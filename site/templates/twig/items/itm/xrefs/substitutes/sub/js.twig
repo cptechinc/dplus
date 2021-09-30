@@ -1,0 +1,146 @@
+{% include 'items/itm/xrefs/substitutes/sub/js/classes.js.twig' %}
+
+$(function() {
+	var modalAjax = $('#ajax-modal');
+
+	var formSub   = SubForm.getInstance();
+	var alert     = SubAlerts.getInstance();
+	var server    = SubRequests.getInstance();
+
+/* =============================================================
+	Event Changes
+============================================================= */
+	$('body').on('keyup change paste', 'input, select, textarea', function() {
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+	});
+
+	$("body").on('change', 'input[name=subitemID]', function(e) {
+		e.preventDefault();
+		var input  = $(this);
+		var inputs = formSub.inputs;
+		var sameItemids = inputs.itemid.val() === inputs.subitemid.val();
+
+		if (sameItemids) {
+			alert.sameItemid(inputs.itemid.val(), inputs.subitemid.val(), function(confirmed) {
+				inputs.subitemid.val('');
+				inputs.subitemid.focus();
+			});
+			return false;
+		}
+
+		server.validateExists(inputs.itemid.val(), inputs.subitemid.val(), function(exists) {
+			if (exists) {
+				alert.exists(inputs.itemid.val(), inputs.subitemid.val(), function(goEdit) {
+					if (goEdit) {
+						var uri = URI();
+						uri.setQuery('subitemID', inputs.subitemid.val());
+						window.location.href = uri.toString();
+					} else {
+						location.reload();
+					}
+				});
+			} else {
+				formSub.showDescriptions();
+			}
+		});
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formSub.form.serialize();
+
+	$("body").on("click", "a:not(#ajax-modal a, #itm-substitute-form .form_button)", function(e) {
+		if (formSub.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					var validator = formSub.form.validate();
+					if (validator.form()) {
+						formSub.form.submit();
+					}
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modalAjax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var url    = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form   = $(this);
+		var query  = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var href = button.attr('href');
+		var modal = button.closest('.modal');
+		modal.find('.modal-body').load(href);
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(button.data('itemid')).change();
+		modal.modal('hide');
+	});
+
+/* =============================================================
+	Validation Methods
+============================================================= */
+	formSub.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		ignore: ".validate-ignore",
+		rules: {
+			subitemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: function() {
+							return $('#subitemID').val();
+						}
+					}
+				}
+			},
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+});

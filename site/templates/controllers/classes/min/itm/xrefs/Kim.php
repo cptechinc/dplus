@@ -6,13 +6,14 @@ use ItemMasterItemQuery, ItemMasterItem;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Kim as KimCRUD;
 // Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
 use Controllers\Mki\Kim as KimController;
-use Controllers\Min\Itm\Xrefs as Xrefs;
 
-class Kim extends ItmFunction {
+class Kim extends Base {
 	const PERMISSION_ITMP = 'xrefs';
 
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
 
@@ -26,7 +27,7 @@ class Kim extends ItmFunction {
 			return self::handleCRUD($data);
 		}
 
-		$page->show_breadcrumbs = false;
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->component) === false) {
 			return self::kitComponent($data);
@@ -48,26 +49,35 @@ class Kim extends ItmFunction {
 		self::pw('session')->redirect(self::kitUrl($data->itemID), $http301 = false);
 	}
 
-	public static function kit($data) {
-		if (self::validateItemidAndPermission($data) === false) {
-			return self::displayAlertUserPermission($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
-
-		if ($data->action) {
-			return self::handleCRUD($data);
-		}
-
+	private static function kit($data) {
 		self::pw('page')->headline = "ITM: Kit $data->itemID";
-		$html = self::kitDisplay($data);
+		$html = self::displayKit($data);
 		self::pw('session')->removeFor('response', 'kim');
 		return $html;
 	}
 
-	private static function kitDisplay($data) {
+	private static function kitComponent($data) {
+		$fields = ['itemID|text', 'component|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$kim  = KimController::getKim();
+		$component = $kim->component->getCreateComponent($data->itemID, $data->component);
+
+		$page           = self::pw('page');
+		$page->headline = $component->isNew() ? "ITM: Kit $data->itemID" : "ITM: Kit $data->itemID - $data->component";
+		$page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
+		$html = self::displayKitComponent($data, $component);
+		self::pw('session')->removeFor('response', 'kim');
+		return $html;
+	}
+
+/* =============================================================
+	Displays
+============================================================= */
+	private static function displayKit($data) {
 		$kim  = KimController::getKim();
 		$itm  = self::getItm();
-		$item = $itm->get_item($data->itemID);
+		$item = $itm->item($data->itemID);
 		$kit  = $kim->kit($data->itemID);
 		self::initHooks();
 
@@ -79,32 +89,10 @@ class Kim extends ItmFunction {
 		return $html;
 	}
 
-	public static function kitComponent($data) {
-		if (self::validateItemidAndPermission($data) === false) {
-			return self::displayAlertUserPermission($data);
-		}
-
-		$fields = ['itemID|text', 'component|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		if ($data->action) {
-			return self::handleCRUD($data);
-		}
-		$kim  = KimController::getKim();
-		$component = $kim->component->getCreateComponent($data->itemID, $data->component);
-
-		$page           = self::pw('page');
-		$page->headline = $component->isNew() ? "ITM: Kit $data->itemID" : "ITM: Kit $data->itemID - $data->component";
-		$page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
-		$html = self::kitComponentDisplay($data, $component);
-		self::pw('session')->removeFor('response', 'kim');
-		return $html;
-	}
-
-	private static function kitComponentDisplay($data, $component) {
+	private static function displayKitComponent($data, $component) {
 		$kim  = KimController::getKim();
 		$itm  = self::getItm();
-		$item = $itm->get_item($data->itemID);
+		$item = $itm->item($data->itemID);
 		$kit  = $kim->kit($data->itemID);
 		self::initHooks();
 

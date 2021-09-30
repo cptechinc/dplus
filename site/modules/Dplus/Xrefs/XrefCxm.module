@@ -277,7 +277,7 @@ class XrefCxm extends WireData implements Module {
 					$modules->get('QnotesItemCxm')->process_input($input);
 					break;
 				case 'update-cxm-shortitem':
-					$this->process_input_cxm_shortitem($input);
+					$this->inputUpdateShortitem($input);
 					break;
 				case 'delete-xref':
 					$this->input_delete($input);
@@ -294,7 +294,7 @@ class XrefCxm extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return XrefResponse
 	 */
-	public function process_input_cxm_shortitem(WireInput $input) {
+	public function inputUpdateShortitem(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
@@ -302,22 +302,35 @@ class XrefCxm extends WireData implements Module {
 		$custitemID = $values->text('custitemid');
 
 		if ($this->xref_shortitem_exists($custitemID)) {
-			$cxmitem = $this->xref_shortitem_by_custitemid($custitemID);
-			$message = "Short ItemID '$custitemID' already exists for $cxmitem->itemid";
-			$response = XrefResponse::response_error($record->itemid, $message);
-		} else {
-			$record = $this->get_create_xref_shortitem($itemID, $custitemID);
-			$record->setCustitemid($custitemID);
-
-			if ($record->isNew() === false) {
-				$this->delete_recreate_record($record);
+			if ($values->bool('overwrite') === false) {
+				$xref = $this->xref_shortitem_by_custitemid($custitemID);
+				$message = "Short ItemID '$custitemID' already exists for $xref->itemid";
+				$this->setResponse(XrefResponse::response_error($xref->itemid, $message));
+				return false;
 			}
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$response = $this->save_and_respond($record);
+			$xref = $this->xref_shortitem_by_custitemid($custitemID);
+			$xref->setItemid($itemID);
+			if ($xref->isNew() === false) {
+				$this->delete_recreate_record($xref);
+			}
+			$xref->setDate(date('Ymd'));
+			$xref->setTime(date('His'));
+			$response = $this->save_and_respond($xref);
+			$this->setResponse($response);
+			return $response->has_success();
 		}
 
-		$this->wire('session')->setFor('response', 'cxm', $response);
+		$record = $this->get_create_xref_shortitem($itemID, $custitemID);
+		$record->setCustitemid($custitemID);
+
+		if ($record->isNew() === false) {
+			$this->delete_recreate_record($record);
+		}
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		$response = $this->save_and_respond($record);
+		$this->setResponse($response);
+		return $response->has_success();
 	}
 
 	/**
@@ -499,7 +512,9 @@ class XrefCxm extends WireData implements Module {
 		$array = $record->toArray();
 		$original = new ItemXrefCustomer();
 		$original->fromArray($array);
-		$original->setCustitemid($record->originalvalues[ItemXrefCustomer::get_aliasproperty('custitemid')]);
+		if (array_key_exists(ItemXrefCustomer::get_aliasproperty('custitemid'), $record->originalvalues)) {
+			$original->setCustitemid($record->originalvalues[ItemXrefCustomer::get_aliasproperty('custitemid')]);
+		}
 		$original->setItemid($record->originalvalues[ItemXrefCustomer::get_aliasproperty('itemid')]);
 		$original->delete();
 		$this->update_dplus_cobol($original);
@@ -567,6 +582,18 @@ class XrefCxm extends WireData implements Module {
 			$this->update_dplus_cobol($record);
 		}
 		return $response;
+	}
+
+	private function setResponse(XrefResponse $response) {
+		$this->wire('session')->setFor('response', 'cxm', $response);
+	}
+
+	public function getResponse() {
+		$this->wire('session')->getFor('response', 'cxm');
+	}
+
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', 'cxm');
 	}
 
 /* =============================================================

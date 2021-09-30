@@ -42,11 +42,11 @@ class SalesHistory extends Subfunction {
 	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
+		self::deleteCustPoJson();
 		$data    = self::sanitizeParametersShort($data, ['custID|text', 'itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$session = self::pw('session');
-
 
 		if ($jsonm->exists(self::JSONCODE)) {
 			if ($json['custid'] != $data->custID) {
@@ -61,6 +61,14 @@ class SalesHistory extends Subfunction {
 		}
 		$session->setFor('ci', 'sales-history', ($session->getFor('ci', 'sales-history') + 1));
 		$session->redirect(self::historyUrl($data->custID, $refresh = true), $http301 = false);
+	}
+
+	private static function deleteCustPoJson() {
+		$jsonm = self::getJsonModule();
+		if ($jsonm->exists(self::JSONCODE) && empty(PurchaseOrders::getSessionPo()) === false) {
+			$jsonm->delete(self::JSONCODE);
+			PurchaseOrders::deleteSessionPo();
+		}
 	}
 
 /* =============================================================

@@ -7,13 +7,19 @@ $(function() {
 /* =============================================================
 	Event Changes
 ============================================================= */
+	$('body').on('keyup change paste', '#' + formCosting.id +' input, select, textarea', function(){
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+	});
+
 	$("body").on("change", "select[name=uom_purchase]", function(e) {
 		formCosting.updateUomPurchase();
 
 		var inputs = formCosting.inputs;
 		var conversion = floatParse(inputs.uom.find('option:selected').data('conversion'));
 		var conversionText = inputs.uom.siblings('small').find('.conversion-description');
-		conversionText.text(conversion.toFixed(formCosting.config.fields.qty.precision));
+		conversionText.text(conversion.toFixed(formCosting.config.fields.margin.precision));
 	});
 
 	$("body").on("change", "input[name=standardcost]", function(e) {
@@ -34,7 +40,7 @@ $(function() {
 ============================================================= */
 	origForm = formCosting.form.serialize();
 
-	$("body").on("click", "a:not(#item-costing-form .form_button)", function(e) {
+	$("body").on("click", "a:not(#ajax-modal a, #item-costing-form .form_button)", function(e) {
 		if (formCosting.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);

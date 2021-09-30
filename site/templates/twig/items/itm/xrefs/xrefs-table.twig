@@ -6,7 +6,7 @@
 <table class="table table-sm">
 	<tr>
 		<td>
-			<a href="{{ page.xrefUrlUpcx(item.itemid) }}" class="link">UPC X-refs</a>
+			<a href="{{ page.xrefUrlUpcx(item.itemid) }}" class="link">UPC X-Refs</a>
 		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
@@ -17,7 +17,7 @@
 	</tr>
 	<tr>
 		<td>
-			<a href="{{ page.xrefUrlVxm(item.itemid) }}" class="link">Vendor X-refs</a>
+			<a href="{{ page.xrefUrlVxm(item.itemid) }}" class="link">Vendor X-Refs</a>
 		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
@@ -28,7 +28,7 @@
 	</tr>
 	<tr>
 		<td>
-			<a href="{{ page.xrefUrlCxm(item.itemid) }}" class="link">Customer X-refs</a>
+			<a href="{{ page.xrefUrlCxm(item.itemid) }}" class="link">Customer X-Refs</a>
 		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
@@ -58,7 +58,9 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Subtitute Items</td>
+		<td>
+			<a href="{{ page.xrefUrlSubstitutes(item.itemid) }}" class="link">Substitute Items</a>
+		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
 				<input type="checkbox" class="custom-control-input" id="substitutes" {{ item.has_substitutes() ? 'checked' : '' }}>

@@ -1,0 +1,83 @@
+{% include 'items/itm/misc/form/hazmat/js/classes.js.twig' %}
+
+$(function() {
+	var formHazmat  = HazmatForm.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change focus', 'input[name=dot1]', function(e) {
+		var input = $(this);
+
+		if (input.val() == '') {
+			var inputs = $('.hazmat-step[name!=dot1]');
+			inputs.attr('readonly', 'true');
+			inputs.val('').change();
+			$('input[name=label]').attr('readonly', 'true');
+		}
+	});
+
+	$("body").on('change focus', '.hazmat-step', function(e) {
+		var input = $(this);
+
+		if (input.val() != '') {
+			var nextstep = parseInt(input.data('step')) + 1;
+			$('[data-step="'+nextstep+'"]').removeAttr('readonly');
+		}
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validatorHazmat = formHazmat.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			dot1: {
+				required: true,
+				maxlength: formHazmat.config.fields.dot1.maxlength
+			},
+			dot2: {
+				required: false,
+				maxlength: formHazmat.config.fields.dot2.maxlength
+			},
+			class: {
+				required: function() {
+					return $('#dot1').val() != '';
+				},
+				maxlength: formHazmat.config.fields.class.maxlength
+			},
+			unnbr: {
+				required: function() {
+					return $('#class').val() != '';
+				},
+				maxlength: formHazmat.config.fields.unnbr.maxlength
+			},
+			packgroup: {
+				required: function() {
+					return $('#unnbr').val() != '';
+				},
+			},
+			label: {
+				required: function() {
+					return $('#packgroup').val() != '';
+				},
+				maxlength: formHazmat.config.fields.label.maxlength
+			},
+			allowair: {
+				required: function() {
+					return $('#label').val() != '';
+				},
+			},
+		},
+		messages: {
+			dot1: "Enter a DOT Ship Name"
+		},
+		submitHandler: function(form) {
+			// form.submit();
+		}
+	});
+});

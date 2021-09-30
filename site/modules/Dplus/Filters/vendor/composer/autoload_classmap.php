@@ -20,6 +20,7 @@ return array(
     'Dplus\\Filters\\Min\\InvAdjustmentReason' => $baseDir . '/src/Min/InvAdjustmentReason.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
     'Dplus\\Filters\\Min\\ItemMaster' => $baseDir . '/src/Min/ItemMaster.php',
+    'Dplus\\Filters\\Min\\ItemSubstitute' => $baseDir . '/src/Min/ItemSubstitute.php',
     'Dplus\\Filters\\Min\\LotMaster' => $baseDir . '/src/Min/LotMaster.php',
     'Dplus\\Filters\\Min\\Upcx' => $baseDir . '/src/Min/Upcx.php',
     'Dplus\\Filters\\Min\\WarehouseBin' => $baseDir . '/src/Min/WarehouseBin.php',

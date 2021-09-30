@@ -49,6 +49,47 @@ class ItmHazmat extends WireData implements Module {
 	}
 
 /* =============================================================
+	Field Attributes, Functions
+============================================================= */
+	const FIELD_ATTRIBUTES = [
+		'dot'   => ['type' => 'text', 'maxlength' => InvHazmatItem::MAX_LENGTH_DOT1],
+		'class' => ['type' => 'text', 'maxlength' => InvHazmatItem::MAX_LENGTH_CLASS],
+		'label' => ['type' => 'text', 'maxlength' => InvHazmatItem::MAX_LENGTH_LABEL],
+		'unnbr' => ['type' => 'text', 'maxlength' => InvHazmatItem::MAX_LENGTH_UNNBR],
+	];
+
+	/**
+	 * Initialize field attributes
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		$attributes = self::FIELD_ATTRIBUTES;
+		$this->fieldAttributes = $attributes;
+	}
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
+		}
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, $this->fieldAttributes) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
+			return false;
+		}
+		return $this->fieldAttributes[$field][$attr];
+	}
+
+/* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
@@ -56,7 +97,7 @@ class ItmHazmat extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function hazmat_exists($itemID) {
+	public function exists($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
@@ -67,7 +108,7 @@ class ItmHazmat extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return InvHazmatItem
 	 */
-	public function get_hazmat($itemID) {
+	public function hazmat($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		return $q->findOne();
@@ -78,23 +119,24 @@ class ItmHazmat extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return InvHazmatItem
 	 */
-	public function get_create_hazmat($itemID) {
-		if ($this->hazmat_exists($itemID)) {
-			$record = $this->get_hazmat($itemID);
+	public function getCreateHazmat($itemID) {
+		if ($this->exists($itemID)) {
+			$hazmat = $this->hazmat($itemID);
 		} else {
 			$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
-			$record = new InvHazmatItem();
-			$record->setItemid($itemID);
+			$hazmat = new InvHazmatItem();
+			$hazmat->setItemid($itemID);
 		}
-		return $record;
+		return $hazmat;
 	}
+
 
 	/**
 	 * Delete Hazmat if Exists
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function delete_hazmat($itemID) {
+	public function delete($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		return $q->count() ? $q->delete() : true;
@@ -109,102 +151,79 @@ class ItmHazmat extends WireData implements Module {
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
-	public function process_input(WireInput $input) {
+	public function processInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
 		switch ($values->text('action')) {
-			case 'delete-itm-hazmat':
-				$this->input_delete($input);
 			case 'update-itm-hazmat':
-				$this->input_update($input);
+				$this->inputUpdate($input);
 				break;
 			default:
-				$this->wire('session')->setFor('response', 'itm', ItmResponse::response_error("ItmHazmat", "No Action Provided"));
+				$this->setResponse(ItmResponse::response_error("ItmHazmat", "No Action Provided"));
 				break;
 		}
 	}
 
 	/**
-	 * Delete Hazmat Record
+	 * Update ITM Hazmat from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	private function input_delete(WireInput $input) {
+	private function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = strtoupper($values->text('itemID'));
+		$itm = $this->wire('modules')->get('Itm');
+		$itemID = $itm->itemid($values->text('itemID'));
 
-		if (!$this->recordlocker->function_locked($itemID)) {
-			$this->recordlocker->create_lock($itemID);
+		if ($itm->exists($itemID) === false) {
+			$this->setResponse(ItmResponse::response_error($itemID, "$itemID does not exist"));
+			return false;
 		}
 
-		if ($this->recordlocker->function_locked_by_user($itemID)) {
-			return $this->delete_hazmat($itemID);
+		$itm->lockrecord($itemID);
+		if ($itm->recordlocker->userHasLocked($itemID) === false) {
+			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $itm->recordlocker->getLockingUser($itemID);
+			$this->setResponse(ItmResponse::response_error($itemID, $message));
+			return false;
 		}
-		$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($itemID);
-		$this->wire('session')->setFor('response', 'itm', ItmResponse::response_error($itemID, $message));
-		return false;
+		$hazmat = $this->getCreateHazmat($itemID);
+		return $this->inputUpdateHazmat($hazmat, $input);
 	}
 
 	/**
-	 * Delete Hazmat Record
-	 * @param  WireInput $input Input Data
+	 * Update Itm Item Misc Fields
+	 * @param  InvHazmatItem  $item
+	 * @param  WireInput      $input Input Data
 	 * @return bool
 	 */
-	private function input_update(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$itemID = strtoupper($values->text('itemID'));
-		$record = $this->get_create_hazmat($itemID);
-
-		if (!$this->recordlocker->function_locked($itemID)) {
-			$this->recordlocker->create_lock($itemID);
-		}
-
-		if ($record->isNew() || $this->recordlocker->function_locked_by_user($itemID)) {
-			$invalidfields = $this->set_hazmat_fields($record, $input);
-			$response = $this->save_and_respond($record, $invalidfields);
-
-			if ($invalidfields) {
-				$response->set_error(true);
-				$response->set_success(false);
-				$response->set_saved_itm(false);
-				$response->set_message("$itemID Hazmat was not saved to Dplus");
-			} else {
-				$response->set_saved_itm($response->success);
-			}
-			$this->wire('session')->setFor('response', 'itm', $response);
-			return $response->has_success();
-		}
-
-		$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($itemID);
-		$this->wire('session')->setFor('response', 'itm', ItmResponse::response_error($itemID, $message));
-		return false;
+	private function inputUpdateHazmat(InvHazmatItem $hazmat, WireInput $input) {
+		$invalidfields = $this->setHazmatFields($hazmat, $input);
+		$response = $this->saveAndRespond($hazmat, $invalidfields);
+		$this->setResponse($response);
+		return $response->has_success();
 	}
 
 	/**
-	 * Sets Item Values
-	 * @param InvHazmatItem  $record Item Master Item
-	 * @param WireInput      $input  Input Data
+	 * Set Hazmat Fields
+	 * @param InvHazmatItem $hazmat
+	 * @param WireInput     $input   Input Data
 	 */
-	protected function set_hazmat_fields(InvHazmatItem $record, WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$invalidfields = array();
-
-		$invalidfields = $this->set_validated_fields($record, $input);
+	private function setHazmatFields(InvHazmatItem $hazmat, WireInput $input) {
+		$invalidfields = [];
+		$invalidfields = $this->setHazmatFieldsValidated($hazmat, $input);
+		$hazmat->setDate(date('Ymd'));
+		$hazmat->setTime(date('His'));
 		return $invalidfields;
 	}
 
 	/**
-	 * Updates the fields that need to be validated against a table
-	 * @param  InvHazmatItem $record Item
-	 * @param  WireInput      $input  Input Values
-	 * @return array                  Invalid Input fields, empty if none
+	 * Set Hazmat Fields that need validation
+	 * @param InvHazmatItem $hazmat
+	 * @param WireInput     $input   Input Data
 	 */
-	protected function set_validated_fields(InvHazmatItem $record, WireInput $input) {
-		$invalid = array();
+	private function setHazmatFieldsValidated(InvHazmatItem $hazmat, WireInput $input) {
+		$invalidfields = [];
 		$fields = array(
 			'dot1' => array(
 				'description' => 'DOT Ship Name 1',
@@ -262,7 +281,7 @@ class ItmHazmat extends WireData implements Module {
 			),
 		);
 		$validator = $this->wire('modules')->get('InputValidator');
-		$validator->set_validator((new ItmValidator()))->set_input($input)->set_record($record)->set_validatefields($fields);
+		$validator->set_validator((new ItmValidator()))->set_input($input)->set_record($hazmat)->set_validatefields($fields);
 		$invalid = $validator->validate();
 		$validator->set_valid_properties();
 		return $invalid;
@@ -273,16 +292,16 @@ class ItmHazmat extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Returns ItmResponse based on the outcome of the database save
-	 * @param  InvHazmatItem $record        Record to record response of database save
+	 * @param  InvHazmatItem  $hazmat        Record to record response of database save
 	 * @param  array          $invalidfields Input fields that require attention
 	 * @return ItmResponse
 	 */
-	protected function save_and_respond(InvHazmatItem $record, array $invalidfields) {
-		$is_new = $record->isDeleted() ? false : $record->isNew();
-		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+	protected function saveAndRespond(InvHazmatItem $hazmat, array $invalidfields) {
+		$is_new = $hazmat->isDeleted() ? false : $hazmat->isNew();
+		$saved  = $hazmat->isDeleted() ? $hazmat->isDeleted() : $hazmat->save();
 
 		$response = new ItmResponse();
-		$response->set_itemID($record->itemid);
+		$response->set_itemID($hazmat->itemid);
 
 		if ($saved) {
 			$response->set_success(true);
@@ -292,19 +311,44 @@ class ItmHazmat extends WireData implements Module {
 
 		if ($is_new) {
 			$response->set_action(ItmResponse::CRUD_CREATE);
-		} elseif ($record->isDeleted()) {
+		} elseif ($hazmat->isDeleted()) {
 			$response->set_action(ItmResponse::CRUD_DELETE);
 		} else {
 			$response->set_action(ItmResponse::CRUD_UPDATE);
 		}
 
 		$response->build_message(self::RESPONSE_TEMPLATE);
+		$response->set_fields($invalidfields);
+
+		if (empty($invalidfields) === false) {
+			$response->set_error(true);
+			$response->set_success(false);
+			$response->set_saved_itm(false);
+			$response->build_message(self::RESPONSE_TEMPLATE);
+			return $response;
+		}
 
 		if ($response->has_success() && empty($invalidfields)) {
-			$this->request_hazmat_update($record->itemid);
+			$response->set_saved_itm($response->success);
+			$this->request_hazmat_update($hazmat->itemid);
 		}
-		$response->set_fields($invalidfields);
 		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param ItmResponse $response
+	 */
+	protected function setResponse(ItmResponse $response) {
+		$this->wire('session')->setFor('response', 'itm-hazmat', $response);
+	}
+
+	/**
+	 * Get Session Response
+	 * @return ItmResponse|null
+	 */
+	protected function getResponse() {
+		$this->wire('session')->getFor('response', 'itm-hazmat');
 	}
 
 /* =============================================================

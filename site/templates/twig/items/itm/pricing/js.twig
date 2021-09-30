@@ -9,6 +9,15 @@ $(function() {
 	var formPricing = PricingForm.getInstance();
 	var alert       = PricingAlerts.getInstance();
 
+/* =============================================================
+	Events
+============================================================= */
+	$('body').on('keyup change paste', '#' + formPricing.id +' input, select, textarea', function(){
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+	});
+
 	$("body").on("change", ".unit-price, .unit-qty", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		formPricing.updateUnitRow(unitrow);
@@ -21,7 +30,7 @@ $(function() {
 		var inputs = formPricing.inputs;
 		var conversion = floatParse(inputs.uom.find('option:selected').data('conversion'));
 		var conversionText = inputs.uom.siblings('small').find('.conversion-description');
-		conversionText.text(conversion.toFixed(formPricing.config.fields.qty.precision));
+		conversionText.text(conversion.toFixed(formPricing.config.fields.margin.precision));
 		formPricing.updateUnitRows();
 	});
 

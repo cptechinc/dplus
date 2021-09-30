@@ -9,23 +9,28 @@
 {% block body %}
 	<div class="card-body">
 		<div class="mb-3">
-			{% include 'items/itm/misc/form/misc.twig' %}
+			{% include 'items/itm/misc/form/misc/form.twig' %}
 		</div>
 		<hr>
+		{% include 'items/itm/misc/form/hazmat/hazmat.twig' %}
 
-		{% include 'items/itm/misc/form/hazmat.twig' %}
+		<div class="d-flex justify-content-between align-items-center">
+			{#
+				Only show Edit Actions if the Item is
+				1. Locked for editing by the User
+			#}
+			{% if itm.recordlocker.userHasLocked(item.itemid) %}
+				<button class="btn btn-success save-itm-misc">
+					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+				</button>
+			{% endif %}
+			<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
 	</div>
 {% endblock %}
 
 {% block footer %}
-	<div class="card-footer">
-		<div class="d-flex justify-content-between align-items-center">
-			<div></div>
-			<div>
-				<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning btn-sm">
-					<i class="fa fa-times" aria-hidden="true"></i> Close
-				</a>
-			</div>
-		</div>
-	</div>
+	
 {% endblock %}

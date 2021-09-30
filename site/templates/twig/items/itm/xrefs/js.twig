@@ -1,31 +1,64 @@
+{% include 'items/itm/xrefs/js/classes.js.twig' %}
+
 $(function() {
-	var modal_ajax = $('#ajax-modal');
+	var modalAjax = $('#ajax-modal');
 	var form = $('#itm-xrefs-form');
 	var input_supercededby = form.find('input[name=supercededby]');
+
+	var formXrefs = XrefsForm.getInstance();
+	var alert     = XrefsAlerts.getInstance();
+	var server    = XrefsRequests.getInstance();
+
+/* =============================================================
+	Events
+============================================================= */
+	$('body').on('keyup change paste', '#' + formXrefs.id +' input, select, textarea', function(){
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+	});
+	
+	$("body").on("change", "input[name=shortitemID]", function(e) {
+		var input  = $(this);
+		var inputs = formXrefs.inputs;
+		inputs.overwriteshort.val('false');
+
+		server.validateShortItemAvailable(formXrefs.inputs.itemid.val(), input.val(), function(isAvailable) {
+			if (isAvailable === false) {
+				alert.shortItemidExists(inputs.itemid.val(), inputs.shortitemid.val(), function(overwrite) {
+					inputs.overwriteshort.val(overwrite ? 'true' : 'false');
+				});
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=supercede]", function(e) {
+		var input  = $(this);
+		var inputs = formXrefs.inputs;
+		inputs.overwriteshort.val('false');
+
+		if (inputs.itemid.val() == inputs.supercede.val()) {
+			alert.supercedeIsSameItemid(inputs.itemid.val(), inputs.supercede.val(), function(isConfirmed) {
+				inputs.supercede.val('');
+				var validator = formXrefs.form.validate();
+				validator.element('#' + inputs.supercede.attr('id'));
+			});
+		}
+	});
 
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	origForm = form.serialize();
-
 	$("body").on("click", "a:not(#itm-xrefs-form.form_button, #ajax-modal a)", function(e) {
-		if (form.serialize() !== origForm) {
+		if (formXrefs.hasChanges()) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
 
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					form.find('button[type=submit]').click();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					formXrefs.form.find('button[type=submit]').click();
+				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
 					});
@@ -34,13 +67,15 @@ $(function() {
 		}
 	});
 
+
 /* =============================================================
 	Item Lookup Modal Methods
 ============================================================= */
-	modal_ajax.on('show.bs.modal', function (event) {
+	modalAjax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal = $(this);
-		var url = '{{ page.search_lookupURL('items') }}';
+		var modal  = $(this);
+		var url    = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
 		modal.find('.modal-title').text('Search for an Item');
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {
@@ -64,13 +99,60 @@ $(function() {
 	$("body").on("click", "#ajax-modal .item-link", function(e) {
 		e.preventDefault();
 		var button = $(this);
-		input_supercededby.val(button.data('itemid'));
-		$('#ajax-modal').modal('hide');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(button.data('itemid'));
+		modal.modal('hide');
 	});
 
 	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
 		e.preventDefault();
-		var href = $(this).attr('href');
-		modal_ajax.find('.modal-body').load(href);
+		var button = $(this);
+		var href   = button.attr('href');
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Methods
+============================================================= */
+	jQuery.validator.addMethod("supercedematches", function(value, element) {
+			return this.optional(element) || value != formXrefs.inputs.itemid.val();
+		},
+		"Cannot supercede an item back to the same Item ID"
+	);
+
+	formXrefs.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		ignore: ".validate-ignore",
+		rules: {
+			shortitemID: {
+				required: false,
+			},
+			supercede: {
+				required: false,
+				supercedematches: true,
+			},
+		},
+		submitHandler: function(form) {
+			var inputs = formXrefs.inputs;
+			if (inputs.overwriteshort.val() == 'false') {
+				server.validateShortItemAvailable(inputs.itemid.val(), inputs.shortitemid.val(), function(isAvailable) {
+					if (isAvailable === false) {
+						alert.shortItemidExists(inputs.itemid.val(), inputs.shortitemid.val(), function(overwrite) {
+							inputs.overwriteshort.val(overwrite ? 'true' : 'false');
+							form.submit();
+						});
+					} else {
+						form.submit();
+					}
+				});
+			} else {
+				form.submit();
+			}
+		}
 	});
 });

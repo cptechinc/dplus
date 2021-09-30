@@ -5,12 +5,13 @@ use Purl\Url as Purl;
 use WarehouseInventoryQuery, WarehouseInventory;
 // ProcessWire classes, modules
 use ProcessWire\Page, ProcessWire\ItmWarehouse as WarehouseCRUD;
-// Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
 
-class Warehouse extends ItmFunction {
+class Warehouse extends Base {
 	const PERMISSION_ITMP = 'whse';
 
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -56,7 +57,7 @@ class Warehouse extends ItmFunction {
 		self::pw('session')->redirect($url, $http301 = false);
 	}
 
-	public static function warehouse($data) {
+	private static function warehouse($data) {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
@@ -82,6 +83,28 @@ class Warehouse extends ItmFunction {
 		return self::whseDisplay($data);
 	}
 
+	public static function list($data) {
+		if (self::validateItemidAndPermission($data) === false) {
+			return $page->body;
+		}
+
+		$fields = ['itemID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+		if ($data->action) {
+			return self::handleCRUD($data);
+		}
+		self::initHooks();
+		$itmw    = self::getItmWarehouse();
+		$itmw->recordlocker->deleteLock();
+		$page    = self::pw('page');
+		$page->headline = "ITM: $data->itemID Warehouses";
+
+		return self::listDisplay($data);
+	}
+
+/* =============================================================
+	Displays
+============================================================= */
 	private static function whseDisplay($data) {
 		$itm  = self::getItm();
 		$itmW = self::getItmWarehouse();
@@ -145,25 +168,6 @@ class Warehouse extends ItmFunction {
 		return $html;
 	}
 
-	public static function list($data) {
-		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
-		}
-
-		$fields = ['itemID|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-		if ($data->action) {
-			return self::handleCRUD($data);
-		}
-		self::initHooks();
-		$itmw    = self::getItmWarehouse();
-		$itmw->recordlocker->deleteLock();
-		$page    = self::pw('page');
-		$page->headline = "ITM: $data->itemID Warehouses";
-
-		return self::listDisplay($data);
-	}
-
 	private static function listDisplay($data) {
 		$config  = self::pw('config');
 		$item    = self::getItm()->item($data->itemID);
@@ -180,14 +184,9 @@ class Warehouse extends ItmFunction {
 		return $html;
 	}
 
-	public static function getItmWarehouse() {
-		return self::pw('modules')->get('ItmWarehouse');
-	}
-
-	public static function getQnotes() {
-		return self::pw('modules')->get('QnotesItemWhseOrder');
-	}
-
+/* =============================================================
+	URLs
+============================================================= */
 	public static function itmUrlWhseDelete($itemID, $whseID) {
 		$url = new Purl(self::itmUrlWhse($itemID, $whseID));
 		$url->query->set('action', 'delete-whse');
@@ -200,6 +199,9 @@ class Warehouse extends ItmFunction {
 		return $url->getUrl();
 	}
 
+/* =============================================================
+	Hooks
+============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Itm');
 
@@ -212,4 +214,14 @@ class Warehouse extends ItmFunction {
 		});
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
+	public static function getItmWarehouse() {
+		return self::pw('modules')->get('ItmWarehouse');
+	}
+
+	public static function getQnotes() {
+		return self::pw('modules')->get('QnotesItemWhseOrder');
+	}
 }

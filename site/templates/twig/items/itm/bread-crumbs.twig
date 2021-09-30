@@ -55,17 +55,41 @@
 				{% if lastsegment == 'xrefs' %}
 					<i class="fa fa-arrows" aria-hidden="true"></i>
 				{% endif %}
-				{{ lastsegment|title }}
+				{{ lastsegment == 'xrefs' ? 'X-Refs' : lastsegment|title }}
 			</li>
 		{% endif %}
 	{% elseif segments[1] == 'xrefs' %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.itmUrlFunction(values.text('itemID'), 'xrefs') }}">
-				<i class="fa fa-arrows" aria-hidden="true"></i> {{ 'X-refs'|title }}
+				<i class="fa fa-arrows" aria-hidden="true"></i> {{ 'X-Refs'|title }}
 			</a>
 		</li>
-		<li class="breadcrumb-item active" aria-current="page">
-			{{ lastsegment|upper }}
-		</li>
+
+		{% if lastsegment == 'substitutes' %}
+			{% if values.offsetExists('subitemID') %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.xrefUrlSubstitutes(values.text('itemID')) }}">
+						{{ lastsegment|capitalize }}
+					</a>
+				</li>
+				{% if values.text('subitemID') == 'new' %}
+					<li class="breadcrumb-item active" aria-current="page">
+						Add
+					</li>
+				{% else %}
+					<li class="breadcrumb-item active" aria-current="page">
+						{{ values.text('subitemID')}}
+					</li>
+				{% endif %}
+			{% else %}
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ lastsegment|capitalize }}
+				</li>
+			{% endif %}
+		{% else %}
+			<li class="breadcrumb-item active" aria-current="page">
+				{{ lastsegment|upper }}
+			</li>
+		{% endif %}
 	{% endif %}
 {% endblock %}

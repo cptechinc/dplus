@@ -36,6 +36,11 @@
 				],
 				'itm' => [
 					['GET', 'warehouse/', Json\Min::class, 'validateItmWhse'],
+					['GET', 'substitute/', Json\Min::class, 'validateItmSub'],
+					'xrefs' => [
+						['GET', 'shortitemid/', Json\Min::class, 'validateItmShortitemid'],
+						['GET', 'shortitemid/available/', Json\Min::class, 'validateItmShortitemidAvailable'],
+					]
 				]
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
@@ -125,6 +130,7 @@
 			'sales-order' => [
 				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
 			],
+			['GET', 'freight-code/', Json\Mso::class, 'getFreightCode'],
 		],
 		'mqo' => [
 			'quote' => [

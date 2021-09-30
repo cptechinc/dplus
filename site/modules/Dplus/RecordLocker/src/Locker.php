@@ -81,7 +81,7 @@ class Locker extends WireData {
 		$lock->setKey($key);
 		$lock->setUserid($userID);
 		$lock->setDate(date(LockRecord::DATE_FORMAT));
-		return $lock->save();
+		return boolval($lock->save());
 	}
 
 	/**
