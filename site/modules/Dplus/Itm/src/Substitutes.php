@@ -346,6 +346,7 @@ class Substitutes extends WireData {
 
 		$response = new Response();
 		$response->setItemID($sub->itemid);
+		$response->setKey($this->getRecordlockerKey($sub));
 
 		if ($saved) {
 			$response->setSuccess(true);

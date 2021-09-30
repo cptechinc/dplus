@@ -42,6 +42,7 @@ class SalesOrders extends Subfunction {
 	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
+		self::deleteCustPoJson();
 		$data    = self::sanitizeParametersShort($data, ['custID|text', 'itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
@@ -63,6 +64,14 @@ class SalesOrders extends Subfunction {
 		$session->redirect(self::ordersUrl($data->custID, $refresh = true), $http301 = false);
 	}
 
+	private static function deleteCustPoJson() {
+		$jsonm = self::getJsonModule();
+		if ($jsonm->exists(self::JSONCODE) && empty(PurchaseOrders::getSessionPo()) === false) {
+			$jsonm->delete(self::JSONCODE);
+			PurchaseOrders::deleteSessionPo();
+		}
+	}
+	
 /* =============================================================
 	Display
 ============================================================= */

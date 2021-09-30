@@ -12,7 +12,6 @@ use Dplus\Configs;
 // Dplus Filters
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
-use Controllers\Min\Itm\Xrefs;
 use Controllers\Min\Upcx as UpcxController;
 
 class Upcx extends Base {
@@ -45,12 +44,11 @@ class Upcx extends Base {
 			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'upc|text', 'action|text'];
-		$data = self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
+		self::sanitizeParameters($data, $fields);
 
 		if ($data->action) {
 			$upcx = UpcxController::getUpcx();
-			$upcx->process_input($input);
+			$upcx->process_input(self::pw('input'));
 		}
 		$upc = $data->action == 'delete-upcx' ? '' : $data->upc;
 		self::pw('session')->redirect(self::xrefUrl($data->itemID, $upc), $http301 = false);
