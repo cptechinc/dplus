@@ -6,7 +6,7 @@ use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 // Mvc Controllers
-use Controllers\Min\Inproc\Base;
+use Controllers\Mpm\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = '';
