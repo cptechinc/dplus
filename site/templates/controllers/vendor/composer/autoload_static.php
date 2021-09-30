@@ -97,6 +97,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mki\\Kim' => __DIR__ . '/../..' . '/classes/mki/Kim.php',
         'Controllers\\Mpm\\Base' => __DIR__ . '/../..' . '/classes/mpm/Base.php',
         'Controllers\\Mpm\\Menu' => __DIR__ . '/../..' . '/classes/mpm/Menu.php',
+        'Controllers\\Mpm\\Pmmain\\Bmm' => __DIR__ . '/../..' . '/classes/mpm/pmmain/Bmm.php',
         'Controllers\\Mpm\\Pmmain\\Menu' => __DIR__ . '/../..' . '/classes/mpm/pmmain/Menu.php',
         'Controllers\\Mpo\\ApInvoice\\Base' => __DIR__ . '/../..' . '/classes/mpo/ApInvoice/Base.php',
         'Controllers\\Mpo\\ApInvoice\\Lists\\ApInvoice' => __DIR__ . '/../..' . '/classes/mpo/ApInvoice/Lists/ApInvoice.php',

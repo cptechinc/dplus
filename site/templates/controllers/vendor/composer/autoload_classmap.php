@@ -96,6 +96,7 @@ return array(
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
     'Controllers\\Mpm\\Base' => $baseDir . '/classes/mpm/Base.php',
     'Controllers\\Mpm\\Menu' => $baseDir . '/classes/mpm/Menu.php',
+    'Controllers\\Mpm\\Pmmain\\Bmm' => $baseDir . '/classes/mpm/pmmain/Bmm.php',
     'Controllers\\Mpm\\Pmmain\\Menu' => $baseDir . '/classes/mpm/pmmain/Menu.php',
     'Controllers\\Mpo\\ApInvoice\\Base' => $baseDir . '/classes/mpo/ApInvoice/Base.php',
     'Controllers\\Mpo\\ApInvoice\\Lists\\ApInvoice' => $baseDir . '/classes/mpo/ApInvoice/Lists/ApInvoice.php',

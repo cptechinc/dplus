@@ -8,6 +8,7 @@
 		['GET',  '', Mpm\Menu::class, 'index'],
 		'pmmain' => [
 			['GET',  '', Mpm\Pmmain\Menu::class, 'index'],
+			['GET',  'bmm', Mpm\Pmmain\Bmm::class, 'index'],
 		]
 	];
 	$router = new Mvc\Router();
