@@ -172,6 +172,7 @@ class Itm extends Base {
 		if ($item->isNew() === false && $itm->recordlocker->userHasLocked($data->itemID)) {
 			$html .= self::displayQnotes($data);
 		}
+		$itm->deleteResponse();
 		return $html;
 	}
 
