@@ -2,6 +2,8 @@
 // Dplus Models
 use CustomerQuery, Customer;
 use CustomerShiptoQuery, CustomerShipto;
+// Dpluso Models
+use CartdetQuery, Cartdet;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Configs
