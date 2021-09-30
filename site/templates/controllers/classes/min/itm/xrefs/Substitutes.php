@@ -126,6 +126,7 @@ class Substitutes extends Base {
 		$html  = self::breadCrumbs();
 		$html  = self::displayResponse();
 		$html .= self::displaySubstitutes($data, $item, $xrefs);
+		$itmSub->deleteResponse();
 		return $html;
 	}
 
