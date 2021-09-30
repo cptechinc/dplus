@@ -95,6 +95,8 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Min\\Upcx' => __DIR__ . '/../..' . '/classes/min/Upcx.php',
         'Controllers\\Misc\\Cart\\Cart' => __DIR__ . '/../..' . '/classes/misc/cart/Cart.php',
         'Controllers\\Mki\\Kim' => __DIR__ . '/../..' . '/classes/mki/Kim.php',
+        'Controllers\\Mpm\\Menu' => __DIR__ . '/../..' . '/classes/mpm/Menu.php',
+        'Controllers\\Mpm\\Pmmain\\Menu' => __DIR__ . '/../..' . '/classes/mpm/pmmain/Menu.php',
         'Controllers\\Mpo\\ApInvoice\\Base' => __DIR__ . '/../..' . '/classes/mpo/ApInvoice/Base.php',
         'Controllers\\Mpo\\ApInvoice\\Lists\\ApInvoice' => __DIR__ . '/../..' . '/classes/mpo/ApInvoice/Lists/ApInvoice.php',
         'Controllers\\Mpo\\Poadmn\\Base' => __DIR__ . '/../..' . '/classes/mpo/poadmn/Base.php',
