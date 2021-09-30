@@ -32,7 +32,7 @@ abstract class Base extends AbstractController {
 		if (self::validateUserPermission()) {
 			return true;
 		}
-		$perm = self::DPLUSPERMISSION;
+		$perm = static::DPLUSPERMISSION;
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $perm"]);
 	}
 
@@ -40,12 +40,12 @@ abstract class Base extends AbstractController {
 	Validator, Module Getters
 ============================================================= */
 	public static function validateUserPermission(User $user = null) {
-		if (empty(self::DPLUSPERMISSION)) {
+		if (empty(static::DPLUSPERMISSION)) {
 			return true;
 		}
 		if (empty($user)) {
 			$user = self::pw('user');
 		}
-		return $user->has_function(self::DPLUSPERMISSION);
+		return $user->has_function(static::DPLUSPERMISSION);
 	}
 }
