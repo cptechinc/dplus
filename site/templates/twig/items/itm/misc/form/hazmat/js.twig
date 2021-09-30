@@ -6,6 +6,17 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
+	$("body").on('change focus', 'input[name=dot1]', function(e) {
+		var input = $(this);
+
+		if (input.val() == '') {
+			var inputs = $('.hazmat-step[name!=dot1]');
+			inputs.attr('readonly', 'true');
+			inputs.val('').change();
+			$('input[name=label]').attr('readonly', 'true');
+		}
+	});
+
 	$("body").on('change focus', '.hazmat-step', function(e) {
 		var input = $(this);
 

@@ -151,7 +151,20 @@ class PurchaseOrders extends Subfunction {
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['CICUSTPO', "CUSTID=$vars->custID", "SHIPID=$vars->shiptoID", "CUSTPO=$vars->custpo"];
+		self::setSessionPo($vars->custpo);
 		self::sendRequest($data, $vars->sessionID);
+	}
+
+	public static function setSessionPo($custpo) {
+		self::pw('session')->setFor('ci', 'ci-custpo', $custpo);
+	}
+
+	public static function getSessionPo() {
+		return self::pw('session')->getFor('ci', 'ci-custpo');
+	}
+
+	public static function deleteSessionPo() {
+		return self::pw('session')->removeFor('ci', 'ci-custpo');
 	}
 
 /* =============================================================
