@@ -35,7 +35,7 @@
 			{% for customer in customers %}
 				<tr>
 					<td scope="row">
-						<a href="{{ page.url ~ '?custID=' ~ customer.id }}" class="link ci-customer customer-link" data-custid="{{ customer.id }}" data-cust_name="{{ customer.name }}" >
+						<a href="{{ input.url() ~ '?custID=' ~ customer.id }}" class="link ci-customer customer-link" data-custid="{{ customer.id }}" data-cust_name="{{ customer.name }}" >
 							<strong>{{ customer.id }}</strong>
 						</a>
 					</td>

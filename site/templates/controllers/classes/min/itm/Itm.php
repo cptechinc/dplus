@@ -1,6 +1,8 @@
 <?php namespace Controllers\Min\Itm;
 // External Libraries, classes
-Use Purl\Url as Purl;
+use Purl\Url as Purl;
+// Propel ORM Library
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
 use ItemMasterItem;
 // ProcessWire classes, modules

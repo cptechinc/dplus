@@ -27,13 +27,13 @@
 						{% endfor %}
 					</tr>
 					{% for order in lot['orders'] %}
-					<tr>
-						{% for column, properties in json['columns']['orders'] %}
-							<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
-								{{ order[column] }}
-							</td>
-						{% endfor %}
-					</tr>
+						<tr>
+							{% for column, properties in json['columns']['orders'] %}
+								<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+									{{ order[column] }}
+								</td>
+							{% endfor %}
+						</tr>
 					{% endfor %}
 				{% endif %}
 			{% endfor %}

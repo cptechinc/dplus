@@ -1,5 +1,5 @@
 <h3>Enter Customer ID</h3>
-<form action="{{ page.url }}" method="post" class="allow-enterkey-submit" id="customer-search-form">
+<form action="{{ input.url() }}" method="POST" class="allow-enterkey-submit" id="customer-search-form">
 	<input type="hidden" name="action" value="set-customer">
 	<div class="form-group">
 		{% include 'util/form/input-with-modal-lookup.twig' with {
