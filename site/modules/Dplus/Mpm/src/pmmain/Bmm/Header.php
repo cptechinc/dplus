@@ -19,6 +19,9 @@ class Header extends WireData {
 		$this->sessionID = session_id();
 	}
 
+/* =============================================================
+	Queries
+============================================================= */
 	/**
 	 * Return Query
 	 * @return BomItemQuery
@@ -40,6 +43,9 @@ class Header extends WireData {
 		return $q;
 	}
 
+/* =============================================================
+	CRUD Reads
+============================================================= */
 	/**
 	 * Return BomItem
 	 * @param  string $itemID Item ID
