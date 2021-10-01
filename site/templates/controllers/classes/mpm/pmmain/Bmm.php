@@ -3,10 +3,14 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
+// Dplus CRUD
+use Dplus\Mpm\Pmmain\Bmm as BmmManager;
 // Mvc Controllers
 use Controllers\Mpm\Base;
 
 class Bmm extends Base {
+	private static $bmm;
+
 /* =============================================================
 	Indexes
 ============================================================= */
@@ -186,5 +190,10 @@ class Bmm extends Base {
 /* =============================================================
 	Supplemental
 ============================================================= */
-
+	public static function getBmm() {
+		if (empty(self::$bmm)) {
+			self::$bmm = new BmmManager();
+		}
+		return self::$bmm;
+	}
 }
