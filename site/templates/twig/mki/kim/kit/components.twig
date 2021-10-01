@@ -42,7 +42,7 @@
 						</a>
 					{% else %}
 						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ recordlocker.getLockingUser('vxm', vxm.get_recordlocker_key(item)) }}
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ kim.recordlocker.getLockingUser(kit.itemid) }}
 						</span>
 					{% endif %}
 				</td>
