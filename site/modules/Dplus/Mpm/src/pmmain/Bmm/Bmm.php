@@ -3,6 +3,8 @@
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Configs
+use Dplus\Configs;
 // Dplus CRUD
 use Dplus\Mpm\Pmmain\Bom;
 
@@ -36,5 +38,9 @@ class Bmm extends WireData {
 		$locker->setFunction(self::RECORDLOCKER_FUNCTION);
 		$locker->setUser($locker->wire('user'));
 		return $locker;
+	}
+
+	public function getConfigPm() {
+		return Configs\Pm::config();
 	}
 }
