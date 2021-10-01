@@ -1,0 +1,22 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/vendor/autoload.php');
+
+/**
+ * Module that handles the editing of the UPC item Itm
+ */
+class Mpm extends WireData implements Module {
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Mpm',
+			'version' => 101,
+			'summary' => 'Module for Autoloading Mpm CRUD',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => []
+		);
+	}
+}
