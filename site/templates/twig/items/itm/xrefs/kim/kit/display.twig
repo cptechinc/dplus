@@ -1,18 +1,5 @@
 {% extends 'items/itm/display.twig' %}
 
-{% block header %}
-	<div class="card-header">
-		<div class="row">
-			<div class="col-sm-2">
-				<strong>Item ID:</strong>
-			</div>
-			<div class="col-sm-6">
-				{{ item.itemid }} - {{ item.description }}
-			</div>
-		</div>
-	</div>
-{% endblock %}
-
 {% block body %}
 	{% include 'mki/kim/kit/components.twig' %}
 {% endblock %}
