@@ -53,20 +53,20 @@ class Bom extends Base {
 		return $html;
 	}
 
-	// private static function bomComponent($data) {
-	// 	$fields = ['itemID|text', 'component|text', 'action|text'];
-	// 	self::sanitizeParametersShort($data, $fields);
-	//
-	// 	$bmm  = BomController::getBom();
-	// 	$component = $bmm->component->getCreateComponent($data->itemID, $data->component);
-	//
-	// 	$page           = self::pw('page');
-	// 	$page->headline = $component->isNew() ? "ITM: Kit $data->itemID" : "ITM: Kit $data->itemID - $data->component";
-	// 	$page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $bmm]);
-	// 	$html = self::displayKitComponent($data, $component);
-	// 	self::pw('session')->removeFor('response', 'kim');
-	// 	return $html;
-	// }
+	private static function bomComponent($data) {
+		$fields = ['itemID|text', 'component|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bmm  = BmmParent::getBmm();
+		$component = $bmm->components->getOrCreate($data->itemID, $data->component);
+
+		$page           = self::pw('page');
+		$page->headline = $component->isNew() ? "ITM: BoM $data->itemID" : "ITM: BoM $data->itemID - $data->component";
+		// $page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $bmm]);
+		$html = self::displayBomComponent($data, $component);
+		// self::pw('session')->removeFor('response', 'kim');
+		return $html;
+	}
 
 /* =============================================================
 	Displays
@@ -85,21 +85,22 @@ class Bom extends Base {
 		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/bom/display.twig', ['item' => $item, 'bmm' => $bmm, 'bomItem' => $bomItem]);
 		return $html;
 	}
-	//
-	// private static function displayKitComponent($data, $component) {
-	// 	$bmm  = BomController::getBom();
-	// 	$itm  = self::getItm();
-	// 	$item = $itm->item($data->itemID);
-	// 	$kit  = $bmm->kit($data->itemID);
-	// 	self::initHooks();
-	//
-	// 	$html  = '';
-	// 	$html .= self::kitHeaders();
-	// 	$html .= self::lockItem($data->itemID);
-	// 	$html .= BomController::lockKit($kit);
-	// 	$html .= self::pw('config')->twig->render('items/itm/xrefs/kim/component/display.twig', ['item' => $item, 'kim' => $bmm, 'kit' => $kit, 'component' => $component]);
-	// 	return $html;
-	// }
+
+	private static function displayBomComponent($data, $component) {
+		$bmm      = BmmParent::getBmm();
+		$itm      = self::getItm();
+		$item     = $itm->item($data->itemID);
+		$bomItem  = $bmm->header->header($data->itemID);
+		self::initHooks();
+
+		$html  = '';
+		// $html .= self::kitHeaders();
+		// $html .= self::lockItem($data->itemID);
+		// $html .= BmmParent::lockKit($kit);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/display.twig', ['item' => $item, 'bmm' => $bmm, 'bomItem' => $bomItem, 'component' => $component]);
+		return $html;
+	}
+
 	//
 	// private static function kitHeaders() {
 	// 	$session = self::pw('session');
