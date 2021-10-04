@@ -17,7 +17,7 @@ $(function() {
 			$('.response-alert').remove();
 		}
 	});
-	
+
 	$("body").on("change", "input[name=shortitemID]", function(e) {
 		var input  = $(this);
 		var inputs = formXrefs.inputs;
@@ -83,7 +83,7 @@ $(function() {
 		});
 	});
 
-	$("body").on("submit", "#ajax-modal .item-search", function(e) {
+	$("body").on("submit", "#ajax-modal form", function(e) {
 		e.preventDefault();
 		var form = $(this);
 		var query = form.serialize();
