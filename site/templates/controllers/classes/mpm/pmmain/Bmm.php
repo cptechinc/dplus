@@ -175,6 +175,25 @@ class Bmm extends Base {
 	// 	self::pw('session')->remove('qnotes_itm');
 	// 	return $html;
 	// }
+	//
+
+	public static function displayLock($data) {
+		$fields = ['bomID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$bmm = self::getBmm();
+
+		if ($bmm->header->exists($data->bomID) === false) {
+			return '';
+		}
+		if ($bmm->recordlocker->isLocked($data->bomID) === false) {
+			return '';
+		}
+		if ($bmm->recordlocker->userhasLocked($data->bomID)) {
+			return '';
+		}
+		$msg = "BoM Item $data->bomID is being locked by " . $bmm->recordlocker->getLockingUser($data->bomID);
+		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "BoM Item $data->bomID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+	}
 
 /* =============================================================
 	Hooks
@@ -195,5 +214,10 @@ class Bmm extends Base {
 			self::$bmm = new BmmManager();
 		}
 		return self::$bmm;
+	}
+
+	public static function lock($bomID) {
+		$bmm = self::getBmm();
+		return $bmm->lockrecord($bomID);
 	}
 }
