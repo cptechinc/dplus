@@ -106,6 +106,13 @@
 			],
 			['GET', 'kit/', Json\Mki::class, 'getKit'],
 		],
+		'mpm' => [
+			'validate' => [
+				'bmm' => [
+					['GET', 'component/', Json\Mpm::class, 'validateBomComponent'],
+				]
+			]
+		],
 		'mpo' => [
 			'validate' => [
 				['GET', 'po/ponbr/', Json\Mpo::class, 'validatePonbr'],

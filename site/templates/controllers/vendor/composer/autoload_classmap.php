@@ -14,6 +14,7 @@ return array(
     'Controllers\\Ajax\\Json\\Min' => $baseDir . '/classes/ajax/json/Min.php',
     'Controllers\\Ajax\\Json\\Misc' => $baseDir . '/classes/ajax/json/Misc.php',
     'Controllers\\Ajax\\Json\\Mki' => $baseDir . '/classes/ajax/json/Mki.php',
+    'Controllers\\Ajax\\Json\\Mpm' => $baseDir . '/classes/ajax/json/Mpm.php',
     'Controllers\\Ajax\\Json\\Mpo' => $baseDir . '/classes/ajax/json/Mpo.php',
     'Controllers\\Ajax\\Json\\Mqo' => $baseDir . '/classes/ajax/json/Mqo.php',
     'Controllers\\Ajax\\Json\\Msa' => $baseDir . '/classes/ajax/json/Msa.php',
