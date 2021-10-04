@@ -60,6 +60,10 @@ class Bom extends Base {
 		$bmm  = BmmParent::getBmm();
 		$component = $bmm->components->getOrCreate($data->itemID, $data->component);
 
+		if ($component->isNew() === false) {
+			$bmm->lockrecord($data->itemID);
+		}
+
 		$page           = self::pw('page');
 		$page->headline = $component->isNew() ? "ITM: BoM $data->itemID" : "ITM: BoM $data->itemID - $data->component";
 		// $page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $bmm]);
@@ -77,7 +81,7 @@ class Bom extends Base {
 		$item = $itm->item($data->itemID);
 		$bomItem  = $bmm->header->header($data->itemID);
 		self::initHooks();
-
+		BmmParent::lock($data->itemID);
 		$html = '';
 		// $html .= self::kitHeaders();
 		// $html .= self::lockItem($data->itemID);
@@ -87,16 +91,18 @@ class Bom extends Base {
 	}
 
 	private static function displayBomComponent($data, $component) {
+		$data->bomID = $data->itemID;
 		$bmm      = BmmParent::getBmm();
 		$itm      = self::getItm();
 		$item     = $itm->item($data->itemID);
 		$bomItem  = $bmm->header->header($data->itemID);
 		self::initHooks();
+		BmmParent::lock($data->itemID);
 
 		$html  = '';
 		// $html .= self::kitHeaders();
-		// $html .= self::lockItem($data->itemID);
-		// $html .= BmmParent::lockKit($kit);
+		$html .= self::lockItem($data->itemID);
+		$html .= BmmParent::displayLock($data);
 		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/display.twig', ['item' => $item, 'bmm' => $bmm, 'bomItem' => $bomItem, 'component' => $component]);
 		return $html;
 	}
@@ -174,6 +180,12 @@ class Bom extends Base {
 			$bomID = $event->arguments(0);
 			$component = $event->arguments(1);
 			$event->return = self::bomComponentDeleteUrl($bomID, $component);
+		});
+
+		$m->addHook('Page(pw_template=itm)::bomComponentExitUrl', function($event) {
+			$bomID = $event->arguments(0);
+			$component = $event->arguments(1);
+			$event->return = self::bomUrl($bomID, $component);
 		});
 	}
 }
