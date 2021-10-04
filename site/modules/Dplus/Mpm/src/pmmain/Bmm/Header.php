@@ -47,6 +47,17 @@ class Header extends WireData {
 	CRUD Reads
 ============================================================= */
 	/**
+	 * Return if BomItem exists
+	 * @param  string $itemID Item ID
+	 * @param  int    $level  BoM Level
+	 * @return bool
+	 */
+	public function exists($itemID, $level = 1) {
+		$q = $this->queryHeader($itemID, $level);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return BomItem
 	 * @param  string $itemID Item ID
 	 * @param  int    $level  BoM Level
