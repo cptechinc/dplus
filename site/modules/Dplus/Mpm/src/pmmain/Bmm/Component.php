@@ -33,6 +33,17 @@ class Components extends WireData {
 		return $q;
 	}
 
+	/**
+	 * Return Query Filtered By Itemid, Level
+	 * @param  string $bomID       Bom Item ID
+	 * @return BomComponentQuery
+	 */
+	public function queryBomId($bomID) {
+		$q = $this->query();
+		$q->filterByProduces($bomID);
+		return $q;
+	}
+
 /* =============================================================
 	CRUD Reads
 ============================================================= */
@@ -47,15 +58,37 @@ class Components extends WireData {
 		return $q->findOne();
 	}
 
+
+	/**
+	 * Return Query Filtered By Itemid, Level
+	 * @param  string $bomID       Bom Item ID
+	 * @return array
+	 */
+	public function getComponentIds($bomID) {
+		$q = $this->queryBomId($bomID);
+		$q->select(BomComponent::aliasproperty('itemid'));
+		return $q->find()->toArray();
+	}
+
 	/**
 	 * Return BomComponent
 	 * @param  string $bomID       Bom Item ID
 	 * @param  string $componentID Component Item ID
-	 * @return BomComponent
+	 * @return bool
 	 */
 	public function exists($bomID, $componentID) {
 		$q = $this->queryComponent($bomID, $componentID);
-		return $q->findOne();
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return if Components Exist for BoM
+	 * @param  string $bomID       Bom Item ID
+	 * @return bool
+	 */
+	public function hasComponents($bomID) {
+		$q = $this->queryBomId($bomID);
+		return boolval($q->count());
 	}
 
 /* =============================================================
