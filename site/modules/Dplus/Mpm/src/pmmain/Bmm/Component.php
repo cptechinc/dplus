@@ -73,6 +73,7 @@ class Components extends WireData {
 		$c->setProduces($bomID);
 		$c->setItemid($componentID);
 		$c->setScrap('N');
+		$q->setQty(0);
 		return $c;
 	}
 
