@@ -30,6 +30,25 @@ class Bmm extends WireData {
 	}
 
 	/**
+	 * Lock Record
+	 * @param  string $bomID BoM Header Item ID
+	 * NOTE: Keep public so it can be used by Itm\Xrefs\Bom
+	 * @return bool
+	 */
+	public function lockrecord($bomID) {
+		if ($this->header->exists($bomID) === false) {
+			return false;
+		}
+		if ($this->recordlocker->islocked($bomID) && $this->recordlocker->userHasLocked($bomID) === false) {
+			return false;
+		}
+		if ($this->recordlocker->userHasLocked($bomID)) {
+			return true;
+		}
+		return $this->recordlocker->lock($bomID);
+	}
+
+	/**
 	 * Return Record Locker
 	 * @return FunctionLocker
 	 */
