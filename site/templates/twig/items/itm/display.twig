@@ -1,4 +1,4 @@
-{% set configIn = itm.configIn() %}
+{% set configIn = page.wire('modules').get('Dconfigs').config('in') %}
 
 <div class="card mb-5">
 	{% block header %}
