@@ -7,6 +7,7 @@
 	component              BomComponent
 #}
 {% set configPm = bmm.getConfigPm() %}
+
 <form action="{{ input.url() }}" method="POST" id="bom-component-form">
 	<input type="hidden" name="action" value="update-component">
 	<input type="hidden" name="itemID" value="{{ input.get.text('itemID') }}">
@@ -16,10 +17,11 @@
 		<div class="col-sm-3">
 			<label for="component">Component Item ID</label>
 		</div>
-		<div class="col-sm-9">
+		<div class="col-sm-6">
 			{% include 'util/bootstrap/form/input-group.twig' with {
 					'inputgroup': {
 						'type': 'prepend',
+						'size': 'sm',
 						'attributes': {
 							'readonly': page.pw_template == 'itm'
 						},
