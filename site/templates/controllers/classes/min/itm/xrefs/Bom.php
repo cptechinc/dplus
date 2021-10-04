@@ -66,7 +66,7 @@ class Bom extends Base {
 
 		$page           = self::pw('page');
 		$page->headline = $component->isNew() ? "ITM: BoM $data->itemID" : "ITM: BoM $data->itemID - $data->component";
-		// $page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $bmm]);
+		$page->js       .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/js.twig', ['bmm' => $bmm]);
 		$html = self::displayBomComponent($data, $component);
 		// self::pw('session')->removeFor('response', 'kim');
 		return $html;
