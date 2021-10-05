@@ -33,18 +33,18 @@ class Bom extends Base {
 		return self::bom($data);
 	}
 
-	// public static function handleCRUD($data) {
-	// 	if (self::validateItemidAndPermission($data) === false) {
-	// 		return self::displayAlertUserPermission($data);
-	// 	}
-	// 	self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
-	// 	$bmm = BmmParent::getBom();
-	//
-	// 	if ($data->action) {
-	// 		$bmm->process_input(self::pw('input'));
-	// 	}
-	// 	self::pw('session')->redirect(self::BomUrl($data->itemID), $http301 = false);
-	// }
+	public static function handleCRUD($data) {
+		if (self::validateItemidAndPermission($data) === false) {
+			return self::displayAlertUserPermission($data);
+		}
+		self::sanitizeParametersShort($data, ['bomID|text', 'itemID|text', 'action|text']);
+		$bmm = BmmParent::getBmm();
+
+		if ($data->action) {
+			$bmm->processInput(self::pw('input'));
+		}
+		self::pw('session')->redirect(self::bomUrl($data->itemID), $http301 = false);
+	}
 
 	private static function bom($data) {
 		self::pw('page')->headline = "ITM: BoM $data->itemID";
