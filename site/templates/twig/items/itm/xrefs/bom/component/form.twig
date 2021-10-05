@@ -8,7 +8,7 @@
 #}
 {% set configPm = bmm.getConfigPm() %}
 
-<form action="{{ input.url() }}" method="POST" id="bom-component-form">
+<form action="{{ input.url() }}" method="POST" id="bom-component-form" data-new="{{ component.isNew() ? 'true' : 'false'}}">
 	<input type="hidden" name="action" value="update-component">
 	<input type="hidden" name="itemID" value="{{ input.get.text('itemID') }}">
 	<input type="hidden" name="bomID" value="{{ input.get.offsetExists('bomID') ? input.get.text('bomID') : input.get.text('itemID') }}">
@@ -23,7 +23,7 @@
 						'type': 'prepend',
 						'size': 'sm',
 						'attributes': {
-							'readonly': page.pw_template == 'itm'
+							'readonly': component.isNew() == false,
 						},
 						'input': {
 							'name': 'component',
@@ -58,7 +58,7 @@
 		</div>
 		<div class="col-sm-9">
 			<p class="form-control-plain-text form-control-sm">
-				{{ component.item.unitofmsale.code }} - {{ component.item.unitofmsale.description }}
+				<span class="uom-code">{{ component.item.unitofmsale.code }}</span> - <span class="uom-description">{{ component.item.unitofmsale.description }}</span>
 			</p>
 		</div>
 	</div>
