@@ -29,32 +29,33 @@ class Bmm extends Base {
 		// return self::list($data);
 	}
 
-	// public static function handleCRUD($data) {
-	// 	$input = self::pw('input');
-	//
-	// 	if (self::validateUserPermission() === false) {
-	// 		self::pw('session')->redirect($input->url(), $http301 = false);
-	// 	}
-	//
-	// 	$fields = ['itemID|text', 'action|text'];
-	// 	$data  = self::sanitizeParametersShort($data, $fields);
-	// 	$url   = new Purl($input->url($withQueryString = true));
-	// 	$url->query->set('itemID', $data->itemID);
-	// 	$url->query->remove('action');
-	//
-	// 	if ($data->action) {
-	// 		$itm  = self::getItm();
-	// 		$itm->process_input($input);
-	//
-	// 		if ($data->action == 'delete-itm') {
-	// 			$response = self::pw('session')->getFor('response', 'itm');
-	// 			if ($response->has_success()) {
-	// 				$url->query->remove('itemID');
-	// 			}
-	// 		}
-	// 	}
-	// 	self::pw('session')->redirect($url->getUrl(), $http301 = false);
-	// }
+	public static function handleCRUD($data) {
+		$input = self::pw('input');
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($input->url(), $http301 = false);
+		}
+
+		$fields = ['itemID|text', 'action|text'];
+		$data  = self::sanitizeParametersShort($data, $fields);
+		$url   = new Purl($input->url($withQueryString = true));
+		$url->query->set('itemID', $data->itemID);
+		$url->query->remove('action');
+
+		if ($data->action) {
+			$itm  = self::getItm();
+			$itm->process_input($input);
+
+			if ($data->action == 'delete-itm') {
+				$response = self::pw('session')->getFor('response', 'itm');
+				if ($response->has_success()) {
+					$url->query->remove('itemID');
+				}
+			}
+		}
+		self::pw('session')->redirect($url->getUrl(), $http301 = false);
+	}
+
 	//
 	// private static function itm($data) {
 	// 	$page   = self::pw('page');
