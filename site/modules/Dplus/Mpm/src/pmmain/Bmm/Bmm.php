@@ -22,6 +22,58 @@ class Bmm extends WireData {
 		$this->initRecordlocker();
 	}
 
+/* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Process Input, Act on action needed
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function processInput(WireInput $input) {
+		$rm     = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update-component':
+			case 'delete-component':
+				$this->components->processInput($input);
+				break;
+		}
+	}
+
+/* =============================================================
+	BMM Response
+============================================================= */
+	/**
+	 * Return Response
+	 * @return Response
+	 */
+	public static function getResponse() {
+		$d = new WireData();
+		return $d->wire('session')->getFor('response', 'bmm');
+	}
+
+	/**
+	 * Delete Response
+	 */
+	public static function deleteResponse() {
+		$d = new WireData();
+		$d->wire('session')->removeFor('response', 'bmm');
+	}
+
+	/**
+	 * Set Response
+	 * @param Response $response
+	 */
+	public static function setResponse($response) {
+		$d = new WireData();
+		return $d->wire('session')->setFor('response', 'bmm', $response);
+	}
+
+/* =============================================================
+	RecordLocker
+============================================================= */
 	/**
 	 * Intialize Record Locker
 	 */
@@ -59,6 +111,13 @@ class Bmm extends WireData {
 		return $locker;
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return Pm Config
+	 * @return ConfigPm
+	 */
 	public function getConfigPm() {
 		return Configs\Pm::config();
 	}
