@@ -1,0 +1,125 @@
+{% include 'items/itm/xrefs/bom/component/js/classes.js.twig' %}
+
+$(function() {
+	var modalAjax = $('#ajax-modal');
+
+	var formBom       = BomForm.getInstance();
+	var alert         = BomAlerts.getInstance();
+	var server        = BomRequests.getInstance();
+
+
+/* =============================================================
+	Events
+============================================================= */
+	$("body").on("change", "input[name=component]", function(e) {
+		var input = $(this);
+
+		if (input.val() == formBom.inputs.bomid.val()) {
+			alert.sameAsBomHeader(formBom.inputs.bomid.val(), input.val(), function() {
+
+			});
+		} else {
+			server.validateComponentExists(formBom.inputs.bomid.val(), input.val(), function(exists) {
+				if (exists) {
+					alert.componentExists(input.val(), function(goEdit) {
+						if (goEdit) {
+							var uri = URI();
+							uri.setQuery('component', input.val());
+							window.location.href = uri.toString();
+							return true;
+						}
+						location.reload();
+					});
+				} else {
+					var validator = formBom.form.validate();
+					var valid = validator.element('#component');
+					if (valid) {
+						formBom.populateComponentDescription();
+					}
+				}
+			});
+		}
+
+
+
+		// formVxm.populateItemData(input.val());
+	});
+/* =============================================================
+	Validation Methods
+============================================================= */
+	formBom.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		ignore: ".validate-ignore",
+		rules: {
+			qty: {
+				min: 1,
+			},
+			component: {
+				remote: {
+					url: '{{ page.jsonapiURL('mpm/validate/bmm/component/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						bomID: function() {
+							return $('input[name=itemID]').val();
+						},
+						new: function() {
+							return formBom.form.data('new');
+						}
+					}
+				}
+			}
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modalAjax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var url    = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.data('description');
+		var modal = button.closest('.modal');
+		$(modal.attr('data-input')).val(itemID).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form   = $(this);
+		var query  = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url    = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var href   = $(this).attr('href');
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(href);
+	});
+
+});

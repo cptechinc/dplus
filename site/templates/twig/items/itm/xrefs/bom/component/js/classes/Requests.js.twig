@@ -1,0 +1,38 @@
+class BomRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new BomRequests();
+		}
+		return this.instance;
+	}
+
+	validateItemid(itemID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itemid/') }}');
+
+		ajax.setData({itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateComponentExists(bomID, component, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('mpm/validate/bmm/component/') }}');
+
+		ajax.setData({bomID: bomID, component: component});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getItm(itemID, itmfields, callback) {
+		var fields = Array.isArray(itmfields) ? itmfields.join(',') : itmfields;
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/item') }}');
+
+		ajax.setData({itemID: itemID, fields: fields});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}
