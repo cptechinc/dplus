@@ -3,6 +3,7 @@
 use BomItemQuery, BomItem;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+use Dplus\Mpm\Pmmain\Bmm;
 
 /**
  * BoM Header Manager
@@ -17,6 +18,7 @@ class Header extends WireData {
 
 	public function __construct() {
 		$this->sessionID = session_id();
+		$this->recordlocker = Bmm::getRecordLocker();
 	}
 
 /* =============================================================
@@ -66,5 +68,27 @@ class Header extends WireData {
 	public function header($itemID, $level = 1) {
 		$q = $this->queryHeader($itemID, $level);
 		return $q->findOne();
+	}
+
+/* =============================================================
+	RecordLocker
+============================================================= */
+	/**
+	 * Lock Record
+	 * @param  string $bomID BoM Header Item ID
+	 * NOTE: Keep public so it can be used by Itm\Xrefs\Bom
+	 * @return bool
+	 */
+	public function lockrecord($bomID) {
+		if ($this->exists($bomID) === false) {
+			return false;
+		}
+		if ($this->recordlocker->islocked($bomID) && $this->recordlocker->userHasLocked($bomID) === false) {
+			return false;
+		}
+		if ($this->recordlocker->userHasLocked($bomID)) {
+			return true;
+		}
+		return $this->recordlocker->lock($bomID);
 	}
 }
