@@ -434,6 +434,20 @@ class Min extends AbstractController {
 		return $available === false ? "Short Item $data->shortitemID already exists" : 'true';
 	}
 
+	public static function getUom($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$umm = self::pw('modules')->get('CodeTablesUmm');
+		if ($umm->code_exists($data->code) === false) {
+			return false;
+		}
+		$uom = $umm->get_code($data->code);
+		return [
+			'code'        => $uom->code,
+			'description' => $uom->description,
+			'conversion'  => $uom->conversion
+		];
+	}
 
 	private static function validator() {
 		return new MinValidator();

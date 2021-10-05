@@ -49,6 +49,9 @@
 			['GET', 'item/', Json\Min::class, 'getItm'],
 			'upcx' => [
 				['GET', 'primary/', Json\Min::class, 'getPrimaryUpc'],
+			],
+			'umm' => [
+				['GET', 'uom/', Json\Min::class, 'getUom'],
 			]
 		],
 		'map' => [
@@ -110,6 +113,7 @@
 			'validate' => [
 				'bmm' => [
 					['GET', 'component/', Json\Mpm::class, 'validateBomComponent'],
+					['GET', 'component/exists/', Json\Mpm::class, 'validateBomComponent'],
 				]
 			]
 		],
