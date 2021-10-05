@@ -9,6 +9,8 @@ $(function() {
 	var alert     = XrefsAlerts.getInstance();
 	var server    = XrefsRequests.getInstance();
 
+	formXrefs.form.find('.form-body').height($('table.xrefs').height());
+
 /* =============================================================
 	Events
 ============================================================= */
@@ -44,6 +46,17 @@ $(function() {
 				validator.element('#' + inputs.supercede.attr('id'));
 			});
 		}
+
+		server.getItm(inputs.supercede.val(), [], function(item) {
+			if (item) {
+				console.log(item);
+				$('.supercede.description1').text(item.description);
+				$('.supercede.description2').text(item.description2);
+			} else {
+				$('.supercede.description1').text('');
+				$('.supercede.description2').text('');
+			}
+		});
 	});
 
 /* =============================================================
