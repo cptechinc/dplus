@@ -11,7 +11,7 @@
 <form action="{{ input.url() }}" method="POST" id="bom-component-form">
 	<input type="hidden" name="action" value="update-component">
 	<input type="hidden" name="itemID" value="{{ input.get.text('itemID') }}">
-	<input type="hidden" name="bomID" value="{{ input.get.text('bomID') }}">
+	<input type="hidden" name="bomID" value="{{ input.get.offsetExists('bomID') ? input.get.text('bomID') : input.get.text('itemID') }}">
 
 	<div class="row form-group">
 		<div class="col-sm-3">
