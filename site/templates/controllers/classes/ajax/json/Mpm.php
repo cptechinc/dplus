@@ -36,11 +36,23 @@ class Mpm extends AbstractController {
 			return boolval($data->jqv) ? "Component cannot be the same as Finished Good Item ID" : false;
 		}
 
-		$validate = new Validators\Min();
+		$bmm    = new Bmm();
+		$exists = $bmm->components->exists($data->bomID, $data->component);
 
-		if ($validate->itemid($data->component) === false) {
-			return boolval($data->jqv) ? "Component Item ID not found" : false;
+		// Validations for new Components
+		if (boolval($data->new) === true) {
+			// validate Item ID
+			if ($exists === false) {
+				$validate = new Validators\Min();
+
+				if ($validate->itemid($data->component) === false) {
+					return boolval($data->jqv) ? "Component Item ID not found" : false;
+				}
+				return boolval($data->jqv) ? true : false;
+			}
+			// For New components, but it already exists
+			return boolval($data->jqv) ? "$data->bomID Component $data->component already exists" : false;
 		}
-		return true;
+		return $exists;
 	}
 }
