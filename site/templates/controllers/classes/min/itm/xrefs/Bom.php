@@ -15,7 +15,7 @@ class Bom extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'component|text', 'action|text']);
 
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
@@ -49,6 +49,7 @@ class Bom extends Base {
 	private static function bom($data) {
 		self::pw('page')->headline = "ITM: BoM $data->itemID";
 		$html = self::displayBom($data);
+
 		self::pw('session')->removeFor('response', 'bom');
 		return $html;
 	}
