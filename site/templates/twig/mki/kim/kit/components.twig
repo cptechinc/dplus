@@ -6,6 +6,7 @@
 	kim.recordlocker       module RecordLockerUserFunction
 	kit                    InvKit
 #}
+{% set response = kim.getResponse() %}
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
@@ -23,13 +24,13 @@
 	<tbody>
 		{% for component in kit.components %}
 			{% set class = component.itemid == page.focus ? 'highlight' : '' %}
-			{# set class = (response.key == kit.itemid and response.has_success()) ? 'bg-success text-white' : class #}
+			{% set class = (response.kitID == kit.itemid and response.component == component.itemid and response.has_success()) ? 'bg-success text-white' : class %}
 			<tr class="{{ class }}">
 				<td>{{ component.itemid }}</td>
 				<td>{{ component.usagetag }}</td>
 				<td>{{ component.item.description }}</td>
 				<td class="text-right">
-					{{ kim.configs.kt.usageorfreeusage() ? component.usage()|number_format : '' }}
+					{{ kim.getConfigKt().usageorfreeusage() ? component.usage()|number_format(0) : '' }}
 				</td>
 				<td class="text-center">
 					{% if kim.recordlocker.isLocked(kit.itemid) == false or kim.recordlocker.userHasLocked(kit.itemid) %}

@@ -308,6 +308,29 @@ class Kim extends WireData implements Module {
 		return $this->recordlocker->userHasLocked($kitID);
 	}
 
+	/**
+	 * Return Kim Response
+	 * @return KimResponse
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'kim');
+	}
+
+	/**
+	 * Set Session Response
+	 * @param KimResponse $response
+	 */
+	public function setResponse($response) {
+		return $this->wire('session')->setFor('response', 'kim', $response);
+	}
+
+	/**
+	 * Delete Response
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', 'kim');
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
