@@ -112,7 +112,6 @@ class Cxm extends AbstractController {
 		return $html;
 	}
 
-
 	private static function cxmHeaders() {
 		$html = '';
 		$session = self::pw('session');
