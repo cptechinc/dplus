@@ -23,6 +23,9 @@ $(function() {
 	$("body").on("change", "input[name=shortitemID]", function(e) {
 		var input  = $(this);
 		var inputs = formXrefs.inputs;
+		if (input.val() === '') {
+			return true;
+		}
 		inputs.overwriteshort.val('false');
 
 		server.validateShortItemAvailable(formXrefs.inputs.itemid.val(), input.val(), function(isAvailable) {
