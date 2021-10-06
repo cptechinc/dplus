@@ -70,6 +70,36 @@ class Header extends WireData {
 		return $q->findOne();
 	}
 
+	/**
+	 * Return New or Existing BomItem
+	 * @param  string $itemID Item ID
+	 * @param  int    $level  BoM Level
+	 * @return BomItem
+	 */
+	public function getOrCreate($itemID, $level = 1) {
+		if ($this->exists($itemID, $level)) {
+			return $this->header($itemID, $level);
+		}
+		return $this->new($itemID, $level);
+	}
+
+/* =============================================================
+	CRUD Create
+============================================================= */
+	/**
+	 * Return New BomItem
+	 * @param  string $itemID Item ID
+	 * @param  int    $level  BoM Level
+	 * @return BomItem
+	 */
+	public function new($itemID, $level = 1) {
+		$bom = new BomItem();
+		$bom->setItemid($itemID);
+		$bom->setLevel($level);
+		return $bom;
+	}
+
+
 /* =============================================================
 	RecordLocker
 ============================================================= */

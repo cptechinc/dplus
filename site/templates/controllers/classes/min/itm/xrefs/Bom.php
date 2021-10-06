@@ -79,7 +79,6 @@ class Bom extends Base {
 		$page->headline = $component->isNew() ? "ITM: BoM $data->itemID" : "ITM: BoM $data->itemID - $data->component";
 		$page->js       .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/js.twig', ['bmm' => $bmm]);
 		$html = self::displayBomComponent($data, $component);
-		// self::pw('session')->removeFor('response', 'kim');
 		return $html;
 	}
 
@@ -90,7 +89,7 @@ class Bom extends Base {
 		$bmm  = BmmParent::getBmm();
 		$itm  = self::getItm();
 		$item = $itm->item($data->itemID);
-		$bomItem  = $bmm->header->header($data->itemID);
+		$bomItem  = $bmm->header->getOrCreate($data->itemID);
 		self::initHooks();
 		BmmParent::lock($data->itemID);
 		$html = '';
@@ -98,7 +97,7 @@ class Bom extends Base {
 		$html .= self::lockItem($data->itemID);
 		$html .= BmmParent::displayLock($data);
 		$html .= BmmParent::displayResponse($data);
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/bom/display.twig', ['item' => $item, 'bmm' => $bmm, 'bomItem' => $bomItem]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/bom/display.twig', ['item' => $item, 'itm' => $itm, 'bmm' => $bmm, 'bomItem' => $bomItem]);
 		$bmm::deleteResponse();
 		return $html;
 	}
@@ -117,7 +116,7 @@ class Bom extends Base {
 		$html .= self::lockItem($data->itemID);
 		$html .= BmmParent::displayLock($data);
 		$html .= BmmParent::displayResponse($data);
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/display.twig', ['item' => $item, 'bmm' => $bmm, 'bomItem' => $bomItem, 'component' => $component]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/display.twig', ['item' => $item, 'bmm' => $bmm, 'itm' => $itm, 'bomItem' => $bomItem, 'component' => $component]);
 		$bmm::deleteResponse();
 		return $html;
 	}
