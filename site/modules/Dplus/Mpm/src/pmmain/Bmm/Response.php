@@ -103,18 +103,18 @@ class Response extends WireData {
 		$this->message = $msg;
 	}
 
-	public static function responseError($itemID, $message) {
+	public static function responseError($bomID, $message) {
 		$response = new Response();
-		$response->itemID = $itemID;
+		$response->bomID = $bomID;
 		$response->message = $message;
 		$response->setError(true);
 		$response->setSuccess(false);
 		return $response;
 	}
 
-	public static function responseSuccess($itemID, $message) {
+	public static function responseSuccess($bomID, $message) {
 		$response = new Response();
-		$response->itemID = $itemID;
+		$response->bomID = $bomID;
 		$response->message = $message;
 		$response->setError(false);
 		$response->setSuccess(true);

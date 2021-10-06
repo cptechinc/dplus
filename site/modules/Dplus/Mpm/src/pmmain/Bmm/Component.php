@@ -186,7 +186,38 @@ class Components extends WireData {
 			case 'update-component':
 				$this->inputUpdate($input);
 				break;
+			case 'delete-component':
+				$this->inputDelete($input);
+				break;
 		}
+	}
+
+	/**
+	 * Delete Bmm Component
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function inputDelete(WireInput $input) {
+		$rm     = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$bmmHeader = new Header();
+		$bmmHeader->lockrecord($values->text('bomID'));
+
+		if ($bmmHeader->recordlocker->isLocked($values->text('bomID')) && $bmmHeader->recordlocker->userHasLocked($values->text('bomID')) === false) {
+			$msg = 'BoM ' . $values->text('bomID') . ' is being locked by ' . $bmmHeader->recordlocker->getLockingUser();
+			$response = Response::responseError($values->text('bomID'), $msg);
+			return false;
+		}
+
+		if ($this->exists($values->text('bomID'), $values->text('component') === false)) {
+			return true;
+		}
+		$component = $this->component($values->text('bomID'), $values->text('component'));
+		$component->delete();
+		$response = $this->saveAndRespond($component);
+		Bmm::setResponse($response);
+		return $response->hasSuccess();
 	}
 
 	/**
@@ -206,6 +237,8 @@ class Components extends WireData {
 		$bmmHeader->lockrecord($values->text('bomID'));
 
 		if ($bmmHeader->recordlocker->isLocked($values->text('bomID')) && $bmmHeader->recordlocker->userHasLocked($values->text('bomID')) === false) {
+			$msg = 'BoM ' . $values->text('bomID') . ' is being locked by ' . $bmmHeader->recordlocker->getLockingUser();
+			$response = Response::responseError($values->text('bomID'), $msg);
 			return false;
 		}
 

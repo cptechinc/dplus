@@ -38,6 +38,10 @@ class Bom extends Base {
 			return self::displayAlertUserPermission($data);
 		}
 		self::sanitizeParametersShort($data, ['bomID|text', 'itemID|text', 'action|text']);
+
+		if (empty($data->bomID)) {
+			self::setupInputBomid($data);
+		}
 		$bmm = BmmParent::getBmm();
 
 		if ($data->action) {
@@ -46,11 +50,17 @@ class Bom extends Base {
 		self::pw('session')->redirect(self::bomUrl($data->itemID), $http301 = false);
 	}
 
+	private static function setupInputBomid($data) {
+		$data->bomID = $data->itemID;
+		$input = self::pw('input');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$values->bomID = $data->itemID;
+	}
+
 	private static function bom($data) {
 		self::pw('page')->headline = "ITM: BoM $data->itemID";
 		$html = self::displayBom($data);
-
-		self::pw('session')->removeFor('response', 'bom');
 		return $html;
 	}
 
