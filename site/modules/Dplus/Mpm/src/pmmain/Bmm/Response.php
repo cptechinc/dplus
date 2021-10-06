@@ -89,7 +89,7 @@ class Response extends WireData {
 
 	protected function getPlaceholderReplaces() {
 		$crud = self::CRUD_DESCRIPTION[$this->action];
-		$replace = ['{bomid}' => $this->bomID, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
+		$replace = ['{bomID}' => $this->bomID, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
 		if ($this->componentID) {
 			$replace['{component}'] = $this->componentID;
 		}
