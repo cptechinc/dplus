@@ -85,9 +85,11 @@ class Bom extends Base {
 		BmmParent::lock($data->itemID);
 		$html = '';
 		// $html .= self::kitHeaders();
-		// $html .= self::lockItem($data->itemID);
-		// $html .= BmmParent::lockKit($kit);
+		$html .= self::lockItem($data->itemID);
+		$html .= BmmParent::displayLock($data);
+		$html .= BmmParent::displayResponse($data);
 		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/bom/display.twig', ['item' => $item, 'bmm' => $bmm, 'bomItem' => $bomItem]);
+		$bmm::deleteResponse();
 		return $html;
 	}
 
@@ -104,7 +106,9 @@ class Bom extends Base {
 		// $html .= self::kitHeaders();
 		$html .= self::lockItem($data->itemID);
 		$html .= BmmParent::displayLock($data);
+		$html .= BmmParent::displayResponse($data);
 		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/display.twig', ['item' => $item, 'bmm' => $bmm, 'bomItem' => $bomItem, 'component' => $component]);
+		$bmm::deleteResponse();
 		return $html;
 	}
 

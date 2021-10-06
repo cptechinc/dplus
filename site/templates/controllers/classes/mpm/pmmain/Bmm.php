@@ -196,6 +196,15 @@ class Bmm extends Base {
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "BoM Item $data->bomID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 	}
 
+	public static function displayResponse($data) {
+		$bmm = self::getBmm();
+		$response = $bmm::getResponse();
+		if (empty($response)) {
+			return '';
+		}
+		return self::pw('config')->twig->render('items/itm/response-alert-new.twig', ['response' => $response]);
+	}
+
 /* =============================================================
 	Hooks
 ============================================================= */

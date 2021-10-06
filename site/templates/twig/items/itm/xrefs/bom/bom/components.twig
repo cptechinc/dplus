@@ -5,6 +5,8 @@
 	bmm                    Dplus\Mpm\Pmmain\Bmm
 	bomItem                BomItem
 #}
+{% set response = bmm.getResponse() %}
+
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
@@ -20,8 +22,9 @@
 	</thead>
 	<tbody>
 		{% for component in bomItem.getComponents() %}
-			{% set class = component.itemid == page.focus ? 'highlight' : '' %}
-			{# set class = (response.key == bomItem.itemid and response.has_success()) ? 'bg-success text-white' : class #}
+			{% set class = component.itemid == input.get.text('focus') ? 'highlight' : '' %}
+			{% set class = (response.hasSuccess() and response.key == [component.produces, component.itemid]|join(bmm.recordlocker.glue())) ? 'bg-success text-white' : class %}
+
 			<tr class="{{ class }}">
 				<td>{{ component.itemid }}</td>
 				<td>
