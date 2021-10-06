@@ -155,6 +155,11 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			var inputs = formXrefs.inputs;
+			if (inputs.shortitemid.val() == '') {
+				form.submit();
+				return true;
+			}
+			
 			if (inputs.overwriteshort.val() == 'false') {
 				server.validateShortItemAvailable(inputs.itemid.val(), inputs.shortitemid.val(), function(isAvailable) {
 					if (isAvailable === false) {
