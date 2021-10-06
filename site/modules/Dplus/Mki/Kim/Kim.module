@@ -70,6 +70,7 @@ class Kim extends WireData implements Module {
 		$kit->setItemid($itemID);
 		$kit->setDate(date(InvKit::FORMAT_DATE));
 		$kit->setTime(date(InvKit::FORMAT_TIME));
+		$kit->setDummy('P');
 		return $kit->save();
 	}
 
