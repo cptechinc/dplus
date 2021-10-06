@@ -68,8 +68,8 @@ class Cxm extends Base {
 
 	private static function xref($data) {
 		self::initHooks();
-		$page    = self::pw('page');
-		$cxm    = CxmController::getCxm();
+		$page  = self::pw('page');
+		$cxm   = CxmController::getCxm();
 		$xref = $cxm->get_create_xref($data->custID, $data->custitemID);
 		$page->headline = "ITM: $xref->itemid CXM $xref->custid-$xref->custitemid";
 
