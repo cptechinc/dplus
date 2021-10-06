@@ -49,7 +49,7 @@ class Mki extends AbstractController {
 		$validate = self::validator();
 
 		if ($validate->kit($data->kitID) === false) {
-			return false
+			return false;
 		}
 		$kit = InvKitQuery::create()->findOneByItemid($data->kitID);
 		$response = array(
