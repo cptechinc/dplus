@@ -25,8 +25,9 @@
 							'name': 'shortitemID',
 							'value': xrefs.cxm.xref_shortitem_exists(item.itemid) ? xrefs.cxm.xref_shortitem(item.itemid).custitemid : '',
 							'attributes': {
-								'placeholder': 'Short Item ID',
-								'aria-label':  'Short Item ID'
+								'placeholder': '',
+								'aria-label':  'Short Item ID',
+								'autocomplete': 'off'
 							}
 						}
 					}
@@ -64,9 +65,10 @@
 								'name': 'supercede',
 								'value': item.supercede,
 								'attributes': {
-									'placeholder': 'Supercede Item ID',
+									'placeholder': '',
 									'aria-label':  'Supercede Item ID',
-									'oninput': configIn.useUppercaseItemid() ? 'this.value = this.value.toUpperCase()' : ''
+									'oninput': configIn.useUppercaseItemid() ? 'this.value = this.value.toUpperCase()' : '',
+									'autocomplete': 'off'
 								}
 							},
 							'button': {
