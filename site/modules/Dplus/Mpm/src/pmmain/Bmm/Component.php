@@ -3,6 +3,9 @@
 use BomComponentQuery, BomComponent;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus RecordLocker
+use Dplus\RecordLocker\Locker;
+// Dplus Bmm CRUD
 use Dplus\Mpm\Pmmain\Bmm;
 
 class Components extends WireData {
@@ -261,10 +264,11 @@ class Components extends WireData {
 		$is_new = $component->isDeleted() ? false : $component->isNew();
 		$saved  = $component->isDeleted() ? $component->isDeleted() : $component->save();
 
+		$locker = Bmm::getRecordLocker();
 		$response = new Response();
 		$response->bomID       = $component->produces;
 		$response->componentID = $component->itemid;
-		$response->setKey("$component->produces-$component->itemid");
+		$response->setKey(implode(Locker::GLUE, [$component->produces,$component->itemid]));
 
 		if ($saved) {
 			$response->setSuccess(true);
