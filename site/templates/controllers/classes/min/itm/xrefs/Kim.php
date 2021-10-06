@@ -85,7 +85,7 @@ class Kim extends Base {
 		$html .= self::kitHeaders();
 		$html .= self::lockItem($data->itemID);
 		$html .= KimController::lockKit($kit);
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/kim/kit/display.twig', ['item' => $item, 'kim' => $kim, 'kit' => $kit]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/kim/kit/display.twig', ['item' => $item, 'itm' => $itm, 'kim' => $kim, 'kit' => $kit]);
 		return $html;
 	}
 
@@ -100,7 +100,7 @@ class Kim extends Base {
 		$html .= self::kitHeaders();
 		$html .= self::lockItem($data->itemID);
 		$html .= KimController::lockKit($kit);
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/kim/component/display.twig', ['item' => $item, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/kim/component/display.twig', ['item' => $item, 'itm' => $itm, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
 		return $html;
 	}
 
