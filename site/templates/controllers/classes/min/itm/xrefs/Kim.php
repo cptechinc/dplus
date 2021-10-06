@@ -78,7 +78,7 @@ class Kim extends Base {
 		$kim  = KimController::getKim();
 		$itm  = self::getItm();
 		$item = $itm->item($data->itemID);
-		$kit  = $kim->kit($data->itemID);
+		$kit  = $kim->getCreateKit($data->itemID);
 		self::initHooks();
 
 		$html = '';
@@ -93,7 +93,7 @@ class Kim extends Base {
 		$kim  = KimController::getKim();
 		$itm  = self::getItm();
 		$item = $itm->item($data->itemID);
-		$kit  = $kim->kit($data->itemID);
+		$kit  = $kim->getCreateKit($data->itemID);
 		self::initHooks();
 
 		$html  = '';
