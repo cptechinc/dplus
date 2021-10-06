@@ -11,7 +11,9 @@
 	<div class="card-body">
 		{% include 'items/cxm/search/xref/customer/form.twig' with {'q': page.wire('input').get.text('q'), 'custID': customer.custid} %}
 	</div>
+
 	{% include 'items/cxm/list/customer.twig' %}
+	
 	<div class="card-footer">
 		<div class="d-flex justify-content-between align-items-center">
 			<div></div>
