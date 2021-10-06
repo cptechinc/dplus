@@ -7,6 +7,7 @@
 	kit                    InvKit
 #}
 {% set response = kim.getResponse() %}
+
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
@@ -15,9 +16,9 @@
 			<th>Description</th>
 			<th class="text-right">Rate</th>
 			<th class="text-center">
-				<a href="{{ page.kitComponentUrl(kit.itemid, 'new') }}" class="btn btn-sm btn-light">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add
-				</a>
+				{% block add_new %}
+					{% include 'mki/kim/kit/components/link-add.twig' %}
+				{% endblock %}
 			</th>
 		</tr>
 	</thead>
@@ -33,19 +34,9 @@
 					{{ kim.getConfigKt().usageorfreeusage() ? component.usage()|number_format(0) : '' }}
 				</td>
 				<td class="text-center">
-					{% if kim.recordlocker.isLocked(kit.itemid) == false or kim.recordlocker.userHasLocked(kit.itemid) %}
-						<a href="{{ page.kitComponentUrl(kit.itemid, component.itemid) }}" class="btn btn-sm btn-warning">
-							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-						</a>
-						&nbsp;
-						<a href="{{ page.kitComponentDeleteUrl(kit.itemid, component.itemid) }}" class="btn btn-sm btn-danger delete_button" data-component="{{ component.itemid }}">
-							<i class="fa fa-trash" aria-hidden="true"></i> Delete
-						</a>
-					{% else %}
-						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ kim.recordlocker.getLockingUser(kit.itemid) }}
-						</span>
-					{% endif %}
+					{% block edit_component %}
+						{% include 'mki/kim/kit/components/edit-buttons.twig' %}
+					{% endblock %}
 				</td>
 			</tr>
 		{% endfor %}
