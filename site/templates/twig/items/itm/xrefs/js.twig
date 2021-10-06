@@ -116,7 +116,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var modal  = button.closest('.modal');
-		$(modal.attr('data-input')).val(button.data('itemid'));
+		$(modal.attr('data-input')).val(button.data('itemid')).change();
 		modal.modal('hide');
 	});
 
