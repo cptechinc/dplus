@@ -65,10 +65,10 @@ class Xrefs extends Base {
 
 		$html = '';
 		$html .= self::breadCrumbs();
-		if ($session->getFor('response', 'cxm')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'cxm')]);
-			$session->removeFor('response', 'cxm');
-		}
+		// if ($session->getFor('response', 'cxm')) {
+		// 	$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'cxm')]);
+		// 	$session->removeFor('response', 'cxm');
+		// }
 		if ($itm->getResponse()) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
 		}
