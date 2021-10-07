@@ -237,7 +237,7 @@ class KimComponent extends WireData implements Module {
 		if ($this->configs->kt->isUsageTag()) {
 			$fields['usagetag'] = array(
 				'description' => 'Usage Tag Code',
-				'allow_blank' => false,
+				'allow_blank' => true,
 				'function'    => 'component_usagetag'
 			);
 		}
