@@ -3,7 +3,7 @@
 	-------------------------------------------------
 	item                   ItemMasterItem
 #}
-<table class="table table-sm">
+<table class="table table-sm xrefs">
 	<tr>
 		<td>
 			<a href="{{ page.xrefUrlUpcx(item.itemid) }}" class="link">UPC X-Refs</a>
@@ -38,11 +38,13 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Bill-of-Material</td>
+		<td>
+			<a href="{{ page.xrefUrlBom(item.itemid) }}" class="link">Bill-of-Material</a>
+		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="is-bom" {{ item.is_bom() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="is-bom" ></label>
+				<input type="checkbox" class="custom-control-input" id="is-bom" {{ item.hasBom() ? 'checked' : '' }}>
+				<label class="custom-control-label" for="is-bom">{{ item.countBomSubComponents() }} Components</label>
 			</div>
 		</td>
 	</tr>

@@ -1,0 +1,35 @@
+class BomForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new BomForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'bom-component-form';
+		this.form = $('#' + this.id);
+		this.inputs = BomInputs.getInstance();
+		this.config = BomConfigs.getInstance();
+	}
+
+	populateComponentDescription() {
+		var server = BomRequests.getInstance();
+		var form   = this;
+		server.getItm(this.inputs.component.val(), ['uom'], function(item) {
+			if (item) {
+				form.form.find('.description').text(item.description);
+				form.form.find('.description2').text(item.description2);
+				form.form.find('.uom-code').text(item.uom.sale.code);
+				form.form.find('.uom-description').text(item.uom.sale.description);
+			} else {
+				form.form.find('.description').text('');
+				form.form.find('.description2').text('');
+				form.form.find('.uom-code').text('');
+				form.form.find('.uom-description').text('');
+			}
+		});
+	}
+}

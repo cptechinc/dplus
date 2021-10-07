@@ -9,6 +9,8 @@ $(function() {
 	var alert     = XrefsAlerts.getInstance();
 	var server    = XrefsRequests.getInstance();
 
+	formXrefs.form.find('.form-body').height($('table.xrefs').height());
+
 /* =============================================================
 	Events
 ============================================================= */
@@ -17,10 +19,13 @@ $(function() {
 			$('.response-alert').remove();
 		}
 	});
-	
+
 	$("body").on("change", "input[name=shortitemID]", function(e) {
 		var input  = $(this);
 		var inputs = formXrefs.inputs;
+		if (input.val() === '') {
+			return true;
+		}
 		inputs.overwriteshort.val('false');
 
 		server.validateShortItemAvailable(formXrefs.inputs.itemid.val(), input.val(), function(isAvailable) {
@@ -44,6 +49,17 @@ $(function() {
 				validator.element('#' + inputs.supercede.attr('id'));
 			});
 		}
+
+		server.getItm(inputs.supercede.val(), [], function(item) {
+			if (item) {
+				console.log(item);
+				$('.supercede.description1').text(item.description);
+				$('.supercede.description2').text(item.description2);
+			} else {
+				$('.supercede.description1').text('');
+				$('.supercede.description2').text('');
+			}
+		});
 	});
 
 /* =============================================================
@@ -83,7 +99,7 @@ $(function() {
 		});
 	});
 
-	$("body").on("submit", "#ajax-modal .item-search", function(e) {
+	$("body").on("submit", "#ajax-modal form", function(e) {
 		e.preventDefault();
 		var form = $(this);
 		var query = form.serialize();
@@ -100,7 +116,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var modal  = button.closest('.modal');
-		$(modal.attr('data-input')).val(button.data('itemid'));
+		$(modal.attr('data-input')).val(button.data('itemid')).change();
 		modal.modal('hide');
 	});
 
@@ -139,6 +155,11 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			var inputs = formXrefs.inputs;
+			if (inputs.shortitemid.val() == '') {
+				form.submit();
+				return true;
+			}
+			
 			if (inputs.overwriteshort.val() == 'false') {
 				server.validateShortItemAvailable(inputs.itemid.val(), inputs.shortitemid.val(), function(isAvailable) {
 					if (isAvailable === false) {

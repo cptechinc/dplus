@@ -18,6 +18,18 @@ class Dconfigs extends WireData implements Module {
 		'in'   => 'ConfigureIn',
 	);
 
+	const CONFIGS = [
+		'ap', 'ar',
+		'ci',
+		'ii', 'in',
+		'kt',
+		'pm', 'po',
+		'qt',
+		'so', 'sys',
+	];
+
+	const NAMESPACE = '\\Dplus\\Configs';
+
 	/**
 	 * Return Configure Module
 	 * @param  string $code Configure Module Name
@@ -39,8 +51,22 @@ class Dconfigs extends WireData implements Module {
 	 * @param  string $code Configure Module Name
 	 * @return mixed
 	 */
-	public function config($code) {
-		return $this->config_module($code)->config();
+	public function config($id) {
+		if ($this->exists === false) {
+			return false;
+		}
+		$ns = self::NAMESPACE;
+		$class = $this->configName($id);
+		$nsclass = "$ns\\$class";
+		return $nsclass::config();
+	}
+
+	public function exists($id) {
+		return in_array(strtolower($id), self::CONFIGS);
+	}
+
+	private function configName($id) {
+		return ucfirst(strtolower($id));
 	}
 
 /* =============================================================

@@ -1,0 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	bmm                    Dplus\Mpm\Pmmain\Bmm
+	bomItem                BomItem
+#}
+
+<h3>BoM Tree</h3>
+{% include 'items/itm/xrefs/bom/bom/tree/list.twig' with {'bmm': bmm, 'bomID': bomItem.itemid} %}

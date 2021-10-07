@@ -1,0 +1,34 @@
+class BomAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new BomAlerts();
+		}
+		return this.instance;
+	}
+
+	componentExists(itemID, callback) {
+		swal2.fire({
+			title: "Component " + itemID + " exists",
+			text: 'Would you like to go edit this item?',
+			icon: 'error',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			callback(result.value ? result.value : false);
+		});
+	}
+
+	sameAsBomHeader(bomID, component, callback) {
+		swal2.fire({
+			title: "Same as Finished Good",
+			text: 'Component cannot be the same as Finished Good Item ID',
+			icon: 'error',
+			confirmButtonText: 'ok',
+		}).then((result) => {
+			callback(result.value ? result.value : false);
+		});
+	}
+}

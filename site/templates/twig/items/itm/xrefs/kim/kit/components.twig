@@ -1,0 +1,13 @@
+{% extends 'mki/kim/kit/components.twig' %}
+
+{% block add_new %}
+	{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+		{% include 'mki/kim/kit/components/link-add.twig' %}
+	{% endif %}
+{% endblock %}
+
+{% block edit_component %}
+	{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+		{% include 'mki/kim/kit/components/edit-buttons.twig' %}
+	{% endif %}
+{% endblock %}

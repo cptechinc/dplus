@@ -68,8 +68,8 @@ class Cxm extends Base {
 
 	private static function xref($data) {
 		self::initHooks();
-		$page    = self::pw('page');
-		$cxm    = CxmController::getCxm();
+		$page  = self::pw('page');
+		$cxm   = CxmController::getCxm();
 		$xref = $cxm->get_create_xref($data->custID, $data->custitemID);
 		$page->headline = "ITM: $xref->itemid CXM $xref->custid-$xref->custitemid";
 
@@ -114,8 +114,9 @@ class Cxm extends Base {
 		$cxm  = CxmController::getCxm();
 		$html = '';
 		$html .= self::cxmHeaders();
+		$html .= self::lockItem($data->itemID);
 		$html .= CxmController::lockXref($xref);
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/cxm/form/display.twig', ['xref' => $xref, 'item' => $item, 'cxm' => $cxm, 'qnotes' => self::pw('modules')->get('QnotesItemCxm'), 'customer' => $cxm->get_customer($data->custID)]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/cxm/form/display.twig', ['xref' => $xref, 'item' => $item, 'itm' => $itm, 'cxm' => $cxm, 'qnotes' => self::pw('modules')->get('QnotesItemCxm'), 'customer' => $cxm->get_customer($data->custID)]);
 
 		if (!$xref->isNew()) {
 			$html .= CxmController::qnotesDisplay($xref);
@@ -144,12 +145,13 @@ class Cxm extends Base {
 	}
 
 	private static function listDisplay($data, PropelModelPager $xrefs) {
-		$itm     = self::getItm();
+		$itm  = self::getItm();
 		$item = $itm->get_item($data->itemID);
 
 		$html = '';
 		$html .= self::cxmHeaders();
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/cxm/list/display.twig', ['item' => $item, 'cxm' => CxmController::getCxm(), 'items' => $xrefs]);
+		$html .= self::lockItem($data->itemID);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/cxm/list/display.twig', ['item' => $item, 'itm' => $itm, 'cxm' => CxmController::getCxm(), 'items' => $xrefs]);
 		return $html;
 	}
 

@@ -1,0 +1,19 @@
+{% if bmm.components.hasComponents(bomID) %}
+	<a href="#{{ bomID|attrJS }}" class="link" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="{{ bomID|attrJS }}">
+		<i class="fa fa-plus-circle" aria-hidden="true"></i>
+		{{ bomID }}
+	</a>
+{% else %}
+	{{ bomID }}
+{% endif %}
+
+
+{% if bmm.components.hasComponents(bomID) %}
+	<ul id="{{ bomID|attrJS }}" class="collapse" style="list-style-type:none;">
+		{% for componentID in bmm.components.getComponentIds(bomID) %}
+			<li>
+				{% include 'items/itm/xrefs/bom/bom/tree/list-item.twig' with {'bmm': bmm, 'bomID': componentID} %}
+			</li>
+		{% endfor %}
+	</ul>
+{% endif %}
