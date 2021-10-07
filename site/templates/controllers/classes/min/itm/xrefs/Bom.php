@@ -76,7 +76,7 @@ class Bom extends Base {
 		}
 
 		$page           = self::pw('page');
-		$page->headline = $component->isNew() ? "ITM: BoM $data->itemID" : "ITM: BoM $data->itemID - $data->component";
+		$page->headline = $component->isNew() ? "ITM: BoM $data->itemID Add Component" : "ITM: BoM $data->itemID - $data->component";
 		$page->js       .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/js.twig', ['bmm' => $bmm]);
 		$html = self::displayBomComponent($data, $component);
 		return $html;
@@ -107,7 +107,7 @@ class Bom extends Base {
 		$bmm      = BmmParent::getBmm();
 		$itm      = self::getItm();
 		$item     = $itm->item($data->itemID);
-		$bomItem  = $bmm->header->header($data->itemID);
+		$bomItem  = $bmm->header->getOrCreate($data->itemID);
 		self::initHooks();
 		BmmParent::lock($data->itemID);
 
