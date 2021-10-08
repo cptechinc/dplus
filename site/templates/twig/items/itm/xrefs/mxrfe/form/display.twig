@@ -1,14 +1,7 @@
-{% extends 'items/mxrfe/xref/form/display.twig' %}
+{% extends 'items/itm/display.twig' %}
 
-{% block header %}
-	<div class="card-header">
-		<div class="row">
-			<div class="col-sm-2">
-				<strong> Item ID:</strong>
-			</div>
-			<div class="col-sm-6">
-				{{ xref.itemid }} - {{ xref.item.description }}
-			</div>
-		</div>
+{% block body %}
+	<div class="card-body">
+		{% include 'items/itm/xrefs/mxrfe/form/form.twig' %}
 	</div>
 {% endblock %}

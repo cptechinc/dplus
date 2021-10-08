@@ -103,13 +103,15 @@ class Mxrfe extends Base {
 	private static function displayXref($data, ItemXrefManufacturer $xref) {
 		$mxrfe  = BaseMxrfe::mxrfeMaster();
 		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
-		$item   = self::getItm()->get_item($data->itemID);
+		$itm    = self::getItm();
+		$item   = $itm->get_item($data->itemID);
 		$config = self::pw('config');
 
 		$html = '';
+		$html .= self::lockItem($data->itemID);
 		$html .= self::mxrfeHeaders();
 		$html .= BaseMxrfe::lockXref($xref);
-		$html .= $config->twig->render('items/itm/xrefs/mxrfe/form/display.twig', ['xref' => $xref, 'item' => $item, 'mxrfe' => $mxrfe, 'qnotes' => $qnotes]);
+		$html .= $config->twig->render('items/itm/xrefs/mxrfe/form/display.twig', ['xref' => $xref, 'item' => $item, 'mxrfe' => $mxrfe, 'qnotes' => $qnotes, 'itm' => $itm]);
 
 		if (!$xref->isNew()) {
 			$html .= BaseMxrfe::qnotesDisplay($xref);
@@ -131,10 +133,12 @@ class Mxrfe extends Base {
 	}
 
 	private static function displayList($data, PropelModelPager $xrefs) {
-		$item = self::getItm()->get_item($data->itemID);
+		$itm  = self::getItm();
+		$item = $itm->item($data->itemID);
 		$html = '';
+		$html .= self::lockItem($data->itemID);
 		$html .= self::mxrfeHeaders();
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/mxrfe/list/display.twig', ['item' => $item, 'xrefs' => $xrefs, 'mxrfe' => BaseMxrfe::mxrfeMaster()]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/mxrfe/list/display.twig', ['item' => $item, 'xrefs' => $xrefs, 'mxrfe' => BaseMxrfe::mxrfeMaster(), 'itm' => $itm]);
 		return $html;
 	}
 
