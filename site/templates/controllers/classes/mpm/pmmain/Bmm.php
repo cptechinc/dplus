@@ -3,6 +3,8 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
+// Dplus Filters
+use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Mpm\Pmmain\Bmm as BmmManager;
 // Mvc Controllers
@@ -15,7 +17,7 @@ class Bmm extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['bomID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -26,35 +28,35 @@ class Bmm extends Base {
 		// if (empty($data->itemID) === false) {
 		// 	return self::itm($data);
 		// }
-		// return self::list($data);
+		return self::list($data);
 	}
 
-	public static function handleCRUD($data) {
-		$input = self::pw('input');
-
-		if (self::validateUserPermission() === false) {
-			self::pw('session')->redirect($input->url(), $http301 = false);
-		}
-
-		$fields = ['itemID|text', 'action|text'];
-		$data  = self::sanitizeParametersShort($data, $fields);
-		$url   = new Purl($input->url($withQueryString = true));
-		$url->query->set('itemID', $data->itemID);
-		$url->query->remove('action');
-
-		if ($data->action) {
-			$itm  = self::getItm();
-			$itm->process_input($input);
-
-			if ($data->action == 'delete-itm') {
-				$response = self::pw('session')->getFor('response', 'itm');
-				if ($response->has_success()) {
-					$url->query->remove('itemID');
-				}
-			}
-		}
-		self::pw('session')->redirect($url->getUrl(), $http301 = false);
-	}
+	// public static function handleCRUD($data) {
+	// 	$input = self::pw('input');
+	//
+	// 	if (self::validateUserPermission() === false) {
+	// 		self::pw('session')->redirect($input->url(), $http301 = false);
+	// 	}
+	//
+	// 	$fields = ['itemID|text', 'action|text'];
+	// 	$data  = self::sanitizeParametersShort($data, $fields);
+	// 	$url   = new Purl($input->url($withQueryString = true));
+	// 	$url->query->set('itemID', $data->itemID);
+	// 	$url->query->remove('action');
+	//
+	// 	if ($data->action) {
+	// 		$itm  = self::getItm();
+	// 		$itm->process_input($input);
+	//
+	// 		if ($data->action == 'delete-itm') {
+	// 			$response = self::pw('session')->getFor('response', 'itm');
+	// 			if ($response->has_success()) {
+	// 				$url->query->remove('itemID');
+	// 			}
+	// 		}
+	// 	}
+	// 	self::pw('session')->redirect($url->getUrl(), $http301 = false);
+	// }
 
 	//
 	// private static function itm($data) {
@@ -78,28 +80,27 @@ class Bmm extends Base {
 	// 	return self::displayItem($data, $item);
 	// }
 	//
-	// private static function list($data) {
-	// 	$fields = ['itemID|text', 'q|text'];
-	// 	$data   = self::sanitizeParametersShort($data, $fields);
-	// 	$page     = self::pw('page');
-	// 	$validate = new MinValidator();
-	//
-	// 	if ($validate->itemid($data->q)) {
-	// 		self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
-	// 	}
-	//
-	// 	$filter = new ItemMasterFilter();
-	// 	if (empty($data->q) === false) {
-	// 		$filter->search($data->q);
-	// 		self::pw('page')->headline = "ITM: Searching for '$data->q'";
-	// 	}
-	//
-	// 	$filter->sortby($page);
-	// 	$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
-	//
-	// 	$page->js = self::pw('config')->twig->render('items/item-list.js.twig');
-	// 	return self::displayList($data, $items);
-	// }
+	private static function list($data) {
+		$fields = ['itemID|text', 'q|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$page     = self::pw('page');
+		$filter = new Filters\Mpm\Bom\Header();
+
+		if ($filter->exists($data->q)) {
+			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
+		}
+
+		if (empty($data->q) === false) {
+			$filter->search($data->q);
+			$page->headline = "BMM: Searching for '$data->q'";
+		}
+
+		$filter->sortby($page);
+		$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
+
+		// $page->js = self::pw('config')->twig->render('items/item-list.js.twig');
+		return self::displayList($data, $items);
+	}
 
 /* =============================================================
 	URLs
@@ -121,23 +122,15 @@ class Bmm extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	// private static function displayList($data, PropelModelPager $items) {
-	// 	$config     = self::pw('config');
-	// 	$validate   = new MinValidator();
-	// 	$htmlwriter = self::pw('modules')->get('HtmlWriter');
-	// 	$html   = $config->twig->render('items/itm/bread-crumbs.twig');
-	//
-	// 	if (self::pw('session')->getFor('response', 'itm')) {
-	// 		$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
-	// 	}
-	// 	if (empty($data->itemID) === false && $validate->itemid($data->itemID) === false) {
-	// 		$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
-	// 		$html .= $htmlwriter->div('class=mb-3');
-	// 	}
-	// 	$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
-	// 	$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
-	// 	return $html;
-	// }
+	private static function displayList($data, PropelModelPager $items) {
+		$config     = self::pw('config');
+
+		$html   = '';
+		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
+		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
+		return $html;
+	}
+	
 	//
 	// private static function displayItem($data, ItemMasterItem $item) {
 	// 	$session = self::pw('session');
