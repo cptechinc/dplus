@@ -118,13 +118,14 @@ class Substitutes extends Base {
 ============================================================= */
 	private static function displayList($data, PropelModelPager $xrefs) {
 		self::initHooks();
-		$itm    = self::pw('modules')->get('Itm');
 		$itmSub = self::getItmSubstitutes();
 		$itmSub->recordlocker->deleteLock();
+		$itm    = $itmSub->getItm();
 
 		$item = $itm->item($data->itemID);
 		$html  = self::breadCrumbs();
-		$html  = self::displayResponse();
+		$html .= self::displayResponse();
+		$html .= self::lockItem($data->itemID);
 		$html .= self::displaySubstitutes($data, $item, $xrefs);
 		$itmSub->deleteResponse();
 		return $html;
@@ -132,17 +133,20 @@ class Substitutes extends Base {
 
 	private static function displaySubstitutes($data, ItemMasterItem $item, PropelModelPager $xrefs) {
 		$itmSub = self::getItmSubstitutes();
-		return self::pw('config')->twig->render('items/itm/xrefs/substitutes/list/display.twig', ['item' => $item, 'substitutes' => $xrefs, 'itmSub' => $itmSub]);
+		$itm    = $itmSub->getItm();
+		return self::pw('config')->twig->render('items/itm/xrefs/substitutes/list/display.twig', ['item' => $item, 'substitutes' => $xrefs, 'itmSub' => $itmSub, 'itm' => $itm]);
 	}
 
 	private static function displaySub($data, ItemMasterItem $item, ItemSubstitute $sub) {
 		self::initHooks();
 		$itmSub = self::getItmSubstitutes();
+		$itm    = $itmSub->getItm();
 
-		$html   = self::breadCrumbs();
-		$html  .= '<div class="mb-3">' . self::displayLock($data, $sub) . '</div>';
-		$html  .= '<div class="mb-3">' . self::displayResponse() . '</div>';
-		$html  .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/sub/display.twig', ['item' => $item, 'sub' => $sub, 'itmSub' => $itmSub]);
+		$html  = self::breadCrumbs();
+		$html .= self::lockItem($data->itemID);
+		$html .= '<div class="mb-3">' . self::displayLock($data, $sub) . '</div>';
+		$html .= '<div class="mb-3">' . self::displayResponse() . '</div>';
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/sub/display.twig', ['item' => $item, 'sub' => $sub, 'itmSub' => $itmSub, 'itm' => $itm]);
 		$itmSub->deleteResponse();
 		return $html;
 	}
