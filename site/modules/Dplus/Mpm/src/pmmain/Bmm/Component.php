@@ -154,6 +154,7 @@ class Components extends WireData {
 		$c->setItemid($componentID);
 		$c->setScrap('N');
 		$c->setQty(0);
+		$c->setDummy('P');
 		return $c;
 	}
 
