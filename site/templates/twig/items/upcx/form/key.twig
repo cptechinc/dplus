@@ -1,0 +1,55 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="upc">UPC Code</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/form/input.twig' with {
+				'name': 'upc', 'value': upc.upc,
+				'class_add': [],
+				'attributes': {
+					'readonly': upc.isNew() == false,
+					'data-new': upc.isNew() ? 'true' : 'false'
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="itemID">Item ID</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'attributes': {
+						'readonly': upc.itemid ? true : false
+					},
+					'input': {
+						'name': 'itemID',
+						'id': 'itemID',
+						'value': upc.itemid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'itemid':  upc.itemid,
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#itemID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="text-muted help-text item-description">{{ upc.ItemMasterItem.description }}</small>
+	</div>
+</div>
