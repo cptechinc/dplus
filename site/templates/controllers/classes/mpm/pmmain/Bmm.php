@@ -146,7 +146,7 @@ class Bmm extends Base {
 	private static function displayBom($data, BomItem $bom) {
 		$config  = self::pw('config');
 		$html =  '';
-
+		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
 		$html .= $config->twig->render('mpm/bmm/bom/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom]);
 		return $html;
 	}

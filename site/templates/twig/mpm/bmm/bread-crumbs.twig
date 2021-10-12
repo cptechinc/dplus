@@ -1,0 +1,38 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+#}
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values      = input.get %}
+{% set segments    = input.urlSegments() %}
+{% set lastsegment = segments[segments|length] %}
+
+{% block current_page %}
+	<li class="breadcrumb-item">
+		<a href="{{ page.url }}">
+			<i class="fa fa-list" aria-hidden="true"></i> MPM
+		</a>
+	</li>
+	<li class="breadcrumb-item">
+		<a href="{{ page.url }}">
+			<i class="fa fa-list" aria-hidden="true"></i> PMMAIN
+		</a>
+	</li>
+
+	{% if segments|length == 0 and values.offsetExists('itemID') == false %}
+		<li class="breadcrumb-item active" aria-current="page">
+			<i class="fa fa-microchip" aria-hidden="true"></i> ITM
+		</li>
+	{% endif %}
+
+	{% if values.offsetExists('itemID') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				<i class="fa fa-microchip" aria-hidden="true"></i> ITM
+			</a>
+		</li>
+	{% endif %}
+{% endblock %}
