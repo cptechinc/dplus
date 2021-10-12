@@ -51,6 +51,7 @@ class Mxrfe extends Base {
 			$mxrfe->process_input($input);
 			switch ($data->action) {
 				case 'delete-xref':
+				case 'update-xref':
 					$url = Xrefs::xrefUrlMxrfe($data->itemID);
 					break;
 			}
@@ -93,8 +94,9 @@ class Mxrfe extends Base {
 		$filter->itemid($data->itemID);
 		$filter->sortby($page);
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		$html = self::displayList($data, $xrefs);
 		self::pw('session')->removeFor('response', 'mxrfe');
-		return self::displayList($data, $xrefs);
+		return $html;
 	}
 
 /* =============================================================
