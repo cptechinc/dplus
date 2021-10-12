@@ -24,9 +24,9 @@ class Bmm extends Base {
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
-		// if (empty($data->action) === false) {
-		// 	return self::handleCRUD($data);
-		// }
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
 
 		if (empty($data->bomID) === false) {
 			if (empty($data->component) === false) {
@@ -60,7 +60,9 @@ class Bmm extends Base {
 		$bmm->lockrecord($data->bomID);
 		$bom = $bmm->header->getOrCreate($data->bomID);
 		self::initHooks();
-		return self::displayBom($data, $bom);
+		$html = self::displayBom($data, $bom);
+		$bmm::deleteResponse();
+		return $html;
 	}
 
 	private static function component($data) {
@@ -76,7 +78,9 @@ class Bmm extends Base {
 		$component = $bmm->components->getOrCreate($data->bomID, $data->component);
 		self::initHooks();
 		$page->js .= self::pw('config')->twig->render('mpm/bmm/component/js.twig', ['bmm' => $bmm]);
-		return self::displayComponent($data, $bom, $component);
+		$html = self::displayComponent($data, $bom, $component);
+		$bmm::deleteResponse();
+		return $html;
 	}
 
 	private static function list($data) {
@@ -101,7 +105,9 @@ class Bmm extends Base {
 		self::initHooks();
 
 		$page->js .= self::pw('config')->twig->render('mpm/bmm/list/.js.twig');
-		return self::displayList($data, $items);
+		$html = self::displayList($data, $items);
+		$bmm::deleteResponse();
+		return $html;
 	}
 
 /* =============================================================
