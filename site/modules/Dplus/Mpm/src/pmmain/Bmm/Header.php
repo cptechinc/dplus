@@ -96,9 +96,84 @@ class Header extends WireData {
 		$bom = new BomItem();
 		$bom->setItemid($itemID);
 		$bom->setLevel($level);
+		$bom->setDummy('P');
 		return $bom;
 	}
 
+	public function createHeader($itemID, $level = 1) {
+		$bom = $this->new($itemID, $level);
+		$bom->setDate(date('Ymd'));
+		$bom->setTime(date('His'));
+		$response = $this->saveAndRespond($bom);
+		return $response->hasSuccess();
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns ItmResponse based on the outcome of the database save
+	 * @param  BomItem $bom        Record to record response of database save
+	 * @param  array        $errors           Input fields that require attention
+	 * @return Response
+	 */
+	private function saveAndRespond(BomItem $bom, array $errors = []) {
+		$is_new = $bom->isDeleted() ? false : $bom->isNew();
+		$saved  = $bom->isDeleted() ? $bom->isDeleted() : $bom->save();
+
+		$locker = Bmm::getRecordLocker();
+		$response = new Response();
+		$response->bomID = $bom->itemid;
+		$response->setKey($bom->itemid);
+
+		if ($saved) {
+			$response->setSuccess(true);
+		} else {
+			$response->setError(true);
+		}
+
+		if ($is_new) {
+			$response->setAction(Response::CRUD_CREATE);
+		} elseif ($bom->isDeleted()) {
+			$response->setAction(Response::CRUD_DELETE);
+		} else {
+			$response->setAction(Response::CRUD_UPDATE);
+		}
+		$response->buildMessage(self::RESPONSE_TEMPLATE);
+		$response->setFields($errors);
+
+		if ($response->hasSuccess() && empty($errors)) {
+			$this->requestUpdateHeader($bom->itemid);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Send Request Data to Dplus
+	 * @param  array  $data
+	 * @return void
+	 */
+	private function requestDplus(array $data) {
+		$config  = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	}
+
+	/**
+	 * Writes File for Dplus to update the ITM file for this ITEM
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function requestUpdateHeader($bomID) {
+		$data = array('UPDATEBMM', "ITEMID=$bomID");
+		$this->requestDplus($data);
+	}
 
 /* =============================================================
 	RecordLocker

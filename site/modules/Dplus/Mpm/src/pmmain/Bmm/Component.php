@@ -154,6 +154,7 @@ class Components extends WireData {
 		$c->setItemid($componentID);
 		$c->setScrap('N');
 		$c->setQty(0);
+		$c->setDummy('P');
 		return $c;
 	}
 
@@ -230,8 +231,10 @@ class Components extends WireData {
 		$values = $input->$rm;
 
 		$bmmHeader = new Header();
+
 		if ($bmmHeader->exists($values->text('bomID')) === false) {
-			// TODO HANDLE CREATE OF HEADER
+			$bmmHeader->createHeader($values->text('bomID'));
+			sleep(2);
 		}
 
 		$bmmHeader->lockrecord($values->text('bomID'));
