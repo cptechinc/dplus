@@ -9,11 +9,11 @@ use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 use Controllers\Mpm\Base;
 
 class Menu extends Base {
-	const DPLUSPERMISSION = '';
+	const DPLUSPERMISSION = 'mpm';
 	const SUBFUNCTIONS = [
 		'pmmain' => [
 			'name'       => 'pmmain',
-			'permission' => '', // TOOD
+			'permission' => 'pmmain',
 			'title'      => 'Maintenance',
 			'summary'    => ' Production Management Maintenance'
 		]
@@ -60,7 +60,7 @@ class Menu extends Base {
 				$functions[$key] = $function;
 			}
 		}
-		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
+		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================
