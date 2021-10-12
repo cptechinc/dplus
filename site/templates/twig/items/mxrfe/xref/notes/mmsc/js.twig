@@ -26,6 +26,10 @@ $(function () {
 		} else {
 			modal.find('.action-desc').text('Adding');
 		}
+
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
 	});
 
 	$('#notes-mmsc-modal').on('shown.bs.modal', function (e) {

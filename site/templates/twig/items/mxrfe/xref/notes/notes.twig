@@ -7,9 +7,11 @@
 	qnotes                 module QnotesItemMxrfe
 #}
 {% set response = session.get('response_qnote') %}
+
 {% if response %}
 	{% include 'code-tables/code-table-response.twig' with {'response': response} %}
 {% endif %}
+
 <h3>Notes <i class="fa fa-commenting" aria-hidden="true"></i></h3>
 
 
