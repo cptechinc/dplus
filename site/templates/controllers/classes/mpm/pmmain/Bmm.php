@@ -131,16 +131,16 @@ class Bmm extends Base {
 		return $url->getUrl();
 	}
 
-	public static function bmmComponentUrl($itemID, $componentID = '') {
-		$url = new Purl(self::bmmUrl($itemID));
+	public static function bomComponentUrl($itemID, $componentID = '') {
+		$url = new Purl(self::bomUrl($itemID));
 		if ($componentID) {
 			$url->query->set('component', $componentID);
 		}
 		return $url->getUrl();
 	}
 
-	public static function bmmComponentDeleteUrl($itemID, $componentID) {
-		$url = new Purl(self::bmmComponentUrl($itemID, $componentID));
+	public static function bomComponentDeleteUrl($itemID, $componentID) {
+		$url = new Purl(self::bomComponentUrl($itemID, $componentID));
 		$url->query->set('action', 'delete-component');
 		return $url->getUrl();
 	}
@@ -151,9 +151,10 @@ class Bmm extends Base {
 	private static function displayList($data, PropelModelPager $items) {
 		$config = self::pw('config');
 
-		$html   = '';
-		$html  .= $config->twig->render('mpm/bmm/list/list.twig', ['items' => $items, 'bmm' => self::getBmm()]);
-		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
+		$html  = '';
+		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
+		$html .= $config->twig->render('mpm/bmm/list/list.twig', ['items' => $items, 'bmm' => self::getBmm()]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		return $html;
 	}
 
@@ -247,11 +248,11 @@ class Bmm extends Base {
 		});
 
 		$m->addHook('Page(pw_template=mpm)::bomComponentUrl', function($event) {
-			$event->return = self::bmmComponentUrl($event->arguments(0), $event->arguments(1));
+			$event->return = self::bomComponentUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=mpm)::bomComponentDeleteUrl', function($event) {
-			$event->return = self::bmmComponentDeleteUrl($event->arguments(0), $event->arguments(1));
+			$event->return = self::bomComponentDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
 
