@@ -1,4 +1,4 @@
-{% include 'items/itm/xrefs/bom/component/js/classes.js.twig' %}
+{% include 'mpm/bmm/component/js/classes.js.twig' %}
 
 $(function() {
 	var modalAjax = $('#ajax-modal');
@@ -65,7 +65,7 @@ $(function() {
 					data: {
 						jqv: 'true',
 						bomID: function() {
-							return $('input[name=itemID]').val();
+							return $('input[name=bomID]').val();
 						},
 						new: function() {
 							return formBom.form.data('new');
@@ -121,5 +121,4 @@ $(function() {
 		var modal  = button.closest('.modal');
 		modal.find('.modal-body').load(href);
 	});
-
 });
