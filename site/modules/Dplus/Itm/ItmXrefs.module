@@ -209,11 +209,8 @@ class ItmXrefs extends WireData implements Module {
 		$cxm = $this->wire('modules')->get('XrefCxm');
 		$original = $cxm->xref_shortitem_by_custitemid($shortitemID);
 		$deleted = boolval($original->delete());
-		if ($deleted === false) {
-			return false;
-		}
 		$this->requestUpdateItmShort($original->itemid);
-		sleep(2);
+		sleep(3);
 		return true;
 	}
 
