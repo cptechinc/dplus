@@ -1,4 +1,5 @@
 {% include 'dplus-menu/menu-search-form.twig' with {'page': pages.get('/')} %}
+
 <div class="mb-3">
 	{% if page.parent().template == 'dplus-menu' or page.parent().template == 'warehouse-menu' %}
 	<a href="{{ page.parent().url }}" class="btn btn-primary">
