@@ -3,6 +3,7 @@
 use Purl\Url;
 // Dplus Model
 use ItemMasterItem;
+use ItemXrefCustomer;
 // Dplus Filters
 use Dplus\Filters\Mso\Cxm   as CxmFilter;
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
@@ -157,7 +158,16 @@ class ItmXrefs extends WireData implements Module {
 		if ($cxm->xref_shortitem_exists($itemID)) {
 			$xref = $cxm->xref_shortitem($itemID);
 		}
+
+		if ($xref->isNew() === false && $shortitemID != $xref->custitemid) {
+			$original = $xref;
+			$originalValues = $original->toArray();
+			$original->delete();
+			$xref = new ItemXrefCustomer();
+			$xref->fromArray($originalValues);
+		}
 		$xref->setCustitemid($shortitemID);
+
 		$xref->setDate(date('Ymd'));
 		$xref->setTime(date('His'));
 		$xref->setDummy('P');
