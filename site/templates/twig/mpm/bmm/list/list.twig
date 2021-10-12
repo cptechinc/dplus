@@ -19,8 +19,21 @@
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 align-middle">Level</th>
 			<th class="pt-3 pb-3 align-middle">Number of Components</th>
-			<th>
-				
+			<th class="pt-3 pb-3 align-middle">
+				{% include 'util/bootstrap/html/button.twig' with {
+						'button': {
+							'colorclass': 'btn-light',
+							'text': 'fa fa-plus'|icon ~ ' Items',
+							'size': 'sm',
+							'attributes': {
+								'title': 'Search Items',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('items')
+							}
+						}
+					}
+				%}
 			</th>
 		</tr>
 	</thead>
