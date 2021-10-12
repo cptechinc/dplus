@@ -77,7 +77,7 @@ class Bmm extends Base {
 	private static function list($data) {
 		$fields = ['itemID|text', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$page     = self::pw('page');
+		$page   = self::pw('page');
 		$filter = new Filters\Mpm\Bom\Header();
 
 		$page->headline = "Bill-of-Material Master";
@@ -103,6 +103,27 @@ class Bmm extends Base {
 	URLs
 ============================================================= */
 	public static function bmmUrl($itemID = '') {
+		if (empty($itemID)) {
+			return Menu::bmmUrl();
+		}
+		return self::bmmFocusUrl($itemID);
+	}
+
+	public static function bmmFocusUrl($focus) {
+		$filter = new Filters\Mpm\Bom\Header();
+		if ($filter->exists($focus) === false) {
+			return Menu::bmmUrl();
+		}
+		$position = $filter->positionQuick($focus);
+		$pagenbr = self::getPagenbrFromOffset($position);
+
+		$url = new Purl(Menu::bmmUrl());
+		$url->query->set('focus', $focus);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'bmm', $pagenbr);
+		return $url->getUrl();
+	}
+
+	public static function bomUrl($itemID) {
 		$url = new Purl(Menu::bmmUrl());
 		if ($itemID) {
 			$url->query->set('bomID', $itemID);
@@ -117,25 +138,18 @@ class Bmm extends Base {
 		}
 		return $url->getUrl();
 	}
+
 	public static function bmmComponentDeleteUrl($itemID, $componentID) {
 		$url = new Purl(self::bmmComponentUrl($itemID, $componentID));
 		$url->query->set('action', 'delete-component');
 		return $url->getUrl();
 	}
 
-
-
-	// public static function itmDeleteUrl($itemID) {
-	// 	$url = new Purl(self::itmUrl($itemID));
-	// 	$url->query->set('action', 'delete-itm');
-	// 	return $url->getUrl();
-	// }
-
 /* =============================================================
 	Displays
 ============================================================= */
 	private static function displayList($data, PropelModelPager $items) {
-		$config     = self::pw('config');
+		$config = self::pw('config');
 
 		$html   = '';
 		$html  .= $config->twig->render('mpm/bmm/list/list.twig', ['items' => $items, 'bmm' => self::getBmm()]);
@@ -224,8 +238,12 @@ class Bmm extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMpm');
 
-		$m->addHook('Page(pw_template=mpm)::bomUrl', function($event) {
+		$m->addHook('Page(pw_template=mpm)::bmmUrl', function($event) {
 			$event->return = self::bmmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::bomUrl', function($event) {
+			$event->return = self::bomUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=mpm)::bomComponentUrl', function($event) {

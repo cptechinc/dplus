@@ -12,27 +12,31 @@
 
 {% block current_page %}
 	<li class="breadcrumb-item">
-		<a href="{{ page.url }}">
+		<a href="{{ page.mpmUrl() }}">
 			<i class="fa fa-list" aria-hidden="true"></i> MPM
 		</a>
 	</li>
 	<li class="breadcrumb-item">
-		<a href="{{ page.url }}">
+		<a href="{{ page.pmmainUrl() }}">
 			<i class="fa fa-list" aria-hidden="true"></i> PMMAIN
 		</a>
 	</li>
 
-	{% if segments|length == 0 and values.offsetExists('itemID') == false %}
+	{% if lastsegment == 'mpm' and values.offsetExists('bomID') == false %}
 		<li class="breadcrumb-item active" aria-current="page">
-			<i class="fa fa-microchip" aria-hidden="true"></i> ITM
+			<i class="fa fa-microchip" aria-hidden="true"></i> BMM
 		</li>
 	{% endif %}
 
-	{% if values.offsetExists('itemID') %}
+	{% if values.offsetExists('bomID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.url }}">
-				<i class="fa fa-microchip" aria-hidden="true"></i> ITM
+			<a href="{{ page.bmmUrl(values.text('bomID')) }}">
+				<i class="fa fa-microchip" aria-hidden="true"></i> BMM
 			</a>
+		</li>
+
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ values.text('bomID') }}
 		</li>
 	{% endif %}
 {% endblock %}

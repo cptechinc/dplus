@@ -55,7 +55,8 @@ class Header extends AbstractFilter {
 		$q = $this->getQueryClass();
 		$q->execute_query('SET @rownum = 0');
 		$table = $q->getTableMap()::TABLE_NAME;
-		$sql = "SELECT x.position FROM (SELECT InitItemNbr, @rownum := @rownum + 1 AS position FROM $table) x WHERE InitItemNbr = :itemid";
+		$col   = Model::aliasproperty('itemid');
+		$sql = "SELECT x.position FROM (SELECT $col, @rownum := @rownum + 1 AS position FROM $table) x WHERE $col = :itemid";
 		$params = [':itemid' => $itemID];
 		$stmt = $q->executeQuery($sql, $params);
 		return $stmt->fetchColumn();
