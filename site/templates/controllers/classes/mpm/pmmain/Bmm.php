@@ -71,7 +71,7 @@ class Bmm extends Base {
 		$page->headline = "BMM: $data->bomID Component $data->component";
 
 		if ($data->component == 'new') {
-			$page->headline = "BMM: $data->bomID add Component";
+			$page->headline = "BMM: $data->bomID Add Component";
 		}
 		$bmm->lockrecord($data->bomID);
 		$bom = $bmm->header->getOrCreate($data->bomID);
@@ -106,7 +106,7 @@ class Bmm extends Base {
 
 		$page->js .= self::pw('config')->twig->render('mpm/bmm/list/.js.twig');
 		$html = self::displayList($data, $items);
-		$bmm::deleteResponse();
+		self::getBmm()::deleteResponse();
 		return $html;
 	}
 
