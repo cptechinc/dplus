@@ -5,6 +5,7 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
 use BomItem;
+use BomComponent;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -65,8 +66,10 @@ class Bmm extends Base {
 		}
 		$bmm->lockrecord($data->bomID);
 		$bom = $bmm->header->getOrCreate($data->bomID);
+		$component = $bmm->components->getOrCreate($data->bomID, $data->component);
 		self::initHooks();
-		return self::displayComponent($data, $bom);
+		$page->js .= self::pw('config')->twig->render('mpm/bmm/component/js.twig', ['bmm' => $bmm]);
+		return self::displayComponent($data, $bom, $component);
 	}
 
 	private static function list($data) {
@@ -126,6 +129,14 @@ class Bmm extends Base {
 		return $url->getUrl();
 	}
 
+	public static function bomFocusUrl($itemID, $focus) {
+		$url = new Purl(self::bomUrl($itemID));
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
+		return $url->getUrl();
+	}
+
 	public static function bomComponentUrl($itemID, $componentID = '') {
 		$url = new Purl(self::bomUrl($itemID));
 		if ($componentID) {
@@ -161,15 +172,13 @@ class Bmm extends Base {
 		return $html;
 	}
 
-	private static function displayComponent($data, BomItem $bom) {
+	private static function displayComponent($data, BomItem $bom, BomComponent $component) {
 		$config  = self::pw('config');
 		$html =  '';
 		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
-		$html .= $config->twig->render('mpm/bmm/bom/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom]);
+		$html .= $config->twig->render('mpm/bmm/component/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom, 'component' => $component]);
 		return $html;
 	}
-
-
 
 	public static function displayLock($data) {
 		$fields = ['bomID|text'];
@@ -218,6 +227,10 @@ class Bmm extends Base {
 
 		$m->addHook('Page(pw_template=mpm)::bomComponentDeleteUrl', function($event) {
 			$event->return = self::bomComponentDeleteUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::bomComponentExitUrl', function($event) {
+			$event->return = self::bomFocusUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
 
