@@ -37,10 +37,17 @@ class Bmm extends Base {
 		return self::list($data);
 	}
 
-	// public static function handleCRUD($data) {
-	// 	$input = self::pw('input');
-	// 	self::pw('session')->redirect($url->getUrl(), $http301 = false);
-	// }
+	public static function handleCRUD($data) {
+		$fields = ['bomID|text', 'component|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$url = self::bomUrl($data->bomID);
+
+		if ($data->action) {
+			$bmm  = self::getBmm();
+			$bmm->processInput(self::pw('input'));
+		}
+		self::pw('session')->redirect($url, $http301 = false);
+	}
 
 	private static function bom($data) {
 		$bmm  = self::getBmm();
