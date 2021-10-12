@@ -40,11 +40,15 @@ class Bmm extends Base {
 	public static function handleCRUD($data) {
 		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url = self::bomUrl($data->bomID);
+		$url  = self::bomUrl($data->bomID);
+		$bmm  = self::getBmm();
 
 		if ($data->action) {
-			$bmm  = self::getBmm();
 			$bmm->processInput(self::pw('input'));
+		}
+
+		if ($bmm->components->hasComponents($data->bomID) === false) {
+			$url = self::bmmUrl();
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
