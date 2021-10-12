@@ -24,7 +24,7 @@
 	</thead>
 	<tbody>
 		{% for bom in items %}
-			<tr>
+			<tr data-bomid="{{ bom.itemid }}">
 				<td>
 					{{ bom.itemid }}
 				</td>

@@ -95,7 +95,7 @@ class Bmm extends Base {
 		$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		self::initHooks();
 
-		// $page->js = self::pw('config')->twig->render('items/item-list.js.twig');
+		$page->js .= self::pw('config')->twig->render('mpm/bmm/list/.js.twig');
 		return self::displayList($data, $items);
 	}
 

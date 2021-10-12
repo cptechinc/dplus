@@ -1,0 +1,9 @@
+$(function() {
+	var uri = URI();
+	var queryData = uri.search(true);
+
+	if (queryData.focus) {
+		$('tr[data-bomid="'+ queryData.focus +'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('[data-bomid="' + queryData.focus + '"]').offset().top,},700,'linear');
+	}
+});
