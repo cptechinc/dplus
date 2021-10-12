@@ -187,7 +187,7 @@ class XrefMxrfe extends WireData implements Module {
 				break;
 			default:
 				$message = self::DESCRIPTION . " No action was specified";
-				$this->wire('session')->setFor('response', 'mxrfe', XrefResponse::response_error(session_id(), $message));
+				$this->setResponse(XrefResponse::response_error(session_id(), $message));
 				break;
 		}
 	}
@@ -211,16 +211,17 @@ class XrefMxrfe extends WireData implements Module {
 				if (!$this->lockrecord($record)) {
 					$key = $this->get_recordlocker_key($record);
 					$message = self::DESCRIPTION . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
-					$this->wire('session')->setFor('response', 'mxrfe', XrefResponse::response_error("$key", $message));
+					$this->setResponse(XrefResponse::response_error(XrefResponse::response_error($key, $message)));
 					return false;
 				}
 			}
 			$record->delete();
-			$this->wire('session')->setFor('response', 'mxrfe', $this->save_and_respond($record));
-			if ($this->wire('session')->getFor('response', 'mxrfe')->has_success()) {
+			$response = $this->save_and_respond($record);
+			$this->setResponse($response);
+			if ($response->has_success()) {
 				$this->update_dplus_cobol($record);
 			}
-			return $this->wire('session')->getFor('response', 'mxrfe')->has_success();
+			return $response->has_success();
 		}
 		return true;
 	}
@@ -243,7 +244,7 @@ class XrefMxrfe extends WireData implements Module {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
 				$message = self::DESCRIPTION . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
-				$this->wire('session')->setFor('response', 'mxrfe', XrefResponse::response_error("$key", $message));
+				$this->setResponse(XrefResponse::response_error($key, $message));
 				return false;
 			}
 		}
@@ -254,8 +255,8 @@ class XrefMxrfe extends WireData implements Module {
 		if ($response->has_success()) {
 			$this->update_dplus_cobol($record);
 		}
-		$this->wire('session')->setFor('response', 'mxrfe', $response);
-		return $this->wire('session')->getFor('response', 'mxrfe')->has_success();
+		$this->setResponse($response);
+		return $response->has_success();
 	}
 
 	/**
@@ -349,6 +350,30 @@ class XrefMxrfe extends WireData implements Module {
 
 		$response->build_message(self::RESPONSE_TEMPLATE);
 		return $response;
+	}
+
+	/**
+	 * Set Response
+	 * @param XrefResponse $response
+	 */
+	public function setResponse(XrefResponse $response) {
+		$this->wire('session')->setFor('response', 'mxrfe', $response);
+	}
+
+	/**
+	 * Return Response
+	 * @return XrefResponse
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'mxrfe');
+	}
+
+	/**
+	 * Delete Session Response
+	 * @return void
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', 'mxrfe');
 	}
 
 /* =============================================================
