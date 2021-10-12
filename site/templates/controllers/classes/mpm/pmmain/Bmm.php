@@ -3,6 +3,8 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
+// Dplus Models
+use BomItem;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -24,10 +26,10 @@ class Bmm extends Base {
 		// if (empty($data->action) === false) {
 		// 	return self::handleCRUD($data);
 		// }
-		//
-		// if (empty($data->itemID) === false) {
-		// 	return self::itm($data);
-		// }
+
+		if (empty($data->bomID) === false) {
+			return self::bom($data);
+		}
 		return self::list($data);
 	}
 
@@ -58,28 +60,20 @@ class Bmm extends Base {
 	// 	self::pw('session')->redirect($url->getUrl(), $http301 = false);
 	// }
 
-	//
-	// private static function itm($data) {
-	// 	$page   = self::pw('page');
-	// 	$validate = new MinValidator();
-	//
-	// 	if ($data->itemID === 'new') {
-	// 		$page->headline = 'ITM: Creating new Item';
-	// 	}
-	//
-	// 	if ($validate->itemid($data->itemID)) {
-	// 		$page->headline = "ITM: $data->itemID";
-	// 	}
-	//
-	// 	if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
-	// 		return self::list($data);
-	// 	}
-	// 	$item = self::getItm()->getCreateItem($data->itemID);
-	// 	$page->js .= self::pw('config')->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => self::getItm()]);
-	//
-	// 	return self::displayItem($data, $item);
-	// }
-	//
+	private static function bom($data) {
+		$bmm  = self::getBmm();
+		$page = self::pw('page');
+		$page->headline = "BMM: $data->bomID";
+
+		if ($data->bomID === 'new') {
+			$page->headline = 'BMM: Creating new Bill of Material';
+		}
+		$bmm->lockrecord($data->bomID);
+		$bom = $bmm->header->getOrCreate($data->bomID);
+		self::initHooks();
+		return self::displayBom($data, $bom);
+	}
+
 	private static function list($data) {
 		$fields = ['itemID|text', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -144,11 +138,19 @@ class Bmm extends Base {
 		$config     = self::pw('config');
 
 		$html   = '';
-		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
+		$html  .= $config->twig->render('mpm/bmm/list/list.twig', ['items' => $items, 'bmm' => self::getBmm()]);
 		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		return $html;
 	}
-	
+
+	private static function displayBom($data, BomItem $bom) {
+		$config  = self::pw('config');
+		$html =  '';
+
+		$html .= $config->twig->render('mpm/bmm/bom/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom]);
+		return $html;
+	}
+
 	//
 	// private static function displayItem($data, ItemMasterItem $item) {
 	// 	$session = self::pw('session');
