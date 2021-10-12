@@ -9,11 +9,11 @@ use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 use Controllers\Mpm\Base;
 
 class Menu extends Base {
-	const DPLUSPERMISSION = '';
+	const DPLUSPERMISSION = 'pmmain';
 	const SUBFUNCTIONS = [
 		'bmm' => [
-			'name'       => 'pmadmn',
-			'permission' => '', // TOOD
+			'name'       => 'bmm',
+			'permission' => '',
 			'title'      => 'Bill-of-Material Maintenance',
 			'summary'    => 'View / Edit Bill-of-Materials'
 		]
@@ -63,7 +63,7 @@ class Menu extends Base {
 			}
 		}
 		self::initHooks();
-		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
+		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================
