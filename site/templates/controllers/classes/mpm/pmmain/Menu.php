@@ -48,6 +48,10 @@ class Menu extends Base {
 		return $url->getUrl();
 	}
 
+	public static function bmmUrl() {
+		return self::subfunctionUrl('bmm');
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */

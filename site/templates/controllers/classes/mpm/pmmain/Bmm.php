@@ -86,6 +86,8 @@ class Bmm extends Base {
 		$page     = self::pw('page');
 		$filter = new Filters\Mpm\Bom\Header();
 
+		$page->headline = "Bill-of-Material Master";
+
 		if ($filter->exists($data->q)) {
 			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
 		}
@@ -97,6 +99,7 @@ class Bmm extends Base {
 
 		$filter->sortby($page);
 		$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		self::initHooks();
 
 		// $page->js = self::pw('config')->twig->render('items/item-list.js.twig');
 		return self::displayList($data, $items);
@@ -105,14 +108,29 @@ class Bmm extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
-	// public static function itmUrl($itemID = '') {
-	// 	$url = new Purl(self::pw('pages')->get('pw_template=itm')->url);
-	// 	if ($itemID) {
-	// 		$url->query->set('itemID', $itemID);
-	// 	}
-	// 	return $url->getUrl();
-	// }
-	//
+	public static function bmmUrl($itemID = '') {
+		$url = new Purl(Menu::bmmUrl());
+		if ($itemID) {
+			$url->query->set('bomID', $itemID);
+		}
+		return $url->getUrl();
+	}
+
+	public static function bmmComponentUrl($itemID, $componentID = '') {
+		$url = new Purl(self::bmmUrl($itemID));
+		if ($componentID) {
+			$url->query->set('component', $componentID);
+		}
+		return $url->getUrl();
+	}
+	public static function bmmComponentDeleteUrl($itemID, $componentID) {
+		$url = new Purl(self::bmmComponentUrl($itemID, $componentID));
+		$url->query->set('action', 'delete-component');
+		return $url->getUrl();
+	}
+
+
+
 	// public static function itmDeleteUrl($itemID) {
 	// 	$url = new Purl(self::itmUrl($itemID));
 	// 	$url->query->set('action', 'delete-itm');
@@ -202,11 +220,19 @@ class Bmm extends Base {
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMin');
+		$m = self::pw('modules')->get('DpagesMpm');
 
-		// $m->addHook('Page(pw_template=itm)::itmDeleteUrl', function($event) {
-		// 	$event->return = self::itmDeleteUrl($event->arguments(0));
-		// });
+		$m->addHook('Page(pw_template=mpm)::bomUrl', function($event) {
+			$event->return = self::bmmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::bomComponentUrl', function($event) {
+			$event->return = self::bmmComponentUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::bomComponentDeleteUrl', function($event) {
+			$event->return = self::bmmComponentDeleteUrl($event->arguments(0), $event->arguments(1));
+		});
 	}
 
 /* =============================================================
