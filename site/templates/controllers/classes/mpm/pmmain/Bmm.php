@@ -159,6 +159,8 @@ class Bmm extends Base {
 
 		$html  = '';
 		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
+		$html .= self::displayResponse($data);
+		$html .= self::displayLock($data);
 		$html .= $config->twig->render('mpm/bmm/list/list.twig', ['items' => $items, 'bmm' => self::getBmm()]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		return $html;
@@ -168,6 +170,8 @@ class Bmm extends Base {
 		$config  = self::pw('config');
 		$html =  '';
 		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
+		$html .= self::displayResponse($data);
+		$html .= self::displayLock($data);
 		$html .= $config->twig->render('mpm/bmm/bom/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom]);
 		return $html;
 	}
@@ -176,6 +180,8 @@ class Bmm extends Base {
 		$config  = self::pw('config');
 		$html =  '';
 		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
+		$html .= self::displayResponse($data);
+		$html .= self::displayLock($data);
 		$html .= $config->twig->render('mpm/bmm/component/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom, 'component' => $component]);
 		return $html;
 	}
