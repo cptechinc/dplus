@@ -19,7 +19,7 @@ class Bmm extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['bomID|text', 'action|text'];
+		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -28,6 +28,9 @@ class Bmm extends Base {
 		// }
 
 		if (empty($data->bomID) === false) {
+			if (empty($data->component) === false) {
+				return self::component($data);
+			}
 			return self::bom($data);
 		}
 		return self::list($data);
@@ -35,28 +38,6 @@ class Bmm extends Base {
 
 	// public static function handleCRUD($data) {
 	// 	$input = self::pw('input');
-	//
-	// 	if (self::validateUserPermission() === false) {
-	// 		self::pw('session')->redirect($input->url(), $http301 = false);
-	// 	}
-	//
-	// 	$fields = ['itemID|text', 'action|text'];
-	// 	$data  = self::sanitizeParametersShort($data, $fields);
-	// 	$url   = new Purl($input->url($withQueryString = true));
-	// 	$url->query->set('itemID', $data->itemID);
-	// 	$url->query->remove('action');
-	//
-	// 	if ($data->action) {
-	// 		$itm  = self::getItm();
-	// 		$itm->process_input($input);
-	//
-	// 		if ($data->action == 'delete-itm') {
-	// 			$response = self::pw('session')->getFor('response', 'itm');
-	// 			if ($response->has_success()) {
-	// 				$url->query->remove('itemID');
-	// 			}
-	// 		}
-	// 	}
 	// 	self::pw('session')->redirect($url->getUrl(), $http301 = false);
 	// }
 
@@ -72,6 +53,20 @@ class Bmm extends Base {
 		$bom = $bmm->header->getOrCreate($data->bomID);
 		self::initHooks();
 		return self::displayBom($data, $bom);
+	}
+
+	private static function component($data) {
+		$bmm  = self::getBmm();
+		$page = self::pw('page');
+		$page->headline = "BMM: $data->bomID Component $data->component";
+
+		if ($data->component == 'new') {
+			$page->headline = "BMM: $data->bomID add Component";
+		}
+		$bmm->lockrecord($data->bomID);
+		$bom = $bmm->header->getOrCreate($data->bomID);
+		self::initHooks();
+		return self::displayComponent($data, $bom);
 	}
 
 	private static function list($data) {
@@ -166,45 +161,15 @@ class Bmm extends Base {
 		return $html;
 	}
 
-	//
-	// private static function displayItem($data, ItemMasterItem $item) {
-	// 	$session = self::pw('session');
-	// 	$config  = self::pw('config');
-	// 	$itm     = self::getItm();
-	// 	$html =  '';
-	// 	$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-	//
-	// 	if ($itm->getResponse()) {
-	// 		$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
-	// 	}
-	//
-	// 	if ($session->response_qnote) {
-	// 		$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
-	// 		$session->remove('response_qnote');
-	// 	}
-	//
-	// 	$html .= self::lockItem($data->itemID);
-	// 	$html .= $config->twig->render('items/itm/itm-links.twig');
-	// 	$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'qnotes' => self::pw('modules')->get('QnotesItem')]);
-	// 	if ($item->isNew() === false && $itm->recordlocker->userHasLocked($data->itemID)) {
-	// 		$html .= self::displayQnotes($data);
-	// 	}
-	// 	$itm->deleteResponse();
-	// 	return $html;
-	// }
-	//
-	// private static function displayQnotes($data) {
-	// 	$fields = ['itemID|text'];
-	// 	$data   = self::sanitizeParametersShort($data, $fields);
-	// 	$qnotes = self::pw('modules')->get('QnotesItem');
-	// 	$config = self::pw('config');
-	// 	$item   = self::getItm()->item($data->itemID);
-	// 	$html   = $config->twig->render('items/itm/notes/notes.twig', ['item' => $item, 'qnotes' => $qnotes]);
-	// 	self::pw('page')->js .= $config->twig->render("items/itm/notes/js.twig", ['item' => $item, 'qnotes' => $qnotes]);
-	// 	self::pw('session')->remove('qnotes_itm');
-	// 	return $html;
-	// }
-	//
+	private static function displayComponent($data, BomItem $bom) {
+		$config  = self::pw('config');
+		$html =  '';
+		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
+		$html .= $config->twig->render('mpm/bmm/bom/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom]);
+		return $html;
+	}
+
+
 
 	public static function displayLock($data) {
 		$fields = ['bomID|text'];
