@@ -14,6 +14,7 @@ use Dplus\Mpm\Pmmain\Bmm as BmmManager;
 use Controllers\Mpm\Base;
 
 class Bmm extends Base {
+	const DPLUSPERMISSION = 'bmm';
 	private static $bmm;
 
 /* =============================================================

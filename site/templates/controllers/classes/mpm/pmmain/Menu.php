@@ -13,7 +13,7 @@ class Menu extends Base {
 	const SUBFUNCTIONS = [
 		'bmm' => [
 			'name'       => 'bmm',
-			'permission' => '',
+			'permission' => 'bmm',
 			'title'      => 'Bill-of-Material Maintenance',
 			'summary'    => 'View / Edit Bill-of-Materials'
 		]
