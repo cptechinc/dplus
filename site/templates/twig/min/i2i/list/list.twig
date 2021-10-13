@@ -11,7 +11,7 @@
 				</th>
 				<th class="py-2">
 					<a href="{{ page.get_sortURL('whseid') }}" class="link">Whse
-						{% if page.orderby_column == 'whseitemid' %}
+						{% if page.orderby_column == 'whseid' %}
 							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 						{% endif %}
 					</a>
@@ -35,7 +35,7 @@
 				<tr data-key="{{ i2i.getRecordlockerKey(xref) }}">
 					<td>
 						{{ xref.parentitemid }} <br>
-						<small>{{ xref.parentItem().description }}</small>
+						<small>{{ xref.parentItem().description }}</small> <br>
 					</td>
 					<td>
 						{{ xref.whseid }}
