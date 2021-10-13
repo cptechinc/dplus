@@ -10,6 +10,8 @@ use Dplus\Cart\Cart as Manager;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mci\Ci\Ci;
+use Controllers\Mqo\Quote\Quote;
+use Controllers\Mso\SalesOrder\SalesOrder;
 
 class Cart extends AbstractController {
 /* =============================================================
@@ -28,15 +30,62 @@ class Cart extends AbstractController {
 		if ($cart->hasCustid() === false) {
 			return self::selectCustomer($data);
 		}
-		self::cart($data);
+		return self::cart($data);
+	}
+
+	public static function handleCRUD($data) {
+		$fields = ['action|text', 'custID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$cart = self::getCart();
+		$cart->processInput(self::pw('input'));
+		$url = self::cartUrl();
+
+		switch ($data->action) {
+			case 'create-quote':
+				$url = Quote::quoteEditNewUrl();
+				break;
+			case 'create-order':
+				$url = SalesOrder::orderEditNewUrl();
+				break;
+		}
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 	private static function selectCustomer($data) {
 		$fields = ['q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		self::pw('page')->headline = "Select a Customer";
 		self::pw('page')->js .= self::pw('config')->twig->render('cart/form/js.twig');
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return self::displayCustomerForm($data);
+	}
+
+	private static function cart($data) {
+		$cart     = self::getCart();
+		$page     = self::pw('page');
+		$config   = self::pw('config');
+		$modules  = self::pw('modules');
+		$customer = $cart->getCustomer($cart->getCustid());
+		$page->headline = "Cart for $customer->name";
+
+		if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
+			$lastsold = $modules->get('LastSoldItemsCustomerCstk');
+			$lastsold->custID   = $cart->getCustid();
+			$lastsold->shiptoID = $cart->getShiptoid();
+			$lastsold->function = 'cart';
+			$lastsold->request_pricing();
+		} else {
+			$lastsold = false;
+		}
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+		$page->js .= self::pw('config')->twig->render('cart/js.twig', ['cart' => $cart]);
+
+		if ($config->twigloader->exists("cart/lookup/$config->company/form.twig")) {
+			$page->js .= $config->twig->render("cart/lookup/$config->company/js.twig", ['cart' => $cart]);
+		} else {
+			$page->js .= $config->twig->render('cart/lookup/js.twig', ['cart' => $cart]);
+		}
+		return self::displayCart($data);
 	}
 
 /* =============================================================
@@ -103,6 +152,32 @@ class Cart extends AbstractController {
 	private static function displayCustomerForm($data) {
 		return self::pw('config')->twig->render('cart/form/customer-form.twig');
 	}
+
+	private static function displayCart($data) {
+		$html   = '';
+		$config = self::pw('config');
+		$cart   = self::getCart();
+		$customer = $cart->getCustomer();
+		$shipto   = $cart->getCustomerShipto();
+
+		$html .= $config->twig->render('cart/cart-links.twig', ['customer' => $customer, 'shipto' => $shipto, 'cart' => $cart]);
+
+		if ($config->twigloader->exists("cart/items/$config->company/list.twig")) {
+			$html .= $config->twig->render("cart/items/$config->company/list.twig", ['cart' => $cart]);
+		} else {
+			$html .= $config->twig->render('cart/items/list.twig', ['cart' => $cart]);
+		}
+
+		if ($config->twigloader->exists("cart/lookup/$config->company/form.twig")) {
+			$html .= $config->twig->render("cart/lookup/$config->company/form.twig", ['cart' => $cart]);
+		} else {
+			$html .= $config->twig->render('cart/lookup/form.twig', ['cart' => $cart]);
+		}
+
+		$html .= $config->twig->render('cart/actions.twig');
+		return $html;
+	}
+
 /* =============================================================
 	Hooks
 ============================================================= */
@@ -143,28 +218,6 @@ class Cart extends AbstractController {
 		$m->addHook('Page(pw_template=cart)::createOrderUrl', function($event) {
 			$event->return = self::createOrderUrl();
 		});
-
-		// TODO: handle redirect on createX action
-
-		// $m->addHook('Page(pw_template=cart)::redirectUrl', function($event) {
-		// 	$p = $event->object;
-		// 	$action = $p->fullUrl->query->get('action');
-		// 	$url = $this->cartUrl();
-		//
-		// 	if (strpos($action, 'create') !== false) {
-		// 		if ($action == 'create-order' || $action == 'create-blank-order') {
-		// 			$purl = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
-		// 			$purl->path->add('new');
-		// 			$url = $purl->getUrl();
-		// 		} elseif($action == 'create-quote') {
-		// 			$purl = new Url($this->wire('pages')->get('pw_template=quote-view')->url);
-		// 			$purl->path->add('edit');
-		// 			$purl->path->add('new');
-		// 			$url = $purl->getUrl();
-		// 		}
-		// 	}
-		// 	$event->return = $url;
-		// });
 	}
 
 /* =============================================================

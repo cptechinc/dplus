@@ -1,0 +1,19 @@
+class CartRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CartRequests();
+		}
+		return this.instance;
+	}
+
+	validatePriceMargin(itemID, price, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('mso/validate/price-discount/') }}');
+
+		ajax.setData({itemID: itemID, price: price});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

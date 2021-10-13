@@ -3,7 +3,7 @@
 	<div class="row">
 		{% if user.has_function('eso') %}
 			<div class="col">
-				<a href="{{ page.create_orderURL() }}" class="btn btn-primary">
+				<a href="{{ page.createOrderUrl() }}" class="btn btn-primary">
 					<span class="fa-stack fa-md" aria-hidden="true">
 						<i class="fa fa-usd fa-stack-1x"></i>
 						<i class="fa fa-file-o fa-stack-2x"></i>
@@ -15,7 +15,7 @@
 		{% endif %}
 		{% if user.has_function('eqo') %}
 			<div class="col">
-				<a href="{{ page.create_quoteURL() }}" class="btn btn-primary">
+				<a href="{{ page.createQuoteUrl() }}" class="btn btn-primary">
 					<span class="fa-stack fa-md" aria-hidden="true">
 						<i class="fa fa-quote-left fa-stack-1x"></i>
 						<i class="fa fa-file-o fa-stack-2x"></i>
@@ -26,7 +26,7 @@
 			</div>
 		{% endif %}
 		<div class="col">
-			<a href="{{ page.empty_cartURL() }}" class="btn btn-secondary">
+			<a href="{{ page.emptyCartUrl() }}" class="btn btn-secondary">
 				<span class="fa-stack fa-md" aria-hidden="true">
 					<i class="fa fa-bars fa-stack-1x"></i>
 					<i class="fa fa-file-o fa-stack-2x"></i>

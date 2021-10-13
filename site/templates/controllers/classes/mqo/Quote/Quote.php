@@ -17,7 +17,7 @@ use Dplus\Configs;
 use Dplus\CodeValidators\Mqo as MqoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
-use Controllers\Mii\Ii;
+use Controllers\Mii\Ii\Ii;
 use Controllers\Mci\Ci\Ci;
 
 class Quote extends Base {

@@ -1,0 +1,22 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+		'inputgroup': {
+			'type': 'prepend',
+			'size': 'sm',
+			'input': {
+				'name': 'price', 'value': detail.price|number_format(cart.decimalPlacesPrice()),
+				'addclasses': [
+					'text-right',
+					'qty-input'
+				],
+				'attributes': {
+					'data-allowdiscount': item.allow_discount() ? 'Y' : 'N',
+					'data-itemid': detail.itemid,
+				}
+			},
+			'button': {
+				'colorclass': 'btn-light',
+				'text': '$'
+			}
+		}
+	}
+%}

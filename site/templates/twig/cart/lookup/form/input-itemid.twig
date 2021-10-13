@@ -1,0 +1,26 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+		'inputgroup': {
+			'type': 'prepend',
+			'input': {
+				'name': 'itemID',
+				'id': 'additemID',
+				'value': '',
+				'attributes': {
+					'placeholder': 'Item ID',
+					'aria-label':  'Item ID'
+				}
+			},
+			'button': {
+				'colorclass': 'btn-secondary',
+				'text': 'fa fa-search'|icon,
+				'attributes': {
+					'title': 'Search Items',
+					'data-toggle': 'modal',
+					'data-target': '#ajax-modal',
+					'data-lookupurl': page.search_lookupURL('items'),
+					'data-input': '#additemID'
+				}
+			}
+		}
+	}
+%}

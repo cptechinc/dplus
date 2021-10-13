@@ -1,0 +1,25 @@
+class CartConfig {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CartConfig();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			qty: {
+				precision: {{  cart.decimalPlacesQty() }}
+			},
+			price: {
+				precision: {{  cart.decimalPlacesPrice() }}
+			},
+			totalprice: {
+				precision: 2
+			}
+		}
+	}
+
+}

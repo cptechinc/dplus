@@ -1,0 +1,14 @@
+{% include 'util/bootstrap/form/input.twig' with {
+		'input': {
+			'name': 'qty', 'value': detail.qty|number_format(cart.decimalPlacesQty()),
+			'size': 'sm',
+			'addclasses': [
+				'text-right',
+				'qty-input'
+			],
+			'attributes': {
+				'data-avgweight': item.weight|number_format(cart.decimalPlacesQty())
+			}
+		}
+	}
+%}
