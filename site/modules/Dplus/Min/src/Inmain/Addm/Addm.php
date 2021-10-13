@@ -15,7 +15,7 @@ class Addm extends WireData {
 	const DESCRIPTION        = 'Add-on Item';
 	const DESCRIPTION_RECORD = 'Add-on Item';
 	const RESPONSE_TEMPLATE  = 'Item {itemID} Add-on {addonID} {not} {crud}';
-	const RECORDLOCKER_FUNCTION = 'i2i';
+	const RECORDLOCKER_FUNCTION = 'addm';
 
 	private static $instance;
 
@@ -52,7 +52,7 @@ class Addm extends WireData {
 	 */
 	public function queryAddm($itemID, $addonID) {
 		$q = $this->query();
-		$q->filterByParentitemid($itemID);
+		$q->filterByItemid($itemID);
 		$q->filterByAddonitemid($addonID);
 		return $q;
 	}

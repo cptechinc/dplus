@@ -1,0 +1,82 @@
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="itemID">Item ID</label>
+	</div>
+	<div class="col-sm-8 itemid-parent">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': xref.itemid ? true : false,
+						'tabindex': xref.itemid ? '-1' : '',
+					},
+					'input': {
+						'name': 'itemID',
+						'value': xref.itemid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID',
+							'tabindex': xref.itemid ? '-1' : '',
+							'data-itemid': xref.itemid,
+							'data-updates': 'description,description2'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#itemID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ xref.item.description }}</small>
+		<small class="form-text text-muted description2">{{ xref.item.description2 }}</small>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="addonID">Child Item ID</label>
+	</div>
+	<div class="col-sm-8 itemid-parent">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': xref.addonitemid ? true : false,
+						'tabindex': xref.addonitemid ? '-1' : '',
+					},
+					'input': {
+						'name': 'addonID',
+						'value': xref.addonitemid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID',
+							'tabindex': xref.addonitemid ? '-1' : '',
+							'data-itemid': xref.addonitemid,
+							'data-updates': 'description,description2'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#addonID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ xref.addon.description }}</small>
+		<small class="form-text text-muted description2">{{ xref.addon.description2 }}</small>
+	</div>
+</div>

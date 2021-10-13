@@ -30,9 +30,11 @@ class Addm extends AbstractController {
 		// 	return self::handleCRUD($data);
 		// }
 		//
-		// if (empty($data->parentID) === false) {
-		// 	return self::xref($data);
-		// }
+		if (empty($data->itemID) === false) {
+			if (empty($data->addonID) === false) {
+				return self::xref($data);
+			}
+		}
 		return self::list($data);
 	}
 
@@ -65,6 +67,28 @@ class Addm extends AbstractController {
 		return $html;
 	}
 
+	public static function xref($data) {
+		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$addm = self::getAddm();
+
+		$xref = $addm->getOrCreate($data->itemID, $data->addonID);
+
+		self::pw('page')->headline = "ADDM: $data->itemID Add-on $data->addonID";
+
+		if ($addm->exists($data->itemID, $data->addonID) === false) {
+			self::pw('page')->headline = "ADDM: $data->itemID Creating Add-on";
+		}
+
+		if ($xref->isNew() === false) {
+			if ($addm->recordlocker->isLocked($addm->getRecordlockerKey($xref)) === false) {
+				$addm->recordlocker->lock($addm->getRecordlockerKey($xref));
+			}
+		}
+		// self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/xref/form/.js.twig');
+		return self::displayXref($data, $xref);
+	}
+
 /* =============================================================
 	Display Functions
 ============================================================= */
@@ -77,11 +101,29 @@ class Addm extends AbstractController {
 		return $html;
 	}
 
+	private static function displayXref($data, ItemAddonItem $xref) {
+		$addm   = self::getAddm();
+		$config = self::pw('config');
+
+		$html  = '';
+		$html .= $config->twig->render('min/inmain/addm/xref/display.twig', ['addm' => $addm, 'xref' => $xref]);
+		return $html;
+	}
+
 /* =============================================================
 	URL Functions
 ============================================================= */
 	public static function addmUrl() {
 		return self::pw('pages')->get('pw_template=addm')->url;
+	}
+
+	public static function xrefListUrl($focus = '') {
+		if (empty($focus)) {
+			return self::addmUrl();
+		}
+		$url = new Purl(self::addmUrl());
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
 	}
 
 	public static function xrefUrl($itemID, $addonID) {
@@ -131,11 +173,10 @@ class Addm extends AbstractController {
 			$event->return = self::xrefNewUrl();
 		});
 
-		//
-		// $m->addHook('Page(pw_template=addm)::xrefListUrl', function($event) {
-		// 	$event->return = self::xrefListUrl($event->arguments(0));
-		// });
-		//
+		$m->addHook('Page(pw_template=addm)::xrefListUrl', function($event) {
+			$event->return = self::xrefListUrl($event->arguments(0));
+		});
+
 		// $m->addHook('Page(pw_template=addm)::xrefListFocusUrl', function($event) {
 		// 	$event->return = self::xrefListFocusUrl($event->arguments(0), $event->arguments(1));
 		// });
