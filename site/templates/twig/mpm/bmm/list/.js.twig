@@ -1,0 +1,54 @@
+$(function() {
+	var modalAjax = $('#ajax-modal');
+	var uri = URI();
+	var queryData = uri.search(true);
+
+	if (queryData.focus) {
+		$('tr[data-bomid="'+ queryData.focus +'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('[data-bomid="' + queryData.focus + '"]').offset().top,},700,'linear');
+	}
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modalAjax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var url    = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var modal = button.closest('.modal');
+		var uri   = URI();
+		uri.setQuery('bomID', itemID);
+		window.location.href = uri.toString();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form   = $(this);
+		var query  = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url    = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var href   = $(this).attr('href');
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(href);
+	});
+});

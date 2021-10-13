@@ -9,11 +9,11 @@ use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 use Controllers\Mpm\Base;
 
 class Menu extends Base {
-	const DPLUSPERMISSION = '';
+	const DPLUSPERMISSION = 'mpm';
 	const SUBFUNCTIONS = [
 		'pmmain' => [
 			'name'       => 'pmmain',
-			'permission' => '', // TOOD
+			'permission' => 'pmmain',
 			'title'      => 'Maintenance',
 			'summary'    => ' Production Management Maintenance'
 		]
@@ -34,12 +34,20 @@ class Menu extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function mpmUrl() {
+		return self::pw('pages')->get('pw_template=mpm')->url;
+	}
+
 	public static function subfunctionUrl($key) {
-		$url = new Purl(self::pw('pages')->get('pw_template=mpm')->url);
+		$url = new Purl(self::mpmUrl());
 		if (array_key_exists($key, self::SUBFUNCTIONS)) {
 			$url->path->add($key);
 		}
 		return $url->getUrl();
+	}
+
+	public static function pmmainUrl() {
+		return self::subfunctionUrl('pmmain');
 	}
 
 /* =============================================================
@@ -52,7 +60,7 @@ class Menu extends Base {
 				$functions[$key] = $function;
 			}
 		}
-		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
+		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================
@@ -63,6 +71,14 @@ class Menu extends Base {
 
 		$m->addHook('Page(pw_template=mpm)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::mpmUrl', function($event) {
+			$event->return = self::mpmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::pmmainUrl', function($event) {
+			$event->return = self::pmmainUrl($event->arguments(0));
 		});
 	}
 }

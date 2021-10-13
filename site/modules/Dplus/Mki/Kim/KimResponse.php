@@ -1,8 +1,8 @@
 <?php namespace ProcessWire;
 
 /**
- * ItmResponse
- * Handles Response Data for Itm functions
+ * KimResponse
+ * Handles Response Data for Kim functions
  *
  * @author Paul Gomez
  *
@@ -85,7 +85,7 @@ class KimResponse extends WireData {
 	}
 
 	public static function response_error($kitID, $message) {
-		$response = new ItmResponse();
+		$response = new KimResponse();
 		$response->kitID = $kitID;
 		$response->message = $message;
 		$response->set_error(true);
@@ -94,7 +94,7 @@ class KimResponse extends WireData {
 	}
 
 	public static function response_success($kitID, $message) {
-		$response = new ItmResponse();
+		$response = new KimResponse();
 		$response->kitID = $kitID;
 		$response->message = $message;
 		$response->set_error(false);

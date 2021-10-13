@@ -14,7 +14,7 @@ class Header extends WireData {
 	const MODEL_KEY          = 'itemid';
 	const DESCRIPTION        = 'BoM Header';
 	const DESCRIPTION_RECORD = 'BoM Header';
-	const RESPONSE_TEMPLATE  = 'BoM {itemid} {not} {crud}';
+	const RESPONSE_TEMPLATE  = 'BoM {bomID} {not} {crud}';
 
 	public function __construct() {
 		$this->sessionID = session_id();
@@ -100,6 +100,12 @@ class Header extends WireData {
 		return $bom;
 	}
 
+	/**
+	 * Create Header
+	 * @param  string $itemID Item ID
+	 * @param  int    $level  BoM Level
+	 * @return Response
+	 */
 	public function createHeader($itemID, $level = 1) {
 		$bom = $this->new($itemID, $level);
 		$bom->setDate(date('Ymd'));
@@ -108,6 +114,23 @@ class Header extends WireData {
 		return $response->hasSuccess();
 	}
 
+/* =============================================================
+	CRUD Create
+============================================================= */
+	/**
+	 * Create Header
+	 * @param  string $itemID Item ID
+	 * @param  int    $level  BoM Level
+	 * @return Response
+	 */
+	public function deleteHeader($itemID, $level = 1) {
+		if ($this->exists($itemID) === false) {
+			return Response::responseSuccess($itemID, "BoM $item ID was deleted");
+		}
+		$bom = $this->header($itemID, $level);
+		$bom->delete();
+		return $this->saveAndRespond($bom);
+	}
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */

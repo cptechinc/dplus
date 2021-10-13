@@ -10,6 +10,7 @@
 			['GET',  '', Mpm\Pmmain\Menu::class, 'index'],
 			'bmm' => [
 				['GET',  '', Mpm\Pmmain\Bmm::class, 'index'],
+				['GET',  'page{d:\d+}', Mpm\Pmmain\Bmm::class, 'index'],
 				['POST', '', Mpm\Pmmain\Bmm::class, 'handleCRUD'],
 			]
 		]
@@ -20,7 +21,7 @@
 	$page->body = $router->route();
 
 	if ($router->hasError() === false) {
-		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+		$config->scripts->append($modules->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
 		$page->show_breadcrumbs = false;
 	}
 	include __DIR__ . "/basic-page.php";

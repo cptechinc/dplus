@@ -217,6 +217,10 @@ class Components extends WireData {
 		$component = $this->component($values->text('bomID'), $values->text('component'));
 		$component->delete();
 		$response = $this->saveAndRespond($component);
+
+		if ($this->hasComponents($values->text('bomID')) === false) {
+			$response = $bmmHeader->deleteHeader($values->text('bomID'));
+		}
 		Bmm::setResponse($response);
 		return $response->hasSuccess();
 	}

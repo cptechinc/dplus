@@ -73,7 +73,7 @@ abstract class Base extends AbstractController {
 
 		$methodName = strtoupper($handler);
 		if (method_exists($class, $methodName) === false) {
-			throw new Exception("Class Method $class::$methodName does not exist");
+			throw new \Exception("Class Method $class::$methodName does not exist");
 		}
 		return $class::$methodName();
 	}

@@ -1,0 +1,45 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	bmm                    Dplus\Mpm\Pmmain\Bmm
+	bomItem                BomItem
+#}
+{% set response = bmm.getResponse() %}
+
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white p-3">
+			<th>Component</th>
+			<th>Description</th>
+			<th class="text-right">Usage Rate</th>
+			<th class="text-center">
+				{% block add_button %}
+					{% include 'mpm/bmm/bom/components/links-add.twig' %}
+				{% endblock %}
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for component in bomItem.getComponents() %}
+			{% set class = component.itemid == input.get.text('focus') ? 'highlight' : '' %}
+			{% set class = (response.hasSuccess() and response.key == [component.produces, component.itemid]|join(bmm.recordlocker.glue())) ? 'bg-success text-white' : class %}
+
+			<tr class="{{ class }}">
+				<td>{{ component.itemid }}</td>
+				<td>
+					{{ component.item.description }} <br>
+					{{ component.item.description2 }}
+				</td>
+				<td class="text-right">
+					{{ component.qty }}
+				</td>
+				<td class="text-center">
+					{% block crud_links %}
+						{% include 'mpm/bmm/bom/components/links-edit.twig' %}
+					{% endblock %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
