@@ -33,9 +33,9 @@ class AddonItem extends AbstractFilter {
 	Misc Query Functions
 ============================================================= */
 	/**
-	 * Return if ItemAddonItem Exists
+	 * Return if Item2Item Exists
 	 * @param  string $itemID   Item ID
-	 * @param  string $addonID  Addon Item ID ID
+	 * @param  string $addonID  Add-on Item ID
 	 * @return bool
 	 */
 	public function exists($itemID, $addonID) {
@@ -47,8 +47,8 @@ class AddonItem extends AbstractFilter {
 
 	/**
 	 * Return Position of Item in results
-	 * @param  Model|string $itemID   Parent Item ID
-	 * @param  string       $addonID  Addon Item ID ID
+	 * @param  Model|string $itemID   Item ID
+	 * @param  string       $addonID  Add-on Item ID
 	 * @return int
 	 */
 	public function positionQuick($itemID, $addonID = '') {
