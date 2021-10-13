@@ -73,6 +73,7 @@ return array(
     'Controllers\\Mii\\Loti\\Activity' => $baseDir . '/classes/mii/Loti/Activity.php',
     'Controllers\\Mii\\Loti\\Base' => $baseDir . '/classes/mii/Loti/Base.php',
     'Controllers\\Mii\\Loti\\Loti' => $baseDir . '/classes/mii/Loti/Loti.php',
+    'Controllers\\Min\\Inmain\\Addm' => $baseDir . '/classes/min/inmain/Addm.php',
     'Controllers\\Min\\Inmain\\I2i' => $baseDir . '/classes/min/inmain/I2i.php',
     'Controllers\\Min\\Inproc\\Base' => $baseDir . '/classes/min/inproc/Base.php',
     'Controllers\\Min\\Inproc\\Iarn' => $baseDir . '/classes/min/inproc/Iarn.php',
