@@ -86,7 +86,7 @@ class I2i extends AbstractController {
 	public static function xref($data) {
 		$fields = ['parentID|text', 'childID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$i2i = self::geti2i();
+		$i2i = self::getI2i();
 
 		$xref = $i2i->getOrCreate($data->parentID, $data->childID);
 
