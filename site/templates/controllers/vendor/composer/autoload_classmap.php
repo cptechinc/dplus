@@ -140,6 +140,7 @@ return array(
     'Controllers\\Routers\\Base' => $baseDir . '/classes/routers/Base.php',
     'Controllers\\Routers\\Factory' => $baseDir . '/classes/routers/Factory.php',
     'Controllers\\Routers\\Min' => $baseDir . '/classes/routers/Min.php',
+    'Controllers\\Routers\\Mpm' => $baseDir . '/classes/routers/Mpm.php',
     'Controllers\\Routers\\Mpo' => $baseDir . '/classes/routers/Mpo.php',
     'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',

@@ -3,180 +3,206 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
+// Dplus Models
+use BomItem;
+use BomComponent;
+// Dplus Filters
+use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Mpm\Pmmain\Bmm as BmmManager;
 // Mvc Controllers
 use Controllers\Mpm\Base;
 
 class Bmm extends Base {
+	const DPLUSPERMISSION = 'bmm';
 	private static $bmm;
 
 /* =============================================================
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
-		// if (empty($data->action) === false) {
-		// 	return self::handleCRUD($data);
-		// }
-		//
-		// if (empty($data->itemID) === false) {
-		// 	return self::itm($data);
-		// }
-		// return self::list($data);
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
+
+		if (empty($data->bomID) === false) {
+			if (empty($data->component) === false) {
+				return self::component($data);
+			}
+			return self::bom($data);
+		}
+		return self::list($data);
 	}
 
 	public static function handleCRUD($data) {
-		$input = self::pw('input');
-
-		if (self::validateUserPermission() === false) {
-			self::pw('session')->redirect($input->url(), $http301 = false);
-		}
-
-		$fields = ['itemID|text', 'action|text'];
-		$data  = self::sanitizeParametersShort($data, $fields);
-		$url   = new Purl($input->url($withQueryString = true));
-		$url->query->set('itemID', $data->itemID);
-		$url->query->remove('action');
+		$fields = ['bomID|text', 'component|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$url  = self::bomUrl($data->bomID);
+		$bmm  = self::getBmm();
 
 		if ($data->action) {
-			$itm  = self::getItm();
-			$itm->process_input($input);
-
-			if ($data->action == 'delete-itm') {
-				$response = self::pw('session')->getFor('response', 'itm');
-				if ($response->has_success()) {
-					$url->query->remove('itemID');
-				}
-			}
+			$bmm->processInput(self::pw('input'));
 		}
-		self::pw('session')->redirect($url->getUrl(), $http301 = false);
+
+		if ($bmm->components->hasComponents($data->bomID) === false) {
+			$url = self::bmmUrl();
+		}
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
-	//
-	// private static function itm($data) {
-	// 	$page   = self::pw('page');
-	// 	$validate = new MinValidator();
-	//
-	// 	if ($data->itemID === 'new') {
-	// 		$page->headline = 'ITM: Creating new Item';
-	// 	}
-	//
-	// 	if ($validate->itemid($data->itemID)) {
-	// 		$page->headline = "ITM: $data->itemID";
-	// 	}
-	//
-	// 	if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
-	// 		return self::list($data);
-	// 	}
-	// 	$item = self::getItm()->getCreateItem($data->itemID);
-	// 	$page->js .= self::pw('config')->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => self::getItm()]);
-	//
-	// 	return self::displayItem($data, $item);
-	// }
-	//
-	// private static function list($data) {
-	// 	$fields = ['itemID|text', 'q|text'];
-	// 	$data   = self::sanitizeParametersShort($data, $fields);
-	// 	$page     = self::pw('page');
-	// 	$validate = new MinValidator();
-	//
-	// 	if ($validate->itemid($data->q)) {
-	// 		self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
-	// 	}
-	//
-	// 	$filter = new ItemMasterFilter();
-	// 	if (empty($data->q) === false) {
-	// 		$filter->search($data->q);
-	// 		self::pw('page')->headline = "ITM: Searching for '$data->q'";
-	// 	}
-	//
-	// 	$filter->sortby($page);
-	// 	$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
-	//
-	// 	$page->js = self::pw('config')->twig->render('items/item-list.js.twig');
-	// 	return self::displayList($data, $items);
-	// }
+	private static function bom($data) {
+		$bmm  = self::getBmm();
+		$page = self::pw('page');
+		$page->headline = "BMM: $data->bomID";
+
+		if ($data->bomID === 'new') {
+			$page->headline = 'BMM: Creating new Bill of Material';
+		}
+		$bmm->lockrecord($data->bomID);
+		$bom = $bmm->header->getOrCreate($data->bomID);
+		self::initHooks();
+		$html = self::displayBom($data, $bom);
+		$bmm::deleteResponse();
+		return $html;
+	}
+
+	private static function component($data) {
+		$bmm  = self::getBmm();
+		$page = self::pw('page');
+		$page->headline = "BMM: $data->bomID Component $data->component";
+
+		if ($data->component == 'new') {
+			$page->headline = "BMM: $data->bomID Add Component";
+		}
+		$bmm->lockrecord($data->bomID);
+		$bom = $bmm->header->getOrCreate($data->bomID);
+		$component = $bmm->components->getOrCreate($data->bomID, $data->component);
+		self::initHooks();
+		$page->js .= self::pw('config')->twig->render('mpm/bmm/component/js.twig', ['bmm' => $bmm]);
+		$html = self::displayComponent($data, $bom, $component);
+		$bmm::deleteResponse();
+		return $html;
+	}
+
+	private static function list($data) {
+		$fields = ['itemID|text', 'q|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$page   = self::pw('page');
+		$filter = new Filters\Mpm\Bom\Header();
+
+		$page->headline = "Bill-of-Material Master";
+
+		if ($filter->exists($data->q)) {
+			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
+		}
+
+		if (empty($data->q) === false) {
+			$filter->search($data->q);
+			$page->headline = "BMM: Searching for '$data->q'";
+		}
+
+		$filter->sortby($page);
+		$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		self::initHooks();
+
+		$page->js .= self::pw('config')->twig->render('mpm/bmm/list/.js.twig');
+		$html = self::displayList($data, $items);
+		self::getBmm()::deleteResponse();
+		return $html;
+	}
 
 /* =============================================================
 	URLs
 ============================================================= */
-	// public static function itmUrl($itemID = '') {
-	// 	$url = new Purl(self::pw('pages')->get('pw_template=itm')->url);
-	// 	if ($itemID) {
-	// 		$url->query->set('itemID', $itemID);
-	// 	}
-	// 	return $url->getUrl();
-	// }
-	//
-	// public static function itmDeleteUrl($itemID) {
-	// 	$url = new Purl(self::itmUrl($itemID));
-	// 	$url->query->set('action', 'delete-itm');
-	// 	return $url->getUrl();
-	// }
+	public static function bmmUrl($itemID = '') {
+		if (empty($itemID)) {
+			return Menu::bmmUrl();
+		}
+		return self::bmmFocusUrl($itemID);
+	}
+
+	public static function bmmFocusUrl($focus) {
+		$filter = new Filters\Mpm\Bom\Header();
+		if ($filter->exists($focus) === false) {
+			return Menu::bmmUrl();
+		}
+		$position = $filter->positionQuick($focus);
+		$pagenbr = self::getPagenbrFromOffset($position);
+
+		$url = new Purl(Menu::bmmUrl());
+		$url->query->set('focus', $focus);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'bmm', $pagenbr);
+		return $url->getUrl();
+	}
+
+	public static function bomUrl($itemID) {
+		$url = new Purl(Menu::bmmUrl());
+		if ($itemID) {
+			$url->query->set('bomID', $itemID);
+		}
+		return $url->getUrl();
+	}
+
+	public static function bomFocusUrl($itemID, $focus) {
+		$url = new Purl(self::bomUrl($itemID));
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
+		return $url->getUrl();
+	}
+
+	public static function bomComponentUrl($itemID, $componentID = '') {
+		$url = new Purl(self::bomUrl($itemID));
+		if ($componentID) {
+			$url->query->set('component', $componentID);
+		}
+		return $url->getUrl();
+	}
+
+	public static function bomComponentDeleteUrl($itemID, $componentID) {
+		$url = new Purl(self::bomComponentUrl($itemID, $componentID));
+		$url->query->set('action', 'delete-component');
+		return $url->getUrl();
+	}
 
 /* =============================================================
 	Displays
 ============================================================= */
-	// private static function displayList($data, PropelModelPager $items) {
-	// 	$config     = self::pw('config');
-	// 	$validate   = new MinValidator();
-	// 	$htmlwriter = self::pw('modules')->get('HtmlWriter');
-	// 	$html   = $config->twig->render('items/itm/bread-crumbs.twig');
-	//
-	// 	if (self::pw('session')->getFor('response', 'itm')) {
-	// 		$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
-	// 	}
-	// 	if (empty($data->itemID) === false && $validate->itemid($data->itemID) === false) {
-	// 		$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
-	// 		$html .= $htmlwriter->div('class=mb-3');
-	// 	}
-	// 	$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
-	// 	$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
-	// 	return $html;
-	// }
-	//
-	// private static function displayItem($data, ItemMasterItem $item) {
-	// 	$session = self::pw('session');
-	// 	$config  = self::pw('config');
-	// 	$itm     = self::getItm();
-	// 	$html =  '';
-	// 	$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-	//
-	// 	if ($itm->getResponse()) {
-	// 		$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
-	// 	}
-	//
-	// 	if ($session->response_qnote) {
-	// 		$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
-	// 		$session->remove('response_qnote');
-	// 	}
-	//
-	// 	$html .= self::lockItem($data->itemID);
-	// 	$html .= $config->twig->render('items/itm/itm-links.twig');
-	// 	$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'qnotes' => self::pw('modules')->get('QnotesItem')]);
-	// 	if ($item->isNew() === false && $itm->recordlocker->userHasLocked($data->itemID)) {
-	// 		$html .= self::displayQnotes($data);
-	// 	}
-	// 	$itm->deleteResponse();
-	// 	return $html;
-	// }
-	//
-	// private static function displayQnotes($data) {
-	// 	$fields = ['itemID|text'];
-	// 	$data   = self::sanitizeParametersShort($data, $fields);
-	// 	$qnotes = self::pw('modules')->get('QnotesItem');
-	// 	$config = self::pw('config');
-	// 	$item   = self::getItm()->item($data->itemID);
-	// 	$html   = $config->twig->render('items/itm/notes/notes.twig', ['item' => $item, 'qnotes' => $qnotes]);
-	// 	self::pw('page')->js .= $config->twig->render("items/itm/notes/js.twig", ['item' => $item, 'qnotes' => $qnotes]);
-	// 	self::pw('session')->remove('qnotes_itm');
-	// 	return $html;
-	// }
-	//
+	private static function displayList($data, PropelModelPager $items) {
+		$config = self::pw('config');
+
+		$html  = '';
+		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
+		$html .= self::displayResponse($data);
+		$html .= self::displayLock($data);
+		$html .= $config->twig->render('mpm/bmm/list/list.twig', ['items' => $items, 'bmm' => self::getBmm()]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
+		return $html;
+	}
+
+	private static function displayBom($data, BomItem $bom) {
+		$config  = self::pw('config');
+		$html =  '';
+		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
+		$html .= self::displayResponse($data);
+		$html .= self::displayLock($data);
+		$html .= $config->twig->render('mpm/bmm/bom/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom]);
+		return $html;
+	}
+
+	private static function displayComponent($data, BomItem $bom, BomComponent $component) {
+		$config  = self::pw('config');
+		$html =  '';
+		$html .= $config->twig->render('mpm/bmm/bread-crumbs.twig');
+		$html .= self::displayResponse($data);
+		$html .= self::displayLock($data);
+		$html .= $config->twig->render('mpm/bmm/component/display.twig', ['bmm' => self::getBmm(), 'bomItem' => $bom, 'component' => $component]);
+		return $html;
+	}
 
 	public static function displayLock($data) {
 		$fields = ['bomID|text'];
@@ -209,11 +235,27 @@ class Bmm extends Base {
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMin');
+		$m = self::pw('modules')->get('DpagesMpm');
 
-		// $m->addHook('Page(pw_template=itm)::itmDeleteUrl', function($event) {
-		// 	$event->return = self::itmDeleteUrl($event->arguments(0));
-		// });
+		$m->addHook('Page(pw_template=mpm)::bmmUrl', function($event) {
+			$event->return = self::bmmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::bomUrl', function($event) {
+			$event->return = self::bomUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::bomComponentUrl', function($event) {
+			$event->return = self::bomComponentUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::bomComponentDeleteUrl', function($event) {
+			$event->return = self::bomComponentDeleteUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::bomComponentExitUrl', function($event) {
+			$event->return = self::bomFocusUrl($event->arguments(0), $event->arguments(1));
+		});
 	}
 
 /* =============================================================

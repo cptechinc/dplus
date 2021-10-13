@@ -1,0 +1,67 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	items                  ItemXrefCxm[]|ObjectCollection
+#}
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white p-3">
+			<th class="pt-3 pb-3 align-middle">
+				<a href="{{ page.get_sortURL('itemid') }}" class="link"> Item ID
+					{% if page.orderby_column == 'itemid' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th class="pt-3 pb-3 align-middle">Description</th>
+			<th class="pt-3 pb-3 align-middle">Level</th>
+			<th class="pt-3 pb-3 align-middle">Number of Components</th>
+			<th class="pt-3 pb-3 align-middle">
+				{% include 'util/bootstrap/html/button.twig' with {
+						'button': {
+							'colorclass': 'btn-light',
+							'text': 'fa fa-plus'|icon ~ ' Items',
+							'size': 'sm',
+							'attributes': {
+								'title': 'Search Items',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('items')
+							}
+						}
+					}
+				%}
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for bom in items %}
+			<tr data-bomid="{{ bom.itemid }}">
+				<td>
+					{{ bom.itemid }}
+				</td>
+				<td>
+					<small>{{ bom.item.description }}</small> <br>
+					<small>{{ bom.item.description2 }}</small>
+				</td>
+				<td>{{ bom.level }}</td>
+				<td>{{ bom.countComponents() }}</td>
+				<td>
+					{% if bmm.recordlocker.isLocked(bom.itemid) == false or bmm.recordlocker.userHasLocked(bom.itemid) %}
+						<a href="{{ page.bomUrl(bom.itemid) }}" class="btn btn-sm btn-warning">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</a>
+						&nbsp;
+					{% else %}
+						<span class="badge badge-secondary">
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ bmm.recordlocker.getLockingUser(bom.itemid) }}
+						</span>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
