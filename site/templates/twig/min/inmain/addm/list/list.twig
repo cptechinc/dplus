@@ -36,10 +36,6 @@
 					</td>
 					<td>
 						{% if addm.recordlocker.isLocked(addm.getRecordlockerKey(xref)) == false or addm.recordlocker.userHasLocked(addm.getRecordlockerKey(xref)) %}
-							<a href="{{ page.xrefUrl(xref.itemid, xref.addonitemid) }}" class="btn btn-warning btn-sm">
-								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-							</a>
-							&nbsp; &nbsp;
 							<a href="{{ page.xrefDeleteUrl(xref.itemid, xref.addonitemid) }}" class="btn btn-danger btn-sm delete_button" data-delete="Item to Item {{ addm.getRecordlockerKey(xref) }}">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
