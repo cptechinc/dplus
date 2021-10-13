@@ -85,7 +85,7 @@ class Addm extends AbstractController {
 				$addm->recordlocker->lock($addm->getRecordlockerKey($xref));
 			}
 		}
-		// self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/xref/form/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inmain/addm/xref/form/js.twig');
 		return self::displayXref($data, $xref);
 	}
 
