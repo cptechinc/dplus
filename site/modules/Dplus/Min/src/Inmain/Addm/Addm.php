@@ -113,7 +113,7 @@ class Addm extends WireData {
 		if ($itemID && strtolower($itemID) != 'new') {
 			$r->setItemid($itemID);
 		}
-		if ($addonID) {
+		if ($addonID && strtolower($addonID) != 'new') {
 			$r->setAddonitemid($addonID);
 		}
 		$r->setDummy('P');
