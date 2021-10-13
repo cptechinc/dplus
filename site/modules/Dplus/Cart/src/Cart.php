@@ -263,14 +263,16 @@ class Cart extends WireData {
 		$values  = $input->$rm;
 		$linenbr = $values->int('linenbr');
 		$item    = $this->items->getItemByLine($linenbr);
+
 		if (empty($item)) {
 			return false;
 		}
 		$item->setQty(0);
 		$saved = $item->save();
 
+		$this->requestDeleteItem($linenbr);
+
 		if ($saved) {
-			$this->requestDeleteItem($linenbr);
 			return true;
 		} else {
 			return false;
@@ -400,7 +402,7 @@ class Cart extends WireData {
 	 * Request Item Delete
 	 * @param int    $linenbr  Line Number
 	 */
-	private function requestDelete($linenbr = 1) {
+	private function requestDeleteItem($linenbr = 1) {
 		$data = ['CARTDET', "LINENO=$linenbr", 'QTY=0'];
 		$this->requestDplus($data);
 	}
