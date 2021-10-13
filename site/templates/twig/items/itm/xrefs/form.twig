@@ -9,7 +9,7 @@
 	item                   ItemMasterItem
 	recordlocker           module RecordLockerUser
 #}
-<form action="{{ page.wire('input').url() }}" method="POST" id="itm-xrefs-form">
+<form action="{{ input.url() }}" method="POST" id="itm-xrefs-form">
 	<input type="hidden" name="action" value="update-itm-xrefs">
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
 
@@ -27,7 +27,8 @@
 							'attributes': {
 								'placeholder': '',
 								'aria-label':  'Short Item ID',
-								'autocomplete': 'off'
+								'autocomplete': 'off',
+								'data-original': xrefs.cxm.xref_shortitem_exists(item.itemid) ? xrefs.cxm.xref_shortitem(item.itemid).custitemid : ''
 							}
 						}
 					}

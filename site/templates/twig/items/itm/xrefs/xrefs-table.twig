@@ -9,10 +9,7 @@
 			<a href="{{ page.xrefUrlUpcx(item.itemid) }}" class="link">UPC X-Refs</a>
 		</td>
 		<td>
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="xref-upcx-count" {{ item.countItemXrefUpcs() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="customCheck1" >{{ item.countItemXrefUpcs() }} Records</label>
-			</div>
+			{{ item.countItemXrefUpcs() }} Records
 		</td>
 	</tr>
 	<tr>
@@ -20,10 +17,7 @@
 			<a href="{{ page.xrefUrlVxm(item.itemid) }}" class="link">Vendor X-Refs</a>
 		</td>
 		<td>
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="xref-vendor-count" {{ item.countItemXrefVendors() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="customCheck1" >{{ item.countItemXrefVendors() }} Records</label>
-			</div>
+			{{ item.countItemXrefVendors() }} Records
 		</td>
 	</tr>
 	<tr>
@@ -31,10 +25,7 @@
 			<a href="{{ page.xrefUrlCxm(item.itemid) }}" class="link">Customer X-Refs</a>
 		</td>
 		<td>
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="xref-customer-count" {{ item.countItemXrefCustomers() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="customCheck1" >{{ item.countItemXrefCustomers() }} Records</label>
-			</div>
+			{{ item.countItemXrefCustomers() }} Records
 		</td>
 	</tr>
 	<tr>
@@ -42,10 +33,7 @@
 			<a href="{{ page.xrefUrlBom(item.itemid) }}" class="link">Bill-of-Material</a>
 		</td>
 		<td>
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="is-bom" {{ item.countBomSubComponents() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="is-bom">{{ item.countBomSubComponents() }} Components</label>
-			</div>
+			{{ item.countBomSubComponents() ? 1 : 0 }} Records
 		</td>
 	</tr>
 	<tr>
@@ -53,10 +41,7 @@
 			<a href="{{ page.xrefUrlKim(item.itemid) }}" class="link">Kit</a>
 		</td>
 		<td>
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="is-kit" {{ item.is_kit() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="is-kit">{{ item.countKitcomponents() }} Components</label>
-			</div>
+			{{ item.countKitcomponents() ? 1 : 0  }} Records
 		</td>
 	</tr>
 	<tr>
@@ -64,10 +49,7 @@
 			<a href="{{ page.xrefUrlSubstitutes(item.itemid) }}" class="link">Substitute Items</a>
 		</td>
 		<td>
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="substitutes" {{ item.has_substitutes() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="customCheck1" >{{ item.count_substitutes() }} Records</label>
-			</div>
+			{{ item.count_substitutes() }} Records
 		</td>
 	</tr>
 	<tr>
@@ -75,19 +57,13 @@
 			<a href="{{ page.xrefUrlMxrfe(item.itemid) }}" class="link">Mnfr / Competitor</a>
 		</td>
 		<td>
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="mfr" {{ item.countItemXrefManufacturers() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="customCheck1" >{{ item.countItemXrefManufacturers() }} Records</label>
-			</div>
+			{{ item.countItemXrefManufacturers() }} Records
 		</td>
 	</tr>
 	<tr>
 		<td>Add-On Items</td>
 		<td>
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input" id="addons" {{ item.has_addonitems() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="customCheck1" >{{ item.count_addonitems() }} Records</label>
-			</div>
+			{{ item.count_addonitems() }} Records
 		</td>
 	</tr>
 </table>

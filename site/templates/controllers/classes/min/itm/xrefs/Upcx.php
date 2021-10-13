@@ -39,7 +39,6 @@ class Upcx extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
@@ -70,7 +69,7 @@ class Upcx extends Base {
 
 		$configs = new WireData();
 		$configs->in = Configs\In::config();
-		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
+		$page->js .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
 		$html = self::displayXref($data, $xref);
 		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
@@ -100,13 +99,14 @@ class Upcx extends Base {
 	Displays
 ============================================================= */
 	private static function displayXref($data, ItemXrefUpc $xref)  {
-		$itm    = self::getItm();
+		$itm  = self::getItm();
 		$item = $itm->get_item($data->itemID);
 
 		$html = '';
 		$html .= self::upcxHeaders();
+		$html .= self::lockItem($data->itemID);
 		$html .= UpcxController::lockXref($xref);
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/upcx/form/display.twig', ['upcx' => UpcxController::getUpcx(), 'upc' => $xref, 'item' => $item]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/upcx/form/display.twig', ['upcx' => UpcxController::getUpcx(), 'upc' => $xref, 'item' => $item, 'itm' => $itm]);
 		return $html;
 	}
 
@@ -124,12 +124,13 @@ class Upcx extends Base {
 	}
 
 	private static function displayList($data, $xrefs) {
-		$itm     = self::getItm();
+		$itm  = self::getItm();
 		$item = $itm->get_item($data->itemID);
 
 		$html = '';
 		$html .= self::upcxHeaders();
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/upcx/list/display.twig', ['upcs' => $xrefs, 'item' => $item, 'upcx' => UpcxController::getUpcx()]);
+		$html .= self::lockItem($data->itemID);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/upcx/list/display.twig', ['upcs' => $xrefs, 'item' => $item, 'upcx' => UpcxController::getUpcx(), 'itm' => $itm]);
 		return $html;
 	}
 

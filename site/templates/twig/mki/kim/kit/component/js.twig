@@ -79,7 +79,7 @@ $(function() {
 			},
 			{% if kim.configs.kt.usageorfreeusage() %}
 				usagetag: {
-					required: true,
+					required: false,
 					usagetag: true
 				}
 			{% else %}
@@ -104,6 +104,9 @@ $(function() {
 
 	function validate_usagetag(val) {
 		var options = {{ kim.component.options_component_usagetag()|json_encode()|raw }};
+		if (val == '') {
+			return true;
+		}
 		return options.hasOwnProperty(val);
 	}
 
@@ -170,9 +173,10 @@ $(function() {
 	$("body").on('click', '.item-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
+		var modal  = button.closest('.modal');
 		var itemID = button.data('itemid');
 		input_component.val(itemID).change();
-		modal_ajax.modal('hide');
+		modal.modal('hide');
 	});
 
 /* =============================================================

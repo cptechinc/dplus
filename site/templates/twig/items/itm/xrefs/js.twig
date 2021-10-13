@@ -31,7 +31,12 @@ $(function() {
 		server.validateShortItemAvailable(formXrefs.inputs.itemid.val(), input.val(), function(isAvailable) {
 			if (isAvailable === false) {
 				alert.shortItemidExists(inputs.itemid.val(), inputs.shortitemid.val(), function(overwrite) {
+					console.log(overwrite);
 					inputs.overwriteshort.val(overwrite ? 'true' : 'false');
+					if (overwrite === false) {
+						console.log(inputs.shortitemid.data('original'));
+						inputs.shortitemid.val(inputs.shortitemid.data('original')).change();
+					}
 				});
 			}
 		});
@@ -159,7 +164,7 @@ $(function() {
 				form.submit();
 				return true;
 			}
-			
+
 			if (inputs.overwriteshort.val() == 'false') {
 				server.validateShortItemAvailable(inputs.itemid.val(), inputs.shortitemid.val(), function(isAvailable) {
 					if (isAvailable === false) {

@@ -1,16 +1,3 @@
-<div class="row">
-	<div class="col-sm-6">
-		<h3>
-			{{ upcs.getNbResults() }} UPCs for {{ itemID }}
-		</h3>
-	</div>
-	<div class="col-sm-6 text-right">
-		<a href="{{ page.upcCreateUrl() }}" class="btn btn-secondary btn-sm">
-			<i class="fa fa-plus" aria-hidden="true"></i> Add UPC
-		</a>
-	</div>
-</div>
-
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white">
@@ -37,7 +24,13 @@
 				</a>
 			</th>
 			<th class="pt-3 pb-3">Label</th>
-			<th class="pt-3 pb-3 text-center"></th>
+			<th class="pt-3 pb-3 text-center">
+				{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+					<a href="{{ page.upcCreateUrl() }}" class="btn btn-light btn-sm">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					</a>
+				{% endif %}
+			</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -56,18 +49,20 @@
 				<td>{{ upc.is_mastercase()|yesorno|capitalize }}</td>
 				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
 				<td class="text-center">
-					{% if upcx.recordlocker.isLocked(upcx.getRecordlockerKey(upc)) == false or upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(upc)) %}
-						<a href="{{ page.upcUrl(upc.upc, upc.itemid) }}" class="btn btn-warning btn-sm">
-							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-						</a>
-						&nbsp; &nbsp;
-						<a href="{{ page.upcDeleteUrl(upc.upc, upc.itemid)}}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ upc.upc }}">
-							<i class="fa fa-trash" aria-hidden="true"></i> Delete
-						</a>
-					{% else %}
-						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ upcx.recordlocker.getLockingUser(upcx.getRecordlockerKey(upc)) }}
-						</span>
+					{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+						{% if upcx.recordlocker.isLocked(upcx.getRecordlockerKey(upc)) == false or upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(upc)) %}
+							<a href="{{ page.upcUrl(upc.upc, upc.itemid) }}" class="btn btn-warning btn-sm">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+							&nbsp; &nbsp;
+							<a href="{{ page.upcDeleteUrl(upc.upc, upc.itemid)}}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ upc.upc }}">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							</a>
+						{% else %}
+							<span class="badge badge-secondary">
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ upcx.recordlocker.getLockingUser(upcx.getRecordlockerKey(upc)) }}
+							</span>
+						{% endif %}
 					{% endif %}
 				</td>
 			</tr>

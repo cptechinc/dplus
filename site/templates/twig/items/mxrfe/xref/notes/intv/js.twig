@@ -7,6 +7,10 @@ $(function () {
 		var button = $(e.relatedTarget);
 		var note_row = button.closest('.qnote-row');
 
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+
 		if (note_row.length) {
 			modal.find('.action-desc').text('Editing');
 			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');

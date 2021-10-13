@@ -1,9 +1,12 @@
 {% extends 'items/itm/xrefs/xrefs-display.twig' %}
 
 {% block body %}
-	<div class="card-body">
-		{% include 'items/upcx/search.twig' with {'q' : page.input.get.text('q')} %}
-	</div>
+	{% if 100 == 1 %}
+		<div class="p-2">
+			{% include 'items/upcx/search.twig' with {'q' : page.input.get.text('q')} %}
+		</div>
+	{% endif %}
+
 	{% include 'items/itm/xrefs/upcx/list/list.twig' %}
 	{% include 'util/paginator/propel.twig' with {'pager': upcs} %}
 {% endblock %}

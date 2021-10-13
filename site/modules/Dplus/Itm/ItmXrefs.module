@@ -3,6 +3,7 @@
 use Purl\Url;
 // Dplus Model
 use ItemMasterItem;
+use ItemXrefCustomer;
 // Dplus Filters
 use Dplus\Filters\Mso\Cxm   as CxmFilter;
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
@@ -134,35 +135,106 @@ class ItmXrefs extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
+		$shortitemID = $values->text('shortitemID');
 
+		// Delete record if blank
+		if (empty($shortitemID)) {
+			return $this->deleteShortItmItemid($itemID);
+		}
+
+		// CHECK / VALIDATE IF SHORT ITEMID EXISTS
 		if ($cxm->xref_shortitem_exists_by_custitemid($values->text('shortitemID'))) {
 			$overwrite = $values->bool('overwriteshort');
-			if ($overwrite === false) {
-				return false;
-			}
-			$this->sendCxmRequest($input);
-			return true;
+			$this->overwriteOriginalShortitemid($itemID, $shortitemID, $overwrite);
 		}
 
-		if ($cxm->xref_shortitem_exists($itemID) === false || $cxm->xref_shortitem($itemID)->custitemid != $values->text('shortitemID')) {
-			$this->sendCxmRequest($input);
-			return true;
+		$xref = $cxm->new_xref();
+
+		if ($cxm->xref_shortitem_exists($itemID) === false) {
+			$xref->setItemid($itemID);
+			$xref->setCustid(Configs\Sys::config()->custid);
 		}
+
+		if ($cxm->xref_shortitem_exists($itemID)) {
+			$xref = $cxm->xref_shortitem($itemID);
+		}
+
+		if ($xref->isNew() === false && $shortitemID != $xref->custitemid) {
+			$original = $xref;
+			$originalValues = $original->toArray();
+			$original->delete();
+			$xref = new ItemXrefCustomer();
+			$xref->fromArray($originalValues);
+		}
+		$xref->setCustitemid($shortitemID);
+
+		$xref->setDate(date('Ymd'));
+		$xref->setTime(date('His'));
+		$xref->setDummy('P');
+		$saved = $xref->save();
+
+		if (boolval($saved) === false) {
+			return false;
+		}
+		$this->requestUpdateItmShort($itemID, $shortitemID);
 	}
 
 	/**
-	 * Send Request To CXM for updating short itemid
-	 * @param  WireInput $input
+	 * Delete CXM record for Short Item ID
+	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	private function sendCxmRequest(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$data = ['action' => 'update-cxm-shortitem', 'itemID' => $values->text('itemID'), 'custitemid' => $values->text('shortitemID'), 'overwrite' => $values->bool('overwriteshort')];
-		$input_cxm = new WireInput();
-		$input_cxm->$rm->setArray($data);
+	private function deleteShortItmItemid($itemID) {
 		$cxm = $this->wire('modules')->get('XrefCxm');
-		$cxm->process_input($input_cxm);
+		if ($cxm->xref_shortitem_exists($itemID) === false) {
+			return true;
+		}
+		$xref = $cxm->xref_shortitem($itemID);
+		$xref->delete();
+		$this->requestUpdateItmShort($itemID);
+		return true;
+	}
+
+	/**
+	 * Delete Short Item ID
+	 * @param  string $itemID       Item ID
+	 * @param  string $shortitemID  Short Item ID
+	 * @param  bool   $overwrite    Overwrite ?
+	 * @return bool
+	 */
+	private function overwriteOriginalShortitemid($itemID, $shortitemID, $overwrite = false) {
+		if ($overwrite === false) {
+			return false;
+		}
+		$cxm = $this->wire('modules')->get('XrefCxm');
+		$original = $cxm->xref_shortitem_by_custitemid($shortitemID);
+		$deleted = boolval($original->delete());
+		$this->requestUpdateItmShort($original->itemid);
+		sleep(3);
+		return true;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	private function requestDplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Writes File for Dplus to update the ITM file for this ITEM
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	private function requestUpdateItmShort($itemID, $shortitemID = '') {
+		$custID = Configs\Sys::config()->custid;
+		$data = ['UPDATESHORTITM', "CUSTID=$custID", "CUSTITEM=$shortitemID", "OURITEM=$itemID"];
+		$this->requestDplus($data);
 	}
 
 /* =============================================================

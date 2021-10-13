@@ -107,7 +107,7 @@ class Bom extends Base {
 		$bmm      = BmmParent::getBmm();
 		$itm      = self::getItm();
 		$item     = $itm->item($data->itemID);
-		$bomItem  = $bmm->header->header($data->itemID);
+		$bomItem  = $bmm->header->getOrCreate($data->itemID);
 		self::initHooks();
 		BmmParent::lock($data->itemID);
 
