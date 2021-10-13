@@ -78,12 +78,12 @@ class Cart extends AbstractController {
 			$lastsold = false;
 		}
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
-		$page->js .= self::pw('config')->twig->render('cart/test/js.twig', ['cart' => $cart]);
+		$page->js .= self::pw('config')->twig->render('cart/js.twig', ['cart' => $cart]);
 
-		if ($config->twigloader->exists("cart/test/lookup/$config->company/form.twig")) {
-			$page->js .= $config->twig->render("cart/test/lookup/$config->company/js.twig", ['cart' => $cart]);
+		if ($config->twigloader->exists("cart/lookup/$config->company/form.twig")) {
+			$page->js .= $config->twig->render("cart/lookup/$config->company/js.twig", ['cart' => $cart]);
 		} else {
-			$page->js .= $config->twig->render('cart/test/lookup/js.twig', ['cart' => $cart]);
+			$page->js .= $config->twig->render('cart/lookup/js.twig', ['cart' => $cart]);
 		}
 		return self::displayCart($data);
 	}
@@ -160,21 +160,21 @@ class Cart extends AbstractController {
 		$customer = $cart->getCustomer();
 		$shipto   = $cart->getCustomerShipto();
 
-		$html .= $config->twig->render('cart/test/cart-links.twig', ['customer' => $customer, 'shipto' => $shipto, 'cart' => $cart]);
+		$html .= $config->twig->render('cart/cart-links.twig', ['customer' => $customer, 'shipto' => $shipto, 'cart' => $cart]);
 
-		if ($config->twigloader->exists("cart/test/items/$config->company/list.twig")) {
-			$html .= $config->twig->render("cart/test/items/$config->company/list.twig", ['cart' => $cart]);
+		if ($config->twigloader->exists("cart/items/$config->company/list.twig")) {
+			$html .= $config->twig->render("cart/items/$config->company/list.twig", ['cart' => $cart]);
 		} else {
-			$html .= $config->twig->render('cart/test/items/list.twig', ['cart' => $cart]);
+			$html .= $config->twig->render('cart/items/list.twig', ['cart' => $cart]);
 		}
 
-		if ($config->twigloader->exists("cart/test/lookup/$config->company/form.twig")) {
-			$html .= $config->twig->render("cart/test/lookup/$config->company/form.twig", ['cart' => $cart]);
+		if ($config->twigloader->exists("cart/lookup/$config->company/form.twig")) {
+			$html .= $config->twig->render("cart/lookup/$config->company/form.twig", ['cart' => $cart]);
 		} else {
-			$html .= $config->twig->render('cart/test/lookup/form.twig', ['cart' => $cart]);
+			$html .= $config->twig->render('cart/lookup/form.twig', ['cart' => $cart]);
 		}
 
-		$html .= $config->twig->render('cart/test/actions.twig');
+		$html .= $config->twig->render('cart/actions.twig');
 		return $html;
 	}
 

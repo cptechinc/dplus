@@ -13,23 +13,14 @@
 		<div class="col-sm-3 "></div>
 	</div>
 </div>
+
 <form action="{{ page.url }}" class="pt-3 allow-enterkey-submit" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
 
 	<div class="row">
 		<div class="col-sm-3">
 			<div class="form-group">
-				{% include 'util/form/input-with-modal-lookup.twig' with {
-						'name': 'itemID', 'id': 'additemID', 'value': '', 'placeholder': 'Item ID',
-						'small': true,
-						'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
-						'attributes_button': {
-							'data-search': 'item',
-							'data-input': '#additemID',
-							'data-lookupurl': page.searchLookupUrl('items')
-						}
-					}
-				%}
+				{% include 'cart/lookup/form/input-itemid.twig' %}
 			</div>
 			<div class="mt-2">
 				<ul class="list-unstyled">
@@ -55,7 +46,7 @@
 							'qty-input'
 						],
 						'attributes': {
-							'disabled': true
+							'disabled': false
 						}
 					}
 				%}
@@ -73,7 +64,7 @@
 							'ignore'
 						],
 						'attributes': {
-							'disabled': true
+							'disabled': false
 						}
 					}
 				%}
