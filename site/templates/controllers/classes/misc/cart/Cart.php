@@ -151,10 +151,10 @@ class Cart extends AbstractController {
 
 		$html .= $config->twig->render('cart/test/cart-links.twig', ['customer' => $customer, 'shipto' => $shipto, 'cart' => $cart]);
 
-		if ($config->twigloader->exists("cart/test/$config->company/cart-items.twig")) {
-			$html .= $config->twig->render("cart/test/$config->company/cart-items.twig", ['cart' => $cart]);
+		if ($config->twigloader->exists("cart/test/items/$config->company/list.twig")) {
+			$html .= $config->twig->render("cart/test/items/$config->company/list.twig", ['cart' => $cart]);
 		} else {
-			$html .= $config->twig->render('cart/test/cart-items.twig', ['cart' => $cart]);
+			$html .= $config->twig->render('cart/test/items/list.twig', ['cart' => $cart]);
 		}
 
 		if ($config->twigloader->exists("cart/test/lookup/$config->company/form.twig")) {

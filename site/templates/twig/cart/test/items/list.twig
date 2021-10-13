@@ -35,41 +35,10 @@
 				<small>Avg Wgt: {{ item.weight }}</small>
 			</div>
 			<div class="col-sm-1 text-right">
-				{% include 'util/bootstrap/form/input.twig' with {
-						'input': {
-							'name': 'qty', 'value': detail.qty|number_format(cart.decimalPlacesQty()),
-							'size': 'sm',
-							'addclasses': [
-								'text-right',
-								'qty-input'
-							]
-						}
-					}
-				%}
+				{% include 'cart/test/items/inputs/qty.twig' %}
 			</div>
 			<div class="col-sm-2 text-right">
-				{% include 'util/bootstrap/form/input-group.twig' with {
-						'inputgroup': {
-							'type': 'prepend',
-							'size': 'sm',
-							'input': {
-								'name': 'price', 'value': detail.price|number_format(cart.decimalPlacesPrice()),
-								'addclasses': [
-									'text-right',
-									'qty-input'
-								],
-								'attributes': {
-									'data-allowdiscount': item.allow_discount() ? 'Y' : 'N',
-									'data-itemid': detail.itemid,
-								}
-							},
-							'button': {
-								'colorclass': 'btn-light',
-								'text': '$'
-							}
-						}
-					}
-				%}
+				{% include 'cart/test/items/inputs/price.twig' %}
 			</div>
 			<div class="col-sm-2 text-right">
 				$ <span class="total-price">{{ detail.totalprice|currency }}</span>
