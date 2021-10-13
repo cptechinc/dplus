@@ -60,7 +60,7 @@ class Addm extends AbstractController {
 
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
-		// self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inmain/addm/list/.js.twig');
 		$html = self::displayList($data, $xrefs);
 		return $html;
 	}
