@@ -1,0 +1,18 @@
+class BomInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new BomInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'bom-component-form';
+		this.form = $('#' + this.id);
+		this.bomid     = this.form.find('input[name=bomID]');
+		this.component = this.form.find('input[name=component]');
+		this.qty       = this.form.find('input[name=qty]');
+	}
+}

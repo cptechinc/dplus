@@ -1,159 +1,88 @@
 <form action="{{ page.fullURL.getUrl() }}" method="POST" id="upc-xref-form">
 	<input type="hidden" name="action" value="update-upcx">
 
-	<div class="row">
-		<div class="col-sm-8">
-			<div class="form-group row">
-				<div class="col-sm-3">
-					<label for="upc">UPC Code</label>
-				</div>
-				<div class="col-sm-6">
-					{% include 'util/form/input.twig' with {
-							'name': 'upc', 'value': upc.upc,
-							'class_add': [],
-							'attributes': {
-								'readonly': upc.isNew() == false,
-								'data-new': upc.isNew() ? 'true' : 'false'
-							}
-						}
-					%}
-				</div>
-			</div>
-			{% block form_input_itemid %}
-				<div class="form-group row">
-					<div class="col-sm-3">
-						<label for="itemID">Item ID</label>
-					</div>
-					<div class="col-sm-6">
-						{% include 'util/bootstrap/form/input-group.twig' with {
-								'inputgroup': {
-									'type': 'prepend',
-									'attributes': {
-										'readonly': upc.itemid ? true : false
-									},
-									'input': {
-										'name': 'itemID',
-										'id': 'itemID',
-										'value': upc.itemid,
-										'attributes': {
-											'placeholder': '',
-											'aria-label':  'Item ID'
-										}
-									},
-									'button': {
-										'colorclass': 'btn-secondary',
-										'text': 'fa fa-search'|icon,
-										'attributes': {
-											'itemid':  upc.itemid,
-											'title': 'Search Items',
-											'data-toggle': 'modal',
-											'data-target': '#ajax-modal',
-											'data-lookupurl': page.search_lookupURL('items'),
-											'data-input': '#itemID'
-										}
-									}
-								}
-							}
-						%}
-						<small class="text-muted help-text item-description">{{ upc.ItemMasterItem.description }}</small>
-					</div>
-				</div>
-			{% endblock %}
+	{% include 'items/upcx/form/key.twig' %}
 
-			<div class="form-group row">
-				<div class="col-sm-3">
-					<label for="primary">Primary</label>
-				</div>
-				<div class="col-sm-6">
-					{% include 'util/bootstrap/form/select-simple.twig' with {
-							'select': {
-								'name': 'primary',
-								'value' : upc.is_primary() ? 'Y' : 'N',
-								'haskeys': true,
-								'options': {'Y': 'Yes', 'N': 'No'},
-								'attributes': {
-									'data-primary': upc.is_primary() ? 'true' : 'false'
-								}
-							}
-						}
-					%}
-					{% if upc.get_primary_upc_code() != '' %}
-						{% set primary = upc.get_primary_upc() %}
-						<a href="{{ page.upcUrl(primary.upc, primary.itemid) }}" class="link">
-							View Primary ({{ primary.upc }}-{{ primary.itemid }})
-						</a>
-					{% endif %}
-					<input type="hidden" name="valid_primary" id="valid_primary" value="false">
-				</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-sm-3">
-					<label for="qty">Qty Per UPC</label>
-				</div>
-				<div class="col-sm-6">
-					<input type="number" class="form-control form-control-sm w-50 text-right" name="qty" id="qty" value="{{ upc.qty }}">
-				</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-sm-3">
-					<label for="mastercase">Master Case</label>
-				</div>
-				<div class="col-sm-6">
-					{% include 'util/bootstrap/form/select-simple.twig' with {
-							'select': {
-								'name': 'mastercase',
-								'value' : upc.is_mastercase() ? 'Y' : 'N',
-								'haskeys': true,
-								'options': {
-									'Y': 'Yes',
-									'N': 'No'
-								},
-							}
-						}
-					%}
-				</div>
-			</div>
-
-			<div class="form-group row">
-				<div class="col-sm-3">
-					<label for="needslabel">Need Label</label>
-				</div>
-				<div class="col-sm-6">
-					{% include 'util/bootstrap/form/select-simple.twig' with {
-							'select': {
-								'name': 'needslabel',
-								'value' : upc.needslabel() ? 'Y' : 'N',
-								'haskeys': true,
-								'options': {
-									'Y': 'Yes',
-									'N': 'No'
-								},
-							}
-						}
-					%}
-				</div>
-			</div>
-			<div class="d-flex justify-content-between align-items-center">
-				{#
-					Only show Edit Actions if the Item is
-					1. Locked for editing by the User
-					2. Is a new Item
-					NOTE: Only show delete if item already exists.
-				#}
-				{% if upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(upc)) or upc.isNew() %}
-					<button type="submit" class="btn btn-success" name="action" value="update-upcx">
-						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-					</button>
-					{% if upc.isNew() == false %}
-						<a href="{{ page.upcDeleteUrl(upc.upc, upc.itemid)}}" class="btn btn-danger delete_button" data-delete="UPC {{ upc.upc }}">
-							<i class="fa fa-trash" aria-hidden="true"></i> Delete
-						</a>
-					{% endif %}
-				{% endif %}
-				<a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}" class="btn btn-warning">
-					<i class="fa fa-times" aria-hidden="true"></i> Close
-				</a>
-			</div>
+	<div class="form-group row">
+		<div class="col-sm-3">
+			<label for="primary">Primary</label>
 		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'primary',
+						'value' : upc.is_primary() ? 'Y' : 'N',
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'},
+						'attributes': {
+							'data-primary': upc.is_primary() ? 'true' : 'false'
+						}
+					}
+				}
+			%}
+			{% if upc.get_primary_upc_code() != '' %}
+				{% set primary = upc.get_primary_upc() %}
+				<a href="{{ page.upcUrl(primary.upc, primary.itemid) }}" class="link">
+					View Primary ({{ primary.upc }}-{{ primary.itemid }})
+				</a>
+			{% endif %}
+			<input type="hidden" name="valid_primary" id="valid_primary" value="false">
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-3">
+			<label for="qty">Qty Per UPC</label>
+		</div>
+		<div class="col-sm-6">
+			<input type="number" class="form-control form-control-sm w-50 text-right" name="qty" id="qty" value="{{ upc.qty }}">
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-3">
+			<label for="mastercase">Master Case</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'mastercase',
+						'value' : upc.is_mastercase() ? 'Y' : 'N',
+						'haskeys': true,
+						'options': {
+							'Y': 'Yes',
+							'N': 'No'
+						},
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<div class="col-sm-3">
+			<label for="needslabel">Need Label</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'needslabel',
+						'value' : upc.needslabel() ? 'Y' : 'N',
+						'haskeys': true,
+						'options': {
+							'Y': 'Yes',
+							'N': 'No'
+						},
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{% block edit_actions %}
+			{% include 'items/upcx/form/edit-buttons.twig' %}
+		{% endblock %}
+
+		<a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
 	</div>
 </form>

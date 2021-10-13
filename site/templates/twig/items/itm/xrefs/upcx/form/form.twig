@@ -1,0 +1,7 @@
+{% extends 'items/upcx/form/form.twig' %}
+
+{% block edit_actions %}
+	{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+		{% include 'items/upcx/form/edit-buttons.twig' %}
+	{% endif %}
+{% endblock %}

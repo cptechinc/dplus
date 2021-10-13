@@ -9,86 +9,90 @@
 	item                   ItemMasterItem
 	recordlocker           module RecordLockerUser
 #}
-<form action="{{ page.wire('input').url() }}" method="POST" id="itm-xrefs-form">
+<form action="{{ input.url() }}" method="POST" id="itm-xrefs-form">
 	<input type="hidden" name="action" value="update-itm-xrefs">
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
 
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="shortitemID">Short Item ID</label>
-		</div>
-		<div class="col-sm-8">
-			{% include 'util/bootstrap/form/input.twig' with {
-					'input': {
-						'size': 'sm',
-						'name': 'shortitemID',
-						'value': xrefs.cxm.xref_shortitem_exists(item.itemid) ? xrefs.cxm.xref_shortitem(item.itemid).custitemid : '',
-						'attributes': {
-							'placeholder': 'Short Item ID',
-							'aria-label':  'Short Item ID'
-						}
-					}
-				}
-			%}
-			<input type="hidden" name="overwriteshort" value="false">
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="upcx.primaryupc">Primary UPC Code</label>
-		</div>
-		<div class="col-sm-8">
-			<div class="row">
-				<div class="col-sm-8">
-					<p class="form-control-plaintext form-control-sm">
-						{{ xrefs.upcx.xref_primary_exists_for_itemid(item.itemid) ? xrefs.upcx.xref_primary_by_itemid(item.itemid).upc : '' }}
-					</p>
-				</div>
-				<div class="col-sm-4">
-					<p class="form-control-plaintext">{{ item.countItemXrefUpcs() }} Records</p>
-				</div>
+	<div class="form-body">
+		<div class="form-group row">
+			<div class="col-sm-4">
+				<label for="shortitemID">Short Item ID</label>
 			</div>
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="supercede">Supercede Item ID</label>
-		</div>
-		<div class="col-sm-8">
-			{% include 'util/bootstrap/form/input-group.twig' with {
-					'inputgroup': {
-						'type': 'prepend',
-						'size': 'sm',
+			<div class="col-sm-8">
+				{% include 'util/bootstrap/form/input.twig' with {
 						'input': {
-							'name': 'supercede',
-							'value': item.supercede,
+							'size': 'sm',
+							'name': 'shortitemID',
+							'value': xrefs.cxm.xref_shortitem_exists(item.itemid) ? xrefs.cxm.xref_shortitem(item.itemid).custitemid : '',
 							'attributes': {
-								'placeholder': 'Supercede Item ID',
-								'aria-label':  'Supercede Item ID',
-								'oninput': configIn.useUppercaseItemid() ? 'this.value = this.value.toUpperCase()' : ''
-							}
-						},
-						'button': {
-							'colorclass': 'btn-secondary',
-							'text': 'fa fa-search'|icon,
-							'attributes': {
-								'title': 'Search Items',
-								'data-toggle': 'modal',
-								'data-target': '#ajax-modal',
-								'data-lookupurl': page.search_lookupURL('items'),
-								'data-input': '#supercede'
+								'placeholder': '',
+								'aria-label':  'Short Item ID',
+								'autocomplete': 'off',
+								'data-original': xrefs.cxm.xref_shortitem_exists(item.itemid) ? xrefs.cxm.xref_shortitem(item.itemid).custitemid : ''
 							}
 						}
 					}
-				}
-			%}
-			<div class="text-muted pt-2">
-				<small class="description1 form-text">{{ sub.getSubstitute().description }}</small>
-				<small class="description2 form-text">{{ sub.getSubstitute().description2 }}</small>
+				%}
+				<input type="hidden" name="overwriteshort" value="false">
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-sm-4">
+				<label for="upcx.primaryupc">Primary UPC Code</label>
+			</div>
+			<div class="col-sm-8">
+				<div class="row">
+					<div class="col-sm-8">
+						<p class="form-control-plaintext form-control-sm">
+							{{ xrefs.upcx.xref_primary_exists_for_itemid(item.itemid) ? xrefs.upcx.xref_primary_by_itemid(item.itemid).upc : '' }}
+						</p>
+					</div>
+					<div class="col-sm-4">
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-sm-4">
+				<label for="supercede">Supercede Item ID</label>
+			</div>
+			<div class="col-sm-8">
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'supercede',
+								'value': item.supercede,
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Supercede Item ID',
+									'oninput': configIn.useUppercaseItemid() ? 'this.value = this.value.toUpperCase()' : '',
+									'autocomplete': 'off'
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search Items',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.search_lookupURL('items'),
+									'data-input': '#supercede'
+								}
+							}
+						}
+					}
+				%}
+				<div class="text-muted pt-2">
+					<small class="supercede description1 form-text">{{ item.getSupercedeItem().description }}</small>
+					<small class="supercede description2 form-text">{{ item.getSupercedeItem().description2 }}</small>
+				</div>
 			</div>
 		</div>
 	</div>
-
 	<div class="d-flex justify-content-between align-items-center">
 		{#
 			Only show Edit Actions if the Item is

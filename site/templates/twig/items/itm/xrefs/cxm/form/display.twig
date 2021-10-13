@@ -2,7 +2,7 @@
 
 {% block body %}
 	<div class="card-body">
-		{% include 'items/cxm/xref/form/form.twig' with {'item': xref} %}
+		{% include 'items/itm/xrefs/cxm/form/form.twig' with {'item': xref, 'xref': xref, 'itm': itm} %}
 	</div>
 {% endblock %}
 

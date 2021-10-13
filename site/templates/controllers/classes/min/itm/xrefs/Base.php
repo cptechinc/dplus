@@ -45,4 +45,8 @@ class Base extends ItmBase {
 	public static function xrefUrlSubstitutes($itemID) {
 		return self::xrefUrlFunction($itemID, 'substitutes');
 	}
+
+	public static function xrefUrlBom($itemID) {
+		return self::xrefUrlFunction($itemID, 'bom');
+	}
 }

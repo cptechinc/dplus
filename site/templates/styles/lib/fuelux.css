@@ -2985,7 +2985,7 @@ label.fuelux .checkbox-inline {
 .fuelux .picker .glass[disabled] {
     cursor: not-allowed
 }
-
+/*
 .fuelux .tree {
     border: 1px solid #999;
     border-radius: 4px 4px 4px 4px;
@@ -3136,7 +3136,7 @@ label.fuelux .checkbox-inline {
 
 .fuelux .tree.tree-folder-select .tree-branch.tree-selected>.tree-branch-header .tree-branch-name:hover {
     background-color: #eee
-}
+} */
 
 .fuelux .wizard {
     *zoom: 1;

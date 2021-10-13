@@ -118,6 +118,17 @@ class KimComponent extends WireData implements Module {
 		return $this->new($kitID, $itemID);
 	}
 
+	/**
+	 * Return if Kit has Components
+	 * @param  string $kitID Kit ID
+	 * @return bool
+	 */
+	public function hasComponents($kitID) {
+		$q = $this->query();
+		$q->filterByKitid($kitID);
+		return boolval($q->count());
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -171,8 +182,14 @@ class KimComponent extends WireData implements Module {
 		if ($this->exists($kitID, $itemID)) {
 			$component = $this->component($kitID, $itemID);
 			$component->delete();
-			$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component));
-			return $this->wire('session')->getFor('response', 'kim')->has_success();
+			$response = $this->save_and_respond($component);
+
+			if ($response->has_success() && $this->hasComponents($kitID) === false) {
+				$kim = $this->wire('modules')->get('Kim');
+				$response = $kim->deleteKit($kitID);
+			}
+			$this->wire('session')->setFor('response', 'kim', $response);
+			return $response->has_success();
 		}
 		return true;
 	}
@@ -237,7 +254,7 @@ class KimComponent extends WireData implements Module {
 		if ($this->configs->kt->isUsageTag()) {
 			$fields['usagetag'] = array(
 				'description' => 'Usage Tag Code',
-				'allow_blank' => false,
+				'allow_blank' => true,
 				'function'    => 'component_usagetag'
 			);
 		}

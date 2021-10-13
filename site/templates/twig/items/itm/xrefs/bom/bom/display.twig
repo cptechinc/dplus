@@ -1,0 +1,33 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	bmm                    Dplus\Mpm\Pmmain\Bmm
+	bomItem                BomItem
+#}
+{% extends 'items/itm/display.twig' %}
+
+{% block body %}
+	<div class="py-2 px-2 bg-primary">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<h6 class="text-center text-white">Level: 1</h6>
+			<div></div>
+		</div>
+	</div>
+	{% include 'items/itm/xrefs/bom/bom/components.twig' %}
+
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div>
+				<a href="{{ page.bomExitUrl(input.get.text('itemID')) }}" class="btn btn-warning btn-sm">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}

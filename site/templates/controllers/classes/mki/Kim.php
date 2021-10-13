@@ -89,7 +89,7 @@ class Kim extends AbstractController {
 	private static function kitComponentDisplay($data) {
 		$kim    = self::getKim();
 		$kim->init_configs();
-		$kit = $kim->kit($data->kitID);
+		$kit = $kim->getCreateKit($data->kitID);
 		$component = $kim->component->getCreateComponent($data->kitID, $data->component);
 
 		$html = '';
@@ -120,7 +120,7 @@ class Kim extends AbstractController {
 		$filter = new FilterKim();
 		$filter->init();
 		if ($data->q) {
-			$page->headline = "KIM: Searching for '$data->q'";
+			self::pw('page')->headline = "KIM: Searching for '$data->q'";
 			$filter->search($data->q);
 		}
 		$kits = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);

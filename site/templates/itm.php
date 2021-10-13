@@ -1,6 +1,6 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-	
+
 	use Controllers\Min\Itm as Mitm;
 	use Controllers\Min\Itm\Xrefs as ItmXrefs;
 
@@ -48,16 +48,20 @@
 			],
 			'upcx' => [
 				['GET',  '', ItmXrefs\Upcx::class, 'index'],
-				['POST', '', ItmXrefs\Upcx::class, 'hndleCRUD'],
+				['POST', '', ItmXrefs\Upcx::class, 'handleCRUD'],
 			],
 			'kim' => [
 				['GET',  '', ItmXrefs\Kim::class, 'index'],
-				['POST', '', ItmXrefs\Kim::class, 'kimhandleCRUD'],
+				['POST', '', ItmXrefs\Kim::class, 'handleCRUD'],
 			],
 			'substitutes' => [
 				['GET',  '', ItmXrefs\Substitutes::class, 'index'],
 				['GET',  'page{d:\d+}', ItmXrefs\Substitutes::class, 'index'],
 				['POST', '', ItmXrefs\Substitutes::class, 'handleCRUD'],
+			],
+			'bom' => [
+				['GET',  '', ItmXrefs\Bom::class, 'index'],
+				['POST', '', ItmXrefs\Bom::class, 'handleCRUD'],
 			],
 		],
 	];

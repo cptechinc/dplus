@@ -1,0 +1,7 @@
+{% extends 'mki/kim/kit/component/form.twig' %}
+
+{% block edit_buttons %}
+	{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+		{% include 'mki/kim/kit/component/form/edit-buttons.twig' %}
+	{% endif %}
+{% endblock %}

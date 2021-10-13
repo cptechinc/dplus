@@ -1,0 +1,16 @@
+class BomConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new BomConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			
+		};
+	}
+}

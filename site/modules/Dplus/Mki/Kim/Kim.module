@@ -43,10 +43,19 @@ class Kim extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function kit_exists($itemID) {
+	public function exists($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
+	}
+
+	/**
+	 * Return if Hazmat Item Exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function kit_exists($itemID) {
+		return $this->exists($itemID);
 	}
 
 	/**
@@ -70,6 +79,7 @@ class Kim extends WireData implements Module {
 		$kit->setItemid($itemID);
 		$kit->setDate(date(InvKit::FORMAT_DATE));
 		$kit->setTime(date(InvKit::FORMAT_TIME));
+		$kit->setDummy('P');
 		return $kit->save();
 	}
 
@@ -100,6 +110,27 @@ class Kim extends WireData implements Module {
 	public function all() {
 		$q = $this->query();
 		return $q->find();
+	}
+
+/* =============================================================
+	CRUD Delete Functions
+============================================================= */
+	public function deleteKit($itemID) {
+		if ($this->exists($itemID) === false) {
+			return KimResponse::response_success($itemID, "Kit $itemID was deleted");
+		}
+		$validate = new KimValidator();
+
+		if ($validate->can_delete($itemID) === false) {
+			return KimResponse::response_success($itemID, "Kit $itemID can not be deleted, it's on order");
+		}
+
+		$kit = $this->kit($itemID);
+		$kit->delete();
+		$response = $this->save_and_respond($kit);
+		echo var_dump($response);
+		exit;
+		return $response;
 	}
 
 /* =============================================================
@@ -306,6 +337,29 @@ class Kim extends WireData implements Module {
 			$this->recordlocker->lock($kitID);
 		}
 		return $this->recordlocker->userHasLocked($kitID);
+	}
+
+	/**
+	 * Return Kim Response
+	 * @return KimResponse
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'kim');
+	}
+
+	/**
+	 * Set Session Response
+	 * @param KimResponse $response
+	 */
+	public function setResponse($response) {
+		return $this->wire('session')->setFor('response', 'kim', $response);
+	}
+
+	/**
+	 * Delete Response
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', 'kim');
 	}
 
 /* =============================================================

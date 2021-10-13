@@ -14,6 +14,7 @@ return array(
     'Dplus\\Configs\\Ii' => $baseDir . '/src/configs/Ii.php',
     'Dplus\\Configs\\In' => $baseDir . '/src/configs/In.php',
     'Dplus\\Configs\\Kt' => $baseDir . '/src/configs/Kt.php',
+    'Dplus\\Configs\\Pm' => $baseDir . '/src/configs/Pm.php',
     'Dplus\\Configs\\Po' => $baseDir . '/src/configs/Po.php',
     'Dplus\\Configs\\Qt' => $baseDir . '/src/configs/Qt.php',
     'Dplus\\Configs\\So' => $baseDir . '/src/configs/So.php',

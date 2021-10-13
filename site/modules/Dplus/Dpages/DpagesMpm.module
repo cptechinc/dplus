@@ -1,0 +1,44 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class DpagesMpm
+ *
+ * Installs fields, templates, pages, hooks necessary for Mpo Pages
+ * Adds Hooks for getting URLs to Mpo pages
+ */
+class DpagesMpm extends Dpages implements Module {
+	const FIELDS = [];
+	const TEMPLATES = [];
+
+	const PAGES = [
+		'mpm-menu' => [
+			'template'       => 'dplus-menu',
+			'name'           => 'mpo',
+			'title'          => 'Production Management',
+			'summary'        => 'Production Management Menu',
+			'parent'         => '/',
+			'dplus_function' => '',
+			'pw_template'    => 'mpm'
+		]
+	];
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Online Production Management Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dplus Online Production Management Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+		);
+	}
+
+	public function init() {
+
+	}
+}
