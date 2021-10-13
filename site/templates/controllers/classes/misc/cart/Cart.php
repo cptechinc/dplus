@@ -92,12 +92,11 @@ class Cart extends AbstractController {
 	Urls
 ============================================================= */
 	public static function cartUrl() {
-		return self::pw('pages')->get('template=test')->url;
-		return self::pw('pages')->get('template=test')->url;
+		return self::pw('pages')->get('pw_template=cart')->url;
 	}
 
 	public static function setCustomerUrl($custID, $shiptoID = '') {
-		$url = new Purl(self::pw('pages')->get('pw_template=cart')->url);
+		$url = new Purl(self::cartUrl());
 		$url->query->set('custID', $custID);
 		if ($shiptoID) {
 			$url->query->set('shiptoID', $shiptoID);
@@ -185,22 +184,22 @@ class Cart extends AbstractController {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesCart');
 
-		$m->addHook('Page(template=test)::deleteItemUrl', function($event) {
+		$m->addHook('Page(pw_template=cart)::deleteItemUrl', function($event) {
 			$linenbr = $event->arguments(0);
 			$event->return = self::deleteItemUrl($linenbr);
 		});
 
-		$m->addHook('Page(template=test)::emptyCartUrl', function($event) {
+		$m->addHook('Page(pw_template=cart)::emptyCartUrl', function($event) {
 			$event->return = self::emptyCartUrl();
 		});
 
-		$m->addHook('Page(template=test)::ciUrl', function($event) {
+		$m->addHook('Page(pw_template=cart)::ciUrl', function($event) {
 			$page = $event->object;
 			$custID = $event->arguments(0);
 			$event->return = Ci::ciUrl($custID);
 		});
 
-		$m->addHook('Page(template=test)::ciShiptoUrl', function($event) {
+		$m->addHook('Page(pw_template=cart)::ciShiptoUrl', function($event) {
 			$page = $event->object;
 			$custID   = $event->arguments(0);
 			$shiptoID = $event->arguments(1);
@@ -212,11 +211,11 @@ class Cart extends AbstractController {
 			}
 		});
 
-		$m->addHook('Page(template=test)::createQuoteUrl', function($event) {
+		$m->addHook('Page(pw_template=cart)::createQuoteUrl', function($event) {
 			$event->return = self::createQuoteUrl();
 		});
 
-		$m->addHook('Page(template=test)::createOrderUrl', function($event) {
+		$m->addHook('Page(pw_template=cart)::createOrderUrl', function($event) {
 			$event->return = self::createOrderUrl();
 		});
 	}
