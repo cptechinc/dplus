@@ -10,6 +10,8 @@ use Dplus\Cart\Cart as Manager;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mci\Ci\Ci;
+use Controllers\Mqo\Quote\Quote;
+use Controllers\Mso\SalesOrder\SalesOrder;
 
 class Cart extends AbstractController {
 /* =============================================================
@@ -36,7 +38,17 @@ class Cart extends AbstractController {
 		self::sanitizeParametersShort($data, $fields);
 		$cart = self::getCart();
 		$cart->processInput(self::pw('input'));
-		self::pw('session')->redirect(self::cartUrl(), $http301 = false);
+		$url = self::cartUrl();
+
+		switch ($data->action) {
+			case 'create-quote':
+				$url = Quote::quoteEditNewUrl();
+				break;
+			case 'create-order':
+				$url = SalesOrder::orderEditNewUrl();
+				break;
+		}
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 	private static function selectCustomer($data) {
@@ -162,6 +174,8 @@ class Cart extends AbstractController {
 		} else {
 			$html .= $config->twig->render('cart/test/lookup/form.twig', ['cart' => $cart]);
 		}
+
+		$html .= $config->twig->render('cart/test/actions.twig');
 		return $html;
 	}
 
@@ -205,28 +219,6 @@ class Cart extends AbstractController {
 		$m->addHook('Page(template=test)::createOrderUrl', function($event) {
 			$event->return = self::createOrderUrl();
 		});
-
-		// TODO: handle redirect on createX action
-
-		// $m->addHook('Page(template=test)::redirectUrl', function($event) {
-		// 	$p = $event->object;
-		// 	$action = $p->fullUrl->query->get('action');
-		// 	$url = $this->cartUrl();
-		//
-		// 	if (strpos($action, 'create') !== false) {
-		// 		if ($action == 'create-order' || $action == 'create-blank-order') {
-		// 			$purl = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
-		// 			$purl->path->add('new');
-		// 			$url = $purl->getUrl();
-		// 		} elseif($action == 'create-quote') {
-		// 			$purl = new Url($this->wire('pages')->get('pw_template=quote-view')->url);
-		// 			$purl->path->add('edit');
-		// 			$purl->path->add('new');
-		// 			$url = $purl->getUrl();
-		// 		}
-		// 	}
-		// 	$event->return = $url;
-		// });
 	}
 
 /* =============================================================
