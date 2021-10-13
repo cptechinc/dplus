@@ -164,7 +164,6 @@ class Addm extends AbstractController {
 			$event->return = self::xrefUrl($event->arguments(0), $event->arguments(1));
 		});
 
-
 		$m->addHook('Page(pw_template=addm)::xrefDeleteUrl', function($event) {
 			$event->return = self::xrefDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
