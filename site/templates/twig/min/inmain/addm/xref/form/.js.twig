@@ -15,13 +15,17 @@ $(function() {
 
 		formAddm.updateItmDescription(input, function() {
 			if (formAddm.inputs.itemid.val() != '' && formAddm.inputs.addonid.val() != '') {
-				server.validateXref(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(exists) {
-					if (exists === true) {
-						alert.xrefExists(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(goEdit) {
-							AddmForm.getInstance().redirectExisting(goEdit);
-						});
-					}
-				});
+				var validator = formAddm.inputs.form.validate();
+				
+				if (validator.element('#' + formAddm.inputs.addonid.attr('id'))) {
+					server.validateXref(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(exists) {
+						if (exists === true) {
+							alert.xrefExists(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(goEdit) {
+								AddmForm.getInstance().redirectExisting(goEdit);
+							});
+						}
+					});
+				}
 			}
 		});
 	});
@@ -72,6 +76,10 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
+	jQuery.validator.addMethod("addonid", function(value, element) {
+		return this.optional(element) || value != $('#itemID').val();
+	}, "Add-on Item must be different from Item ID");
+
 	formAddm.inputs.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -91,6 +99,7 @@ $(function() {
 			},
 			addonID: {
 				required: true,
+				addonid: true,
 				remote: {
 					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
