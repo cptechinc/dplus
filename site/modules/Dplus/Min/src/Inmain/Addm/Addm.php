@@ -158,28 +158,23 @@ class Addm extends WireData {
 	 * @return array
 	 */
 	public function updateXrefValidated(ItemAddonItem $xref, WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
+		$rm       = strtolower($input->requestMethod());
+		$values   = $input->$rm;
 		$validate = new Validators\Min();
-		$invalid = array();
+		$invalid  = [];
 
-		$fields = array(
-			'whseid' => array(
-				'description' => 'Supply Warehouse ID',
-				'input'       => 'whseID',
-				'function'    => 'whseid'
-			),
-			'itemid' => array(
+		$fields = [
+			'itemID' => [
 				'description' => 'Item ID',
-				'input'       => 'parentID',
+				'input'       => 'itemID',
 				'function'    => 'itemid'
-			),
-			'addonitemid' => array(
-				'description' => 'Add-on Item ID',
-				'input'       => 'childID',
+			],
+			'addonID' => [
+				'description' => 'Add-on Item',
+				'input'       => 'addonID',
 				'function'    => 'itemid'
-			)
-		);
+			]
+		];
 
 		$validator = $this->wire('modules')->get('InputValidator');
 		$validator->set_validator($validate)->set_input($input)->set_record($xref)->set_validatefields($fields);
@@ -201,14 +196,14 @@ class Addm extends WireData {
 		$values = $input->$rm;
 
 		switch ($values->text('action')) {
-			case 'delete-i2i':
+			case 'delete':
 				return $this->inputDelete($input);
 				break;
-			case 'update-i2i':
+			case 'update':
 				return $this->inputUpdate($input);
 				break;
 			default:
-				$key = implode('-', [$values->text('parentID'), $values->text('childID')]);
+				$key = implode('-', [$values->text('itemID'), $values->text('addonID')]);
 				$message = self::DESCRIPTION_RECORD . " ($key) was not saved, no action was specified";
 				$this->wire('session')->setFor('response', 'i2i', Response::response_error($key, $message));
 				return false;
@@ -236,7 +231,7 @@ class Addm extends WireData {
 		$invalidFields = $this->updateXrefInput($xref, $input);
 		$response = $this->saveAndRespond($xref, $invalidFields);
 		$this->wire('session')->setFor('response', 'i2i', $response);
-		return $this->wire('session')->getFor('response', 'i2i')->has_success();
+		return $this->wire('session')->getFor('response', 'i2i')->hasSuccess();
 	}
 
 	/**
@@ -256,13 +251,13 @@ class Addm extends WireData {
 			if ($this->lockrecord($xref) === false) {
 				$key = $this->getRecordlockerKey($xref);
 				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($xref);
-				$this->wire('session')->setFor('response', 'i2i', Response::response_error($key, $message));
+				$this->setResponse(Response::response_error($key, $message));
 				return false;
 			}
 			$xref->delete();
 			$response = $this->saveAndRespond($xref);
-			$this->wire('session')->setFor('response', 'i2i', $response);
-			return $response->has_success();
+			$this->setResponse($response);
+			return $response->hasSuccess();
 		}
 		return true;
 	}
@@ -299,10 +294,45 @@ class Addm extends WireData {
 
 		$response->build_message(self::RESPONSE_TEMPLATE);
 
-		if ($response->has_success() && empty($invalidfields)) {
+		if ($response->hasSuccess() && empty($invalidfields)) {
 			$this->updateDplusServer($xref);
 		}
 		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param Response $response
+	 */
+	protected function setResponse(Response $response) {
+		$this->wire('session')->setFor('response', 'addm', $response);
+	}
+
+	/**
+	 * Get Session Response
+	 * @return Response|null
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'addm');
+	}
+
+	/**
+	 * Delete Response
+	 * @return void
+	 */
+	public function deleteResponse() {
+		return $this->wire('session')->removeFor('response', 'addm');
+	}
+
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function fieldHasError($inputname) {
+		$response = $this->getResponse();
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
 /* =============================================================
