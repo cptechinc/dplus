@@ -1,3 +1,5 @@
+{% set configIn = page.wire('modules').get('Dconfigs').config('in') %}
+
 <div class="row form-group">
 	<div class="col-sm-4">
 		<label for="itemID">Item ID</label>
@@ -13,6 +15,7 @@
 					'input': {
 						'name': 'itemID',
 						'value': xref.itemid,
+						'uppercase': configIn.useUppercaseItemid(),
 						'attributes': {
 							'placeholder': '',
 							'aria-label':  'Item ID',
@@ -41,7 +44,7 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-4">
-		<label for="addonID">Child Item ID</label>
+		<label for="addonID">Add-on Item ID</label>
 	</div>
 	<div class="col-sm-8 item-fields">
 		{% include 'util/bootstrap/form/input-group.twig' with {
@@ -54,6 +57,7 @@
 					'input': {
 						'name': 'addonID',
 						'value': xref.addonitemid,
+						'uppercase': configIn.useUppercaseItemid(),
 						'attributes': {
 							'placeholder': '',
 							'aria-label':  'Item ID',
