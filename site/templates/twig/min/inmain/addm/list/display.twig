@@ -11,4 +11,5 @@
 		{% include 'min/inmain/addm/list/search.twig' with {'q' : input.get.text('q')} %}
 	</div>
 	{% include 'min/inmain/addm/list/list.twig' %}
+	{% include 'util/paginator/propel.twig' with {'pager': xrefs} %}
 </div>
