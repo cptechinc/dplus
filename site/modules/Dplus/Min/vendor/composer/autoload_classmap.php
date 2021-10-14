@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\Min\\Inmain\\Addm\\Addm' => $baseDir . '/src/Inmain/Addm/Addm.php',
+    'Dplus\\Min\\Inmain\\Addm\\Response' => $baseDir . '/src/Inmain/Addm/Response.php',
     'Dplus\\Min\\Inmain\\I2i\\I2i' => $baseDir . '/src/Inmain/I2i/I2i.php',
     'Dplus\\Min\\Inmain\\I2i\\Response' => $baseDir . '/src/Inmain/I2i/Response.php',
     'Dplus\\Min\\Inproc\\Iarn\\Iarn' => $baseDir . '/src/Inproc/Iarn.php',
