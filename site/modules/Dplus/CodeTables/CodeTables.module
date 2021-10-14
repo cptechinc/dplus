@@ -3,6 +3,7 @@
 use Purl\Url;
 
 include_once(__DIR__.'/CodeTablesResponse.php');
+include_once(__DIR__.'/vendor/autoload.php');
 
 class CodeTables extends WireData implements Module {
 

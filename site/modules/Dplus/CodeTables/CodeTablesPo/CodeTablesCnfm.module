@@ -14,7 +14,7 @@ class CodeTablesCnfm extends WireData implements Module {
 	const MODEL_KEY          = 'id';
 	const DESCRIPTION        = 'PO Confirmation Code';
 	const DESCRIPTION_RECORD = 'PO Confirmation Code';
-	const MODEL_TABLE = 'po_confirm_code';
+	const MODEL_TABLE        = 'po_confirm_code';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;

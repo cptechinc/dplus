@@ -12,10 +12,10 @@ class Menu extends Base {
 	const DPLUSPERMISSION = 'inproc';
 	const SUBFUNCTIONS = [
 		'iarn' => [
-			'name'    => 'iarn',
+			'name'       => 'iarn',
 			'permission' => 'iarn',
-			'title'   => 'Inventory Adjustment Reason',
-			'summary' => 'View / Edit Inventory Adjustment Reason'
+			'title'      => 'Inventory Adjustment Reason',
+			'summary'    => 'View / Edit Inventory Adjustment Reason'
 		]
 	];
 
@@ -46,7 +46,13 @@ class Menu extends Base {
 	Displays
 ============================================================= */
 	private static function menu($data) {
-		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => self::SUBFUNCTIONS]);
+		$functions = [];
+		foreach (self::SUBFUNCTIONS as $key => $function) {
+			if (empty($function['permission']) || self::pw('user')->hasPermission($function['permission'])) {
+				$functions[$key] = $function;
+			}
+		}
+		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================
@@ -58,6 +64,5 @@ class Menu extends Base {
 		$m->addHook('Page(pw_template=inproc)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
 		});
-
 	}
 }

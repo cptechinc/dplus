@@ -1,4 +1,5 @@
 <?php namespace Mvc\Controllers;
+use stdClass;
 
 use ProcessWire\ProcessWire;
 use ProcessWire\Sanitizer;
@@ -38,14 +39,18 @@ abstract class AbstractController extends WireData {
 	}
 
 	public static function sanitizeParametersShort($data, $fields) {
+		if (empty($data)) {
+			$data = new stdClass();
+		}
+
 		foreach ($fields as $param) {
 			// Split param: Format is name|sanitizer method
 			$arr = explode('|', $param);
 			$name = $arr[0];
 			$method = $arr[1];
 
-				// Check if Param exists
-			if (!isset($data->$name)) {
+			// Check if Param exists
+			if (isset($data->$name) === false) {
 				$data->$name = '';
 				continue;
 			}

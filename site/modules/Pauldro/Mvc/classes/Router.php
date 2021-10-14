@@ -1,5 +1,7 @@
 <?php namespace Mvc;
 
+
+use stdClass;
 use Exception;
 
 use Whoops\Run as Whoops;
@@ -153,6 +155,9 @@ class Router extends WireData {
 
 		// convert array to object:
 		$vars = json_decode(json_encode($vars));
+		if (empty($vars)) {
+			$vars = new stdClass();
+		}
 		return $class::$methodName($vars);
 	}
 
