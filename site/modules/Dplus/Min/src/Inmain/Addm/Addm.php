@@ -230,6 +230,14 @@ class Addm extends WireData {
 			$this->setResponse(Response::responseError($key, $message));
 			return false;
 		}
+
+		if ($xref->isNew() && $itemID == $addonID) {
+			$key = $this->getRecordlockerKey($xref);
+			$message = self::DESCRIPTION_RECORD . ' Add-on Item must be different from Item ID';
+			$this->setResponse(Response::responseError($key, $message));
+			return false;
+		}
+
 		$invalidFields = $this->updateXrefInput($xref, $input);
 
 		$response = $this->saveAndRespond($xref, $invalidFields);
@@ -298,7 +306,7 @@ class Addm extends WireData {
 		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
-			$this->updateDplusServer($xref);
+			// $this->updateDplusServer($xref);
 		}
 		return $response;
 	}
@@ -359,7 +367,7 @@ class Addm extends WireData {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
-	
+
 
 /* =============================================================
 	Hook Functions
