@@ -1,10 +1,14 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
 // Purl URI Library
 use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemAddonItemQuery, ItemAddonItem;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
+// Dplus Filters
+use Dplus\Filters;
 // Mvc Controllers
 use Controllers\Min\Inmain\Addm as AddmParent;
 
@@ -31,7 +35,7 @@ class Addm extends Base {
 		if (empty($data->component) === false) {
 			return self::bomComponent($data);
 		}
-		return self::bom($data);
+		return self::list($data);
 	}
 
 	// public static function handleCRUD($data) {
@@ -43,17 +47,23 @@ class Addm extends Base {
 	// 	if (empty($data->bomID)) {
 	// 		self::setupInputBomid($data);
 	// 	}
-	// 	$bmm = AddmParent::getBmm();
+	// 	$addm = AddmParent::getAddm();
 	//
 	// 	if ($data->action) {
-	// 		$bmm->processInput(self::pw('input'));
+	// 		$addm->processInput(self::pw('input'));
 	// 	}
 	// 	self::pw('session')->redirect(self::bomUrl($data->itemID), $http301 = false);
 	// }
 
-	private static function bom($data) {
-		self::pw('page')->headline = "ITM: BoM $data->itemID";
-		$html = self::displayBom($data);
+	private static function list($data) {
+		self::pw('page')->headline = "ITM: $data->itemID Add-ons";
+
+		$filter = new Filters\Min\AddonItem();
+		$filter->query->filterByItemid($data->itemID);
+		$filter->sortby(self::pw('page'));
+		$filter->query->orderBy(ItemAddonItem::aliasproperty('itemid'), 'ASC');
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		$html = self::displayList($data, $xrefs);
 		return $html;
 	}
 
@@ -61,16 +71,16 @@ class Addm extends Base {
 	// 	$fields = ['itemID|text', 'component|text', 'action|text'];
 	// 	self::sanitizeParametersShort($data, $fields);
 	//
-	// 	$bmm  = AddmParent::getBmm();
-	// 	$addonID = $bmm->components->getOrCreate($data->itemID, $data->component);
+	// 	$addm  = AddmParent::getAddm();
+	// 	$addonID = $addm->components->getOrCreate($data->itemID, $data->component);
 	//
 	// 	if ($addonID->isNew() === false) {
-	// 		$bmm->lockrecord($data->itemID);
+	// 		$addm->lockrecord($data->itemID);
 	// 	}
 	//
 	// 	$page           = self::pw('page');
 	// 	$page->headline = $addonID->isNew() ? "ITM: BoM $data->itemID" : "ITM: BoM $data->itemID - $data->component";
-	// 	$page->js .= self::pw('config')->twig->render('mpm/bmm/component/js.twig', ['bmm' => $bmm]);
+	// 	$page->js .= self::pw('config')->twig->render('mpm/bmm/component/js.twig', ['bmm' => $addm]);
 	// 	$html = self::displayBomComponent($data, $addonID);
 	// 	return $html;
 	// }
@@ -78,29 +88,26 @@ class Addm extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayBom($data) {
-		$bmm  = AddmParent::getBmm();
+	private static function displayList($data, PropelModelPager $xrefs) {
+		$addm  = AddmParent::getAddm();
 		$itm  = self::getItm();
 		$item = $itm->item($data->itemID);
-		$bomItem  = $bmm->header->getOrCreate($data->itemID);
 		self::initHooks();
-
 
 		$html = '';
 		$html .= self::lockItem($data->itemID);
-		$html .= AddmParent::displayLock($data);
 		$html .= AddmParent::displayResponse($data);
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/bom/display.twig', ['item' => $item, 'itm' => $itm, 'bmm' => $bmm, 'bomItem' => $bomItem]);
-		$bmm::deleteResponse();
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/addm/list/display.twig', ['itm' => $itm, 'addm' => $addm, 'item' => $item, 'xrefs' => $xrefs]);
+		$addm->deleteResponse();
 		return $html;
 	}
 
 	// private static function displayBomComponent($data, $addonID) {
 	// 	$data->bomID = $data->itemID;
-	// 	$bmm      = AddmParent::getBmm();
+	// 	$addm      = AddmParent::getAddm();
 	// 	$itm      = self::getItm();
 	// 	$item     = $itm->item($data->itemID);
-	// 	$bomItem  = $bmm->header->getOrCreate($data->itemID);
+	// 	$bomItem  = $addm->header->getOrCreate($data->itemID);
 	// 	self::initHooks();
 	// 	AddmParent::lock($data->itemID);
 	//
@@ -109,8 +116,8 @@ class Addm extends Base {
 	// 	$html .= self::lockItem($data->itemID);
 	// 	$html .= AddmParent::displayLock($data);
 	// 	$html .= AddmParent::displayResponse($data);
-	// 	$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/display.twig', ['item' => $item, 'bmm' => $bmm, 'itm' => $itm, 'bomItem' => $bomItem, 'component' => $addonID]);
-	// 	$bmm::deleteResponse();
+	// 	$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/display.twig', ['item' => $item, 'bmm' => $addm, 'itm' => $itm, 'bomItem' => $bomItem, 'component' => $addonID]);
+	// 	$addm::deleteResponse();
 	// 	return $html;
 	// }
 
@@ -118,7 +125,7 @@ class Addm extends Base {
 	URL Functions
 ============================================================= */
 	public static function addmUrl($itemID, $focus = '') {
-		$url = new Purl(Xrefs::xrefUrlBom($itemID));
+		$url = new Purl(Xrefs::xrefUrlAddm($itemID));
 		if ($focus) {
 			$url->query->set('focus', $focus);
 		}
@@ -160,10 +167,15 @@ class Addm extends Base {
 			$event->return = self::xrefUrl($itemID, $addonID);
 		});
 
+		$m->addHook('Page(pw_template=itm)::xrefNewUrl', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = self::xrefUrl($itemID, 'new');
+		});
+
 		$m->addHook('Page(pw_template=itm)::xrefDeleteUrl', function($event) {
 			$itemID  = $event->arguments(0);
 			$addonID = $event->arguments(1);
-			$event->return = self::xrefUrl($itemID, $addonID);
+			$event->return = self::xrefDeleteUrl($itemID, $addonID);
 		});
 
 		$m->addHook('Page(pw_template=itm)::xrefExitUrl', function($event) {

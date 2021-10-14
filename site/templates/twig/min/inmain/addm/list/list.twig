@@ -25,9 +25,9 @@
 					</a>
 				</th>
 				<th class="py-2">
-					<a href="{{ page.xrefNewUrl() }}" class="btn btn-light btn-sm">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add
-					</a>
+					{% block add_button %}
+						{% include 'min/inmain/addm/list/actions/add.twig' %}
+					{% endblock %}
 				</th>
 			</tr>
 		</thead>
@@ -43,15 +43,9 @@
 						<small>{{ xref.addon.description }}</small>
 					</td>
 					<td>
-						{% if addm.recordlocker.isLocked(addm.getRecordlockerKey(xref)) == false or addm.recordlocker.userHasLocked(addm.getRecordlockerKey(xref)) %}
-							<a href="{{ page.xrefDeleteUrl(xref.itemid, xref.addonitemid) }}" class="btn btn-danger btn-sm delete_button" data-delete="Item to Item {{ addm.getRecordlockerKey(xref) }}">
-								<i class="fa fa-trash" aria-hidden="true"></i> Delete
-							</a>
-						{% else %}
-							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ addm.recordlocker.getLockingUser(addm.getRecordlockerKey(xref)) }}
-							</span>
-						{% endif %}
+						{% block edit_buttons %}
+							{% include 'min/inmain/addm/list/actions/edit.twig' %}
+						{% endblock %}
 					</td>
 				</tr>
 			{% endfor %}
