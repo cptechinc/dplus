@@ -111,7 +111,7 @@ $(function() {
 			$('#loading-modal').modal('show');
 
 			if ($(form).data('new') === false) {
-				// form.submit();
+				form.submit();
 				return true;
 			}
 
@@ -129,7 +129,7 @@ $(function() {
 					});
 				}
 				if (exists === false) {
-					// form.submit();
+					form.submit();
 				}
 			});
 		}
