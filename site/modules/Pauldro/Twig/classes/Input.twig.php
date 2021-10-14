@@ -17,7 +17,8 @@ class TwigInput extends TwigBaseHtml {
 
 	const ATTRIBUTES_NOVALUE = [
 		'readonly',
-		'disabled'
+		'disabled',
+		'autofocus'
 	];
 
 	public function __construct() {
