@@ -24,6 +24,9 @@ class Addm extends AbstractController {
 	public static function index($data) {
 		$fields = ['itemID|text', 'addonID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (self::validateUserPermission($data) === false) {
+			return self::displayAlertUserPermission($data);
+		}
 		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
