@@ -89,7 +89,7 @@
 				}
 			}
 		%}
-		<small class="form-text text-muted description">{{ xref.addon.description }}</small>
-		<small class="form-text text-muted description2">{{ xref.addon.description2 }}</small>
+		<small class="form-text text-muted description">{{ xref.addonitemid ? xref.addon.description : '' }}</small>
+		<small class="form-text text-muted description2">{{ xref.addonitemid ? xref.addon.description2 : '' }}</small>
 	</div>
 </div>

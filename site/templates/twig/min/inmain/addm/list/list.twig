@@ -6,6 +6,8 @@
 	addm                   Dplus\Min\Inmain\Addm\Addm
 	xrefs                  Propel\Runtime\Util\PropelModelPager (ItemAddonItem[])
 #}
+{% set response = addm.getResponse() %}
+
 <div class="table-responsive">
 	<table class="table table-sm">
 		<thead>
@@ -33,7 +35,10 @@
 		</thead>
 		<tbody>
 			{% for xref in xrefs %}
-				<tr data-key="{{ addm.getRecordlockerKey(xref) }}">
+				{% set class = xref.addonitemid == input.get.text('focus') ? 'highlight' : '' %}
+				{% set class = (response.hasSuccess() and response.key == [xref.itemid, xref.addonitemid]|join(addm.recordlocker.glue())) ? 'bg-success text-white' : class %}
+
+				<tr data-key="{{ addm.getRecordlockerKey(xref) }}" class="{{ class }}">
 					<td>
 						{{ xref.itemid }} <br>
 						<small>{{ xref.item.description }}</small>

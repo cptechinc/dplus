@@ -1,0 +1,29 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	itm                    module Itm
+	addm                   Dplus\Min\Inmain\Addm\Addm
+	item                   ItemMasterItem
+	xref                   ItemAddonItem
+#}
+{% extends 'items/itm/display.twig' %}
+
+{% block body %}
+	<div class="card-body">
+		{% include 'items/itm/xrefs/addm/xref/form.twig' %}
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div>
+				<a href="{{ page.addmExitUrl(input.get.text('itemID')) }}" class="btn btn-warning btn-sm">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}
