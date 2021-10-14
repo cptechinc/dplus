@@ -48,7 +48,7 @@ class Addm extends AbstractController {
 		$filter = new Filters\Min\AddonItem();
 
 		if ($data->q) {
-			self::pw('page')->headline = "I2I: Searching for '$data->q'";
+			self::pw('page')->headline = "Addm: Searching for '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
 

@@ -1,3 +1,11 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page(pw_template=addm)
+	input                  ProcessWire\WireInput
+	addm                   Dplus\Min\Inmain\Addm\Addm
+	xref                   ItemAddonItem
+#}
 <form action="{{ input.url() }}" method="POST" id="addm-form" data-new="{{ xref.isNew() ? 'true' : 'false' }}">
 	<input type="hidden" name="action" value="update">
 
