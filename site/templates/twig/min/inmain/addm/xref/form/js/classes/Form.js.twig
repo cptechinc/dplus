@@ -29,7 +29,6 @@ class AddmForm {
 		if (input.attr('data-itemid') != input.val()) {
 			AddmRequests.getInstance().getItm(input.val(),['description', 'description2'], function(item) {
 				if (item) {
-					console.log(item);
 					var parent = input.closest('.item-fields');
 					parent.find('.description').text(item.description);
 					parent.find('.description2').text(item.description2);
