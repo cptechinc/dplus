@@ -38,6 +38,24 @@ class Addm extends AbstractController {
 		return self::list($data);
 	}
 
+	public static function handleCRUD($data) {
+		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		self::sanitizeParameters($data, $fields);
+		$addm = self::getAddm();
+		$addm->processInput(self::pw('input'));
+		$url = self::xrefListUrl();
+
+		switch ($data->action) {
+			case 'update':
+				if ($addm->exists($data->itemID, $data->addonID)) {
+					$xref = $addm->xref($data->itemID, $data->addonID);
+					$url = self::xrefListFocusUrl($addm->getRecordlockerKey($xref));
+				}
+				break;
+		}
+		self::pw('session')->redirect($url, $http301 = false);
+	}
+
 	private static function list($data) {
 		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
 		self::pw('session')->removeFor('addm', 'sortfilter');
@@ -121,10 +139,41 @@ class Addm extends AbstractController {
 		if (empty($focus)) {
 			return self::addmUrl();
 		}
+		return self::xrefListFocusUrl($focus);
+	}
+
+	public static function xrefListFocusUrl($focus) {
+		$addm = self::getAddm();
+
+		if ($addm->existsFromRecordlockerKey($focus) === false) {
+			return self::addmUrl();
+		}
+
+		$xref = $addm->xrefFromRecordlockerKey($focus);
+		$filter     = new Filters\Min\AddonItem();
+		$sortFilter = Filters\SortFilter::getFromSession('addm');
+
+		if ($sortFilter) {
+			$filter->applySortFilter($sortFilter);
+		}
+		$filter->query->orderBy(ItemAddonItem::aliasproperty('itemid'), 'ASC');
+		$offset  = $filter->positionQuick($xref->itemid);
+		$pagenbr = self::getPagenbrFromOffset($offset);
+
 		$url = new Purl(self::addmUrl());
 		$url->query->set('focus', $focus);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'addm', $pagenbr);
+		if ($sortFilter) {
+			if ($sortFilter->q) {
+				$url->query->set('q', $sortFilter->q);
+			}
+			if ($sortFilter->orderby) {
+				$url->query->set('orderby', $sortFilter->orderby);
+			}
+		}
 		return $url->getUrl();
 	}
+
 
 	public static function xrefUrl($itemID, $addonID) {
 		$url = new Purl(self::addmUrl());
