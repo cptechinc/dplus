@@ -63,6 +63,10 @@
 				['GET',  '', ItmXrefs\Bom::class, 'index'],
 				['POST', '', ItmXrefs\Bom::class, 'handleCRUD'],
 			],
+			'addm' => [
+				['GET',  '', ItmXrefs\Addm::class, 'index'],
+				['POST', '', ItmXrefs\Addm::class, 'handleCRUD'],
+			],
 		],
 	];
 	$router = new Mvc\Router();

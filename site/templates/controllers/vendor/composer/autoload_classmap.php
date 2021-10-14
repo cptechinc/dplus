@@ -87,6 +87,7 @@ return array(
     'Controllers\\Min\\Itm\\Misc' => $baseDir . '/classes/min/itm/Misc.php',
     'Controllers\\Min\\Itm\\Pricing' => $baseDir . '/classes/min/itm/Pricing.php',
     'Controllers\\Min\\Itm\\Warehouse' => $baseDir . '/classes/min/itm/Warehouse.php',
+    'Controllers\\Min\\Itm\\Xrefs\\Addm' => $baseDir . '/classes/min/itm/xrefs/Addm.php',
     'Controllers\\Min\\Itm\\Xrefs\\Base' => $baseDir . '/classes/min/itm/xrefs/Base.php',
     'Controllers\\Min\\Itm\\Xrefs\\Bom' => $baseDir . '/classes/min/itm/xrefs/Bom.php',
     'Controllers\\Min\\Itm\\Xrefs\\Cxm' => $baseDir . '/classes/min/itm/xrefs/Cxm.php',

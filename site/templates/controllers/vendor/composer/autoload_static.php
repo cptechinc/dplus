@@ -88,6 +88,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Min\\Itm\\Misc' => __DIR__ . '/../..' . '/classes/min/itm/Misc.php',
         'Controllers\\Min\\Itm\\Pricing' => __DIR__ . '/../..' . '/classes/min/itm/Pricing.php',
         'Controllers\\Min\\Itm\\Warehouse' => __DIR__ . '/../..' . '/classes/min/itm/Warehouse.php',
+        'Controllers\\Min\\Itm\\Xrefs\\Addm' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Addm.php',
         'Controllers\\Min\\Itm\\Xrefs\\Base' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Base.php',
         'Controllers\\Min\\Itm\\Xrefs\\Bom' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Bom.php',
         'Controllers\\Min\\Itm\\Xrefs\\Cxm' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Cxm.php',
