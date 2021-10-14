@@ -18,7 +18,7 @@ $(function() {
 				server.validateXref(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(exists) {
 					if (exists === true) {
 						alert.xrefExists(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(goEdit) {
-							// AddmForm.getInstance().redirectExisting(goEdit);
+							AddmForm.getInstance().redirectExisting(goEdit);
 						});
 					}
 				});
@@ -108,7 +108,30 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		submitHandler: function(form) {
-			form.submit();
+			$('#loading-modal').modal('show');
+
+			if ($(form).data('new') === false) {
+				// form.submit();
+				return true;
+			}
+
+			var data = $(form).serializeArray().reduce(function(obj, item) {
+				obj[item.name] = item.value;
+				return obj;
+			}, {});
+
+			var server = AddmRequests.getInstance();
+			server.validateXref(data['itemID'], data['addonID'], function(exists) {
+				if (exists === true) {
+					var alert = AddmAlerts.getInstance();
+					alert.xrefExists(data['itemID'], data['addonID'], function(goEdit) {
+						AddmForm.getInstance().redirectExisting(goEdit);
+					});
+				}
+				if (exists === false) {
+					// form.submit();
+				}
+			});
 		}
 	});
 });
