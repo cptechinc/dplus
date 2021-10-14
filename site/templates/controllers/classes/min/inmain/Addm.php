@@ -17,14 +17,16 @@ use Dplus\Filters;
 use Dplus\Min\Inmain\Addm\Addm as Manager;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Min\Base;
 
-class Addm extends AbstractController {
+class Addm extends Base {
+	const DPLUSPERMISSION = 'addm';
 	private static $addm;
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'addonID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		if (self::validateUserPermission($data) === false) {
+		if (self::validateUserPermission() === false) {
 			return self::displayAlertUserPermission($data);
 		}
 		self::pw('page')->show_breadcrumbs = false;

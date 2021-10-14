@@ -18,13 +18,18 @@ use Dplus\Filters\Min\I2i as I2iFilter;
 use Dplus\Min\Inmain\I2i\I2i as CRUDManager;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Min\Base;
 
-class I2i extends AbstractController {
+class I2i extends Base {
+	const DPLUSPERMISSION = 'i2i';
 	private static $i2i;
 
 	public static function index($data) {
 		$fields = ['parentID|text', 'childID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (self::validateUserPermission() === false) {
+			return self::displayAlertUserPermission($data);
+		}
 		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
