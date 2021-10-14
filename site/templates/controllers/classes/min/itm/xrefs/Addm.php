@@ -26,34 +26,32 @@ class Addm extends Base {
 			return self::displayAlertUserPermission($data);
 		}
 
-		// if (empty($data->action) === false) {
-		// 	return self::handleCRUD($data);
-		// }
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
 
 		self::pw('page')->show_breadcrumbs = false;
 
-		if (empty($data->component) === false) {
-			return self::bomComponent($data);
+		if (empty($data->addonID) === false) {
+			return self::xref($data);
 		}
 		return self::list($data);
 	}
 
-	// public static function handleCRUD($data) {
-	// 	if (self::validateItemidAndPermission($data) === false) {
-	// 		return self::displayAlertUserPermission($data);
-	// 	}
-	// 	self::sanitizeParametersShort($data, ['bomID|text', 'itemID|text', 'action|text']);
-	//
-	// 	if (empty($data->bomID)) {
-	// 		self::setupInputBomid($data);
-	// 	}
-	// 	$addm = AddmParent::getAddm();
-	//
-	// 	if ($data->action) {
-	// 		$addm->processInput(self::pw('input'));
-	// 	}
-	// 	self::pw('session')->redirect(self::bomUrl($data->itemID), $http301 = false);
-	// }
+	public static function handleCRUD($data) {
+		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		if (self::validateItemidAndPermission($data) === false) {
+			return self::displayAlertUserPermission($data);
+		}
+		$addm = AddmParent::getAddm();
+
+		if ($data->action) {
+			$addm->processInput(self::pw('input'));
+		}
+		self::pw('session')->redirect(self::addmUrl($data->itemID), $http301 = false);
+	}
 
 	private static function list($data) {
 		self::pw('page')->headline = "ITM: $data->itemID Add-ons";
@@ -67,23 +65,27 @@ class Addm extends Base {
 		return $html;
 	}
 
-	// private static function bomComponent($data) {
-	// 	$fields = ['itemID|text', 'component|text', 'action|text'];
-	// 	self::sanitizeParametersShort($data, $fields);
-	//
-	// 	$addm  = AddmParent::getAddm();
-	// 	$addonID = $addm->components->getOrCreate($data->itemID, $data->component);
-	//
-	// 	if ($addonID->isNew() === false) {
-	// 		$addm->lockrecord($data->itemID);
-	// 	}
-	//
-	// 	$page           = self::pw('page');
-	// 	$page->headline = $addonID->isNew() ? "ITM: BoM $data->itemID" : "ITM: BoM $data->itemID - $data->component";
-	// 	$page->js .= self::pw('config')->twig->render('mpm/bmm/component/js.twig', ['bmm' => $addm]);
-	// 	$html = self::displayBomComponent($data, $addonID);
-	// 	return $html;
-	// }
+	private static function xref($data) {
+		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$addm = AddmParent::getAddm();
+
+		$xref = $addm->getOrCreate($data->itemID, $data->addonID);
+
+		self::pw('page')->headline = "ITM: $data->itemID Add-on $data->addonID";
+
+		if ($addm->exists($data->itemID, $data->addonID) === false) {
+			self::pw('page')->headline = "ITM: $data->itemID ADDM: Creating Add-on";
+		}
+
+		if ($xref->isNew() === false) {
+			if ($addm->recordlocker->isLocked($addm->getRecordlockerKey($xref)) === false) {
+				$addm->recordlocker->lock($addm->getRecordlockerKey($xref));
+			}
+		}
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inmain/addm/xref/form/.js.twig');
+		return self::displayXref($data, $xref);
+	}
 
 /* =============================================================
 	Displays
@@ -102,24 +104,19 @@ class Addm extends Base {
 		return $html;
 	}
 
-	// private static function displayBomComponent($data, $addonID) {
-	// 	$data->bomID = $data->itemID;
-	// 	$addm      = AddmParent::getAddm();
-	// 	$itm      = self::getItm();
-	// 	$item     = $itm->item($data->itemID);
-	// 	$bomItem  = $addm->header->getOrCreate($data->itemID);
-	// 	self::initHooks();
-	// 	AddmParent::lock($data->itemID);
-	//
-	// 	$html  = '';
-	// 	// $html .= self::kitHeaders();
-	// 	$html .= self::lockItem($data->itemID);
-	// 	$html .= AddmParent::displayLock($data);
-	// 	$html .= AddmParent::displayResponse($data);
-	// 	$html .= self::pw('config')->twig->render('items/itm/xrefs/bom/component/display.twig', ['item' => $item, 'bmm' => $addm, 'itm' => $itm, 'bomItem' => $bomItem, 'component' => $addonID]);
-	// 	$addm::deleteResponse();
-	// 	return $html;
-	// }
+	private static function displayXref($data, ItemAddonItem $xref) {
+		$addm     = AddmParent::getAddm();
+		$itm      = self::getItm();
+		$item     = $itm->item($data->itemID);
+		self::initHooks();
+
+		$html  = '';
+		$html .= self::lockItem($data->itemID);
+		$html .= AddmParent::displayResponse($data);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/addm/xref/display.twig', ['itm' => $itm, 'addm' => $addm, 'item' => $item, 'xref' => $xref]);
+		$addm->deleteResponse();
+		return $html;
+	}
 
 /* =============================================================
 	URL Functions
@@ -179,6 +176,12 @@ class Addm extends Base {
 		});
 
 		$m->addHook('Page(pw_template=itm)::xrefExitUrl', function($event) {
+			$itemID  = $event->arguments(0);
+			$addonID = $event->arguments(1);
+			$event->return = self::addmUrl($itemID, $addonID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefListUrl', function($event) {
 			$itemID  = $event->arguments(0);
 			$addonID = $event->arguments(1);
 			$event->return = self::addmUrl($itemID, $addonID);
