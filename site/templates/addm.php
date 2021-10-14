@@ -7,7 +7,7 @@
 
 	$routes = [
 		['GET',  '', Addm::class, 'index'],
-		['GET',  'page{d:\d+}', Addm::class, 'list'],
+		['GET',  'page{d:\d+}', Addm::class, 'index'],
 		['POST', '', Addm::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Router();
@@ -16,8 +16,8 @@
 	$page->body = $router->route();
 
 	if ($router->hasError() === false) {
-		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-		$session->removeFor('response', 'addm');
+		$config->scripts->append($modules->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
+		Addm::getAddm()->deleteResponse();
 		$page->show_breadcrumbs = false;
 	}
 	include __DIR__ . "/basic-page.php";
