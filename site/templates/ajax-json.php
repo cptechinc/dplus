@@ -43,7 +43,7 @@
 					]
 				],
 				'addm' => [
-					['GET', 'xref/', Json\Min::class, 'validateAddmExists'],
+					['GET', 'xref/', Json\Min::class, 'validateAddm'],
 				],
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
