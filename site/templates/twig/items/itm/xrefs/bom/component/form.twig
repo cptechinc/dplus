@@ -1,0 +1,17 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	bmm                    Dplus\Mpm\Pmmain\Bmm
+	bomItem                BomItem
+	component              BomComponent
+	itm                    module Itm
+#}
+
+{% extends 'mpm/bmm/component/form.twig' %}
+
+{% block crud_buttons %}
+	{% if itm.recordlocker.isLocked(bomItem.itemid) == false or itm.recordlocker.userHasLocked(bomItem.itemid) %}
+		{% include 'mpm/bmm/component/form/crud-buttons.twig' %}
+	{% endif %}
+{% endblock %}

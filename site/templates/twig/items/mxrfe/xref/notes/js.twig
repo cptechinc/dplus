@@ -20,4 +20,10 @@ $(function() {
 	{% if page.session.get('response_qnote') %}
 		$('html, body').animate({scrollTop: $('#notes-tab').offset().top - 60}, 1000);
 	{% endif %}
+
+	$('body').on('keyup change paste', 'form input, select, textarea', function(){
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+	});
 });

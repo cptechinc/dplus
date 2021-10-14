@@ -10,7 +10,7 @@ class Items extends WireData {
 /* =============================================================
 	Constructor
 ============================================================= */
-	public function __constructor() {
+	public function __construct() {
 		$this->sessionID = session_id();
 	}
 

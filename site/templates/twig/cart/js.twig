@@ -1,4 +1,9 @@
+{% include 'cart/js/classes.js.twig' %}
+
 $(function() {
+	var serverCart = CartRequests.getInstance();
+	var alertCart  = CartAlerts.getInstance();
+
 /* =============================================================
 	Header Functions
 ============================================================= */
@@ -16,17 +21,15 @@ $(function() {
 		e.preventDefault();
 		var input = $(this);
 		var price = parseFloat(input.val());
-		var row   = input.closest('.cart-item');
-		input.val(price.toFixed({{ cart.decimal_places_price }}));
-		update_totalprice(row);
+		var form = new EditForm();
+		form.setForm(input.closest('form'));
+		input.val(price.toFixed(form.config.fields.price.precision));
+		form.updateTotals();
 
-		request_validate_pricemargin(input.data('itemid'), price, function(valid) {
-			if (valid === false) {
-				swal2.fire({
-					icon: 'warning',
-					title: 'Attention',
-					text: 'The line does not meet minimum margin requirements, saving this item will place this order on hold',
-					confirmButtonText: 'Ok'
+		serverCart.validatePriceMargin(input.data('itemid'), price, function(isValid) {
+			if (isValid === false) {
+				alertCart.minMarginRequirements(input.closest('form').find('input[name=linenbr]').val(), function() {
+
 				});
 			}
 		});
@@ -36,32 +39,9 @@ $(function() {
 		e.preventDefault();
 		var input = $(this);
 		var qty = parseFloat($(this).val());
-		var row   = input.closest('.cart-item');
-		input.val(qty.toFixed({{ cart.decimal_places_qty }}));
-		update_totalprice(row);
+		var form = new EditForm();
+		form.setForm(input.closest('form'));
+		input.val(qty.toFixed(form.config.fields.qty.precision));
+		form.updateTotals();
 	});
-
-	function update_totalprice(row) {
-		var input_qty = row.find('input[name=qty]');
-		var price = parseFloat(row.find('input[name=price]').val());
-		var qty   = parseFloat(input_qty.val());
-
-		if (input_qty.attr('data-avgweight')) {
-			var totalweight = parseFloat(input_qty.val()) * parseFloat(input_qty.attr('data-avgweight'));
-			qty = totalweight;
-		}
-		var total = price * qty;
-		row.find('.total-price').text(total.toFixed({{ cart.decimal_places_price }}));
-		row.find('.total-weight').text(totalweight.toFixed({{ cart.decimal_places_qty }}));
-	}
-
-	function request_validate_pricemargin(itemID, price, callback) {
-		var uri = URI('{{ page.jsonapiURL('mso/validate/price-discount/') }}');
-		uri.setQuery('itemID', itemID);
-		uri.setQuery('price', price);
-
-		$.getJSON(uri.toString(), function(valid) {
-			callback(valid);
-		});
-	}
 });

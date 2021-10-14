@@ -1,0 +1,16 @@
+{#
+	Only show Edit Actions if the Item is
+	1. Locked for editing by the User
+	2. Is a new Item
+	NOTE: Only show delete if item already exists.
+#}
+{% if upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(upc)) or upc.isNew() %}
+	<button type="submit" class="btn btn-success" name="action" value="update-upcx">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+	</button>
+	{% if upc.isNew() == false %}
+		<a href="{{ page.upcDeleteUrl(upc.upc, upc.itemid)}}" class="btn btn-danger delete_button" data-delete="UPC {{ upc.upc }}">
+			<i class="fa fa-trash" aria-hidden="true"></i> Delete
+		</a>
+	{% endif %}
+{% endif %}

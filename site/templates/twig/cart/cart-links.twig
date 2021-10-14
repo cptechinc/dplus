@@ -1,23 +1,23 @@
 <div class="form-group">
 	<div class="row">
 		<div class="col">
-			{% if cart.has_shiptoid() %}
-				<a href="{{ page.ci_customershiptoURL(shipto.custidid, shipto.shiptoid) }}" class="btn btn-primary">
+			{% if cart.hasShiptoid() %}
+				<a href="{{ page.ciShiptoUrl(shipto.custid, shipto.shiptoid) }}" class="btn btn-primary">
 					<i class="fa fa-user" aria-hidden="true"></i> View Shipto {{ shipto.name }}
 				</a>
 			{% else %}
-				<a href="{{ page.ci_customerURL(customer.id) }}" class="btn btn-primary">
+				<a href="{{ page.ciUrl(customer.id) }}" class="btn btn-primary">
 					<i class="fa fa-user" aria-hidden="true"></i> View {{ customer.name }}
 				</a>
 			{% endif %}
 
 			&nbsp; &nbsp;
-			<a href="{{ page.empty_cartURL() }}" class="btn btn-danger">
+			<a href="{{ page.emptyCartUrl() }}" class="btn btn-danger">
 				<i class="fa fa-eraser" aria-hidden="true"></i> Clear Cart
 			</a>
 		</div>
 		<div class="col">
-			<form action="{{ page.url }}" method="get">
+			<form action="{{ input.url() }}" method="get">
 				<input type="hidden" name="action" value="set-shiptoid">
 				<input type="hidden" name="custID" value="{{ customer.id }}">
 
@@ -28,7 +28,9 @@
 					<div class="col">
 						<select name="shiptoID" class="form-control form-control-sm" id="select_shipto">
 							{% for ship in customer.get_shiptos() %}
-								<option value="{{ ship.id }}" {{ ship.id == shipto.id ? 'selected' : '' }}>{{ ship.name }}</option>
+								<option value="{{ ship.id }}" {{ ship.id == shipto.id ? 'selected' : '' }}>
+									{{ ship.id }} - {{ ship.name }}
+								</option>
 							{% endfor %}
 						</select>
 					</div>

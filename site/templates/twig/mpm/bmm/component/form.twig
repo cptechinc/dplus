@@ -1,0 +1,145 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	bmm                    Dplus\Mpm\Pmmain\Bmm
+	bomItem                BomItem
+	component              BomComponent
+#}
+{% set configPm = bmm.getConfigPm() %}
+
+<form action="{{ input.url() }}" method="POST" id="bom-component-form" data-new="{{ component.isNew() ? 'true' : 'false'}}">
+	<input type="hidden" name="action" value="update-component">
+	<input type="hidden" name="itemID" value="{{ input.get.text('itemID') }}">
+	<input type="hidden" name="bomID" value="{{ input.get.offsetExists('bomID') ? input.get.text('bomID') : input.get.text('itemID') }}">
+
+	<div class="row form-group">
+		<div class="col-sm-3">
+			<label for="component">Component Item ID</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'attributes': {
+							'readonly': component.isNew() == false,
+						},
+						'input': {
+							'name': 'component',
+							'value': component.itemid,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Component Item ID'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Items',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('items'),
+								'data-input': '#component'
+							}
+						}
+					}
+				}
+			%}
+			<small class="form-text text-muted description">{{ component.item.description }}</small>
+			<small class="form-text text-muted description2">{{ component.item.description2 }}</small>
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<div class="col-sm-3">
+			<label>Unit of Measure</label>
+		</div>
+		<div class="col-sm-9">
+			<p class="form-control-plain-text form-control-sm">
+				<span class="uom-code">{{ component.item.unitofmsale.code }}</span> - <span class="uom-description">{{ component.item.unitofmsale.description }}</span>
+			</p>
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<div class="col-sm-3">
+			<label for="qty">Usage Rate</label>
+		</div>
+		<div class="col-sm-2">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'type': 'number',
+						'name': 'qty',
+						'value': component.qty,
+						'size': 'sm',
+						'attributes': {
+							'aria-label':  'Component Usage Rate',
+							'readonly': configPm.scrapUnused() == false,
+							'tabindex': configPm.scrapUnused() == false ? '-1' : '',
+						},
+						'addclasses': [
+							'text-right'
+						]
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<div class="col-sm-3">
+			<label for="scrap">Scrap Unused</label>
+		</div>
+		<div class="col-sm-2">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'scrap',
+						'value' : component.scrap,
+						'haskeys': true,
+						'size': 'sm',
+						'options': {'Y': 'Yes', 'N': 'No'},
+						'attributes': {
+							'readonly': configPm.useSerialBase() == false,
+							'tabindex': configPm.useSerialBase() == false ? '-1' : '',
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<div class="col-sm-3">
+			<label for="serialbase">Serial Nbr Base</label>
+		</div>
+		<div class="col-sm-2">
+			{% set allowSerialBase = configPm.useSerialBase() == true and component.isSerialized() == false %}
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'serialbase',
+						'value' : component.serialbase,
+						'haskeys': true,
+						'size': 'sm',
+						'options': {'': '', 'Y': 'Yes', 'N': 'No'},
+						'attributes': {
+							'readonly': allowSerialBase,
+							'tabindex': allowSerialBase ? '-1' : '',
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		{% block crud_buttons %}
+			{% include 'mpm/bmm/component/form/crud-buttons.twig' %}
+		{% endblock %}
+
+		<a href="{{ page.bomComponentExitUrl(bomItem.itemid, component.itemid) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

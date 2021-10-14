@@ -1,0 +1,36 @@
+class EditForm {
+	constructor() {
+		this.form = null;
+		this.inputs = new EditInputs();
+		this.config = CartConfig.getInstance();
+	}
+
+	setForm(form) {
+		this.form = form;
+		this.inputs.setForm(form);
+	}
+
+	updateTotals() {
+		this.updateTotalPrice();
+		this.updateTotalWeight();
+	}
+
+	updateTotalPrice() {
+		var price = parseFloat(this.inputs.price.val());
+		var qty   = parseFloat(this.inputs.qty.val());
+		var total = price * qty;
+		this.form.find('.total-price').text(total.toFixed(this.config.fields.totalprice.precision));
+	}
+
+	updateTotalWeight() {
+		if (this.inputs.qty.attr('data-avgweight')) {
+			var price = parseFloat(this.inputs.price.val());
+			var qty   = parseFloat(this.inputs.qty.val());
+			var totalweight = parseFloat(this.inputs.qty.val()) * parseFloat(this.inputs.qty.attr('data-avgweight'));
+			qty = totalweight;
+			var total = price * qty;
+			this.form.find('.total-price').text(total.toFixed(this.config.fields.totalprice.precision));
+			this.form.find('.total-weight').text(totalweight.toFixed(this.config.fields.qty.precision));
+		}
+	}
+}

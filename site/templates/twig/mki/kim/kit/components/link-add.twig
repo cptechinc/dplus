@@ -1,0 +1,5 @@
+{% if kim.recordlocker.isLocked(kit.itemid) == false or kim.recordlocker.userHasLocked(kit.itemid) %}
+	<a href="{{ page.kitComponentUrl(kit.itemid, 'new') }}" class="btn btn-sm btn-light">
+		<i class="fa fa-plus" aria-hidden="true"></i> Add
+	</a>
+{% endif %}

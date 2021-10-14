@@ -65,10 +65,10 @@ class Xrefs extends Base {
 
 		$html = '';
 		$html .= self::breadCrumbs();
-		if ($session->getFor('response', 'cxm')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'cxm')]);
-			$session->removeFor('response', 'cxm');
-		}
+		// if ($session->getFor('response', 'cxm')) {
+		// 	$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'cxm')]);
+		// 	$session->removeFor('response', 'cxm');
+		// }
 		if ($itm->getResponse()) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
 		}
@@ -106,6 +106,10 @@ class Xrefs extends Base {
 
 		$m->addHook('Page(pw_template=itm)::xrefUrlSubstitutes', function($event) {
 			$event->return = self::xrefUrlSubstitutes($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefUrlBom', function($event) {
+			$event->return = self::xrefUrlBom($event->arguments(0));
 		});
 	}
 
