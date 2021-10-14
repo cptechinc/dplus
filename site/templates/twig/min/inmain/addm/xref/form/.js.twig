@@ -1,0 +1,125 @@
+{% include 'min/inmain/addm/xref/form/js/classes.js.twig' %}
+
+$(function() {
+	var modalAjax = $('#ajax-modal');
+
+	var alert    = AddmAlerts.getInstance();
+	var server   = AddmRequests.getInstance();
+	var formAddm = AddmForm.getInstance();
+
+/* =============================================================
+	Events
+============================================================= */
+	$("body").on("change", "input[name=itemID], input[name=addonID]", function(e) {
+		var input = $(this);
+
+		if (input.attr('data-itemid') != input.val()) {
+			AddmRequests.getInstance().getItm(input.val(),['description', 'description2'], function(item) {
+				if (item) {
+					console.log(item);
+					var parent = input.closest('.item-fields');
+					parent.find('.description').text(item.description);
+					parent.find('.description2').text(item.description2);
+					input.attr('data-itemid', input.val());
+				}
+			});
+		}
+
+
+
+		// server.validateXref(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(exists) {
+		// 	if (exists === true) {
+		// 		alert.xrefExists(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(goEdit) {
+		// 			// AddmForm.getInstance().redirectExisting(goEdit);
+		// 		});
+		// 	}
+		//
+		// });
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modalAjax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(itemID).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query  = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url    = action + '?' + query;
+		var modal  = form.closest('.modal');
+		modal.find('.modal-title').text('Searching for ' + search);
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var href   = button.attr('href');
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formAddm.inputs.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: function() {
+							return $('#itemID').val();
+						}
+					}
+				}
+			},
+			addonID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: function() {
+							return $('#addonID').val();
+						}
+					}
+				}
+			},
+		},
+		messages: {},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+});
