@@ -1,4 +1,4 @@
-class AddmAlerts {
+class AddmAlerts extends Alerts {
 	static instance = null;
 
 	static getInstance() {
@@ -24,22 +24,4 @@ class AddmAlerts {
 			return false
 		});
 	}
-
-	unsavedChanges(callback) {
-		swal2.fire({
-			title: 'Changes have occurred!',
-			text: 'Do you want to save?',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-			cancelButtonText: 'No',
-		}).then((result) => { // Return True for save, false for dismiss
-			if (result.value) {
-				callback(true)
-			} else if (result.dismiss === Swal.DismissReason.cancel) {
-				callback(false);
-			}
-		});
-	}
-
 }
