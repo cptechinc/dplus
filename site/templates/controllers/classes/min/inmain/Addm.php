@@ -29,7 +29,7 @@ class Addm extends AbstractController {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
-		
+
 		if (empty($data->itemID) === false) {
 			if (empty($data->addonID) === false) {
 				return self::xref($data);
@@ -115,6 +115,7 @@ class Addm extends AbstractController {
 		$config = self::pw('config');
 
 		$html  = '';
+		$html .= self::displayBreadcrumbs();
 		$html .= self::displayResponse();
 		$html .= $config->twig->render('min/inmain/addm/list/display.twig', ['addm' => $addm, 'xrefs' => $xrefs]);
 		return $html;
@@ -125,6 +126,7 @@ class Addm extends AbstractController {
 		$config = self::pw('config');
 
 		$html  = '';
+		$html .= self::displayBreadcrumbs();
 		$html .= self::displayResponse();
 		$html .= $config->twig->render('min/inmain/addm/xref/display.twig', ['addm' => $addm, 'xref' => $xref]);
 		return $html;
@@ -138,6 +140,10 @@ class Addm extends AbstractController {
 			return '';
 		}
 		return self::pw('config')->twig->render('items/itm/response-alert-new.twig', ['response' => $response]);
+	}
+
+	private static function displayBreadcrumbs() {
+		return self::pw('config')->twig->render('min/inmain/addm/bread-crumbs.twig', ['addm' => self::getAddm()]);
 	}
 
 /* =============================================================
@@ -236,9 +242,5 @@ class Addm extends AbstractController {
 		$m->addHook('Page(pw_template=addm)::xrefListUrl', function($event) {
 			$event->return = self::xrefListUrl($event->arguments(0));
 		});
-
-		// $m->addHook('Page(pw_template=addm)::xrefListFocusUrl', function($event) {
-		// 	$event->return = self::xrefListFocusUrl($event->arguments(0), $event->arguments(1));
-		// });
 	}
 }
