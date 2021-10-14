@@ -77,7 +77,7 @@ class Addm extends AbstractController {
 		self::pw('page')->headline = "ADDM: $data->itemID Add-on $data->addonID";
 
 		if ($addm->exists($data->itemID, $data->addonID) === false) {
-			self::pw('page')->headline = "ADDM: $data->itemID Creating Add-on";
+			self::pw('page')->headline = "ADDM: Creating Add-on";
 		}
 
 		if ($xref->isNew() === false) {
@@ -85,7 +85,7 @@ class Addm extends AbstractController {
 				$addm->recordlocker->lock($addm->getRecordlockerKey($xref));
 			}
 		}
-		self::pw('page')->js .= self::pw('config')->twig->render('min/inmain/addm/xref/form/js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inmain/addm/xref/form/.js.twig');
 		return self::displayXref($data, $xref);
 	}
 
