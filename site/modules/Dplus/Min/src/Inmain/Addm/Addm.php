@@ -148,6 +148,7 @@ class Addm extends WireData {
 		$invalidFields = $this->updateXrefValidated($xref, $input);
 		$xref->setDate(date('Ymd'));
 		$xref->setTime(date('His'));
+		$xref->setDummy('P');
 		return $invalidFields;
 	}
 
@@ -164,12 +165,12 @@ class Addm extends WireData {
 		$invalid  = [];
 
 		$fields = [
-			'itemID' => [
+			'itemid' => [
 				'description' => 'Item ID',
 				'input'       => 'itemID',
 				'function'    => 'itemid'
 			],
-			'addonID' => [
+			'addonitemid' => [
 				'description' => 'Add-on Item',
 				'input'       => 'addonID',
 				'function'    => 'itemid'
@@ -205,7 +206,7 @@ class Addm extends WireData {
 			default:
 				$key = implode('-', [$values->text('itemID'), $values->text('addonID')]);
 				$message = self::DESCRIPTION_RECORD . " ($key) was not saved, no action was specified";
-				$this->wire('session')->setFor('response', 'i2i', Response::response_error($key, $message));
+				$this->setResponse(Response::responseError($key, $message));
 				return false;
 				break;
 		}
@@ -219,19 +220,21 @@ class Addm extends WireData {
 	public function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('parentID');
-		$addonID  = $values->text('childID');
+		$itemID   = $values->text('itemID');
+		$addonID  = $values->text('addonID');
 		$xref     = $this->getOrCreate($itemID, $addonID);
 
 		if ($this->lockrecord($xref) === false && $xref->isNew() === false) {
-			$message = self::DESCRIPTION_RECORD . " ($xref->parentID-$xref->childID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($xref));
-			$this->wire('session')->setFor('response', 'i2i', Response::response_error($this->getRecordlockerKey($xref), $message));
+			$key = $this->getRecordlockerKey($xref);
+			$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($key);
+			$this->setResponse(Response::responseError($key, $message));
 			return false;
 		}
 		$invalidFields = $this->updateXrefInput($xref, $input);
+
 		$response = $this->saveAndRespond($xref, $invalidFields);
-		$this->wire('session')->setFor('response', 'i2i', $response);
-		return $this->wire('session')->getFor('response', 'i2i')->hasSuccess();
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 	/**
@@ -251,7 +254,7 @@ class Addm extends WireData {
 			if ($this->lockrecord($xref) === false) {
 				$key = $this->getRecordlockerKey($xref);
 				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($xref);
-				$this->setResponse(Response::response_error($key, $message));
+				$this->setResponse(Response::responseError($key, $message));
 				return false;
 			}
 			$xref->delete();
@@ -276,23 +279,23 @@ class Addm extends WireData {
 		$saved  = $xref->isDeleted() ? $xref->isDeleted() : $xref->save();
 
 		$response = new Response();
-		$response->set_key($this->getRecordlockerKey($xref));
+		$response->setKey($this->getRecordlockerKey($xref));
 
 		if ($saved) {
-			$response->set_success(true);
+			$response->setSuccess(true);
 		} else {
-			$response->set_error(true);
+			$response->setError(true);
 		}
 
 		if ($is_new) {
-			$response->set_action(Response::CRUD_CREATE);
+			$response->setAction(Response::CRUD_CREATE);
 		} elseif ($xref->isDeleted()) {
-			$response->set_action(Response::CRUD_DELETE);
+			$response->setAction(Response::CRUD_DELETE);
 		} else {
-			$response->set_action(Response::CRUD_UPDATE);
+			$response->setAction(Response::CRUD_UPDATE);
 		}
 
-		$response->build_message(self::RESPONSE_TEMPLATE);
+		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
 			$this->updateDplusServer($xref);
@@ -356,13 +359,7 @@ class Addm extends WireData {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
-	/**
-	 * Return Warehouses to Select from
-	 * @return Warehouse[]|ObjectCollection
-	 */
-	public function getWarehouses() {
-		return WarehouseQuery::create()->find();
-	}
+	
 
 /* =============================================================
 	Hook Functions
