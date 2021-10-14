@@ -8,9 +8,10 @@ use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\WireData;
 // Dplus Codes
-use Dplus\Codes\Po\Cnfm as CnfmCRUD;
+use Dplus\Codes\Po\Cnfm as Manager;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+
 
 class Cnfm extends Base {
 	const DPLUSPERMISSION = 'cnfm';
@@ -41,7 +42,7 @@ class Cnfm extends Base {
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mpo/cnfm/js.twig', ['cnfm' => $cnfm]);
 		self::initHooks();
 		$html = self::displayList($data, $cnfm->codes());
-		self::pw('session')->removeFor('response', 'cnfm');
+		$cnfm->deleteResponse();
 		return $html;
 	}
 
@@ -91,7 +92,7 @@ class Cnfm extends Base {
 		$config = self::pw('config');
 
 		$html = '';
-		// $html .= self::breadCrumbsDisplay($data);
+		$html .= self::displayBreadcrumbs($data);
 		$html .= '<div class="mb-3">' . self::displayResponse($data) . '</div>';
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $cnfm , 'codes' => $codes]);
 		$html .= $config->twig->render('code-tables/mpo/cnfm/edit-modal.twig', ['cnfm' => $cnfm]);
@@ -100,18 +101,22 @@ class Cnfm extends Base {
 	}
 
 	private static function displayResponse($data) {
-		$response = self::pw('session')->getFor('response', 'cnfm');
+		$response = self::getCnfm()->getResponse();
 		if (empty($response)) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
+	private static function displayBreadcrumbs($data) {
+		return self::pw('config')->twig->render('code-tables/mpo/cnfm/bread-crumbs.twig');
+	}
+
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
 	public static function getCnfm() {
-		return CnfmCRUD::getInstance();
+		return Manager::getInstance();
 	}
 
 /* =============================================================

@@ -151,7 +151,7 @@ class Cnfm extends Base {
 		$code->setDate(date('Ymd'));
 		$code->setTime(date('His'));
 		$response = $this->saveAndRespond($code);
-		$this->wire('session')->setFor('response', 'cnfm', $response);
+		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
 
@@ -173,11 +173,13 @@ class Cnfm extends Base {
 		$code = $this->code($id);
 		$code->delete();
 		$response = $this->saveAndRespond($code);
-		$this->wire('session')->setFor('response', 'cnfm', $response);
+		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
 
-
+/* =============================================================
+	CRUD Response
+============================================================= */
 	/**
 	 * Return Response based on the outcome of the database save
 	 * @param  PoConfirmCode $code  PO Confirmation Code
@@ -209,5 +211,28 @@ class Cnfm extends Base {
 			$this->updateDplus($code->id);
 		}
 		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param Response $response
+	 */
+	public function setResponse(Response $response) {
+		$this->wire('session')->setFor('response', self::RECORDLOCKER_FUNCTION, $response);
+	}
+
+	/**
+	 * Return Session Response
+	 * @return Response
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', self::RECORDLOCKER_FUNCTION);
+	}
+
+	/**
+	 * Delete Session Response
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', self::RECORDLOCKER_FUNCTION);
 	}
 }
