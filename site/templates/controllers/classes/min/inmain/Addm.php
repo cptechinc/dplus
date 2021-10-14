@@ -88,7 +88,7 @@ class Addm extends AbstractController {
 		return $html;
 	}
 
-	public static function xref($data) {
+	private static function xref($data) {
 		$fields = ['itemID|text', 'addonID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$addm = self::getAddm();
@@ -194,7 +194,6 @@ class Addm extends AbstractController {
 		}
 		return $url->getUrl();
 	}
-
 
 	public static function xrefUrl($itemID, $addonID) {
 		$url = new Purl(self::addmUrl());
