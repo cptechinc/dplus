@@ -26,10 +26,10 @@ class Addm extends AbstractController {
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
-		// if (empty($data->action) === false) {
-		// 	return self::handleCRUD($data);
-		// }
-		//
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
+		
 		if (empty($data->itemID) === false) {
 			if (empty($data->addonID) === false) {
 				return self::xref($data);
