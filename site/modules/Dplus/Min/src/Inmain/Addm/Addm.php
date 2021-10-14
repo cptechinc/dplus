@@ -252,9 +252,9 @@ class Addm extends WireData {
 	 */
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$itemID = $values->text('parentID');
-		$addonID  = $values->text('childID');
+		$values  = $input->$rm;
+		$itemID  = $values->text('itemID');
+		$addonID = $values->text('addonID');
 
 		if ($this->exists($itemID, $addonID)) {
 			$xref = $this->xref($itemID, $addonID);
@@ -288,6 +288,8 @@ class Addm extends WireData {
 
 		$response = new Response();
 		$response->setKey($this->getRecordlockerKey($xref));
+		$response->setItemID($xref->itemid);
+		$response->setAddonID($xref->addonitemid);
 
 		if ($saved) {
 			$response->setSuccess(true);
@@ -306,7 +308,7 @@ class Addm extends WireData {
 		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
-			// $this->updateDplusServer($xref);
+			$this->updateDplusServer($xref);
 		}
 		return $response;
 	}
@@ -357,7 +359,7 @@ class Addm extends WireData {
 	public function updateDplusServer(ItemAddonItem $xref) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
-		$data = ["DBNAME=$dplusdb", 'UPDATEI2I', "MSTRITEM=$xref->itemid", "CHILDITEM=$xref->addonitemid"];
+		$data = ["DBNAME=$dplusdb", 'UPDATEADDM', "ITEMID=$xref->itemid", "ADDONITEM=$xref->addonitemid"];
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);
