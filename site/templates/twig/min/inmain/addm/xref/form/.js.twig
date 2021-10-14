@@ -16,7 +16,7 @@ $(function() {
 		formAddm.updateItmDescription(input, function() {
 			if (formAddm.inputs.itemid.val() != '' && formAddm.inputs.addonid.val() != '') {
 				var validator = formAddm.inputs.form.validate();
-				
+
 				if (validator.element('#' + formAddm.inputs.addonid.attr('id'))) {
 					server.validateXref(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(exists) {
 						if (exists === true) {
