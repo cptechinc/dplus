@@ -115,6 +115,7 @@ class Addm extends AbstractController {
 		$config = self::pw('config');
 
 		$html  = '';
+		$html .= self::displayResponse();
 		$html .= $config->twig->render('min/inmain/addm/list/display.twig', ['addm' => $addm, 'xrefs' => $xrefs]);
 		return $html;
 	}
@@ -124,8 +125,19 @@ class Addm extends AbstractController {
 		$config = self::pw('config');
 
 		$html  = '';
+		$html .= self::displayResponse();
 		$html .= $config->twig->render('min/inmain/addm/xref/display.twig', ['addm' => $addm, 'xref' => $xref]);
 		return $html;
+	}
+
+	// NOTE: Keep public for Itm
+	public static function displayResponse() {
+		$response = self::getAddm()->getResponse();
+
+		if (empty($response)) {
+			return '';
+		}
+		return self::pw('config')->twig->render('items/itm/response-alert-new.twig', ['response' => $response]);
 	}
 
 /* =============================================================
