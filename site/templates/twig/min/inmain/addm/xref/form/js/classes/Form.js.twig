@@ -10,17 +10,37 @@ class AddmForm {
 
 	constructor() {
 		this.id = 'i2i-form';
+		this.form   = $(this.id);
 		this.inputs = AddmInputs.getInstance();
 	}
 
 	redirectExisting(goEdit) {
 		if (goEdit === true) {
 			var uri = URI();
-			uri.setQuery('parentID', this.inputs.parentid.val());
-			uri.setQuery('childtID', this.inputs.childid.val());
+			uri.setQuery('itemID', this.inputs.itemid.val());
+			uri.setQuery('addonID', this.inputs.addonid.val());
 			window.location.href = uri.toString();
 		} else {
 			location.reload();
+		}
+	}
+
+	updateItmDescription(input, callback) {
+		if (input.attr('data-itemid') != input.val()) {
+			AddmRequests.getInstance().getItm(input.val(),['description', 'description2'], function(item) {
+				if (item) {
+					console.log(item);
+					var parent = input.closest('.item-fields');
+					parent.find('.description').text(item.description);
+					parent.find('.description2').text(item.description2);
+					input.attr('data-itemid', input.val());
+					callback();
+					return true;
+				}
+			});
+		} else {
+			callback();
+			return true;
 		}
 	}
 

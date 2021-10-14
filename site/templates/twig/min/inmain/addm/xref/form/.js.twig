@@ -13,28 +13,17 @@ $(function() {
 	$("body").on("change", "input[name=itemID], input[name=addonID]", function(e) {
 		var input = $(this);
 
-		if (input.attr('data-itemid') != input.val()) {
-			AddmRequests.getInstance().getItm(input.val(),['description', 'description2'], function(item) {
-				if (item) {
-					console.log(item);
-					var parent = input.closest('.item-fields');
-					parent.find('.description').text(item.description);
-					parent.find('.description2').text(item.description2);
-					input.attr('data-itemid', input.val());
-				}
-			});
-		}
-
-
-
-		// server.validateXref(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(exists) {
-		// 	if (exists === true) {
-		// 		alert.xrefExists(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(goEdit) {
-		// 			// AddmForm.getInstance().redirectExisting(goEdit);
-		// 		});
-		// 	}
-		//
-		// });
+		formAddm.updateItmDescription(input, function() {
+			if (formAddm.inputs.itemid.val() != '' && formAddm.inputs.addonid.val() != '') {
+				server.validateXref(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(exists) {
+					if (exists === true) {
+						alert.xrefExists(formAddm.inputs.itemid.val(), formAddm.inputs.addonid.val(), function(goEdit) {
+							// AddmForm.getInstance().redirectExisting(goEdit);
+						});
+					}
+				});
+			}
+		});
 	});
 
 /* =============================================================
