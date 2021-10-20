@@ -62,6 +62,9 @@ class Kim extends Mki {
 	 * @return bool
 	 */
 	public function component_usagetag($val) {
+		if ($val == '') {
+			return true;
+		}
 		return array_key_exists($val, InvKitComponent::OPTIONS_USAGETAG);
 	}
 
