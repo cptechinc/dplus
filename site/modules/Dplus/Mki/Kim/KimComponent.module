@@ -143,7 +143,7 @@ class KimComponent extends WireData implements Module {
 		$kitID = $values->text('kitID');
 		$kim = $this->wire('modules')->get('Kim');
 
-		if ($kim->kit_exists($kitID) === false) {
+		if ($kim->kit_exists($kitID) === false && $values->text('action') != 'delete-component') {
 			$created = $this->create_kit($kitID);
 
 			if (!$created) {
