@@ -12,7 +12,8 @@
 
 include_once("./_func.php"); // include our shared functions
 
-$config->maxUrlSegments = 8;
+$config->maxUrlSegments = 10;
+$config->maxPageNum = 10000;
 
 // BUILD AND INSTATIATE CLASSES
 $page->fullURL = new Purl\Url($page->httpUrl);
