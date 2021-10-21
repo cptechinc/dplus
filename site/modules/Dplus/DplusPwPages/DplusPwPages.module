@@ -422,10 +422,11 @@ class DplusPwPages extends WireData implements Module {
 		});
 
 		$this->addHook('Page::paginatefull', function($event) {
-			$page = $event->object;
+			$page    = $event->object;
 			$pagenbr = $event->arguments(0);
+			$dpurl   = $this->wire('modules')->get('Dpurl');
 			$url = new Url($page->fullURL->getUrl());
-			$url->path = $this->paginate_page($page, $pagenbr);
+			$dpurl->paginateSimple($url, $pagenbr);
 			$event->return = $url->getUrl();
 		});
 
