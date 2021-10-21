@@ -6,7 +6,7 @@
 
 	$routes = [
 		['GET', '', KimController::class, 'index'],
-		['GET', 'page{d:\d+}', KimController::class, 'listKits'],
+		['GET', 'page{pagenbr:\d+}', KimController::class, 'listKits'],
 		['POST', '', KimController::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Router();

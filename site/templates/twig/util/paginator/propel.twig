@@ -9,11 +9,11 @@
 	<div>
 		<ul class="pagination">
 			<li class="page-item {{ (pager.isFirstPage()) ? 'disabled' : '' }}">
-				<a href="{{ page.paginatefull(pager.getPreviousPage()) }}" class="page-link paginator-link" aria-label="Previous">
+				<a href="{{ page.paginatefull(input.pageNum() - 1) }}" class="page-link paginator-link" aria-label="Previous">
 					<span aria-hidden="true">&laquo;</span>
 				</a>
 			</li>
-			<li class="page-item {{ (page.pagenbr == i) ? 'active' : '' }}">
+			<li class="page-item {{ (page.getPage() == i) ? 'active' : '' }}">
 				<div class="dropdown">
 					<a class="page-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Page {{ pager.getPage() }} of {{ pager.getLastPage() }}
@@ -32,7 +32,7 @@
 			</li>
 
 			<li class="page-item {{ (pager.isLastPage()) ? 'disabled' : '' }}">
-				<a href="{{ page.paginatefull(pager.getNextPage())  }}" aria-label="Next" class="page-link paginator-link">
+				<a href="{{ page.paginatefull(pager.getNextPage()) }}" aria-label="Next" class="page-link paginator-link">
 					<span aria-hidden="true">&raquo;</span>
 				</a>
 			</li>

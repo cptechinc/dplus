@@ -6,10 +6,10 @@
 
 	$routes = [
 		['GET', '', Orders::class, 'index'],
-		['GET', 'page{d:\d+}', Orders::class, 'index'],
+		['GET', 'page{pagenbr:\d+}', Orders::class, 'index'],
 		'customer' => [
 			['GET', '', Customer::class, 'index'],
-			['GET', 'page{d:\d+}', Customer::class, 'index'],
+			['GET', 'page{pagenbr:\d+}', Customer::class, 'index'],
 		]
 	];
 	$router = new Mvc\Router();
