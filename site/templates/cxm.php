@@ -6,7 +6,7 @@
 
 	$routes = [
 		['GET',  '', Cxm::class, 'index'],
-		['GET',  'page{d:\d+}', Cxm::class, 'list'],
+		['GET',  'page{pagenbr:\d+}', Cxm::class, 'list'],
 		['POST', '', Cxm::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Router();

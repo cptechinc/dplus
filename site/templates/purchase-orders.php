@@ -6,10 +6,10 @@
 
 	$routes = [
 		['GET', '', Lists\PurchaseOrder::class, 'index'],
-		['GET', 'page{d:\d+}', Lists\PurchaseOrder::class, 'list'],
+		['GET', 'page{pagenbr:\d+}', Lists\PurchaseOrder::class, 'list'],
 		'vendor' => [
 			['GET', '', Lists\Vendor::class, 'index'],
-			['GET', 'page{d:\d+}', Lists\Vendor::class, 'index'],
+			['GET', 'page{pagenbr:\d+}', Lists\Vendor::class, 'index'],
 		],
 		'epo' => [
 			['GET', '', Epo\Create::class, 'index'],

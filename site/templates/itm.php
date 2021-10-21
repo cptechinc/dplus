@@ -8,7 +8,7 @@
 
 	$routes = [
 		['GET',  '', Mitm\Itm::class, 'index'],
-		['GET',  'page{d:\d+}', Mitm\Itm::class, 'index'],
+		['GET',  'page{pagenbr:\d+}', Mitm\Itm::class, 'index'],
 		['POST', '', Mitm\Itm::class, 'handleCRUD'],
 		'costing' => [
 			['GET',  '', Mitm\Costing::class, 'index'],
@@ -20,7 +20,7 @@
 		],
 		'warehouses' => [
 			['GET',  '', Mitm\Warehouse::class, 'index'],
-			['GET',  'page{d:\d+}', Mitm\Warehouse::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Mitm\Warehouse::class, 'index'],
 			['POST', '', Mitm\Warehouse::class, 'handleCRUD'],
 		],
 		'misc' => [
@@ -56,7 +56,7 @@
 			],
 			'substitutes' => [
 				['GET',  '', ItmXrefs\Substitutes::class, 'index'],
-				['GET',  'page{d:\d+}', ItmXrefs\Substitutes::class, 'index'],
+				['GET',  'page{pagenbr:\d+}', ItmXrefs\Substitutes::class, 'index'],
 				['POST', '', ItmXrefs\Substitutes::class, 'handleCRUD'],
 			],
 			'bom' => [
