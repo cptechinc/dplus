@@ -7,7 +7,7 @@
 
 	$routes = [
 		['GET',  '', Addm::class, 'index'],
-		['GET',  'page{d:\d+}', Addm::class, 'index'],
+		['GET',  'page{pagenbr:\d+}', Addm::class, 'index'],
 		['POST', '', Addm::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Router();
