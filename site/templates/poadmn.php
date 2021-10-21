@@ -9,7 +9,7 @@
 		['GET',  '', Poadmn\Menu::class, 'index'],
 		'cnfm' => [
 			['GET',  '', Poadmn\Cnfm::class, 'index'],
-			['GET',  'page{d:\d+}', Poadmn\Cnfm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Poadmn\Cnfm::class, 'index'],
 			['POST',  '', Poadmn\Cnfm::class, 'handleCRUD'],
 		],
 	];

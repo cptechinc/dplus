@@ -7,7 +7,7 @@
 
 	$routes = [
 		['GET',  '', I2i::class, 'index'],
-		['GET',  'page{d:\d+}', I2i::class, 'list'],
+		['GET',  'page{pagenbr:\d+}', I2i::class, 'list'],
 		['POST', '', I2i::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Router();

@@ -6,14 +6,14 @@
 
 	$routes = [
 		['GET',  '', Ci\Ci::class, 'index'],
-		['GET',  'page{nbr:\d+}/', Ci\Ci::class, 'index'],
+		['GET',  'page{pagenbr:\d+}/', Ci\Ci::class, 'index'],
 		'pricing' => [
 			['GET',  '', Ci\Pricing::class, 'index'],
-			['GET',  'page{nbr:\d+}/', Ci\Pricing::class, 'index'],
+			['GET',  'page{pagenbr:\d+}/', Ci\Pricing::class, 'index'],
 		],
 		'ship-tos' => [
 			['GET',  '', Ci\Shipto::class, 'index'],
-			['GET',  'page{nbr:\d+}/', Ci\Shipto::class, 'index'],
+			['GET',  'page{pagenbr:\d+}/', Ci\Shipto::class, 'index'],
 		],
 		'contacts' => [
 			['GET',  '', Ci\Contacts::class, 'index'],

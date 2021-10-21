@@ -5,7 +5,7 @@
 
 	$routes = [
 		['GET',  '', Menu::class, 'index'],
-		['GET',  'page{d:\d+}', Menu::class, 'index'],
+		['GET',  'page{pagenbr:\d+}', Menu::class, 'index'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
