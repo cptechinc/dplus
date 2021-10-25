@@ -41,7 +41,10 @@
 						['GET', 'shortitemid/', Json\Min::class, 'validateItmShortitemid'],
 						['GET', 'shortitemid/available/', Json\Min::class, 'validateItmShortitemidAvailable'],
 					]
-				]
+				],
+				'addm' => [
+					['GET', 'xref/', Json\Min::class, 'validateAddm'],
+				],
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
