@@ -55,6 +55,9 @@ class MainMenu extends AbstractController {
 		return self::pw('config')->twig->render('dplus-menu/menu-search-page.twig', ['page' => $menu, 'items' => $results]);
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	private static function deleteRecordLocks() {
 		$locker = new RecordLocker\User();
 		$locker->deleteLocks();

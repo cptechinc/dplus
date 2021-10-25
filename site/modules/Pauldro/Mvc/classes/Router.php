@@ -1,5 +1,7 @@
 <?php namespace Mvc;
 
+
+use stdClass;
 use Exception;
 
 use Whoops\Run as Whoops;
@@ -73,7 +75,12 @@ class Router extends WireData {
 		$input = $this->wire('input');
 		$dispatcher = $this->dispatcher();
 		$this->routeInfo  = $dispatcher->dispatch($input->requestMethod(), $input->url());
+		$params = $this->routeInfo[2];
 		$response = '';
+
+		if (array_key_exists('pagenbr', $params)) {
+			$input->setPageNum(intval($params['pagenbr']));
+		}
 
 		try {
 			$response = $this->handle($this->routeInfo);
@@ -153,6 +160,9 @@ class Router extends WireData {
 
 		// convert array to object:
 		$vars = json_decode(json_encode($vars));
+		if (empty($vars)) {
+			$vars = new stdClass();
+		}
 		return $class::$methodName($vars);
 	}
 

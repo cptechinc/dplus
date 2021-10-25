@@ -3,10 +3,10 @@
 
 	$routes = [
 		['GET', '', Lists\ApInvoice::class, 'index'],
-		['GET', 'page{d:\d+}', Lists\ApInvoice::class, 'list'],
+		['GET', 'page{pagenbr:\d+}', Lists\ApInvoice::class, 'list'],
 		'vendor' => [
 			['GET', '', Lists\Vendor::class, 'index'],
-			['GET', 'page{d:\d+}', Lists\Vendor::class, 'index'],
+			['GET', 'page{pagenbr:\d+}', Lists\Vendor::class, 'index'],
 		]
 	];
 	$router = new Mvc\Router();

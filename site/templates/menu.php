@@ -1,32 +1,18 @@
 <?php
-	$permission_list = implode("|", $user->get_functions());
+	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 
-	if ($input->get->q) {
-		$code = $input->get->text('q');
+	use Controllers\Dplus\MainMenu as Menu;
 
-		$actualcount = $pages->find("dplus_function=$code")->count;
+	$routes = [
+		['GET',  '', Menu::class, 'index'],
+		['GET',  'page{pagenbr:\d+}', Menu::class, 'index'],
+	];
+	$router = new Mvc\Router();
+	$router->setRoutes($routes);
+	$router->setRoutePrefix($page->url);
+	$page->body = $router->route();
 
-		// COUNT HOW MANY FUNCTIONS ACTUALLY EXIST WITH THIS CODE
-		if ($actualcount == 1) {
-			// CHECK IF USER HAS ACCESS TO THIS FUNCTION
-			if ($user->has_function($code)) {
-				$session->redirect($pages->get("dplus_function=$code")->url, $http301 = false);
-			} else {
-				$resultscount = 0;
-				$page->headline = "Searching for functions that match '$code'";
-				$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => new ProcessWire\PageArray()]);
-			}
-		} else {
-			$mainmenu = $pages->get('/');
-			$page->headline = "Searching for functions that match '$code'";
-			$functions = $mainmenu->children("dplus_function~=$code");
-			$functions->filter("dplus_function=$permission_list");
-			$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => $functions]);
-		}
-	} else {
-		$mainmenu = $pages->get('/');
-		$page->headline = "Menu";
-		$menus = $mainmenu->children("template=dplus-menu|warehouse-menu, dplus_function=$permission_list");
-		$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => $menus]);
+	if ($router->hasError() === false) {
+		// $page->show_breadcrumbs = false;
 	}
 	include __DIR__ . "/basic-page.php";

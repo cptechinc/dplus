@@ -1,10 +1,17 @@
 <?php namespace ProcessWire;
 
-use Purl\Url;
+use Purl\Url as Purl;
 
 class Dpurl extends WireData implements Module {
 
-	public function paginate(Url $url, $segment, $pagenbr = 1) {
+	/**
+	 * Add Pagination to Url
+	 * @param  Purl    $url
+	 * @param  string  $segment Segment to place pagination segment after
+	 * @param  int     $pagenbr Page Number
+	 * @return Purl
+	 */
+	public function paginate(Purl $url, $segment, $pagenbr = 1) {
 		$path = $url->getPath();
 		$path = rtrim($path, '/').'/';
 
@@ -22,6 +29,24 @@ class Dpurl extends WireData implements Module {
 		return $url;
 	}
 
+	/**
+	 * Paginate Url by adding pagination to the last segment
+	 * @param  Purl   $url
+	 * @param  int    $pagenbr  Page Number
+	 * @return Purl
+	 */
+	public function paginateSimple(Purl $url, $pagenbr = 1) {
+		$path = $url->getPath();
+		$path = rtrim($path, '/').'/';
+		$segments = $url->path->getData();
+		$segment = $segments[count($segments) - 1];
+
+		return $this->paginate($url, $segment, $pagenbr);
+	}
+
+/* =============================================================
+	Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dpurl URL ',

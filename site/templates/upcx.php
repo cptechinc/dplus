@@ -6,7 +6,7 @@
 
 	$routes = [
 		['GET',  '', Upcx::class, 'index'],
-		['GET',  'page{d:\d+}', Upcx::class, 'list'],
+		['GET',  'page{pagenbr:\d+}', Upcx::class, 'list'],
 		['POST', '', Upcx::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Router();

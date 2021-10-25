@@ -5,7 +5,7 @@
 
 	$routes = [
 		['GET', '', Ii\Ii::class, 'index'],
-		['GET', 'page{nbr:\d+}/', Ii\Ii::class, 'index'],
+		['GET', 'page{pagenbr:\d+}/', Ii\Ii::class, 'index'],
 		['GET', 'stock', Ii\Stock::class, 'index'],
 		['GET', 'requirements', Ii\Requirements::class, 'index'],
 		['GET', 'pricing', Ii\Pricing::class, 'index'],

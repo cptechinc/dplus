@@ -10,7 +10,7 @@
 			['GET',  '', Mpm\Pmmain\Menu::class, 'index'],
 			'bmm' => [
 				['GET',  '', Mpm\Pmmain\Bmm::class, 'index'],
-				['GET',  'page{d:\d+}', Mpm\Pmmain\Bmm::class, 'index'],
+				['GET',  'page{pagenbr:\d+}', Mpm\Pmmain\Bmm::class, 'index'],
 				['POST', '', Mpm\Pmmain\Bmm::class, 'handleCRUD'],
 			]
 		]
