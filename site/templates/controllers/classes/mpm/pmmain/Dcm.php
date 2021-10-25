@@ -63,7 +63,7 @@ class Dcm extends Base {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		self::initHooks();
 
-		// $page->js .= self::pw('config')->twig->render('mpm/dcm/list/.js.twig');
+		$page->js .= self::pw('config')->twig->render('code-tables/mpm/dcm/.js.twig', ['dcm' => self::getDcm()]);
 		$html = self::displayList($data, $codes);
 		self::getDcm()->deleteResponse();
 		return $html;
