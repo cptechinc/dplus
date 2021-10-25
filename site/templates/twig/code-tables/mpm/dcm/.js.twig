@@ -74,7 +74,7 @@ $(function() {
 				required: true,
 				maxlength: formCode.config.fields.code.maxlength,
 				remote: {
-					url: '{{ page.jsonApiUrl('mpm/validate/dcm/') }}',
+					url: '{{ page.jsonApiUrl('mpm/validate/dcm/pr-workcenter/') }}',
 					type: "get",
 					data: {
 						jqv: 'true',
