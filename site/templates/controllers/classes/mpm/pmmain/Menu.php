@@ -58,7 +58,7 @@ class Menu extends Base {
 	private static function menu($data) {
 		$functions = [];
 		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermission($function['permission'])) {
+			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
 				$functions[$key] = $function;
 			}
 		}
