@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
 {
     public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Dplus\\CodeValidators\\Itm\\Warehouse' => __DIR__ . '/../..' . '/src/Min/Itm/Warehouse.php',
         'Dplus\\CodeValidators\\Map' => __DIR__ . '/../..' . '/src/Map/Map.php',
         'Dplus\\CodeValidators\\Map\\Mxrfe' => __DIR__ . '/../..' . '/src/Map/Mxrfe.php',
@@ -29,6 +28,7 @@ class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
         'Dplus\\CodeValidators\\Msa' => __DIR__ . '/../..' . '/src/Msa/Msa.php',
         'Dplus\\CodeValidators\\Mso' => __DIR__ . '/../..' . '/src/Mso/Mso.php',
         'Dplus\\CodeValidators\\Mso\\Cxm' => __DIR__ . '/../..' . '/src/Mso/Cxm.php',
+        'Dplus\\CodeValidators\\UserPermission' => __DIR__ . '/../..' . '/src/Misc/UserPermission.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

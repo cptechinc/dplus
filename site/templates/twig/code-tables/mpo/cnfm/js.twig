@@ -79,7 +79,7 @@ $(function() {
 					data: {
 						jqv: 'true',
 						new: function() {
-							return formCode.inputs.form.attr('data-code') ? 'false' : 'true';
+							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
 						},
 					}
 				}
