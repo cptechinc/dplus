@@ -29,6 +29,7 @@ return array(
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
     'Dplus\\Filters\\Mki\\Kim' => $baseDir . '/src/Mki/Kim.php',
     'Dplus\\Filters\\Mpm\\Bom\\Header' => $baseDir . '/src/Mpm/Bom/Header.php',
+    'Dplus\\Filters\\Mpm\\PrWorkCenter' => $baseDir . '/src/Mpm/PrWorkCenter.php',
     'Dplus\\Filters\\Mpo\\ApInvoice' => $baseDir . '/src/Mpo/ApInvoice.php',
     'Dplus\\Filters\\Mpo\\PurchaseOrder' => $baseDir . '/src/Mpo/PurchaseOrder.php',
     'Dplus\\Filters\\Mqo\\Quote' => $baseDir . '/src/Mqo/Quote.php',
