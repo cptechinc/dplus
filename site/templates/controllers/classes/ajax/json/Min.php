@@ -467,14 +467,14 @@ class Min extends AbstractController {
 		}
 
 		// JQuery Validate
-		if (boolval($data->new)) { // If new, check that Add-on doesn't already exist or Can't Exist
+		if (boolval($data->new)) { // If new, check that Add-On doesn't already exist or Can't Exist
 			if ($data->itemID === $data->addonID) {
 				return $data->jqv ? "Add-On Item ID cannot = the Item ID" : false;
 			}
-			return $exists ? "Add-on Item Already Exists" : true;
+			return $exists ? "Add-On Item Already Exists" : true;
 		}
 
-		return $exists ? true : "Add-on Item not found";
+		return $exists ? true : "Add-On Item not found";
 	}
 
 

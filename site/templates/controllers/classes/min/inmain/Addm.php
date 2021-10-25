@@ -97,10 +97,10 @@ class Addm extends Base {
 
 		$xref = $addm->getOrCreate($data->itemID, $data->addonID);
 
-		self::pw('page')->headline = "ADDM: $data->itemID Add-on $data->addonID";
+		self::pw('page')->headline = "ADDM: $data->itemID Add-On $data->addonID";
 
 		if ($addm->exists($data->itemID, $data->addonID) === false) {
-			self::pw('page')->headline = "ADDM: Creating Add-on";
+			self::pw('page')->headline = "ADDM: Creating Add-On";
 		}
 
 		if ($xref->isNew() === false) {

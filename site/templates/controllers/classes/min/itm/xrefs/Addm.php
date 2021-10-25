@@ -54,7 +54,7 @@ class Addm extends Base {
 	}
 
 	private static function list($data) {
-		self::pw('page')->headline = "ITM: $data->itemID Add-ons";
+		self::pw('page')->headline = "ITM: $data->itemID Add-Ons";
 
 		$filter = new Filters\Min\AddonItem();
 		$filter->query->filterByItemid($data->itemID);
@@ -72,10 +72,10 @@ class Addm extends Base {
 
 		$xref = $addm->getOrCreate($data->itemID, $data->addonID);
 
-		self::pw('page')->headline = "ITM: $data->itemID Add-on $data->addonID";
+		self::pw('page')->headline = "ITM: $data->itemID Add-On $data->addonID";
 
 		if ($addm->exists($data->itemID, $data->addonID) === false) {
-			self::pw('page')->headline = "ITM: $data->itemID ADDM: Creating Add-on";
+			self::pw('page')->headline = "ITM: $data->itemID ADDM: Creating Add-On";
 		}
 
 		if ($xref->isNew() === false) {

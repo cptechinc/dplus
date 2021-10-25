@@ -78,7 +78,7 @@ $(function() {
 ============================================================= */
 	jQuery.validator.addMethod("addonid", function(value, element) {
 		return this.optional(element) || value != $('#itemID').val();
-	}, "Add-on Item must be different from Item ID");
+	}, "Add-On Item must be different from Item ID");
 
 	formAddm.inputs.form.validate({
 		errorClass: "is-invalid",

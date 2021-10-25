@@ -14,8 +14,8 @@ class Menu extends Base {
 		'addm' => [
 			'name'       => 'addm',
 			'permission' => 'addm',
-			'title'      => 'Add-on Item Maintenance',
-			'summary'    => 'View / Edit Add-on Items'
+			'title'      => 'Add-On Item Maintenance',
+			'summary'    => 'View / Edit Add-On Items'
 		]
 	];
 
