@@ -25,6 +25,7 @@ return array(
     'Dplus\\Filters\\Min\\Upcx' => $baseDir . '/src/Min/Upcx.php',
     'Dplus\\Filters\\Min\\WarehouseBin' => $baseDir . '/src/Min/WarehouseBin.php',
     'Dplus\\Filters\\Misc\\CountryCode' => $baseDir . '/src/Misc/CountryCode.php',
+    'Dplus\\Filters\\Misc\\Funcperm' => $baseDir . '/src/Misc/Funcperm.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
     'Dplus\\Filters\\Mki\\Kim' => $baseDir . '/src/Mki/Kim.php',
     'Dplus\\Filters\\Mpm\\Bom\\Header' => $baseDir . '/src/Mpm/Bom/Header.php',
