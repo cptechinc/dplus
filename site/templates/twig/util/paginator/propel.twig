@@ -13,7 +13,7 @@
 					<span aria-hidden="true">&laquo;</span>
 				</a>
 			</li>
-			<li class="page-item {{ (page.getPage() == i) ? 'active' : '' }}">
+			<li class="page-item {{ (pager.getPage() == i) ? 'active' : '' }}">
 				<div class="dropdown">
 					<a class="page-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Page {{ pager.getPage() }} of {{ pager.getLastPage() }}
