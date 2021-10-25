@@ -8,7 +8,7 @@ use PrWorkCenter;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
-// use Dplus\Mpm\Pmmain\Dcm as DcmManager;
+use Dplus\Codes\Mpm\Dcm as DcmManager;
 // Mvc Controllers
 use Controllers\Mpm\Base;
 
@@ -65,7 +65,7 @@ class Dcm extends Base {
 
 		// $page->js .= self::pw('config')->twig->render('mpm/dcm/list/.js.twig');
 		$html = self::displayList($data, $codes);
-		// self::getDcm()::deleteResponse();
+		self::getDcm()->deleteResponse();
 		return $html;
 	}
 
@@ -105,12 +105,13 @@ class Dcm extends Base {
 ============================================================= */
 	private static function displayList($data, PropelModelPager $codes) {
 		$config = self::pw('config');
+		$dcm = self::getDcm();
 
 		$html  = '';
 		// $html .= $config->twig->render('mpm/dcm/bread-crumbs.twig');
 		// $html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/list.twig', ['manager' => null, 'codes' => $codes]);
-		// $html .= $config->twig->render('code-tables/mpo/cnfm/edit-modal.twig', ['cnfm' => $cnfm]);
+		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $dcm, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/mpm/dcm/edit-modal.twig', ['dcm' => $dcm]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		return $html;
 	}
@@ -139,7 +140,6 @@ class Dcm extends Base {
 	Supplemental
 ============================================================= */
 	public static function getDcm() {
-		return null;
 		if (empty(self::$dcm)) {
 			self::$dcm = new DcmManager();
 		}
