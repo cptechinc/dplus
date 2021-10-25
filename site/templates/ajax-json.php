@@ -117,6 +117,9 @@
 				'bmm' => [
 					['GET', 'component/', Json\Mpm::class, 'validateBomComponent'],
 					['GET', 'component/exists/', Json\Mpm::class, 'validateBomComponent'],
+				],
+				'dcm' => [
+					['GET', 'pr-workcenter/', Json\Mpm::class, 'validatePrWorkCenterExists'],
 				]
 			]
 		],
