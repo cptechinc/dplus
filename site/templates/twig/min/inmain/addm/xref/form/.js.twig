@@ -31,6 +31,29 @@ $(function() {
 	});
 
 /* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formAddm.inputs.form.serialize();
+
+	$("body").on("click", "a:not(#xref-form.form_button, #ajax-modal a)", function(e) {
+		if (formAddm.inputs.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(save) {
+				if (save === true) {
+					formI2i.inputs.form.find('button[type=submit]').click();
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
 	modalAjax.on('show.bs.modal', function (event) {
