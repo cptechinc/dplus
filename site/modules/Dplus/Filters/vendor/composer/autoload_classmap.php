@@ -31,6 +31,7 @@ return array(
     'Dplus\\Filters\\Mpm\\Bom\\Header' => $baseDir . '/src/Mpm/Bom/Header.php',
     'Dplus\\Filters\\Mpm\\PrWorkCenter' => $baseDir . '/src/Mpm/PrWorkCenter.php',
     'Dplus\\Filters\\Mpo\\ApInvoice' => $baseDir . '/src/Mpo/ApInvoice.php',
+    'Dplus\\Filters\\Mpo\\PoConfirmCode' => $baseDir . '/src/Mpo/PoConfirmCode.php',
     'Dplus\\Filters\\Mpo\\PurchaseOrder' => $baseDir . '/src/Mpo/PurchaseOrder.php',
     'Dplus\\Filters\\Mqo\\Quote' => $baseDir . '/src/Mqo/Quote.php',
     'Dplus\\Filters\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
