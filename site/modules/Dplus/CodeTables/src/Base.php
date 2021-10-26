@@ -103,9 +103,18 @@ abstract class Base extends WireData {
 	CRUD Reads
 ============================================================= */
 	/**
-	 * Return the Code records from Database filtered by ProductLne ID
+	 * Return the Code records from Database
+	 * @return ObjectCollection
+	 */
+	public function codes() {
+		$q = $this->getQueryClass();
+		return $q->find();
+	}
+
+	/**
+	 * Return the Code records from Database filtered by Code ID
 	 * @param  string $id
-	 * @return PrWorkCenter
+	 * @return Code
 	 */
 	public function code($id) {
 		$q = $this->query();
