@@ -50,11 +50,11 @@ class Rcm extends Base {
 		$page   = self::pw('page');
 		$filter = new Filters\Mpm\PrResource();
 
-		$page->headline = "Work Center";
+		$page->headline = "Resource / Operator";
 
 		if (empty($data->q) === false) {
 			$filter->search($data->q);
-			$page->headline = "DCM: Searching for '$data->q'";
+			$page->headline = "RCM: Searching for '$data->q'";
 		}
 
 		$filter->sortby($page);
