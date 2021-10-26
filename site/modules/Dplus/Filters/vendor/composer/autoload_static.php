@@ -30,6 +30,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Misc\\PhoneBook' => __DIR__ . '/../..' . '/src/Misc/PhoneBook.php',
         'Dplus\\Filters\\Mki\\Kim' => __DIR__ . '/../..' . '/src/Mki/Kim.php',
         'Dplus\\Filters\\Mpm\\Bom\\Header' => __DIR__ . '/../..' . '/src/Mpm/Bom/Header.php',
+        'Dplus\\Filters\\Mpm\\PrResource' => __DIR__ . '/../..' . '/src/Mpm/PrResource.php',
         'Dplus\\Filters\\Mpm\\PrWorkCenter' => __DIR__ . '/../..' . '/src/Mpm/PrWorkCenter.php',
         'Dplus\\Filters\\Mpo\\ApInvoice' => __DIR__ . '/../..' . '/src/Mpo/ApInvoice.php',
         'Dplus\\Filters\\Mpo\\PoConfirmCode' => __DIR__ . '/../..' . '/src/Mpo/PoConfirmCode.php',
