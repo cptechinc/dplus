@@ -119,12 +119,12 @@
 					['GET', 'component/exists/', Json\Mpm::class, 'validateBomComponent'],
 				],
 				'dcm' => [
-					['GET', 'pr-workcenter/', Json\Mpm::class, 'validatePrWorkCenterExists'],
-				]
+					['GET', 'code/', Json\Mpm::class, 'validatePrWorkCenterExists'],
+				],
 			],
 			'dcm' => [
-				['GET', 'pr-workcenter/', Json\Mpm::class, 'getPrWorkCenter'],
-			]
+				['GET', 'code/', Json\Mpm::class, 'getPrWorkCenter'],
+			],
 		],
 		'mpo' => [
 			'validate' => [
