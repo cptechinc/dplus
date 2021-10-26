@@ -2,8 +2,8 @@
 // Purl URI Library
 use Purl\Url;
 // Propel Classes
-use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
-use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
+use Propel\Runtime\ActiveQuery\CodeCriteria as Query;
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
 use ProcessWire\WireData;
@@ -16,7 +16,8 @@ abstract class Base extends WireData {
 	const MODEL_TABLE        = '';
 	const DESCRIPTION        = '';
 	const DESCRIPTION_RECORD = '';
-	const RECORDLOCKER_FUNCTION = 'cxm';
+	const RESPONSE_TEMPLATE  = 'Code {code} {not} {crud}';
+	const RECORDLOCKER_FUNCTION = '';
 	const DPLUS_TABLE           = '';
 
 	protected static $instance;
@@ -29,17 +30,18 @@ abstract class Base extends WireData {
 	}
 
 	public function __construct() {
+		$this->sessionID = session_id();
 		$this->recordlocker = new FunctionLocker();
-		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setFunction(static::RECORDLOCKER_FUNCTION);
 		$this->recordlocker->setUser($this->wire('user'));
 	}
 
 	/**
 	 * Return Array ready for JSON
-	 * @param  Model  $code Code
+	 * @param  Code  $code Code
 	 * @return array
 	 */
-	public function codeJson(Model $code) {
+	public function codeJson(Code $code) {
 		return ['code' => $code->code, 'description' => $code->description];
 	}
 
@@ -64,7 +66,7 @@ abstract class Base extends WireData {
 	}
 
 	/**
-	 * Returns the associated ModelQuery class for table code
+	 * Returns the associated CodeQuery class for table code
 	 * @return mixed
 	 */
 	public function query() {
@@ -72,7 +74,118 @@ abstract class Base extends WireData {
 	}
 
 /* =============================================================
-	Query Functions
+	CRUD Reads
+============================================================= */
+	/**
+	 * Return the Code records from Database filtered by ProductLne ID
+	 * @param  string $id
+	 * @return PrWorkCenter
+	 */
+	public function code($id) {
+		$q = $this->query();
+		return $q->findOneById($id);
+	}
+
+	/**
+	 * Returns if Code Exists
+	 * @param  string $id
+	 * @return bool
+	 */
+	public function exists($id) {
+		$q = $this->query();
+		return boolval($q->filterById($id)->count());
+	}
+
+	/**
+	 * Return New or Existing Code
+	 * @param  string $id  Code ID
+	 * @return Code
+	 */
+	public function getOrCreate($id = '') {
+		if ($this->exists($id)) {
+			return $this->code($id);
+		}
+		return $this->new($id);
+	}
+
+/* =============================================================
+	CRUD Creates
+============================================================= */
+	/**
+	 * Return New Code
+	 * @param  string $id
+	 * @return Code
+	 */
+	public function new($id = '') {
+		$code = new Code();
+		if (empty($id) === false) {
+			$code->setId($id);
+		}
+		return $code;
+	}
+
+
+/* =============================================================
+	CRUD Response
+============================================================= */
+	/**
+	 * Return Response based on the outcome of the database save
+	 * @param  Code     $code  Code
+	 * @return Response
+	 */
+	protected function saveAndRespond(Code $code) {
+		$is_new = $code->isDeleted() ? false : $code->isNew();
+		$saved  = $code->isDeleted() ? $code->isDeleted() : $code->save();
+
+		$response = new Response();
+		$response->setCode($code->id);
+
+		if ($saved) {
+			$response->setSuccess(true);
+		} else {
+			$response->setError(true);
+		}
+
+		if ($is_new) {
+			$response->setAction(Response::CRUD_CREATE);
+		} elseif ($code->isDeleted()) {
+			$response->setAction(Response::CRUD_DELETE);
+		} else {
+			$response->setAction(Response::CRUD_UPDATE);
+		}
+
+		$response->buildMessage(static::RESPONSE_TEMPLATE);
+		if ($response->hasSuccess()) {
+			$this->updateDplus($code->id);
+		}
+		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param Response $response
+	 */
+	public function setResponse(Response $response) {
+		$this->wire('session')->setFor('response', static::RECORDLOCKER_FUNCTION, $response);
+	}
+
+	/**
+	 * Return Session Response
+	 * @return Response
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', static::RECORDLOCKER_FUNCTION);
+	}
+
+	/**
+	 * Delete Session Response
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
+	}
+
+/* =============================================================
+	Dplus Requests
 ============================================================= */
 	/**
 	 * Sends Dplus Cobol that Code Table has been Update
@@ -86,7 +199,7 @@ abstract class Base extends WireData {
 		$table = static::DPLUS_TABLE;
 		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code"];
 		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
 	}
 }

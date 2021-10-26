@@ -82,37 +82,16 @@ class Dcm extends Base {
 		return $q->find();
 	}
 
+/* =============================================================
+	CRUD Creates
+============================================================= */
 	/**
-	 * Return the Code records from Database filtered by ProductLne ID
-	 * @param  string $id
+	 * Return New Code
 	 * @return PrWorkCenter
 	 */
-	public function code($id) {
-		$q = $this->query();
-		return $q->findOneById($id);
-	}
-
-	/**
-	 * Returns if Code Exists
-	 * @param  string $id
-	 * @return bool
-	 */
-	public function exists($id) {
-		$q = $this->query();
-		return boolval($q->filterById($id)->count());
-	}
-
-	/**
-	 * Return New or Existing PO Confirm Code
-	 * @param  string $id  Code ID
-	 * @return PrWorkCenter
-	 */
-	public function getOrCreate($id = '') {
-		if ($this->exists($id)) {
-			return $this->code($id);
-		}
+	public function new($id = '') {
 		$code = new PrWorkCenter();
-		if (strtolower($id) != 'new') {
+		if (empty($id) === false && strtolower($id) != 'new') {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
@@ -177,62 +156,5 @@ class Dcm extends Base {
 		return $response->hasSuccess();
 	}
 
-/* =============================================================
-	CRUD Response
-============================================================= */
-	/**
-	 * Return Response based on the outcome of the database save
-	 * @param  PrWorkCenter $code  Work Center Code
-	 * @return Response
-	 */
-	protected function saveAndRespond(PrWorkCenter $code) {
-		$is_new = $code->isDeleted() ? false : $code->isNew();
-		$saved  = $code->isDeleted() ? $code->isDeleted() : $code->save();
 
-		$response = new Response();
-		$response->setCode($code->id);
-
-		if ($saved) {
-			$response->setSuccess(true);
-		} else {
-			$response->setError(true);
-		}
-
-		if ($is_new) {
-			$response->setAction(Response::CRUD_CREATE);
-		} elseif ($code->isDeleted()) {
-			$response->setAction(Response::CRUD_DELETE);
-		} else {
-			$response->setAction(Response::CRUD_UPDATE);
-		}
-
-		$response->buildMessage(self::RESPONSE_TEMPLATE);
-		if ($response->hasSuccess()) {
-			$this->updateDplus($code->id);
-		}
-		return $response;
-	}
-
-	/**
-	 * Set Session Response
-	 * @param Response $response
-	 */
-	public function setResponse(Response $response) {
-		$this->wire('session')->setFor('response', self::RECORDLOCKER_FUNCTION, $response);
-	}
-
-	/**
-	 * Return Session Response
-	 * @return Response
-	 */
-	public function getResponse() {
-		return $this->wire('session')->getFor('response', self::RECORDLOCKER_FUNCTION);
-	}
-
-	/**
-	 * Delete Session Response
-	 */
-	public function deleteResponse() {
-		$this->wire('session')->removeFor('response', self::RECORDLOCKER_FUNCTION);
-	}
 }
