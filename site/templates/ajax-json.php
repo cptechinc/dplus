@@ -132,6 +132,9 @@
 				['GET', 'cnfm/', Json\Mpo::class, 'validateCnfmCode'],
 			],
 			['GET', 'po/item/', Json\Mpo::class, 'getPoItem'],
+			'cnfm' => [
+				['GET', 'code/', Json\Mpo::class, 'getCnfmCode'],
+			]
 		],
 		'msa' => [
 			'validate' => [
