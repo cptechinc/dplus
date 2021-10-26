@@ -15,6 +15,7 @@ use Mvc\Controllers\AbstractController;
 
 class Cnfm extends Base {
 	const DPLUSPERMISSION = 'cnfm';
+	const SHOWONPAGE = 10;
 
 /* =============================================================
 	Indexes
