@@ -121,9 +121,15 @@
 				'dcm' => [
 					['GET', 'code/', Json\Mpm::class, 'validatePrWorkCenterExists'],
 				],
+				'rcm' => [
+					['GET', 'code/', Json\Mpm::class, 'validatePrResourceExists'],
+				],
 			],
 			'dcm' => [
 				['GET', 'code/', Json\Mpm::class, 'getPrWorkCenter'],
+			],
+			'rcm' => [
+				['GET', 'code/', Json\Mpm::class, 'getPrResource'],
 			],
 		],
 		'mpo' => [
