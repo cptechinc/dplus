@@ -11,7 +11,7 @@ use Dplus\Codes\Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the CNFM code table
+ * Class that handles the CRUD of the RCM code table
  */
 class Rcm extends Base {
 	const MODEL              = 'PrResource';
@@ -90,7 +90,7 @@ class Rcm extends Base {
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
 		$dcm = Dcm::getInstance();
-		if ($dcm->exists($values->text('workcenterid')) === false) {
+		if ($values->text('workcenterid') != '' && $dcm->exists($values->text('workcenterid')) === false) {
 			$invalidfields['workcenterid'] = "Work Center";
 			return $invalidfields;
 		}

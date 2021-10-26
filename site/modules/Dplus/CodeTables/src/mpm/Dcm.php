@@ -8,7 +8,7 @@ use Dplus\Codes\Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the CNFM code table
+ * Class that handles the CRUD of the DCM code table
  */
 class Dcm extends Base {
 	const MODEL              = 'PrWorkCenter';
