@@ -34,6 +34,7 @@ return array(
     'Dplus\\Filters\\Mpo\\ApInvoice' => $baseDir . '/src/Mpo/ApInvoice.php',
     'Dplus\\Filters\\Mpo\\PoConfirmCode' => $baseDir . '/src/Mpo/PoConfirmCode.php',
     'Dplus\\Filters\\Mpo\\PurchaseOrder' => $baseDir . '/src/Mpo/PurchaseOrder.php',
+    'Dplus\\Filters\\Mpr\\ProspectSource' => $baseDir . '/src/Mpr/ProspectSource.php',
     'Dplus\\Filters\\Mqo\\Quote' => $baseDir . '/src/Mqo/Quote.php',
     'Dplus\\Filters\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
     'Dplus\\Filters\\Mso\\SalesHistory' => $baseDir . '/src/Mso/SalesHistory.php',

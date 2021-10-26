@@ -142,6 +142,16 @@
 				['GET', 'code/', Json\Mpo::class, 'getCnfmCode'],
 			]
 		],
+		'mpr' => [
+			'validate' => [
+				'src' => [
+					['GET', 'code/', Json\Mpr::class, 'validateSourceExists'],
+				],
+			],
+			'src' => [
+				['GET', 'code/', Json\Mpr::class, 'getSource'],
+			]
+		],
 		'msa' => [
 			'validate' => [
 				['GET', 'loginid/', Json\Msa::class, 'validateUserid'],

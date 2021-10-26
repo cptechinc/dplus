@@ -1,24 +1,24 @@
 <?php namespace ProcessWire;
 
 /**
- * class DpagesMpm
+ * class DpagesMpr
  *
  * Installs fields, templates, pages, hooks necessary for Mpo Pages
  * Adds Hooks for getting URLs to Mpo pages
  */
-class DpagesMpm extends Dpages implements Module {
+class DpagesMpr extends Dpages implements Module {
 	const FIELDS = [];
 	const TEMPLATES = [];
 
 	const PAGES = [
 		'mpm-menu' => [
 			'template'       => 'dplus-menu',
-			'name'           => 'mpm',
-			'title'          => 'Production Management',
-			'summary'        => 'Production Management Menu',
+			'name'           => 'mpr',
+			'title'          => 'Prospecting',
+			'summary'        => 'Prospecting Menu',
 			'parent'         => '/',
-			'dplus_function' => 'mpm',
-			'pw_template'    => 'mpm'
+			'dplus_function' => 'mpr',
+			'pw_template'    => 'mpr'
 		]
 	];
 
@@ -27,9 +27,9 @@ class DpagesMpm extends Dpages implements Module {
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Online Production Management Pages',
+			'title' => 'Dplus Online Prospecting Pages',
 			'version' => 101,
-			'summary' => 'Installs and creates Dplus Online Production Management Pages',
+			'summary' => 'Installs and creates Dplus Online Prospecting Pages',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('DplusPwPages', 'Dpages'),
