@@ -17,6 +17,15 @@ class DcmRequests {
 		});
 	}
 
+	getCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mpm/dcm/pr-workcenter/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	validateCodeUrl() {
 		return '{{ page.jsonApiUrl('mpm/validate/dcm/pr-workcenter/') }}';
 	}
