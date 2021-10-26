@@ -242,6 +242,7 @@ abstract class Base extends WireData {
 
 		$response = new Response();
 		$response->setCode($code->id);
+		$response->setKey($code->id);
 
 		if ($saved) {
 			$response->setSuccess(true);
