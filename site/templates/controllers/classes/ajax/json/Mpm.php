@@ -77,4 +77,19 @@ class Mpm extends AbstractController {
 		}
 		return true;
 	}
+
+	public static function getPrWorkCenter($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$dcm = new Dcm();
+		if ($dcm->exists($data->code) === false) {
+			return false;
+		}
+		$code = $dcm->code($data->code);
+		$response = [
+			'code'        => $code->code,
+			'description' => $code->description
+		];
+		return $response;
+	}
 }
