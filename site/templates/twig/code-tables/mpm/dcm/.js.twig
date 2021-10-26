@@ -91,9 +91,6 @@ $(function() {
 				maxlength: formCode.config.fields.description.maxlength,
 			}
 		},
-		messages: {
-			code: "Please check the Code value (Max Length: {{ formCode.config.fields.code.maxlength }})",
-		},
 		submitHandler: function(form) {
 			var formCode = DcmForm.getInstance();
 			var server   = DcmRequests.getInstance();
