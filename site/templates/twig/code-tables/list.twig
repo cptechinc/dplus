@@ -1,3 +1,11 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+{% set response = manager.getResponse() %}
+
 <div class="list-group codes-list">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
@@ -18,7 +26,7 @@
 	</div>
 	{% for code in codes %}
 		{# data-code attribute and class code is for the highlight on close #}
-		<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}" id="code-{{ code.code }}">
+		<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key == code.code and response.hasSuccess() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
 				<div class="col-3">
 					{{ code.code }}
