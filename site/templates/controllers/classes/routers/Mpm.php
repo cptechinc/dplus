@@ -9,5 +9,6 @@ class Mpm extends Base {
 		'pmmain' => ['', Pm\Menu::class, 'pmmainUrl'],
 		'bmm'    => ['', Pm\Pmmain\Menu::class, 'bmmUrl'],
 		'dcm'    => ['', Pm\Pmmain\Menu::class, 'dcmUrl'],
+		'rcm'    => ['', Pm\Pmmain\Menu::class, 'rcmUrl'],
 	];
 }
