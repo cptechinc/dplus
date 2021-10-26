@@ -151,6 +151,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Routers\\Min' => __DIR__ . '/../..' . '/classes/routers/Min.php',
         'Controllers\\Routers\\Mpm' => __DIR__ . '/../..' . '/classes/routers/Mpm.php',
         'Controllers\\Routers\\Mpo' => __DIR__ . '/../..' . '/classes/routers/Mpo.php',
+        'Controllers\\Routers\\Mpr' => __DIR__ . '/../..' . '/classes/routers/Mpr.php',
         'Controllers\\Wm\\Base' => __DIR__ . '/../..' . '/classes/Mwm/Base.php',
         'Controllers\\Wm\\Binr' => __DIR__ . '/../..' . '/classes/Mwm/binr/Binr.php',
         'Controllers\\Wm\\Inventory\\LotReturn' => __DIR__ . '/../..' . '/classes/Mwm/inventory/LotReturn/LotReturn.php',
