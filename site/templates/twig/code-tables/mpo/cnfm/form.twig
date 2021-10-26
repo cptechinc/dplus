@@ -1,6 +1,12 @@
-{# cnfm is an instance of PoConfirmCode #}
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	cnfm                   Dplus\Codes\Mpo\Cnfm
+#}
 {# data-code is for verifying edit vs new #}
-<form action="{{ input.url() }}" method="POST" id="code-form" data-code="">
+
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
 	<input type="hidden" name="action" value="edit-code">
 
 	<div class="form-group">
