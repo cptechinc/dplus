@@ -104,7 +104,7 @@ class Dcm extends Base {
 		$dcm = self::getDcm();
 
 		$html  = '';
-		// $html .= $config->twig->render('mpm/dcm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/mpm/dcm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $dcm, 'codes' => $codes]);
 		$html .= $config->twig->render('code-tables/mpm/dcm/edit-modal.twig', ['dcm' => $dcm]);
@@ -126,6 +126,10 @@ class Dcm extends Base {
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMpm');
+
+		$m->addHook('Page(pw_template=mpm)::menuUrl', function($event) {
+			$event->return = Menu::menuUrl();
+		});
 
 		$m->addHook('Page(pw_template=mpm)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0));
