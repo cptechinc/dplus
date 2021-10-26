@@ -43,8 +43,11 @@ $(function() {
 						var modal = input.closest('.modal');
 
 						if (editCode) {
-							var button = $('button[data-code="'+code+'"]');
-							formCode.updateInputsFromJson(button.data('json'));
+							server.getCode(code, function(response) {
+								if (response) {
+									formCode.updateInputsFromJson(response);
+								}
+							});
 						} else {
 							modal.modal('hide');
 						}
@@ -110,8 +113,11 @@ $(function() {
 							var modal = formCode.form.closest('.modal');
 
 							if (editCode) {
-								var button = $('button[data-code="'+code+'"]');
-								formCode.updateInputsFromJson(button.data('json'));
+								server.getCode(code, function(response) {
+									if (response) {
+										formCode.updateInputsFromJson(response);
+									}
+								});	
 							} else {
 								modal.modal('hide');
 							}
