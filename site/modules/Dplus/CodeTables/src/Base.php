@@ -182,13 +182,24 @@ abstract class Base extends WireData {
 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 
 		$code = $this->getOrCreate($id);
-		$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
-		$code->setDate(date('Ymd'));
-		$code->setTime(date('His'));
+		$this->_inputUpdate($input, $code);
 
 		$response = $this->saveAndRespond($code);
 		$this->setResponse($response);
 		return $response->hasSuccess();
+	}
+
+	/**
+	 * Update Record with Input Data
+	 * @param  WireInput $input Input Data
+	 * @param  Code      $code
+	 * @return Code
+	 */
+	protected function _inputUpdate(WireInput $input, Code $code) {
+		$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+		$code->setDate(date('Ymd'));
+		$code->setTime(date('His'));
+		return $code;
 	}
 
 
