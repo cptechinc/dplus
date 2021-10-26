@@ -108,7 +108,7 @@ class Rcm extends Base {
 		$html  = '';
 		$html .= $config->twig->render('code-tables/mpm/rcm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $rcm, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/mpm/rcm/list.twig', ['manager' => $rcm, 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		$html .= $config->twig->render('code-tables/mpm/rcm/edit-modal.twig', ['rcm' => $rcm]);
 		return $html;
