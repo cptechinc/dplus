@@ -24,41 +24,12 @@ class Cnfm extends Base {
 	const RESPONSE_TEMPLATE  = 'PO Confirmation Code {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'cnfm';
 	const DPLUS_TABLE           = 'CNFM';
-
-	protected static $instance;
-
-	/**
-	 * Return the Max Length of characters for the code
-	 * NOTE: Used for the JS
-	 * @return int
-	 */
-	public function codeMaxLength() {
-		return PoConfirmCode::MAX_LENGTH_CODE;
-	}
-
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 4],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
-	/**
-	 * Return Field Attribute value
-	 * @param  string $field Field Name
-	 * @param  string $attr  Attribute Name
-	 * @return mixed|bool
-	 */
-	public function fieldAttribute($field = '', $attr = '') {
-		if (empty($field) || empty($attr)) {
-			return false;
-		}
-		if (array_key_exists($field, self::FIELD_ATTRIBUTES) === false) {
-			return false;
-		}
-		if (array_key_exists($attr, self::FIELD_ATTRIBUTES[$field]) === false) {
-			return false;
-		}
-		return self::FIELD_ATTRIBUTES[$field][$attr];
-	}
+	protected static $instance;
 
 /* =============================================================
 	CRUD Read, Validate Functions
