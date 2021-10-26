@@ -1,13 +1,8 @@
 <?php namespace Dplus\Codes\Mpm;
-// Purl URI Library
-use Purl\Url;
 // Propel Classes
 use Propel\Runtime\Collection\ObjectCollection;
-use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 // Dplus Models
 use PrWorkCenterQuery, PrWorkCenter;
-// ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Codes
 use Dplus\Codes\Base;
 use Dplus\Codes\Response;
@@ -24,41 +19,12 @@ class Dcm extends Base {
 	const RESPONSE_TEMPLATE  = 'Work Center Code {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'dcm';
 	const DPLUS_TABLE           = 'DCM';
-
-	protected static $instance;
-
-	/**
-	 * Return the Max Length of characters for the code
-	 * NOTE: Used for the JS
-	 * @return int
-	 */
-	public function codeMaxLength() {
-		return PrWorkCenter::CODELENGTH;
-	}
-
 	const FIELD_ATTRIBUTES = [
-		'code'        => ['type' => 'text', 'maxlength' => 4],
+		'code'        => ['type' => 'text', 'maxlength' => PrWorkCenter::CODELENGTH],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
-	/**
-	 * Return Field Attribute value
-	 * @param  string $field Field Name
-	 * @param  string $attr  Attribute Name
-	 * @return mixed|bool
-	 */
-	public function fieldAttribute($field = '', $attr = '') {
-		if (empty($field) || empty($attr)) {
-			return false;
-		}
-		if (array_key_exists($field, self::FIELD_ATTRIBUTES) === false) {
-			return false;
-		}
-		if (array_key_exists($attr, self::FIELD_ATTRIBUTES[$field]) === false) {
-			return false;
-		}
-		return self::FIELD_ATTRIBUTES[$field][$attr];
-	}
+	protected static $instance;
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -69,7 +35,7 @@ class Dcm extends Base {
 	 */
 	public function ids() {
 		$q = $this->query();
-		$q->select(PrWorkCenter::get_aliasproperty('id'));
+		$q->select(PrWorkCenter::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
 

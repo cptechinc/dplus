@@ -19,6 +19,10 @@ abstract class Base extends WireData {
 	const RESPONSE_TEMPLATE  = 'Code {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = '';
 	const DPLUS_TABLE           = '';
+	const FIELD_ATTRIBUTES = [
+		'code'        => ['type' => 'text', 'maxlength' => 4],
+		'description' => ['type' => 'text', 'maxlength' => 20],
+	];
 
 	protected static $instance;
 
@@ -43,6 +47,28 @@ abstract class Base extends WireData {
 	 */
 	public function codeJson(Code $code) {
 		return ['code' => $code->code, 'description' => $code->description];
+	}
+
+/* =============================================================
+	Field Configs
+============================================================= */
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, static::FIELD_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, static::FIELD_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return static::FIELD_ATTRIBUTES[$field][$attr];
 	}
 
 /* =============================================================
@@ -150,7 +176,7 @@ abstract class Base extends WireData {
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	private function inputUpdate(WireInput $input) {
+	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
@@ -159,17 +185,19 @@ abstract class Base extends WireData {
 		$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
 		$code->setDate(date('Ymd'));
 		$code->setTime(date('His'));
+
 		$response = $this->saveAndRespond($code);
 		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
+
 
 	/**
 	 * Delete CNFM Code
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	private function inputDelete(WireInput $input) {
+	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
