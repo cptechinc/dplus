@@ -109,8 +109,8 @@ class Dcm extends Base {
 		$html .= $config->twig->render('code-tables/mpm/dcm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $dcm, 'codes' => $codes]);
-		$html .= $config->twig->render('code-tables/mpm/dcm/edit-modal.twig', ['dcm' => $dcm]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		$html .= $config->twig->render('code-tables/mpm/dcm/edit-modal.twig', ['dcm' => $dcm]);
 		return $html;
 	}
 
