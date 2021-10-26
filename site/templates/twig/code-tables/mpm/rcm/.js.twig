@@ -106,6 +106,19 @@ $(function() {
 					}
 				}
 			},
+			workcenterid: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonApiUrl('mpm/validate/dcm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#workcenterid').val();
+						}
+					}
+				}
+			},
 			description: {
 				maxlength: formCode.config.fields.description.maxlength,
 			}
