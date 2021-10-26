@@ -9,6 +9,7 @@ class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
     public static $classMap = array (
         'Dplus\\Codes\\Base' => __DIR__ . '/../..' . '/src/Base.php',
         'Dplus\\Codes\\Mpm\\Dcm' => __DIR__ . '/../..' . '/src/mpm/Dcm.php',
+        'Dplus\\Codes\\Mpm\\Rcm' => __DIR__ . '/../..' . '/src/mpm/Rcm.php',
         'Dplus\\Codes\\Mpo\\Cnfm' => __DIR__ . '/../..' . '/src/mpo/Cnfm.php',
         'Dplus\\Codes\\Response' => __DIR__ . '/../..' . '/src/Response.php',
     );
