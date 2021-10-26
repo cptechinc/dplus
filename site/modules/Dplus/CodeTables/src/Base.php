@@ -189,11 +189,12 @@ abstract class Base extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$invalidfields = [];
 
-		$code = $this->getOrCreate($id);
-		$this->_inputUpdate($input, $code);
+		$code          = $this->getOrCreate($id);
+		$invalidfields = $this->_inputUpdate($input, $code);
 
-		$response = $this->saveAndRespond($code);
+		$response = $this->saveAndRespond($code, $invalidfields);
 		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
@@ -202,7 +203,7 @@ abstract class Base extends WireData {
 	 * Update Record with Input Data
 	 * @param  WireInput $input Input Data
 	 * @param  Code      $code
-	 * @return Code
+	 * @return array
 	 */
 	protected function _inputUpdate(WireInput $input, Code $code) {
 		$rm = strtolower($input->requestMethod());
@@ -210,7 +211,7 @@ abstract class Base extends WireData {
 		$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
 		$code->setDate(date('Ymd'));
 		$code->setTime(date('His'));
-		return $code;
+		return [];
 	}
 
 
@@ -242,10 +243,11 @@ abstract class Base extends WireData {
 ============================================================= */
 	/**
 	 * Return Response based on the outcome of the database save
-	 * @param  Code     $code  Code
+	 * @param  Code     $code          Code
+	 * @param  array    $invalidfields
 	 * @return Response
 	 */
-	protected function saveAndRespond(Code $code) {
+	protected function saveAndRespond(Code $code, $invalidfields = []) {
 		$is_new = $code->isDeleted() ? false : $code->isNew();
 		$saved  = $code->isDeleted() ? $code->isDeleted() : $code->save();
 
@@ -267,6 +269,7 @@ abstract class Base extends WireData {
 			$response->setAction(Response::CRUD_UPDATE);
 		}
 
+		$response->setFields($invalidfields);
 		$response->buildMessage(static::RESPONSE_TEMPLATE);
 		if ($response->hasSuccess()) {
 			$this->updateDplus($code->id);

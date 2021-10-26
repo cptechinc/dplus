@@ -1,6 +1,9 @@
 <?php namespace Dplus\Codes\Mpm;
 // Propel Classes
 use Propel\Runtime\Collection\ObjectCollection;
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
+// ProcessWire
+use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use PrResourceQuery, PrResource;
 // Dplus Codes
@@ -25,6 +28,15 @@ class Rcm extends Base {
 	];
 
 	protected static $instance;
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return ['code' => $code->code, 'description' => $code->description, 'workcenterid' => $code->workcenterid];
+	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -62,5 +74,27 @@ class Rcm extends Base {
 			$code->setId($id);
 		}
 		return $code;
+	}
+
+/* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Update Record with Input Data
+	 * @param  WireInput $input Input Data
+	 * @param  Code      $code
+	 * @return array
+	 */
+	protected function _inputUpdate(WireInput $input, Code $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = parent::_inputUpdate($input, $code);
+		$dcm = Dcm::getInstance();
+		if ($dcm->exists($values->text('workcenterid')) === false) {
+			$invalidfields['workcenterid'] = "Work Center";
+			return $invalidfields;
+		}
+		$code->setWorkcenterid($values->text('workcenterid'));
+		return $invalidfields;
 	}
 }
