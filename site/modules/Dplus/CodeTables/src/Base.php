@@ -6,7 +6,7 @@ use Propel\Runtime\ActiveQuery\CodeCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
-use ProcessWire\WireData;
+use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
@@ -124,6 +124,68 @@ abstract class Base extends WireData {
 		return $code;
 	}
 
+/* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Process Input Data, Update Database
+	 * @param  WireInput $input Input Data
+	 */
+	public function processInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'delete-code':
+				$this->inputDelete($input);
+				break;
+			case 'edit-code':
+				$this->inputUpdate($input);
+				break;
+		}
+	}
+
+	/**
+	 * Update CNFM Code from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function inputUpdate(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+
+		$code = $this->getOrCreate($id);
+		$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+		$code->setDate(date('Ymd'));
+		$code->setTime(date('His'));
+		$response = $this->saveAndRespond($code);
+		$this->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+	/**
+	 * Delete CNFM Code
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+
+		if ($this->exists($id) === false) {
+			$response = Response::responseSuccess("Code $id was deleted");
+			$response->buildMessage(static::RESPONSE_TEMPLATE);
+			$response->setCode($id);
+			return true;
+		}
+		$code = $this->code($id);
+		$code->delete();
+		$response = $this->saveAndRespond($code);
+		$this->setResponse($response);
+		return $response->hasSuccess();
+	}
 
 /* =============================================================
 	CRUD Response
