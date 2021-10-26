@@ -15,7 +15,7 @@ use Controllers\Mpm\Base;
 class Dcm extends Base {
 	const DPLUSPERMISSION = 'dcm';
 	const SHOWONPAGE = 10;
-	
+
 	private static $dcm;
 
 /* =============================================================
@@ -63,7 +63,7 @@ class Dcm extends Base {
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mpm/dcm/.js.twig', ['dcm' => self::getDcm()]);
 		$html = self::displayList($data, $codes);
-		// self::getDcm()->deleteResponse();
+		self::getDcm()->deleteResponse();
 		return $html;
 	}
 
