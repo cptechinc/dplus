@@ -21,6 +21,7 @@ class RcmForm {
 			this.inputs.code.val(json.code);
 			this.inputs.code.attr('readonly', 'true');
 			this.inputs.description.val(json.description);
+			this.inputs.workcenterid.val(json.workcenterid);
 			var validator = this.inputs.form.validate();
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;

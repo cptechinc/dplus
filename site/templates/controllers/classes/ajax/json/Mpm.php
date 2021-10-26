@@ -124,8 +124,9 @@ class Mpm extends AbstractController {
 		}
 		$code = $rcm->code($data->code);
 		$response = [
-			'code'        => $code->code,
-			'description' => $code->description
+			'code'         => $code->code,
+			'description'  => $code->description,
+			'workcenterid' => $code->workcenterid,
 		];
 		return $response;
 	}
