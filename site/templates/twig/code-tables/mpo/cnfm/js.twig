@@ -139,8 +139,8 @@ $(function() {
 			$('#code-table-alert').remove();
 			$('.bg-success').removeClass('bg-success text-white');
 			$('.highlight').removeClass('highlight');
-			$('[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
-			$('html, body').animate({scrollTop: $('[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
+			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
+			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
 		}
 	});
 })
