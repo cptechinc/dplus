@@ -1,9 +1,10 @@
 {% include 'code-tables/mpm/rcm/js/classes.js.twig' %}
 
 $(function() {
-	var server   = RcmRequests.getInstance();
-	var alert    = RcmAlerts.getInstance();
-	var formCode = RcmForm.getInstance();
+	var ajaxModal = $('#ajax-modal');
+	var server    = RcmRequests.getInstance();
+	var alert     = RcmAlerts.getInstance();
+	var formCode  = RcmForm.getInstance();
 
 /* =============================================================
 	Event Functions
@@ -29,6 +30,23 @@ $(function() {
 			formCode.inputs.description.focus();
 		} else {
 			formCode.inputs.code.focus();
+		}
+	});
+
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		var form = formCode.inputs.form;
+		form.validate().resetForm();
+		form.find('.is-invalid').removeClass("is-invalid");
+		form.find('.is-valid').removeClass("is-valid");
+		form.find('.invalid-feedback').remove();
+		form.find('.valid-feedback').remove();
+
+		if (form.attr('data-code')) {
+			$('#code-table-alert').remove();
+			$('.bg-success').removeClass('bg-success text-white');
+			$('.highlight').removeClass('highlight');
+			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
+			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
 		}
 	});
 
@@ -131,22 +149,41 @@ $(function() {
 	});
 
 /* =============================================================
-	Form Functions
+	Lookup Modal Functions
 ============================================================= */
-	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
-		var form = formCode.inputs.form;
-		form.validate().resetForm();
-		form.find('.is-invalid').removeClass("is-invalid");
-		form.find('.is-valid').removeClass("is-valid");
-		form.find('.invalid-feedback').remove();
-		form.find('.valid-feedback').remove();
+	ajaxModal.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		modal.attr('data-input', button.data('input'));
 
-		if (form.attr('data-code')) {
-			$('#code-table-alert').remove();
-			$('.bg-success').removeClass('bg-success text-white');
-			$('.highlight').removeClass('highlight');
-			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
-			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
-		}
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(button.data('lookupurl'), function() {});
+	});
+
+	$("body").on('click', '.code-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(button.data('code'));
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(button.attr('href'));
 	});
 })
