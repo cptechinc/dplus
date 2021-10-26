@@ -61,7 +61,7 @@ class Dcm extends Base {
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mpm/dcm/.js.twig', ['dcm' => self::getDcm()]);
 		$html = self::displayList($data, $codes);
-		self::getDcm()->deleteResponse();
+		// self::getDcm()->deleteResponse();
 		return $html;
 	}
 
@@ -105,7 +105,7 @@ class Dcm extends Base {
 
 		$html  = '';
 		// $html .= $config->twig->render('mpm/dcm/bread-crumbs.twig');
-		// $html .= self::displayResponse($data);
+		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $dcm, 'codes' => $codes]);
 		$html .= $config->twig->render('code-tables/mpm/dcm/edit-modal.twig', ['dcm' => $dcm]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
@@ -114,11 +114,11 @@ class Dcm extends Base {
 
 	public static function displayResponse($data) {
 		$dcm = self::getDcm();
-		$response = $dcm::getResponse();
+		$response = $dcm->getResponse();
 		if (empty($response)) {
 			return '';
 		}
-		return self::pw('config')->twig->render('items/itm/response-alert-new.twig', ['response' => $response]);
+		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
 /* =============================================================
