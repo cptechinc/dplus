@@ -20,7 +20,7 @@ class Dcm extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['bomID|text', 'component|text', 'action|text'];
+		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -30,21 +30,17 @@ class Dcm extends Base {
 		return self::list($data);
 	}
 
-	// public static function handleCRUD($data) {
-	// 	$fields = ['bomID|text', 'component|text', 'action|text'];
-	// 	self::sanitizeParametersShort($data, $fields);
-	// 	$url  = self::bomUrl($data->bomID);
-	// 	$dcm  = self::getDcm();
-	//
-	// 	if ($data->action) {
-	// 		$dcm->processInput(self::pw('input'));
-	// 	}
-	//
-	// 	if ($dcm->components->hasComponents($data->bomID) === false) {
-	// 		$url = self::dcmUrl();
-	// 	}
-	// 	self::pw('session')->redirect($url, $http301 = false);
-	// }
+	public static function handleCRUD($data) {
+		$fields = ['code|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$url  = self::dcmUrl($data->code);
+		$dcm  = self::getDcm();
+
+		if ($data->action) {
+			$dcm->processInput(self::pw('input'));
+		}
+		self::pw('session')->redirect($url, $http301 = false);
+	}
 
 	private static function list($data) {
 		$fields = ['q|text'];
@@ -72,15 +68,15 @@ class Dcm extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
-	public static function dcmUrl($itemID = '') {
-		if (empty($itemID)) {
+	public static function dcmUrl($code = '') {
+		if (empty($code)) {
 			return Menu::dcmUrl();
 		}
-		return self::dcmFocusUrl($itemID);
+		return self::dcmFocusUrl($code);
 	}
 
 	public static function dcmFocusUrl($focus) {
-		$filter = new Filters\Mpm\Bom\Header();
+		$filter = new Filters\Mpm\PrWorkCenter();
 		if ($filter->exists($focus) === false) {
 			return Menu::dcmUrl();
 		}
@@ -96,7 +92,7 @@ class Dcm extends Base {
 	public static function codeDeleteUrl($code) {
 		$url = new Purl(Menu::dcmUrl());
 		$url->query->set('code', $code);
-		$url->query->set('action', 'delete');
+		$url->query->set('action', 'delete-code');
 		return $url->getUrl();
 	}
 
@@ -144,10 +140,5 @@ class Dcm extends Base {
 			self::$dcm = new DcmManager();
 		}
 		return self::$dcm;
-	}
-
-	public static function lock($bomID) {
-		$dcm = self::getDcm();
-		return $dcm->lockrecord($bomID);
 	}
 }
