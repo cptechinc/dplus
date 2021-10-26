@@ -1,9 +1,9 @@
-{% include 'code-tables/mpo/cnfm/js/classes.js.twig' %}
+{% include 'code-tables/mpm/dcm/js/classes.js.twig' %}
 
 $(function() {
-	var server   = CnfmRequests.getInstance();
-	var alert    = CnfmAlerts.getInstance();
-	var formCode = CnfmForm.getInstance();
+	var server   = DcmRequests.getInstance();
+	var alert    = DcmAlerts.getInstance();
+	var formCode = DcmForm.getInstance();
 
 /* =============================================================
 	Event Functions
@@ -45,6 +45,7 @@ $(function() {
 						if (editCode) {
 							server.getCode(code, function(response) {
 								if (response) {
+									modal.find('.modal-title').text('Edit Code ' + code);
 									formCode.updateInputsFromJson(response);
 								}
 							});
@@ -77,7 +78,7 @@ $(function() {
 				required: true,
 				maxlength: formCode.config.fields.code.maxlength,
 				remote: {
-					url: '{{ page.jsonApiUrl('mpo/validate/cnfm/') }}',
+					url: '{{ page.jsonApiUrl('mpm/validate/dcm/code/') }}',
 					type: "get",
 					data: {
 						jqv: 'true',
@@ -91,23 +92,21 @@ $(function() {
 				maxlength: formCode.config.fields.description.maxlength,
 			}
 		},
-		messages: {
-			code: "Please check the Code value (Max Length: {{ formCode.config.fields.code.maxlength }})",
-		},
 		submitHandler: function(form) {
-			var formCode = CnfmForm.getInstance();
-			var server   = CnfmRequests.getInstance();
+			var formCode = DcmForm.getInstance();
+			var server   = DcmRequests.getInstance();
 			var code = formCode.inputs.code.val();
 
 			if (formCode.inputs.form.attr('data-code') == code) {
 				form.submit();
 			} else {
 				server.validateCode(code, function(exists) {
-					var alert = CnfmAlerts.getInstance();
+					var alert = DcmAlerts.getInstance();
 					if (exists === false) {
 						form.submit();
 						return true;
 					}
+
 					alert.codeExists(code, function(editCode) {
 						if (editCode) {
 							var modal = formCode.form.closest('.modal');
@@ -115,9 +114,10 @@ $(function() {
 							if (editCode) {
 								server.getCode(code, function(response) {
 									if (response) {
+										modal.find('.modal-title').text('Edit Code ' + code);
 										formCode.updateInputsFromJson(response);
 									}
-								});	
+								});
 							} else {
 								modal.modal('hide');
 							}

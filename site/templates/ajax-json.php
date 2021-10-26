@@ -41,7 +41,10 @@
 						['GET', 'shortitemid/', Json\Min::class, 'validateItmShortitemid'],
 						['GET', 'shortitemid/available/', Json\Min::class, 'validateItmShortitemidAvailable'],
 					]
-				]
+				],
+				'addm' => [
+					['GET', 'xref/', Json\Min::class, 'validateAddm'],
+				],
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
@@ -114,8 +117,20 @@
 				'bmm' => [
 					['GET', 'component/', Json\Mpm::class, 'validateBomComponent'],
 					['GET', 'component/exists/', Json\Mpm::class, 'validateBomComponent'],
-				]
-			]
+				],
+				'dcm' => [
+					['GET', 'code/', Json\Mpm::class, 'validatePrWorkCenterExists'],
+				],
+				'rcm' => [
+					['GET', 'code/', Json\Mpm::class, 'validatePrResourceExists'],
+				],
+			],
+			'dcm' => [
+				['GET', 'code/', Json\Mpm::class, 'getPrWorkCenter'],
+			],
+			'rcm' => [
+				['GET', 'code/', Json\Mpm::class, 'getPrResource'],
+			],
 		],
 		'mpo' => [
 			'validate' => [
@@ -123,6 +138,9 @@
 				['GET', 'cnfm/', Json\Mpo::class, 'validateCnfmCode'],
 			],
 			['GET', 'po/item/', Json\Mpo::class, 'getPoItem'],
+			'cnfm' => [
+				['GET', 'code/', Json\Mpo::class, 'getCnfmCode'],
+			]
 		],
 		'msa' => [
 			'validate' => [

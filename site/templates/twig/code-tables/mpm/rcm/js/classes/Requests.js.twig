@@ -1,9 +1,9 @@
-class CnfmRequests {
+class RcmRequests {
 	static instance = null;
 
 	static getInstance() {
 		if (this.instance === null) {
-			this.instance = new CnfmRequests();
+			this.instance = new RcmRequests();
 		}
 		return this.instance;
 	}
@@ -18,7 +18,7 @@ class CnfmRequests {
 	}
 
 	getCode(code, callback) {
-		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mpo/cnfm/code/') }}');
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mpm/rcm/code/') }}');
 
 		ajax.setData({code: code});
 		ajax.request(function(response) {
@@ -27,7 +27,6 @@ class CnfmRequests {
 	}
 
 	validateCodeUrl() {
-		return '{{ page.jsonApiUrl('mpo/validate/cnfm/') }}';
+		return '{{ page.jsonApiUrl('mpm/validate/rcm/code/') }}';
 	}
-
 }

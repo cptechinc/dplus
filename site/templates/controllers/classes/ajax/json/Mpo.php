@@ -4,6 +4,8 @@ use PurchaseOrderQuery, PurchaseOrder;
 use PurchaseOrderDetailQuery, PurchaseOrderDetail;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
+// Dplus Codes
+use Dplus\Codes\Mpo\Cnfm;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
@@ -83,5 +85,19 @@ class Mpo extends AbstractController {
 			return $exists === true ? "Code $data->code already exists" : true;
 		}
 		return $exists === false ? "Code $data->code not found" : true;
+	}
+
+	public static function getCnfmCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+		$cnfm = Cnfm::getInstance();
+		if ($cnfm->exists($data->code) === false) {
+			return false;
+		}
+		$code = $cnfm->code($data->code);
+		$response = [
+			'code'        => $code->code,
+			'description' => $code->description
+		];
+		return $response;
 	}
 }
