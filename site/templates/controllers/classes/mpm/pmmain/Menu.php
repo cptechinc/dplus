@@ -22,7 +22,13 @@ class Menu extends Base {
 			'permission' => 'dcm',
 			'title'      => 'Work Center Maintenance',
 			'summary'    => 'View / Edit Work Centers'
-		]
+		],
+		'rcm' => [
+			'name'       => 'rcm',
+			'permission' => 'rcm',
+			'title'      => 'Resource/Operator Maintenance',
+			'summary'    => 'View / Edit Work Resources/Operators'
+		],
 	];
 
 /* =============================================================
@@ -60,6 +66,10 @@ class Menu extends Base {
 
 	public static function dcmUrl() {
 		return self::subfunctionUrl('dcm');
+	}
+
+	public static function rcmUrl() {
+		return self::subfunctionUrl('rcm');
 	}
 
 /* =============================================================

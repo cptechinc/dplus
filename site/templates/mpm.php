@@ -17,6 +17,11 @@
 				['GET',  '', Mpm\Pmmain\Dcm::class, 'index'],
 				['GET',  'page{pagenbr:\d+}', Mpm\Pmmain\Dcm::class, 'index'],
 				['POST', '', Mpm\Pmmain\Dcm::class, 'handleCRUD'],
+			],
+			'rcm' => [
+				['GET',  '', Mpm\Pmmain\Rcm::class, 'index'],
+				['GET',  'page{pagenbr:\d+}', Mpm\Pmmain\Rcm::class, 'index'],
+				['POST', '', Mpm\Pmmain\Rcm::class, 'handleCRUD'],
 			]
 		]
 	];

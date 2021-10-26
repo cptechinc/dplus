@@ -101,6 +101,7 @@ return array(
     'Controllers\\Mpm\\Pmmain\\Bmm' => $baseDir . '/classes/mpm/pmmain/Bmm.php',
     'Controllers\\Mpm\\Pmmain\\Dcm' => $baseDir . '/classes/mpm/pmmain/Dcm.php',
     'Controllers\\Mpm\\Pmmain\\Menu' => $baseDir . '/classes/mpm/pmmain/Menu.php',
+    'Controllers\\Mpm\\Pmmain\\Rcm' => $baseDir . '/classes/mpm/pmmain/Rcm.php',
     'Controllers\\Mpo\\ApInvoice\\Base' => $baseDir . '/classes/mpo/ApInvoice/Base.php',
     'Controllers\\Mpo\\ApInvoice\\Lists\\ApInvoice' => $baseDir . '/classes/mpo/ApInvoice/Lists/ApInvoice.php',
     'Controllers\\Mpo\\Poadmn\\Base' => $baseDir . '/classes/mpo/poadmn/Base.php',

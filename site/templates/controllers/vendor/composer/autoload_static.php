@@ -102,6 +102,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mpm\\Pmmain\\Bmm' => __DIR__ . '/../..' . '/classes/mpm/pmmain/Bmm.php',
         'Controllers\\Mpm\\Pmmain\\Dcm' => __DIR__ . '/../..' . '/classes/mpm/pmmain/Dcm.php',
         'Controllers\\Mpm\\Pmmain\\Menu' => __DIR__ . '/../..' . '/classes/mpm/pmmain/Menu.php',
+        'Controllers\\Mpm\\Pmmain\\Rcm' => __DIR__ . '/../..' . '/classes/mpm/pmmain/Rcm.php',
         'Controllers\\Mpo\\ApInvoice\\Base' => __DIR__ . '/../..' . '/classes/mpo/ApInvoice/Base.php',
         'Controllers\\Mpo\\ApInvoice\\Lists\\ApInvoice' => __DIR__ . '/../..' . '/classes/mpo/ApInvoice/Lists/ApInvoice.php',
         'Controllers\\Mpo\\Poadmn\\Base' => __DIR__ . '/../..' . '/classes/mpo/poadmn/Base.php',
