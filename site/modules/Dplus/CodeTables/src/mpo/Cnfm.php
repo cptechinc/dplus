@@ -1,4 +1,4 @@
-<?php namespace Dplus\Codes\Po;
+<?php namespace Dplus\Codes\Mpo;
 // Purl URI Library
 use Purl\Url;
 // Propel Classes

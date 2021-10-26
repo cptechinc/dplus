@@ -8,7 +8,7 @@ use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\WireData;
 // Dplus Codes
-use Dplus\Codes\Po\Cnfm as Manager;
+use Dplus\Codes\Mpo\Cnfm as Manager;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
