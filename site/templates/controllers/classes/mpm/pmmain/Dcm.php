@@ -14,6 +14,8 @@ use Controllers\Mpm\Base;
 
 class Dcm extends Base {
 	const DPLUSPERMISSION = 'dcm';
+	const SHOWONPAGE = 10;
+	
 	private static $dcm;
 
 /* =============================================================
@@ -56,7 +58,7 @@ class Dcm extends Base {
 		}
 
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mpm/dcm/.js.twig', ['dcm' => self::getDcm()]);
@@ -81,7 +83,7 @@ class Dcm extends Base {
 			return Menu::dcmUrl();
 		}
 		$position = $filter->positionQuick($focus);
-		$pagenbr = self::getPagenbrFromOffset($position);
+		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
 		$url = new Purl(Menu::dcmUrl());
 		$url->query->set('focus', $focus);
