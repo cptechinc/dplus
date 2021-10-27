@@ -1,0 +1,26 @@
+{% set configGl = page.wire('modules').get('Dconfigs').config('gl') %}
+
+<div class="card mb-5">
+	{% block header %}
+		<div class="card-header">
+			<div class="d-flex w-100 justify-content-between">
+				<div></div>
+				<div></div>
+				<div>
+					<b>Co:</b> {{ configGl.companyid }}
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+
+	{% block body %}
+	{% endblock %}
+
+	{% block footer %}
+		<div class="card-footer">
+			<div class="d-flex justify-content-between align-items-center">
+
+			</div>
+		</div>
+	{% endblock %}
+</div>

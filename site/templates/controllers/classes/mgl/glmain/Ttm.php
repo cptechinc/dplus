@@ -114,7 +114,7 @@ class Ttm extends Base {
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/mgl/ttm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/mgl/ttm/list.twig', ['manager' => $ttm, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/mgl/ttm/display.twig', ['manager' => $ttm, 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		$html .= $config->twig->render('code-tables/mgl/ttm/edit-modal.twig', ['manager' => $ttm]);
 		return $html;
