@@ -1,0 +1,32 @@
+class TtmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new TtmRequests();
+		}
+		return this.instance;
+	}
+
+	validateCode(code, callback) {
+		var ajax = new AjaxRequest(this.validateCodeUrl());
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mgl/ttm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateCodeUrl() {
+		return '{{ page.jsonApiUrl('mgl/validate/ttm/code/') }}';
+	}
+}
