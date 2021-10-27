@@ -5,7 +5,7 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
-use GLTextCodeQuery, GLTextCode;
+use GlTextCodeQuery, GlTextCode;
 // Dplus Codes
 use Dplus\Codes\Base;
 use Dplus\Codes\Response;
@@ -14,7 +14,7 @@ use Dplus\Codes\Response;
  * Class that handles the CRUD of the TTM code table
  */
 class Ttm extends Base {
-	const MODEL              = 'GLTextCode';
+	const MODEL              = 'GlTextCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'gl_text_code';
 	const DESCRIPTION        = 'Statement Text Code';
@@ -53,7 +53,7 @@ class Ttm extends Base {
 	 */
 	public function ids() {
 		$q = $this->query();
-		$q->select(GLTextCode::aliasproperty('id'));
+		$q->select(GlTextCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
 
@@ -71,10 +71,10 @@ class Ttm extends Base {
 ============================================================= */
 	/**
 	 * Return New Code
-	 * @return GLTextCode
+	 * @return GlTextCode
 	 */
 	public function new($id = '') {
-		$code = new GLTextCode();
+		$code = new GlTextCode();
 		if (empty($id) === false && strtolower($id) != 'new') {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
@@ -95,12 +95,7 @@ class Ttm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
-		$dcm = Dcm::getInstance();
-		if ($values->text('workcenterid') != '' && $dcm->exists($values->text('workcenterid')) === false) {
-			$invalidfields['workcenterid'] = "Work Center";
-			return $invalidfields;
-		}
-		$code->setWorkcenterid($values->text('workcenterid'));
+
 		return $invalidfields;
 	}
 }
