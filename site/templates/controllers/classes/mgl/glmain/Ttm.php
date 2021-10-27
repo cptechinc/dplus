@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
-use ProspectSource;
+use GlTextCode;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -48,7 +48,7 @@ class Ttm extends Base {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
-		$filter = new Filters\Mgl\ProspectSource();
+		$filter = new Filters\Mgl\GlTextCode();
 
 		$page->headline = "Source Code";
 
@@ -78,7 +78,7 @@ class Ttm extends Base {
 	}
 
 	public static function ttmFocusUrl($focus) {
-		$filter = new Filters\Mgl\ProspectSource();
+		$filter = new Filters\Mgl\GlTextCode();
 		if ($filter->exists($focus) === false) {
 			return Menu::ttmUrl();
 		}
