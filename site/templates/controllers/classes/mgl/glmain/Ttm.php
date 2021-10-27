@@ -65,7 +65,7 @@ class Ttm extends Base {
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mgl/ttm/.js.twig', ['ttm' => self::getTtm()]);
 		$html = self::displayList($data, $codes);
-		// self::getTtm()->deleteResponse();
+		self::getTtm()->deleteResponse();
 		return $html;
 	}
 
