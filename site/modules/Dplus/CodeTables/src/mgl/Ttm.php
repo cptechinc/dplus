@@ -24,7 +24,7 @@ class Ttm extends Base {
 	const DPLUS_TABLE           = 'TTM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 6],
-		'text'        => ['type' => 'text', 'maxlength' => 20],
+		'text'        => ['type' => 'text', 'maxlength' => 35],
 	];
 
 	protected static $instance;
