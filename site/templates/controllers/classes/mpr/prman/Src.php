@@ -35,11 +35,12 @@ class Src extends Base {
 	public static function handleCRUD($data) {
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url  = self::srcUrl($data->code);
+		$url  = self::srcUrl();
 		$src  = self::getSrc();
 
 		if ($data->action) {
 			$src->processInput(self::pw('input'));
+			$url  = self::srcUrl($data->code);
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}

@@ -35,11 +35,12 @@ class Dcm extends Base {
 	public static function handleCRUD($data) {
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url  = self::dcmUrl($data->code);
+		$url  = self::dcmUrl();
 		$dcm  = self::getDcm();
 
 		if ($data->action) {
 			$dcm->processInput(self::pw('input'));
+			$url  = self::dcmUrl($data->code);
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}

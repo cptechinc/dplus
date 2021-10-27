@@ -35,11 +35,12 @@ class Rcm extends Base {
 	public static function handleCRUD($data) {
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url  = self::rcmUrl($data->code);
+		$url  = self::rcmUrl();
 		$rcm  = self::getRcm();
 
 		if ($data->action) {
 			$rcm->processInput(self::pw('input'));
+			$url  = self::rcmUrl($data->code);
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
