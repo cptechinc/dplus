@@ -95,7 +95,11 @@ class Ttm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
-
+		
+		$code->setText1($values->text('text1', ['maxLength' => $this->fieldAttribute('text', 'maxlength')]));
+		$code->setText2($values->text('text2', ['maxLength' => $this->fieldAttribute('text', 'maxlength')]));
+		$code->setText3($values->text('text3', ['maxLength' => $this->fieldAttribute('text', 'maxlength')]));
+		$code->setText4($values->text('text4', ['maxLength' => $this->fieldAttribute('text', 'maxlength')]));
 		return $invalidfields;
 	}
 }
