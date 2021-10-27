@@ -2,6 +2,7 @@
 use PDO;
 // Propel
 use Propel\Runtime\Propel;
+use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Models
 use CustomerQuery, Customer as Model;
 // Dpluso Models
