@@ -35,12 +35,14 @@ class Ttm extends Base {
 	public static function handleCRUD($data) {
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url  = self::ttmUrl($data->code);
+		$url  = self::ttmUrl();
 		$ttm  = self::getTtm();
 
 		if ($data->action) {
 			$ttm->processInput(self::pw('input'));
+			$url  = self::ttmUrl($data->code);
 		}
+
 		self::pw('session')->redirect($url, $http301 = false);
 	}
 
@@ -50,11 +52,11 @@ class Ttm extends Base {
 		$page   = self::pw('page');
 		$filter = new Filters\Mgl\GlTextCode();
 
-		$page->headline = "Source Code";
+		$page->headline = "Statement Code";
 
 		if (empty($data->q) === false) {
 			$filter->search($data->q);
-			$page->headline = "SRC: Searching for '$data->q'";
+			$page->headline = "TTM: Searching for '$data->q'";
 		}
 
 		$filter->sortby($page);
@@ -63,7 +65,7 @@ class Ttm extends Base {
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mgl/ttm/.js.twig', ['ttm' => self::getTtm()]);
 		$html = self::displayList($data, $codes);
-		self::getTtm()->deleteResponse();
+		// self::getTtm()->deleteResponse();
 		return $html;
 	}
 
@@ -80,6 +82,8 @@ class Ttm extends Base {
 	public static function ttmFocusUrl($focus) {
 		$filter = new Filters\Mgl\GlTextCode();
 		if ($filter->exists($focus) === false) {
+			echo self::pw('modules')->get('DplusDatabase')->getLastExecutedQuery();
+			exit;
 			return Menu::ttmUrl();
 		}
 		$position = $filter->positionQuick($focus);
@@ -88,6 +92,8 @@ class Ttm extends Base {
 		$url = new Purl(Menu::ttmUrl());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'ttm', $pagenbr);
+		// echo $url->getUrl();
+		// exit;
 		return $url->getUrl();
 	}
 
@@ -106,11 +112,11 @@ class Ttm extends Base {
 		$ttm = self::getTtm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/mgl/ttm/bread-crumbs.twig');
+		// $html .= $config->twig->render('code-tables/mgl/ttm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $ttm, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/mgl/ttm/list.twig', ['manager' => $ttm, 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
-		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $ttm]);
+		$html .= $config->twig->render('code-tables/mgl/ttm/edit-modal.twig', ['manager' => $ttm]);
 		return $html;
 	}
 
