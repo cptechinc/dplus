@@ -208,7 +208,10 @@ abstract class Base extends WireData {
 	protected function _inputUpdate(WireInput $input, Code $code) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+		
+		if ($code->__isset('description')) {
+			$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+		}
 		$code->setDate(date('Ymd'));
 		$code->setTime(date('His'));
 		return [];
