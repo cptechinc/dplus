@@ -100,8 +100,9 @@
 		'mgl' => [
 			'validate' => [
 				['GET', 'gl-code/', Json\Mgl::class, 'validateGlCode'],
+				['GET', 'ttm/code/', Json\Mgl::class, 'validateStmtCode'],
 			],
-			['GET', 'gl-code/', Json\Mgl::class, 'getGlCode'],
+			['GET', 'ttm/code/', Json\Mgl::class, 'getStmtCode'],
 		],
 		'mki' => [
 			'validate' => [
