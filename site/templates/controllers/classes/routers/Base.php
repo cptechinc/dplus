@@ -1,5 +1,6 @@
 <?php namespace Controllers\Routers;
-
+// PHP Core
+use Exception;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mpo\Poadmn;
@@ -67,6 +68,7 @@ abstract class Base extends AbstractController {
 
 		$class = $routeData[1];
 		$handler = $routeData[2];
+
 		if (class_exists($class) == false) {
 			throw new Exception("Class $class does not exist");
 		}
