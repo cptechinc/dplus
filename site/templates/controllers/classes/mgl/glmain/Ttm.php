@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mpr\Glmain;
+<?php namespace Controllers\Mgl\Glmain;
 // External Libraries, classes
 use Purl\Url as Purl;
 // Propel ORM Library
@@ -8,9 +8,9 @@ use ProspectSource;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
-use Dplus\Codes\Mpr\Ttm as TtmManager;
+use Dplus\Codes\Mgl\Ttm as TtmManager;
 // Mvc Controllers
-use Controllers\Mpr\Glmain\Base;
+use Controllers\Mgl\Glmain\Base;
 
 class Ttm extends Base {
 	const DPLUSPERMISSION = 'ttm';
@@ -48,7 +48,7 @@ class Ttm extends Base {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
-		$filter = new Filters\Mpr\ProspectSource();
+		$filter = new Filters\Mgl\ProspectSource();
 
 		$page->headline = "Source Code";
 
@@ -78,7 +78,7 @@ class Ttm extends Base {
 	}
 
 	public static function ttmFocusUrl($focus) {
-		$filter = new Filters\Mpr\ProspectSource();
+		$filter = new Filters\Mgl\ProspectSource();
 		if ($filter->exists($focus) === false) {
 			return Menu::ttmUrl();
 		}
