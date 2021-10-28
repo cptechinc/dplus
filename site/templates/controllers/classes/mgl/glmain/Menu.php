@@ -15,6 +15,12 @@ class Menu extends Base {
 			'permission' => 'ttm',
 			'title'      => 'Statement Text Code',
 			'summary'    => 'View / Edit Statement Text Code'
+		],
+		'dtm' => [
+			'name'       => 'dtm',
+			'permission' => 'dtm',
+			'title'      => 'Distribution Code',
+			'summary'    => 'View / Edit Distribution Text Code'
 		]
 	];
 
