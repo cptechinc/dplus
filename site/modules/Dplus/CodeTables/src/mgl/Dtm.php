@@ -133,7 +133,7 @@ class Dtm extends Base {
 	 * @param  Code      $code
 	 * @return array
 	 */
-	protected function updateGlAcctsPcts(WireInput $input, Code $code) {
+	private function updateGlAcctsPcts(WireInput $input, Code $code) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$total = $subtotal = 0;
