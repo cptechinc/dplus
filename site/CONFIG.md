@@ -1,4 +1,4 @@
-# Dplus Online config.php 
+# Dplus Online config.php
 
 ### Installer Configs
 These config values are for the ProcessWire DB connection, not the dplus database
@@ -13,6 +13,9 @@ $config->dbPass = '';
 ### Static Application Configs
 These configs will stay the same from installation to installation
 ```
+$config->maxUrlSegments = 10;
+$config->maxPageNum = 10000;
+
 $config->errorpage_dplusdb = '1020';
 $config->rootURL = $rootURL;
 $config->urls->vendor = "vendor/";
