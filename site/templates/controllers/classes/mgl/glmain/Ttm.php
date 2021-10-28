@@ -129,7 +129,7 @@ class Ttm extends Base {
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMpm');
+		$m = self::pw('modules')->get('Dpages');
 
 		$m->addHook('Page(pw_template=mgl)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
