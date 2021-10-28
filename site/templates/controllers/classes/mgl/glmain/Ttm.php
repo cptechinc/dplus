@@ -85,7 +85,7 @@ class Ttm extends Base {
 			return Menu::ttmUrl();
 		}
 		$position = $filter->positionQuick($focus);
-		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
+		$pagenbr  = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
 		$url = new Purl(Menu::ttmUrl());
 		$url->query->set('focus', $focus);
