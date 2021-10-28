@@ -6,6 +6,8 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use GlDistCodeQuery, GlDistCode;
+// Dplus Validators
+use Dplus\CodeValidators as Validators;
 // Dplus Codes
 use Dplus\Codes\Base;
 use Dplus\Codes\Response;
@@ -121,6 +123,39 @@ class Dtm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
+		$invalidfields = array_merge($invalidfields, $this->updateGlAcctsPcts($input, $code));
+		return $invalidfields;
+	}
+
+	/**
+	 * Set GL Accounts and Percentages
+	 * @param  WireInput $input  Input Data
+	 * @param  Code      $code
+	 * @return array
+	 */
+	protected function updateGlAcctsPcts(WireInput $input, Code $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$total = $subtotal = 0;
+		$validate = new Validators\Mgl();
+		$invalidfields = [];
+
+		for ($i = 1; $i <= $this->getNbrOfGlAccts(); $i++) {
+			if ($values->text("glacct$i") != '' && $validate->glCode($values->text("glacct$i")) === false) {
+				$invalidfields["glacct$i"] = "GL Account $i";
+				continue;
+			}
+			$code->setAccountNbr($i, $values->text("glacct$i"));
+			$subtotal += $values->float("glpct$i");
+
+			if ($subtotal <= 100) {
+				$code->setAccountPct($i, $values->float("glpct$i"));
+				$total += $values->float("glpct$i");
+			}
+		}
+		if ($total != 100) {
+			$invalidfields['glpcttotal'] = "GL Percent Total is not equal 100";
+		}
 		return $invalidfields;
 	}
 }
