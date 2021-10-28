@@ -55,6 +55,10 @@ class Menu extends Base {
 		return self::subfunctionUrl('ttm');
 	}
 
+	public static function dtmUrl() {
+		return self::subfunctionUrl('dtm');
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -72,7 +76,7 @@ class Menu extends Base {
 	Init
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMpm');
+		$m = self::pw('modules')->get('Dpages');
 
 		$m->addHook('Page(pw_template=mgl)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
