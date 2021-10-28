@@ -16,6 +16,7 @@ return array(
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
     'Dplus\\Filters\\Mar\\Shipto' => $baseDir . '/src/Mar/Shipto.php',
     'Dplus\\Filters\\Mgl\\GlCode' => $baseDir . '/src/Mgl/GlCode.php',
+    'Dplus\\Filters\\Mgl\\GlDistCode' => $baseDir . '/src/Mgl/GlDistCode.php',
     'Dplus\\Filters\\Mgl\\GlTextCode' => $baseDir . '/src/Mgl/GlTextCode.php',
     'Dplus\\Filters\\Min\\I2i' => $baseDir . '/src/Min/I2i.php',
     'Dplus\\Filters\\Min\\InvAdjustmentReason' => $baseDir . '/src/Min/InvAdjustmentReason.php',
