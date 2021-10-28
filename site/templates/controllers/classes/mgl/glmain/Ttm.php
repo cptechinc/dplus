@@ -82,8 +82,6 @@ class Ttm extends Base {
 	public static function ttmFocusUrl($focus) {
 		$filter = new Filters\Mgl\GlTextCode();
 		if ($filter->exists($focus) === false) {
-			echo self::pw('modules')->get('DplusDatabase')->getLastExecutedQuery();
-			exit;
 			return Menu::ttmUrl();
 		}
 		$position = $filter->positionQuick($focus);
@@ -92,8 +90,6 @@ class Ttm extends Base {
 		$url = new Purl(Menu::ttmUrl());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'ttm', $pagenbr);
-		// echo $url->getUrl();
-		// exit;
 		return $url->getUrl();
 	}
 
