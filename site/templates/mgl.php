@@ -10,7 +10,12 @@
 				['GET',  '', Mgl\Glmain\Ttm::class, 'index'],
 				['GET',  'page{pagenbr:\d+}', Mgl\Glmain\Ttm::class, 'index'],
 				['POST', '', Mgl\Glmain\Ttm::class, 'handleCRUD'],
-			]
+			],
+			'dtm' => [
+				['GET',  '', Mgl\Glmain\Dtm::class, 'index'],
+				['GET',  'page{pagenbr:\d+}', Mgl\Glmain\Dtm::class, 'index'],
+				['POST', '', Mgl\Glmain\Dtm::class, 'handleCRUD'],
+			],
 		]
 	];
 	$router = new Mvc\Router();

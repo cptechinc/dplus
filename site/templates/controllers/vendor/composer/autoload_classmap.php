@@ -53,6 +53,7 @@ return array(
     'Controllers\\Mci\\Ci\\Subfunction' => $baseDir . '/classes/mci/Ci/Subfunction.php',
     'Controllers\\Mgl\\Base' => $baseDir . '/classes/mgl/Base.php',
     'Controllers\\Mgl\\Glmain\\Base' => $baseDir . '/classes/mgl/glmain/Base.php',
+    'Controllers\\Mgl\\Glmain\\Dtm' => $baseDir . '/classes/mgl/glmain/Dtm.php',
     'Controllers\\Mgl\\Glmain\\Menu' => $baseDir . '/classes/mgl/glmain/Menu.php',
     'Controllers\\Mgl\\Glmain\\Ttm' => $baseDir . '/classes/mgl/glmain/Ttm.php',
     'Controllers\\Mgl\\Menu' => $baseDir . '/classes/mgl/Menu.php',

@@ -54,6 +54,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mci\\Ci\\Subfunction' => __DIR__ . '/../..' . '/classes/mci/Ci/Subfunction.php',
         'Controllers\\Mgl\\Base' => __DIR__ . '/../..' . '/classes/mgl/Base.php',
         'Controllers\\Mgl\\Glmain\\Base' => __DIR__ . '/../..' . '/classes/mgl/glmain/Base.php',
+        'Controllers\\Mgl\\Glmain\\Dtm' => __DIR__ . '/../..' . '/classes/mgl/glmain/Dtm.php',
         'Controllers\\Mgl\\Glmain\\Menu' => __DIR__ . '/../..' . '/classes/mgl/glmain/Menu.php',
         'Controllers\\Mgl\\Glmain\\Ttm' => __DIR__ . '/../..' . '/classes/mgl/glmain/Ttm.php',
         'Controllers\\Mgl\\Menu' => __DIR__ . '/../..' . '/classes/mgl/Menu.php',
