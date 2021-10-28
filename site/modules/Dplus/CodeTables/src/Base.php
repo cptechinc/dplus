@@ -193,7 +193,6 @@ abstract class Base extends WireData {
 
 		$code          = $this->getOrCreate($id);
 		$invalidfields = $this->_inputUpdate($input, $code);
-
 		$response = $this->saveAndRespond($code, $invalidfields);
 		$this->setResponse($response);
 		return $response->hasSuccess();
@@ -208,7 +207,7 @@ abstract class Base extends WireData {
 	protected function _inputUpdate(WireInput $input, Code $code) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		
+
 		if ($code->__isset('description')) {
 			$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
 		}
