@@ -29,6 +29,47 @@ class Dtm extends Base {
 
 	protected static $instance;
 
+	/**
+	 * Return the number of GL accounts
+	 * @return int
+	 */
+	public function getNbrOfGlAccts() {
+		return GlDistCode::NBROFACCTS;
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		$json = [
+			'code'        => $code->code,
+			'description' => $code->description,
+			'accounts'    => []
+		];
+
+		for ($i = 1; $i <= $this->getNbrOfGlAccts(); $i++) {
+			$acctNbr = $code->getAccountNbr($i);
+			$json['accounts'][$i] = [
+				'code'        => '',
+				'description' => '',
+				'percent'     => ''
+			];
+
+			if ($acctNbr) {
+				$glAcct = $code->getGlAccount($acctNbr);
+
+				$json['accounts'][$i] = [
+					'code'        => $glAcct->code,
+					'description' => $glAcct->description,
+					'percent'     => $code->getAccountPct($i),
+				];
+			}
+		}
+		return $json;
+	}
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
