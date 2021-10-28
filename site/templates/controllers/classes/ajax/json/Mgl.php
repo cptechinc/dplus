@@ -5,6 +5,7 @@ use GlCodeQuery, GlCode;
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Code Tables
 use Dplus\Codes\Mgl\Ttm;
+use Dplus\Codes\Mgl\Dtm;
 // Dplus Validators
 use Dplus\CodeValidators\Mgl as MglValidator;
 // Mvc Controllers
@@ -74,6 +75,38 @@ class Mgl extends AbstractController {
 		}
 		$code = $ttm->code($data->code);
 		return $ttm->codeJson($code);
+	}
+
+	public static function validateDistCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$dtm = Dtm::getInstance();
+		$exists = $dtm->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Distribution $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Distribution $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getDistCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$dtm = Dtm::getInstance();
+		if ($dtm->exists($data->code) === false) {
+			return false;
+		}
+		$code = $dtm->code($data->code);
+		return $dtm->codeJson($code);
 	}
 
 	private static function validator() {
