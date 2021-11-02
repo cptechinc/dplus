@@ -89,7 +89,9 @@ class Rcm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
-		if ($values->text('workcenterid') != '' && $this->exists($values->text('workcenterid')) === false) {
+		$dcm = Dcm::getInstance();
+
+		if ($values->text('workcenterid') != '' && $dcm->exists($values->text('workcenterid')) === false) {
 			$invalidfields['workcenterid'] = "Work Center";
 			return $invalidfields;
 		}
