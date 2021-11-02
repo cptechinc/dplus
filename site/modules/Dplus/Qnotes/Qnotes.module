@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+include_once(__DIR__ . '/vendor/autoload.php');
+
 class Qnotes extends WireData implements Module {
 	/**
 	 * Returns Lines Broken down by line limits
