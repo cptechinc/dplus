@@ -43,7 +43,7 @@ $(function() {
 
 			alert.unsavedChanges(function(save) {
 				if (save === true) {
-					formI2i.inputs.form.find('button[type=submit]').click();
+					formAddm.inputs.form.find('button[type=submit]').click();
 				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
