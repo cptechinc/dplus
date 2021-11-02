@@ -60,6 +60,10 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'inproc',
 			'fields' => array()
 		),
+		'addm' => [
+			'name'   => 'addm',
+			'fields' => []
+		]
 	);
 
 	const PAGES = array(
@@ -267,6 +271,15 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'Processing',
 			'parent'         => '/min/',
 			'dplus_function' => '' // TODO
+		),
+		'addm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'addm',
+			'name'           => 'addm',
+			'title'          => 'Add-On Item Maintenance',
+			'summary'        => 'View / Edit Add-On Items',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => 'addm'
 		),
 	);
 

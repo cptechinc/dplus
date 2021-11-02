@@ -1,0 +1,17 @@
+class AddmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new AddmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'addm-form',
+		this.form = $('#' + this.id),
+		this.itemid  = this.form.find('input[name=itemID]');
+		this.addonid = this.form.find('input[name=addonID]');
+	}
+}

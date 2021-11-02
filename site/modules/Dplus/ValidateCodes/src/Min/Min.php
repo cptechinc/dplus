@@ -268,4 +268,15 @@ class Min extends WireData {
 		$itmw = $this->wire('modules')->get('ItmWarehouse');
 		return $itmw->exists($itemID, $whseID);
 	}
+
+	/**
+	 * Return if Add-on Item Record Exists
+	 * @param  string $itemID   Item ID
+	 * @param  string $addonID  Add-on Item ID
+	 * @return bool
+	 */
+	public function addm($itemID, $addonID) {
+		$addm = Inmain\Addm\Addm::getInstance();
+		return $addm->exists($itemID, $addonID);
+	}
 }

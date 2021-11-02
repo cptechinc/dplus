@@ -449,6 +449,35 @@ class Min extends AbstractController {
 		];
 	}
 
+	public static function validateAddm($data) {
+		$fields = ['itemID|text', 'addonID|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+
+		$exists = $validate->addm($data->itemID, $data->addonID);
+
+		if (boolval($data->jqv) === false) {
+			if (boolval($data->new)) {
+				if ($data->itemID === $data->addonID) {
+					return false;
+				}
+				return $exists === false;
+			}
+			return $exists;
+		}
+
+		// JQuery Validate
+		if (boolval($data->new)) { // If new, check that Add-On doesn't already exist or Can't Exist
+			if ($data->itemID === $data->addonID) {
+				return $data->jqv ? "Add-On Item ID cannot = the Item ID" : false;
+			}
+			return $exists ? "Add-On Item Already Exists" : true;
+		}
+
+		return $exists ? true : "Add-On Item not found";
+	}
+
+
 	private static function validator() {
 		return new MinValidator();
 	}

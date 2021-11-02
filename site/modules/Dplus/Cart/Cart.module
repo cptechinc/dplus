@@ -539,61 +539,6 @@ class Cart extends WireData implements Module {
 ============================================================= */
 	public function init() {
 		$this->sessionID = session_id();
-
-		$this->addHook('Page(pw_template=cart)::delete_itemURL', function($event) {
-			$linenbr = $event->arguments(0);
-			$event->return = $this->delete_itemURL($linenbr);
-		});
-
-		$this->addHook('Page(pw_template=cart)::empty_cartURL', function($event) {
-			$event->return = $this->empty_cartURL();
-		});
-
-		$this->addHook('Page(pw_template=cart)::ci_customerURL', function($event) {
-			$page = $event->object;
-			$custID = $event->arguments(0);
-			$event->return = $this->wire('pages')->get('pw_template=ci')->url.'?custID='.urlencode($custID);
-		});
-
-		$this->addHook('Page(pw_template=cart)::ci_customershiptoURL', function($event) {
-			$page = $event->object;
-			$custID   = $event->arguments(0);
-			$shiptoID = $event->arguments(1);
-
-			if ($shiptoID) {
-				$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
-			} else {
-				$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
-			}
-		});
-
-		$this->addHook('Page(pw_template=cart)::create_quoteURL', function($event) {
-			$event->return = $this->create_quoteURL();
-		});
-
-		$this->addHook('Page(pw_template=cart)::create_orderURL', function($event) {
-			$event->return = $this->create_orderURL();
-		});
-
-		$this->addHook('Page(pw_template=cart)::redirectURL', function($event) {
-			$p = $event->object;
-			$action = $p->fullURL->query->get('action');
-			$url = $this->cartURL();
-
-			if (strpos($action, 'create') !== false) {
-				if ($action == 'create-order' || $action == 'create-blank-order') {
-					$purl = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
-					$purl->path->add('new');
-					$url = $purl->getUrl();
-				} elseif($action == 'create-quote') {
-					$purl = new Url($this->wire('pages')->get('pw_template=quote-view')->url);
-					$purl->path->add('edit');
-					$purl->path->add('new');
-					$url = $purl->getUrl();
-				}
-			}
-			$event->return = $url;
-		});
 	}
 
 	public static function getModuleInfo() {

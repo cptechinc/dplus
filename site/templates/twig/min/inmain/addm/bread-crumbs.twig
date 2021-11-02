@@ -1,0 +1,27 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+	addm                   Dplus\Min\Inmain\Addm\Addm
+#}
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values      = input.get %}
+{% set segments    = input.urlSegments() %}
+{% set lastsegment = segments[segments|length] %}
+
+{% block current_page %}
+	{% if values.offsetExists('itemID') and values.text('itemID') != 'new'  %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.xrefListUrl([values.text('itemID'), values.text('addonID')]|join(addm.recordlocker.glue())) }}">
+				<i class="fa fa-microchip" aria-hidden="true"></i> ADDM
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ [values.text('itemID'), values.text('addonID')]|join('--') }}</li>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">
+			<i class="fa fa-microchip" aria-hidden="true"></i> ADDM
+		</li>
+	{% endif %}
+{% endblock %}
