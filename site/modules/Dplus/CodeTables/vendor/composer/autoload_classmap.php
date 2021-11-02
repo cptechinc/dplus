@@ -13,5 +13,6 @@ return array(
     'Dplus\\Codes\\Mpm\\Rcm' => $baseDir . '/src/mpm/Rcm.php',
     'Dplus\\Codes\\Mpo\\Cnfm' => $baseDir . '/src/mpo/Cnfm.php',
     'Dplus\\Codes\\Mpr\\Src' => $baseDir . '/src/mpr/Src.php',
+    'Dplus\\Codes\\Msa\\Lgrp' => $baseDir . '/src/msa/Lgrp.php',
     'Dplus\\Codes\\Response' => $baseDir . '/src/Response.php',
 );
