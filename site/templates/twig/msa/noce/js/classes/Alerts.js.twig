@@ -1,0 +1,27 @@
+class NoceAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new NoceAlerts();
+		}
+		return this.instance;
+	}
+
+	notesExist(code, callback) {
+		swal2.fire({
+			title: 'Notes Exist',
+			text: 'Edit Note ' + code + '?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+		}).then(function (result) {
+			if (result.value) {
+				callback(true);
+				return true;
+			}
+			callback(false);
+			return false;
+		});
+	}
+}

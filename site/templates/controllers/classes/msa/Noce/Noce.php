@@ -60,7 +60,7 @@ class Noce extends Base {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
-		$page->js .= self::pw('config')->twig->render('msa/noce/js.twig', ['qnotes' => self::getQnotes()]);
+		$page->js .= self::pw('config')->twig->render('msa/noce/.js.twig', ['qnotes' => self::getQnotes()]);
 		$html = self::displayList($data, $codes);
 		self::getQnotes()->deleteResponse();
 		return $html;
