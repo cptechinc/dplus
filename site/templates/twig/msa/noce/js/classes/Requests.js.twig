@@ -8,25 +8,25 @@ class NoceRequests {
 		return this.instance;
 	}
 
-	validateCode(code, callback) {
-		var ajax = new AjaxRequest(this.validateCodeUrl());
+	validateId(id, callback) {
+		var ajax = new AjaxRequest(this.validateIdUrl());
 
-		ajax.setData({code: code});
+		ajax.setData({code: id});
 		ajax.request(function(response) {
 			callback(response)
 		});
 	}
 
-	getCode(code, callback) {
-		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mpr/src/code/') }}');
+	getNotes(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/noce/') }}');
 
-		ajax.setData({code: code});
+		ajax.setData({code: id});
 		ajax.request(function(response) {
 			callback(response)
 		});
 	}
 
-	validateCodeUrl() {
-		return '{{ page.jsonApiUrl('mpr/validate/src/code/') }}';
+	validateIdUrl() {
+		return '{{ page.jsonApiUrl('msa/validate/noce/') }}';
 	}
 }
