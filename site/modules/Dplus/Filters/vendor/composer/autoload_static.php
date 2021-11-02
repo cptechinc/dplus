@@ -8,6 +8,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
 {
     public static $classMap = array (
         'Dplus\\Filters\\AbstractFilter' => __DIR__ . '/../..' . '/src/AbstractFilter.php',
+        'Dplus\\Filters\\CodeFilter' => __DIR__ . '/../..' . '/src/CodeFilter.php',
         'Dplus\\Filters\\Map\\ApContact' => __DIR__ . '/../..' . '/src/Map/ApContact.php',
         'Dplus\\Filters\\Map\\Mxrfe' => __DIR__ . '/../..' . '/src/Map/Mxrfe.php',
         'Dplus\\Filters\\Map\\Vendor' => __DIR__ . '/../..' . '/src/Map/Vendor.php',
@@ -19,7 +20,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Mgl\\GlCode' => __DIR__ . '/../..' . '/src/Mgl/GlCode.php',
         'Dplus\\Filters\\Mgl\\GlDistCode' => __DIR__ . '/../..' . '/src/Mgl/GlDistCode.php',
         'Dplus\\Filters\\Mgl\\GlTextCode' => __DIR__ . '/../..' . '/src/Mgl/GlTextCode.php',
-		'Dplus\\Filters\\Min\\AddonItem' => __DIR__ . '/../..' . '/src/Min/AddonItem.php',
+        'Dplus\\Filters\\Min\\AddonItem' => __DIR__ . '/../..' . '/src/Min/AddonItem.php',
         'Dplus\\Filters\\Min\\I2i' => __DIR__ . '/../..' . '/src/Min/I2i.php',
         'Dplus\\Filters\\Min\\InvAdjustmentReason' => __DIR__ . '/../..' . '/src/Min/InvAdjustmentReason.php',
         'Dplus\\Filters\\Min\\ItemGroup' => __DIR__ . '/../..' . '/src/Min/ItemGroup.php',
@@ -40,6 +41,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Mpo\\PurchaseOrder' => __DIR__ . '/../..' . '/src/Mpo/PurchaseOrder.php',
         'Dplus\\Filters\\Mpr\\ProspectSource' => __DIR__ . '/../..' . '/src/Mpr/ProspectSource.php',
         'Dplus\\Filters\\Mqo\\Quote' => __DIR__ . '/../..' . '/src/Mqo/Quote.php',
+        'Dplus\\Filters\\Msa\\SysLoginGroup' => __DIR__ . '/../..' . '/src/Msa/SysLoginGroup.php',
         'Dplus\\Filters\\Mso\\Cxm' => __DIR__ . '/../..' . '/src/Mso/Cxm.php',
         'Dplus\\Filters\\Mso\\SalesHistory' => __DIR__ . '/../..' . '/src/Mso/SalesHistory.php',
         'Dplus\\Filters\\Mso\\SalesHistory\\Detail' => __DIR__ . '/../..' . '/src/Mso/SalesHistory/SalesHistoryDetail.php',

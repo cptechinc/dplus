@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\Filters\\AbstractFilter' => $baseDir . '/src/AbstractFilter.php',
+    'Dplus\\Filters\\CodeFilter' => $baseDir . '/src/CodeFilter.php',
     'Dplus\\Filters\\Map\\ApContact' => $baseDir . '/src/Map/ApContact.php',
     'Dplus\\Filters\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
     'Dplus\\Filters\\Map\\Vendor' => $baseDir . '/src/Map/Vendor.php',
@@ -18,7 +19,7 @@ return array(
     'Dplus\\Filters\\Mgl\\GlCode' => $baseDir . '/src/Mgl/GlCode.php',
     'Dplus\\Filters\\Mgl\\GlDistCode' => $baseDir . '/src/Mgl/GlDistCode.php',
     'Dplus\\Filters\\Mgl\\GlTextCode' => $baseDir . '/src/Mgl/GlTextCode.php',
-	'Dplus\\Filters\\Min\\AddonItem' => $baseDir . '/src/Min/AddonItem.php',
+    'Dplus\\Filters\\Min\\AddonItem' => $baseDir . '/src/Min/AddonItem.php',
     'Dplus\\Filters\\Min\\I2i' => $baseDir . '/src/Min/I2i.php',
     'Dplus\\Filters\\Min\\InvAdjustmentReason' => $baseDir . '/src/Min/InvAdjustmentReason.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
@@ -39,6 +40,7 @@ return array(
     'Dplus\\Filters\\Mpo\\PurchaseOrder' => $baseDir . '/src/Mpo/PurchaseOrder.php',
     'Dplus\\Filters\\Mpr\\ProspectSource' => $baseDir . '/src/Mpr/ProspectSource.php',
     'Dplus\\Filters\\Mqo\\Quote' => $baseDir . '/src/Mqo/Quote.php',
+    'Dplus\\Filters\\Msa\\SysLoginGroup' => $baseDir . '/src/Msa/SysLoginGroup.php',
     'Dplus\\Filters\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
     'Dplus\\Filters\\Mso\\SalesHistory' => $baseDir . '/src/Mso/SalesHistory.php',
     'Dplus\\Filters\\Mso\\SalesHistory\\Detail' => $baseDir . '/src/Mso/SalesHistory/SalesHistoryDetail.php',
