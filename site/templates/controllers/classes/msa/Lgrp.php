@@ -60,7 +60,7 @@ class Lgrp extends Base {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
-		$page->js .= self::pw('config')->twig->render('code-tables/msa/lgrp/.js.twig', ['src' => self::getLgrp()]);
+		$page->js .= self::pw('config')->twig->render('code-tables/msa/lgrp/.js.twig', ['lgrp' => self::getLgrp()]);
 		$html = self::displayList($data, $codes);
 		self::getLgrp()->deleteResponse();
 		return $html;
@@ -73,10 +73,10 @@ class Lgrp extends Base {
 		if (empty($code)) {
 			return Menu::lgrpUrl();
 		}
-		return self::srcFocusUrl($code);
+		return self::lgrpFocusUrl($code);
 	}
 
-	public static function srcFocusUrl($focus) {
+	public static function lgrpFocusUrl($focus) {
 		$filter = new Filters\Msa\SysLoginGroup();
 		if ($filter->exists($focus) === false) {
 			return Menu::lgrpUrl();
@@ -86,7 +86,7 @@ class Lgrp extends Base {
 
 		$url = new Purl(Menu::lgrpUrl());
 		$url->query->set('focus', $focus);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'src', $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'lgrp', $pagenbr);
 		return $url->getUrl();
 	}
 
@@ -105,7 +105,7 @@ class Lgrp extends Base {
 		$lgrp = self::getLgrp();
 
 		$html  = '';
-		// $html .= $config->twig->render('code-tables/msa/src/bread-crumbs.twig');
+		// $html .= $config->twig->render('code-tables/msa/lgrp/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $lgrp, 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
