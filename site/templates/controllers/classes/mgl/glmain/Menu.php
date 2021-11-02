@@ -33,6 +33,7 @@ class Menu extends Base {
 			return self::displayUserNotPermitted();
 		}
 		self::initHooks();
+		self::pw('page')->headline = "General Ledger Maintenance";
 		return self::menu($data);
 	}
 
@@ -69,7 +70,14 @@ class Menu extends Base {
 				$functions[$key] = $function;
 			}
 		}
-		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
+		return self::displayMenu($data, $functions);
+	}
+
+	private static function displayMenu($data, array $functions) {
+		$html = '';
+		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
+		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
+		return $html;
 	}
 
 /* =============================================================

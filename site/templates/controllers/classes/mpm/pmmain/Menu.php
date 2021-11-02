@@ -39,6 +39,7 @@ class Menu extends Base {
 		if (self::validateUserPermission() === false) {
 			return self::displayUserNotPermitted();
 		}
+		self::pw('page')->headline = "Production Maintenance";
 		return self::menu($data);
 	}
 
@@ -83,7 +84,14 @@ class Menu extends Base {
 			}
 		}
 		self::initHooks();
-		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
+		return self::displayMenu($data, $functions);
+	}
+
+	private static function displayMenu($data, array $functions) {
+		$html = '';
+		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
+		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
+		return $html;
 	}
 
 /* =============================================================
