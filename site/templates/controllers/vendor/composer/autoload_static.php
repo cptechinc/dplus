@@ -143,6 +143,8 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mqo\\Quote\\OrderQuote' => __DIR__ . '/../..' . '/classes/mqo/Quote/OrderQuote.php',
         'Controllers\\Mqo\\Quote\\PrintQt' => __DIR__ . '/../..' . '/classes/mqo/Quote/PrintQt.php',
         'Controllers\\Mqo\\Quote\\Quote' => __DIR__ . '/../..' . '/classes/mqo/Quote/Quote.php',
+        'Controllers\\Msa\\Base' => __DIR__ . '/../..' . '/classes/msa/Base.php',
+        'Controllers\\Msa\\Menu' => __DIR__ . '/../..' . '/classes/msa/Menu.php',
         'Controllers\\Mso\\Cxm' => __DIR__ . '/../..' . '/classes/mso/Cxm.php',
         'Controllers\\Mso\\SalesOrder\\Base' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Base.php',
         'Controllers\\Mso\\SalesOrder\\Documents' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Documents.php',
