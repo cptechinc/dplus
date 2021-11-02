@@ -81,6 +81,7 @@ abstract class Base extends WireData {
 	public function modelClassName() {
 		return $this::MODEL;
 	}
+	
 /* =============================================================
 	Query Functions
 ============================================================= */
@@ -190,7 +191,7 @@ abstract class Base extends WireData {
 	public function new($id = '') {
 		$code = new Code();
 		$maxlength = $this->fieldAttribute('code', 'maxlength');
-		
+
 		if ($maxlength) {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $maxlength]);
 		}
