@@ -158,10 +158,12 @@
 		],
 		'msa' => [
 			'validate' => [
+				['GET', 'lgrp/', Json\Msa::class, 'validateLgrp'],
 				['GET', 'loginid/', Json\Msa::class, 'validateUserid'],
 				['GET', 'userid/', Json\Msa::class, 'validateUserid'],
 			],
 			['GET', 'user/', Json\Msa::class, 'getUser'],
+			['GET', 'lgrp/', Json\Msa::class, 'getLgrp'],
 		],
 		'mso' => [
 			'validate' => [
