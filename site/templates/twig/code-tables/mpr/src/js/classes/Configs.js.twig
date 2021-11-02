@@ -1,0 +1,21 @@
+class SrcConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SrcConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ src.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ src.fieldAttribute('description', 'maxlength') }}
+			},
+		};
+	}
+}

@@ -16,7 +16,19 @@ class Menu extends Base {
 			'permission' => 'bmm',
 			'title'      => 'Bill-of-Material Maintenance',
 			'summary'    => 'View / Edit Bill-of-Materials'
-		]
+		],
+		'dcm' => [
+			'name'       => 'dcm',
+			'permission' => 'dcm',
+			'title'      => 'Work Center Maintenance',
+			'summary'    => 'View / Edit Work Centers'
+		],
+		'rcm' => [
+			'name'       => 'rcm',
+			'permission' => 'rcm',
+			'title'      => 'Resource/Operator Maintenance',
+			'summary'    => 'View / Edit Work Resources/Operators'
+		],
 	];
 
 /* =============================================================
@@ -52,13 +64,21 @@ class Menu extends Base {
 		return self::subfunctionUrl('bmm');
 	}
 
+	public static function dcmUrl() {
+		return self::subfunctionUrl('dcm');
+	}
+
+	public static function rcmUrl() {
+		return self::subfunctionUrl('rcm');
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
 	private static function menu($data) {
 		$functions = [];
 		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermission($function['permission'])) {
+			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
 				$functions[$key] = $function;
 			}
 		}

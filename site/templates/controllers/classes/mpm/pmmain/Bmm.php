@@ -103,7 +103,7 @@ class Bmm extends Base {
 		$page->headline = "Bill-of-Material Master";
 
 		if ($filter->exists($data->q)) {
-			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
+			self::pw('session')->redirect(self::bomUrl($data->q), $http301 = false);
 		}
 
 		if (empty($data->q) === false) {

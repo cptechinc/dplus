@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Purl\Url as Purl;
+
 use PurchaseOrder, SalesOrder, Quote;
 
 /**
@@ -32,6 +34,16 @@ class DplusInput extends WireData implements Module {
 		$this->addHook('WireInput::countSegments', function(HookEvent $event) {
 			$input = $event->object;
 			$event->return = count($input->urlSegments());
+		});
+
+		$this->addHook('WireInput::paginateUrl', function($event) {
+			$input    = $event->object;
+			$pagenbr = $event->arguments(0);
+			$dpurl   = $this->wire('modules')->get('Dpurl');
+			$url = new Purl($input->url());
+			$url->query = $input->queryString();
+			$dpurl->paginateSimple($url, $pagenbr);
+			$event->return = $url->getUrl();
 		});
 	}
 

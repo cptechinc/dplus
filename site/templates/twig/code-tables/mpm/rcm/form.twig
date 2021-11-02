@@ -1,0 +1,59 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	rcm                    Dplus\Codes\Mpm\Dcm
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="edit-code">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" maxlength="{{ rcm.fieldAttribute('code', 'maxlength') }}" id="code">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Description</label>
+		<input type="text" name="description" class="form-control" maxlength="{{ rcm.fieldAttribute('description', 'maxlength') }}" id="description">
+	</div>
+
+	<div class="form-group">
+		<label for="workcenterid">Description</label>
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'input': {
+						'name': 'workcenterid',
+						'value': '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Work Center'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Work Centers',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('mpm/dcm/codes/'),
+							'data-input': '#workcenterid'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

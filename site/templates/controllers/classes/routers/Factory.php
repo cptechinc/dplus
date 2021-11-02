@@ -14,6 +14,7 @@ class Factory extends WireData {
 		Routers\Mpo::class,
 		Routers\Min::class,
 		Routers\Mpm::class,
+		Routers\Mpr::class,
 	];
 
 	/**

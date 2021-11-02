@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Dplus\\CodeValidators\\Itm\\Warehouse' => $baseDir . '/src/Min/Itm/Warehouse.php',
     'Dplus\\CodeValidators\\Map' => $baseDir . '/src/Map/Map.php',
     'Dplus\\CodeValidators\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
@@ -28,4 +27,5 @@ return array(
     'Dplus\\CodeValidators\\Msa' => $baseDir . '/src/Msa/Msa.php',
     'Dplus\\CodeValidators\\Mso' => $baseDir . '/src/Mso/Mso.php',
     'Dplus\\CodeValidators\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
+    'Dplus\\CodeValidators\\UserPermission' => $baseDir . '/src/Misc/UserPermission.php',
 );

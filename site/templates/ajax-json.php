@@ -117,8 +117,20 @@
 				'bmm' => [
 					['GET', 'component/', Json\Mpm::class, 'validateBomComponent'],
 					['GET', 'component/exists/', Json\Mpm::class, 'validateBomComponent'],
-				]
-			]
+				],
+				'dcm' => [
+					['GET', 'code/', Json\Mpm::class, 'validatePrWorkCenterExists'],
+				],
+				'rcm' => [
+					['GET', 'code/', Json\Mpm::class, 'validatePrResourceExists'],
+				],
+			],
+			'dcm' => [
+				['GET', 'code/', Json\Mpm::class, 'getPrWorkCenter'],
+			],
+			'rcm' => [
+				['GET', 'code/', Json\Mpm::class, 'getPrResource'],
+			],
 		],
 		'mpo' => [
 			'validate' => [
@@ -126,6 +138,19 @@
 				['GET', 'cnfm/', Json\Mpo::class, 'validateCnfmCode'],
 			],
 			['GET', 'po/item/', Json\Mpo::class, 'getPoItem'],
+			'cnfm' => [
+				['GET', 'code/', Json\Mpo::class, 'getCnfmCode'],
+			]
+		],
+		'mpr' => [
+			'validate' => [
+				'src' => [
+					['GET', 'code/', Json\Mpr::class, 'validateSourceExists'],
+				],
+			],
+			'src' => [
+				['GET', 'code/', Json\Mpr::class, 'getSource'],
+			]
 		],
 		'msa' => [
 			'validate' => [

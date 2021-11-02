@@ -1,5 +1,6 @@
 <?php namespace ProcessWire;
 
+
 use LogpermQuery, Logperm;
 use LogmQuery, Logm;
 use DplusUserQuery as UserQuery, DplusUser as Duser;
@@ -7,6 +8,8 @@ use FuncpermQuery, Funcperm;
 use CustpermQuery, Custperm;
 
 use WhsesessionQuery, Whsesession;
+
+use Dplus\CodeValidators as Validators;
 
 /**
  * Module that Handles Tying User to their Dplus data through roles && permissions
@@ -276,17 +279,17 @@ class DplusUser extends WireData implements Module {
 		});
 
 		$this->addHook('User::has_function', function($event) {
-			$permissions_master = FuncpermQuery::create();
 			$user = $event->object;
 			$function = $event->arguments(0);
-			$event->return = $permissions_master->does_user_have_permission($user->loginid, $function);
+			$validate = new Validators\UserPermission();
+			$event->return = $validate->userHasPermission($user->loginid, $function);
 		});
 
-		$this->addHook('User::hasPermission', function($event) {
-			$permissions_master = FuncpermQuery::create();
+		$this->addHook('User::hasPermissionCode', function($event) {
 			$user = $event->object;
 			$function = $event->arguments(0);
-			$event->return = $permissions_master->does_user_have_permission($user->loginid, $function);
+			$validate = new Validators\UserPermission();
+			$event->return = $validate->userHasPermission($user->loginid, $function);
 		});
 
 		$this->addHook('User::get_functions', function($event) {

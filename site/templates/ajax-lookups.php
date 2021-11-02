@@ -59,6 +59,12 @@
 		'mpo' => [
 			['GET', 'ap-invoices/', AjaxLookup::class, 'purchaseOrders'],
 			['GET', 'ap-invoices/page{pagenbr:\d+}/', AjaxLookup::class, 'purchaseOrders'],
+		],
+		'mpm' => [
+			'dcm' => [
+				['GET', 'codes/', AjaxLookup::class, 'dcmCodes'],
+				['GET', 'codes/page{pagenbr:\d+}/', AjaxLookup::class, 'dcmCodes'],
+			]
 		]
 	];
 

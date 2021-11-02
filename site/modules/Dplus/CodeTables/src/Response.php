@@ -32,7 +32,7 @@ class Response extends WireData {
 		$this->message = '';
 		$this->code    = '';
 		$this->key     = '';
-		$this->fields = array();
+		$this->fields  = [];
 	}
 
 	public function setAction(int $action = 0) {

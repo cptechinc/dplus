@@ -266,6 +266,25 @@ class Lookup extends AbstractController {
 		return self::filterResults($filter, $data);
 	}
 
+	/**
+	 * Search DCM (PrWorkCenter) Codes
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function dcmCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
+		$filter = new Filters\Mpm\PrWorkCenter();
+		$filter->init();
+		$page->headline = "Work Center Codes";
+		if ($data->q) {
+			$filter->search($data->q);
+			$page->headline = "Searching for $data->q";
+		}
+		return self::filterResults($filter, $data);
+	}
+
 	private static function moduleFilterResults(Module $filter, $data) {
 		$input = self::pw('input');
 		$page  = self::pw('page');
@@ -299,9 +318,14 @@ class Lookup extends AbstractController {
 	private static function filterResultsTwig($path = 'codes', BaseQuery $query, $q = '') {
 		$input = self::pw('input');
 		$results = $query->paginate($input->pageNum, 10);
+		$twigpath = "api/lookup/codes/search.twig";
+
+		if (self::pw('config')->twigloader->exists("api/lookup/$path/search.twig")) {
+			$twigpath = "api/lookup/$path/search.twig";
+		}
 
 		$html  = '';
-		$html .= self::pw('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $q]);
+		$html .= self::pw('config')->twig->render("$twigpath", ['results' => $results, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $q]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::pw('config')->twig->render('util/paginator.twig', ['resultscount'=> $results->getNbResults() != $query->count() ? $query->count() : $results->getNbResults()]);
 		return $html;
