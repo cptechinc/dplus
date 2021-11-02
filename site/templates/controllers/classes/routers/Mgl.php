@@ -8,5 +8,6 @@ class Mgl extends Base {
 		'mgl'    => ['', Gl\Menu::class, 'mglUrl'],
 		'glmain' => ['', Gl\Menu::class, 'glmainUrl'],
 		'ttm'    => ['', Gl\Glmain\Menu::class, 'ttmUrl'],
+		'dtm'    => ['', Gl\Glmain\Menu::class, 'dtmUrl'],
 	];
 }
