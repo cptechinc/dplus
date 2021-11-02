@@ -41,6 +41,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Mpo\\PurchaseOrder' => __DIR__ . '/../..' . '/src/Mpo/PurchaseOrder.php',
         'Dplus\\Filters\\Mpr\\ProspectSource' => __DIR__ . '/../..' . '/src/Mpr/ProspectSource.php',
         'Dplus\\Filters\\Mqo\\Quote' => __DIR__ . '/../..' . '/src/Mqo/Quote.php',
+        'Dplus\\Filters\\Msa\\NotePreDefined' => __DIR__ . '/../..' . '/src/Msa/NotePredefined.php',
         'Dplus\\Filters\\Msa\\SysLoginGroup' => __DIR__ . '/../..' . '/src/Msa/SysLoginGroup.php',
         'Dplus\\Filters\\Mso\\Cxm' => __DIR__ . '/../..' . '/src/Mso/Cxm.php',
         'Dplus\\Filters\\Mso\\SalesHistory' => __DIR__ . '/../..' . '/src/Mso/SalesHistory.php',
