@@ -143,6 +143,7 @@ return array(
     'Controllers\\Mqo\\Quote\\PrintQt' => $baseDir . '/classes/mqo/Quote/PrintQt.php',
     'Controllers\\Mqo\\Quote\\Quote' => $baseDir . '/classes/mqo/Quote/Quote.php',
     'Controllers\\Msa\\Base' => $baseDir . '/classes/msa/Base.php',
+    'Controllers\\Msa\\Lgrp' => $baseDir . '/classes/msa/Lgrp.php',
     'Controllers\\Msa\\Menu' => $baseDir . '/classes/msa/Menu.php',
     'Controllers\\Mso\\Cxm' => $baseDir . '/classes/mso/Cxm.php',
     'Controllers\\Mso\\SalesOrder\\Base' => $baseDir . '/classes/mso/SalesOrder/Base.php',
