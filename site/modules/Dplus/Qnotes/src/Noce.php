@@ -40,6 +40,17 @@ class Noce extends Qnotes {
 		return $q->find()->toArray();
 	}
 
-
+	/**
+	 * Return Note Line
+	 * @param  string $id    Note Line
+	 * @param  int    $line  Line Number
+	 * @return NotePredefined
+	 */
+	public function noteLine($id, $line = 1) {
+		$q = $this->query();
+		$q->filterById($id);
+		$q->filterBySequence($line);
+		return $q->findOne();
+	}
 
 }
