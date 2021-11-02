@@ -8,7 +8,7 @@ use Dplus\Codes\Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the DCM code table
+ * Class that handles the CRUD of the SRC code table
  */
 class Src extends Base {
 	const MODEL              = 'ProspectSource';
