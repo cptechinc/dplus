@@ -47,7 +47,8 @@ class Noce extends Base {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
-		$filter = new Filters\Msa\SysLoginGroup();
+		$filter = new Filters\Msa\NotePreDefined();
+		$filter->filterSummarized();
 
 		$page->headline = "Pre-defined Notes";
 
@@ -57,11 +58,11 @@ class Noce extends Base {
 		}
 
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		$notes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
 		$page->js .= self::pw('config')->twig->render('msa/noce/.js.twig', ['qnotes' => self::getQnotes()]);
-		$html = self::displayList($data, $codes);
+		$html = self::displayList($data, $notes);
 		self::getQnotes()->deleteResponse();
 		return $html;
 	}
@@ -77,7 +78,8 @@ class Noce extends Base {
 	}
 
 	public static function noceFocusUrl($focus) {
-		$filter = new Filters\Msa\SysLoginGroup();
+		$filter = new Filters\Msa\NotePreDefined();
+		$filter->filterSummarized();
 		if ($filter->exists($focus) === false) {
 			return Menu::noceUrl();
 		}
@@ -100,18 +102,16 @@ class Noce extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayList($data, PropelModelPager $codes) {
+	private static function displayList($data, PropelModelPager $notes) {
 		$config = self::pw('config');
 		$qnotes = self::getQnotes();
 
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/msa/noce/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('msa/noce/list.twig', ['qnotes' => $qnotes]);
+		$html .= $config->twig->render('msa/noce/list.twig', ['qnotes' => $qnotes, 'notes' => $notes]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $notes]);
 		$html .= $config->twig->render('msa/noce/notes-modal.twig', ['qnotes' => $qnotes]);
-		// $html .= $config->twig->render('code-tables/list.twig', ['manager' => $qnotes, 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
-		// $html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $qnotes]);
 		return $html;
 	}
 

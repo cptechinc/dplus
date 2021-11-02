@@ -2,7 +2,8 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	qnotes                 module QnotesPredefined
+	qnotes                 Dplus\qnotes\Noce
+	notes                  NotePreDefined[]|ObjectCollection
 #}
 <div class="list-group codes-list">
 	<div class="list-group-item bg-dark text-white">
@@ -22,7 +23,7 @@
 			</div>
 		</div>
 	</div>
-	{% for note in qnotes.getSummarizedNotes() %}
+	{% for note in notes %}
 		<div class="list-group-item code pb-1 pt-1 {{ (response.key == note.id and response.has_success() ) ? 'bg-success text-white' : ''}}" id="code-{{ note.id|attrJS }}" data-id="{{ note.id }}">
 			<div class="row align-items-center">
 				<div class="col-sm-2">
