@@ -145,6 +145,7 @@ return array(
     'Controllers\\Msa\\Base' => $baseDir . '/classes/msa/Base.php',
     'Controllers\\Msa\\Lgrp' => $baseDir . '/classes/msa/Lgrp.php',
     'Controllers\\Msa\\Menu' => $baseDir . '/classes/msa/Menu.php',
+    'Controllers\\Msa\\Noce' => $baseDir . '/classes/msa/Noce/Noce.php',
     'Controllers\\Mso\\Cxm' => $baseDir . '/classes/mso/Cxm.php',
     'Controllers\\Mso\\SalesOrder\\Base' => $baseDir . '/classes/mso/SalesOrder/Base.php',
     'Controllers\\Mso\\SalesOrder\\Documents' => $baseDir . '/classes/mso/SalesOrder/Documents.php',

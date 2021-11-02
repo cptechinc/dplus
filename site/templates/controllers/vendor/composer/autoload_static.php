@@ -146,6 +146,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Msa\\Base' => __DIR__ . '/../..' . '/classes/msa/Base.php',
         'Controllers\\Msa\\Lgrp' => __DIR__ . '/../..' . '/classes/msa/Lgrp.php',
         'Controllers\\Msa\\Menu' => __DIR__ . '/../..' . '/classes/msa/Menu.php',
+        'Controllers\\Msa\\Noce' => __DIR__ . '/../..' . '/classes/msa/Noce/Noce.php',
         'Controllers\\Mso\\Cxm' => __DIR__ . '/../..' . '/classes/mso/Cxm.php',
         'Controllers\\Mso\\SalesOrder\\Base' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Base.php',
         'Controllers\\Mso\\SalesOrder\\Documents' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Documents.php',

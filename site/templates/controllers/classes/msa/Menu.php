@@ -16,6 +16,12 @@ class Menu extends Base {
 			'permission' => 'lgrp',
 			'title'      => 'Login Group Entry',
 			'summary'    => 'View / Edit Login Groups'
+		],
+		'noce' => [
+			'name'       => 'noce',
+			'permission' => 'noce',
+			'title'      => 'Pre-Defined Notes Entry',
+			'summary'    => 'View / Edit Pre-Defined Notes'
 		]
 	];
 
@@ -49,6 +55,10 @@ class Menu extends Base {
 
 	public static function lgrpUrl() {
 		return self::subfunctionUrl('lgrp');
+	}
+
+	public static function noceUrl() {
+		return self::subfunctionUrl('noce');
 	}
 
 /* =============================================================
