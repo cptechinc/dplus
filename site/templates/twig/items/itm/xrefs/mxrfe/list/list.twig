@@ -37,7 +37,7 @@
 				{% set class = mxrfe.get_recordlocker_key(xref) == input.get.text('focus') ? 'highlight' : '' %}
 				{% set class = (response.key == mxrfe.get_recordlocker_key(xref) and response.has_success()) ? 'bg-success text-white' : class %}
 				<tr class="{{ class }}" data-mxrfe="{{ mxrfe.get_recordlocker_key(xref) }}">
-					<td>{{ xref.mnfrid }} -> {{ response.key }}</td>
+					<td>{{ xref.mnfrid }}</td>
 					<td>{{ xref.vendor.name }}</td>
 					<td>{{ xref.mnfritemid }}</td>
 					<td class="text-center">
