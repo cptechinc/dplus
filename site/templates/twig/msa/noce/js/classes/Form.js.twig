@@ -14,4 +14,17 @@ class NoceForm {
 		this.inputs = NoceInputs.getInstance();
 		this.config = NoceConfigs.getInstance();
 	}
+
+	updateInputsFromId(id) {
+		var inputs = this.inputs;
+		inputs.code.val(id);
+		// this.inputs.code.change();
+		var server = NoceRequests.getInstance();
+		server.getNotes(id, function(notes) {
+			console.log(notes);
+			if (notes) {
+				inputs.note.val(notes.note);
+			}
+		});
+	}
 }
