@@ -16,7 +16,7 @@
 			</div>
 			<div class="col-sm-4 text-center">
 				{% if page.is_print() == false %}
-					<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-modal" data-id="" data-description="">
+					<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-modal" data-code="" data-description="">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 					</button>
 				{% endif %}
@@ -24,13 +24,13 @@
 		</div>
 	</div>
 	{% for note in notes %}
-		<div class="list-group-item code pb-1 pt-1 {{ (response.key == note.id and response.has_success() ) ? 'bg-success text-white' : ''}}" id="code-{{ note.id|attrJS }}" data-id="{{ note.id }}">
+		<div class="list-group-item code pb-1 pt-1 {{ (response.key == note.id and response.has_success() ) ? 'bg-success text-white' : ''}}" id="code-{{ note.id|attrJS }}" data-code="{{ note.id }}">
 			<div class="row align-items-center">
 				<div class="col-sm-2">
 					{{ note.id }}
 				</div>
 				<div class="col-sm-6">
-					<span class="summary" data-id="{{ note.id }}">{{ note.note }}</span>
+					<span class="summary" data-code="{{ note.id }}">{{ note.note }}</span>
 				</div>
 				<div class="col-sm-4 text-center">
 					{% if page.is_print() == false %}
@@ -38,7 +38,7 @@
 							<i class="fa fa-eye" aria-hidden="true"></i> Show
 						</button>
 						&nbsp;
-						<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#notes-modal" data-id="{{ note.id }}" data-description="{{ note.description }}">
+						<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#notes-modal" data-code="{{ note.id }}" data-description="{{ note.description }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 						&nbsp;
@@ -51,7 +51,7 @@
 			<div class="row align-items-center">
 				<div class="col-sm-2"></div>
 				<div class="col-sm-6">
-					<textarea class="collapse form-control-plaintext hidden-note" data-id="{{ note.id }}" id="notes-{{ note.id|attrJS }}" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" rows="10" readonly>{{ qnotes.getNotesArray(note.id)|join('\r') }}</textarea>
+					<textarea class="collapse form-control-plaintext hidden-note" data-code="{{ note.id }}" id="notes-{{ note.id|attrJS }}" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" rows="10" readonly>{{ qnotes.getNotesArray(note.id)|join('\r') }}</textarea>
 				</div>
 				<div class="col-sm-4"></div>
 			</div>
