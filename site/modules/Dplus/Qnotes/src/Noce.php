@@ -11,7 +11,7 @@ class Noce extends Qnotes {
 
 	const FIELD_ATTRIBUTES = [
 		'code' => ['type' => 'text', 'maxlength' => NotePredefined::MAX_LENGTH_CODE],
-		'note' => ['type' => 'text', 'maxlength' => 50],
+		'note' => ['type' => 'text', 'cols' => 50],
 	];
 
 /* =============================================================

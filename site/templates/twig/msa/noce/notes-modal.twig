@@ -14,34 +14,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ input.url() }}" method="post" id="notes-form">
-					<div class="form-group">
-						<label for="id">Code</label>
-						<input type="text" class="form-control w-auto" name="id" id="id" maxlength="{{ qnotes.fieldAttribute('code', 'maxlength') }}" data-id="">
-					</div>
-					<div class="form-group">
-						<label for="note">Note</label>
-						<div class="form-group d-flex justify-content-between align-items-center">
-							{% include 'util/qnotes-textarea.twig' with {
-									'id': 'note',
-									'rows': 15, 'cols': qnotes.fieldAttribute('notes', 'maxlength'),
-									'val': ''
-								}
-							%}
-						</div>
-					</div>
-					<div class="d-flex justify-content-between align-items-center">
-						<button type="submit" name="action" value="update-notes" class="btn btn-success">
-							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-						</button>
-						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
-							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-						</button>
-						<button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
-							Close
-						</button>
-					</div>
-				</form>
+				{% include 'msa/noce/form.twig' %}
 			</div>
 		</div>
 	</div>
