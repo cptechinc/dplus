@@ -64,6 +64,11 @@ $(function() {
 
 		var noDuplicates = formCode.inputs.validateDuplicateGlCodes();
 
+		if (code == '') {
+			var row = input.closest('.code-inputs');
+			row.find('.gl-desc').text('');
+		}
+
 		if (noDuplicates === false) {
 			alert.codeGlAlreadyUsed(code, function() {
 
