@@ -82,6 +82,20 @@ $(function() {
 		}
 	});
 
+	$("body").on("change", "input[name=workcenterid]", function(e) {
+		var input = $(this);
+		var code = input.val();
+		var validator = formCode.form.validate();
+
+		if (validator.element('#'+input.attr('id'))) {
+			server.getWorkCenterCode(code, function(code) {
+				if (code) {
+					$('.work-center.description').text(code.description)
+				}
+			});
+		}
+	});
+
 /* =============================================================
 	Validation Functions
 ============================================================= */
@@ -178,7 +192,11 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var modal  = button.closest('.modal');
-		$(modal.attr('data-input')).val(button.data('code'));
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('code'));
+		if (input.data('jqv')) {
+			input.change();
+		}
 		modal.modal('hide');
 	});
 
