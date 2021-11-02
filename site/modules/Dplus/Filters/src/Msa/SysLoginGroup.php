@@ -4,7 +4,7 @@ use SysLoginGroupQuery, SysLoginGroup as Model;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
 * Wrapper Class for SysLoginGroupQuery
