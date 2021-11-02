@@ -47,6 +47,14 @@ class Rcm extends Base {
 		];
 	}
 
+	/**
+	 * Return DCM
+	 * @return Dcm
+	 */
+	public function getDcm() {
+		return Dcm::getInstance();
+	}
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
