@@ -121,28 +121,10 @@ class Bom extends Base {
 		return $html;
 	}
 
-	//
-	// private static function kitHeaders() {
-	// 	$session = self::pw('session');
-	// 	$config  = self::pw('config');
-	//
-	// 	$html  = '';
-	// 	$html .= self::breadCrumbs();
-	//
-	// 	if ($session->getFor('response', 'itm')) {
-	// 		$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
-	// 	}
-	//
-	// 	if ($session->getFor('response','kim')) {
-	// 		$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','kim')]);
-	// 	}
-	// 	return $html;
-	// }
-
 /* =============================================================
 	URL Functions
 ============================================================= */
-	public static function BomUrl($itemID, $focus = '') {
+	public static function bomUrl($itemID, $focus = '') {
 		$url = new Purl(Xrefs::xrefUrlBom($itemID));
 		if ($focus) {
 			$url->query->set('focus', $focus);
@@ -151,7 +133,7 @@ class Bom extends Base {
 	}
 
 	public static function bomComponentUrl($bomID, $component) {
-		$url = new Purl(self::BomUrl($bomID));
+		$url = new Purl(self::bomUrl($bomID));
 		$url->query->set('component', $component);
 		return $url->getUrl();
 	}
@@ -168,10 +150,10 @@ class Bom extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMpm');
 
-		$m->addHook('Page(pw_template=itm)::BomUrl', function($event) {
+		$m->addHook('Page(pw_template=itm)::bomUrl', function($event) {
 			$bomID = $event->arguments(0);
 			$focus = $event->arguments(1);
-			$event->return = self::BomUrl($bomID, $focus);
+			$event->return = self::bomUrl($bomID, $focus);
 		});
 
 		$m->addHook('Page(pw_template=itm)::bomExitUrl', function($event) {

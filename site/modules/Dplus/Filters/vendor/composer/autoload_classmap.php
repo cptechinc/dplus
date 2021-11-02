@@ -18,6 +18,7 @@ return array(
     'Dplus\\Filters\\Mgl\\GlCode' => $baseDir . '/src/Mgl/GlCode.php',
     'Dplus\\Filters\\Mgl\\GlDistCode' => $baseDir . '/src/Mgl/GlDistCode.php',
     'Dplus\\Filters\\Mgl\\GlTextCode' => $baseDir . '/src/Mgl/GlTextCode.php',
+	'Dplus\\Filters\\Min\\AddonItem' => $baseDir . '/src/Min/AddonItem.php',
     'Dplus\\Filters\\Min\\I2i' => $baseDir . '/src/Min/I2i.php',
     'Dplus\\Filters\\Min\\InvAdjustmentReason' => $baseDir . '/src/Min/InvAdjustmentReason.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',

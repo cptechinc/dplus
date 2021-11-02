@@ -1,0 +1,23 @@
+{% extends 'min/inmain/addm/list/list.twig' %}
+
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page(pw_template=addm)
+	input                  ProcessWire\WireInput
+	itm                    module Itm
+	item                   ItemMasterItem
+	addm                   Dplus\Min\Inmain\Addm\Addm
+	xrefs                  Propel\Runtime\Util\PropelModelPager (ItemAddonItem[])
+#}
+{% block add_button %}
+	{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+		{% include 'items/itm/xrefs/addm/list/actions/add.twig' %}
+	{% endif %}
+{% endblock %}
+
+{% block edit_buttons %}
+	{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+		{% include 'min/inmain/addm/list/actions/edit.twig' %}
+	{% endif %}
+{% endblock %}

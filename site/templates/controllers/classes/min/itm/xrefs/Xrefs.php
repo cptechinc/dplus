@@ -111,6 +111,10 @@ class Xrefs extends Base {
 		$m->addHook('Page(pw_template=itm)::xrefUrlBom', function($event) {
 			$event->return = self::xrefUrlBom($event->arguments(0));
 		});
+
+		$m->addHook('Page(pw_template=itm)::xrefUrlAddm', function($event) {
+			$event->return = self::xrefUrlAddm($event->arguments(0));
+		});
 	}
 
 /* =============================================================

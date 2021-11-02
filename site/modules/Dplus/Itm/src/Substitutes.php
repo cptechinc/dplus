@@ -395,8 +395,6 @@ class Substitutes extends WireData {
 		return $this->wire('session')->removeFor('response', 'itm-sub');
 	}
 
-
-
 	/**
 	 * Return if Field has Error
 	 * NOTE: Uses $session->response_itm->fields to derive this

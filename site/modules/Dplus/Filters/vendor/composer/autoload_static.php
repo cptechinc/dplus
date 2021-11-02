@@ -19,6 +19,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Mgl\\GlCode' => __DIR__ . '/../..' . '/src/Mgl/GlCode.php',
         'Dplus\\Filters\\Mgl\\GlDistCode' => __DIR__ . '/../..' . '/src/Mgl/GlDistCode.php',
         'Dplus\\Filters\\Mgl\\GlTextCode' => __DIR__ . '/../..' . '/src/Mgl/GlTextCode.php',
+		'Dplus\\Filters\\Min\\AddonItem' => __DIR__ . '/../..' . '/src/Min/AddonItem.php',
         'Dplus\\Filters\\Min\\I2i' => __DIR__ . '/../..' . '/src/Min/I2i.php',
         'Dplus\\Filters\\Min\\InvAdjustmentReason' => __DIR__ . '/../..' . '/src/Min/InvAdjustmentReason.php',
         'Dplus\\Filters\\Min\\ItemGroup' => __DIR__ . '/../..' . '/src/Min/ItemGroup.php',

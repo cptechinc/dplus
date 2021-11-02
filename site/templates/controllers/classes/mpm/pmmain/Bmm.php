@@ -23,6 +23,9 @@ class Bmm extends Base {
 	public static function index($data) {
 		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (self::validateUserPermission($data) === false) {
+			return self::displayAlertUserPermission($data);
+		}
 		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
@@ -41,6 +44,9 @@ class Bmm extends Base {
 	public static function handleCRUD($data) {
 		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (self::validateUserPermission($data) === false) {
+			return self::displayAlertUserPermission($data);
+		}
 		$url  = self::bomUrl($data->bomID);
 		$bmm  = self::getBmm();
 

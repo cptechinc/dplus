@@ -1,0 +1,59 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page(pw_template=addm)
+	input                  ProcessWire\WireInput
+	addm                   Dplus\Min\Inmain\Addm\Addm
+	xrefs                  Propel\Runtime\Util\PropelModelPager (ItemAddonItem[])
+#}
+{% set response = addm.getResponse() %}
+
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr class="bg-dark text-white">
+				<th class="py-2">
+					<a href="{{ page.get_sortURL('itemid') }}" class="link">Item ID
+						{% if page.orderby_column == 'itemid' %}
+							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+						{% endif %}
+					</a>
+				</th>
+				<th class="py-2">
+					<a href="{{ page.get_sortURL('addonitemid') }}" class="link">Add-On Item
+						{% if page.orderby_column == 'addonitemid' %}
+							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+						{% endif %}
+					</a>
+				</th>
+				<th class="py-2">
+					{% block add_button %}
+						{% include 'min/inmain/addm/list/actions/add.twig' %}
+					{% endblock %}
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for xref in xrefs %}
+				{% set class = xref.addonitemid == input.get.text('focus') ? 'highlight' : '' %}
+				{% set class = (response.hasSuccess() and response.key == [xref.itemid, xref.addonitemid]|join(addm.recordlocker.glue())) ? 'bg-success text-white' : class %}
+
+				<tr data-key="{{ addm.getRecordlockerKey(xref) }}" class="{{ class }}">
+					<td>
+						{{ xref.itemid }} <br>
+						<small>{{ xref.item.description }}</small>
+					</td>
+					<td>
+						{{ xref.addonitemid }} <br>
+						<small>{{ xref.addon.description }}</small>
+					</td>
+					<td>
+						{% block edit_buttons %}
+							{% include 'min/inmain/addm/list/actions/edit.twig' %}
+						{% endblock %}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

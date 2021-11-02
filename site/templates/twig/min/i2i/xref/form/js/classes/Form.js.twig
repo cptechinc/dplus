@@ -17,7 +17,7 @@ class I2iForm {
 		if (goEdit === true) {
 			var uri = URI();
 			uri.setQuery('parentID', this.inputs.parentid.val());
-			uri.setQuery('childtID', this.inputs.childid.val());
+			uri.setQuery('childID', this.inputs.childid.val());
 			window.location.href = uri.toString();
 		} else {
 			location.reload();

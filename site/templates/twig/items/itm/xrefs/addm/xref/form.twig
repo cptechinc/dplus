@@ -1,0 +1,16 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	itm                    module Itm
+	addm                   Dplus\Min\Inmain\Addm\Addm
+	item                   ItemMasterItem
+	xref                   ItemAddonItem
+#}
+{% extends 'min/inmain/addm/xref/form.twig' %}
+
+{% block exit_button %}
+	<a href="{{ page.xrefListUrl(xref.itemid, xref.addonitemid) }}" class="btn btn-warning">
+		<i class="fa fa-times" aria-hidden="true"></i> Close
+	</a>
+{% endblock %}
