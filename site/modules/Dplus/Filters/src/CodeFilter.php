@@ -54,7 +54,8 @@ abstract class CodeFilter extends AbstractFilter {
 		$q = $this->getQueryClass();
 		$q->execute_query('SET @rownum = 0');
 		$table = $q->getTableMap()::TABLE_NAME;
-		$col   = Model::aliasproperty('code');
+		$model = $this->modelName();
+		$col   = $model::aliasproperty('code');
 		$sql = "SELECT x.position FROM (SELECT $col, @rownum := @rownum + 1 AS position FROM $table) x WHERE $col = :code";
 		$params = [':code' => $code];
 		$stmt = $q->executeQuery($sql, $params);
