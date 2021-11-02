@@ -78,7 +78,7 @@ $(function() {
 				required: true,
 				maxlength: formCode.config.fields.code.maxlength,
 				remote: {
-					url: '{{ page.jsonApiUrl('msa/validate/lgrp/code/') }}',
+					url: '{{ page.jsonApiUrl('msa/validate/lgrp/') }}',
 					type: "get",
 					data: {
 						jqv: 'true',
@@ -101,7 +101,7 @@ $(function() {
 				form.submit();
 			} else {
 				server.validateCode(code, function(exists) {
-					var alert = LgrpAlerts.getInstance();
+					var alert = CodeAlerts.getInstance();
 					if (exists === false) {
 						form.submit();
 						return true;

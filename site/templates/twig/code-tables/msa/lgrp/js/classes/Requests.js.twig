@@ -18,7 +18,7 @@ class LgrpRequests {
 	}
 
 	getCode(code, callback) {
-		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mpr/src/code/') }}');
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/lgrp/') }}');
 
 		ajax.setData({code: code});
 		ajax.request(function(response) {
@@ -27,6 +27,6 @@ class LgrpRequests {
 	}
 
 	validateCodeUrl() {
-		return '{{ page.jsonApiUrl('mpr/validate/src/code/') }}';
+		return '{{ page.jsonApiUrl('msa/validate/lgrp/') }}';
 	}
 }
