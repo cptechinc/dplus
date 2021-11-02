@@ -13,10 +13,10 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal  = $(this);
 		var code   = button.data('code');
+
+		modal.find('.modal-title').text('Add Code');
 		if (code) {
 			modal.find('.modal-title').text('Edit Code ' + code);
-		} else {
-			modal.find('.modal-title').text('Add Code');
 		}
 		formCode.updateInputsFromJson(button.data('json'));
 	});
@@ -79,6 +79,24 @@ $(function() {
 	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
 		if (formCode.inputs.code.val() == '') {
 			formCode.inputs.code.focus();
+		}
+	});
+
+	$("body").on("change", "input[name=workcenterid]", function(e) {
+		var input = $(this);
+		var code = input.val();
+		var validator = formCode.form.validate();
+
+		if (code == '') {
+			$('.work-center.description').text('');
+		}
+
+		if (code != '' && validator.element('#'+input.attr('id'))) {
+			server.getWorkCenterCode(code, function(code) {
+				if (code) {
+					$('.work-center.description').text(code.description);
+				}
+			});
 		}
 	});
 
@@ -178,7 +196,11 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var modal  = button.closest('.modal');
-		$(modal.attr('data-input')).val(button.data('code'));
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('code'));
+		if (input.data('jqv')) {
+			input.change();
+		}
 		modal.modal('hide');
 	});
 

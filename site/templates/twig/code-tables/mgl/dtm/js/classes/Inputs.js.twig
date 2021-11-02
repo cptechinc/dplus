@@ -1,0 +1,80 @@
+class DtmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new DtmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.accounts      = [];
+
+		var config = DtmConfigs.getInstance();
+		for (var i = 1; i <= config.nbrOfAccounts; i++) {
+			this.accounts[i] = {
+				code: this.form.find('input[name=glacct'+i+']'),
+				description: this.form.find('.gl-desc[data-nbr='+i+']'),
+				percent: this.form.find('input[name=glpct'+i+']'),
+			}
+		}
+	}
+
+	validateDuplicateGlCode(code) {
+		var valid = true;
+		var codes = [];
+		$(".glcode").each(function(index) {
+			var input = $(this);
+			if (input.val() != '') {
+				codes.push(input.val());
+			}
+		});
+		const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+		return countOccurrences(codes, code) == 1;
+	}
+
+	validateDuplicateGlCodes() {
+		var valid = true;
+		var codes = [];
+		$(".glcode").each(function(index) {
+			var input = $(this);
+			if (input.val() != '') {
+				if (codes.contains(input.val())) {
+					valid = false;
+				} else {
+					codes.push(input.val());
+				}
+			}
+		});
+		return valid;
+	}
+
+	validateGlPctTotal() {
+		var valid = true;
+		var total = 0;
+
+		$(".glpct").each(function(index) {
+			var input = $(this);
+			if (input.val() != '') {
+				total += parseFloat(input.val());
+			}
+		});
+		return total == 100;
+	}
+
+	getGlPctTotal() {
+		var total = 0;
+		$(".glpct").each(function(index) {
+			var input = $(this);
+			if (input.val() != '') {
+				total += parseFloat(input.val());
+			}
+		});
+		return total;
+	}
+}

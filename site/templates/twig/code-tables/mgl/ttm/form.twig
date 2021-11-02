@@ -1,0 +1,32 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="edit-code">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
+	</div>
+
+	{% for i in 1..4 %}
+		<div class="form-group">
+			<label for="text{{i}}">Text {{i}}</label>
+			<input type="text" name="text{{i}}" class="form-control" maxlength="{{ manager.fieldAttribute('text', 'maxlength') }}" id="text{{i}}">
+		</div>
+	{% endfor %}
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

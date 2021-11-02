@@ -26,6 +26,15 @@ class RcmRequests {
 		});
 	}
 
+	getWorkCenterCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mpm/dcm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	validateCodeUrl() {
 		return '{{ page.jsonApiUrl('mpm/validate/rcm/code/') }}';
 	}

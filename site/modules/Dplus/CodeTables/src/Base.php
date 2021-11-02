@@ -72,6 +72,16 @@ abstract class Base extends WireData {
 	}
 
 /* =============================================================
+	Model Functions
+============================================================= */
+	/**
+	 * Return Nodel Class Name
+	 * @return string
+	 */
+	public function modelClassName() {
+		return $this::MODEL;
+	}
+/* =============================================================
 	Query Functions
 ============================================================= */
 	/**
@@ -87,7 +97,7 @@ abstract class Base extends WireData {
 	 * @return Query
 	 */
 	public function getQueryClass() {
-		$class = self::queryClassName();
+		$class = static::queryClassName();
 		return $class::create();
 	}
 
@@ -97,6 +107,17 @@ abstract class Base extends WireData {
 	 */
 	public function query() {
 		return $this->getQueryClass();
+	}
+
+	/**
+	 * Return Query Filtered By ID
+	 * @param  string $id
+	 * @return Query
+	 */
+	public function queryId($id) {
+		$q = $this->query();
+		$q->filterById($id);
+		return $q;
 	}
 
 /* =============================================================
@@ -143,6 +164,21 @@ abstract class Base extends WireData {
 		return $this->new($id);
 	}
 
+	/**
+	 * Return Description for Code
+	 * @param  string $id
+	 * @return string
+	 */
+	public function description($id) {
+		if ($this->exists($id) === false) {
+			return '';
+		}
+		$model = static::modelClassName();
+		$q = $this->queryId($id);
+		$q->select($model::aliasproperty('description'));
+		return $q->findOne();
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */
@@ -156,6 +192,7 @@ abstract class Base extends WireData {
 		if (empty($id) === false) {
 			$code->setId($id);
 		}
+		$code->setDummy('P');
 		return $code;
 	}
 
@@ -193,7 +230,6 @@ abstract class Base extends WireData {
 
 		$code          = $this->getOrCreate($id);
 		$invalidfields = $this->_inputUpdate($input, $code);
-
 		$response = $this->saveAndRespond($code, $invalidfields);
 		$this->setResponse($response);
 		return $response->hasSuccess();
@@ -208,9 +244,13 @@ abstract class Base extends WireData {
 	protected function _inputUpdate(WireInput $input, Code $code) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+
+		if ($code->__isset('description')) { // Some Code tables may not use description
+			$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+		}
 		$code->setDate(date('Ymd'));
 		$code->setTime(date('His'));
+		$code->setDummy('P');
 		return [];
 	}
 

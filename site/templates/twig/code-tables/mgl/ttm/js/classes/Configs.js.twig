@@ -1,0 +1,21 @@
+class TtmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new TtmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ ttm.fieldAttribute('code', 'maxlength') }}
+			},
+			text: {
+				maxlength: {{ ttm.fieldAttribute('text', 'maxlength') }}
+			},
+		};
+	}
+}

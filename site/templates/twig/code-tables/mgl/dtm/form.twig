@@ -1,0 +1,96 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="edit-code">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Description</label>
+		<input type="text" name="description" class="form-control" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
+	</div>
+
+	<legend>GL Accounts</legend>
+	{% for i in 1..manager.getNbrOfGlAccts() %}
+		<div class="row mb-2 code-inputs">
+			<div class="col-sm-1">{{ i }}</div>
+			<div class="col-sm-2">
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'glacct' ~ i,
+								'value': '',
+								'addclasses': [
+									'glcode'
+								],
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'GL Account ' ~ i
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search GL Accounts',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.searchLookupUrl('gl-codes/'),
+									'data-input': '#glacct' ~ i
+								}
+							}
+						}
+					}
+				%}
+			</div>
+			<div class="col-sm-6">
+				<p class="form-control-plaintext form-control-sm gl-desc" data-nbr="{{ i }}">stt</p>
+			</div>
+			<div class="col-sm-3">
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'append',
+							'size': 'sm',
+							'input': {
+								'name': 'glpct' ~ i,
+								'type': 'number',
+								'value': '',
+								'addclasses': [
+									'text-right',
+									'glpct'
+								],
+								'attributes': {
+									'aria-label':  'GL Account Percent' ~ i
+								}
+							},
+							'span': {
+								'colorclass': 'btn-light',
+								'text': '%',
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+	{% endfor %}
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

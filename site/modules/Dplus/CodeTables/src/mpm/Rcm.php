@@ -35,7 +35,16 @@ class Rcm extends Base {
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
-		return ['code' => $code->code, 'description' => $code->description, 'workcenterid' => $code->workcenterid];
+		$dcm = Dcm::getInstance();
+		return [
+			'code'         => $code->code,
+			'description'  => $code->description,
+			'workcenterid' => $code->workcenterid,
+			'workcenter' => [
+				'code'        => $code->workcenterid,
+				'description' => $dcm->description($code->workcenterid)
+			]
+		];
 	}
 
 /* =============================================================
@@ -90,6 +99,7 @@ class Rcm extends Base {
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
 		$dcm = Dcm::getInstance();
+
 		if ($values->text('workcenterid') != '' && $dcm->exists($values->text('workcenterid')) === false) {
 			$invalidfields['workcenterid'] = "Work Center";
 			return $invalidfields;

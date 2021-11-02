@@ -9,10 +9,11 @@ class RcmInputs {
 	}
 
 	constructor() {
-		this.id            = 'code-form',
-		this.form          = $('#' + this.id),
-		this.code          = this.form.find('input[name=code]');
-		this.description   = this.form.find('input[name=description]');
-		this.workcenterid  = this.form.find('input[name=workcenterid]');
+		this.id              = 'code-form',
+		this.form            = $('#' + this.id),
+		this.code            = this.form.find('input[name=code]');
+		this.description     = this.form.find('input[name=description]');
+		this.workcenterid    = this.form.find('input[name=workcenterid]');
+		this.workcenterdesc  = this.form.find('p.work-center.description');
 	}
 }
