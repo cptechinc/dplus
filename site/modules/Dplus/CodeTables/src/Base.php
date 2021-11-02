@@ -156,6 +156,7 @@ abstract class Base extends WireData {
 		if (empty($id) === false) {
 			$code->setId($id);
 		}
+		$code->setDummy('P');
 		return $code;
 	}
 
@@ -208,11 +209,12 @@ abstract class Base extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if ($code->__isset('description')) {
+		if ($code->__isset('description')) { // Some Code tables may not use description
 			$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
 		}
 		$code->setDate(date('Ymd'));
 		$code->setTime(date('His'));
+		$code->setDummy('P');
 		return [];
 	}
 
