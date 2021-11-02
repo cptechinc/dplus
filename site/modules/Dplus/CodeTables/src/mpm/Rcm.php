@@ -24,7 +24,7 @@ class Rcm extends Base {
 	const DPLUS_TABLE           = 'RCM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => PrResource::CODELENGTH],
-		'description' => ['type' => 'text', 'maxlength' => 20],
+		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
 	protected static $instance;
@@ -45,6 +45,14 @@ class Rcm extends Base {
 				'description' => $dcm->description($code->workcenterid)
 			]
 		];
+	}
+
+	/**
+	 * Return DCM
+	 * @return Dcm
+	 */
+	public function getDcm() {
+		return Dcm::getInstance();
 	}
 
 /* =============================================================

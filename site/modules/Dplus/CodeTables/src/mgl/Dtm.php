@@ -45,6 +45,7 @@ class Dtm extends Base {
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
+		$mhm = Mhm::getInstance();
 		$json = [
 			'code'        => $code->code,
 			'description' => $code->description,
@@ -59,8 +60,8 @@ class Dtm extends Base {
 				'percent'     => ''
 			];
 
-			if ($acctNbr) {
-				$glAcct = $code->getGlAccount($acctNbr);
+			if ($acctNbr && $mhm->exists($acctNbr)) {
+				$glAcct = $mhm->code($acctNbr);
 
 				$json['accounts'][$i] = [
 					'code'        => $glAcct->code,

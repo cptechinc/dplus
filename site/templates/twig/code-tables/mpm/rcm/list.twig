@@ -9,13 +9,13 @@
 <div class="list-group codes-list mb-3">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-sm-3">
+			<div class="col-sm-2">
 				Code
 			</div>
 			<div class="col-sm-3">
 				Name
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-4">
 				Work Center
 			</div>
 			<div class="col-sm-3 text-center">
@@ -31,14 +31,15 @@
 		{# data-code attribute and class code is for the highlight on close #}
 		<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key == code.code and response.hasSuccess() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
-				<div class="col-sm-3">
+				<div class="col-sm-2">
 					{{ code.code }}
 				</div>
 				<div class="col-sm-3">
 					{{ code.description }}
 				</div>
-				<div class="col-sm-3">
-					{{ code.workcenterid }} {{ code.workcenter.description }}
+				<div class="col-sm-4">
+					<span class="text-monospace pr-3">{{ code.workcenterid|strpad(manager.getDcm().fieldAttribute('code', 'maxlength')|raw) }}</span>
+					{{ code.workcenter.description }}
 				</div>
 				<div class="col-sm-3 text-center">
 					{% if page.is_print() == false %}
