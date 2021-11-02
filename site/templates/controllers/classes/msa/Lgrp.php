@@ -11,7 +11,7 @@ use Dplus\Filters;
 use Dplus\Codes\Msa\Lgrp as LgrpManager;
 
 class Lgrp extends Base {
-	const DPLUSPERMISSION = 'msa';
+	const DPLUSPERMISSION = 'lgrp';
 	const SHOWONPAGE = 10;
 
 	private static $lgrp;
