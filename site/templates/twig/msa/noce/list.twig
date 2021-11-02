@@ -7,52 +7,52 @@
 <div class="list-group codes-list">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-2">
+			<div class="col-sm-2">
 				Code
 			</div>
-			<div class="col-6">
+			<div class="col-sm-6">
 				Description
 			</div>
-			<div class="col-4">
+			<div class="col-sm-4 text-center">
 				{% if page.is_print() == false %}
-					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#notes-modal" data-id="" data-description="">
+					<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-modal" data-id="" data-description="">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 					</button>
 				{% endif %}
 			</div>
 		</div>
 	</div>
-	{% for note in qnotes.get_notes_summarized() %}
+	{% for note in qnotes.getSummarizedNotes() %}
 		<div class="list-group-item code pb-1 pt-1 {{ (response.key == note.id and response.has_success() ) ? 'bg-success text-white' : ''}}" id="code-{{ note.id|attrJS }}" data-id="{{ note.id }}">
 			<div class="row align-items-center">
-				<div class="col-2">
+				<div class="col-sm-2">
 					{{ note.id }}
 				</div>
-				<div class="col-6">
+				<div class="col-sm-6">
 					<span class="summary" data-id="{{ note.id }}">{{ note.note }}</span>
 				</div>
-				<div class="col-4 text-center">
+				<div class="col-sm-4 text-center">
 					{% if page.is_print() == false %}
-						<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-{{ note.id|attrJS }}" aria-controls="#notes-{{ note.id|attrJS }}">
+						<button type="button" class="btn btn-sm btn-light" data-toggle="collapse" data-target="#notes-{{ note.id|attrJS }}" aria-controls="#notes-{{ note.id|attrJS }}">
 							<i class="fa fa-eye" aria-hidden="true"></i> Show
 						</button>
 						&nbsp;
-						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#notes-modal" data-id="{{ note.id }}" data-description="{{ note.description }}">
+						<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#notes-modal" data-id="{{ note.id }}" data-description="{{ note.description }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 						&nbsp;
-						<a href="{{ page.code_deleteURL(note.id) }}" class="btn btn-danger delete_button" data-deleting="Pre-Defined Note" data-delete="{{ note.id }}">
+						<a href="{{ page.notesDeleteUrl(note.id) }}" class="btn btn-sm btn-danger delete_button" data-deleting="Pre-Defined Note" data-delete="{{ note.id }}">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% endif %}
 				</div>
 			</div>
 			<div class="row align-items-center">
-				<div class="col-2"></div>
-				<div class="col-6">
-					<textarea class="collapse form-control-plaintext hidden-note" data-id="{{ note.id }}" id="notes-{{ note.id|attrJS }}" cols="{{ qnotes.get_column_count() }}" rows="10" readonly>{{ qnotes.get_notes_form_array(note.id)|join('\r') }}</textarea>
+				<div class="col-sm-2"></div>
+				<div class="col-sm-6">
+					<textarea class="collapse form-control-plaintext hidden-note" data-id="{{ note.id }}" id="notes-{{ note.id|attrJS }}" cols="{{ qnotes.fieldAttribute('notes', 'maxlength') }}" rows="10" readonly>{{ qnotes.getNotesArray(note.id)|join('\r') }}</textarea>
 				</div>
-				<div class="col-4"></div>
+				<div class="col-sm-4"></div>
 			</div>
 		</div>
 	{% endfor %}

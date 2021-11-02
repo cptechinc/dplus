@@ -14,17 +14,17 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.url }}" method="post" id="notes-form">
+				<form action="{{ input.url() }}" method="post" id="notes-form">
 					<div class="form-group">
 						<label for="id">Code</label>
-						<input type="text" class="form-control w-auto" name="id" id="id" maxlength="{{ qnotes.get_max_length_code() }}" data-id="">
+						<input type="text" class="form-control w-auto" name="id" id="id" maxlength="{{ qnotes.fieldAttribute('code', 'maxlength') }}" data-id="">
 					</div>
 					<div class="form-group">
 						<label for="note">Note</label>
 						<div class="form-group d-flex justify-content-between align-items-center">
 							{% include 'util/qnotes-textarea.twig' with {
 									'id': 'note',
-									'rows': 15, 'cols': qnotes.get_column_count(),
+									'rows': 15, 'cols': qnotes.fieldAttribute('notes', 'maxlength'),
 									'val': ''
 								}
 							%}
