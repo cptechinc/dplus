@@ -50,7 +50,7 @@
 			<div class="row align-items-center">
 				<div class="col-sm-2"></div>
 				<div class="col-sm-6">
-					<textarea class="collapse form-control-plaintext hidden-note" data-id="{{ note.id }}" id="notes-{{ note.id|attrJS }}" cols="{{ qnotes.fieldAttribute('notes', 'maxlength') }}" rows="10" readonly>{{ qnotes.getNotesArray(note.id)|join('\r') }}</textarea>
+					<textarea class="collapse form-control-plaintext hidden-note" data-id="{{ note.id }}" id="notes-{{ note.id|attrJS }}" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" rows="10" readonly>{{ qnotes.getNotesArray(note.id)|join('\r') }}</textarea>
 				</div>
 				<div class="col-sm-4"></div>
 			</div>
