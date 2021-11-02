@@ -17,6 +17,15 @@ class CnfmRequests {
 		});
 	}
 
+	getCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mpo/cnfm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	validateCodeUrl() {
 		return '{{ page.jsonApiUrl('mpo/validate/cnfm/') }}';
 	}

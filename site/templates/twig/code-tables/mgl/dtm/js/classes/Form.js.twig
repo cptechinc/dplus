@@ -1,0 +1,75 @@
+class DtmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new DtmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = DtmInputs.getInstance();
+		this.config = DtmConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			for (var i = 1; i <= this.config.nbrOfAccounts; i++) {
+				this.inputs.accounts[i].code.val(json.accounts[i].code);
+				this.inputs.accounts[i].description.text(json.accounts[i].description);
+				this.inputs.accounts[i].percent.val(json.accounts[i].percent);
+			}
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		for (var i = 1; i <= this.config.nbrOfAccounts; i++) {
+			this.inputs.accounts[i].code.val('');
+			this.inputs.accounts[i].description.text('');
+			this.inputs.accounts[i].percent.val('');
+		}
+	}
+
+	validateCodeForSubmit(code, callback) {
+		var server   = DtmRequests.getInstance();
+		var formCode = this;
+
+		server.validateCode(code, function(exists) {
+			var alert = DtmAlerts.getInstance();
+			if (exists === false) {
+				callback(true);
+			}
+
+			alert.codeExists(code, function(editCode) {
+				if (editCode) {
+					var modal = formCode.form.closest('.modal');
+
+					if (editCode) {
+						server.getCode(code, function(response) {
+							if (response) {
+								modal.find('.modal-title').text('Edit Code ' + code);
+								formCode.updateInputsFromJson(response);
+							}
+						});
+					} else {
+						modal.modal('hide');
+						callback(false);
+					}
+				} else {
+					callback(true);
+				}
+			});
+		});
+	}
+}

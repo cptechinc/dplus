@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+/**
+ * class DpagesMpr
+ *
+ * Installs fields, templates, pages, hooks necessary for Mpo Pages
+ * Adds Hooks for getting URLs to Mpo pages
+ */
+class DpagesMpr extends Dpages implements Module {
+	const FIELDS = [];
+	const TEMPLATES = [];
+
+	const PAGES = [
+		'mpm-menu' => [
+			'template'       => 'dplus-menu',
+			'name'           => 'mpr',
+			'title'          => 'Prospecting',
+			'summary'        => 'Prospecting Menu',
+			'parent'         => '/',
+			'dplus_function' => 'mpr',
+			'pw_template'    => 'mpr'
+		]
+	];
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Online Prospecting Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dplus Online Prospecting Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+		);
+	}
+}

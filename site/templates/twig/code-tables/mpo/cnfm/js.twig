@@ -43,8 +43,11 @@ $(function() {
 						var modal = input.closest('.modal');
 
 						if (editCode) {
-							var button = $('button[data-code="'+code+'"]');
-							formCode.updateInputsFromJson(button.data('json'));
+							server.getCode(code, function(response) {
+								if (response) {
+									formCode.updateInputsFromJson(response);
+								}
+							});
 						} else {
 							modal.modal('hide');
 						}
@@ -79,7 +82,7 @@ $(function() {
 					data: {
 						jqv: 'true',
 						new: function() {
-							return formCode.inputs.form.attr('data-code') ? 'false' : 'true';
+							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
 						},
 					}
 				}
@@ -89,7 +92,7 @@ $(function() {
 			}
 		},
 		messages: {
-			code: "Please check the Code value (Max Length: {{ max_length_code }})",
+			code: "Please check the Code value (Max Length: {{ formCode.config.fields.code.maxlength }})",
 		},
 		submitHandler: function(form) {
 			var formCode = CnfmForm.getInstance();
@@ -110,8 +113,11 @@ $(function() {
 							var modal = formCode.form.closest('.modal');
 
 							if (editCode) {
-								var button = $('button[data-code="'+code+'"]');
-								formCode.updateInputsFromJson(button.data('json'));
+								server.getCode(code, function(response) {
+									if (response) {
+										formCode.updateInputsFromJson(response);
+									}
+								});	
 							} else {
 								modal.modal('hide');
 							}
@@ -134,5 +140,13 @@ $(function() {
 		form.find('.is-valid').removeClass("is-valid");
 		form.find('.invalid-feedback').remove();
 		form.find('.valid-feedback').remove();
+
+		if (form.attr('data-code')) {
+			$('#code-table-alert').remove();
+			$('.bg-success').removeClass('bg-success text-white');
+			$('.highlight').removeClass('highlight');
+			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
+			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
+		}
 	});
 })

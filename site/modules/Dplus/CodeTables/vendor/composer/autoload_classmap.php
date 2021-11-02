@@ -7,6 +7,11 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\Codes\\Base' => $baseDir . '/src/Base.php',
-    'Dplus\\Codes\\Po\\Cnfm' => $baseDir . '/src/po/Cnfm.php',
+    'Dplus\\Codes\\Mgl\\Dtm' => $baseDir . '/src/mgl/Dtm.php',
+    'Dplus\\Codes\\Mgl\\Ttm' => $baseDir . '/src/mgl/Ttm.php',
+    'Dplus\\Codes\\Mpm\\Dcm' => $baseDir . '/src/mpm/Dcm.php',
+    'Dplus\\Codes\\Mpm\\Rcm' => $baseDir . '/src/mpm/Rcm.php',
+    'Dplus\\Codes\\Mpo\\Cnfm' => $baseDir . '/src/mpo/Cnfm.php',
+    'Dplus\\Codes\\Mpr\\Src' => $baseDir . '/src/mpr/Src.php',
     'Dplus\\Codes\\Response' => $baseDir . '/src/Response.php',
 );

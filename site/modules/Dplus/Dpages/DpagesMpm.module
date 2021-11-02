@@ -1,7 +1,5 @@
 <?php namespace ProcessWire;
 
-use Purl\Url;
-
 /**
  * class DpagesMpm
  *
@@ -15,11 +13,11 @@ class DpagesMpm extends Dpages implements Module {
 	const PAGES = [
 		'mpm-menu' => [
 			'template'       => 'dplus-menu',
-			'name'           => 'mpo',
+			'name'           => 'mpm',
 			'title'          => 'Production Management',
 			'summary'        => 'Production Management Menu',
 			'parent'         => '/',
-			'dplus_function' => '',
+			'dplus_function' => 'mpm',
 			'pw_template'    => 'mpm'
 		]
 	];
@@ -36,9 +34,5 @@ class DpagesMpm extends Dpages implements Module {
 			'autoload' => true,
 			'requires' => array('DplusPwPages', 'Dpages'),
 		);
-	}
-
-	public function init() {
-
 	}
 }

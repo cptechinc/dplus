@@ -141,7 +141,7 @@ class SalesOrder extends AbstractFilter {
 	 */
 	public function salespersonid($id) {
 		if ($id) {
-			$this->query->filterByfilterbySalesPerson($id);
+			$this->query->filterBySalesPerson($id);
 		}
 		return $this;
 	}

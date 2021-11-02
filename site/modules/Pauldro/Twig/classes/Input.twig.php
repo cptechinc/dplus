@@ -11,23 +11,26 @@ class TwigInput extends TwigBaseHtml {
 		'value'      => '',
 		'size'       => '',
 		'addclasses' => [],
-		'attributes' => []
+		'attributes' => [],
+		'uppercase'  => false
 	];
 
 	const ATTRIBUTES_NOVALUE = [
 		'readonly',
-		'disabled'
+		'disabled',
+		'autofocus'
 	];
 
 	public function __construct() {
 		$this->type = 'text';
 		$this->inputclass = 'form-control';
 		$this->size       = '';
-		$this->name = '';
-		$this->id   = '';
+		$this->name  = '';
+		$this->id    = '';
 		$this->value = '';
 		$this->addclasses = [];
 		$this->attributes = [];
+		$this->uppercase  = false;
 	}
 
 	/**
@@ -53,5 +56,14 @@ class TwigInput extends TwigBaseHtml {
 		}
 		$class .= ' ' . implode(' ', $this->addclasses);
 		return trim($class);
+	}
+
+	public function attributes() {
+		if ($this->uppercase === true) {
+			$attributes = $this->attributes;
+			$attributes['oninput'] = 'this.value = this.value.toUpperCase()';
+			$this->attributes = $attributes;
+		}
+		return parent::attributes();
 	}
 }

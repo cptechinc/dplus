@@ -1,0 +1,22 @@
+class DtmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new DtmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.nbrOfAccounts = {{ dtm.getNbrOfGlAccts() }};
+		this.fields = {
+			code: {
+				maxlength: {{ dtm.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ dtm.fieldAttribute('description', 'maxlength') }}
+			},
+		};
+	}
+}

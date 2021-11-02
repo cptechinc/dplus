@@ -1,0 +1,28 @@
+class DtmAlerts extends CodeAlerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new DtmAlerts();
+		}
+		return this.instance;
+	}
+
+	codeGlAlreadyUsed(code, callback) {
+		swal2.fire({
+			title: 'Account Already Used',
+			text: 'GL Account ' + code,
+			icon: 'warning',
+			confirmButtonText: 'Ok'
+		});
+	}
+
+	pctSumNot100(total, callback) {
+		swal2.fire({
+			title: 'Precentages do not equal 100',
+			text: 'Current total: ' + total + '%',
+			icon: 'warning',
+			confirmButtonText: 'Ok'
+		});
+	}
+}

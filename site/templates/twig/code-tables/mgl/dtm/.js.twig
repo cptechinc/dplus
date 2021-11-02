@@ -1,0 +1,228 @@
+{% include 'code-tables/mgl/dtm/js/classes.js.twig' %}
+
+$(function() {
+	var server   = DtmRequests.getInstance();
+	var alert    = DtmAlerts.getInstance();
+	var formCode = DtmForm.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$('#edit-code-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+		modal.find('.modal-title').text('Add Code');
+
+		if (code) {
+			modal.find('.modal-title').text('Edit Code ' + code);
+		}
+		formCode.updateInputsFromJson(button.data('json'));
+	});
+
+	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+		formCode.inputs.code.focus();
+
+		if (code) {
+			formCode.inputs.description.focus();
+		}
+	});
+
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var code = input.val();
+
+		server.validateCode(code, function(exists) {
+			if (exists === true) {
+				alert.codeExists(code, function(editCode) {
+					if (editCode) {
+						var modal = input.closest('.modal');
+
+						if (editCode) {
+							server.getCode(code, function(response) {
+								if (response) {
+									modal.find('.modal-title').text('Edit Code ' + code);
+									formCode.updateInputsFromJson(response);
+								}
+							});
+						} else {
+							modal.modal('hide');
+						}
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("change", "input.glcode", function(e) {
+		var input = $(this);
+		var code = input.val();
+
+		var noDuplicates = formCode.inputs.validateDuplicateGlCodes();
+
+		if (noDuplicates === false) {
+			alert.codeGlAlreadyUsed(code, function() {
+
+			});
+			return false;
+		}
+
+		if (noDuplicates) {
+			server.validateGlCode(code, function(exists) {
+				if (exists === true) {
+					server.getGlCode(code, function(response) {
+						if (response) {
+							var row = input.closest('.code-inputs');
+							row.find('.gl-desc').text(response.description);
+						}
+					});
+				}
+			});
+		}
+	});
+
+	$("body").on("change", "input.glpct", function(e) {
+		var input = $(this);
+		var pct = input.val();
+
+		var valid = formCode.inputs.validateGlPctTotal();
+
+		if (valid === false) {
+			var total = formCode.inputs.getGlPctTotal();
+			alert.pctSumNot100(total, function() {
+
+			});
+		}
+	});
+
+	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
+		if (formCode.inputs.code.val() == '') {
+			formCode.inputs.code.focus();
+		}
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	jQuery.validator.addMethod("glAccountAlreadyUsed", function(value, element) {
+		return this.optional(element) || formCode.inputs.validateDuplicateGlCode(value);
+	}, "Acct Already Used");
+
+	jQuery.validator.addMethod("glPctTotal", function(value, element) {
+		return this.optional(element) || formCode.inputs.validateGlPctTotal();
+	}, "Precentages do not equal 100");
+
+	var validator = formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			if (element.hasParent('.input-group')) {
+				element = element.closest('.input-group');
+			}
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: formCode.config.fields.code.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mgl/validate/dtm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			description: {
+				maxlength: formCode.config.fields.description.maxlength,
+			},
+		},
+		submitHandler: function(form) {
+			var formCode = DtmForm.getInstance();
+			var code     = formCode.inputs.code.val();
+			var valid    = true;
+			var noDuplicates = formCode.inputs.validateDuplicateGlCodes();
+
+			if (noDuplicates === false) {
+				valid = false;
+				alert.codeGlAlreadyUsed(code, function() {
+
+				});
+			}
+
+			var validPcts = formCode.inputs.validateGlPctTotal();
+
+			if (validPcts === false) {
+				valid = false;
+				var total = formCode.inputs.getGlPctTotal();
+				alert.pctSumNot100(total, function() {
+
+				});
+			}
+
+			if (valid) {
+				if (formCode.inputs.form.attr('data-code') == code) {
+					form.submit();
+				} else {
+					formCode.validateCodeForSubmit(code, function(submitForm) {
+						if (submitForm) {
+							form.submit();
+						}
+					})
+				}
+			}
+		}
+	});
+
+	$(".glcode").each(function () {
+		var input = $(this);
+		input.rules('add', {
+			required: false,
+			glAccountAlreadyUsed: true,
+			remote: {
+				url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
+				type: "get",
+				data: {
+					jqv: 'true',
+					code: function() {
+						return input.val();
+					},
+				}
+			}
+		});
+	});
+
+	$(".glpct").each(function () {
+		var input = $(this);
+		input.rules('add', {
+			required: false,
+			glPctTotal: true
+		});
+	});
+
+/* =============================================================
+	Form Functions
+============================================================= */
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		var form = formCode.inputs.form;
+		form.validate().resetForm();
+		form.find('.is-invalid').removeClass("is-invalid");
+		form.find('.is-valid').removeClass("is-valid");
+		form.find('.invalid-feedback').remove();
+		form.find('.valid-feedback').remove();
+
+		if (form.attr('data-code')) {
+			$('#code-table-alert').remove();
+			$('.bg-success').removeClass('bg-success text-white');
+			$('.highlight').removeClass('highlight');
+			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
+			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
+		}
+	});
+})

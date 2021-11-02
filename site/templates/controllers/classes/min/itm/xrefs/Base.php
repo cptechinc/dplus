@@ -49,4 +49,8 @@ class Base extends ItmBase {
 	public static function xrefUrlBom($itemID) {
 		return self::xrefUrlFunction($itemID, 'bom');
 	}
+
+	public static function xrefUrlAddm($itemID) {
+		return self::xrefUrlFunction($itemID, 'addm');
+	}
 }

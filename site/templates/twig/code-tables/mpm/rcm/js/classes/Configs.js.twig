@@ -1,0 +1,21 @@
+class RcmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new RcmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ rcm.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ rcm.fieldAttribute('description', 'maxlength') }}
+			},
+		};
+	}
+}

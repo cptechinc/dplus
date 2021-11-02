@@ -1,0 +1,95 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page(pw_template=addm)
+	input                  ProcessWire\WireInput
+	addm                   Dplus\Min\Inmain\Addm\Addm
+	xref                   ItemAddonItem
+#}
+{% set configIn = page.wire('modules').get('Dconfigs').config('in') %}
+
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="itemID">Item ID</label>
+	</div>
+	<div class="col-sm-8 item-fields">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': xref.itemid ? true : false,
+						'tabindex': xref.itemid ? '-1' : '',
+					},
+					'input': {
+						'name': 'itemID',
+						'value': xref.itemid,
+						'uppercase': configIn.useUppercaseItemid(),
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID',
+							'tabindex': xref.itemid ? '-1' : '',
+							'data-itemid': xref.itemid,
+							'data-updates': 'description,description2',
+							'autofocus': xref.itemid == ''
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#itemID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ xref.item.description }}</small>
+		<small class="form-text text-muted description2">{{ xref.item.description2 }}</small>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="addonID">Add-On Item ID</label>
+	</div>
+	<div class="col-sm-8 item-fields">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': xref.addonitemid ? true : false,
+						'tabindex': xref.addonitemid ? '-1' : '',
+					},
+					'input': {
+						'name': 'addonID',
+						'value': xref.addonitemid,
+						'uppercase': configIn.useUppercaseItemid(),
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID',
+							'tabindex': xref.addonitemid ? '-1' : '',
+							'data-itemid': xref.addonitemid,
+							'data-updates': 'description,description2'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#addonID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ xref.addonitemid ? xref.addon.description : '' }}</small>
+		<small class="form-text text-muted description2">{{ xref.addonitemid ? xref.addon.description2 : '' }}</small>
+	</div>
+</div>

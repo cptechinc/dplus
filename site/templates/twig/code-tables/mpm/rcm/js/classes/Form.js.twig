@@ -1,0 +1,38 @@
+class RcmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new RcmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = RcmInputs.getInstance();
+		this.config = RcmConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		console.log(json);
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.workcenterid.val(json.workcenterid);
+			this.inputs.workcenterdesc.text(json.workcenter.description);
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.workcenterid.val('');
+		this.inputs.workcenterdesc.text('');
+	}
+}

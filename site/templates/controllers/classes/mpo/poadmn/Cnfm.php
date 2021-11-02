@@ -7,14 +7,17 @@ use Propel\Runtime\Util\PropelModelPager;
 use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\WireData;
+// Dplus Filters
+use Dplus\Filters;
 // Dplus Codes
-use Dplus\Codes\Po\Cnfm as Manager;
+use Dplus\Codes\Mpo\Cnfm as Manager;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 
 class Cnfm extends Base {
 	const DPLUSPERMISSION = 'cnfm';
+	const SHOWONPAGE = 10;
 
 /* =============================================================
 	Indexes
@@ -39,9 +42,20 @@ class Cnfm extends Base {
 		$cnfm = self::getCnfm();
 		$cnfm->recordlocker->deleteLock();
 		self::pw('page')->headline = Menu::SUBFUNCTIONS['cnfm']['title'];
+
+		$filter = new Filters\Mpo\PoConfirmCode();
+
+		if (empty($data->q) === false) {
+			$filter->search($data->q);
+			self::pw('page')->headline = "DCM: Searching for '$data->q'";
+		}
+
+		$filter->sortby(self::pw('page'));
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mpo/cnfm/js.twig', ['cnfm' => $cnfm]);
 		self::initHooks();
-		$html = self::displayList($data, $cnfm->codes());
+		$html = self::displayList($data, $codes);
 		$cnfm->deleteResponse();
 		return $html;
 	}
@@ -72,9 +86,17 @@ class Cnfm extends Base {
 		return $url->getUrl();
 	}
 
-	public static function codeFocusUrl($code) {
+	public static function codeFocusUrl($focus) {
+		$filter = new Filters\Mpo\PoConfirmCode();
+		if ($filter->exists($focus) === false) {
+			return self::cnfmUrl();
+		}
+		$position = $filter->positionQuick($focus);
+		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
+
 		$url = new Purl(self::cnfmUrl());
-		$url->query->set('focus', $code);
+		$url->query->set('focus', $focus);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'cnfm', $pagenbr);
 		return $url->getUrl();
 	}
 
@@ -87,7 +109,7 @@ class Cnfm extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayList($data, ObjectCollection $codes) {
+	private static function displayList($data, PropelModelPager $codes) {
 		$cnfm   = self::getCnfm();
 		$config = self::pw('config');
 
@@ -95,6 +117,7 @@ class Cnfm extends Base {
 		$html .= self::displayBreadcrumbs($data);
 		$html .= '<div class="mb-3">' . self::displayResponse($data) . '</div>';
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $cnfm , 'codes' => $codes]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		$html .= $config->twig->render('code-tables/mpo/cnfm/edit-modal.twig', ['cnfm' => $cnfm]);
 		$html .= '<div class="mb-3"></div>';
 		return $html;

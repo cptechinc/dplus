@@ -1,0 +1,43 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page(pw_template=addm)
+	input                  ProcessWire\WireInput
+	addm                   Dplus\Min\Inmain\Addm\Addm
+	xref                   ItemAddonItem
+#}
+<form action="{{ input.url() }}" method="POST" id="addm-form" data-new="{{ xref.isNew() ? 'true' : 'false' }}">
+	<input type="hidden" name="action" value="update">
+
+	<div class="mb-4">
+		{% include 'min/inmain/addm/xref/form/key.twig' %}
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		{% block crud_actions %}
+			{#
+				Only show Edit Actions if the Item is
+				1. Locked for editing by the User
+				2. Is a new Item
+				NOTE: Only show delete if item already exists.
+			#}
+			{% if addm.recordlocker.userHasLocked(addm.getRecordlockerKey(xref)) or xref.isNew() %}
+				<button type="submit" class="btn btn-success">
+					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+				</button>
+
+				{% if xref.isNew() == false %}
+					<a href="{{ page.xrefDeleteUrl(item.itemid, xref.addonitemid) }}" class="btn btn-danger delete_button">
+						<i class="fa fa-trash" aria-hidden="true"></i> Delete
+					</a>
+				{% endif %}
+			{% endif %}
+		{% endblock %}
+		
+		{% block exit_button %}
+			<a href="{{ page.xrefListUrl(addm.getRecordlockerKey(xref)) }}" class="btn btn-warning">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		{% endblock %}
+	</div>
+</form>

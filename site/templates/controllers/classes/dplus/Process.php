@@ -23,7 +23,7 @@ class Process extends AbstractController {
 		}
 
 		$permission = empty($page->dplus_function) ? $page->dplus_permission : $page->dplus_function;
-		$hasPermission = $user->has_function($permission) || empty($permission);
+		$hasPermission = $user->hasPermissionCode($permission) || empty($permission);
 
 		if ($hasPermission === false) {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $permission"]);
