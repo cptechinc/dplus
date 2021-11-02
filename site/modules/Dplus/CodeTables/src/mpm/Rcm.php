@@ -35,7 +35,16 @@ class Rcm extends Base {
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
-		return ['code' => $code->code, 'description' => $code->description, 'workcenterid' => $code->workcenterid];
+		$dcm = Dcm::getInstance();
+		return [
+			'code'         => $code->code,
+			'description'  => $code->description,
+			'workcenterid' => $code->workcenterid,
+			'workcenter' => [
+				'code'        => $code->workcenterid,
+				'description' => $dcm->description($code->workcenterid)
+			]
+		];
 	}
 
 /* =============================================================

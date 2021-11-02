@@ -87,10 +87,14 @@ $(function() {
 		var code = input.val();
 		var validator = formCode.form.validate();
 
-		if (validator.element('#'+input.attr('id'))) {
+		if (code == '') {
+			$('.work-center.description').text('');
+		}
+
+		if (code != '' && validator.element('#'+input.attr('id'))) {
 			server.getWorkCenterCode(code, function(code) {
 				if (code) {
-					$('.work-center.description').text(code.description)
+					$('.work-center.description').text(code.description);
 				}
 			});
 		}
