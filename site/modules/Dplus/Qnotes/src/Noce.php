@@ -1,12 +1,14 @@
 <?php namespace Dplus\Qnotes;
 // Dolus Models
 use NotePredefinedQuery, NotePredefined;
+// ProcessWire
+use ProcessWire\WireInput;
 
 class Noce extends Qnotes {
 	const MODEL                = 'NotePredefined';
 	const MODEL_KEY            = 'id';
 	const DESCRIPTION          = 'Pre-Defined Notes';
-	const RESPONSE_TEMPLATE    = 'Pre-Defined Note {code} {not} {crud}';
+	const RESPONSE_TEMPLATE    = 'Pre-Defined Note {key} Lines {lines} were {not} {crud}';
 	const TYPE                 = 'NOCE';
 
 	const FIELD_ATTRIBUTES = [
@@ -42,7 +44,7 @@ class Noce extends Qnotes {
 
 	/**
 	 * Return Note Line
-	 * @param  string $id    Note Line
+	 * @param  string $id    Note ID
 	 * @param  int    $line  Line Number
 	 * @return NotePredefined
 	 */
@@ -52,5 +54,110 @@ class Noce extends Qnotes {
 		$q->filterBySequence($line);
 		return $q->findOne();
 	}
+
+/* =============================================================
+	CRUD Create Functions
+============================================================= */
+	/**
+	 * Return New NotePredefined
+	 * @param  string $id  Note ID
+	 * @return NotePredefined
+	 */
+	public function new($id = '') {
+		$note = NotePredefined::new();
+		if ($id && $id != 'new') {
+			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$note->setId($id);
+		}
+		$note->generateKey2(); // PK
+		$note->setSequence(1); // PK
+		$note->setDummy('P');
+		return $note;
+	}
+
+/* =============================================================
+	CRUD Delete Functions
+============================================================= */
+	/**
+	 * Delete Notes
+	 * @param  string $id    Note Line
+	 * @return bool
+	 */
+	public function deleteNotes($id) {
+		$q = $this->query();
+		$q->filterById($id);
+		if ($q->count() === 0) {
+			return true;
+		}
+		return $q->delete();
+	}
+
+/* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Write Notes from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function _inputUpdate(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$this->deleteNotes($id);
+
+		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
+
+		$savedLines = [];
+
+		foreach ($noteLines as $key => $line) {
+			$sequence = $key + 1;
+			$note = $this->new($id);
+			$note->generateKey2(); // PK
+			$note->setSequence($sequence); // PK
+			$note->setNote($line);
+			$note->setDate(date('Ymd'));
+			$note->setTime(date('His').'00');
+			$savedLines[$sequence] = boolval($note->save());
+		}
+		$response = $this->updateAndRespond($note, $savedLines);
+		$this->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+	/**
+	 * Process Written Lines, update Dplus cobol
+	 * @param  NotePredefined $note
+	 * @param  array          $savedLines  e.g. [1 => true, 2 => false]
+	 * @return Response
+	 */
+	private function updateAndRespond(NotePredefined $note, array $savedLines = []) {
+		$response = new Response();
+		$response->setKey($note->id);
+		$response->setAction(Response::CRUD_UPDATE);
+
+		if (in_array(false, $savedLines)) {
+			$errorLines =
+			array_filter($savedLines, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+
+			$response->addMsgReplacement('{lines}', implode(", ", array_keys($errorLines)));
+
+			if (sizeof($errorLines)) {
+				$response->setError(true);
+			}
+		} else {
+			$response->setSuccess(true);
+			$response->addMsgReplacement('{lines}', '');
+		}
+		$response->buildMessage(static::RESPONSE_TEMPLATE);
+
+		if ($response->hasSuccess()) {
+			$this->updateDplus($note);
+		}
+		return $response;
+	}
+
 
 }
