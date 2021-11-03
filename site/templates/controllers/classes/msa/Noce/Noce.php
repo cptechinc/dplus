@@ -110,7 +110,6 @@ class Noce extends Base {
 		// $html .= $config->twig->render('code-tables/msa/noce/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('msa/noce/list.twig', ['qnotes' => $qnotes, 'notes' => $notes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $notes]);
 		$html .= $config->twig->render('msa/noce/notes-modal.twig', ['qnotes' => $qnotes]);
 		return $html;
 	}
