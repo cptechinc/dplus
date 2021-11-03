@@ -32,6 +32,17 @@ $(function() {
 		}
 	});
 
+	$('#notes-modal').on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var id     = modal.find('input[name=code]').val().toString();
+
+		$('.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.note[data-code="'+id+'"]').addClass('highlight');
+		$('.code-table-alert').remove();
+	});
+
 	$("body").on("change", "input[name=code]", function(e) {
 		var input = $(this);
 		var id = input.val();
@@ -94,48 +105,28 @@ $(function() {
 				return true;
 			}
 
-				server.validateCode(id, function(exists) {
-					if (exists === false) {
-						form.submit();
-						return true;
-					}
+			server.validateCode(id, function(exists) {
+				if (exists === false) {
+					form.submit();
+					return true;
+				}
 
-					var alert = NoceAlerts.getInstance();
+				var alert = NoceAlerts.getInstance();
 
-					alert.codeExists(id, function(editNote) {
+				alert.codeExists(id, function(editNote) {
+					if (editNote) {
+						var modal = formNote.form.closest('.modal');
+
 						if (editNote) {
-							var modal = formNote.form.closest('.modal');
-
-							if (editNote) {
-								formNote.setupFormEdit(id);
-							} else {
-								modal.modal('hide');
-							}
+							formNote.setupFormEdit(id);
 						} else {
-							form.submit();
+							modal.modal('hide');
 						}
-					});
+					} else {
+						form.submit();
+					}
 				});
+			});
 		}
 	});
-//
-// /* =============================================================
-// 	Form Functions
-// ============================================================= */
-// 	$("#notes-modal").on('hidden.bs.modal', function (e) {
-// 		var form = formNote.inputs.form;
-// 		form.validate().resetForm();
-// 		form.find('.is-invalid').removeClass("is-invalid");
-// 		form.find('.is-valid').removeClass("is-valid");
-// 		form.find('.invalid-feedback').remove();
-// 		form.find('.valid-feedback').remove();
-//
-// 		if (form.attr('data-code')) {
-// 			$('#code-table-alert').remove();
-// 			$('.bg-success').removeClass('bg-success text-white');
-// 			$('.highlight').removeClass('highlight');
-// 			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
-// 			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
-// 		}
-// 	});
 })
