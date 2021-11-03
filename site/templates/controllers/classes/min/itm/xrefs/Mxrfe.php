@@ -88,7 +88,7 @@ class Mxrfe extends Base {
 
 		$page  = self::pw('page');
 		$page->title = "MXRFE";
-		$page->headline = "ITM: $data->itemID Mnfr / Comp ID";
+		$page->headline = "ITM: $data->itemID MXRFE";
 
 		$filter = new MxrfeFilter();
 		$filter->itemid($data->itemID);
