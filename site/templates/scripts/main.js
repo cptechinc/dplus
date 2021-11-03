@@ -184,7 +184,6 @@ $(function() {
 		}).then((confirm) => {
 			if (confirm.value) {
 				button.closest('form').submit();
-				window.location.href = action;
 			}
 		});
 	});
