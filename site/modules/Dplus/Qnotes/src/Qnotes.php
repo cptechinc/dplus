@@ -1,8 +1,10 @@
 <?php namespace Dplus\Qnotes;
 // Propel ORM Library
 use Propel\Runtime\Collection\ObjectCollection;
-
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
+// ProcessWire
 use ProcessWire\WireData;
+use ProcessWire\WireInput;
 
 abstract class Qnotes extends WireData {
 	const MODEL                = '';
@@ -27,6 +29,24 @@ abstract class Qnotes extends WireData {
 
 	public function __construct() {
 		$this->sessionID = session_id();
+	}
+
+	/**
+	 * Returns Lines Broken down by line limits
+	 * @param  string $note   Text Area Note
+	 * @param  int    $length Line Length Limit
+	 * @return array
+	 */
+	public function explodeNoteLines($note, int $length = 0) {
+		$lines = [];
+
+		if ($length) {
+			$wrapped = wordwrap($note, $length, PHP_EOL, $cut = true);
+			$lines = explode(PHP_EOL, $wrapped);
+		} else {
+			$lines = explode(PHP_EOL, $note);
+		}
+		return $lines;
 	}
 
 /* =============================================================
@@ -104,6 +124,38 @@ abstract class Qnotes extends WireData {
 	}
 
 /* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Process Input Data, Update Database
+	 * @param  WireInput $input Input Data
+	 */
+	public function processInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'delete':
+				$this->inputDelete($input);
+				break;
+			case 'update-notes':
+				$this->inputUpdate($input);
+				break;
+		}
+	}
+
+	/**
+	 * Update CNFM Code from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function inputUpdate(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		return $this->_inputUpdate($input);
+	}
+
+/* =============================================================
 	CRUD Response
 ============================================================= */
 	/**
@@ -127,5 +179,33 @@ abstract class Qnotes extends WireData {
 	 */
 	public function deleteResponse() {
 		$this->wire('session')->removeFor('response', static::TYPE);
+	}
+
+/* =============================================================
+	Dplus Requests
+============================================================= */
+	/**
+	 * Return Data needed for Dplus to UPDATE the Qnote
+	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
+	 * @param  string $key2     Key 2
+	 * @param  string $form     Form e.g YNNN
+	 * @return array
+	 */
+	public function writeRqstData(ActiveRecordInterface $note) {
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		return ["DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$note->type", "KEY2=$note->key2", "FORM=$note->form"];
+	}
+
+	/**
+	 * Sends Update Request for Qnote
+	 * @param  ActiveRecordInterface $note
+	 * @return void
+	 */
+	public function updateDplus(ActiveRecordInterface $note) {
+		$config = $this->wire('config');
+		$data   = $this->writeRqstData($note);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
 	}
 }
