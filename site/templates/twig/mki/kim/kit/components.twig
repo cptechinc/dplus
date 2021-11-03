@@ -7,14 +7,17 @@
 	kit                    InvKit
 #}
 {% set response = kim.getResponse() %}
+{% set configKt = kim.getConfigKt() %}
 
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
 			<th>Component</th>
-			<th>Tag</th>
+			{% if configKt.isUsageTag() %}
+				<th>Tag</th>
+			{% endif %}
 			<th>Description</th>
-			<th class="text-right">Rate</th>
+			<th class="text-right">Usage Rate</th>
 			<th class="text-center">
 				{% block add_new %}
 					{% include 'mki/kim/kit/components/link-add.twig' %}
@@ -28,10 +31,14 @@
 			{% set class = (response.kitID == kit.itemid and response.component == component.itemid and response.has_success()) ? 'bg-success text-white' : class %}
 			<tr class="{{ class }}">
 				<td>{{ component.itemid }}</td>
-				<td>{{ component.usagetag }}</td>
+
+				{% if configKt.isUsageTag() %}
+					<td>{{ component.usagetag }}</td>
+				{% endif %}
+
 				<td>{{ component.item.description }}</td>
 				<td class="text-right">
-					{{ kim.getConfigKt().usageorfreeusage() ? component.usage()|number_format(0) : '' }}
+					{{ component.usage()|number_format(kim.component.decimal_places_qty()) }}
 				</td>
 				<td class="text-center">
 					{% block edit_component %}
