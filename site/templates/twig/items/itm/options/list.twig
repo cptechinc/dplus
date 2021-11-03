@@ -1,0 +1,37 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page(pw_template=itm)
+	input                  ProcessWire\WireInput
+	addm                   Dplus\Min\Inmain\Addm\Addm
+	options                Propel\Runtime\Util\PropelModelPager (MsaSysopCode[])
+#}
+{% set response = addm.getResponse() %}
+
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr class="bg-dark text-white">
+				<th class="py-2">Option</th>
+				<th class="py-2">Code</th>
+				<th class="py-2">Description</th>
+				<th class="py-2">Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for option in options %}
+				{# set class = xref.addonitemid == input.get.text('focus') ? 'highlight' : '' #}
+				{# set class = (response.hasSuccess() and response.key == [xref.itemid, xref.addonitemid]|join(addm.recordlocker.glue())) ? 'bg-success text-white' : class #}
+
+				<tr data-key="{{ option.id }}" class="{# class #}">
+					<td>{{ option.description }}</td>
+					<td>code</td>
+					<td>VALUE</td>
+					<td>
+						edit
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
