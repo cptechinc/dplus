@@ -86,6 +86,8 @@ class KimComponent extends WireData implements Module {
 		if ($validator->itemid($itemID)) {
 			$c->setItemid($itemID);
 		}
+		$c->setFreegoods('N');
+		$c->setDummy('P');
 		return $c;
 	}
 
@@ -143,7 +145,7 @@ class KimComponent extends WireData implements Module {
 		$kitID = $values->text('kitID');
 		$kim = $this->wire('modules')->get('Kim');
 
-		if ($kim->kit_exists($kitID) === false) {
+		if ($kim->kit_exists($kitID) === false && $values->text('action') != 'delete-component') {
 			$created = $this->create_kit($kitID);
 
 			if (!$created) {
@@ -227,6 +229,7 @@ class KimComponent extends WireData implements Module {
 		$component->setUsage($values->text('usage')); // TODO GET Precision
 		$component->setDate(date('Ymd'));
 		$component->setTime(date('His'));
+		$component->setDummy('P');
 		$invalidfields = $this->updateComponentFieldsValidated($component, $input);
 		return $invalidfields;
 	}
