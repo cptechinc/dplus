@@ -138,14 +138,14 @@ abstract class Qnotes extends WireData {
 			case 'delete':
 				$this->inputDelete($input);
 				break;
-			case 'update-notes':
+			case 'update':
 				$this->inputUpdate($input);
 				break;
 		}
 	}
 
 	/**
-	 * Update CNFM Code from Input Data
+	 * Update Qnotes from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
@@ -153,6 +153,17 @@ abstract class Qnotes extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		return $this->_inputUpdate($input);
+	}
+
+	/**
+	 * Delete Qnotes from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		return $this->_inputDelete($input);
 	}
 
 /* =============================================================
