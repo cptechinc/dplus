@@ -78,7 +78,6 @@ $(function() {
 					data: {
 						jqv: 'true',
 						new: function() {
-							console.log(formNote.inputs.form.attr('data-code'));
 							return formNote.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
 						},
 					}
@@ -88,11 +87,14 @@ $(function() {
 		submitHandler: function(form) {
 			var formNote = NoceForm.getInstance();
 			var server   = NoceRequests.getInstance();
-			var code     = formNote.inputs.code.val();
+			var id       = formNote.inputs.code.val();
 
-			// if (formNote.inputs.form.attr('data-code') == code) {
-			// 	form.submit();
-			// } else {
+			if (formNote.inputs.form.attr('data-code') == id) {
+				form.submit();
+				return true;
+			}
+
+
 			// 	server.validateCode(code, function(exists) {
 			// 		var alert = NoceAlerts.getInstance();
 			// 		if (exists === false) {
@@ -119,7 +121,7 @@ $(function() {
 			// 			}
 			// 		});
 			// 	});
-			// }
+			
 		}
 	});
 //
