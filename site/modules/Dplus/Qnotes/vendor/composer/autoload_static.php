@@ -9,6 +9,7 @@ class ComposerStaticInite6cdb8e5e8d5442da30953ddd302d993
     public static $classMap = array (
         'Dplus\\Qnotes\\Noce' => __DIR__ . '/../..' . '/src/Noce.php',
         'Dplus\\Qnotes\\Qnotes' => __DIR__ . '/../..' . '/src/Qnotes.php',
+        'Dplus\\Qnotes\\Response' => __DIR__ . '/../..' . '/src/Response.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
