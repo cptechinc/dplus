@@ -11,9 +11,9 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			<th class="pt-3 pb-3 align-middle">Mf / Cp</th>
+			<th class="pt-3 pb-3 align-middle">Mnfr / Comp ID</th>
 			<th class="pt-3 pb-3 align-middle">Mnfr / Comp Name</th>
-			<th class="pt-3 pb-3 align-middle">Mnfr/Comp Item ID</th>
+			<th class="pt-3 pb-3 align-middle">Mnfr / Comp Item ID</th>
 			<th class="pt-3 pb-3 text-center">
 				{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
 					<a href="{{ page.xrefUrl('', 'new', item.itemid) }}" class="btn btn-light btn-sm">
