@@ -92,6 +92,7 @@ return array(
     'Controllers\\Min\\Itm\\Dimensions' => $baseDir . '/classes/min/itm/Dimensions.php',
     'Controllers\\Min\\Itm\\Itm' => $baseDir . '/classes/min/itm/Itm.php',
     'Controllers\\Min\\Itm\\Misc' => $baseDir . '/classes/min/itm/Misc.php',
+    'Controllers\\Min\\Itm\\Options' => $baseDir . '/classes/min/itm/Options.php',
     'Controllers\\Min\\Itm\\Pricing' => $baseDir . '/classes/min/itm/Pricing.php',
     'Controllers\\Min\\Itm\\Warehouse' => $baseDir . '/classes/min/itm/Warehouse.php',
     'Controllers\\Min\\Itm\\Xrefs\\Addm' => $baseDir . '/classes/min/itm/xrefs/Addm.php',

@@ -20,6 +20,7 @@ class Itm extends Base {
 		'misc'         => ['title' => 'Misc', 'permission' => 'misc'],
 		'xrefs'        => ['title' => 'X-Refs', 'permission' => 'xrefs'],
 		// 'dimensions'   => ['title' => 'Packaging', 'permission' => ''],
+		'options'      => ['title' => 'Opts', 'permission' => 'options'],
 	];
 
 /* =============================================================
