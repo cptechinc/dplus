@@ -8,7 +8,6 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
 {
     public static $classMap = array (
         'Dplus\\Filters\\AbstractFilter' => __DIR__ . '/../..' . '/src/AbstractFilter.php',
-        'Dplus\\Filters\\CodeFilter' => __DIR__ . '/../..' . '/src/CodeFilter.php',
         'Dplus\\Filters\\Map\\ApContact' => __DIR__ . '/../..' . '/src/Map/ApContact.php',
         'Dplus\\Filters\\Map\\Mxrfe' => __DIR__ . '/../..' . '/src/Map/Mxrfe.php',
         'Dplus\\Filters\\Map\\Vendor' => __DIR__ . '/../..' . '/src/Map/Vendor.php',
@@ -41,6 +40,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Mpo\\PurchaseOrder' => __DIR__ . '/../..' . '/src/Mpo/PurchaseOrder.php',
         'Dplus\\Filters\\Mpr\\ProspectSource' => __DIR__ . '/../..' . '/src/Mpr/ProspectSource.php',
         'Dplus\\Filters\\Mqo\\Quote' => __DIR__ . '/../..' . '/src/Mqo/Quote.php',
+        'Dplus\\Filters\\Msa\\MsaSysopCode' => __DIR__ . '/../..' . '/src/Msa/MsaSysopCode.php',
         'Dplus\\Filters\\Msa\\NotePreDefined' => __DIR__ . '/../..' . '/src/Msa/NotePredefined.php',
         'Dplus\\Filters\\Msa\\SysLoginGroup' => __DIR__ . '/../..' . '/src/Msa/SysLoginGroup.php',
         'Dplus\\Filters\\Mso\\Cxm' => __DIR__ . '/../..' . '/src/Mso/Cxm.php',
