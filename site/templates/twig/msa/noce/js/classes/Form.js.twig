@@ -9,8 +9,8 @@ class NoceForm {
 	}
 
 	constructor() {
-		this.id = 'code-form';
-		this.form = $('#' + this.id);
+		this.id     = 'notes-form';
+		this.form   = $('#' + this.id);
 		this.inputs = NoceInputs.getInstance();
 		this.config = NoceConfigs.getInstance();
 	}
@@ -21,8 +21,8 @@ class NoceForm {
 		// this.inputs.code.change();
 		var server = NoceRequests.getInstance();
 		server.getNotes(id, function(notes) {
-			console.log(notes);
 			if (notes) {
+				inputs.code.attr('readonly', 'true');
 				inputs.note.val(notes.note);
 			}
 		});
