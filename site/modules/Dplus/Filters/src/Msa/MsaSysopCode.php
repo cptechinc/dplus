@@ -41,7 +41,7 @@ class MsaSysopCode extends AbstractFilter {
 	 * @return self
 	 */
 	public function system($system) {
-		if (array_key_exists($system, self::SYSTEMS)) {
+		if (in_array($system, self::SYSTEMS)) {
 			$this->query->filterBySystem($system);
 		}
 		return $this;
