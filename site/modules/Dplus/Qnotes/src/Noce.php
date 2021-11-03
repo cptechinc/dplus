@@ -8,7 +8,7 @@ class Noce extends Qnotes {
 	const MODEL                = 'NotePredefined';
 	const MODEL_KEY            = 'id';
 	const DESCRIPTION          = 'Pre-Defined Notes';
-	const RESPONSE_TEMPLATE    = 'Pre-Defined Note {key} Lines {lines} were {not} {crud}';
+	const RESPONSE_TEMPLATE    = 'Pre-Defined Note {key} was {not} {crud}';
 	const TYPE                 = 'NOCE';
 
 	const FIELD_ATTRIBUTES = [
@@ -105,9 +105,7 @@ class Noce extends Qnotes {
 		$values = $input->$rm;
 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 		$this->deleteNotes($id);
-
 		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
-
 		$savedLines = [];
 
 		foreach ($noteLines as $key => $line) {
@@ -159,5 +157,41 @@ class Noce extends Qnotes {
 		return $response;
 	}
 
+	/**
+	 * Delete Notes from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function _inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 
+		$note = $this->new($id);
+		$response = $this->deleteAndRespond($note);
+
+		$this->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+	/**
+	 * Delete note, update Dplus cobol
+	 * @param  NotePredefined $note
+	 * @return Response
+	 */
+	protected function deleteAndRespond(NotePredefined $note) {
+		$success = $this->deleteNotes($note->id);
+
+		$response = new Response();
+		$response->setKey($note->id);
+		$response->setAction(Response::CRUD_DELETE);
+		$response->setSuccess($success);
+		$response->setError($success === false);
+		$response->addMsgReplacement('{lines}', '');
+		$response->buildMessage(static::RESPONSE_TEMPLATE);
+		if ($response->hasSuccess()) {
+			$this->updateDplus($note);
+		}
+		return $response;
+	}
 }
