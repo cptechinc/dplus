@@ -13,15 +13,10 @@ $(function() {
 		var modal  = $(this);
 		var id     = button.data('code');
 
-		modal.find('.modal-title').text('Add Note');
-		formNote.form.attr('data-code', '');
-		formNote.inputs.code.removeAttr('readonly');
-		formNote.inputs.note.val('');
+		formNote.setupFormAdd();
 
 		if (id) {
-			formNote.form.attr('data-code', id);
-			modal.find('.modal-title').text('Edit Note ' + id);
-			formNote.updateInputsFromId(id);
+			formNote.setupFormEdit(id);
 		}
 	});
 
@@ -36,39 +31,34 @@ $(function() {
 			formNote.inputs.note.focus();
 		}
 	});
-//
-// 	$("body").on("change", "input[name=code]", function(e) {
-// 		var input = $(this);
-// 		var code = input.val();
-//
-// 		server.validateCode(code, function(exists) {
-// 			if (exists === true) {
-// 				alert.codeExists(code, function(editCode) {
-// 					if (editCode) {
-// 						var modal = input.closest('.modal');
-//
-// 						if (editCode) {
-// 							server.getCode(code, function(response) {
-// 								if (response) {
-// 									modal.find('.modal-title').text('Edit Code ' + code);
-// 									formNote.updateInputsFromJson(response);
-// 								}
-// 							});
-// 						} else {
-// 							modal.modal('hide');
-// 						}
-// 					}
-// 				});
-// 			}
-// 		});
-// 	});
-//
-// 	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
-// 		if (formNote.inputs.code.val() == '') {
-// 			formNote.inputs.code.focus();
-// 		}
-// 	});
-//
+
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var id = input.val();
+
+		server.validateId(id, function(exists) {
+			if (exists === true) {
+				alert.notesExist(id, function(editNote) {
+					if (editNote) {
+						var modal = input.closest('.modal');
+
+						if (editNote) {
+							formNote.setupFormEdit(id);
+						} else {
+							modal.modal('hide');
+						}
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("focusin", "#notes-form input:not(input[name=code]), textarea:not(input[name=code])", function(e) {
+		if (formNote.inputs.code.val() == '') {
+			formNote.inputs.code.focus();
+		}
+	});
+
 /* =============================================================
 	Validation Functions
 ============================================================= */
@@ -88,6 +78,7 @@ $(function() {
 					data: {
 						jqv: 'true',
 						new: function() {
+							console.log(formNote.inputs.form.attr('data-code'));
 							return formNote.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
 						},
 					}
