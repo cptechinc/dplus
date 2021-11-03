@@ -95,7 +95,7 @@ class Noce extends Base {
 	public static function notesDeleteUrl($code) {
 		$url = new Purl(Menu::noceUrl());
 		$url->query->set('code', $code);
-		$url->query->set('action', 'delete-note');
+		$url->query->set('action', 'delete');
 		return $url->getUrl();
 	}
 
