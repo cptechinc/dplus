@@ -94,34 +94,28 @@ $(function() {
 				return true;
 			}
 
+				server.validateCode(id, function(exists) {
+					if (exists === false) {
+						form.submit();
+						return true;
+					}
 
-			// 	server.validateCode(code, function(exists) {
-			// 		var alert = NoceAlerts.getInstance();
-			// 		if (exists === false) {
-			// 			form.submit();
-			// 			return true;
-			// 		}
-			//
-			// 		alert.codeExists(code, function(editCode) {
-			// 			if (editCode) {
-			// 				var modal = formNote.form.closest('.modal');
-			//
-			// 				if (editCode) {
-			// 					server.getCode(code, function(response) {
-			// 						if (response) {
-			// 							modal.find('.modal-title').text('Edit Code ' + code);
-			// 							formNote.updateInputsFromJson(response);
-			// 						}
-			// 					});
-			// 				} else {
-			// 					modal.modal('hide');
-			// 				}
-			// 			} else {
-			// 				form.submit();
-			// 			}
-			// 		});
-			// 	});
-			
+					var alert = NoceAlerts.getInstance();
+
+					alert.codeExists(id, function(editNote) {
+						if (editNote) {
+							var modal = formNote.form.closest('.modal');
+
+							if (editNote) {
+								formNote.setupFormEdit(id);
+							} else {
+								modal.modal('hide');
+							}
+						} else {
+							form.submit();
+						}
+					});
+				});
 		}
 	});
 //
