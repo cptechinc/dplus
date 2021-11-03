@@ -14,25 +14,28 @@ $(function() {
 		var id     = button.data('code');
 
 		modal.find('.modal-title').text('Add Note');
+		formNote.form.attr('data-code', '');
+		formNote.inputs.code.removeAttr('readonly');
+		formNote.inputs.note.val('');
 
 		if (id) {
-			modal.attr('data-code', id);
+			formNote.form.attr('data-code', id);
 			modal.find('.modal-title').text('Edit Note ' + id);
+			formNote.updateInputsFromId(id);
 		}
-		formNote.updateInputsFromId(id);
 	});
-//
-// 	$('#notes-modal').on('shown.bs.modal', function (event) {
-// 		var button = $(event.relatedTarget); // Button that triggered the modal
-// 		var modal  = $(this);
-// 		var code   = button.data('code');
-//
-// 		if (code) {
-// 			formNote.inputs.description.focus();
-// 		} else {
-// 			formNote.inputs.code.focus();
-// 		}
-// 	});
+
+	$('#notes-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var id   = button.data('code');
+
+		formNote.inputs.code.focus();
+
+		if (id) {
+			formNote.inputs.note.focus();
+		}
+	});
 //
 // 	$("body").on("change", "input[name=code]", function(e) {
 // 		var input = $(this);
