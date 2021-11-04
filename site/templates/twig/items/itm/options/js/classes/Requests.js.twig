@@ -1,0 +1,17 @@
+class CodeRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeRequests();
+		}
+		return this.instance;
+	}
+
+	codeOptionsUrl(system, sysop) {
+		var url = URI('{{ page.searchLookupUrl('msa/sysop/options') }}');
+		url.setQuery('system', system);
+		url.setQuery('sysop', sysop);
+		return url.toString();
+	}
+}
