@@ -3,6 +3,8 @@
 use InvOptCodeQuery, InvOptCode;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus Msa
+use Dplus\Msa\Sysop;
 
 class Options extends WireData {
 	const MODEL              = 'InvOptCode';
@@ -20,10 +22,17 @@ class Options extends WireData {
 	public static function getInstance() {
 		if (empty(self::$instance)) {
 			$instance = new self();
-			$instance->init();
 			self::$instance = $instance;
 		}
 		return self::$instance;
+	}
+
+	/**
+	 * Return Query
+	 * @return InvOptCodeQuery
+	 */
+	public function query() {
+		return InvOptCodeQuery::create();
 	}
 
 /* =============================================================
@@ -58,6 +67,12 @@ class Options extends WireData {
 		return boolval($q->count());
 	}
 
+	/**
+	 * Return Option Code
+	 * @param  string $itemID Item ID
+	 * @param  string $sysop  System Option Code
+	 * @return InvOptCode
+	 */
 	public function code($itemID, $sysop) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
@@ -80,20 +95,10 @@ class Options extends WireData {
 		return $opt;
 	}
 
-	/**
-	 * Return Query
-	 * @return InvOptCodeQuery
-	 */
-	public function query() {
-		return InvOptCodeQuery::create();
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	public function getSysop() {
+		return Sysop::getInstance();
 	}
-
-	/**
-	 * Set up Functions / Properties for pw_templated pages
-	 * @return void
-	 */
-	public function init() {
-
-	}
-
 }
