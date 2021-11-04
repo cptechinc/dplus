@@ -1,7 +1,8 @@
 $(function() {
 	{% include 'items/itm/options/js/classes.js.twig' %}
 
-	// var server   = CodeRequests.getInstance();
+	var modalAjax = $('#ajax-modal');
+	var server   = CodeRequests.getInstance();
 	var alert    = CodeAlerts.getInstance();
 	var formCode = CodeForm.getInstance();
 
@@ -11,4 +12,44 @@ $(function() {
 		formCode.updateInputsFromJson(json);
 	});
 
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modalAjax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.code-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code = button.data('code');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(code).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modalAjax.find('.modal-body').load(href);
+	});
 });
