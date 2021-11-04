@@ -1,0 +1,10 @@
+class CodeAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeAlerts();
+		}
+		return this.instance;
+	}
+}

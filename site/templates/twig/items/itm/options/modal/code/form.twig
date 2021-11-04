@@ -1,4 +1,4 @@
-<form action="{{ input.paginateUrl(1) }}" method="POST" id="edit-code-form">
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form">
 	<div class="row form-group">
 		<div class="col-sm-4">
 			<label for="sysop">Option</label>
@@ -31,7 +31,7 @@
 					'inputgroup': {
 						'type': 'prepend',
 						'input': {
-							'name': 'optioncode',
+							'name': 'code',
 							'value': '',
 							'attributes': {
 								'placeholder': '',
@@ -46,7 +46,8 @@
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
 								'data-lookupurl': '',
-								'data-input': '#optioncode'
+								'data-input': '#code'
+								'data-system': 'IN',
 							}
 						}
 					}
@@ -54,5 +55,17 @@
 			%}
 			<small class="form-text text-muted code-description">Description</small>
 		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button" name="action" value="update">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="submit" class="btn btn-danger delete_button" name="action" value="delete">
+			<i class="fa fa-trash" aria-hidden="true"></i> Delete
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
 	</div>
 </form>

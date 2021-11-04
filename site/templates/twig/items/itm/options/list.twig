@@ -38,7 +38,7 @@
 					<td>{{ itmcode.description ? itmcode.description : itmcode.code }}</td>
 					<td class="text-center">
 						{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
-							<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-json="{{ itmOpt.codeJson(itmcode)|json_encode }}">
+							<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-json="{{ itmOpt.codeJson(option.id, itmcode)|json_encode }}">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</button>
 							&nbsp; &nbsp;

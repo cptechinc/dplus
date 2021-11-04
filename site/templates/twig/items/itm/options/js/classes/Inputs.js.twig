@@ -1,0 +1,22 @@
+class CodeInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.sysop         = this.form.find('input[name=sysop]');
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('.code-description');
+		this.submit = {
+			delete: this.form.find('button[type=submit][value=delete]'),
+			update: this.form.find('button[type=submit][value=update]'),
+		}
+	}
+}

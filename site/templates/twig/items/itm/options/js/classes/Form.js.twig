@@ -1,0 +1,37 @@
+class CodeForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CodeInputs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		var modal = this.form.closest('.modal');
+		this.inputs.sysop.val('');
+		this.inputs.code.val('');
+		this.inputs.description.text('');
+		modal.find('.modal-title').text('Editing ' + json.sysop)
+
+		if (json) {
+			this.inputs.sysop.val(json.sysop);
+			this.inputs.code.val(json.code);
+			this.inputs.description.text(json.description);
+			if (json.code) {
+				this.inputs.submit.delete.removeAttr('disabled');
+			} else {
+				this.inputs.submit.delete.attr('disabled', 'true');
+			}
+
+			return true;
+		}
+	}
+}
