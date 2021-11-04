@@ -40,8 +40,8 @@ class Options extends WireData {
 	 * @param  InvOptCode  $code Code
 	 * @return array
 	 */
-	public function codeJson(InvOptCode $code = null) {
-		$code = empty($code) === false ? $code : $this->new('', '');
+	public function codeJson($sysop, InvOptCode $code = null) {
+		$code = empty($code) === false ? $code : $this->new('', $sysop);
 		return [
 			'sysop'       => $code->sysop,
 			'code'        => $code->code,
@@ -84,11 +84,11 @@ class Options extends WireData {
 	 * @param  string $sysop  System Option Code
 	 * @return InvOptCode
 	 */
-	public function new($itemID, $option) {
+	public function new($itemID, $sysop) {
 		$opt = new InvOptCode();
 		$opt->setItemid($itemID);
-		if ($option) {
-			$opt->setSysop($option);
+		if ($sysop) {
+			$opt->setSysop($sysop);
 		}
 		return $opt;
 	}
