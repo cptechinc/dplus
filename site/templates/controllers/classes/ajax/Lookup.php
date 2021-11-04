@@ -285,6 +285,59 @@ class Lookup extends AbstractController {
 		return self::filterResults($filter, $data);
 	}
 
+	/**
+	 * Search Sysop Codes
+	 * @param  object $data
+	 *                     q      Search Term
+	 *                     system Sysop System
+	 * @return void
+	 */
+	public static function sysopCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, ['system|text']);
+		$page = self::pw('page');
+		$filter = new Filters\Msa\MsaSysopCode();
+		$filter->init();
+		$page->headline = "System Optional Codes";
+		if ($data->system) {
+			$filter->system($data->system);
+		}
+		if ($data->q) {
+			$filter->search($data->q);
+			$page->headline = "Searching for $data->q";
+		}
+		return self::filterResults($filter, $data);
+	}
+
+	/**
+	 * Search Sysop Options
+	 * @param  object $data
+	 *                     q      Search Term
+	 *                     system Sysop System
+	 *                     sysop  Sysop Optional Code
+	 * @return void
+	 */
+	public static function sysopOptions($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, ['system|text', 'sysop|text']);
+
+		$filter = new Filters\Msa\SysopOptionalCode();
+		$filter->init();
+		$page = self::pw('page');
+		$page->headline = "Optional Code ($data->sysop) Options";
+		if ($data->system) {
+			$filter->system($data->system);
+		}
+		if ($data->sysop) {
+			$filter->query->filterBySysop($data->sysop);
+		}
+		if ($data->q) {
+			$filter->search($data->q);
+			$page->headline = "Searching for $data->q";
+		}
+		return self::filterResults($filter, $data);
+	}
+
 	private static function moduleFilterResults(Module $filter, $data) {
 		$input = self::pw('input');
 		$page  = self::pw('page');
