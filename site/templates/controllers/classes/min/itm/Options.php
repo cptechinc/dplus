@@ -73,7 +73,7 @@ class Options extends Base {
 
 		$page = self::pw('page');
 		$page->headline = "ITM: $data->itemID Optional Codes";
-		// $page->js .= self::pw('config')->twig->render('items/itm/costing/js.twig', ['costing' => self::getItmCosting(), 'itm' => self::getItm()]);
+		$page->js .= self::pw('config')->twig->render('items/itm/options/.js.twig', []);
 		return self::listDisplay($data, $options);
 	}
 
@@ -94,6 +94,7 @@ class Options extends Base {
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/options/display.twig', ['itm' => $itm, 'itmOpt' => $itmOpt, 'item' => $item, 'options' => $options]);
+		$html .= $config->twig->render('items/itm/options/modal-code.twig');
 		return $html;
 	}
 

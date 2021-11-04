@@ -1,0 +1,58 @@
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="edit-code-form">
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="sysop">Option</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'sysop',
+						'value': '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Code',
+							'readonly': true
+						},
+						'addclasses': [
+							'form-control-plaintext'
+						]
+					},
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="optioncode">Code</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'input': {
+							'name': 'optioncode',
+							'value': '',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Code',
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Codes',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': '',
+								'data-input': '#optioncode'
+							}
+						}
+					}
+				}
+			%}
+			<small class="form-text text-muted code-description">Description</small>
+		</div>
+	</div>
+</form>
