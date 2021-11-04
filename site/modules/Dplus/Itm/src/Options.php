@@ -35,25 +35,23 @@ class Options extends WireData {
 		return InvOptCodeQuery::create();
 	}
 
+	/**
+	 * Return Array ready for JSON
+	 * @param  InvOptCode  $code Code
+	 * @return array
+	 */
+	public function codeJson(InvOptCode $code = null) {
+		$code = empty($code) === false ? $code : $this->new('', '');
+		return [
+			'sysop'       => $code->sysop,
+			'code'        => $code->code,
+			'description' => $code->description
+		];
+	}
+
 /* =============================================================
 	Create, Read Functions
 ============================================================= */
-	/**
-	 * Get InvOptCode Record for Item ID, System Option
-	 * @param  string $itemID Item ID
-	 * @param  string $sysop  System Option Code
-	 * @return InvOptCode
-	 */
-	public function getOrCreateDimension($itemID, $sysop) {
-		$q = $this->query();
-		$q->filterByItemid($itemID);
-		$q->filterBySysop($sysop);
-		if ($q->count()) {
-			return $q->findOne();
-		}
-		return $this->new($itemID, $sysop);
-	}
-
 	/**
 	 * Return if Item has Itm Dimension Record
 	 * @param  string $itemID Item ID
