@@ -7,7 +7,9 @@ use MsaSysopCodeQuery, MsaSysopCode;
 // Dplus Filters
 use Dplus\Filters;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\ItmCosting as CostingCRUD;
+use ProcessWire\Page;
+// Dplus Itm
+use Dplus\Min\Inmain\Itm\Options as ItmOptions;
 
 class Options extends Base {
 	const PERMISSION_ITMP = 'options';
@@ -80,6 +82,7 @@ class Options extends Base {
 	private static function listDisplay($data, PropelModelPager $options) {
 		$config  = self::pw('config');
 		$itm     = self::getItm();
+		$itmOpt  = self::getItmOptions();
 		$item = $itm->item($data->itemID);
 		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
@@ -89,15 +92,15 @@ class Options extends Base {
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/options/display.twig', ['itm' => $itm, 'item' => $item, 'options' => $options]);
+		$html .= $config->twig->render('items/itm/options/display.twig', ['itm' => $itm, 'itmOpt' => $itmOpt, 'item' => $item, 'options' => $options]);
 		return $html;
 	}
 
 /* =============================================================
 	Supplemental
 ============================================================= */
-	public static function getItmCosting() {
-		return self::pw('modules')->get('ItmCosting');
+	public static function getItmOptions() {
+		return ItmOptions::getInstance();
 	}
 
 	public static function getSysOptCodeFilter() {
