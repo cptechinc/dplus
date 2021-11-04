@@ -27,7 +27,13 @@
 				{% set itmcode = itmOpt.code(item.itemid, option.id) %}
 				<tr data-key="{{ option.id }}" class="{# class #}">
 					<td>{{ option.description }}</td>
-					<td>{{ itmcode.description|length == 0 ? '' : itmcode.code }}</td>
+					<td>
+						{% if itmOpt.getSysop().isNote('IN', option.id) %}
+							Notes
+						{% else %}
+							{{ itmcode.description|length == 0 ? '' : itmcode.code }}
+						{% endif %}
+					</td>
 					<td>{{ itmcode.description ? itmcode.description : itmcode.code }}</td>
 					<td>
 						edit
