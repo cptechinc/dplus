@@ -65,8 +65,9 @@ class Options extends Base {
 
 		$filter = self::getSysOptCodeFilter();
 		$filter->sortby(self::pw('page'));
-		$filter->query->orderBy(MsaSysopCode::aliasproperty('description'), 'ASC');
 		$filter->query->orderBy(MsaSysopCode::aliasproperty('list_seq'), 'ASC');
+		$filter->query->orderBy(MsaSysopCode::aliasproperty('description'), 'ASC');
+
 		$filter->query->find();
 		$options = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 
