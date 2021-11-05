@@ -11,6 +11,7 @@ class CodeInputs {
 	constructor() {
 		this.id            = 'code-form',
 		this.form          = $('#' + this.id),
+		this.system        = this.form.find('input[name=system]');
 		this.sysop         = this.form.find('input[name=sysop]');
 		this.code          = this.form.find('input[name=code]');
 		this.description   = this.form.find('.code-description');
