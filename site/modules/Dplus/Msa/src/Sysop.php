@@ -25,6 +25,9 @@ class Sysop extends WireData {
 		return self::$instance;
 	}
 
+/* =============================================================
+	Query Functions
+============================================================= */
 	/**
 	 * Return Query
 	 * @return MsaSysopCodeQuery
