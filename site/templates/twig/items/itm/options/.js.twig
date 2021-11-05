@@ -12,7 +12,6 @@ $(function() {
 		formCode.updateFormFromJson(json);
 	});
 
-
 /* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
@@ -51,5 +50,35 @@ $(function() {
 		e.preventDefault();
 		var href = $(this).attr('href');
 		modalAjax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			sysop: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/sysop') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						system: function() {
+							return $('input[name=system]').val();
+						}
+					}
+				}
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+			form.submit();
+		}
 	});
 });
