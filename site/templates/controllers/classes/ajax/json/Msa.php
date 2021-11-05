@@ -3,6 +3,10 @@
 use DplusUserQuery, DplusUser;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
+// Dplus Codes
+use Dplus\Codes\Msa as MsaCodes;
+// Dplus Qnotes
+use Dplus\Qnotes;
 // Dplus Validators
 use Dplus\CodeValidators\Msa as MsaValidator;
 // Mvc Controllers
@@ -48,6 +52,79 @@ class Msa extends AbstractController {
 			'name'    => $login->name,
 			'whseid'  => $login->whseid,
 		);
+	}
+
+	public static function validateLgrp($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$lgrp = MsaCodes\Lgrp::getInstance();
+		$exists = $lgrp->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Login Group $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Login Group $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getLgrp($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$lgrp = MsaCodes\Lgrp::getInstance();
+		if ($lgrp->exists($data->code) === false) {
+			return false;
+		}
+		$code = $lgrp->code($data->code);
+		$response = [
+			'code'         => $code->code,
+			'description'  => $code->description,
+		];
+		return $response;
+	}
+
+	public static function validateNoceid($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$qnotes = Qnotes\Noce::getInstance();
+		$exists = $qnotes->notesExist($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Pre-Defined Note $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Pre-Defined Note $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getNoceNote($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$qnotes = Qnotes\Noce::getInstance();
+		
+		if ($qnotes->notesExist($data->code) === false) {
+			return false;
+		}
+		$note = $qnotes->noteLine($data->code);
+		$response = [
+			'code'  => $note->id,
+			'note'  => implode("\r", $qnotes->getNotesArray($data->code)),
+		];
+		return $response;
 	}
 
 	private static function validator() {
