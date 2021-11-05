@@ -330,7 +330,6 @@ class Substitutes extends WireData {
 		return $invalid;
 	}
 
-
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */
