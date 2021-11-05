@@ -183,6 +183,27 @@ class Msa extends AbstractController {
 		return true;
 	}
 
+	public static function validateSysopOption($data) {
+		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$crud   = MsaCRUDs\SysopOptions::getInstance();
+		$exists = $crud->exists($data->system, $data->sysop, $data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Sysop $data->sysop Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Sysop $data->sysop Code $data->code not found";
+		}
+		return true;
+	}
+
 	private static function validator() {
 		return new MsaValidator();
 	}

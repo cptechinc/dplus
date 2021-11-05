@@ -165,8 +165,8 @@
 				'sysop' => [
 					['GET', '', Json\Msa::class, 'validateSysop'],
 					['GET', 'system/', Json\Msa::class, 'validateSysopSystem'],
+					['GET', 'option/', Json\Msa::class, 'validateSysopOption'],
 				]
-
 			],
 			['GET', 'user/', Json\Msa::class, 'getUser'],
 			['GET', 'lgrp/', Json\Msa::class, 'getLgrp'],
