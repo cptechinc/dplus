@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\Msa\\Sysop' => $baseDir . '/src/Sysop.php',
+    'Dplus\\Msa\\SysopOptions' => $baseDir . '/src/SysopOptions.php',
 );
