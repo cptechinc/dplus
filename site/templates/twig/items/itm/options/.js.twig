@@ -6,6 +6,9 @@ $(function() {
 	var alert    = CodeAlerts.getInstance();
 	var formCode = CodeForm.getInstance();
 
+/* =============================================================
+	Edit Modal Functions
+============================================================= */
 	$('#edit-code-modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var json = button.data('json');
