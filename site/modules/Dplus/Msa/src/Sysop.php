@@ -98,4 +98,22 @@ class Sysop extends WireData {
 		$opt->setId($id);
 		return $opt;
 	}
+
+	/**
+	 * Return JSON
+	 * @param  MsaSysopCode $opt
+	 * @return array
+	 */
+	public function codeJson(MsaSysopCode $opt) {
+		return [
+			'system'      => $opt->system,
+			'sysop'       => $opt->id,
+			'id'          => $opt->id,
+			'description' => $opt->description,
+			'input' => [
+				'validate' => $opt->validate(),
+				'force'    => $opt->force(),
+			]
+		];
+	}
 }

@@ -5,6 +5,8 @@ use DplusUserQuery, DplusUser;
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Codes
 use Dplus\Codes\Msa as MsaCodes;
+// Dplus Msa
+use Dplus\Msa as MsaCRUDs;
 // Dplus Qnotes
 use Dplus\Qnotes;
 // Dplus Validators
@@ -115,7 +117,7 @@ class Msa extends AbstractController {
 		self::sanitizeParametersShort($data, ['code|text']);
 
 		$qnotes = Qnotes\Noce::getInstance();
-		
+
 		if ($qnotes->notesExist($data->code) === false) {
 			return false;
 		}
@@ -125,6 +127,39 @@ class Msa extends AbstractController {
 			'note'  => implode("\r", $qnotes->getNotesArray($data->code)),
 		];
 		return $response;
+	}
+
+	public static function validateSysop($data) {
+		$fields = ['system|text', 'sysop|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$sysop = MsaCRUDs\Sysop::getInstance();
+		$exists = $sysop->exists($data->system, $data->sysop);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "$data->system Sysop $data->sysop already exists";
+		}
+
+		if ($exists === false) {
+			return "$data->system Sysop $data->sysop not found";
+		}
+		return true;
+	}
+
+	public static function getSysop($data) {
+		$fields = ['system|text', 'sysop|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$sysop = MsaCRUDs\Sysop::getInstance();
+
+		if ($sysop->exists($data->system, $data->sysop) === false) {
+			return false;
+		}
+		return $sysop->codeJson($sysop->code($data->system, $data->sysop));
 	}
 
 	private static function validator() {

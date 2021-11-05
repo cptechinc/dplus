@@ -162,10 +162,12 @@
 				['GET', 'loginid/', Json\Msa::class, 'validateUserid'],
 				['GET', 'userid/', Json\Msa::class, 'validateUserid'],
 				['GET', 'noce/', Json\Msa::class, 'validateNoceid'],
+				['GET', 'sysop/', Json\Msa::class, 'validateSysop'],
 			],
 			['GET', 'user/', Json\Msa::class, 'getUser'],
 			['GET', 'lgrp/', Json\Msa::class, 'getLgrp'],
 			['GET', 'noce/', Json\Msa::class, 'getNoceNote'],
+			['GET', 'sysop/', Json\Msa::class, 'getSysop'],
 		],
 		'mso' => [
 			'validate' => [
