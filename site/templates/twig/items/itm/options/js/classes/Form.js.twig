@@ -12,31 +12,36 @@ class CodeForm {
 		this.id = 'code-form';
 		this.form = $('#' + this.id);
 		this.inputs = CodeInputs.getInstance();
+		this.system = 'IN';
+	}
+
+	updateFormFromJson(json = null) {
+		var modal = this.form.closest('.modal');
+		modal.find('.modal-title').text('Editing ' + json.sysop);
+		this.updateInputsFromJson(json);
 	}
 
 	updateInputsFromJson(json = null) {
-		var modal = this.form.closest('.modal');
 		this.inputs.sysop.val('');
 		this.inputs.code.val('');
 		this.inputs.description.text('');
-		modal.find('.modal-title').text('Editing ' + json.sysop)
 
 		var server   = CodeRequests.getInstance();
-		var url = server.codeOptionsUrl('IN', json.sysop);
+		var url = server.codeOptionsUrl(this.system, json.sysop);
 
 		this.inputs.code.closest('.input-group').find('button[data-lookupurl]').attr('data-lookupurl', url);
 
-		if (json) {
-			this.inputs.sysop.val(json.sysop);
-			this.inputs.code.val(json.code);
-			this.inputs.description.text(json.description);
+		this.inputs.sysop.val(json.sysop);
+		this.inputs.code.val(json.code);
+		this.inputs.description.text(json.description);
 
-			if (json.code) {
-				this.inputs.submit.delete.removeAttr('disabled');
-			} else {
-				this.inputs.submit.delete.attr('disabled', 'true');
-			}
-			return true;
+		if (json.code) {
+			this.inputs.submit.delete.removeAttr('disabled');
+			server.getSysop(this.system, json.sysop, function(sysop) {
+
+			});
+		} else {
+			this.inputs.submit.delete.attr('disabled', 'true');
 		}
 	}
 }
