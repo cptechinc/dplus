@@ -19,16 +19,16 @@ class Options extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|text', 'system|text', 'sysop|text', 'code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
 
-		// if (empty($data->action) === false) {
-		// 	return self::handleCRUD($data);
-		// }
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
 
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -37,26 +37,25 @@ class Options extends Base {
 		}
 	}
 
-	// public static function handleCRUD($data) {
-	// 	if (self::validateItemidAndPermission($data) === false) {
-	// 		return self::displayAlertUserPermission($data);
-	// 	}
-	//
-	// 	$fields     = ['itemID|text', 'action|text', 'redirect|text'];
-	// 	$data       = self::sanitizeParameters($data, $fields);
-	// 	$input      = self::pw('input');
-	// 	$itmCosting = self::getItmCosting();
-	// 	$itmCosting->initConfigs();
-	//
-	// 	if ($data->action) {
-	// 		$itmCosting->processInput($input);
-	// 	}
-	//
-	// 	if (self::pw('config')->ajax === false) {
-	// 		$url = empty($data->redirect) === false ? $data->redirect : self::itmUrlCosting($data->itemID);
-	// 		self::pw('session')->redirect($url, $http301 = false);
-	// 	}
-	// }
+	public static function handleCRUD($data) {
+		if (self::validateItemidAndPermission($data) === false) {
+			return self::displayAlertUserPermission($data);
+		}
+
+		$fields     = ['itemID|text', 'system|text', 'sysop|text', 'code|text', 'action|text'];
+		$data       = self::sanitizeParameters($data, $fields);
+		$input      = self::pw('input');
+		$itmOptions = self::getItmOptions();
+
+		if ($data->action) {
+			$itmOptions->processInput($input);
+		}
+
+		if (self::pw('config')->ajax === false) {
+			$url = empty($data->redirect) === false ? $data->redirect : self::itmUrlOptions($data->itemID);
+			self::pw('session')->redirect($url, $http301 = false);
+		}
+	}
 
 	private static function list($data) {
 		if (self::validateItemidAndPermission($data) === false) {

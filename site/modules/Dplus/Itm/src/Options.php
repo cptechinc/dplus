@@ -1,17 +1,20 @@
 <?php namespace Dplus\Min\Inmain\Itm;
 // Dplus Models
 use InvOptCodeQuery, InvOptCode;
+use MsaSysopCode, SysopOptionalCode;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Msa
 use Dplus\Msa\Sysop;
+use Dplus\Msa\SysopOptions;
 
 class Options extends WireData {
 	const MODEL              = 'InvOptCode';
 	const MODEL_KEY          = 'itemid, id';
 	const DESCRIPTION        = 'Item Options';
-	const RESPONSE_TEMPLATE  = 'Item {itemid} Option {opt} {not} {crud}';
+	const RESPONSE_TEMPLATE  = 'Item {itemid} Option {sysop} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'itm';
+	const SYSTEM                = 'IN';
 
 	public function __construct() {
 		$this->sessionID = session_id();
@@ -107,9 +110,210 @@ class Options extends WireData {
 	}
 
 /* =============================================================
+	Input Functions
+============================================================= */
+	/**
+	 * Process Input Data and update ITM Dimensions
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function processInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update':
+				$this->updateInput($input);
+				break;
+		}
+	}
+
+	/**
+	 * Update Itm Dimension, Itm Data
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function updateInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itm = $this->wire('modules')->get('Itm');
+		$itemID = $values->text('itemID');
+
+		if ($itm->exists($itemID) === false) {
+			return false;
+		}
+
+		if ($itm->lockrecord($itemID) === false) {
+			return false;
+		}
+		$this->updateInputCode($input);
+		echo var_dump($this->getResponse());
+		exit;
+	}
+
+	/**
+	 * Update Itm Option Code
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function updateInputCode(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+		$sysop  = $values->text('sysop');
+		$code   = $values->text('code');
+
+		$sysopM = $this->getSysop();
+
+		if ($sysopM->exists(self::SYSTEM, $sysop) === false) {
+			$msg = " Sysop $sysop Not found";
+			$this->setResponse(Response::responseError($itemID, $msg));
+			return false;
+		}
+		$sysOption  = $sysopM->code(self::SYSTEM, $sysop);
+		$itmOptCode = $this->getOrCreate($itemID, $sysop);
+		$itmOptCode->setSysopdesc($sysOption->description);
+
+		$isValid = $this->updateCodeUsingSysopRules($sysOption, $itmOptCode);
+
+		if ($isValid === false) {
+			return false;
+		}
+
+		echo $itmOptCode->toJson();
+		exit;
+
+		$response = $this->saveAndRespond($itmOptCode);
+		// $this->wire('session')->setFor('response', 'itm-dim', $response);
+		// return $response->hasSuccess();
+	}
+
+	/**
+	 * Update Code Using Sysop Rules
+	 * @param  MsaSysopCode $sysOption
+	 * @param  InvOptCode   $itmOptCode
+	 * @return bool
+	 */
+	private function updateCodeUsingSysopRules(MsaSysopCode $sysOption, InvOptCode $itmOptCode) {
+		$input = $this->wire('input');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+		$sysop  = $values->text('sysop');
+		$code   = $values->text('code');
+
+		if ($sysOption->force() && $sysop == '') {
+			$msg = "Sysop $sysop is Required";
+			$this->setResponse(Response::responseError($itemID, $msg));
+			return false;
+		}
+
+		$itmOptCode->setCode('');
+		$itmOptCode->setDescription('');
+
+		$optManager = $this->getSysopOptions();
+
+		if ($optManager->exists(self::SYSTEM, $sysop, $code)) {
+			$sysOptOption = $optManager->code(self::SYSTEM, $sysop, $code);
+			$itmOptCode->setCode($code);
+			$itmOptCode->setDescription($sysOptOption->description);
+		}
+
+		if ($sysOption->validate()) {
+			if ($optManager->exists(self::SYSTEM, $sysop, $code) === false) {
+				$msg = "Sysop $sysop Code $code not found";
+				$this->setResponse(Response::responseError($itemID, $msg));
+				return false;
+			}
+		}
+		return true;
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns Response based on the outcome of the database save
+	 * @param  InvOptCode $code          Record to record response of database save
+	 * @param  array      $invalidfields Input fields that require attention
+	 * @return Response
+	 */
+	private function saveAndRespond(InvOptCode $code, array $invalidfields = []) {
+		$is_new = $code->isDeleted() ? false : $code->isNew();
+		$saved  = $code->isDeleted() ? $code->isDeleted() : $code->save();
+
+		$response = new Response();
+		$response->setItemID($code->itemid);
+		$response->setKey("{$code->itemid}-{$code->sysop}");
+
+		if ($saved) {
+			$response->setSuccess(true);
+		} else {
+			$response->setError(true);
+		}
+
+		if ($is_new) {
+			$response->setAction(Response::CRUD_CREATE);
+		} elseif ($code->isDeleted()) {
+			$response->setAction(Response::CRUD_DELETE);
+		} else {
+			$response->setAction(Response::CRUD_UPDATE);
+		}
+		$response->addMsgReplacement('{sysop}', $code->sysop);
+		$response->addMsgReplacement('{code}', $code->code);
+		$response->buildMessage(self::RESPONSE_TEMPLATE);
+
+		if ($response->hasSuccess() && empty($invalidfields)) {
+			// $this->requestUpdate($code->itemid, $code->subitemid);
+		}
+		$response->setFields($invalidfields);
+		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param Response $response
+	 */
+	protected function setResponse(Response $response) {
+		$this->wire('session')->setFor('response', 'itm-options', $response);
+	}
+
+	/**
+	 * Get Session Response
+	 * @return Response|null
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'itm-options');
+	}
+
+	/**
+	 * Delete Response
+	 * @return void
+	 */
+	public function deleteResponse() {
+		return $this->wire('session')->removeFor('response', 'itm-options');
+	}
+
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function fieldHasError($inputname) {
+		$response = $this->getResponse();
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+/* =============================================================
 	Supplemental Functions
 ============================================================= */
 	public function getSysop() {
 		return Sysop::getInstance();
+	}
+
+	public function getSysopOptions() {
+		return SysopOptions::getInstance();
 	}
 }
