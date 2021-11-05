@@ -93,6 +93,19 @@ class Options extends WireData {
 		return $opt;
 	}
 
+	/**
+	 * Return Existing or New Sysop code Value for Item
+	 * @param  string $itemID Item ID
+	 * @param  string $sysop  System Optional Code
+	 * @return InvOptCode
+	 */
+	public function getOrCreate($itemID, $sysop) {
+		if ($this->exists($itemID, $sysop)) {
+			return $this->code($itemID, $sysop);
+		}
+		return $this->new($itemID, $sysop);
+	}
+
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
