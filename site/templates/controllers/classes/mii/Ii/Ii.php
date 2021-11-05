@@ -172,7 +172,8 @@ class Ii extends Base {
 		$page->refreshurl   = self::itemUrl($data->itemID, true);
 		$item = ItemMasterItemQuery::create()->findOneByItemid($data->itemID);
 		$itempricing = ItemPricingQuery::create()->findOneByItemid($data->itemID);
-		return $config->twig->render('items/ii/item/display.twig', ['item' => $item, 'itempricing' => $itempricing, 'html' => $html]);
+		$docm = Documents::getDocFinderIi();
+		return $config->twig->render('items/ii/item/display.twig', ['item' => $item, 'itempricing' => $itempricing, 'html' => $html, 'docm' => $docm]);
 	}
 
 	private static function displaySectionFormatted($data, $jsonInfo) {
