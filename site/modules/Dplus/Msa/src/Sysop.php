@@ -10,6 +10,13 @@ class Sysop extends WireData {
 	const DESCRIPTION        = 'Sysop';
 	const RESPONSE_TEMPLATE  = 'Sysop {system} Option {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'sysop';
+	
+	const SYSTEMS = [
+		'AP', 'AR',
+		'IN',
+		'MS',
+		'SO'
+	];
 
 	public function __construct() {
 		$this->sessionID = session_id();
