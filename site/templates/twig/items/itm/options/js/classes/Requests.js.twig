@@ -24,4 +24,13 @@ class CodeRequests {
 		});
 	}
 
+	getSysopOption(system, sysop, code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/sysop/option') }}');
+
+		ajax.setData({system: system, sysop: sysop, code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 }

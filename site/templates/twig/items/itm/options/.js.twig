@@ -7,6 +7,22 @@ $(function() {
 	var formCode = CodeForm.getInstance();
 
 /* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change', 'input[name=code]', function(e) {
+		var input = $(this);
+		var inputs = formCode.inputs;
+
+		inputs.description.text('');
+
+		server.getSysopOption(inputs.system.val(), inputs.sysop.val(), input.val(), function(option) {
+			if (option) {
+				inputs.description.text(option.description);
+			}
+		});
+	});
+
+/* =============================================================
 	Edit Modal Functions
 ============================================================= */
 	$('#edit-code-modal').on('show.bs.modal', function (event) {
