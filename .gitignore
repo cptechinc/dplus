@@ -11,6 +11,7 @@ site/config.php
 /vendor
 test.php
 site/modules/Dplus/Configs/configs
+site\modules\Dplus\DocumentManagement\config\config.json
 
 # Twig Cache
 site/templates/twig/cache/
