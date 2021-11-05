@@ -204,6 +204,18 @@ class Msa extends AbstractController {
 		return true;
 	}
 
+	public static function getSysopOption($data) {
+		$fields = ['system|text', 'sysop|text', 'code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$crud   = MsaCRUDs\SysopOptions::getInstance();
+		if ($crud->exists($data->system, $data->sysop, $data->code) === false) {
+			return false;
+		}
+		return $crud->codeJson($crud->code($data->system, $data->sysop, $data->code));
+	}
+
+
 	private static function validator() {
 		return new MsaValidator();
 	}
