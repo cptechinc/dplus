@@ -14,4 +14,14 @@ class CodeRequests {
 		url.setQuery('sysop', sysop);
 		return url.toString();
 	}
+
+	getSysop(system, sysop, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/sysop') }}');
+
+		ajax.setData({system: system, sysop: sysop});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 }
