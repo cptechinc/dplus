@@ -171,7 +171,10 @@
 			['GET', 'user/', Json\Msa::class, 'getUser'],
 			['GET', 'lgrp/', Json\Msa::class, 'getLgrp'],
 			['GET', 'noce/', Json\Msa::class, 'getNoceNote'],
-			['GET', 'sysop/', Json\Msa::class, 'getSysop'],
+			'sysop' => [
+				['GET', '', Json\Msa::class, 'getSysop'],
+				['GET', 'option/', Json\Msa::class, 'getSysopOption'],
+			]
 		],
 		'mso' => [
 			'validate' => [

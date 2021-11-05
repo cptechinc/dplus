@@ -93,4 +93,20 @@ class SysopOptions extends WireData {
 		$opt->setId($code);
 		return $opt;
 	}
+
+	/**
+	 * Return JSON array for Code
+	 * @param  SysopOptionalCode $code
+	 * @return array
+	 */
+	public function codeJson(SysopOptionalCode $code) {
+		return [
+			'system'       => $code->system,
+			'sysop'        => $code->sysop,
+			'code'         => $code->id,
+			'id'           => $code->id,
+			'description'  => $code->description,
+			'description2' => $code->description2
+		];
+	}
 }
