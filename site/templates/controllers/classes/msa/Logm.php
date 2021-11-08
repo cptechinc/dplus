@@ -47,9 +47,9 @@ class Logm extends Base {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
-		$filter = new Filters\Msa\SysLoginGroup();
+		$filter = new Filters\Msa\DplusUser();
 
-		$page->headline = "Login ID Entnry";
+		$page->headline = "Login ID Entry";
 
 		if (empty($data->q) === false) {
 			$filter->search($data->q);
@@ -60,9 +60,9 @@ class Logm extends Base {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
-		$page->js .= self::pw('config')->twig->render('code-tables/msa/logm/.js.twig', ['logm' => self::getLogm()]);
+		//$page->js .= self::pw('config')->twig->render('code-tables/msa/logm/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayList($data, $codes);
-		self::getLogm()->deleteResponse();
+		// self::getLogm()->deleteResponse();
 		return $html;
 	}
 
@@ -100,15 +100,15 @@ class Logm extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayList($data, PropelModelPager $codes) {
+	private static function displayList($data, PropelModelPager $users) {
 		$config = self::pw('config');
 		$logm = self::getLogm();
 
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/msa/logm/bread-crumbs.twig');
-		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $logm, 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		// $html .= self::displayResponse($data);
+		$html .= $config->twig->render('msa/logm/list.twig', ['logm' => $logm, 'users' => $users]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $users]);
 		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $logm]);
 		return $html;
 	}
