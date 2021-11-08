@@ -8,8 +8,7 @@
 	item                   ItemMasterItem
 	options                Propel\Runtime\Util\PropelModelPager (MsaSysopCode[])
 #}
-{% set response = addm.getResponse() %}
-
+{% set response = itmOpt.getResponse() %}
 <div class="table-responsive">
 	<table class="table table-sm">
 		<thead>
@@ -22,11 +21,11 @@
 		</thead>
 		<tbody>
 			{% for option in options %}
-				{# set class = xref.addonitemid == input.get.text('focus') ? 'highlight' : '' #}
-				{# set class = (response.hasSuccess() and response.key == [xref.itemid, xref.addonitemid]|join(addm.recordlocker.glue())) ? 'bg-success text-white' : class #}
 				{% set itmcode = itmOpt.code(item.itemid, option.id) %}
 
-				<tr data-key="{{ option.id }}" class="{# class #}">
+				{% set class = option.id == input.get.text('focus') ? 'highlight' : '' %}
+				{% set class = (response.hasSuccess() and response.key == [itmcode.itemid, option.id]|join('-')) ? 'bg-success text-white' : class %}
+				<tr data-key="{{ option.id }}" class="{{ class }}">
 					<td>{{ option.description }}</td>
 					<td>
 						{% if itmOpt.getSysop().isNote('IN', option.id) %}
