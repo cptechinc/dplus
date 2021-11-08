@@ -87,8 +87,8 @@ class Options extends Base {
 		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 
-		if ($itm->getResponse()) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
+		if ($itmOpt->getResponse()) {
+			$html .= $config->twig->render('items/itm/response-alert-new.twig', ['response' => $itmOpt->getResponse()]);
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
