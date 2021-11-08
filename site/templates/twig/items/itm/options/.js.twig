@@ -50,7 +50,12 @@ $(function() {
 		var button = $(this);
 		var code = button.data('code');
 		var modal  = button.closest('.modal');
-		$(modal.attr('data-input')).val(code).change();
+		var input = $(modal.attr('data-input'));
+		input.val(code);
+		if (input.data('jqv')) {
+			input.change();
+			input.focus();
+		}
 		modal.modal('hide');
 	});
 
