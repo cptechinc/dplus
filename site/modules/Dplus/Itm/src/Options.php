@@ -263,7 +263,7 @@ class Options extends WireData {
 		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
-			// $this->requestUpdate($code->itemid, $code->subitemid);
+			$this->requestUpdate($code->itemid, $code->code);
 		}
 		$response->setFields($invalidfields);
 		return $response;
@@ -302,6 +302,34 @@ class Options extends WireData {
 	public function fieldHasError($inputname) {
 		$response = $this->getResponse();
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Request Update for ITM Option Code
+	 * @param  string $itemID Item ID
+	 * @param  string $code   Code ID
+	 * @return void
+	 */
+	private function requestUpdate($itemID, $code) {
+		$data = ['UPDATEITMOPT', "ITEMID=$itemID", "OPTCODE=$code"];
+		$this->requestDplus($data);
+	}
+
+	/**
+	 * Send Request to Dplus
+	 * @param  array  $data Data
+	 * @return void
+	 */
+	private function requestDplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
 	}
 
 /* =============================================================
