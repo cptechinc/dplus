@@ -2,6 +2,7 @@
 
 {% block body %}
 	{% include 'items/itm/options/list.twig' %}
+	{% include 'util/paginator/propel.twig' with {'pager': options} %}
 {% endblock %}
 
 {% block footer %}
