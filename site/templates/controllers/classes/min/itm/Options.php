@@ -72,7 +72,7 @@ class Options extends Base {
 
 		$page = self::pw('page');
 		$page->headline = "ITM: $data->itemID Optional Codes";
-		$page->js .= self::pw('config')->twig->render('items/itm/options/.js.twig', []);
+		$page->js .= self::pw('config')->twig->render('items/itm/options/.js.twig');
 		$html = self::listDisplay($data, $options);
 		self::getItmOptions()->deleteResponse();
 		return $html;
