@@ -18,7 +18,6 @@ class Logm extends WireData {
 		'companyid' => ['type' => 'text', 'maxlength' => 3],
 	];
 
-
 	public function __construct() {
 		$this->sessionID = session_id();
 	}
@@ -95,7 +94,7 @@ class Logm extends WireData {
 	 * @param  string $id    User ID
 	 * @return DplusUser
 	 */
-	public function code($id) {
+	public function user($id) {
 		$q = $this->queryId($id);
 		return $q->findOne();
 	}
@@ -107,7 +106,10 @@ class Logm extends WireData {
 	 */
 	public function new($id) {
 		$opt = new DplusUser();
-		$opt->setId($id);
+		$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('id', 'maxlength')]);
+		if ($id != 'new') {
+			$opt->setId($id);
+		}
 		return $opt;
 	}
 
