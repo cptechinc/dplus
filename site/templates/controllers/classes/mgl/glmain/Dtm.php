@@ -108,7 +108,9 @@ class Dtm extends Base {
 		$dtm = self::getDtm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/mgl/bread-crumbs.twig');
+		if (self::pw('input')->get->offsetExists('print') === false) {
+			$html .= $config->twig->render('code-tables/mgl/bread-crumbs.twig');
+		}
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mgl/dtm/display.twig', ['manager' => $dtm, 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
