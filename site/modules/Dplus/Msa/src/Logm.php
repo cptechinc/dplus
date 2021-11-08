@@ -3,6 +3,8 @@
 use DplusUserQuery, DplusUser;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
 class Logm extends WireData {
 	const MODEL              = 'DplusUser';
@@ -20,6 +22,10 @@ class Logm extends WireData {
 
 	public function __construct() {
 		$this->sessionID = session_id();
+
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 	}
 
 	private static $instance;
