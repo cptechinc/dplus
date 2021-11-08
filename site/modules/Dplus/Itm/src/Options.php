@@ -218,7 +218,7 @@ class Options extends WireData {
 			$itmOptCode->setDescription($sysOptOption->description);
 		}
 
-		if ($sysOption->validate()) {
+		if ($sysOption->validate() && $code != '') {
 			if ($optManager->exists(self::SYSTEM, $sysop, $code) === false) {
 				$msg = "Sysop $sysop Code $code not found";
 				$this->setResponse(Response::responseError($itemID, $msg));
