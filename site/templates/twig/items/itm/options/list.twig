@@ -25,7 +25,7 @@
 
 				{% set class = option.id == input.get.text('focus') ? 'highlight' : '' %}
 				{% set class = (response.hasSuccess() and response.key == [itmcode.itemid, option.id]|join('-')) ? 'bg-success text-white' : class %}
-				<tr data-key="{{ option.id }}" class="{{ class }}">
+				<tr data-key="{{ option.id }}" class="sysop {{ class }}" data-sysop="{{ option.id }}">
 					<td>{{ option.description }}</td>
 					<td>
 						{% if itmOpt.getSysop().isNote('IN', option.id) %}

@@ -6,6 +6,13 @@ $(function() {
 	var alert    = CodeAlerts.getInstance();
 	var formCode = CodeForm.getInstance();
 
+	var uri = URI();
+
+	if (uri.hasQuery('focus')) {
+		var query = uri.query(true);
+		$('.sysop[data-sysop="'+query.focus+'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.sysop[data-sysop="'+query.focus+'"]').offset().top,},700,'linear');
+	}
 /* =============================================================
 	Event Functions
 ============================================================= */
@@ -29,6 +36,17 @@ $(function() {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var json = button.data('json');
 		formCode.updateFormFromJson(json);
+	});
+
+	$('#edit-code-modal').on('hidden.bs.modal', function (event) {
+		var modal  = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var sysop  = modal.find('input[name=sysop]').val().toString();
+
+		$('.response-alert').remove();
+		$('.sysop.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.sysop[data-sysop="'+sysop+'"]').addClass('highlight');
 	});
 
 /* =============================================================
