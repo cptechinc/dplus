@@ -46,7 +46,7 @@ class QnotesPredefined extends WireData implements Module {
 	 */
 	public function notes_exist($id) {
 		$q = $this->get_query();
-		$q->filterByItemid($id);
+		$q->filterById($id);
 		return boolval($q->count());
 	}
 
