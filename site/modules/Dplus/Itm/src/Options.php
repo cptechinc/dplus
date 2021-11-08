@@ -125,6 +125,9 @@ class Options extends WireData {
 			case 'update':
 				$this->updateInput($input);
 				break;
+			case 'delete':
+				$this->deleteInput($input);
+				break;
 		}
 	}
 
@@ -226,6 +229,57 @@ class Options extends WireData {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Update Itm Dimension, Itm Data
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function deleteInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itm = $this->wire('modules')->get('Itm');
+		$itemID = $values->text('itemID');
+
+		if ($itm->exists($itemID) === false) {
+			return false;
+		}
+
+		if ($itm->lockrecord($itemID) === false) {
+			return false;
+		}
+		return $this->deleteInputCode($input);
+	}
+
+	/**
+	 * Delete Itm Option Code
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function deleteInputCode(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+		$sysop  = $values->text('sysop');
+		$code   = $values->text('code');
+
+		$sysopM = $this->getSysop();
+
+		if ($sysopM->exists(self::SYSTEM, $sysop) === false) {
+			return true;
+		}
+
+		if ($this->exists($itemID, $sysop) === false) {
+			return true;
+		}
+
+		$itmOptCode = $this->code($itemID, $sysop);
+		$itmOptCode->delete();
+		$response = $this->saveAndRespond($itmOptCode);
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 /* =============================================================
