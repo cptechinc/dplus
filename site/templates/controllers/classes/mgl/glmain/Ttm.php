@@ -52,15 +52,15 @@ class Ttm extends Base {
 		$page   = self::pw('page');
 		$filter = new Filters\Mgl\GlTextCode();
 
-		$page->headline = "Statement Code";
+		$page->headline = "Statement Text Code";
 
 		if (empty($data->q) === false) {
 			$filter->search($data->q);
 			$page->headline = "TTM: Searching for '$data->q'";
 		}
-
+		$input = self::pw('input');
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mgl/ttm/.js.twig', ['ttm' => self::getTtm()]);
@@ -113,7 +113,9 @@ class Ttm extends Base {
 		}
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mgl/ttm/display.twig', ['manager' => $ttm, 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		if (self::pw('input')->get->offsetExists('print') === false) {
+			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		}
 		$html .= $config->twig->render('code-tables/mgl/ttm/edit-modal.twig', ['manager' => $ttm]);
 		return $html;
 	}

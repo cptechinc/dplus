@@ -59,8 +59,9 @@ class Dtm extends Base {
 			$page->headline = "DTM: Searching for '$data->q'";
 		}
 
+		$input = self::pw('input');
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mgl/dtm/.js.twig', ['dtm' => self::getDtm()]);
@@ -113,7 +114,9 @@ class Dtm extends Base {
 		}
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mgl/dtm/display.twig', ['manager' => $dtm, 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		if (self::pw('input')->get->offsetExists('print') === false) {
+			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		}
 		$html .= $config->twig->render('code-tables/mgl/dtm/edit-modal.twig', ['manager' => $dtm]);
 		return $html;
 	}
