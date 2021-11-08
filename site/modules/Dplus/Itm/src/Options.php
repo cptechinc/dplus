@@ -113,7 +113,7 @@ class Options extends WireData {
 	Input Functions
 ============================================================= */
 	/**
-	 * Process Input Data and update ITM Dimensions
+	 * Process Input Data
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
@@ -172,8 +172,8 @@ class Options extends WireData {
 		$sysOption  = $sysopM->code(self::SYSTEM, $sysop);
 		$itmOptCode = $this->getOrCreate($itemID, $sysop);
 		$itmOptCode->setSysopdesc($sysOption->description);
-		$itmOptCode->setDate('Ymd');
-		$itmOptCode->setTime('His');
+		$itmOptCode->setDate(date('Ymd'));
+		$itmOptCode->setTime(date('His'));
 		$itmOptCode->setDummy('P');
 
 		$isValid = $this->updateCodeUsingSysopRules($sysOption, $itmOptCode);
