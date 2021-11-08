@@ -147,9 +147,7 @@ class Options extends WireData {
 		if ($itm->lockrecord($itemID) === false) {
 			return false;
 		}
-		$this->updateInputCode($input);
-		echo var_dump($this->getResponse());
-		exit;
+		return $this->updateInputCode($input);
 	}
 
 	/**
@@ -174,6 +172,9 @@ class Options extends WireData {
 		$sysOption  = $sysopM->code(self::SYSTEM, $sysop);
 		$itmOptCode = $this->getOrCreate($itemID, $sysop);
 		$itmOptCode->setSysopdesc($sysOption->description);
+		$itmOptCode->setDate('Ymd');
+		$itmOptCode->setTime('His');
+		$itmOptCode->setDummy('P');
 
 		$isValid = $this->updateCodeUsingSysopRules($sysOption, $itmOptCode);
 
@@ -181,12 +182,9 @@ class Options extends WireData {
 			return false;
 		}
 
-		echo $itmOptCode->toJson();
-		exit;
-
 		$response = $this->saveAndRespond($itmOptCode);
-		// $this->wire('session')->setFor('response', 'itm-dim', $response);
-		// return $response->hasSuccess();
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 	/**
