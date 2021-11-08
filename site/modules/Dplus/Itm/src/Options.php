@@ -8,6 +8,10 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 use Dplus\Msa\Sysop;
 use Dplus\Msa\SysopOptions;
 
+/**
+ * Options
+ * Manages CRUD operations for the InvOptCode Records
+ */
 class Options extends WireData {
 	const MODEL              = 'InvOptCode';
 	const MODEL_KEY          = 'itemid, id';
