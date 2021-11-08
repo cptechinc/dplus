@@ -321,7 +321,7 @@ class Options extends WireData {
 		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
-			$this->requestUpdate($code->itemid, $code->code);
+			$this->requestUpdate($code->itemid, $code->sysop);
 		}
 		$response->setFields($invalidfields);
 		return $response;
@@ -367,12 +367,12 @@ class Options extends WireData {
 ============================================================= */
 	/**
 	 * Request Update for ITM Option Code
-	 * @param  string $itemID Item ID
-	 * @param  string $code   Code ID
+	 * @param  string $itemID  Item ID
+	 * @param  string $sysop   Sysop Option ID
 	 * @return void
 	 */
-	private function requestUpdate($itemID, $code) {
-		$data = ['UPDATEITMOPT', "ITEMID=$itemID", "OPTCODE=$code"];
+	private function requestUpdate($itemID, $sysop) {
+		$data = ['UPDATEITMOPT', "ITEMID=$itemID", "OPTCODE=$sysop"];
 		$this->requestDplus($data);
 	}
 
