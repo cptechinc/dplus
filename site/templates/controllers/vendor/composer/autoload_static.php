@@ -147,6 +147,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mqo\\Quote\\Quote' => __DIR__ . '/../..' . '/classes/mqo/Quote/Quote.php',
         'Controllers\\Msa\\Base' => __DIR__ . '/../..' . '/classes/msa/Base.php',
         'Controllers\\Msa\\Lgrp' => __DIR__ . '/../..' . '/classes/msa/Lgrp.php',
+        'Controllers\\Msa\\Logm' => __DIR__ . '/../..' . '/classes/msa/Logm.php',
         'Controllers\\Msa\\Menu' => __DIR__ . '/../..' . '/classes/msa/Menu.php',
         'Controllers\\Msa\\Noce' => __DIR__ . '/../..' . '/classes/msa/Noce/Noce.php',
         'Controllers\\Msa\\Noce\\Ajax' => __DIR__ . '/../..' . '/classes/msa/Noce/Ajax.php',

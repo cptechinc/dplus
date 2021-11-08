@@ -146,6 +146,7 @@ return array(
     'Controllers\\Mqo\\Quote\\Quote' => $baseDir . '/classes/mqo/Quote/Quote.php',
     'Controllers\\Msa\\Base' => $baseDir . '/classes/msa/Base.php',
     'Controllers\\Msa\\Lgrp' => $baseDir . '/classes/msa/Lgrp.php',
+    'Controllers\\Msa\\Logm' => $baseDir . '/classes/msa/Logm.php',
     'Controllers\\Msa\\Menu' => $baseDir . '/classes/msa/Menu.php',
     'Controllers\\Msa\\Noce' => $baseDir . '/classes/msa/Noce/Noce.php',
     'Controllers\\Msa\\Noce\\Ajax' => $baseDir . '/classes/msa/Noce/Ajax.php',
