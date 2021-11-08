@@ -35,7 +35,6 @@ class CodeForm {
 		var url      = server.codeOptionsUrl(this.system, json.sysop);
 
 		inputs.code.closest('.input-group').find('button[data-lookupurl]').attr('data-lookupurl', url);
-
 		inputs.sysop.val(json.sysop);
 		inputs.code.val(json.code);
 		inputs.description.text(json.description);
@@ -57,21 +56,16 @@ class CodeForm {
 
 	getCodeJqvRules(json, callback) {
 		var rules = {required: false};
+		var form = this;
+		var server   = CodeRequests.getInstance();
 
-		if (json.code) {
-			var form = this;
-			var server   = CodeRequests.getInstance();
-
-			server.getSysop(this.system, json.sysop, function(sysop) {
-				rules.required = sysop.input.force;
-				if (sysop.input.validate) {
-					rules.remote = form.getCodeJqvRemoteData();
-				}
-				callback(rules);
-			});
-		} else {
+		server.getSysop(this.system, json.sysop, function(sysop) {
+			rules.required = sysop.input.force;
+			if (sysop.input.validate) {
+				rules.remote = form.getCodeJqvRemoteData();
+			}
 			callback(rules);
-		}
+		});
 	}
 
 	getCodeJqvRemoteData() {
