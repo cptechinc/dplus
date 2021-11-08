@@ -23,7 +23,10 @@
 					<a href="{{ page.url }}">{{ page.title_previous }}</a>
 				</li>
 			{% endif %}
-			<li class="breadcrumb-item active" aria-current="page">{{ page.get('pagetitle|headline|title') }}</li>
+			<li class="breadcrumb-item active" aria-current="page">
+				<i class="fa {{ page.template == 'dplus-menu' ? 'fa-list' : page.template == 'home' ? 'fa-home' : 'fa-microchip'}}" aria-hidden="true"></i>
+				{{ page.has('dplus_function') and page.dplus_function|length ? page.dplus_function|upper : page.title }}
+			</li>
 		{% endblock %}
 	</ol>
 </nav>
