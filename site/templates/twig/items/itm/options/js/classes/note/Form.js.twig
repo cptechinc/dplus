@@ -32,10 +32,9 @@ class NoteForm {
 	updateInputsFromJson(json = null) {
 		this.clearInputs();
 		var inputs = this.inputs;
+		var form   = this;
 
-		var rules = {
-			required: false,
-		};
+		inputs.sysop.val(json.sysop);
 
 		if (json.code) {
 			inputs.submit.delete.removeAttr('disabled');
@@ -43,10 +42,12 @@ class NoteForm {
 			inputs.submit.delete.attr('disabled', 'true');
 		}
 		$('#' + inputs.note.attr('id')).rules('remove', 'required');
-		this.getCodeJqvRules(json, function(rules) {
-			console.log(rules);
-			$('#' + inputs.note.attr('id')).rules('add', rules);
-			var validator = inputs.form.validate();
+
+		CodeRequests.getInstance().getNote(inputs.itemid.val(), json.input.notetype, function(note) {
+			inputs.note.val(note.note);
+			form.getCodeJqvRules(json, function(rules) {
+				$('#' + inputs.note.attr('id')).rules('add', rules);
+			});
 		});
 	}
 
