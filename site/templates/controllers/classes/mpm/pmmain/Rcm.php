@@ -56,7 +56,8 @@ class Rcm extends Base {
 		}
 
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		$input = self::pw('input');
+		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mpm/rcm/.js.twig', ['rcm' => self::getRcm()]);
@@ -107,7 +108,9 @@ class Rcm extends Base {
 		$html .= $config->twig->render('code-tables/mpm/rcm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mpm/rcm/list.twig', ['manager' => $rcm, 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		if (self::pw('input')->get->offsetExists('print') === false) {
+			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		}
 		$html .= $config->twig->render('code-tables/mpm/rcm/edit-modal.twig', ['rcm' => $rcm]);
 		return $html;
 	}

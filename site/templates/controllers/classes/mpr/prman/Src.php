@@ -59,7 +59,8 @@ class Src extends Base {
 		}
 
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		$input = self::pw('input');
+		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mpr/src/.js.twig', ['src' => self::getSrc()]);
@@ -110,7 +111,9 @@ class Src extends Base {
 		$html .= $config->twig->render('code-tables/mpr/src/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $src, 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		if (self::pw('input')->get->offsetExists('print') === false) {
+			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		}
 		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $src]);
 		return $html;
 	}

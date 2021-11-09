@@ -59,8 +59,8 @@ class Dtm extends Base {
 			$page->headline = "DTM: Searching for '$data->q'";
 		}
 
-		$input = self::pw('input');
 		$filter->sortby($page);
+		$input = self::pw('input');
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
