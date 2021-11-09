@@ -1,9 +1,9 @@
-class CodeForm {
+class SrcForm {
 	static instance = null;
 
 	static getInstance() {
 		if (this.instance === null) {
-			this.instance = new CodeForm();
+			this.instance = new SrcForm();
 		}
 		return this.instance;
 	}
@@ -11,8 +11,8 @@ class CodeForm {
 	constructor() {
 		this.id = 'code-form';
 		this.form = $('#' + this.id);
-		this.inputs = CodeInputs.getInstance();
-		this.config = CodeConfigs.getInstance();
+		this.inputs = SrcInputs.getInstance();
+		this.config = SrcConfigs.getInstance();
 	}
 
 	updateInputsFromJson(json = null) {

@@ -1,0 +1,51 @@
+class NoceForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new NoceForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id     = 'notes-form';
+		this.form   = $('#' + this.id);
+		this.inputs = NoceInputs.getInstance();
+		this.config = NoceConfigs.getInstance();
+	}
+
+	setupFormAdd() {
+		var modal  = this.form.closest('.modal');
+		var inputs = this.inputs;
+		modal.find('.modal-title').text('Add Note');
+		inputs.form.attr('data-code', '');
+		inputs.code.val('');
+		inputs.code.removeAttr('readonly');
+		inputs.note.val('');
+	}
+
+	setupFormEdit(id) {
+		var modal  = this.form.closest('.modal');
+		var inputs = this.inputs;
+		modal.find('.modal-title').text('Edit Note ' + id);
+		this.updateFormFromId(id);
+	}
+
+	updateFormFromId(id) {
+		var inputs = this.inputs;
+		inputs.code.val(id);
+		inputs.form.attr('data-code', id);
+
+		var validator = this.form.validate();
+		if (validator.element('#'+inputs.code.attr('id'))) {
+			var server = NoceRequests.getInstance();
+			server.getNotes(id, function(notes) {
+				if (notes) {
+					inputs.code.attr('readonly', 'true');
+					inputs.note.val(notes.note);
+				}
+			});
+		}
+	}
+}

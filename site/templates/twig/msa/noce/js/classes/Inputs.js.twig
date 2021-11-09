@@ -1,0 +1,17 @@
+class NoceInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new NoceInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id    = 'notes-form',
+		this.form  = $('#' + this.id),
+		this.code  = this.form.find('input[name=code]');
+		this.note  = this.form.find('textarea[name=note]');
+	}
+}

@@ -51,6 +51,14 @@ abstract class AbstractFilter extends WireData {
 	}
 
 	/**
+	 * Return Model Class Name
+	 * @return string
+	 */
+	public function modelName() {
+		return $this::MODEL;
+	}
+
+	/**
 	 * Return Query Class Name
 	 * @return string
 	 */

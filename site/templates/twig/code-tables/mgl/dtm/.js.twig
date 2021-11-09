@@ -1,6 +1,7 @@
 {% include 'code-tables/mgl/dtm/js/classes.js.twig' %}
 
 $(function() {
+	var ajaxModal = $('#ajax-modal');
 	var server   = DtmRequests.getInstance();
 	var alert    = DtmAlerts.getInstance();
 	var formCode = DtmForm.getInstance();
@@ -63,6 +64,11 @@ $(function() {
 
 		var noDuplicates = formCode.inputs.validateDuplicateGlCodes();
 
+		if (code == '') {
+			var row = input.closest('.code-inputs');
+			row.find('.gl-desc').text('');
+		}
+
 		if (noDuplicates === false) {
 			alert.codeGlAlreadyUsed(code, function() {
 
@@ -104,6 +110,48 @@ $(function() {
 		}
 	});
 
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	ajaxModal.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(button.data('lookupurl'), function() {});
+	});
+
+	$("body").on('click', '.code-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('code'));
+		if (input.data('jqv')) {
+			input.change();
+		}
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(button.attr('href'));
+	});
 /* =============================================================
 	Validation Functions
 ============================================================= */

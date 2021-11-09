@@ -215,7 +215,6 @@ class Msa extends AbstractController {
 		return $crud->codeJson($crud->code($data->system, $data->sysop, $data->code));
 	}
 
-
 	private static function validator() {
 		return new MsaValidator();
 	}

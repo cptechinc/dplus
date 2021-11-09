@@ -22,6 +22,12 @@ class Menu extends Base {
 			'permission' => 'noce',
 			'title'      => 'Pre-Defined Notes Entry',
 			'summary'    => 'View / Edit Pre-Defined Notes'
+		],
+		'logm' => [
+			'name'       => 'logm',
+			'permission' => 'logm',
+			'title'      => 'Login ID Entry',
+			'summary'    => 'View / Edit User Logins'
 		]
 	];
 
@@ -59,6 +65,10 @@ class Menu extends Base {
 
 	public static function noceUrl() {
 		return self::subfunctionUrl('noce');
+	}
+
+	public static function logmUrl() {
+		return self::subfunctionUrl('logm');
 	}
 
 /* =============================================================

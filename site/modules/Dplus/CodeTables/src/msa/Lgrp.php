@@ -1,27 +1,27 @@
-<?php namespace Dplus\Codes\Mpr;
+<?php namespace Dplus\Codes\Msa;
 // Propel Classes
 use Propel\Runtime\Collection\ObjectCollection;
 // Dplus Models
-use ProspectSourceQuery, ProspectSource;
+use SysLoginGroupQuery, SysLoginGroup;
 // Dplus Codes
 use Dplus\Codes\Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the SRC code table
+ * Class that handles the CRUD of the DCM code table
  */
-class Src extends Base {
-	const MODEL              = 'ProspectSource';
+class Lgrp extends Base {
+	const MODEL              = 'SysLoginGroup';
 	const MODEL_KEY          = 'id';
-	const MODEL_TABLE        = 'prosp_sorc_code';
-	const DESCRIPTION        = 'Source Code';
-	const DESCRIPTION_RECORD = 'Source Code';
-	const RESPONSE_TEMPLATE  = 'Source Code {code} {not} {crud}';
-	const RECORDLOCKER_FUNCTION = 'src';
-	const DPLUS_TABLE           = 'SRC';
+	const MODEL_TABLE        = 'sys_login_group';
+	const DESCRIPTION        = 'Login Group';
+	const DESCRIPTION_RECORD = 'Login Group';
+	const RESPONSE_TEMPLATE  = 'Login Group {code} {not} {crud}';
+	const RECORDLOCKER_FUNCTION = 'lgrp';
+	const DPLUS_TABLE           = 'LGRP';
 	const FIELD_ATTRIBUTES = [
-		'code'        => ['type' => 'text', 'maxlength' => ProspectSource::CODELENGTH],
-		'description' => ['type' => 'text', 'maxlength' => 30],
+		'code'        => ['type' => 'text', 'maxlength' => SysLoginGroup::MAX_LENGTH_CODE],
+		'description' => ['type' => 'text', 'maxlength' => 40],
 	];
 
 	protected static $instance;
@@ -35,7 +35,7 @@ class Src extends Base {
 	 */
 	public function ids() {
 		$q = $this->query();
-		$q->select(ProspectSource::aliasproperty('id'));
+		$q->select(SysLoginGroup::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
 
@@ -53,10 +53,10 @@ class Src extends Base {
 ============================================================= */
 	/**
 	 * Return New Code
-	 * @return ProspectSource
+	 * @return SysLoginGroup
 	 */
 	public function new($id = '') {
-		$code = new ProspectSource();
+		$code = new SysLoginGroup();
 		if (empty($id) === false && strtolower($id) != 'new') {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);

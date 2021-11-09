@@ -4,6 +4,6 @@
 {% set icon  = response.hasError() ? 'fa fa-warning fa-2x' : 'fa fa-floppy-o fa-2x' %}
 {% set title = response.hasError() ? 'Error!' : 'Success!' %}
 
-<div id="code-table-alert" class="mb-3">
-	{% include 'util/alert.twig' with {'type': type,'iconclass': icon, 'title': title, 'message': response.message } %}
+<div class="code-table-alert mb-3">
+	{% include 'util/alert.twig' with {'type': type, 'iconclass': icon, 'title': title, 'message': response.message } %}
 </div>

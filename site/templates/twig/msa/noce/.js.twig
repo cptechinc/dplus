@@ -1,0 +1,132 @@
+{% include 'msa/noce/js/classes.js.twig' %}
+
+$(function() {
+	var server   = NoceRequests.getInstance();
+	var alert    = NoceAlerts.getInstance();
+	var formNote = NoceForm.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$('#notes-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var id     = button.data('code');
+
+		formNote.setupFormAdd();
+
+		if (id) {
+			formNote.setupFormEdit(id);
+		}
+	});
+
+	$('#notes-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var id   = button.data('code');
+
+		formNote.inputs.code.focus();
+
+		if (id) {
+			formNote.inputs.note.focus();
+		}
+	});
+
+	$('#notes-modal').on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var id     = modal.find('input[name=code]').val().toString();
+
+		$('.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.note[data-code="'+id+'"]').addClass('highlight');
+		$('.code-table-alert').remove();
+	});
+
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var id = input.val();
+
+		server.validateId(id, function(exists) {
+			if (exists === true) {
+				alert.notesExist(id, function(editNote) {
+					if (editNote) {
+						var modal = input.closest('.modal');
+
+						if (editNote) {
+							formNote.setupFormEdit(id);
+						} else {
+							modal.modal('hide');
+						}
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("focusin", "#notes-form input:not(input[name=code]), textarea:not(input[name=code])", function(e) {
+		if (formNote.inputs.code.val() == '') {
+			formNote.inputs.code.focus();
+		}
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = formNote.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: formNote.config.fields.code.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('msa/validate/noce/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formNote.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+		},
+		submitHandler: function(form) {
+			var formNote = NoceForm.getInstance();
+			var server   = NoceRequests.getInstance();
+			var id       = formNote.inputs.code.val();
+
+			if (formNote.inputs.form.attr('data-code') == id) {
+				form.submit();
+				return true;
+			}
+
+			server.validateCode(id, function(exists) {
+				if (exists === false) {
+					form.submit();
+					return true;
+				}
+
+				var alert = NoceAlerts.getInstance();
+
+				alert.codeExists(id, function(editNote) {
+					if (editNote) {
+						var modal = formNote.form.closest('.modal');
+
+						if (editNote) {
+							formNote.setupFormEdit(id);
+						} else {
+							modal.modal('hide');
+						}
+					} else {
+						form.submit();
+					}
+				});
+			});
+		}
+	});
+})

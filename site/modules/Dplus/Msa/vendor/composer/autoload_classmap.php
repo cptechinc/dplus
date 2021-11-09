@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Dplus\\Msa\\Logm' => $baseDir . '/src/Logm.php',
     'Dplus\\Msa\\Sysop' => $baseDir . '/src/Sysop.php',
     'Dplus\\Msa\\SysopOptions' => $baseDir . '/src/SysopOptions.php',
 );

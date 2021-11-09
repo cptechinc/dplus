@@ -1,0 +1,70 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	qusers                 Dplus\qusers\Noce
+	users                  NotePreDefined[]|ObjectCollection
+#}
+{# set response = users.getResponse() #}
+
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr class="bg-dark text-white">
+				<th>Login ID / Name</th>
+				<th>Warehouse</th>
+				<th>Admn</th>
+				<th>SF</th>
+				<th>CD</th>
+				<th>RA</th>
+				<th class="text-center">
+					{% if page.is_print() == false %}
+						<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-modal" data-code="" data-description="">
+							<i class="fa fa-plus" aria-hidden="true"></i> Add
+						</button>
+					{% endif %}
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for user in users %}
+				<tr>
+					<td>
+						<span class="text-monospace">{{ user.id|spacepad(logm.fieldAttribute('id', 'maxlength'))|raw }}</span>
+						{{ user.name }}
+					</td>
+					<td>
+						{{ user.whseid }} &nbsp; {{ user.getWhse().name }}
+					</td>
+					<td>
+						{{ user.isAdmin()|yesorno|capitalize }}
+					</td>
+					<td>
+						{{ user.isStorefront()|yesorno|capitalize }}
+					</td>
+					<td>
+						{{ user.isCityDesk()|yesorno|capitalize }}
+					</td>
+					<td>
+						{{ user.isReportAdmin()|yesorno|capitalize }}
+					</td>
+					<td class="text-center">
+						{% if logm.recordlocker.isLocked(user.id) == false or logm.recordlocker.userHasLocked(user.id) %}
+							<a href="{# page.subUrl(sub.itemid, sub.subitemid) #}" class="btn btn-warning btn-sm">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+							&nbsp; &nbsp;
+							<a href="{# page.subDeleteUrl(sub.itemid, sub.subitemid) #}" class="btn btn-danger btn-sm delete_button">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							</a>
+						{% else %}
+							<span class="badge badge-secondary">
+								<i class="fa fa-lock" aria-hidden="true"></i> User Locked By {{ logm.recordlocker.getLockingUser(user.id) }}
+							</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
