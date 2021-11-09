@@ -215,6 +215,14 @@ class Msa extends AbstractController {
 		return $crud->codeJson($crud->code($data->system, $data->sysop, $data->code));
 	}
 
+	public static function getSysopRequiredCodes($data) {
+		$fields = ['system|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$sysop = MsaCRUDs\Sysop::getInstance();
+		return $sysop->getRequiredCodes($data->system);
+	}
+
 	private static function validator() {
 		return new MsaValidator();
 	}

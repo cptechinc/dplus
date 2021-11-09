@@ -38,6 +38,28 @@ class Sysop extends WireData {
 	}
 
 /* =============================================================
+	Json
+============================================================= */
+	/**
+	 * Return JSON
+	 * @param  MsaSysopCode $opt
+	 * @return array
+	 */
+	public function codeJson(MsaSysopCode $opt) {
+		return [
+			'system'      => $opt->system,
+			'sysop'       => $opt->id,
+			'id'          => $opt->id,
+			'description' => $opt->description,
+			'input' => [
+				'validate' => $opt->validate(),
+				'force'    => $opt->force(),
+				'notetype' => $opt->notecode
+			]
+		];
+	}
+
+/* =============================================================
 	Field Configs
 ============================================================= */
 	/**
@@ -157,22 +179,21 @@ class Sysop extends WireData {
 		return $opt;
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	/**
-	 * Return JSON
-	 * @param  MsaSysopCode $opt
+	 * Return Codes That Are Required
+	 * @param  string $system
 	 * @return array
 	 */
-	public function codeJson(MsaSysopCode $opt) {
-		return [
-			'system'      => $opt->system,
-			'sysop'       => $opt->id,
-			'id'          => $opt->id,
-			'description' => $opt->description,
-			'input' => [
-				'validate' => $opt->validate(),
-				'force'    => $opt->force(),
-				'notetype' => $opt->notecode
-			]
-		];
+	public function getRequiredCodes($system = '') {
+		$q = $this->query();
+		if ($system) {
+			$q->filterBySystem($system);
+		}
+		$q->select(MsaSysopCode::aliasproperty('code'));
+		$q->filterByForce(MsaSysopCode::YN_TRUE);
+		return $q->find()->toArray();
 	}
 }

@@ -179,6 +179,9 @@
 			'sysop' => [
 				['GET', '', Json\Msa::class, 'getSysop'],
 				['GET', 'option/', Json\Msa::class, 'getSysopOption'],
+				'system' => [
+					['GET', 'required-codes/', Json\Msa::class, 'getSysopRequiredCodes'],
+				]
 			]
 		],
 		'mso' => [
