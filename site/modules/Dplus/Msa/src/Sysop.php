@@ -18,6 +18,11 @@ class Sysop extends WireData {
 		'SO'
 	];
 
+	const FIELD_ATTRIBUTES = [
+		'code'        => ['type' => 'text', 'maxlength' => MsaSysopCode::MAX_LENGTH_CODE],
+		'description' => ['type' => 'text', 'maxlength' => 20],
+	];
+
 	public function __construct() {
 		$this->sessionID = session_id();
 	}
@@ -30,6 +35,28 @@ class Sysop extends WireData {
 			self::$instance = $instance;
 		}
 		return self::$instance;
+	}
+
+/* =============================================================
+	Field Configs
+============================================================= */
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, static::FIELD_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, static::FIELD_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return static::FIELD_ATTRIBUTES[$field][$attr];
 	}
 
 /* =============================================================
@@ -91,6 +118,18 @@ class Sysop extends WireData {
 		$q = $this->queryCode($system, $id);
 		$q->select(MsaSysopCode::aliasproperty('note_code'));
 		return boolval($q->findOne());
+	}
+
+	/**
+	 * Return Option Code is Required
+	 * @param  string $system  System
+	 * @param  string $id      Option Code
+	 * @return bool
+	 */
+	public function isRequired($system, $id) {
+		$q = $this->queryCode($system, $id);
+		$q->select(MsaSysopCode::aliasproperty('force'));
+		return $q->findOne() == MsaSysopCode::YN_TRUE;
 	}
 
 	/**
