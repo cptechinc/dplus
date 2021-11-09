@@ -10,7 +10,7 @@ class Sysop extends WireData {
 	const DESCRIPTION        = 'Sysop';
 	const RESPONSE_TEMPLATE  = 'Sysop {system} Option {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'sysop';
-	
+
 	const SYSTEMS = [
 		'AP', 'AR',
 		'IN',
@@ -120,6 +120,7 @@ class Sysop extends WireData {
 			'input' => [
 				'validate' => $opt->validate(),
 				'force'    => $opt->force(),
+				'notetype' => $opt->notecode
 			]
 		];
 	}
