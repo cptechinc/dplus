@@ -5,5 +5,6 @@ use Mvc\Controllers\AbstractController;
 use Controllers\Mgl\Base as BaseMgl;
 
 abstract class Base extends BaseMgl {
-	const DPLUSPERMISSION = 'prman';
+	const DPLUSPERMISSION = 'glmain';
+	const TITLE_MENU = 'Maintenance';
 }
