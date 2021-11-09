@@ -55,6 +55,11 @@
 			],
 			'umm' => [
 				['GET', 'uom/', Json\Min::class, 'getUom'],
+			],
+			'itm' => [
+				'options' => [
+					['GET', 'notes/', Json\Min::class, 'getInvOptCodeNotes'],
+				]
 			]
 		],
 		'map' => [

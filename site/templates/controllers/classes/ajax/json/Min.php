@@ -7,6 +7,7 @@ use WarehouseBinQuery, WarehouseBin;
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus CRUD
 use Dplus\Min\Inmain\Itm\Substitutes as ItmSub;
+use Dplus\Min\Inmain\Itm\Options as ItmOptions;
 // Dplus Validators
 use Dplus\CodeValidators as  Validators;
 use Dplus\CodeValidators\Min as MinValidator;
@@ -475,6 +476,17 @@ class Min extends AbstractController {
 		}
 
 		return $exists ? true : "Add-On Item not found";
+	}
+
+
+	public static function getInvOptCodeNotes($data) {
+		$fields = ['itemID|text', 'type|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$qnotes = ItmOptions\Qnotes::getInstance();
+		if ($qnotes->notesExist($data->itemID, $data->type) === false) {
+			return false;
+		}
+		return $qnotes->notesJson($data->itemID, $data->type);
 	}
 
 
