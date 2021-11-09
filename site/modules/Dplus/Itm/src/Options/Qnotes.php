@@ -1,16 +1,25 @@
 <?php namespace Dplus\Min\Inmain\Itm\Options;
+// Propel ORM Library
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dolus Models
 use InvOptCodeNoteQuery, InvOptCodeNote;
 // ProcessWire
 use ProcessWire\WireInput;
 // Dplus Qnotes
 use Dplus\Qnotes\Qnotes as QnotesBase;
+use Dplus\Qnotes\Response;
+// Dplus Msa
+use Dplus\Msa\Sysop;
+// Dplus Itm
+use Dplus\Min\Inmain\Itm\Response as ResponseItm;
+
 
 class Qnotes extends QnotesBase {
 	const MODEL                = 'InvOptCodeNote';
 	const MODEL_KEY            = 'id';
 	const DESCRIPTION          = 'Inventory Optional Code Notes';
 	const RESPONSE_TEMPLATE    = '{itemid} Optional Code Note {type} was {not} {crud}';
+	const SYSTEM = 'IN';
 
 	const FIELD_ATTRIBUTES = [
 		'note' => ['type' => 'text', 'cols' => 60],
@@ -70,6 +79,13 @@ class Qnotes extends QnotesBase {
 		return $q->find()->toArray();
 	}
 
+	/**
+	 * Return Notes as One Text Line
+	 * @param  string $itemID Item ID
+	 * @param  string $type   Note Type
+	 * @param  string $glue   Concatenator Character
+	 * @return string
+	 */
 	public function getNotesImploded($itemID, $type, $glue = "\n") {
 		return implode($glue, $this->getNotesArray($itemID, $type));
 	}
@@ -122,70 +138,90 @@ class Qnotes extends QnotesBase {
 		return $q->delete();
 	}
 
-// /* =============================================================
-// 	CRUD Processing
-// ============================================================= */
-// 	/**
-// 	 * Write Notes from Input Data
-// 	 * @param  WireInput $input Input Data
-// 	 * @return bool
-// 	 */
-// 	protected function _inputUpdate(WireInput $input) {
-// 		$rm = strtolower($input->requestMethod());
-// 		$values = $input->$rm;
-// 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-// 		$this->deleteNotes($id);
-// 		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
-// 		$savedLines = [];
-//
-// 		foreach ($noteLines as $key => $line) {
-// 			$sequence = $key + 1;
-// 			$note = $this->new($id);
-// 			$note->generateKey2(); // PK
-// 			$note->setSequence($sequence); // PK
-// 			$note->setNote($line);
-// 			$note->setDate(date('Ymd'));
-// 			$note->setTime(date('His').'00');
-// 			$savedLines[$sequence] = boolval($note->save());
-// 		}
-// 		$response = $this->updateAndRespond($note, $savedLines);
-// 		$this->setResponse($response);
-// 		return $response->hasSuccess();
-// 	}
-//
-// 	/**
-// 	 * Process Written Lines, update Dplus cobol
-// 	 * @param  InvOptCodeNote $note
-// 	 * @param  array          $savedLines  e.g. [1 => true, 2 => false]
-// 	 * @return Response
-// 	 */
-// 	private function updateAndRespond(InvOptCodeNote $note, array $savedLines = []) {
-// 		$response = new Response();
-// 		$response->setKey($note->id);
-// 		$response->setAction(Response::CRUD_UPDATE);
-//
-// 		if (in_array(false, $savedLines)) {
-// 			$errorLines =
-// 			array_filter($savedLines, function($value, $key) {
-// 				return  $value == false;
-// 			}, ARRAY_FILTER_USE_BOTH);
-//
-// 			$response->addMsgReplacement('{lines}', implode(", ", array_keys($errorLines)));
-//
-// 			if (sizeof($errorLines)) {
-// 				$response->setError(true);
-// 			}
-// 		} else {
-// 			$response->setSuccess(true);
-// 			$response->addMsgReplacement('{lines}', '');
-// 		}
-// 		$response->buildMessage(static::RESPONSE_TEMPLATE);
-//
-// 		if ($response->hasSuccess()) {
-// 			$this->updateDplus($note);
-// 		}
-// 		return $response;
-// 	}
+/* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Write Notes from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function _inputUpdate(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$sysopM = $this->getSysop();
+
+		if ($sysopM->isNote(self::SYSTEM, $values->text('sysop')) === false) {
+			return false;
+		}
+		$sysop = $sysopM->code(self::SYSTEM, $values->text('sysop'));
+
+		$itemID = $values->text('itemID');
+		$type   = $sysopM->notecode(self::SYSTEM, $values->text('sysop'));
+		$this->deleteNotes($itemID, $type);
+
+		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
+		$savedLines = [];
+
+		foreach ($noteLines as $key => $line) {
+			$sequence = $key + 1;
+			$note = $this->new($itemID, $type);
+			$note->generateKey2(); // PK
+			$note->setSequence($sequence); // PK
+			$note->setNote($line);
+			$note->setDescription(implode(' ', [strtoupper($type), '-', $sysop->description]));
+			$note->setDate(date('Ymd'));
+			$note->setTime(date('His').'00');
+			$savedLines[$sequence] = boolval($note->save());
+		}
+
+		$responseQnotes = $this->updateAndRespond($note, $savedLines);
+		$response = new ResponseItm();
+		$response->setKey("$itemID-$sysop->code");
+		$response->setAction($responseQnotes->action);
+		$response->setItemid($itemID);
+		$response->setSuccess($responseQnotes->hasSuccess());
+		$response->setError($responseQnotes->hasError());
+		$response->setMessage($responseQnotes->message);
+
+		$codesM = Codes::getInstance();
+		$codesM->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+	/**
+	 * Process Written Lines, update Dplus cobol
+	 * @param  InvOptCodeNote $note
+	 * @param  array          $savedLines  e.g. [1 => true, 2 => false]
+	 * @return Response
+	 */
+	private function updateAndRespond(InvOptCodeNote $note, array $savedLines = []) {
+		$response = new Response();
+		$response->setKey("$note->itemid-$note->type");
+		$response->setAction(Response::CRUD_UPDATE);
+
+		if (in_array(false, $savedLines)) {
+			$errorLines =
+			array_filter($savedLines, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+
+			if (sizeof($errorLines)) {
+				$response->setError(true);
+			}
+		} else {
+			$response->setSuccess(true);
+		}
+		$response->addMsgReplacement('{itemid}', $note->itemid);
+		$response->addMsgReplacement('{type}', $note->type);
+		$response->buildMessage(static::RESPONSE_TEMPLATE);
+
+		if ($response->hasSuccess()) {
+			$this->updateDplus($note);
+		}
+		return $response;
+	}
 //
 // 	/**
 // 	 * Delete Notes from Input Data
@@ -224,4 +260,31 @@ class Qnotes extends QnotesBase {
 // 		}
 // 		return $response;
 // 	}
+//
+//
+/* =============================================================
+	Dplus Requests
+============================================================= */
+	/**
+	 * Return Data needed for Dplus to UPDATE the Qnote
+	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
+	 * @param  string $key2     Key 2
+	 * @param  string $form     Form e.g YNNN
+	 * @return array
+	 */
+	public function writeRqstData(ActiveRecordInterface $note) {
+		$data = parent::writeRqstData($note);
+		$data[] = "SYSCODE=".self::SYSTEM;
+		return $data;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	public function getSysop() {
+		return Sysop::getInstance();
+	}
+
+
+
 }
