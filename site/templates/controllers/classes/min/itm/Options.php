@@ -96,6 +96,7 @@ class Options extends Base {
 		}
 		$html .= $config->twig->render('items/itm/options/display.twig', ['itm' => $itm, 'itmOpt' => $itmOpt, 'item' => $item, 'options' => $options]);
 		$html .= $config->twig->render('items/itm/options/modal-code.twig');
+		$html .= $config->twig->render('items/itm/options/modal-notes.twig', ['itmOpt' => $itmOpt]);
 		return $html;
 	}
 
@@ -111,5 +112,4 @@ class Options extends Base {
 		$filter->system('IN');
 		return $filter;
 	}
-
 }
