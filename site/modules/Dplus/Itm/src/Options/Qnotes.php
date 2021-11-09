@@ -222,44 +222,56 @@ class Qnotes extends QnotesBase {
 		}
 		return $response;
 	}
-//
-// 	/**
-// 	 * Delete Notes from Input Data
-// 	 * @param  WireInput $input Input Data
-// 	 * @return bool
-// 	 */
-// 	protected function _inputDelete(WireInput $input) {
-// 		$rm = strtolower($input->requestMethod());
-// 		$values = $input->$rm;
-// 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-//
-// 		$note = $this->new($id);
-// 		$response = $this->deleteAndRespond($note);
-//
-// 		$this->setResponse($response);
-// 		return $response->hasSuccess();
-// 	}
-//
-// 	/**
-// 	 * Delete note, update Dplus cobol
-// 	 * @param  InvOptCodeNote $note
-// 	 * @return Response
-// 	 */
-// 	protected function deleteAndRespond(InvOptCodeNote $note) {
-// 		$success = $this->deleteNotes($note->id);
-//
-// 		$response = new Response();
-// 		$response->setKey($note->id);
-// 		$response->setAction(Response::CRUD_DELETE);
-// 		$response->setSuccess($success);
-// 		$response->setError($success === false);
-// 		$response->addMsgReplacement('{lines}', '');
-// 		$response->buildMessage(static::RESPONSE_TEMPLATE);
-// 		if ($response->hasSuccess()) {
-// 			$this->updateDplus($note);
-// 		}
-// 		return $response;
-// 	}
+
+	/**
+	 * Delete Notes from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function _inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$sysopM = $this->getSysop();
+		$itemID = $values->text('itemID');
+		$type   = $sysopM->notecode(self::SYSTEM, $values->text('sysop'));
+
+		$note = $this->new($itemID, $type);
+		$responseQnotes = $this->deleteAndRespond($note);
+
+		$response = new ResponseItm();
+		$response->setKey("$itemID-$sysop->code");
+		$response->setAction($responseQnotes->action);
+		$response->setItemid($itemID);
+		$response->setSuccess($responseQnotes->hasSuccess());
+		$response->setError($responseQnotes->hasError());
+		$response->setMessage($responseQnotes->message);
+
+		$codesM = Codes::getInstance();
+		$codesM->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+	/**
+	 * Delete note, update Dplus cobol
+	 * @param  InvOptCodeNote $note
+	 * @return Response
+	 */
+	protected function deleteAndRespond(InvOptCodeNote $note) {
+		$success = $this->deleteNotes($note->itemid, $note->type);
+
+		$response = new Response();
+		$response->setKey("$note->itemid-$note->type");
+		$response->setAction(Response::CRUD_DELETE);
+		$response->setSuccess($success);
+		$response->setError($success === false);
+		$response->addMsgReplacement('{itemid}', $note->itemid);
+		$response->addMsgReplacement('{type}', $note->type);
+		$response->buildMessage(static::RESPONSE_TEMPLATE);
+		if ($response->hasSuccess()) {
+			$this->updateDplus($note);
+		}
+		return $response;
+	}
 //
 //
 /* =============================================================
