@@ -6,4 +6,5 @@ use Controllers\Mpr\Base as BaseMpr;
 
 abstract class Base extends BaseMpr {
 	const DPLUSPERMISSION = 'prman';
+	const TITLE_MENU = 'Maintenance';
 }

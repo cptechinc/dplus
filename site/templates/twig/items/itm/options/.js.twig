@@ -1,0 +1,129 @@
+$(function() {
+	{% include 'items/itm/options/js/classes.js.twig' %}
+
+	var modalAjax = $('#ajax-modal');
+	var server   = CodeRequests.getInstance();
+	var alert    = CodeAlerts.getInstance();
+	var formCode = CodeForm.getInstance();
+
+	var uri = URI();
+
+	if (uri.hasQuery('focus')) {
+		var query = uri.query(true);
+		$('.sysop[data-sysop="'+query.focus+'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.sysop[data-sysop="'+query.focus+'"]').offset().top,},700,'linear');
+	}
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change', 'input[name=code]', function(e) {
+		var input = $(this);
+		var inputs = formCode.inputs;
+
+		inputs.description.text('');
+
+		server.getSysopOption(inputs.system.val(), inputs.sysop.val(), input.val(), function(option) {
+			if (option) {
+				inputs.description.text(option.description);
+			}
+		});
+	});
+
+/* =============================================================
+	Edit Modal Functions
+============================================================= */
+	$('#edit-code-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		var json = button.data('json');
+		formCode.updateFormFromJson(json);
+	});
+
+	$('#edit-code-modal').on('hidden.bs.modal', function (event) {
+		var modal  = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var sysop  = modal.find('input[name=sysop]').val().toString();
+
+		$('.response-alert').remove();
+		$('.sysop.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.sysop[data-sysop="'+sysop+'"]').addClass('highlight');
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modalAjax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.code-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code = button.data('code');
+		var modal  = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(code);
+		if (input.data('jqv')) {
+			input.change();
+			input.focus();
+		}
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modalAjax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			sysop: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/sysop') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						system: function() {
+							return $('input[name=system]').val();
+						}
+					}
+				}
+			},
+			code: {
+				required: false,
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+			form.submit();
+		}
+	});
+});

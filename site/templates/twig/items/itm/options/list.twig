@@ -1,0 +1,54 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page(pw_template=itm)
+	input                  ProcessWire\WireInput
+	itm                    module Itm
+	itmOpt                 Dplus\Min\Inmain\Itm\Options
+	item                   ItemMasterItem
+	options                Propel\Runtime\Util\PropelModelPager (MsaSysopCode[])
+#}
+{% set response = itmOpt.getResponse() %}
+
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr class="bg-dark text-white">
+				<th class="py-2">Option</th>
+				<th class="py-2">Code</th>
+				<th class="py-2">Description</th>
+				<th class="py-2"></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for option in options %}
+				{% set itmcode = itmOpt.code(item.itemid, option.id) %}
+
+				{% set class = option.id == input.get.text('focus') ? 'highlight' : '' %}
+				{% set class = (response.hasSuccess() and response.key == [itmcode.itemid, option.id]|join('-')) ? 'bg-success text-white' : class %}
+				<tr data-key="{{ option.id }}" class="sysop {{ class }}" data-sysop="{{ option.id }}">
+					<td>{{ option.description }}</td>
+					<td>
+						{% if itmOpt.getSysop().isNote('IN', option.id) %}
+							Notes
+						{% else %}
+							{{ itmcode.description|length == 0 ? '' : itmcode.code }}
+						{% endif %}
+					</td>
+					<td>{{ itmcode.description ? itmcode.description : itmcode.code }}</td>
+					<td class="text-center">
+						{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+							<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-json="{{ itmOpt.codeJson(option.id, itmcode)|json_encode }}">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</button>
+							&nbsp; &nbsp;
+							<a href="{# page.xrefDeleteUrl(item.custid, item.custitemid, item.itemid) #}" class="btn btn-danger btn-sm delete_button">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							</a>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

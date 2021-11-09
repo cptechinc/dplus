@@ -138,6 +138,10 @@ abstract class Base extends AbstractController {
 		return self::itmUrlFunction($itemID, 'dimensions');
 	}
 
+	public static function itmUrlOptions($itemID) {
+		return self::itmUrlFunction($itemID, 'options');
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */

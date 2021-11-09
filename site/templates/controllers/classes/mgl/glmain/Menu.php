@@ -9,6 +9,7 @@ use Controllers\Mgl\Menu as MenuMgl;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'glmain';
+	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
 		'ttm' => [
 			'name'       => 'ttm',
@@ -77,6 +78,10 @@ class Menu extends Base {
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
+
+		$m->addHook('Page(pw_template=mgl)::menuTitle', function($event) {
+			$event->return = MenuMgl::TITLE;
+		});
 
 		$m->addHook('Page(pw_template=mgl)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
