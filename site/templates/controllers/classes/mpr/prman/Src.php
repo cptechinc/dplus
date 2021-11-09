@@ -135,7 +135,7 @@ class Src extends Base {
 		});
 
 		$m->addHook('Page(pw_template=mpr)::menuTitle', function($event) {
-			$event->return = Menu::TITLE_MENU;
+			$event->return = Menu::TITLE;
 		});
 
 		$m->addHook('Page(pw_template=mpr)::codeDeleteUrl', function($event) {

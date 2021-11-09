@@ -9,7 +9,7 @@ use Controllers\Mpr\Menu as MenuMpr;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'prman';
-	const TITLE_MENU = 'Prospecting';
+	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
 		'src' => [
 			'name'       => 'src',
@@ -71,7 +71,7 @@ class Menu extends Base {
 		$m = self::pw('modules')->get('DpagesMpm');
 
 		$m->addHook('Page(pw_template=mpr)::menuTitle', function($event) {
-			$event->return = self::TITLE_MENU;
+			$event->return = MenuMpr::TITLE;
 		});
 
 		$m->addHook('Page(pw_template=mpr)::subfunctionUrl', function($event) {
