@@ -1,4 +1,4 @@
-<?php namespace Dplus\Min\Inmain\Itm;
+<?php namespace Dplus\Min\Inmain\Itm\Options;
 // Dplus Models
 use InvOptCodeQuery, InvOptCode;
 use MsaSysopCode, SysopOptionalCode;
