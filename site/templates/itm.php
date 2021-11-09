@@ -68,6 +68,11 @@
 				['POST', '', ItmXrefs\Addm::class, 'handleCRUD'],
 			],
 		],
+		'options' => [
+			['GET',  '', Mitm\Options::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Mitm\Options::class, 'index'],
+			['POST', '', Mitm\Options::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);

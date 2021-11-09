@@ -10,6 +10,7 @@ use Controllers\Mpr\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'mpr';
+	const TITLE = 'Prospecting';
 	const SUBFUNCTIONS = [
 		'prman' => [
 			'name'       => 'prman',

@@ -60,7 +60,8 @@ class Dtm extends Base {
 		}
 
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		$input = self::pw('input');
+		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
 		$page->js .= self::pw('config')->twig->render('code-tables/mgl/dtm/.js.twig', ['dtm' => self::getDtm()]);
@@ -108,10 +109,14 @@ class Dtm extends Base {
 		$dtm = self::getDtm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/mgl/bread-crumbs.twig');
+		if (self::pw('input')->get->offsetExists('print') === false) {
+			$html .= $config->twig->render('code-tables/mgl/bread-crumbs.twig');
+		}
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mgl/dtm/display.twig', ['manager' => $dtm, 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		if (self::pw('input')->get->offsetExists('print') === false) {
+			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		}
 		$html .= $config->twig->render('code-tables/mgl/dtm/edit-modal.twig', ['manager' => $dtm]);
 		return $html;
 	}
@@ -133,6 +138,10 @@ class Dtm extends Base {
 
 		$m->addHook('Page(pw_template=mgl)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=mgl)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
 		});
 
 		$m->addHook('Page(pw_template=mgl)::codeDeleteUrl', function($event) {

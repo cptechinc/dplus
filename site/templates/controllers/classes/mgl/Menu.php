@@ -10,6 +10,7 @@ use Controllers\Mgl\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'mgl';
+	const TITLE = 'General Ledger';
 	const SUBFUNCTIONS = [
 		'glmain' => [
 			'name'       => 'glmain',

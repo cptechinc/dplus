@@ -5,11 +5,12 @@ use stdClass;
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
-// Mvc Controllers
-use Controllers\Mpm\Base;
+// Controllers
+use Controllers\Mpm\Menu as MenuMpm;
 
 class Menu extends Base {
-	const DPLUSPERMISSION = 'pmmain';
+	const TITLE = 'Maintenance';
+
 	const SUBFUNCTIONS = [
 		'bmm' => [
 			'name'       => 'bmm',
@@ -84,10 +85,7 @@ class Menu extends Base {
 			}
 		}
 		self::initHooks();
-		return self::displayMenu($data, $functions);
-	}
-
-	private static function displayMenu($data, array $functions) {
+		self::pw('page')->headline = self::TITLE;
 		$html = '';
 		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
 		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
@@ -102,6 +100,10 @@ class Menu extends Base {
 
 		$m->addHook('Page(pw_template=mpm)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::menuTitle', function($event) {
+			$event->return = MenuMpm::TITLE;
 		});
 	}
 }

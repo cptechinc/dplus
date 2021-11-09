@@ -10,6 +10,7 @@ use Controllers\Mpm\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'mpm';
+	const TITLE = 'Production Management';
 	const SUBFUNCTIONS = [
 		'pmmain' => [
 			'name'       => 'pmmain',

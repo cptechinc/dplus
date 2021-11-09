@@ -111,6 +111,7 @@ return array(
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
     'Controllers\\Mpm\\Base' => $baseDir . '/classes/mpm/Base.php',
     'Controllers\\Mpm\\Menu' => $baseDir . '/classes/mpm/Menu.php',
+    'Controllers\\Mpm\\Pmmain\\Base' => $baseDir . '/classes/mpm/pmmain/Base.php',
     'Controllers\\Mpm\\Pmmain\\Bmm' => $baseDir . '/classes/mpm/pmmain/Bmm.php',
     'Controllers\\Mpm\\Pmmain\\Dcm' => $baseDir . '/classes/mpm/pmmain/Dcm.php',
     'Controllers\\Mpm\\Pmmain\\Menu' => $baseDir . '/classes/mpm/pmmain/Menu.php',

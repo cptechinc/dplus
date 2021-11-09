@@ -1,18 +1,19 @@
 <?php namespace Dplus\DocManagement\Finders;
-
+// Purl URI manipulation library
 use Purl\Url;
+// Propel ORM Library
 use Propel\Runtime\ActiveQuery\Criteria;
+// ProcessWire
 use ProcessWire\WireData;
-
+// Dplus Models
 use DocumentFolderQuery, DocumentFolder;
 use DocumentQuery, Document;
-
-
+// Dplus Document Management
 use Dplus\DocManagement\Mover as FileMover;
+use Dplus\DocManagement\Viewer;
 
 /**
  * Document Finder
- *
  * Decorator for DocumentQuery to find Documents in Database
  */
 class Finder extends WireData {
@@ -136,11 +137,23 @@ class Finder extends WireData {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
+	/**
+	 * Return columns
+	 * @return WireData
+	 */
 	public function getColumnData() {
 		$columns = new WireData();
 		$columns->tag = Document::aliasproperty('tag');
 		$columns->reference1 = Document::aliasproperty('reference1');
 		$columns->reference2 = Document::aliasproperty('reference2');
 		return $columns;
+	}
+
+	/**
+	 * Return Doc Viewer
+	 * @return Viewer
+	 */
+	public function getViewer() {
+		return Viewer::getInstance();
 	}
 }

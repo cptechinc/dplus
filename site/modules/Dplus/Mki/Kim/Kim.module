@@ -128,8 +128,6 @@ class Kim extends WireData implements Module {
 		$kit = $this->kit($itemID);
 		$kit->delete();
 		$response = $this->save_and_respond($kit);
-		echo var_dump($response);
-		exit;
 		return $response;
 	}
 

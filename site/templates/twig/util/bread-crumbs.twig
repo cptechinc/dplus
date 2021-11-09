@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb rounded-0">
+<nav aria-label="breadcrumb rounded-0" class="d-print-none">
 	<ol class="breadcrumb">
 		{% block parents %}
 			{% for parent in page.parents() %}
@@ -24,7 +24,7 @@
 				</li>
 			{% endif %}
 			<li class="breadcrumb-item active" aria-current="page">
-				<i class="fa {{ page.template == 'dplus-menu' ? 'fa-list' : 'fa-microchip'}}" aria-hidden="true"></i>
+				<i class="fa {{ page.template == 'dplus-menu' ? 'fa-list' : page.template == 'home' ? 'fa-home' : 'fa-microchip'}}" aria-hidden="true"></i>
 				{{ page.has('dplus_function') and page.dplus_function|length ? page.dplus_function|upper : page.title }}
 			</li>
 		{% endblock %}

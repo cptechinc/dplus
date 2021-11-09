@@ -17,12 +17,12 @@ class Kim extends AbstractController {
 
 	public static function index($data) {
 		$fields = [
-			'kitID'     => ['sanitizer' => 'text'],
-			'component' => ['sanitizer' => 'text'],
-			'q'         => ['sanitizer' => 'text'],
-			'action'    => ['sanitizer' => 'text']
+			'kitID'     => 'sanitizer|text',
+			'component' => 'sanitizer|text',
+			'q'         => 'sanitizer|text',
+			'action'    => 'sanitizer|text'
 		];
-		$data = self::sanitizeParameters($data, $fields);
+		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
 

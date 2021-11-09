@@ -65,6 +65,16 @@
 				['GET', 'codes/', AjaxLookup::class, 'dcmCodes'],
 				['GET', 'codes/page{pagenbr:\d+}/', AjaxLookup::class, 'dcmCodes'],
 			]
+		],
+		'msa' => [
+			'sysop' => [
+				['GET', '', AjaxLookup::class, 'sysopCodes'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'sysopCodes'],
+				'options' => [
+					['GET', '', AjaxLookup::class, 'sysopOptions'],
+					['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'sysopOptions'],
+				]
+			]
 		]
 	];
 
