@@ -21,7 +21,7 @@
 		</button>
 	{% else %}
 		<a href="{{ page.menuUrl() }}" class="btn btn-primary">
-			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ segments[(segments|length - 1)]|upper }}
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.menuTitle() }}
 		</a>
 		&nbsp;
 		<a href="{{ page.get_printURL() }}" class="btn btn-primary">
