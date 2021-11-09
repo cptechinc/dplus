@@ -141,7 +141,7 @@ class Dtm extends Base {
 		});
 
 		$m->addHook('Page(pw_template=mgl)::menuTitle', function($event) {
-			$event->return = Menu::TITLE_MENU;
+			$event->return = Menu::TITLE;
 		});
 
 		$m->addHook('Page(pw_template=mgl)::codeDeleteUrl', function($event) {

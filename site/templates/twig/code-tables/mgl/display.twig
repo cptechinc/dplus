@@ -3,7 +3,7 @@
 <div class="mb-3">
 	{% if page.is_print() %}
 		<button onclick="window.history.back();" class="btn btn-primary d-print-none">
-			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+			<i class="fa fa-undo" aria-hidden="true"></i> Back
 		</button>
 		&nbsp;
 		<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
@@ -11,7 +11,7 @@
 		</button>
 	{% else %}
 		<a href="{{ page.menuUrl() }}" class="btn btn-primary">
-			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.menuTitle() }}
+			<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ page.menuTitle() }}
 		</a>
 		&nbsp;
 		<a href="{{ page.get_printURL() }}" class="btn btn-primary">
