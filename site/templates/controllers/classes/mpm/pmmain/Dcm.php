@@ -132,7 +132,7 @@ class Dcm extends Base {
 		});
 
 		$m->addHook('Page(pw_template=mpm)::menuTitle', function($event) {
-			$event->return = Menu::TITLE_MENU;
+			$event->return = Menu::TITLE;
 		});
 
 		$m->addHook('Page(pw_template=mpm)::codeDeleteUrl', function($event) {

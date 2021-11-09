@@ -5,8 +5,12 @@ use stdClass;
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+// Controllers
+use Controllers\Mpm\Menu as MenuMpm;
 
 class Menu extends Base {
+	const TITLE = 'Maintenance';
+
 	const SUBFUNCTIONS = [
 		'bmm' => [
 			'name'       => 'bmm',
@@ -94,7 +98,7 @@ class Menu extends Base {
 		});
 
 		$m->addHook('Page(pw_template=mpm)::menuTitle', function($event) {
-			$event->return = self::TITLE_MENU;
+			$event->return = MenuMpm::TITLE;
 		});
 	}
 }

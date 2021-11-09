@@ -14,6 +14,5 @@ use Controllers\Mpm\Base as BaseMpm;
 
 class Base extends BaseMpm {
 	const DPLUSPERMISSION = 'pmmain';
-	const TITLE_MENU = 'Maintenance';
 	const SHOWONPAGE = 10;
 }
