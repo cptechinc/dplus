@@ -7,6 +7,8 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Msa
 use Dplus\Msa\Sysop;
 use Dplus\Msa\SysopOptions;
+// Dplus Itm
+use Dplus\Min\Inmain\Itm\Response;
 
 /**
  * Options
@@ -331,7 +333,7 @@ class Codes extends WireData {
 	 * Set Session Response
 	 * @param Response $response
 	 */
-	protected function setResponse(Response $response) {
+	public function setResponse(Response $response) {
 		$this->wire('session')->setFor('response', 'itm-options', $response);
 	}
 
