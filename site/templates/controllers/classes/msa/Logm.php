@@ -97,6 +97,12 @@ class Logm extends Base {
 		return $url->getUrl();
 	}
 
+	public static function userEditUrl($id) {
+		$url = new Purl(Menu::logmUrl());
+		$url->query->set('id', $id);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -132,8 +138,12 @@ class Logm extends Base {
 			$event->return = Menu::menuUrl();
 		});
 
-		$m->addHook('Page(template=test)::codeDeleteUrl', function($event) {
-			$event->return = self::codeDeleteUrl($event->arguments(0));
+		$m->addHook('Page(template=test)::userEditUrl', function($event) {
+			$event->return = self::userEditUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(template=test)::userDeleteUrl', function($event) {
+			$event->return = self::userDeleteUrl($event->arguments(0));
 		});
 	}
 
