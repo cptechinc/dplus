@@ -6,8 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Dplus\\Min\\Inmain\\Itm\\Codes' => $baseDir . '/src/Options/Codes.php',
     'Dplus\\Min\\Inmain\\Itm\\Dimensions' => $baseDir . '/src/Dimensions.php',
     'Dplus\\Min\\Inmain\\Itm\\Options' => $baseDir . '/src/Options.php',
+    'Dplus\\Min\\Inmain\\Itm\\Options\\Qnotes' => $baseDir . '/src/Options/Qnotes.php',
     'Dplus\\Min\\Inmain\\Itm\\Response' => $baseDir . '/src/Response.php',
     'Dplus\\Min\\Inmain\\Itm\\Substitutes' => $baseDir . '/src/Substitutes.php',
 );

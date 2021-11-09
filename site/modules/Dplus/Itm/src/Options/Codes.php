@@ -7,14 +7,12 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Msa
 use Dplus\Msa\Sysop;
 use Dplus\Msa\SysopOptions;
-// Dplus Itm
-use Dplus\Min\Inmain\Itm\Options as ItmOptions;
 
 /**
  * Options
  * Manages CRUD operations for the InvOptCode Records
  */
-class Options extends WireData {
+class Codes extends WireData {
 	const MODEL              = 'InvOptCode';
 	const MODEL_KEY          = 'itemid, id';
 	const DESCRIPTION        = 'Item Options';
@@ -24,8 +22,6 @@ class Options extends WireData {
 
 	public function __construct() {
 		$this->sessionID = session_id();
-		$this->codes  = ItmOptions\Codes::getInstance();
-		$this->qnotes = ItmOptions\Qnotes::getInstance();
 	}
 
 	private static $instance;
