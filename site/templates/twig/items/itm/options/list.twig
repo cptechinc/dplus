@@ -26,7 +26,7 @@
 				{% set itmcode = itmOpt.codes.code(item.itemid, option.id) %}
 
 				{% set class = option.id == input.get.text('focus') ? 'highlight' : '' %}
-				{% set class = (response.hasSuccess() and response.key == [itmcode.itemid, option.id]|join('-')) ? 'bg-success text-white' : class %}
+				{% set class = (response.hasSuccess() and response.key == [item.itemid, option.id]|join('-')) ? 'bg-success text-white' : class %}
 				<tr data-key="{{ option.id }}" class="sysop {{ class }}" data-sysop="{{ option.id }}">
 					<td class="text-center">
 						{% if itmOpt.getSysop().isRequired('IN', option.id) %}
@@ -43,7 +43,13 @@
 							{{ itmcode.description|length == 0 ? '' : itmcode.code }}
 						{% endif %}
 					</td>
-					<td>{{ itmcode.description ? itmcode.description : itmcode.code }}</td>
+					<td>
+						{% if itmOpt.getSysop().isNote('IN', option.id) %}
+							{{ itmOpt.qnotes.noteLine(item.itemid, option.notecode).note }}
+						{% else %}
+							{{ itmcode.description ? itmcode.description : itmcode.code }}
+						{% endif %}
+					</td>
 					<td class="text-center">
 						{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
 							{% if itmOpt.getSysop().isNote('IN', option.id) %}
