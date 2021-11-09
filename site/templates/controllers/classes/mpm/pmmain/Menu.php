@@ -84,6 +84,7 @@ class Menu extends Base {
 			}
 		}
 		self::initHooks();
+		self::pw('page')->headline = self::TITLE;
 		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
 
