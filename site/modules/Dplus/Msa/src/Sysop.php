@@ -116,7 +116,7 @@ class Sysop extends WireData {
 	 */
 	public function isNote($system, $id) {
 		$q = $this->queryCode($system, $id);
-		$q->select(MsaSysopCode::aliasproperty('note_code'));
+		$q->select(MsaSysopCode::aliasproperty('notecode'));
 		return boolval($q->findOne());
 	}
 
@@ -130,6 +130,18 @@ class Sysop extends WireData {
 		$q = $this->queryCode($system, $id);
 		$q->select(MsaSysopCode::aliasproperty('force'));
 		return $q->findOne() == MsaSysopCode::YN_TRUE;
+	}
+
+	/**
+	 * Return Option Code Note Code
+	 * @param  string $system  System
+	 * @param  string $id      Option Code
+	 * @return bool
+	 */
+	public function notecode($system, $id) {
+		$q = $this->queryCode($system, $id);
+		$q->select(MsaSysopCode::aliasproperty('notecode'));
+		return $q->findOne();
 	}
 
 	/**
