@@ -9,12 +9,9 @@ use PrWorkCenter;
 use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Codes\Mpm\Dcm as DcmManager;
-// Mvc Controllers
-use Controllers\Mpm\Base;
 
 class Dcm extends Base {
 	const DPLUSPERMISSION = 'dcm';
-	const SHOWONPAGE = 10;
 
 	private static $dcm;
 
@@ -132,6 +129,10 @@ class Dcm extends Base {
 
 		$m->addHook('Page(pw_template=mpm)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=mpm)::menuTitle', function($event) {
+			$event->return = Menu::TITLE_MENU;
 		});
 
 		$m->addHook('Page(pw_template=mpm)::codeDeleteUrl', function($event) {

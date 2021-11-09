@@ -9,12 +9,9 @@ use PrResource;
 use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Codes\Mpm\Rcm as RcmManager;
-// Mvc Controllers
-use Controllers\Mpm\Base;
 
 class Rcm extends Base {
 	const DPLUSPERMISSION = 'rcm';
-	const SHOWONPAGE = 10;
 
 	private static $rcm;
 
@@ -132,6 +129,10 @@ class Rcm extends Base {
 
 		$m->addHook('Page(pw_template=mpm)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=mpm)::menuTitle', function($event) {
+			$event->return = Menu::TITLE_MENU;
 		});
 
 		$m->addHook('Page(pw_template=mpm)::codeDeleteUrl', function($event) {

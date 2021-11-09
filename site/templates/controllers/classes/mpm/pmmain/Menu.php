@@ -5,11 +5,8 @@ use stdClass;
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
-// Mvc Controllers
-use Controllers\Mpm\Base;
 
 class Menu extends Base {
-	const DPLUSPERMISSION = 'pmmain';
 	const SUBFUNCTIONS = [
 		'bmm' => [
 			'name'       => 'bmm',
@@ -94,6 +91,10 @@ class Menu extends Base {
 
 		$m->addHook('Page(pw_template=mpm)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=mpm)::menuTitle', function($event) {
+			$event->return = self::TITLE_MENU;
 		});
 	}
 }

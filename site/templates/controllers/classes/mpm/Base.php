@@ -1,4 +1,6 @@
 <?php namespace Controllers\Mpm;
+// ProcessWire;
+use ProcessWire\User;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
