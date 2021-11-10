@@ -165,6 +165,7 @@
 				['GET', 'loginid/', Json\Msa::class, 'validateUserid'],
 				['GET', 'userid/', Json\Msa::class, 'validateUserid'],
 				['GET', 'noce/', Json\Msa::class, 'validateNoceid'],
+				['GET', 'printer/', Json\Msa::class, 'validatePrinter'],
 				'sysop' => [
 					['GET', '', Json\Msa::class, 'validateSysop'],
 					['GET', 'system/', Json\Msa::class, 'validateSysopSystem'],
