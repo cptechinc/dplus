@@ -1,0 +1,68 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="printerbrowse">Default Printers, Browse Printer</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'printerbrowse',
+						'value': duser.printerbrowse,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Browse Printer'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Printers',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('printers'),
+							'data-input': '#printerbrowse'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="printerreport">Report Printer</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'printerreport',
+						'value': duser.printerreport,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'ReportPrinter'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Printers',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('printers'),
+							'data-input': '#printerreport'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+</div>
