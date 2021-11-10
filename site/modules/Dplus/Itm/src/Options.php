@@ -51,59 +51,9 @@ class Options extends WireData {
 		return	$this->codes->processInput($input);
 	}
 
-// 	/**
-// 	 * Update Itm Dimension, Itm Data
-// 	 * @param  WireInput $input Input Data
-// 	 * @return void
-// 	 */
-// 	private function updateInput(WireInput $input) {
-// 		$rm = strtolower($input->requestMethod());
-// 		$values = $input->$rm;
-//
-// 		$itm = $this->wire('modules')->get('Itm');
-// 		$itemID = $values->text('itemID');
-//
-// 		if ($itm->exists($itemID) === false) {
-// 			return false;
-// 		}
-//
-// 		if ($itm->lockrecord($itemID) === false) {
-// 			return false;
-// 		}
-// 		return $this->updateInputCode($input);
-// 	}
-//
-// 	/**
-// 	 * Update Itm Dimension, Itm Data
-// 	 * @param  WireInput $input Input Data
-// 	 * @return void
-// 	 */
-// 	private function deleteInput(WireInput $input) {
-// 		$rm = strtolower($input->requestMethod());
-// 		$values = $input->$rm;
-//
-// 		$itm = $this->wire('modules')->get('Itm');
-// 		$itemID = $values->text('itemID');
-//
-// 		if ($itm->exists($itemID) === false) {
-// 			return false;
-// 		}
-//
-// 		if ($itm->lockrecord($itemID) === false) {
-// 			return false;
-// 		}
-// 		return $this->deleteInputCode($input);
-// 	}
-//
-
-	/**
-	 * Set Session Response
-	 * @param Response $response
-	 */
-	protected function setResponse(Response $response) {
-		$this->wire('session')->setFor('response', 'itm-options', $response);
-	}
-
+/* =============================================================
+	Response Functions
+============================================================= */
 	/**
 	 * Get Session Response
 	 * @return Response|null
