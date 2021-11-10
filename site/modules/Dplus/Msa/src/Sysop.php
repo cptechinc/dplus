@@ -54,6 +54,7 @@ class Sysop extends WireData {
 			'input' => [
 				'validate' => $opt->validate(),
 				'force'    => $opt->force(),
+				'filename' => $opt->isFilename(),
 				'notetype' => $opt->notecode
 			]
 		];
