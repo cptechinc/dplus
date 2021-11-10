@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
-use ProspectSource;
+use DplusUser;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -26,6 +26,9 @@ class Logm extends Base {
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+		if (empty($data->id) === false) {
+			return self::user($data);
 		}
 		return self::list($data);
 	}
@@ -63,6 +66,19 @@ class Logm extends Base {
 		//$page->js .= self::pw('config')->twig->render('code-tables/msa/logm/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayList($data, $codes);
 		// self::getLogm()->deleteResponse();
+		return $html;
+	}
+
+	private static function user($data) {
+		$logm = self::getLogm();
+		$page = self::pw('page');
+		$page->headline = "LOGM: $data->id";
+
+		if ($logm->exists($data->id) === false) {
+			$page->headline = "LOGM: Creating New User";
+		}
+		$user = $logm->getOrCreate($data->id);
+		$html = self::displayUser($data, $user);
 		return $html;
 	}
 
@@ -108,7 +124,7 @@ class Logm extends Base {
 ============================================================= */
 	private static function displayList($data, PropelModelPager $users) {
 		$config = self::pw('config');
-		$logm = self::getLogm();
+		$logm   = self::getLogm();
 
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/msa/logm/bread-crumbs.twig');
@@ -126,6 +142,15 @@ class Logm extends Base {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
+	}
+
+	private static function displayUser($data, DplusUser $user) {
+		$config = self::pw('config');
+		$logm   = self::getLogm();
+
+		$html  = '';
+		$html .= $config->twig->render('msa/logm/user.twig', ['logm' => $logm, 'duser' => $user]);
+		return $html;
 	}
 
 /* =============================================================

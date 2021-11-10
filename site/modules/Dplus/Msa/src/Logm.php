@@ -38,6 +38,19 @@ class Logm extends WireData {
 		return self::$instance;
 	}
 
+	/**
+	 * Return JSON array for User
+	 * @param  DplusUser $user
+	 * @return array
+	 */
+	public function userJson(DplusUser $user) {
+		return [
+			'id'    => $user->id,
+			'name'  => $user->name,
+			'email' => $user->email
+		];
+	}
+
 /* =============================================================
 	Field Configs
 ============================================================= */
@@ -119,16 +132,10 @@ class Logm extends WireData {
 		return $opt;
 	}
 
-	/**
-	 * Return JSON array for User
-	 * @param  DplusUser $user
-	 * @return array
-	 */
-	public function userJson(DplusUser $user) {
-		return [
-			'id'    => $user->id,
-			'name'  => $user->name,
-			'email' => $code->email
-		];
+	public function getOrCreate($id) {
+		if ($this->exists($id) === false) {
+			return $this->new($id);
+		}
+		return $this->user($id);
 	}
 }
