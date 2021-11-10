@@ -8,6 +8,9 @@
 			['GET', 'time/', Json\Misc::class, 'time'],
 			['GET', 'date/', Json\Misc::class, 'date'],
 			['GET', 'date-time/', Json\Misc::class, 'dateTime'],
+			'validate' => [
+				['GET', 'printer/', Json\Misc::class, 'validatePrinter'],
+			]
 		],
 		'inv' => [
 			'validate' => [

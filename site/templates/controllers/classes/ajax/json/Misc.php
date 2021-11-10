@@ -1,7 +1,8 @@
 <?php namespace Controllers\Ajax\Json;
-
+// ProcessWire
 use ProcessWire\WireData;
-
+// Dplus Validators
+use Dplus\CodeValidators as Validators;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -34,5 +35,15 @@ class Misc extends AbstractController {
 			'time' => self::time($time),
 		];
 		return $response;
+	}
+
+	public static function validatePrinter($data) {
+		$fields = ['id|text', 'strict|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validator = new Validators\Printer();
+		if (boolval($data->strict)) {
+			return $validator->id($data->id);
+		}
+		return $validator->printer($data->id);
 	}
 }
