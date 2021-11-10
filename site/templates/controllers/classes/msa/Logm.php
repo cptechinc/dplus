@@ -8,7 +8,9 @@ use DplusUser;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
+use Dplus\Msa;
 use Dplus\Msa\Logm as LogmManager;
+
 
 class Logm extends Base {
 	const DPLUSPERMISSION = 'logm';
@@ -27,6 +29,7 @@ class Logm extends Base {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+		
 		if (empty($data->id) === false) {
 			return self::user($data);
 		}
