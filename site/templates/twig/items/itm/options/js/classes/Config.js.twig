@@ -1,0 +1,25 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page(pw_template=itm)
+	input                  ProcessWire\WireInput
+	itmOpt                 Dplus\Min\Inmain\Itm\Options
+#}
+class CodeConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+
+		};
+		this.isMissingRequired = {{ itmOpt.isMissingRequiredCodes(input.get.text('itemID')) ? 'true' : 'false'}};
+		console.log(this.isMissingRequired);
+	}
+}
