@@ -215,6 +215,32 @@ class Msa extends AbstractController {
 		return $crud->codeJson($crud->code($data->system, $data->sysop, $data->code));
 	}
 
+	public static function getSysopRequiredCodes($data) {
+		$fields = ['system|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$sysop = MsaCRUDs\Sysop::getInstance();
+		return $sysop->getRequiredCodes($data->system);
+	}
+
+	public static function validatePrinter($data) {
+		$fields = ['id|text', 'strict|bool', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$prtd = new MsaCRUDs\Prtd();
+
+		if ($data->jqv) { // JQueryValidate
+			if ($data->strict) {
+				return $prtd->exists($data->id) ? true : "Printer $data->id not found";
+			}
+			return $prtd->existsPrinterPitch($data->id) ? true : "Printer & Pitch $data->id not found";
+		}
+
+		if ($data->strict) {
+			return $prtd->exists($data->id);
+		}
+		return $prtd->existsPrinterPitch($data->id);
+	}
+
 	private static function validator() {
 		return new MsaValidator();
 	}
