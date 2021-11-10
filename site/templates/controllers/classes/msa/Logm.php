@@ -79,6 +79,10 @@ class Logm extends Base {
 		}
 		$user = $logm->getOrCreate($data->id);
 
+		if ($user->isNew() === false) {
+			$logm->lockrecord($data->id);
+		}
+
 		$page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
 		return $html;
@@ -146,11 +150,22 @@ class Logm extends Base {
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
+	public static function displayLock($data) {
+		$logm = self::getLogm();
+		$logm->recordlocker->userHasLocked($data->id);
+		if ($logm->recordlocker->isLocked($data->id) == false && $logm->recordlocker->userHasLocked($data->id) !== false) {
+			$msg = "User $data->id is being locked by " . $logm->recordlocker->getLockingUser($data->id);
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "User is Locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		}
+		return '';
+	}
+
 	private static function displayUser($data, DplusUser $user) {
 		$config = self::pw('config');
 		$logm   = self::getLogm();
 
 		$html  = '';
+		$html .= '<div class="mb-3">' . self::displayLock($data) . '</div>';
 		$html .= $config->twig->render('msa/logm/user.twig', ['logm' => $logm, 'duser' => $user]);
 		return $html;
 	}
