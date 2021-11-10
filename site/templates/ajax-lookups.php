@@ -78,8 +78,8 @@
 		],
 		'misc' => [
 			'printers' => [
-				['GET', '', AjaxLookup::class, 'dcmCodes'],
-				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'dcmCodes'],
+				['GET', '', AjaxLookup::class, 'printers'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'printers'],
 			]
 		],
 	];

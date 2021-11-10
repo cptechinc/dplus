@@ -1,0 +1,20 @@
+<table class="table table-striped" id="code-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Printer</th>
+			<th>Pitches</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	{% for printer in results %}
+		<tr>
+			<td>
+				<a href="#" class="link printer-link" data-id="{{ printer.id }}">
+					{{ printer.id }}
+				</a>
+			</td>
+			<td>{{ printer.pitches()|join(', ') }}</td>
+			<td>{{ printer.description }}</td>
+		</tr>
+	{% endfor %}
+</table>
