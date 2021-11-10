@@ -63,7 +63,7 @@ class Logm extends Base {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
-		//$page->js .= self::pw('config')->twig->render('code-tables/msa/logm/.js.twig', ['logm' => self::getLogm()]);
+		// $page->js .= self::pw('config')->twig->render('code-tables/msa/logm/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayList($data, $codes);
 		// self::getLogm()->deleteResponse();
 		return $html;
@@ -78,6 +78,8 @@ class Logm extends Base {
 			$page->headline = "LOGM: Creating New User";
 		}
 		$user = $logm->getOrCreate($data->id);
+
+		$page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
 		return $html;
 	}
