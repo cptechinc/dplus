@@ -75,7 +75,13 @@
 					['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'sysopOptions'],
 				]
 			]
-		]
+		],
+		'misc' => [
+			'printers' => [
+				['GET', '', AjaxLookup::class, 'dcmCodes'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'dcmCodes'],
+			]
+		],
 	];
 
 	$router = new Mvc\Router();
