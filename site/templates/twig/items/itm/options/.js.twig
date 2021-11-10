@@ -14,6 +14,7 @@ $(function() {
 		$('.sysop[data-sysop="'+query.focus+'"]').addClass('highlight');
 		$('html, body').animate({scrollTop: $('.sysop[data-sysop="'+query.focus+'"]').offset().top,},700,'linear');
 	}
+
 /* =============================================================
 	Event Functions
 ============================================================= */
@@ -28,6 +29,16 @@ $(function() {
 				inputs.description.text(option.description);
 			}
 		});
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	$("body").on("click", "a:not(a.paginator-link, #ajax-modal a)", function(e) {
+		if (formCode.config.isMissingRequired) {
+			e.preventDefault();
+			alert.missingRequired();
+		}
 	});
 
 /* =============================================================
