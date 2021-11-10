@@ -31,6 +31,7 @@ return array(
     'Dplus\\Filters\\Misc\\CountryCode' => $baseDir . '/src/Misc/CountryCode.php',
     'Dplus\\Filters\\Misc\\Funcperm' => $baseDir . '/src/Misc/Funcperm.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
+    'Dplus\\Filters\\Misc\\Printer' => $baseDir . '/src/Misc/Printer.php',
     'Dplus\\Filters\\Mki\\Kim' => $baseDir . '/src/Mki/Kim.php',
     'Dplus\\Filters\\Mpm\\Bom\\Header' => $baseDir . '/src/Mpm/Bom/Header.php',
     'Dplus\\Filters\\Mpm\\PrResource' => $baseDir . '/src/Mpm/PrResource.php',
