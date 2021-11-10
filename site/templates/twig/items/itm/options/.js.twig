@@ -34,7 +34,7 @@ $(function() {
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	$("body").on("click", "a:not(a.paginator-link, #ajax-modal a)", function(e) {
+	$("body").on("click", "a:not(a.delete_button, a.paginator-link, #ajax-modal a)", function(e) {
 		if (formCode.config.isMissingRequired) {
 			e.preventDefault();
 			alert.missingRequired();
@@ -64,7 +64,6 @@ $(function() {
 	$('#edit-note-modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var json = button.data('json');
-		console.log(json);
 		formNote.updateFormFromJson(json);
 	});
 
