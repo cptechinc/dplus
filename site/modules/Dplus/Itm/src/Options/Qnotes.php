@@ -3,6 +3,7 @@
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dolus Models
 use InvOptCodeNoteQuery, InvOptCodeNote;
+use MsaSysopCode;
 // ProcessWire
 use ProcessWire\WireInput;
 // Dplus Qnotes
@@ -155,10 +156,19 @@ class Qnotes extends QnotesBase {
 		if ($sysopM->isNote(self::SYSTEM, $values->text('sysop')) === false) {
 			return false;
 		}
-		$sysop = $sysopM->code(self::SYSTEM, $values->text('sysop'));
-
+		$sysop  = $sysopM->code(self::SYSTEM, $values->text('sysop'));
 		$itemID = $values->text('itemID');
 		$type   = $sysopM->notecode(self::SYSTEM, $values->text('sysop'));
+
+		if ($sysop->force() && empty($values->textarea('note'))) {
+			$responseQnotes = Response::responseError("$type Notes are required");
+			$responseQnotes->setAction(Response::CRUD_DELETE);
+			$response = $this->responseItmFromQnoteResponse($responseQnotes, $sysop, $itemID);
+			$codesM = Codes::getInstance();
+			$codesM->setResponse($response);
+			return false;
+		}
+
 		$this->deleteNotes($itemID, $type);
 
 		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
@@ -176,15 +186,8 @@ class Qnotes extends QnotesBase {
 			$savedLines[$sequence] = boolval($note->save());
 		}
 
-		$responseQnotes = $this->updateAndRespond($note, $savedLines);
-		$response = new ResponseItm();
-		$response->setKey("$itemID-$sysop->code");
-		$response->setAction($responseQnotes->action);
-		$response->setItemid($itemID);
-		$response->setSuccess($responseQnotes->hasSuccess());
-		$response->setError($responseQnotes->hasError());
-		$response->setMessage($responseQnotes->message);
-
+		$responseQnotes = $this->updateAndResponse($note, $savedLines);
+		$response = $this->responseItmFromQnoteResponse($responseQnotes, $sysop, $itemID);
 		$codesM = Codes::getInstance();
 		$codesM->setResponse($response);
 		return $response->hasSuccess();
@@ -234,17 +237,11 @@ class Qnotes extends QnotesBase {
 		$sysopM = $this->getSysop();
 		$itemID = $values->text('itemID');
 		$type   = $sysopM->notecode(self::SYSTEM, $values->text('sysop'));
+		$sysop  = $sysopM->code(self::SYSTEM, $values->text('sysop'));
 
 		$note = $this->new($itemID, $type);
 		$responseQnotes = $this->deleteAndRespond($note);
-
-		$response = new ResponseItm();
-		$response->setKey("$itemID-$sysop->code");
-		$response->setAction($responseQnotes->action);
-		$response->setItemid($itemID);
-		$response->setSuccess($responseQnotes->hasSuccess());
-		$response->setError($responseQnotes->hasError());
-		$response->setMessage($responseQnotes->message);
+		$response = $this->responseItmFromQnoteResponse($responseQnotes, $sysop, $itemID);
 
 		$codesM = Codes::getInstance();
 		$codesM->setResponse($response);
@@ -272,8 +269,27 @@ class Qnotes extends QnotesBase {
 		}
 		return $response;
 	}
-//
-//
+/* =============================================================
+	Response Functions
+============================================================= */
+	/**
+	 * Return Itm Response
+	 * @param  Response     $response
+	 * @param  MsaSysopCode $sysop     System Optional Code
+	 * @param  string       $itemID    Item ID
+	 * @return ResponseItm
+	 */
+	protected function responseItmFromQnoteResponse(Response $response, MsaSysopCode $sysop, $itemID) {
+		$r = new ResponseItm();
+		$r->setKey("$itemID-$sysop->code");
+		$r->setAction($response->action);
+		$r->setItemid($itemID);
+		$r->setSuccess($response->hasSuccess());
+		$r->setError($response->hasError());
+		$r->setMessage($response->message);
+		return $r;
+	}
+	
 /* =============================================================
 	Dplus Requests
 ============================================================= */
@@ -296,7 +312,4 @@ class Qnotes extends QnotesBase {
 	public function getSysop() {
 		return Sysop::getInstance();
 	}
-
-
-
 }
