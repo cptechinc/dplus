@@ -8,6 +8,7 @@ class ComposerStaticInitaaa727932adf929509f6ae58bf7e96aa
 {
     public static $classMap = array (
         'Dplus\\Msa\\Logm' => __DIR__ . '/../..' . '/src/Logm.php',
+        'Dplus\\Msa\\Prtd' => __DIR__ . '/../..' . '/src/Prtd.php',
         'Dplus\\Msa\\Sysop' => __DIR__ . '/../..' . '/src/Sysop.php',
         'Dplus\\Msa\\SysopOptions' => __DIR__ . '/../..' . '/src/SysopOptions.php',
     );
