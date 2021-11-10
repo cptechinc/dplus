@@ -38,10 +38,18 @@ class Misc extends AbstractController {
 	}
 
 	public static function validatePrinter($data) {
-		$fields = ['id|text', 'strict|bool'];
+		$fields = ['id|text', 'strict|bool', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validator = new Validators\Printer();
-		if (boolval($data->strict)) {
+
+		if ($data->jqv) { // JQueryValidate
+			if ($data->strict) {
+				return $validator->id($data->id) ? true : "Printer $data->id not found";
+			}
+			return $validator->printer($data->id) ? true : "Printer & Pitch $data->id not found";
+		}
+
+		if ($data->strict) {
 			return $validator->id($data->id);
 		}
 		return $validator->printer($data->id);
