@@ -22,13 +22,16 @@
 							'title': 'Search Printers',
 							'data-toggle': 'modal',
 							'data-target': '#ajax-modal',
-							'data-lookupurl': page.searchLookupUrl('printers'),
+							'data-lookupurl': page.searchLookupUrl('misc/printers'),
 							'data-input': '#printerbrowse'
 						}
 					}
 				}
 			}
 		%}
+		<small class="form-text text-muted printer-description">
+			{{ duser.printerBrowse().description }}
+		</small>
 	</div>
 </div>
 
@@ -57,12 +60,15 @@
 							'title': 'Search Printers',
 							'data-toggle': 'modal',
 							'data-target': '#ajax-modal',
-							'data-lookupurl': page.searchLookupUrl('printers'),
+							'data-lookupurl': page.searchLookupUrl('misc/printers'),
 							'data-input': '#printerreport'
 						}
 					}
 				}
 			}
 		%}
+		<small class="form-text text-muted printer-description">
+			{{ duser.printerReport().description }}
+		</small>
 	</div>
 </div>
