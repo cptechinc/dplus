@@ -27,6 +27,5 @@ return array(
     'Dplus\\CodeValidators\\Msa' => $baseDir . '/src/Msa/Msa.php',
     'Dplus\\CodeValidators\\Mso' => $baseDir . '/src/Mso/Mso.php',
     'Dplus\\CodeValidators\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
-    'Dplus\\CodeValidators\\Printer' => $baseDir . '/src/Misc/Printer.php',
     'Dplus\\CodeValidators\\UserPermission' => $baseDir . '/src/Misc/UserPermission.php',
 );

@@ -28,7 +28,6 @@ class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
         'Dplus\\CodeValidators\\Msa' => __DIR__ . '/../..' . '/src/Msa/Msa.php',
         'Dplus\\CodeValidators\\Mso' => __DIR__ . '/../..' . '/src/Mso/Mso.php',
         'Dplus\\CodeValidators\\Mso\\Cxm' => __DIR__ . '/../..' . '/src/Mso/Cxm.php',
-        'Dplus\\CodeValidators\\Printer' => __DIR__ . '/../..' . '/src/Misc/Printer.php',
         'Dplus\\CodeValidators\\UserPermission' => __DIR__ . '/../..' . '/src/Misc/UserPermission.php',
     );
 
