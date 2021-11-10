@@ -4,7 +4,20 @@
 			<label for="id">Login ID</label>
 		</div>
 		<div class="col-sm-9">
-			<input type="text" name="id" id="id" class="form-control form-control-sm" value="{{ duser.id }}">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'id',
+						'value': duser.id,
+						'size': 'sm',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Login ID',
+							'readonly': duser.isNew() == false,
+							'oninput': 'this.value = this.value.toLowerCase()'
+						}
+					}
+				}
+			%}
 		</div>
 	</div>
 
