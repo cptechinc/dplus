@@ -4,6 +4,8 @@ use InvOptCodeQuery, InvOptCode;
 use MsaSysopCode, SysopOptionalCode;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus Filters
+use Dplus\Filters;
 // Dplus Msa
 use Dplus\Msa\Sysop;
 use Dplus\Msa\SysopOptions;
@@ -15,6 +17,8 @@ use Dplus\Min\Inmain\Itm\Options as ItmOptions;
  * Manages CRUD operations for the InvOptCode Records
  */
 class Options extends WireData {
+	const SYSTEM = 'IN';
+
 	public function __construct() {
 		$this->sessionID = session_id();
 		$this->codes  = ItmOptions\Codes::getInstance();
@@ -84,6 +88,33 @@ class Options extends WireData {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
+	/**
+	 * Return if Item ID is missing Required Codes
+	 * @param  string $itemID Item ID
+	 * @return bool           Return True for invalid
+	 */
+	public function isMissingRequiredCodes($itemID) {
+		$sysop = $this->getSysop();
+		$filter = new Filters\Msa\MsaSysopCode();
+		$filter->system(self::SYSTEM);
+		$filter->query->filterById($sysop->getRequiredCodes(self::SYSTEM));
+		$codes = $filter->query->find();
+
+		foreach ($codes as $code) {
+			if ($code->isNote()) {
+				if ($this->qnotes->notesExist($itemID, $code->notecode) === false) {
+					return true;
+				}
+				continue;
+			}
+
+			if ($this->codes->exists($itemID, $code->id) === false) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function getSysop() {
 		return Sysop::getInstance();
 	}
