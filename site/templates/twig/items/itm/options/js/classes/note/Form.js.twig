@@ -40,14 +40,16 @@ class NoteForm {
 		$('#' + inputs.note.attr('id')).rules('remove', 'required');
 
 		CodeRequests.getInstance().getNote(inputs.itemid.val(), json.input.notetype, function(note) {
-			if (note.note) {
-				inputs.submit.delete.removeAttr('disabled');
-			} else {
-				inputs.submit.delete.attr('disabled', 'true');
-			}
+
 			inputs.note.val(note.note);
 			form.getCodeJqvRules(json, function(rules) {
 				$('#' + inputs.note.attr('id')).rules('add', rules);
+
+				if (note.note && rules.required === false) {
+					inputs.submit.delete.removeAttr('disabled');
+				} else {
+					inputs.submit.delete.attr('disabled', 'true');
+				}
 			});
 		});
 	}
