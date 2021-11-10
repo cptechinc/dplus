@@ -25,10 +25,10 @@ $(function() {
 	$("body").on('click', '.printer-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
-		var id     = button.data('id');
+		var printerid = button.data('printer');
 		var modal  = button.closest('.modal');
 		var input  = $(modal.attr('data-input'));
-		input.val(id);
+		input.val(printerid);
 		modal.modal('hide');
 	});
 
