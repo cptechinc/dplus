@@ -65,7 +65,7 @@ class Response extends WireData {
 		$this->key = $key;
 	}
 
-	public function setKey($type) {
+	public function setType($type) {
 		$this->type = $type;
 	}
 
