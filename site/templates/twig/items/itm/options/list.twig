@@ -39,8 +39,8 @@
 					<td>
 						{% if itmOpt.getSysop().isNote('IN', option.id) %}
 							Notes
-						{% else %}
-							{{ itmcode.description|length == 0 ? '' : itmcode.code }}
+						{% elseif option.isFilename() == false %}
+							{{ itmcode.code }}
 						{% endif %}
 					</td>
 					<td>
