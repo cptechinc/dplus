@@ -132,10 +132,30 @@ class Logm extends WireData {
 		return $opt;
 	}
 
+	/**
+	 * Return New or Existing DplusUser
+	 * @param  string $id    User ID
+	 * @return DplusUser
+	 */
 	public function getOrCreate($id) {
 		if ($this->exists($id) === false) {
 			return $this->new($id);
 		}
 		return $this->user($id);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $itemID ItemID
+	 * @return bool
+	 */
+	public function lockrecord($id) {
+		if ($this->recordlocker->isLocked($id) === false) {
+			$this->recordlocker->lock($id);
+		}
+		return $this->recordlocker->userHasLocked($id);
 	}
 }
