@@ -47,7 +47,7 @@
 						{% if itmOpt.getSysop().isNote('IN', option.id) %}
 							{{ itmOpt.qnotes.noteLine(item.itemid, option.notecode).note }}
 						{% else %}
-							{{ itmcode.description ? itmcode.description : itmcode.code }}
+							{{ itmcode.description ? itmcode.description : '' }}
 						{% endif %}
 					</td>
 					<td class="text-center">
