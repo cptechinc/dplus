@@ -28,7 +28,7 @@
 		</thead>
 		<tbody>
 			{% for user in users %}
-				<tr>
+				<tr data-userid="{{ user.id }}">
 					<td>
 						<span class="text-monospace">{{ user.id|spacepad(logm.fieldAttribute('id', 'maxlength'))|raw }}</span>
 						{{ user.name }}

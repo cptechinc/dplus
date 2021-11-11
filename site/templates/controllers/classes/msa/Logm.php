@@ -64,9 +64,9 @@ class Logm extends Base {
 
 		$filter->sortby($page);
 		$ids = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
-		self::initHooks();
 
-		// $page->js .= self::pw('config')->twig->render('code-tables/msa/logm/.js.twig', ['logm' => self::getLogm()]);
+		self::initHooks();
+		$page->js .= self::pw('config')->twig->render('msa/logm/list/.js.twig');
 		$html = self::displayList($data, $ids);
 		// self::getLogm()->deleteResponse();
 		return $html;
