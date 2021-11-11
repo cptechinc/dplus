@@ -78,6 +78,10 @@
 			'printers' => [
 				['GET', '', AjaxLookup::class, 'printers'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'printers'],
+			],
+			'lgrp' => [
+				['GET', '', AjaxLookup::class, 'loginGroups'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'loginGroups'],
 			]
 		],
 	];
