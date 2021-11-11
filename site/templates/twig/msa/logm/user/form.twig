@@ -1,4 +1,4 @@
-<form action="{{ input.paginateUrl(1) }}" method="POST" id="user-form">
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="logm-form">
 	<div class="form-group row">
 		<div class="col-sm-3">
 			<label for="id">Login ID</label>
@@ -140,8 +140,8 @@
 		<button type="submit" name="action" value="delete" class="btn btn-danger delete_button">
 			<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 		</button>
-		<button type="button" class="btn btn-warning">
+		<a href="{{ page.logmUrl(duser.id) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
-		</button>
+		</a>
 	</div>
 </form>
