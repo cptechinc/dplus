@@ -5,8 +5,42 @@
 
 #}
 
+{% include 'msa/logm/user/js/classes.js.twig' %}
+
 $(function() {
 	var modalAjax = $('#ajax-modal');
+
+	var server   = LogmRequests.getInstance();
+	var alert    = LogmAlerts.getInstance();
+	var formLogm = LogmForm.getInstance();
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formLogm.form.serialize();
+
+	$("body").on("click", "a:not(#logm-form.form_button, #ajax-modal a)", function(e) {
+		if (formLogm.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					formLogm.form.find('button[type=submit]').click();
+				} else {
+					// Send HTTP GET Request to remove Record Lock
+					var uri = URI();
+					var query = uri.query(true);
+					uri.query({focus: query.id});
+
+					$.get(uri.toString(), function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
 
 /* =============================================================
 	AJAX Lookup Modal Functions
