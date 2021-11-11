@@ -124,12 +124,17 @@ class Logm extends WireData {
 	 * @return DplusUser
 	 */
 	public function new($id) {
-		$opt = new DplusUser();
+		$user = new DplusUser();
 		$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('id', 'maxlength')]);
 		if ($id != 'new') {
-			$opt->setId($id);
+			$user->setId($id);
 		}
-		return $opt;
+		$user->setAdmin('N');
+		$user->setStorefront('N');
+		$user->setCitydesk('N');
+		$user->setRestrictaccess('N');
+		$user->setAllowprocessdelete('N');
+		return $user;
 	}
 
 	/**
