@@ -29,7 +29,7 @@ class Logm extends Base {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
-		
+
 		if (empty($data->id) === false) {
 			return self::user($data);
 		}
@@ -63,11 +63,11 @@ class Logm extends Base {
 		}
 
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		$ids = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
 		// $page->js .= self::pw('config')->twig->render('code-tables/msa/logm/.js.twig', ['logm' => self::getLogm()]);
-		$html = self::displayList($data, $codes);
+		$html = self::displayList($data, $ids);
 		// self::getLogm()->deleteResponse();
 		return $html;
 	}
@@ -85,7 +85,7 @@ class Logm extends Base {
 		if ($user->isNew() === false) {
 			$logm->lockrecord($data->id);
 		}
-
+		self::initHooks();
 		$page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
 		return $html;
@@ -94,11 +94,11 @@ class Logm extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
-	public static function logmUrl($code = '') {
-		if (empty($code)) {
+	public static function logmUrl($id = '') {
+		if (empty($id)) {
 			return Menu::logmUrl();
 		}
-		return self::logmFocusUrl($code);
+		return self::logmFocusUrl($id);
 	}
 
 	public static function logmFocusUrl($focus) {
@@ -109,7 +109,7 @@ class Logm extends Base {
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::logmUrl());
+		$url = new Purl(self::logmUrl());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'logm', $pagenbr);
 		return $url->getUrl();
@@ -181,6 +181,10 @@ class Logm extends Base {
 
 		$m->addHook('Page(template=test)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(template=test)::logmUrl', function($event) {
+			$event->return = self::logmUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(template=test)::userEditUrl', function($event) {
