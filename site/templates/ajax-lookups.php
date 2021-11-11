@@ -74,9 +74,7 @@
 					['GET', '', AjaxLookup::class, 'sysopOptions'],
 					['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'sysopOptions'],
 				]
-			]
-		],
-		'misc' => [
+			],
 			'printers' => [
 				['GET', '', AjaxLookup::class, 'printers'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'printers'],
