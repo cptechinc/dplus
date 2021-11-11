@@ -46,6 +46,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Msa\\MsaSysopCode' => __DIR__ . '/../..' . '/src/Msa/MsaSysopCode.php',
         'Dplus\\Filters\\Msa\\NotePreDefined' => __DIR__ . '/../..' . '/src/Msa/NotePredefined.php',
         'Dplus\\Filters\\Msa\\SysLoginGroup' => __DIR__ . '/../..' . '/src/Msa/SysLoginGroup.php',
+        'Dplus\\Filters\\Msa\\SysLoginRole' => __DIR__ . '/../..' . '/src/Msa/SysLoginRole.php',
         'Dplus\\Filters\\Msa\\SysopOptionalCode' => __DIR__ . '/../..' . '/src/Msa/SysopOptionalCode.php',
         'Dplus\\Filters\\Mso\\Cxm' => __DIR__ . '/../..' . '/src/Mso/Cxm.php',
         'Dplus\\Filters\\Mso\\SalesHistory' => __DIR__ . '/../..' . '/src/Mso/SalesHistory.php',

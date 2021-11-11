@@ -366,6 +366,20 @@ class Lookup extends AbstractController {
 		return self::filterResults($filter, $data);
 	}
 
+	/**
+	 * Search Login Roles
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function loginRoles($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Login Roles";;
+		$filter = new Filters\Msa\SysLoginRole();
+		$filter->init();
+		return self::filterResults($filter, $data);
+	}
+
 	private static function moduleFilterResults(Module $filter, $data) {
 		$input = self::pw('input');
 		$page  = self::pw('page');

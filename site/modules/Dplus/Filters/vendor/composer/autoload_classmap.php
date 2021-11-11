@@ -45,6 +45,7 @@ return array(
     'Dplus\\Filters\\Msa\\MsaSysopCode' => $baseDir . '/src/Msa/MsaSysopCode.php',
     'Dplus\\Filters\\Msa\\NotePreDefined' => $baseDir . '/src/Msa/NotePredefined.php',
     'Dplus\\Filters\\Msa\\SysLoginGroup' => $baseDir . '/src/Msa/SysLoginGroup.php',
+    'Dplus\\Filters\\Msa\\SysLoginRole' => $baseDir . '/src/Msa/SysLoginRole.php',
     'Dplus\\Filters\\Msa\\SysopOptionalCode' => $baseDir . '/src/Msa/SysopOptionalCode.php',
     'Dplus\\Filters\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
     'Dplus\\Filters\\Mso\\SalesHistory' => $baseDir . '/src/Mso/SalesHistory.php',

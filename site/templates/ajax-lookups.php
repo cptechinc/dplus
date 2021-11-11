@@ -82,6 +82,10 @@
 			'lgrp' => [
 				['GET', '', AjaxLookup::class, 'loginGroups'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'loginGroups'],
+			],
+			'lrole' => [
+				['GET', '', AjaxLookup::class, 'loginRoles'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'loginRoles'],
 			]
 		],
 	];
