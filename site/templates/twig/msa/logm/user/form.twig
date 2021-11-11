@@ -95,7 +95,7 @@
 		<div class="col-sm-3">
 			<label for="userwhsefirst">II screens, My Whse First?</label>
 		</div>
-		<div class="col-sm-9">
+		<div class="col-sm-3">
 			{% include 'util/bootstrap/form/select-simple.twig' with {
 					'select': {
 						'name': 'userwhsefirst',
@@ -113,7 +113,7 @@
 		<div class="col-sm-3">
 			<label for="activteitemsonly">Item ID Get, Active Items Only</label>
 		</div>
-		<div class="col-sm-9">
+		<div class="col-sm-3">
 			{% include 'util/bootstrap/form/select-simple.twig' with {
 					'select': {
 						'name': 'activteitemsonly',
@@ -126,6 +126,9 @@
 			%}
 		</div>
 	</div>
+
+	<legend>Privileges</legend>
+	{% include 'msa/logm/user/form/privileges.twig' %}
 
 	<legend>Groups, Roles</legend>
 	{% include 'msa/logm/user/form/login-roles.twig' %}
