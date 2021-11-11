@@ -24,11 +24,21 @@ $(function() {
 
 	$("body").on('click', '.printer-link', function(e) {
 		e.preventDefault();
-		var button = $(this);
+		var button    = $(this);
 		var printerid = button.data('printer');
+		var modal     = button.closest('.modal');
+		var input     = $(modal.attr('data-input'));
+		input.val(printerid);
+		modal.modal('hide');
+	});
+
+	$("body").on('click', '.code-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code   = button.data('code');
 		var modal  = button.closest('.modal');
 		var input  = $(modal.attr('data-input'));
-		input.val(printerid);
+		input.val(code);
 		modal.modal('hide');
 	});
 
