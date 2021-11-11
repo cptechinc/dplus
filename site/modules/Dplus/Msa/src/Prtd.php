@@ -126,12 +126,19 @@ class Prtd extends WireData {
 	 * @return bool
 	 */
 	public function idByPrinterPitch($id) {
+		if ($this->exists($id)) {
+			return $id;
+		}
+		
 		foreach (Printer::PITCHES as $pitch) {
 			$regex = "/\w($pitch)/";
 
 			if (preg_match($regex, $id)) {
 				$printerID = str_replace($pitch, '', $id);
-				return $this->exists($printerID);
+				if ($this->exists($printerID) === false) {
+					return false;
+				}
+				return $printerID;
 			}
 		}
 		return false;

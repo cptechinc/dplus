@@ -158,4 +158,12 @@ class Logm extends WireData {
 		}
 		return $this->recordlocker->userHasLocked($id);
 	}
+
+	/**
+	 * Return Prtd
+	 * @return Prtd
+	 */
+	public function getPrtd() {
+		return Prtd::getInstance();
+	}
 }

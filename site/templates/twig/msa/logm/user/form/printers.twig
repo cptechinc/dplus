@@ -1,3 +1,4 @@
+{% set prtd = logm.getPrtd() %}
 <div class="form-group row">
 	<div class="col-sm-3">
 		<label for="printerbrowse">Default Printer, Browse Printer</label>
@@ -30,7 +31,7 @@
 			}
 		%}
 		<small class="form-text text-muted printer-description">
-
+			{{ prtd.printer(prtd.idByPrinterPitch(duser.printerbrowse)).description }}
 		</small>
 	</div>
 </div>
@@ -68,7 +69,7 @@
 			}
 		%}
 		<small class="form-text text-muted printer-description">
-			
+			{{ prtd.printer(prtd.idByPrinterPitch(duser.printerreport)).description }}
 		</small>
 	</div>
 </div>
