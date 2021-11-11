@@ -13,6 +13,7 @@
 							'placeholder': '',
 							'aria-label':  'Login ID',
 							'readonly': duser.isNew() == false,
+							'maxlength': logm.fieldAttribute('id', 'maxlength'),
 							'oninput': 'this.value = this.value.toLowerCase()'
 						}
 					}
@@ -26,7 +27,19 @@
 			<label for="name">Login Name</label>
 		</div>
 		<div class="col-sm-9">
-			<input type="text" name="name" id="name" class="form-control form-control-sm" value="{{ duser.name }}">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'name',
+						'value': duser.name,
+						'size': 'sm',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Login Name',
+							'maxlength': logm.fieldAttribute('name', 'maxlength'),
+						}
+					}
+				}
+			%}
 		</div>
 	</div>
 
@@ -124,8 +137,8 @@
 		<button type="submit" name="action" value="delete" class="btn btn-danger delete_button">
 			<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 		</button>
-		<button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
-			Close
+		<button type="button" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</button>
 	</div>
 </form>
