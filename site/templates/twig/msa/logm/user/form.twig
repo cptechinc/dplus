@@ -75,7 +75,47 @@
 
 	{% include 'msa/logm/user/form/user-roles.twig' %}
 
+	<legend>Printers</legend>
 	{% include 'msa/logm/user/form/printers.twig' %}
+
+	<div class="form-group row">
+		<div class="col-sm-3">
+			<label for="userwhsefirst">II screens, My Whse First?</label>
+		</div>
+		<div class="col-sm-9">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'userwhsefirst',
+						'addclasses': ['form-control-sm'],
+						'value' : duser.displayUserWhseFirst() ? 'Y' : 'N',
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<div class="col-sm-3">
+			<label for="activteitemsonly">Item ID Get, Active Items Only</label>
+		</div>
+		<div class="col-sm-9">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'activteitemsonly',
+						'addclasses': ['form-control-sm'],
+						'value' : duser.displayActiveItemsOnly() ? 'Y' : 'N',
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<legend>Groups, Roles</legend>
+	{% include 'msa/logm/user/form/login-roles.twig' %}
 
 	<div class="d-flex justify-content-between align-items-center">
 		<button type="submit" name="action" value="update" class="btn btn-success">
