@@ -1,9 +1,8 @@
 {% set prtd = logm.getPrtd() %}
-<div class="form-group row">
-	<div class="col-sm-3">
+
+<div class="row">
+	<div class="col-sm-6 form-group">
 		<label for="printerbrowse">Default Printer, Browse Printer</label>
-	</div>
-	<div class="col-sm-9">
 		{% include 'util/bootstrap/form/input-group.twig' with {
 				'inputgroup': {
 					'type': 'prepend',
@@ -34,14 +33,8 @@
 			{{ prtd.printer(prtd.idByPrinterPitch(duser.printerbrowse)).description }}
 		</small>
 	</div>
-</div>
-
-
-<div class="form-group row">
-	<div class="col-sm-3">
+	<div class="col-sm-6 form-group">
 		<label for="printerreport">Report Printer</label>
-	</div>
-	<div class="col-sm-9">
 		{% include 'util/bootstrap/form/input-group.twig' with {
 				'inputgroup': {
 					'type': 'prepend',
