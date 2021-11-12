@@ -7,10 +7,13 @@ namespace Composer\Autoload;
 class ComposerStaticInitfdd038617226e94faa44d44a195565f1
 {
     public static $classMap = array (
+        'Dplus\\DocManagement\\Finders\\ApInvoice' => __DIR__ . '/../..' . '/src/finder/sub/Mpo/ApInvoice.php',
         'Dplus\\DocManagement\\Finders\\Ar' => __DIR__ . '/../..' . '/src/finder/sub/Ar.php',
+        'Dplus\\DocManagement\\Finders\\Cu' => __DIR__ . '/../..' . '/src/finder/sub/Cu.php',
         'Dplus\\DocManagement\\Finders\\Finder' => __DIR__ . '/../..' . '/src/finder/Finder.php',
         'Dplus\\DocManagement\\Finders\\Ii' => __DIR__ . '/../..' . '/src/finder/sub/Ii.php',
-        'Dplus\\DocManagement\\Finders\\PurchaseOrder' => __DIR__ . '/../..' . '/src/finder/sub/PurchaseOrder.php',
+        'Dplus\\DocManagement\\Finders\\Lt\\Img' => __DIR__ . '/../..' . '/src/finder/sub/Lt/Img.php',
+        'Dplus\\DocManagement\\Finders\\PurchaseOrder' => __DIR__ . '/../..' . '/src/finder/sub/Mpo/PurchaseOrder.php',
         'Dplus\\DocManagement\\Finders\\Qt' => __DIR__ . '/../..' . '/src/finder/sub/Qt.php',
         'Dplus\\DocManagement\\Finders\\SalesOrder' => __DIR__ . '/../..' . '/src/finder/sub/SalesOrder.php',
         'Dplus\\DocManagement\\Mover' => __DIR__ . '/../..' . '/src/Mover.php',

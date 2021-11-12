@@ -25,6 +25,7 @@ class Finder extends WireData {
 	const TAG_APINVOICE  = 'AP';
 	const TAG_CUSTOMER   = 'CU';
 	const TAG_WIP        = 'WP';
+	const TAG_LOT        = 'LT';
 
 	const TAG_AR_CHECKS = 'RC';
 
