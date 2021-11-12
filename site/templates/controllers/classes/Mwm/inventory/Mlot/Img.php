@@ -1,6 +1,8 @@
 <?php namespace Controllers\Mwm\Inventory\Mlot;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Document Management
+use Dplus\DocManagement\Finders\Lt\Img as Docm;
 // Dplus Inventory Search
 use Dplus\Wm\Inventory\Search;
 // Mvc Controllers
@@ -54,6 +56,7 @@ class Img extends Base {
 	private static function displayLotserial($data) {
 		$inventory = Search::getInstance();
 		$lotserial = $inventory->getLotserial($data->lotserial);
+		$docm = self::getDocm();
 		return self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/display.twig', ['lotserial' => $lotserial]);
 	}
 
@@ -75,5 +78,9 @@ class Img extends Base {
 		$m->addHook('Page(pw_template=whse-mlot)::lotserialUrl', function($event) {
 			$event->return = self::lotserialUrl($event->arguments(0));
 		});
+	}
+
+	public static function getDocm() {
+		return new Docm();
 	}
 }
