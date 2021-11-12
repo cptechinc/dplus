@@ -189,7 +189,7 @@ class Logm extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$user = self::getOrCreate($values->text('id'));
+		$user = $this->getOrCreate($values->text('id'));
 
 		if ($user->isNew() === false) {
 			if ($this->lockrecord($user->id) === false) {
