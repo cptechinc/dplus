@@ -68,7 +68,7 @@ class Logm extends Base {
 		self::initHooks();
 		$page->js .= self::pw('config')->twig->render('msa/logm/list/.js.twig');
 		$html = self::displayList($data, $ids);
-		// self::getLogm()->deleteResponse();
+		self::getLogm()->deleteResponse();
 		return $html;
 	}
 
