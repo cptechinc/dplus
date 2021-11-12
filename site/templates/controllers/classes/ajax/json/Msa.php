@@ -241,6 +241,17 @@ class Msa extends AbstractController {
 		return $prtd->existsPrinterPitch($data->id);
 	}
 
+	public static function validateRoleid($data) {
+		$fields = ['id|text', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$prtd = new MsaCRUDs\Lrole();
+
+		if ($data->jqv) { // JQueryValidate
+			return $prtd->exists($data->id) ? true : "Role ID $data->id not found";
+		}
+		return $prtd->exists($data->id);
+	}
+
 	private static function validator() {
 		return new MsaValidator();
 	}
