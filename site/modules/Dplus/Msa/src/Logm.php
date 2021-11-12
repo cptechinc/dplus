@@ -283,6 +283,36 @@ class Logm extends WireData {
 		return $invalid;
 	}
 
+	/**
+	 * Delete Logm User
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function deleteInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($this->exists($values->text('id')) === false) {
+			return true;
+		}
+
+		$user = $this->user($values->text('id'));
+
+		if ($this->lockrecord($user->id) === false) {
+			$msg = "User ($user->id) is locked by " . $this->recordlocker->getLockingUser($user->id);
+			$response = Response::responseError($msg);
+			$response->setFunction(self::RECORDLOCKER_FUNCTION);
+			$response->setKey($user->id);
+			$this->setResponse($response);
+			return false;
+		}
+		$user->delete();
+		$response = $this->saveAndRespond($user);
+		$this->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */
