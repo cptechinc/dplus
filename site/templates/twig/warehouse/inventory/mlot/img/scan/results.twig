@@ -1,0 +1,33 @@
+<table class="table table-sm table-striped">
+	{% for item in inventory.getItemsDistinct() %}
+		<tr class="bg-dark text-white">
+			<th>
+				<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target=".{{ item.itemid|attrJS }}" aria-expanded="false" aria-controls=".{{ item.itemid|attrJS }}">
+					<i class="fa fa-plus" aria-hidden="true"></i>
+				</button>
+			</th>
+			<th>{{ item.itemid }}</th>
+			<th>
+				<small>
+					{{ item.desc1 }} {{ item.desc2 ? ('<br>' ~ item.desc2)|raw : '' }}
+				</small>
+			</th>
+		</tr>
+		<tr class="collapse bg-light {{ item.itemid|attrJS }}">
+			<td></td>
+			<td><b>Lot #</b></td>
+			<td><b>Lot Qty</b></td>
+		</tr>
+		{% for lotserial in inventory.getLotserialsItemid(item.itemid) %}
+			<tr class="collapse {{ item.itemid|attrJS }}">
+				<td></td>
+				<td>
+					<a href="{{ page.lotserialUrl(lotserial.lotserial) }}" class="link">
+						{{ lotserial.lotserial }}
+					</a>
+				</td>
+				<td>{{ lotserial.qty }}</td>
+			</tr>
+		{% endfor %}
+	{% endfor %}
+</table>
