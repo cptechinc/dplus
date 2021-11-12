@@ -137,7 +137,7 @@ class Logm extends Base {
 
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/msa/logm/bread-crumbs.twig');
-		// $html .= self::displayResponse($data);
+		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('msa/logm/list.twig', ['logm' => $logm, 'users' => $users]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $users]);
 		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $logm]);
