@@ -105,4 +105,86 @@ $(function() {
 		var modal  = button.closest('.modal');
 		modal.find('.modal-body').load(href);
 	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formLogm.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			whseid: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/warehouse') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						id: function() {
+							return $('#whseid').val();
+						}
+					}
+				}
+			},
+			printerreport: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/printer') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						id: function() {
+							return $('#printerreport').val();
+						}
+					}
+				}
+			},
+			printerbrowse: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/printer') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						id: function() {
+							return $('#printerbrowse').val();
+						}
+					}
+				}
+			},
+			groupid: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/lgrp') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#groupid').val();
+						}
+					}
+				}
+			},
+			roleid: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/roleid') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						id: function() {
+							return $('#roleid').val();
+						}
+					}
+				}
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+			form.submit();
+		}
+	});
 });
