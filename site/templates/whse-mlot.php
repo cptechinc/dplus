@@ -6,7 +6,7 @@
 	$routes = [
 		['GET',  '', Mlot\Menu::class, 'index'],
 		'img' => [
-			['GET',  '', Mlot\Menu::class, 'index'],
+			['GET',  '', Mlot\Img::class, 'index'],
 		]
 	];
 
