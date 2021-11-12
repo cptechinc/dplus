@@ -318,7 +318,7 @@ class Logm extends WireData {
 		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
-			// $this->requestUpdate($user->id);
+			$this->requestUpdate($user);
 		}
 		$response->setFields($invalidfields);
 		return $response;
@@ -359,6 +359,32 @@ class Logm extends WireData {
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Request Update Logm User
+	 * @param  DplusUser $user
+	 * @return void
+	 */
+	private function requestUpdate(DplusUser $user) {
+		$data = ['UPDATELOGIN', "lOGIN=$user->id"];
+		$this->requestDplus($data);
+	}
+
+	/**
+	 * Send Request to Dplus
+	 * @param  array  $data Data
+	 * @return void
+	 */
+	private function requestDplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	}
 
 /* =============================================================
 	Supplemental Functions
