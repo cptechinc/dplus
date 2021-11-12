@@ -62,8 +62,8 @@
 								</button>
 							{% endif %}
 							&nbsp; &nbsp;
-							<a href="{# page.xrefDeleteUrl(item.custid, item.custitemid, item.itemid) #}" class="btn btn-danger btn-sm delete_button">
-								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							<a href="{{ page.optionDeleteUrl(item.itemid, option.id) }}" class="btn btn-secondary btn-sm delete_button">
+								<i class="fa fa-eraser" aria-hidden="true"></i> Clear
 							</a>
 						{% endif %}
 					</td>

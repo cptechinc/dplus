@@ -1,4 +1,6 @@
 <?php namespace Controllers\Min\Itm;
+// Purl URI Manipulation Library
+use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
@@ -73,6 +75,7 @@ class Options extends Base {
 		$page = self::pw('page');
 		$page->headline = "ITM: $data->itemID Optional Codes";
 		$page->js .= self::pw('config')->twig->render('items/itm/options/.js.twig', ['itmOpt' => self::getItmOptions()]);
+		self::initHooks();
 		$html = self::listDisplay($data, $options);
 		self::getItmOptions()->deleteResponse();
 		return $html;
@@ -85,7 +88,7 @@ class Options extends Base {
 		$config  = self::pw('config');
 		$itm     = self::getItm();
 		$itmOpt  = self::getItmOptions();
-		
+
 		$item = $itm->item($data->itemID);
 		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
@@ -99,6 +102,26 @@ class Options extends Base {
 		$html .= $config->twig->render('items/itm/options/modal-code.twig');
 		$html .= $config->twig->render('items/itm/options/modal-notes.twig', ['itmOpt' => $itmOpt]);
 		return $html;
+	}
+
+/* =============================================================
+	URL functions
+============================================================= */
+	public static function optionDeleteUrl($itemID, $sysop) {
+		$url = new Purl(self::itmUrlOptions($itemID));
+		$url->query->set('action', 'delete');
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Hook functions
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('Dpages');
+
+		$m->addHook('Page(pw_template=itm)::optionDeleteUrl', function($event) {
+			$event->return = self::optionDeleteUrl($event->arguments(0), $event->arguments(1));
+		});
 	}
 
 /* =============================================================
