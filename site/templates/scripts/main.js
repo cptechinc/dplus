@@ -8,6 +8,7 @@ var nav = '#yt-menu';
 $(function() {
 	$('[data-toggle="tooltip"]').tooltip();
 	init_datepicker();
+	bsCustomFileInput.init()
 
 	$(window).scroll(function() {
 		if ($(this).scrollTop() > 50) {
