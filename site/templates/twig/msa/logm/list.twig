@@ -5,7 +5,7 @@
 	qusers                 Dplus\qusers\Noce
 	users                  NotePreDefined[]|ObjectCollection
 #}
-{# set response = users.getResponse() #}
+{% set response = logm.getResponse() %}
 
 <div class="table-responsive">
 	<table class="table table-sm">
@@ -28,7 +28,9 @@
 		</thead>
 		<tbody>
 			{% for user in users %}
-				<tr data-userid="{{ user.id }}">
+				{% set class = '' %}
+				{% set class = response.key == user.id ? 'bg-success text-white' : class %}
+				<tr data-userid="{{ user.id }}" class="{{ class }}">
 					<td>
 						<span class="text-monospace">{{ user.id|spacepad(logm.fieldAttribute('id', 'maxlength'))|raw }}</span>
 						{{ user.name }}
