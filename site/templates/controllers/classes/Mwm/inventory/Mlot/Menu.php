@@ -55,6 +55,10 @@ class Menu extends WmMenu {
 		return self::pw('pages')->get('pw_template=whse-mlot')->url;
 	}
 
+	public static function imgUrl() {
+		return self::subfunctionUrl('img');
+	}
+
 	public static function subfunctionUrl($key) {
 		$url = new Purl(self::menuUrl());
 		if (array_key_exists($key, self::SUBFUNCTIONS)) {
