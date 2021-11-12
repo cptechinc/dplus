@@ -99,6 +99,10 @@ class Prtd extends WireData {
 	 * @return bool
 	 */
 	public function existsPrinterPitch($id) {
+		if ($this->exists($id)) {
+			return true;
+		}
+		
 		foreach (Printer::PITCHES as $pitch) {
 			$regex = "/\w($pitch)/";
 
@@ -129,7 +133,7 @@ class Prtd extends WireData {
 		if ($this->exists($id)) {
 			return $id;
 		}
-		
+
 		foreach (Printer::PITCHES as $pitch) {
 			$regex = "/\w($pitch)/";
 
