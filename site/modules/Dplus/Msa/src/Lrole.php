@@ -3,6 +3,8 @@
 use SysLoginRoleQuery, SysLoginRole;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
 class Lrole extends WireData {
 	const MODEL              = 'SysLoginRole';
