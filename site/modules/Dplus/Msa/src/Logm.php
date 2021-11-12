@@ -228,7 +228,12 @@ class Logm extends WireData {
 		$user->setDate(date('Ymd'));
 		$user->setTime(date('His'));
 
-		$response = $this->saveAndRespond($user);
+		$response = $this->saveAndRespond($user, $invalid);
+		if ($response->fields) {
+			$response->setError(true);
+			$response->setSuccess(false);
+			$response->buildMessage(self::RESPONSE_TEMPLATE);
+		}
 		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
@@ -246,15 +251,15 @@ class Logm extends WireData {
 		$invalid = [];
 
 		$validateMin = new Validators\Min();
-		if ($validateMin->whseid($values->text('whseid'))) {
+		if ($validateMin->whseid($values->text('whseid')) === false) {
 			$invalid['whseid'] = 'Warehouse ID';
 		}
 
 		$prtd = Prtd::getInstance();
-		if ($prtd->existsPrinterPitch($values->text('printerbrowse'))) {
+		if ($prtd->existsPrinterPitch($values->text('printerbrowse')) === false) {
 			$invalid['printerbrowse'] = 'Default Printer';
 		}
-		if ($prtd->existsPrinterPitch($values->text('printerbrowse'))) {
+		if ($prtd->existsPrinterPitch($values->text('printerbrowse')) === false) {
 			$invalid['printerreport'] = 'Report Printer';
 		}
 
@@ -311,8 +316,6 @@ class Logm extends WireData {
 
 		$response->addMsgReplacement('{id}', $user->id);
 		$response->buildMessage(self::RESPONSE_TEMPLATE);
-
-
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
 			// $this->requestUpdate($user->id);
