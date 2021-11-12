@@ -1,0 +1,36 @@
+<table class="table table-striped" id="code-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Printer</th>
+			<th>Pitch</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	{% for printer in results %}
+		{% set pitches = printer.pitches %}
+
+		{% if pitches|length == 0 %}
+			<tr>
+				<td>
+					<a href="#" class="link printer-link" data-id="{{ printer.id }}" data-pitch="" data-printer="{{ printer.id }}">
+						{{ printer.id }}
+					</a>
+				</td>
+				<td></td>
+				<td>{{ printer.description }}</td>
+			</tr>
+		{% endif %}
+
+		{% for pitch in pitches %}
+			<tr>
+				<td>
+					<a href="#" class="link printer-link" data-id="{{ printer.id }}" data-pitch="{{ pitch }}" data-printer="{{ printer.id ~ pitch }}">
+						{{ printer.id }}
+					</a>
+				</td>
+				<td>{{ pitch }}</td>
+				<td>{{ printer.description }}</td>
+			</tr>
+		{% endfor %}
+	{% endfor %}
+</table>

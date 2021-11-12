@@ -1,0 +1,36 @@
+class LogmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LogmRequests();
+		}
+		return this.instance;
+	}
+
+	codeOptionsUrl(system, sysop) {
+		var url = URI('{{ page.searchLookupUrl('msa/sysop/options') }}');
+		url.setQuery('system', system);
+		url.setQuery('sysop', sysop);
+		return url.toString();
+	}
+
+	getSysop(system, sysop, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/sysop') }}');
+
+		ajax.setData({system: system, sysop: sysop});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getSysopOption(system, sysop, code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/sysop/option') }}');
+
+		ajax.setData({system: system, sysop: sysop, code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+}

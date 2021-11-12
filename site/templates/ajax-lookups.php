@@ -74,8 +74,20 @@
 					['GET', '', AjaxLookup::class, 'sysopOptions'],
 					['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'sysopOptions'],
 				]
+			],
+			'printers' => [
+				['GET', '', AjaxLookup::class, 'printers'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'printers'],
+			],
+			'lgrp' => [
+				['GET', '', AjaxLookup::class, 'loginGroups'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'loginGroups'],
+			],
+			'lrole' => [
+				['GET', '', AjaxLookup::class, 'loginRoles'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'loginRoles'],
 			]
-		]
+		],
 	];
 
 	$router = new Mvc\Router();

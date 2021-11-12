@@ -4,11 +4,13 @@ use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
-use ProspectSource;
+use DplusUser;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
+use Dplus\Msa;
 use Dplus\Msa\Logm as LogmManager;
+
 
 class Logm extends Base {
 	const DPLUSPERMISSION = 'logm';
@@ -27,6 +29,10 @@ class Logm extends Base {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
+		if (empty($data->id) === false) {
+			return self::user($data);
+		}
 		return self::list($data);
 	}
 
@@ -34,11 +40,11 @@ class Logm extends Base {
 		$fields = ['id|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::logmUrl();
-		$logm  = self::getLogm();
+		$logm = self::getLogm();
 
 		if ($data->action) {
 			$logm->processInput(self::pw('input'));
-			$url  = self::logmUrl($data->code);
+			$url  = self::logmUrl($data->id);
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
@@ -57,23 +63,42 @@ class Logm extends Base {
 		}
 
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
-		self::initHooks();
+		$ids = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 
-		//$page->js .= self::pw('config')->twig->render('code-tables/msa/logm/.js.twig', ['logm' => self::getLogm()]);
-		$html = self::displayList($data, $codes);
-		// self::getLogm()->deleteResponse();
+		self::initHooks();
+		$page->js .= self::pw('config')->twig->render('msa/logm/list/.js.twig');
+		$html = self::displayList($data, $ids);
+		self::getLogm()->deleteResponse();
+		return $html;
+	}
+
+	private static function user($data) {
+		$logm = self::getLogm();
+		$page = self::pw('page');
+		$page->headline = "LOGM: $data->id";
+
+		if ($logm->exists($data->id) === false) {
+			$page->headline = "LOGM: Creating New User";
+		}
+		$user = $logm->getOrCreate($data->id);
+
+		if ($user->isNew() === false) {
+			$logm->lockrecord($data->id);
+		}
+		self::initHooks();
+		$page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
+		$html = self::displayUser($data, $user);
 		return $html;
 	}
 
 /* =============================================================
 	URLs
 ============================================================= */
-	public static function logmUrl($code = '') {
-		if (empty($code)) {
+	public static function logmUrl($id = '') {
+		if (empty($id)) {
 			return Menu::logmUrl();
 		}
-		return self::logmFocusUrl($code);
+		return self::logmFocusUrl($id);
 	}
 
 	public static function logmFocusUrl($focus) {
@@ -84,7 +109,7 @@ class Logm extends Base {
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::logmUrl());
+		$url = new Purl(self::logmUrl());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'logm', $pagenbr);
 		return $url->getUrl();
@@ -97,16 +122,22 @@ class Logm extends Base {
 		return $url->getUrl();
 	}
 
+	public static function userEditUrl($id) {
+		$url = new Purl(Menu::logmUrl());
+		$url->query->set('id', $id);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
 	private static function displayList($data, PropelModelPager $users) {
 		$config = self::pw('config');
-		$logm = self::getLogm();
+		$logm   = self::getLogm();
 
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/msa/logm/bread-crumbs.twig');
-		// $html .= self::displayResponse($data);
+		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('msa/logm/list.twig', ['logm' => $logm, 'users' => $users]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $users]);
 		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $logm]);
@@ -122,6 +153,26 @@ class Logm extends Base {
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
+	public static function displayLock($data) {
+		$logm = self::getLogm();
+		$logm->recordlocker->userHasLocked($data->id);
+		if ($logm->recordlocker->isLocked($data->id) == false && $logm->recordlocker->userHasLocked($data->id) !== false) {
+			$msg = "User $data->id is being locked by " . $logm->recordlocker->getLockingUser($data->id);
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "User is Locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		}
+		return '';
+	}
+
+	private static function displayUser($data, DplusUser $user) {
+		$config = self::pw('config');
+		$logm   = self::getLogm();
+
+		$html  = '';
+		$html .= '<div class="mb-3">' . self::displayLock($data) . '</div>';
+		$html .= $config->twig->render('msa/logm/user.twig', ['logm' => $logm, 'duser' => $user]);
+		return $html;
+	}
+
 /* =============================================================
 	Hooks
 ============================================================= */
@@ -132,8 +183,16 @@ class Logm extends Base {
 			$event->return = Menu::menuUrl();
 		});
 
-		$m->addHook('Page(template=test)::codeDeleteUrl', function($event) {
-			$event->return = self::codeDeleteUrl($event->arguments(0));
+		$m->addHook('Page(template=test)::logmUrl', function($event) {
+			$event->return = self::logmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(template=test)::userEditUrl', function($event) {
+			$event->return = self::userEditUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(template=test)::userDeleteUrl', function($event) {
+			$event->return = self::userDeleteUrl($event->arguments(0));
 		});
 	}
 
