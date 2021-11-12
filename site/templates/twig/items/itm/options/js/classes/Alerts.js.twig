@@ -7,4 +7,13 @@ class CodeAlerts extends Alerts {
 		}
 		return this.instance;
 	}
+
+	missingRequired() {
+		swal2.fire({
+			title: 'Missing Required',
+			text: 'Required option not entered',
+			icon: 'error',
+			confirmButtonText: 'Ok',
+		});
+	}
 }

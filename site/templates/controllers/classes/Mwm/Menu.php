@@ -13,7 +13,7 @@ class Menu extends AbstractController {
 			self::requestWhseSessionLogin();
 			self::pw('session')->redirect(self::pw('page')->url, $http301 = false);
 		}
-		Dmenu::index($data);
+		return Dmenu::index($data);
 	}
 
 	public static function requestWhseSessionLogin() {

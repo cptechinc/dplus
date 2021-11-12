@@ -58,6 +58,11 @@
 			],
 			'umm' => [
 				['GET', 'uom/', Json\Min::class, 'getUom'],
+			],
+			'itm' => [
+				'options' => [
+					['GET', 'notes/', Json\Min::class, 'getInvOptCodeNotes'],
+				]
 			]
 		],
 		'map' => [
@@ -179,6 +184,9 @@
 			'sysop' => [
 				['GET', '', Json\Msa::class, 'getSysop'],
 				['GET', 'option/', Json\Msa::class, 'getSysopOption'],
+				'system' => [
+					['GET', 'required-codes/', Json\Msa::class, 'getSysopRequiredCodes'],
+				]
 			]
 		],
 		'mso' => [

@@ -1,0 +1,68 @@
+class NoteForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new NoteForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'note-form';
+		this.form = $('#' + this.id);
+		this.inputs = NoteInputs.getInstance();
+		this.config = CodeConfigs.getInstance();
+		this.system = 'IN';
+	}
+
+	updateFormFromJson(json = null) {
+		var modal = this.form.closest('.modal');
+		var pieces = ['Editing', this.inputs.itemid.val(), json.description, 'notes'];
+		modal.find('.modal-title').text(pieces.join(' '));
+		modal.find('.notetype').text(json.sysop);
+		modal.find('.sysopdesc').text(json.description);
+		this.updateInputsFromJson(json);
+	}
+
+	clearInputs() {
+		this.inputs.sysop.val('');
+		this.inputs.note.val('');
+	}
+
+	updateInputsFromJson(json = null) {
+		this.clearInputs();
+		var inputs = this.inputs;
+		var form   = this;
+
+		inputs.sysop.val(json.sysop);
+
+
+		$('#' + inputs.note.attr('id')).rules('remove', 'required');
+
+		CodeRequests.getInstance().getNote(inputs.itemid.val(), json.input.notetype, function(note) {
+
+			inputs.note.val(note.note);
+			form.getCodeJqvRules(json, function(rules) {
+				$('#' + inputs.note.attr('id')).rules('add', rules);
+
+				if (note.note && rules.required === false) {
+					inputs.submit.delete.removeAttr('disabled');
+				} else {
+					inputs.submit.delete.attr('disabled', 'true');
+				}
+			});
+		});
+	}
+
+	getCodeJqvRules(json, callback) {
+		var rules = {required: false};
+		var form = this;
+		var server   = CodeRequests.getInstance();
+
+		server.getSysop(this.system, json.sysop, function(sysop) {
+			rules.required = sysop.input.force;
+			callback(rules);
+		});
+	}
+}
