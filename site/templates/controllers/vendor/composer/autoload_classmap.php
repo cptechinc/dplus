@@ -163,6 +163,7 @@ return array(
     'Controllers\\Mso\\SalesOrder\\Notes' => $baseDir . '/classes/mso/SalesOrder/Notes.php',
     'Controllers\\Mso\\SalesOrder\\PrintSo' => $baseDir . '/classes/mso/SalesOrder/PrintSo.php',
     'Controllers\\Mso\\SalesOrder\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder/SalesOrder.php',
+    'Controllers\\Mwm\\Inventory\\Mlot\\Menu' => $baseDir . '/classes/Mwm/inventory/Mlot/Menu.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
     'Controllers\\Routers\\Base' => $baseDir . '/classes/routers/Base.php',
     'Controllers\\Routers\\Factory' => $baseDir . '/classes/routers/Factory.php',

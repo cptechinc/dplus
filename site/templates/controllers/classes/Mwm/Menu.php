@@ -7,7 +7,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Mvc\Controllers\AbstractController;
 use Controllers\Dplus\Menu as Dmenu;
 
-class Menu extends AbstractController {
+class Menu extends Dmenu {
 	public static function index($data) {
 		if (self::sessionExists() === false) {
 			self::requestWhseSessionLogin();
