@@ -10,12 +10,17 @@ class Sysop extends WireData {
 	const DESCRIPTION        = 'Sysop';
 	const RESPONSE_TEMPLATE  = 'Sysop {system} Option {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'sysop';
-	
+
 	const SYSTEMS = [
 		'AP', 'AR',
 		'IN',
 		'MS',
 		'SO'
+	];
+
+	const FIELD_ATTRIBUTES = [
+		'code'        => ['type' => 'text', 'maxlength' => MsaSysopCode::MAX_LENGTH_CODE],
+		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
 	public function __construct() {
@@ -30,6 +35,51 @@ class Sysop extends WireData {
 			self::$instance = $instance;
 		}
 		return self::$instance;
+	}
+
+/* =============================================================
+	Json
+============================================================= */
+	/**
+	 * Return JSON
+	 * @param  MsaSysopCode $opt
+	 * @return array
+	 */
+	public function codeJson(MsaSysopCode $opt) {
+		return [
+			'system'      => $opt->system,
+			'sysop'       => $opt->id,
+			'id'          => $opt->id,
+			'description' => $opt->description,
+			'input' => [
+				'validate' => $opt->validate(),
+				'force'    => $opt->force(),
+				'filename' => $opt->isFilename(),
+				'notetype' => $opt->notecode
+			]
+		];
+	}
+
+/* =============================================================
+	Field Configs
+============================================================= */
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, static::FIELD_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, static::FIELD_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return static::FIELD_ATTRIBUTES[$field][$attr];
 	}
 
 /* =============================================================
@@ -89,8 +139,32 @@ class Sysop extends WireData {
 	 */
 	public function isNote($system, $id) {
 		$q = $this->queryCode($system, $id);
-		$q->select(MsaSysopCode::aliasproperty('note_code'));
+		$q->select(MsaSysopCode::aliasproperty('notecode'));
 		return boolval($q->findOne());
+	}
+
+	/**
+	 * Return Option Code is Required
+	 * @param  string $system  System
+	 * @param  string $id      Option Code
+	 * @return bool
+	 */
+	public function isRequired($system, $id) {
+		$q = $this->queryCode($system, $id);
+		$q->select(MsaSysopCode::aliasproperty('force'));
+		return $q->findOne() == MsaSysopCode::YN_TRUE;
+	}
+
+	/**
+	 * Return Option Code Note Code
+	 * @param  string $system  System
+	 * @param  string $id      Option Code
+	 * @return bool
+	 */
+	public function notecode($system, $id) {
+		$q = $this->queryCode($system, $id);
+		$q->select(MsaSysopCode::aliasproperty('notecode'));
+		return $q->findOne();
 	}
 
 	/**
@@ -106,21 +180,21 @@ class Sysop extends WireData {
 		return $opt;
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	/**
-	 * Return JSON
-	 * @param  MsaSysopCode $opt
+	 * Return Codes That Are Required
+	 * @param  string $system
 	 * @return array
 	 */
-	public function codeJson(MsaSysopCode $opt) {
-		return [
-			'system'      => $opt->system,
-			'sysop'       => $opt->id,
-			'id'          => $opt->id,
-			'description' => $opt->description,
-			'input' => [
-				'validate' => $opt->validate(),
-				'force'    => $opt->force(),
-			]
-		];
+	public function getRequiredCodes($system = '') {
+		$q = $this->query();
+		if ($system) {
+			$q->filterBySystem($system);
+		}
+		$q->select(MsaSysopCode::aliasproperty('code'));
+		$q->filterByForce(MsaSysopCode::YN_TRUE);
+		return $q->find()->toArray();
 	}
 }
