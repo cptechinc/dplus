@@ -179,16 +179,19 @@ class Min extends AbstractController {
 	}
 
 	public static function validateWarehouseid($data) {
-		$fields = ['whseID|text', 'jqv|bool'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		$fields = ['whseID|text', 'id|text', 'jqv|bool'];
+		if (empty($data->whseID) === false) {
+			$data->id = $data->whseID;
+		}
+		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($data->whseID == '**') {
+		if ($data->id == '**') {
 			return true;
 		}
 
-		if ($validate->whseid($data->whseID) === false) {
-			return $data->jqv ? "Warehouse ID $data->whseID not found" : false;
+		if ($validate->whseid($data->id) === false) {
+			return $data->jqv ? "Warehouse ID $data->id not found" : false;
 		}
 		return true;
 	}

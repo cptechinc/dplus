@@ -8,6 +8,9 @@
 			['GET', 'time/', Json\Misc::class, 'time'],
 			['GET', 'date/', Json\Misc::class, 'date'],
 			['GET', 'date-time/', Json\Misc::class, 'dateTime'],
+			'validate' => [
+				['GET', 'printer/', Json\Misc::class, 'validatePrinter'],
+			]
 		],
 		'inv' => [
 			'validate' => [
@@ -166,7 +169,9 @@
 				['GET', 'lgrp/', Json\Msa::class, 'validateLgrp'],
 				['GET', 'loginid/', Json\Msa::class, 'validateUserid'],
 				['GET', 'userid/', Json\Msa::class, 'validateUserid'],
+				['GET', 'roleid/', Json\Msa::class, 'validateRoleid'],
 				['GET', 'noce/', Json\Msa::class, 'validateNoceid'],
+				['GET', 'printer/', Json\Msa::class, 'validatePrinter'],
 				'sysop' => [
 					['GET', '', Json\Msa::class, 'validateSysop'],
 					['GET', 'system/', Json\Msa::class, 'validateSysopSystem'],

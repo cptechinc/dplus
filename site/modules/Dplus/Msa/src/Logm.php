@@ -5,6 +5,10 @@ use DplusUserQuery, DplusUser;
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Validators
+use Dplus\CodeValidators as Validators;
+// Dplus MSA Codes
+use Dplus\Codes\Msa\Lgrp;
 
 class Logm extends WireData {
 	const MODEL              = 'DplusUser';
@@ -18,6 +22,11 @@ class Logm extends WireData {
 		'id'        => ['type' => 'text', 'maxlength' => DplusUser::LENGTH_USERID],
 		'name'      => ['type' => 'text', 'maxlength' => 20],
 		'companyid' => ['type' => 'text', 'maxlength' => 3],
+		'whseid'    => ['type' => 'text', 'allowblank' => false],
+		'printerbrowse'  => ['type' => 'text', 'allowblank' => false],
+		'printerreport'  => ['type' => 'text', 'allowblank' => false],
+		'groupid'        => ['type' => 'text', 'allowblank' => true],
+		'roleid'         => ['type' => 'text', 'allowblank' => true],
 	];
 
 	public function __construct() {
@@ -36,6 +45,19 @@ class Logm extends WireData {
 			self::$instance = $instance;
 		}
 		return self::$instance;
+	}
+
+	/**
+	 * Return JSON array for User
+	 * @param  DplusUser $user
+	 * @return array
+	 */
+	public function userJson(DplusUser $user) {
+		return [
+			'id'    => $user->id,
+			'name'  => $user->name,
+			'email' => $user->email
+		];
 	}
 
 /* =============================================================
@@ -111,24 +133,309 @@ class Logm extends WireData {
 	 * @return DplusUser
 	 */
 	public function new($id) {
-		$opt = new DplusUser();
+		$user = new DplusUser();
 		$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('id', 'maxlength')]);
 		if ($id != 'new') {
-			$opt->setId($id);
+			$user->setId($id);
 		}
-		return $opt;
+		$user->setAdmin('N');
+		$user->setStorefront('N');
+		$user->setCitydesk('N');
+		$user->setRestrictaccess('N');
+		$user->setAllowprocessdelete('N');
+		return $user;
 	}
 
 	/**
-	 * Return JSON array for User
-	 * @param  DplusUser $user
+	 * Return New or Existing DplusUser
+	 * @param  string $id    User ID
+	 * @return DplusUser
+	 */
+	public function getOrCreate($id) {
+		if ($this->exists($id) === false) {
+			return $this->new($id);
+		}
+		return $this->user($id);
+	}
+
+/* =============================================================
+	Input Functions
+============================================================= */
+	/**
+	 * Process Input Data
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function processInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update':
+				$this->updateInput($input);
+				break;
+			case 'delete':
+				$this->deleteInput($input);
+				break;
+		}
+	}
+
+	/**
+	 * Update Logm User
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function updateInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$user = $this->getOrCreate($values->text('id'));
+
+		if ($user->isNew() === false) {
+			if ($this->lockrecord($user->id) === false) {
+				$msg = "User ($user->id) is locked by " . $this->recordlocker->getLockingUser($user->id);
+				$response = Response::responseError($msg);
+				$response->setFunction(self::RECORDLOCKER_FUNCTION);
+				$response->setKey($user->id);
+				$this->setResponse($response);
+				return false;
+			}
+		}
+		return $this->updateInputUser($input, $user);
+	}
+
+	/**
+	 * Update Logm User Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function updateInputUser(WireInput $input, DplusUser $user) {
+		$rm = strtolower($input->requestMethod());
+		$values  = $input->$rm;
+		$invalid = [];
+
+		$user->setName($values->text('name', ['maxLength' => $this->fieldAttribute('name', 'maxlength')]));
+		$user->setCompanyid($values->text('companyid', ['maxLength' => $this->fieldAttribute('companyid', 'maxlength')]));
+		$user->setAdmin($values->yn('admin'));
+		$user->setStorefront($values->yn('storefront'));
+		$user->setCitydesk($values->yn('citydesk'));
+		$user->setReportadmin($values->yn('reportadmin'));
+		$user->setUserwhsefirst($values->yn('userwhsefirst'));
+		$user->setActiveitemsonly($values->yn('activteitemsonly'));
+		$user->setRestrictaccess($values->yn('restrictaccess'));
+		$user->setAllowprocessdelete($values->yn('allowprocessdelete'));
+		$invalid = $this->updateInputUserValidated($input, $user);
+		$user->setDate(date('Ymd'));
+		$user->setTime(date('His'));
+
+		$response = $this->saveAndRespond($user, $invalid);
+		if ($response->fields) {
+			$response->setError(true);
+			$response->setSuccess(false);
+			$response->buildMessage(self::RESPONSE_TEMPLATE);
+		}
+		$this->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+	/**
+	 * Update User Fields that require validation, return invalid fields
+	 * @param  WireInput $input  Input Data
+	 * @param  DplusUser $user   User
 	 * @return array
 	 */
-	public function userJson(DplusUser $user) {
-		return [
-			'id'    => $user->id,
-			'name'  => $user->name,
-			'email' => $code->email
-		];
+	private function updateInputUserValidated(WireInput $input, DplusUser $user) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$fields = ['whseid','printerbrowse','printerreport', 'groupid', 'roleid'];
+		$invalid = [];
+
+		$validateMin = new Validators\Min();
+		if ($validateMin->whseid($values->text('whseid')) === false) {
+			$invalid['whseid'] = 'Warehouse ID';
+		}
+
+		$prtd = Prtd::getInstance();
+		if ($prtd->existsPrinterPitch($values->text('printerbrowse')) === false) {
+			$invalid['printerbrowse'] = 'Default Printer';
+		}
+		if ($prtd->existsPrinterPitch($values->text('printerbrowse')) === false) {
+			$invalid['printerreport'] = 'Report Printer';
+		}
+
+		$lgrp = Lgrp::getInstance();
+		if ($values->text('groupid') != '' && $lgrp->exists($values->text('groupid')) === false) {
+			$invalid['groupid'] = 'Login Group';
+		}
+
+		$lrole = Lrole::getInstance();
+		if ($values->text('roleid') != '' && $lrole->exists($values->text('roleid')) === false) {
+			$invalid['roleid'] = 'Login Role';
+		}
+
+		// Set valid field values
+		foreach ($fields as $field) {
+			if (array_key_exists($field, $invalid) === false) {
+				$setFunc = 'set'.ucfirst($field);
+				$user->$setFunc($values->text($field));
+			}
+		}
+		return $invalid;
+	}
+
+	/**
+	 * Delete Logm User
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function deleteInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($this->exists($values->text('id')) === false) {
+			return true;
+		}
+
+		$user = $this->user($values->text('id'));
+
+		if ($this->lockrecord($user->id) === false) {
+			$msg = "User ($user->id) is locked by " . $this->recordlocker->getLockingUser($user->id);
+			$response = Response::responseError($msg);
+			$response->setFunction(self::RECORDLOCKER_FUNCTION);
+			$response->setKey($user->id);
+			$this->setResponse($response);
+			return false;
+		}
+		$user->delete();
+		$response = $this->saveAndRespond($user);
+		$this->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns Response based on the outcome of the database save
+	 * @param  DplusUser $user          Record to record response of database save
+	 * @param  array     $invalidfields Input fields that require attention
+	 * @return Response
+	 */
+	private function saveAndRespond(DplusUser $user, array $invalidfields = []) {
+		$is_new = $user->isDeleted() ? false : $user->isNew();
+		$saved  = $user->isDeleted() ? $user->isDeleted() : $user->save();
+
+		$response = new Response();
+		$response->setFunction(self::RECORDLOCKER_FUNCTION);
+		$response->setKey($user->id);
+
+		if ($saved) {
+			$response->setSuccess(true);
+		} else {
+			$response->setError(true);
+		}
+
+		if ($is_new) {
+			$response->setAction(Response::CRUD_CREATE);
+		} elseif ($user->isDeleted()) {
+			$response->setAction(Response::CRUD_DELETE);
+		} else {
+			$response->setAction(Response::CRUD_UPDATE);
+		}
+
+		$response->addMsgReplacement('{id}', $user->id);
+		$response->buildMessage(self::RESPONSE_TEMPLATE);
+
+		if ($response->hasSuccess() && empty($invalidfields)) {
+			$this->requestUpdate($user);
+		}
+		$response->setFields($invalidfields);
+		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param Response $response
+	 */
+	protected function setResponse(Response $response) {
+		$this->wire('session')->setFor('response', self::RECORDLOCKER_FUNCTION, $response);
+	}
+
+	/**
+	 * Get Session Response
+	 * @return Response|null
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', self::RECORDLOCKER_FUNCTION);
+	}
+
+	/**
+	 * Delete Response
+	 * @return void
+	 */
+	public function deleteResponse() {
+		return $this->wire('session')->removeFor('response', self::RECORDLOCKER_FUNCTION);
+	}
+
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function fieldHasError($inputname) {
+		$response = $this->getResponse();
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Request Update Logm User
+	 * @param  DplusUser $user
+	 * @return void
+	 */
+	private function requestUpdate(DplusUser $user) {
+		$data = ['UPDATELOGIN', "lOGIN=$user->id"];
+		$this->requestDplus($data);
+	}
+
+	/**
+	 * Send Request to Dplus
+	 * @param  array  $data Data
+	 * @return void
+	 */
+	private function requestDplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $itemID ItemID
+	 * @return bool
+	 */
+	public function lockrecord($id) {
+		if ($this->recordlocker->isLocked($id) === false) {
+			$this->recordlocker->lock($id);
+		}
+		return $this->recordlocker->userHasLocked($id);
+	}
+
+	/**
+	 * Return Prtd
+	 * @return Prtd
+	 */
+	public function getPrtd() {
+		return Prtd::getInstance();
 	}
 }

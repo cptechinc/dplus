@@ -15,9 +15,17 @@ abstract class CodeFilter extends AbstractFilter {
 	public function _search($q) {
 		$model = $this->modelName();
 		$columns = [
-			$model::aliasproperty('code'),
 			$model::aliasproperty('description'),
 		];
+
+		if ($model::aliasproperty_exists('code')) {
+			$columns[] = $model::aliasproperty('code');
+		}
+
+		if ($model::aliasproperty_exists('id')) {
+			$columns[] = $model::aliasproperty('id');
+		}
+
 		$this->query->searchFilter($columns, strtoupper($q));
 	}
 
@@ -55,7 +63,15 @@ abstract class CodeFilter extends AbstractFilter {
 		$q->execute_query('SET @rownum = 0');
 		$table = $q->getTableMap()::TABLE_NAME;
 		$model = $this->modelName();
-		$col   = $model::aliasproperty('code');
+		$col   = '';
+
+		if ($model::aliasproperty_exists('code')) {
+			$col = $model::aliasproperty('code');
+		}
+
+		if ($model::aliasproperty_exists('id')) {
+			$col = $model::aliasproperty('id');
+		}
 		$sql = "SELECT x.position FROM (SELECT $col, @rownum := @rownum + 1 AS position FROM $table) x WHERE $col = :code";
 		$params = [':code' => $code];
 		$stmt = $q->executeQuery($sql, $params);

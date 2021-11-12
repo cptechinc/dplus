@@ -223,6 +223,35 @@ class Msa extends AbstractController {
 		return $sysop->getRequiredCodes($data->system);
 	}
 
+	public static function validatePrinter($data) {
+		$fields = ['id|text', 'strict|bool', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$prtd = new MsaCRUDs\Prtd();
+
+		if ($data->jqv) { // JQueryValidate
+			if ($data->strict) {
+				return $prtd->exists($data->id) ? true : "Printer $data->id not found";
+			}
+			return $prtd->existsPrinterPitch($data->id) ? true : "Printer & Pitch $data->id not found";
+		}
+
+		if ($data->strict) {
+			return $prtd->exists($data->id);
+		}
+		return $prtd->existsPrinterPitch($data->id);
+	}
+
+	public static function validateRoleid($data) {
+		$fields = ['id|text', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$prtd = new MsaCRUDs\Lrole();
+
+		if ($data->jqv) { // JQueryValidate
+			return $prtd->exists($data->id) ? true : "Role ID $data->id not found";
+		}
+		return $prtd->exists($data->id);
+	}
+
 	private static function validator() {
 		return new MsaValidator();
 	}

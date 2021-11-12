@@ -5,7 +5,7 @@
 	qusers                 Dplus\qusers\Noce
 	users                  NotePreDefined[]|ObjectCollection
 #}
-{# set response = users.getResponse() #}
+{% set response = logm.getResponse() %}
 
 <div class="table-responsive">
 	<table class="table table-sm">
@@ -28,7 +28,9 @@
 		</thead>
 		<tbody>
 			{% for user in users %}
-				<tr>
+				{% set class = '' %}
+				{% set class = response.key == user.id ? 'bg-success text-white' : class %}
+				<tr data-userid="{{ user.id }}" class="{{ class }}">
 					<td>
 						<span class="text-monospace">{{ user.id|spacepad(logm.fieldAttribute('id', 'maxlength'))|raw }}</span>
 						{{ user.name }}
@@ -50,11 +52,11 @@
 					</td>
 					<td class="text-center">
 						{% if logm.recordlocker.isLocked(user.id) == false or logm.recordlocker.userHasLocked(user.id) %}
-							<a href="{# page.subUrl(sub.itemid, sub.subitemid) #}" class="btn btn-warning btn-sm">
+							<a href="{{ page.userEditUrl(user.id) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 							&nbsp; &nbsp;
-							<a href="{# page.subDeleteUrl(sub.itemid, sub.subitemid) #}" class="btn btn-danger btn-sm delete_button">
+							<a href="{{ page.userDeleteUrl(user.id) }}" class="btn btn-danger btn-sm delete_button">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}

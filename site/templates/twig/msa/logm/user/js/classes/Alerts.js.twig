@@ -1,0 +1,10 @@
+class LogmAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LogmAlerts();
+		}
+		return this.instance;
+	}
+}
