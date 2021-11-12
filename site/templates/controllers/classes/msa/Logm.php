@@ -40,11 +40,11 @@ class Logm extends Base {
 		$fields = ['id|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::logmUrl();
-		$logm  = self::getLogm();
+		$logm = self::getLogm();
 
 		if ($data->action) {
 			$logm->processInput(self::pw('input'));
-			$url  = self::logmUrl($data->code);
+			$url  = self::logmUrl($data->id);
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
