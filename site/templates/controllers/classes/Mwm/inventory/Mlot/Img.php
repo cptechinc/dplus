@@ -38,6 +38,8 @@ class Img extends Base {
 	private static function lotserial($data) {
 		Search::getInstance()->requestSearch($data->lotserial);
 		self::initHooks();
+		self::pw('page')->headline = "Lot #$data->lotserial";
+		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/.js.twig');
 		return self::displayLotserial($data);
 	}
 
