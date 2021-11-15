@@ -128,6 +128,12 @@ class Logm extends Base {
 		return $url->getUrl();
 	}
 
+	public static function userEditContactUrl($id) {
+		$url = new Purl(self::userEditUrl($id));
+		$url->path->add('contact');
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -155,7 +161,7 @@ class Logm extends Base {
 
 	public static function displayLock($data) {
 		$logm = self::getLogm();
-		
+
 		if ($logm->recordlocker->isLocked($data->id) && $logm->recordlocker->userHasLocked($data->id) === false) {
 			$msg = "User $data->id is being locked by " . $logm->recordlocker->getLockingUser($data->id);
 			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "User is Locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
@@ -189,6 +195,10 @@ class Logm extends Base {
 
 		$m->addHook('Page(template=test)::userEditUrl', function($event) {
 			$event->return = self::userEditUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(template=test)::userEditContactUrl', function($event) {
+			$event->return = self::userEditContactUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(template=test)::userDeleteUrl', function($event) {
