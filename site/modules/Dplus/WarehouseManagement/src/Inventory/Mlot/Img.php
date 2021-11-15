@@ -3,6 +3,7 @@
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
 
 use Dplus\DocManagement\Uploader\Lt\Lotimg as Uploader;
+use Dplus\DocManagement\Updater\Lt\Lotimg  as Updater;
 
 use Dplus\Codes\Response;
 
@@ -117,10 +118,17 @@ class Img extends WireData {
 			$this->setResponse(Response::responseError("Image for $lotserial was not uploaded"));
 			return false;
 		}
+		$updater = new Updater();
+		$updater->file = $uploader->uploadedFile;
+		$updater->lotserial = $lotserial;
+		$updater->update();
+		echo var_dump($updater);
+		exit;
 
 		$response = Response::responseSuccess("Uploaded $lotserial Image");
 		$response->setKey($values->text('lotserial'));
 		$this->setResponse($response);
+
 		return true;
 	}
 
