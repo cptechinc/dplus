@@ -6,8 +6,9 @@ use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
  * Uploader
  * Base class for Uploading Files for Document Management
  *
- * @property string $inputName  Input Name
- * @property array  $file       $_FILES element
+ * @property string $inputName     Input Name
+ * @property array  $file          $_FILES element
+ * @property string $uploadedFile  Uploaded File Path
  */
 class Uploader extends WireData {
 	const UPLOAD_DIR = '/tmp/';
@@ -18,6 +19,7 @@ class Uploader extends WireData {
 	public function __construct() {
 		$this->inputName = '';
 		$this->file = [];
+		$this->uploadedFile = '';
 	}
 
 	public static function getInstance() {
@@ -75,6 +77,7 @@ class Uploader extends WireData {
 		if (empty($files)) {
 			return false;
 		}
+		$this->uploadedFile = static::UPLOAD_DIR . $files[0];
 		return true;
 	}
 
