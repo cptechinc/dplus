@@ -7,10 +7,10 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
-// Dplus MSA Codes
-use Dplus\Codes\Msa\Lgrp;
+// Dplus MSA
+use Dplus\Msa\Logm;
 
-class Contact extends WireData {
+class Contact extends Logm {
 	const FIELD_ATTRIBUTES = [
 		'faxname'      => ['type' => 'text', 'maxlength' => 30],
 		'faxcompany'   => ['type' => 'text', 'maxlength' => 30],
