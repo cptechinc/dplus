@@ -12,7 +12,8 @@ use Dplus\DocManagement\Updater\Request;
  * @property string $field1      Document Field 1 Value
  * @property string $field2      Document Field 2 Value
  * @property string $field3      Document Field 3 Value
- * @property string $file        File Path
+ * @property string $directory   File Directory
+ * @property string $filename    File Name
  */
 class Updater extends WireData {
 	const TAG = '';
@@ -23,7 +24,8 @@ class Updater extends WireData {
 		$this->field1 = '';
 		$this->field2 = '';
 		$this->field3 = '';
-		$this->file   = '';
+		$this->directory  = '';
+		$this->filename   = '';
 	}
 
 	/**
@@ -42,11 +44,12 @@ class Updater extends WireData {
 		$this->mapFields();
 
 		$rqst = new Request();
-		$rqst->folder = static::FOLDER;
-		$rqst->field1  = $this->field1;
-		$rqst->field2  = $this->field2;
-		$rqst->field3  = $this->field3;
-		$rqst->file    = $this->file;
+		$rqst->folder    = static::FOLDER;
+		$rqst->field1    = $this->field1;
+		$rqst->field2    = $this->field2;
+		$rqst->field3    = $this->field3;
+		$rqst->directory = $this->directory;
+		$rqst->filename  = $this->filename;
 		$rqst->request();
 		return true;
 	}

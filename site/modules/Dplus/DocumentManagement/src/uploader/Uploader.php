@@ -8,7 +8,7 @@ use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
  *
  * @property string $inputName     Input Name
  * @property array  $file          $_FILES element
- * @property string $uploadedFile  Uploaded File Path
+ * @property string $filename      Uploaded Filename
  */
 class Uploader extends WireData {
 	const UPLOAD_DIR = '/tmp/';
@@ -19,7 +19,7 @@ class Uploader extends WireData {
 	public function __construct() {
 		$this->inputName = '';
 		$this->file = [];
-		$this->uploadedFile = '';
+		$this->filename  = '';
 	}
 
 	public static function getInstance() {
@@ -77,7 +77,7 @@ class Uploader extends WireData {
 		if (empty($files)) {
 			return false;
 		}
-		$this->uploadedFile = static::UPLOAD_DIR . $files[0];
+		$this->filename = $files[0];
 		return true;
 	}
 

@@ -118,10 +118,13 @@ class Img extends WireData {
 			$this->setResponse(Response::responseError("Image for $lotserial was not uploaded"));
 			return false;
 		}
+
 		$updater = new Updater();
-		$updater->file = $uploader->uploadedFile;
+		$updater->directory = $uploader::UPLOAD_DIR;
+		$updater->filename  = $uploader->filename;
 		$updater->lotserial = $lotserial;
 		$updater->update();
+		exit;
 
 		$response = Response::responseSuccess("Uploaded $lotserial Image");
 		$response->setKey($values->text('lotserial'));
