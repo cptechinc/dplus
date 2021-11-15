@@ -1,0 +1,100 @@
+
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="coversheet">Cover Sheet</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'phone',
+					'value': duser.coversheet,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': 'Cover Sheet',
+						'aria-label':  'Cover Sheet',
+						'maxlength': logm.fieldAttribute('coversheet', 'maxlength')
+					},
+					'addclasses': ['w-auto']
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="faxsubject">Subject</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'phone',
+					'value': duser.faxsubject,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': 'Subject',
+						'aria-label':  'Subject',
+						'maxlength': logm.fieldAttribute('faxsubject', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label>Notify</label>
+	</div>
+	<div class="col-sm-9">
+		<p class="form-control-plaintext form-control-sm"></p>
+
+		{% include 'util/bootstrap/form/checkbox-custom.twig' with {
+				'input': {
+					'name': 'notifysuccess',
+					'label': 'On Success',
+					'value': duser.NOTIFY_TRUE,
+					'size': 'sm',
+					'attributes': {
+						'checked': duser.notifySuccess()
+					}
+				}
+			}
+		%}
+
+		{% include 'util/bootstrap/form/checkbox-custom.twig' with {
+				'input': {
+					'name': 'notifyfailure',
+					'label': 'On Failure',
+					'value': duser.NOTIFY_TRUE,
+					'size': 'sm',
+					'attributes': {
+						'checked': duser.notifyFailure()
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="email">Email</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'email',
+					'type': 'email',
+					'value': duser.email,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': 'user@example.com',
+						'aria-label':  'Email',
+						'maxlength': logm.fieldAttribute('email', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>

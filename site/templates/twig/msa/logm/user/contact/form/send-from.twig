@@ -1,0 +1,85 @@
+<legend>Send From</legend>
+
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="faxname">Name</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'faxname',
+					'value': duser.faxname,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': 'Fax Name',
+						'aria-label':  'Fax Name',
+						'maxlength': logm.fieldAttribute('faxname', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="faxcompany">Company</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'faxcompany',
+					'value': duser.faxcompany,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': 'Company',
+						'aria-label':  'Company',
+						'maxlength': logm.fieldAttribute('faxcompany', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="fax">Fax Number</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'fax',
+					'value': duser.fax('-'),
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'Phone'
+					},
+					'addclasses': ['phone-input', 'w-auto']
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="phone">Phone Number</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'phone',
+					'value': duser.phone('-'),
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'Phone'
+					},
+					'addclasses': ['phone-input', 'w-auto']
+				}
+			}
+		%}
+	</div>
+</div>
