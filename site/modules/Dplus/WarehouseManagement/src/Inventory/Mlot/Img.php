@@ -122,8 +122,6 @@ class Img extends WireData {
 		$updater->file = $uploader->uploadedFile;
 		$updater->lotserial = $lotserial;
 		$updater->update();
-		echo var_dump($updater);
-		exit;
 
 		$response = Response::responseSuccess("Uploaded $lotserial Image");
 		$response->setKey($values->text('lotserial'));
