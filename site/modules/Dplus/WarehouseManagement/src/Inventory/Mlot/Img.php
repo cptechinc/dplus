@@ -2,6 +2,8 @@
 
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
 
+use Dplus\DocManagement\Uploader\Lt\Lotimg as Uploader;
+
 use Dplus\Codes\Response;
 
 /**
@@ -103,14 +105,19 @@ class Img extends WireData {
 	private function upload(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$uploader = $this->getUploader($_FILES['image'], strtoupper($values->text('lotserial')));
-		$files    = $uploader->execute();
+		$lotserial = $values->text('lotserial');
 
-		if (empty($files)) {
-			$this->setResponse(Response::responseError('Image was not uploaded'));
+		$uploader = Uploader::getInstance();
+		$uploader->inputName = 'image';
+		$uploader->setFile($_FILES['image']);
+		$uploader->setLotserial($lotserial);
+		$success = $uploader->upload();
+
+		if ($success === false) {
+			$this->setResponse(Response::responseError("Image for $lotserial was not uploaded"));
 			return false;
 		}
-		$lotserial = $values->text('lotserial');
+
 		$response = Response::responseSuccess("Uploaded $lotserial Image");
 		$response->setKey($values->text('lotserial'));
 		$this->setResponse($response);
