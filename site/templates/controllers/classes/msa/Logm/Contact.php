@@ -10,11 +10,12 @@ use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Msa;
 use Dplus\Msa\Logm as LogmManager;
+use Dplus\Msa\Logm\Contact as LogmContactManager;
 // Conrollers
 use Controllers\Msa\Logm;
 
 class Contact extends Logm {
-
+	private static $logmContact;
 
 /* =============================================================
 	Indexes
@@ -60,7 +61,7 @@ class Contact extends Logm {
 			$logm->lockrecord($data->id);
 		}
 		self::initHooks();
-		$page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
+		// $page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
 		return $html;
 	}
@@ -75,11 +76,11 @@ class Contact extends Logm {
 ============================================================= */
 	private static function displayUser($data, DplusUser $user) {
 		$config = self::pw('config');
-		$logm   = self::getLogm();
+		$logmContact = self::getLogmContact();
 
 		$html  = '';
 		$html .= '<div class="mb-3">' . self::displayLock($data) . '</div>';
-		$html .= $config->twig->render('msa/logm/user.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= $config->twig->render('msa/logm/user/contact/display.twig', ['logm' => $logmContact, 'duser' => $user]);
 		return $html;
 	}
 
@@ -90,5 +91,10 @@ class Contact extends Logm {
 /* =============================================================
 	Supplemental
 ============================================================= */
-
+	public static function getLogmContact() {
+		if (empty(self::$logmContact)) {
+			self::$logmContact = LogmContactManager::getInstance();
+		}
+		return self::$logmContact;
+	}
 }
