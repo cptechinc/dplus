@@ -155,8 +155,8 @@ class Logm extends Base {
 
 	public static function displayLock($data) {
 		$logm = self::getLogm();
-		$logm->recordlocker->userHasLocked($data->id);
-		if ($logm->recordlocker->isLocked($data->id) == false && $logm->recordlocker->userHasLocked($data->id) !== false) {
+		
+		if ($logm->recordlocker->isLocked($data->id) && $logm->recordlocker->userHasLocked($data->id) === false) {
 			$msg = "User $data->id is being locked by " . $logm->recordlocker->getLockingUser($data->id);
 			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "User is Locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		}
