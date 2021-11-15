@@ -17,6 +17,7 @@ class Contact extends Logm {
 		'coversheet'   => ['type' => 'text', 'maxlength' => 8],
 		'email'        => ['type' => 'text', 'maxlength' => 50],
 		'faxsubject'   => ['type' => 'text', 'maxlength' => 40],
+		'sendtime'     => ['type' => 'text', 'options' => DplusUser::SENDTIMES],
 	];
 
 	public function __construct() {
