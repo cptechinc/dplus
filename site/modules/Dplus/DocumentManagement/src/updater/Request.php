@@ -26,6 +26,10 @@ class Request extends WireData {
 		$this->updateDplus();
 	}
 
+	/**
+	 * Send Request to Dplus
+	 * @return void
+	 */
 	private function updateDplus() {
 		$config    = $this->wire('config');
 		$requestor = $this->wire('modules')->get('DplusRequest');
@@ -33,6 +37,10 @@ class Request extends WireData {
 		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
 	}
 
+	/**
+	 * Return Request Data
+	 * @return array
+	 */
 	private function requestData() {
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		return [
