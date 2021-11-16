@@ -38,7 +38,7 @@ class Contact extends Logm {
 		$fields = ['id|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::logmUrl();
-		$logm = self::getLogm();
+		$logm = self::getLogmContact();
 
 		if ($data->action) {
 			$logm->processInput(self::pw('input'));
