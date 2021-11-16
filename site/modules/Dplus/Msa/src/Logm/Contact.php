@@ -43,22 +43,6 @@ class Contact extends Logm {
 	Input Functions
 ============================================================= */
 	/**
-	 * Process Input Data
-	 * @param  WireInput $input Input Data
-	 * @return void
-	 */
-	public function processInput(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		switch ($values->text('action')) {
-			case 'update':
-				$this->updateInput($input);
-				break;
-		}
-	}
-
-	/**
 	 * Update Logm User Data
 	 * @param  WireInput $input Input Data
 	 * @param  DplusUser $user  User
