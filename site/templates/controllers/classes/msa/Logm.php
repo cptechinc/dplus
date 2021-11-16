@@ -185,6 +185,7 @@ class Logm extends Base {
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('msa/logm/user.twig', ['logm' => $logm, 'duser' => $user]);
 		$html .= $config->twig->render('msa/logm/user/password/modal/pswd.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= $config->twig->render('msa/logm/user/password/modal/pswd-web.twig', ['logm' => $logm, 'duser' => $user]);
 		return $html;
 	}
 
