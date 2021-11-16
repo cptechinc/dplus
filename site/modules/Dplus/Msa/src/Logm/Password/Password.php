@@ -58,7 +58,7 @@ class Password extends Logm {
 	 * @param  DplusUser $user  User
 	 * @return void
 	 */
-	private function updateInputUserPassword(WireInput $input, DplusUser $user) {
+	protected function updateInputUserPassword(WireInput $input, DplusUser $user) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$password = $values->text('password');
