@@ -150,6 +150,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Msa\\Lgrp' => __DIR__ . '/../..' . '/classes/msa/Lgrp.php',
         'Controllers\\Msa\\Logm' => __DIR__ . '/../..' . '/classes/msa/Logm.php',
         'Controllers\\Msa\\Logm\\Contact' => __DIR__ . '/../..' . '/classes/msa/Logm/Contact.php',
+        'Controllers\\Msa\\Logm\\Password' => __DIR__ . '/../..' . '/classes/msa/Logm/Password/Password.php',
         'Controllers\\Msa\\Menu' => __DIR__ . '/../..' . '/classes/msa/Menu.php',
         'Controllers\\Msa\\Noce' => __DIR__ . '/../..' . '/classes/msa/Noce/Noce.php',
         'Controllers\\Msa\\Noce\\Ajax' => __DIR__ . '/../..' . '/classes/msa/Noce/Ajax.php',
