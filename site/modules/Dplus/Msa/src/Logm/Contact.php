@@ -60,6 +60,7 @@ class Contact extends Logm {
 	/**
 	 * Update Logm User Data
 	 * @param  WireInput $input Input Data
+	 * @param  DplusUser $user  User
 	 * @return bool
 	 */
 	protected function updateInputUser(WireInput $input, DplusUser $user) {
@@ -67,16 +68,11 @@ class Contact extends Logm {
 		$values  = $input->$rm;
 		$invalid = [];
 
-		$user->setName($values->text('name', ['maxLength' => $this->fieldAttribute('name', 'maxlength')]));
-		$user->setCompanyid($values->text('companyid', ['maxLength' => $this->fieldAttribute('companyid', 'maxlength')]));
-		$user->setAdmin($values->yn('admin'));
-		$user->setStorefront($values->yn('storefront'));
-		$user->setCitydesk($values->yn('citydesk'));
-		$user->setReportadmin($values->yn('reportadmin'));
-		$user->setUserwhsefirst($values->yn('userwhsefirst'));
-		$user->setActiveitemsonly($values->yn('activteitemsonly'));
-		$user->setRestrictaccess($values->yn('restrictaccess'));
-		$user->setAllowprocessdelete($values->yn('allowprocessdelete'));
+		$user->setFaxname($values->text('faxname', ['maxLength' => $this->fieldAttribute('faxname', 'maxlength')]));
+		$user->setFaxcompany($values->text('faxcompany', ['maxLength' => $this->fieldAttribute('faxcompany', 'maxlength')]));
+		$user->setCoversheet($values->text('coversheet', ['maxLength' => $this->fieldAttribute('coversheet', 'maxlength')]));
+		$user->setFaxsubject($values->text('faxsubject', ['maxLength' => $this->fieldAttribute('faxsubject', 'maxlength')]));
+		$this->updateInputUserPhonesEmail($input, $user);
 		$user->setDate(date('Ymd'));
 		$user->setTime(date('His'));
 
@@ -88,5 +84,47 @@ class Contact extends Logm {
 		}
 		$this->setResponse($response);
 		return $response->hasSuccess();
+	}
+
+	/**
+	 * Update Email, Phones
+	 * @param  WireInput $input Input Data
+	 * @param  DplusUser $user  User
+	 * @return void
+	 */
+	private function updateInputUserPhonesEmail(WireInput $input, DplusUser $user) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$sanitizer = $this->wire('sanitizer');
+
+		$email = $values->email('email');
+		$email = $sanitizer->text($email, ['maxLength' => $this->fieldAttribute('email', 'maxlength')]);
+		$user->setEmail($email);
+		$this->updateInputUserPhones($input, $user);
+	}
+
+	/**
+	 * Update Phone and Fax Numbers
+	 * @param  WireInput $input  Input Data
+	 * @param  DplusUser $user   User
+	 * @return void
+	 */
+	private function updateInputUserPhones(WireInput $input, DplusUser $user) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$fields = ['fax', 'phone'];
+		$subfields = ['area', 'first3', 'last4'];
+
+		foreach($fields as $f) {
+			$nbr = $values->array($f, 'text', ['delimiter' => '-']);
+			if (sizeof($nbr) !== 3) {
+				$nbr = ['', '', ''];
+			}
+
+			foreach ($subfields as $index => $subf) {
+				$setFunc = 'set'. ucfirst($f) . $subf;
+				$user->$setFunc($nbr[$index]);
+			}
+		}
 	}
 }
