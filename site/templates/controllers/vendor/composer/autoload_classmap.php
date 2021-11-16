@@ -149,6 +149,7 @@ return array(
     'Controllers\\Msa\\Lgrp' => $baseDir . '/classes/msa/Lgrp.php',
     'Controllers\\Msa\\Logm' => $baseDir . '/classes/msa/Logm.php',
     'Controllers\\Msa\\Logm\\Contact' => $baseDir . '/classes/msa/Logm/Contact.php',
+    'Controllers\\Msa\\Logm\\Password' => $baseDir . '/classes/msa/Logm/Password/Password.php',
     'Controllers\\Msa\\Menu' => $baseDir . '/classes/msa/Menu.php',
     'Controllers\\Msa\\Noce' => $baseDir . '/classes/msa/Noce/Noce.php',
     'Controllers\\Msa\\Noce\\Ajax' => $baseDir . '/classes/msa/Noce/Ajax.php',

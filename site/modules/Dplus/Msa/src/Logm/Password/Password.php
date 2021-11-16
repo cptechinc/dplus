@@ -11,15 +11,8 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Msa\Logm;
 
 class Password extends Logm {
-	const FIELD_ATTRIBUTES = [
-		'faxname'      => ['type' => 'text', 'maxlength' => 30],
-		'faxcompany'   => ['type' => 'text', 'maxlength' => 30],
-		'coversheet'   => ['type' => 'text', 'maxlength' => 8],
-		'email'        => ['type' => 'text', 'maxlength' => 50],
-		'faxsubject'   => ['type' => 'text', 'maxlength' => 40],
-		'sendtime'     => ['type' => 'text', 'options' => DplusUser::SENDTIMES],
-		'notify'       => ['type' => 'text', 'true' => DplusUser::NOTIFY_TRUE]
-	];
+	const PSWD_SHELL = '/usr/capsys/menu/password/password';
+	const FIELD_ATTRIBUTES = [];
 
 	private static $instance;
 
@@ -45,9 +38,7 @@ class Password extends Logm {
 		$values  = $input->$rm;
 		$invalid = [];
 
-
 		$this->updateInputUserPassword($input, $user);
-
 		$user->setDate(date('Ymd'));
 		$user->setTime(date('His'));
 
@@ -70,6 +61,9 @@ class Password extends Logm {
 	private function updateInputUserPassword(WireInput $input, DplusUser $user) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		
+		$password = $values->text('password');
+		$cmd = 'php ' . self::PSWD_SHELL . " hash password=$password";
+		$password = $this->wire('sanitizer')->text(shell_exec($cmd));
+		$user->setPassword($password);
 	}
 }

@@ -88,6 +88,7 @@ class Logm extends Base {
 		self::initHooks();
 		$page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
+		self::getLogm()->deleteResponse();
 		return $html;
 	}
 
@@ -134,6 +135,12 @@ class Logm extends Base {
 		return $url->getUrl();
 	}
 
+	public static function userEditPasswordUrl($id) {
+		$url = new Purl(self::userEditUrl($id));
+		$url->path->add('password');
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -175,7 +182,9 @@ class Logm extends Base {
 
 		$html  = '';
 		$html .= '<div class="mb-3">' . self::displayLock($data) . '</div>';
+		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('msa/logm/user.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= $config->twig->render('msa/logm/user/password/modal/pswd.twig', ['logm' => $logm, 'duser' => $user]);
 		return $html;
 	}
 
@@ -203,6 +212,10 @@ class Logm extends Base {
 
 		$m->addHook('Page(template=test)::userDeleteUrl', function($event) {
 			$event->return = self::userDeleteUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(template=test)::userEditPasswordUrl', function($event) {
+			$event->return = self::userEditPasswordUrl($event->arguments(0));
 		});
 	}
 
