@@ -21,14 +21,6 @@ class Contact extends Logm {
 		'notify'       => ['type' => 'text', 'true' => DplusUser::NOTIFY_TRUE]
 	];
 
-	public function __construct() {
-		$this->sessionID = session_id();
-
-		$this->recordlocker = new FunctionLocker();
-		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
-		$this->recordlocker->setUser($this->wire('user'));
-	}
-
 	private static $instance;
 
 	public static function getInstance() {
@@ -76,7 +68,7 @@ class Contact extends Logm {
 	}
 
 	/**
-	 * Update Email, Phones
+	 * Update Email
 	 * @param  WireInput $input Input Data
 	 * @param  DplusUser $user  User
 	 * @return void
