@@ -7,13 +7,13 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Mvc\Controllers\AbstractController;
 use Controllers\Dplus\Menu as Dmenu;
 
-class Menu extends AbstractController {
+class Menu extends Dmenu {
 	public static function index($data) {
 		if (self::sessionExists() === false) {
 			self::requestWhseSessionLogin();
 			self::pw('session')->redirect(self::pw('page')->url, $http301 = false);
 		}
-		Dmenu::index($data);
+		return Dmenu::index($data);
 	}
 
 	public static function requestWhseSessionLogin() {
