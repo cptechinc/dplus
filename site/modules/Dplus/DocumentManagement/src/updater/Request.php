@@ -5,13 +5,13 @@ use ProcessWire\WireData;
 /**
  * Request
  * Sends Document Update Requests to Dplus
- * @property string $sessionID   Session ID
- * @property string $folder      DocumentManagement Folder Code
- * @property string $field1      Document Field 1 Value
- * @property string $field2      Document Field 2 Value
- * @property string $field3      Document Field 3 Value
- * @property string $directory   File Directory
- * @property string $filename    File Name
+ * 
+ * @property string $sessionID    Session ID
+ * @property string $folder       DocumentManagement Folder Code
+ * @property string $field1       Document Field 1 Value
+ * @property string $field2       Document Field 2 Value
+ * @property string $field3       Document Field 3 Value
+ * @property string $filelocation File Location
  */
 class Request extends WireData {
 	public function __construct() {
@@ -20,8 +20,7 @@ class Request extends WireData {
 		$this->field1 = '';
 		$this->field2 = '';
 		$this->field3 = '';
-		$this->directory = '';
-		$this->filename  = '';
+		$this->filelocation = '';
 	}
 
 	public function request() {
@@ -45,15 +44,13 @@ class Request extends WireData {
 	 */
 	private function requestData() {
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-		$dir = str_pad($this->directory, 50);
-		$file = $dir . $this->filename;
 		return [
 			"DBNAME=$dplusdb",
 			"DOCFILEFLDS=$this->folder",
 			"DOCFLD1=$this->field1",
 			"DOCFLD2=$this->field2",
 			"DOCFLD3=$this->field3",
-			"DOCFILENAME=$file",
+			"DOCFILENAME=$this->filelocation",
 		];
 	}
 }

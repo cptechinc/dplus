@@ -121,7 +121,7 @@ class Img extends WireData {
 
 		$updater = new Updater();
 		$updater->directory = $uploader::UPLOAD_DIR;
-		$updater->filename  = $uploader->filename;
+		$updater->filelocation  = $uploader->filelocation;
 		$updater->lotserial = $lotserial;
 		$updater->update();
 		exit;

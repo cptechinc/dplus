@@ -7,13 +7,13 @@ use Dplus\DocManagement\Updater\Request;
  * Updater
  * Holds Document Data to send File Update Request
  *
- * @property string $sessionID   Session ID
- * @property string $folder      DocumentManagement Folder Code
- * @property string $field1      Document Field 1 Value
- * @property string $field2      Document Field 2 Value
- * @property string $field3      Document Field 3 Value
- * @property string $directory   File Directory
- * @property string $filename    File Name
+ * @property string $sessionID    Session ID
+ * @property string $folder       DocumentManagement Folder Code
+ * @property string $field1       Document Field 1 Value
+ * @property string $field2       Document Field 2 Value
+ * @property string $field3       Document Field 3 Value
+ * @property string $directory    File Directory
+ * @property string $filelocation File Location
  */
 class Updater extends WireData {
 	const TAG = '';
@@ -25,7 +25,7 @@ class Updater extends WireData {
 		$this->field2 = '';
 		$this->field3 = '';
 		$this->directory  = '';
-		$this->filename   = '';
+		$this->filelocation = '';
 	}
 
 	/**
@@ -49,7 +49,7 @@ class Updater extends WireData {
 		$rqst->field2    = $this->field2;
 		$rqst->field3    = $this->field3;
 		$rqst->directory = $this->directory;
-		$rqst->filename  = $this->filename;
+		$rqst->filelocation = $this->filelocation;
 		$rqst->request();
 		return true;
 	}
