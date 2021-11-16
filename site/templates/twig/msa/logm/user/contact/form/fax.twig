@@ -53,7 +53,7 @@
 				'input': {
 					'name': 'notifysuccess',
 					'label': 'On Success',
-					'value': duser.NOTIFY_TRUE,
+					'value': logm.fieldAttribute('notify', 'true'),
 					'size': 'sm',
 					'attributes': {
 						'checked': duser.notifySuccess()
@@ -66,7 +66,7 @@
 				'input': {
 					'name': 'notifyfailure',
 					'label': 'On Failure',
-					'value': duser.NOTIFY_TRUE,
+					'value': logm.fieldAttribute('notify', 'true'),
 					'size': 'sm',
 					'attributes': {
 						'checked': duser.notifyFailure()

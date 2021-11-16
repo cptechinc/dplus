@@ -18,6 +18,7 @@ class Contact extends Logm {
 		'email'        => ['type' => 'text', 'maxlength' => 50],
 		'faxsubject'   => ['type' => 'text', 'maxlength' => 40],
 		'sendtime'     => ['type' => 'text', 'options' => DplusUser::SENDTIMES],
+		'notify'       => ['type' => 'text', 'true' => DplusUser::NOTIFY_TRUE]
 	];
 
 	public function __construct() {
@@ -74,6 +75,9 @@ class Contact extends Logm {
 		$user->setFaxsubject($values->text('faxsubject', ['maxLength' => $this->fieldAttribute('faxsubject', 'maxlength')]));
 		$this->updateInputUserEmail($input, $user);
 		$this->updateInputUserPhones($input, $user);
+		$this->updateInputUserNotify($input, $user);
+		$this->updateInputUserSendtime($input, $user);
+
 		$user->setDate(date('Ymd'));
 		$user->setTime(date('His'));
 
@@ -101,7 +105,6 @@ class Contact extends Logm {
 		$email = $values->email('email');
 		$email = $sanitizer->text($email, ['maxLength' => $this->fieldAttribute('email', 'maxlength')]);
 		$user->setEmail($email);
-		$this->updateInputUserPhones($input, $user);
 	}
 
 	/**
@@ -127,5 +130,32 @@ class Contact extends Logm {
 				$user->$setFunc($nbr[$index]);
 			}
 		}
+	}
+
+	/**
+	 * Update Notify fields for User
+	 * @param  WireInput $input Input Data
+	 * @param  DplusUser $user  User
+	 * @return void
+	 */
+	private function updateInputUserNotify(WireInput $input, DplusUser $user) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$user->setNotifysuccess($values->xorblank('notifysuccess'));
+		$user->setNotifyfailure($values->xorblank('notifyfailure'));
+	}
+
+	/**
+	 * Update sendtime for User
+	 * @param  WireInput $input Input Data
+	 * @param  DplusUser $user  User
+	 * @return void
+	 */
+	private function updateInputUserSendtime(WireInput $input, DplusUser $user) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$value = $values->option('sendtime', array_keys($this->fieldAttribute('sendtime', 'options')));
+		$user->setSendtime($value);
 	}
 }
