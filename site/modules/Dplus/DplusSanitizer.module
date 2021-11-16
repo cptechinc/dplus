@@ -61,6 +61,12 @@ class DplusSanitizer extends WireData implements Module {
 			$value = $event->arguments(0);
 			$event->return = $value ? $sanitizer->text($value) : session_id();
 		});
+
+		$this->addHook('Sanitizer::xorblank', function(HookEvent $event) {
+			$sanitizer = $event->object;
+			$value = strtoupper($event->arguments(0));
+			$event->return = $value == 'X' ? 'X' : '';
+		});
 	}
 
 	public static function getModuleInfo() {
