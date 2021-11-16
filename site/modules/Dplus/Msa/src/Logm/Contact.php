@@ -72,7 +72,8 @@ class Contact extends Logm {
 		$user->setFaxcompany($values->text('faxcompany', ['maxLength' => $this->fieldAttribute('faxcompany', 'maxlength')]));
 		$user->setCoversheet($values->text('coversheet', ['maxLength' => $this->fieldAttribute('coversheet', 'maxlength')]));
 		$user->setFaxsubject($values->text('faxsubject', ['maxLength' => $this->fieldAttribute('faxsubject', 'maxlength')]));
-		$this->updateInputUserPhonesEmail($input, $user);
+		$this->updateInputUserEmail($input, $user);
+		$this->updateInputUserPhones($input, $user);
 		$user->setDate(date('Ymd'));
 		$user->setTime(date('His'));
 
@@ -92,7 +93,7 @@ class Contact extends Logm {
 	 * @param  DplusUser $user  User
 	 * @return void
 	 */
-	private function updateInputUserPhonesEmail(WireInput $input, DplusUser $user) {
+	private function updateInputUserEmail(WireInput $input, DplusUser $user) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$sanitizer = $this->wire('sanitizer');
