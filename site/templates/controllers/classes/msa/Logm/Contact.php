@@ -24,14 +24,16 @@ class Contact extends Logm {
 		$fields = ['id|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
+		$logm = self::getLogm();
+
+		if (empty($data->id) || $logm->exists($data->id) === false) {
+			self::pw('session')->redirect(self::logmUrl(), $http301 = false);
+		}
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
-
-		if (empty($data->id) === false) {
-			return self::user($data);
-		}
+		return self::user($data);
 	}
 
 	public static function handleCRUD($data) {
@@ -42,7 +44,7 @@ class Contact extends Logm {
 
 		if ($data->action) {
 			$logm->processInput(self::pw('input'));
-			$url  = self::logmUrl($data->id);
+			$url  = self::userEditUrl($data->id);
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
@@ -50,16 +52,14 @@ class Contact extends Logm {
 	private static function user($data) {
 		$logm = self::getLogm();
 		$page = self::pw('page');
-		$page->headline = "LOGM: $data->id";
+		$page->headline = "LOGM: $data->id Fax Defaults";
 
 		if ($logm->exists($data->id) === false) {
-			$page->headline = "LOGM: Creating New User";
+			self::pw('session')->redirect(self::logmUrl($data->id), $http301 = false);
 		}
-		$user = $logm->getOrCreate($data->id);
+		$user = $logm->user($data->id);
+		$logm->lockrecord($data->id);
 
-		if ($user->isNew() === false) {
-			$logm->lockrecord($data->id);
-		}
 		self::initHooks();
 		// $page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
