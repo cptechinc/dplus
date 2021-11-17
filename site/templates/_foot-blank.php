@@ -1,5 +1,6 @@
 		<?= $config->twig->render('util/ajax-modal.twig'); ?>
 		<?= $config->twig->render('util/loading-modal.twig'); ?>
+		<?= $config->twig->render('shared/image-modal.twig'); ?>
 		<?php foreach($config->scripts->unique() as $script) : ?>
 			<script src="<?= $script; ?>"></script>
 		<?php endforeach; ?>
