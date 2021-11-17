@@ -2,6 +2,8 @@
 
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
 
+use Dplus\Configs;
+
 /**
  * Uploader
  * Base class for Uploading Files for Document Management
@@ -19,6 +21,7 @@ class Uploader extends WireData {
 	public function __construct() {
 		$this->inputName = '';
 		$this->file = [];
+		$this->uploadDirectory = static::UPLOAD_DIR;
 		$this->filelocation  = '';
 	}
 
@@ -39,6 +42,21 @@ class Uploader extends WireData {
 	 */
 	public function setFile(array $file) {
 		$this->file = $file;
+	}
+
+	/**
+	 * Use Autofile
+	 * @param  bool   $autofile Use Autofile
+	 * @return void
+	 */
+	public function useAutoFile(bool $autofile) {
+		if ($autofile) {
+			$sysd = Configs\Sysd::config();
+			$this->uploadDirectory = $sysd->dirautofile . '/';
+			return true;
+		}
+		$this->uploadDirectory = static::UPLOAD_DIR;
+		return true;
 	}
 
 /* =============================================================
@@ -77,7 +95,7 @@ class Uploader extends WireData {
 		if (empty($files)) {
 			return false;
 		}
-		$this->filelocation = static::UPLOAD_DIR . $files[0];
+		$this->filelocation = $this->uploadDirectory . $files[0];
 		return true;
 	}
 
@@ -91,7 +109,7 @@ class Uploader extends WireData {
 		$uploader->setMaxFiles(1);
 		$uploader->setOverwrite(true);
 		$uploader->setValidExtensions($this->fieldAttribute($this->inputName, 'extensions'));
-		$uploader->setDestinationPath(static::UPLOAD_DIR);
+		$uploader->setDestinationPath($this->uploadDirectory);
 		return $uploader;
 	}
 }
