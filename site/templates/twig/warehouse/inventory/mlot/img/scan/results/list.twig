@@ -1,0 +1,55 @@
+<table class="table table-sm table-striped">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Item ID</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	{% for item in inventory.getItemsDistinct() %}
+		<tr class="bg-gray border-top border-primary">
+			<td>
+				<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target=".{{ item.itemid|attrJS }}" aria-expanded="false" aria-controls=".{{ item.itemid|attrJS }}">
+					<i class="fa fa-plus" aria-hidden="true"></i>
+				</button>
+			</td>
+			<td>{{ item.itemid }}</td>
+			<td>
+				<small>
+					{{ item.desc1 }} {{ item.desc2 ? ('<br>' ~ item.desc2)|raw : '' }}
+				</small>
+			</td>
+		</tr>
+		<tr class="collapse bg-light {{ item.itemid|attrJS }}">
+			<td></td>
+			<td>
+				<b>Lot #</b>
+			</td>
+			<td>
+				<b>Lot Qty</b>
+			</td>
+			<td>
+				<b>Has Image?</b>
+			</td>
+		</tr>
+		{% for lotserial in inventory.getLotserialsDistinctByItemid(item.itemid) %}
+			<tr class="collapse {{ item.itemid|attrJS }}">
+				<td></td>
+				<td>
+					<a href="{{ page.lotserialUrl(lotserial.lotserial) }}" class="link">
+						{{ lotserial.lotserial }}
+					</a>
+				</td>
+				<td>{{ lotserial.qty }}</td>
+				<td>
+					{% if docm.hasImage(lotserial.lotserial) %}
+						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(docm.getFolder()) }}" data-id="{{ lotserial.lotserial }}" data-src="{{ docm.getViewer().url(docm.getImageFilename(lotserial.lotserial), docm.getFolder()) }}">
+							<i class="fa fa-picture-o" aria-hidden="true"></i>
+							<span class="sr-only">View Image</span>
+						</button>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	{% endfor %}
+</table>
