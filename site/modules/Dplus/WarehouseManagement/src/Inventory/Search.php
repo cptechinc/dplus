@@ -231,6 +231,21 @@ class Search extends WireData {
 	}
 
 	/**
+	 * Return if Lotserial Exists
+	 * @param  string $lotserial Lot / Serial number
+	 * @param  string $binID     Bin ID
+	 * @return bool
+	 */
+	public function lotserialExists($lotserial, $binID = '') {
+		$q = $this->query();
+		$q->filterByLotserial($lotserial);
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return One Invsearch Record filtered by Lotserial
 	 * @param  string $lotserial Lot / Serial number
 	 * @param  string $binID     Bin ID
