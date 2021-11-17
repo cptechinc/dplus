@@ -39,7 +39,7 @@ class Img extends Base {
 		$url = Menu::imgUrl();
 		$manager = self::getImg();
 		$success = $manager->process(self::pw('input'));
-		
+
 		switch ($data->action) {
 			case 'update':
 				if ($success === false) {
@@ -81,10 +81,11 @@ class Img extends Base {
 
 	private static function displayScanResults($data) {
 		$inventory = Search::getInstance();
+		$docm = self::getDocm();
 
 		$html  = '';
 		$html .= self::displayResponse($data);
-		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/scan/results.twig', ['inventory' => $inventory]);
+		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/scan/results/display.twig', ['inventory' => $inventory, 'docm' => $docm]);
 		return $html;
 	}
 
