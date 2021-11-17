@@ -28,14 +28,14 @@ class Picking extends Base {
 	const DPLUSPERMISSION = 'porpk';
 
 	/** @var PickingCRUD */
-	static private $picking;
+	private static $picking;
 	/** @var MsoValidator */
-	static private $validateMso;
+	private static $validateMso;
 
 /* =============================================================
 	Indexes
 ============================================================= */
-	static public function index($data) {
+	public static function index($data) {
 		$fields = ['scan|text', 'action|text', 'ordn|ordn'];
 		self::sanitizeParametersShort($data, $fields);
 
@@ -56,7 +56,7 @@ class Picking extends Base {
 		return $html;
 	}
 
-	static public function handleCRUD($data) {
+	public static function handleCRUD($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn', 'scan|text']);
 
 		$validate = self::getValidatorMso();
@@ -87,7 +87,7 @@ class Picking extends Base {
 		}
 	}
 
-	static public function picking($data) {
+	public static function picking($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
 		$validate = self::getValidatorMso();
 		$wSession = self::getWhsesession();
@@ -160,7 +160,7 @@ class Picking extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
-	static public function pickingUrl($ordn = '') {
+	public static function pickingUrl($ordn = '') {
 		$url = new Purl(self::pw('pages')->get('pw_template=whse-picking')->url);
 		if ($ordn) {
 			$url->query->set('ordn', $ordn);
@@ -168,13 +168,13 @@ class Picking extends Base {
 		return $url->getUrl();
 	}
 
-	static public function pickScanUrl($ordn, $scan) {
+	public static function pickScanUrl($ordn, $scan) {
 		$url = new Purl(self::pickingUrl($ordn));
 		$url->query->set('scan', $scan);
 		return $url->getUrl();
 	}
 
-	static public function pickingExitUrl($ordn) {
+	public static function pickingExitUrl($ordn) {
 		$url = new Purl(self::pickingUrl($ordn));
 		$url->query->set('action', 'exit-order');
 		return $url->getUrl();
@@ -183,7 +183,7 @@ class Picking extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	static private function orderDisplay($data) {
+	private static function orderDisplay($data) {
 		$writer  = self::getHtmlWriter();
 
 		$html =  self::orderHeader($data);
@@ -203,13 +203,13 @@ class Picking extends Base {
 		return $html;
 	}
 
-	static private function orderHeader($data) {
+	private static function orderHeader($data) {
 		$wSession = self::getWhsesession();
 		$order = SalesOrderQuery::create()->findOneByOrdernumber($data->ordn);
 		return self::pw('config')->twig->render('warehouse/picking/order/header-info.twig', ['order' => $order, 'whsesession' => $wSession]);
 	}
 
-	static private function orderItems($data) {
+	private static function orderItems($data) {
 		$wSession = self::getWhsesession();
 		$picking  = self::getPicking($data->ordn);
 		$config   = self::pw('config');
@@ -226,11 +226,11 @@ class Picking extends Base {
 		return $config->twig->render('warehouse/picking/unguided/order/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 	}
 
-	static private function orderActions($data) {
+	private static function orderActions($data) {
 		return self::pw('config')->twig->render('warehouse/picking/unguided/order/actions.twig', ['ordn' => $data->ordn]);
 	}
 
-	static private function scanResults($data) {
+	private static function scanResults($data) {
 		$session = self::pw('session');
 		$picking = self::getPicking($data->ordn);
 		$inv     = $picking->inventory->lookup;
@@ -253,7 +253,7 @@ class Picking extends Base {
 		return self::scanResultsMultiple($data, $picking);
 	}
 
-	static private function scanVerifyPicked($data, PickingCRUD $picking) {
+	private static function scanVerifyPicked($data, PickingCRUD $picking) {
 		$session = self::pw('session');
 		$query = $picking->getWhseitempickQuery(['barcode' => $data->scan, 'recordnumber' => $session->getFor('picking', 'verify-picked-items')]);
 
@@ -267,7 +267,7 @@ class Picking extends Base {
 		return $html;
 	}
 
-	static private function scanResultsMultiple($data, PickingCRUD $picking) {
+	private static function scanResultsMultiple($data, PickingCRUD $picking) {
 		/** @var InvLookup */
 		$lookup  = $picking->inventory->lookup;
 		$q       = $lookup->getScanQuery($data->scan);
@@ -281,7 +281,7 @@ class Picking extends Base {
 		return $html;
 	}
 
-	static private function scanResultsSingle($data, PickingCRUD $picking) {
+	private static function scanResultsSingle($data, PickingCRUD $picking) {
 		/** @var InvLookup */
 		$lookup  = $picking->inventory->lookup;
 		$config  = self::pw('config');
@@ -314,7 +314,7 @@ class Picking extends Base {
 		}
 	}
 
-	static private function scanform($data) {
+	private static function scanform($data) {
 		$writer = self::getHtmlWriter();
 		$html = $writer->h3('', 'Scan item to pick');
 		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/form.twig');
@@ -325,14 +325,7 @@ class Picking extends Base {
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
-	static public function validateUserPermission(user $user = null) {
-		if (empty($user)) {
-			$user = self::pw('user');
-		}
-		return $user->has_function(self::DPLUSPERMISSION);
-	}
-
-	static public function getPicking($ordn = '') {
+	public static function getPicking($ordn = '') {
 		self::pw('modules')->get('WarehouseManagement');
 
 		if (empty(self::$picking)) {
@@ -346,7 +339,7 @@ class Picking extends Base {
 		return self::$picking;
 	}
 
-	static public function getValidatorMso() {
+	public static function getValidatorMso() {
 		if (empty(self::$validateMso)) {
 			self::$validateMso = new MsoValidator();
 		}
@@ -356,7 +349,7 @@ class Picking extends Base {
 /* =============================================================
 	Init
 ============================================================= */
-	static public function init() {
+	public static function init() {
 		$m = self::pw('modules')->get('WarehouseManagement');
 
 		$m->addHook('Page::removeScanUrl', function($event) {
