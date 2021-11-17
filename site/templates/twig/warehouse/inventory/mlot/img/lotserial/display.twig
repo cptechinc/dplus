@@ -1,10 +1,16 @@
+<div class="mb-3">
+	<a href="{{ page.imgUrl() }}" class="btn btn-primary btn-lg">
+		<i class="fa fa-search" aria-hidden="true"></i> Search
+	</a>
+</div>
+
 <div class="row mb-3">
 	<div class="col-sm-6">
 		{% include 'warehouse/inventory/mlot/img/lotserial/details.twig' %}
 	</div>
 	<div class="col-sm-6">
 		<div class="text-center">
-			<img src="{{ docm.getViewer().url(docm.getImageFilename(lotserial.lotserial)) }}" alt="{{ docm.getFolders().description(docm.getFolder()) ~ ' ' ~ lotserial.lotserial }}">
+			<img src="{{ docm.getViewer().url(docm.getImageFilename(lotserial.lotserial)) }}" class="img-fluid" alt="{{ docm.getFolders().description(docm.getFolder()) ~ ' ' ~ lotserial.lotserial }}">
 		</div>
 	</div>
 </div>

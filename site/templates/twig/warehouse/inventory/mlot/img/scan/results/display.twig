@@ -1,3 +1,9 @@
+<div class="mb-3">
+	<a href="{{ page.imgUrl() }}" class="btn btn-primary btn-lg">
+		<i class="fa fa-search" aria-hidden="true"></i> Search
+	</a>
+</div>
+
 <h3 class="mb-3">Results for "{{ input.get.text('scan') }}"</h3>
 
 {% include 'warehouse/inventory/mlot/img/scan/results/list.twig' %}
