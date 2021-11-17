@@ -16,6 +16,7 @@ class ComposerStaticInitfdd038617226e94faa44d44a195565f1
         'Dplus\\DocManagement\\Finders\\PurchaseOrder' => __DIR__ . '/../..' . '/src/finder/sub/Mpo/PurchaseOrder.php',
         'Dplus\\DocManagement\\Finders\\Qt' => __DIR__ . '/../..' . '/src/finder/sub/Qt.php',
         'Dplus\\DocManagement\\Finders\\SalesOrder' => __DIR__ . '/../..' . '/src/finder/sub/SalesOrder.php',
+        'Dplus\\DocManagement\\Folders' => __DIR__ . '/../..' . '/src/Folders.php',
         'Dplus\\DocManagement\\Mover' => __DIR__ . '/../..' . '/src/Mover.php',
         'Dplus\\DocManagement\\Updater' => __DIR__ . '/../..' . '/src/updater/Updater.php',
         'Dplus\\DocManagement\\Updater\\Lt\\Lotimg' => __DIR__ . '/../..' . '/src/updater/Lt/Lotimg.php',

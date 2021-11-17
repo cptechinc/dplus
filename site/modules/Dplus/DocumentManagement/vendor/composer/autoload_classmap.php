@@ -15,6 +15,7 @@ return array(
     'Dplus\\DocManagement\\Finders\\PurchaseOrder' => $baseDir . '/src/finder/sub/Mpo/PurchaseOrder.php',
     'Dplus\\DocManagement\\Finders\\Qt' => $baseDir . '/src/finder/sub/Qt.php',
     'Dplus\\DocManagement\\Finders\\SalesOrder' => $baseDir . '/src/finder/sub/SalesOrder.php',
+    'Dplus\\DocManagement\\Folders' => $baseDir . '/src/Folders.php',
     'Dplus\\DocManagement\\Mover' => $baseDir . '/src/Mover.php',
     'Dplus\\DocManagement\\Updater' => $baseDir . '/src/updater/Updater.php',
     'Dplus\\DocManagement\\Updater\\Lt\\Lotimg' => $baseDir . '/src/updater/Lt/Lotimg.php',
