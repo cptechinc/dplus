@@ -245,6 +245,28 @@ class Search extends WireData {
 		return $q->findOne();
 	}
 
+	/**
+	 * Return Inventory LotSerial Records for Item ID
+	 * @param  string $itemID  Item ID
+	 * @param  string $binID   *** Optional ***, Bin ID to narrow down
+	 * @param  string $orderby Property to Order By
+	 * @return Invsearch[]|ObjectCollection
+	 */
+	public function getLotserialsDistinctByItemid($itemID, $binID = '', $orderby = '') {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+
+		if (!empty($orderby)) {
+			$q->orderBy($orderby);
+		}
+		$q->groupBy('Lotserial');
+		return $q->find();
+	}
+
 /* =============================================================
 	GET QTY Functions
 ============================================================= */
