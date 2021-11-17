@@ -55,7 +55,12 @@ class Img extends Base {
 	}
 
 	private static function scan($data) {
-		Search::getInstance()->requestSearch($data->scan);
+		$search = Search::getInstance();
+		$search->requestSearch($data->scan);
+
+		if ($search->lotserialExists($data->scan)) {
+			self::pw('session')->redirect(self::lotserialUrl($data->scan), $http301 = false);
+		}
 
 		self::initHooks();
 		self::pw('page')->headline = "Searching for $data->scan";
