@@ -11,6 +11,7 @@ use Dplus\DocManagement\Uploader as Base;
  * @property string $lotserial       Lot / Serial Number
  */
 class Lotimg extends Base {
+	const FILENAME_PREFIX = 'LOTIMG_';
 	const FIELDS = [
 		'image'      => ['type' => 'file', 'extensions' => ['jpeg', 'jpg', 'gif', 'png']],
 		'lotserial'  => ['type' => 'text', 'uppercase' => true],
@@ -37,7 +38,6 @@ class Lotimg extends Base {
 	 */
 	public function setLotserial($lotserial) {
 		$this->lotserial = strtoupper($this->wire('sanitizer')->text($lotserial));
-		$this->newBaseFilename = $this->lotserial;
 	}
 
 /* =============================================================
@@ -52,7 +52,7 @@ class Lotimg extends Base {
 		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
 
 		$uploader = parent::getUploader($file);
-		$uploader->setTargetFilename($this->lotserial . ".$ext");
+		$uploader->setTargetFilename(self::FILENAME_PREFIX . $this->lotserial . ".$ext");
 		$uploader->setLowercase(false);
 		return $uploader;
 	}
