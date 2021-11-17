@@ -56,8 +56,11 @@ class Img extends Base {
 
 	private static function scan($data) {
 		Search::getInstance()->requestSearch($data->scan);
+
 		self::initHooks();
-		return self::displayScanResults($data);
+		$html = self::displayScanResults($data);
+		self::getImg()->deleteResponse();
+		return $html;
 	}
 
 	private static function lotserial($data) {
@@ -68,7 +71,9 @@ class Img extends Base {
 		self::pw('page')->headline = "Lot #$data->lotserial";
 		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/.js.twig');
 		self::pw('config')->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
-		return self::displayLotserial($data);
+		$html = self::displayLotserial($data);
+		self::getImg()->deleteResponse();
+		return $html;
 	}
 
 	private static function copyImage($data) {
@@ -148,6 +153,10 @@ class Img extends Base {
 
 		$m->addHook('Page(pw_template=whse-mlot)::lotserialUrl', function($event) {
 			$event->return = self::lotserialUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=whse-mlot)::imgUrl', function($event) {
+			$event->return = Menu::imgUrl();
 		});
 	}
 
