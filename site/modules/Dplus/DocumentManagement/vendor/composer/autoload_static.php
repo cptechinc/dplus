@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInitfdd038617226e94faa44d44a195565f1
 {
     public static $classMap = array (
+        'Dplus\\DocManagement\\Copier' => __DIR__ . '/../..' . '/src/Copier.php',
         'Dplus\\DocManagement\\Finders\\ApInvoice' => __DIR__ . '/../..' . '/src/finder/sub/Mpo/ApInvoice.php',
         'Dplus\\DocManagement\\Finders\\Ar' => __DIR__ . '/../..' . '/src/finder/sub/Ar.php',
         'Dplus\\DocManagement\\Finders\\Cu' => __DIR__ . '/../..' . '/src/finder/sub/Cu.php',

@@ -64,14 +64,30 @@ class Img extends Finder {
 	}
 
 	/**
-	 * Return Documents
+	 * Return Filename
 	 * filtered by the tag1, reference1 fields for a Lot
 	 * @param  string $lotserial Lot Number
-	 * @return Document
+	 * @return string
 	 */
 	public function getImageFilename($lotserial) {
 		$q = $this->docQuery();
 		$q->select(Document::aliasproperty('filename'));
+		$q->filterByTag(self::TAG);
+		$q->filterByFolder(self::FOLDER);
+		$q->filterByReference1($lotserial);
+		$q->orderBy(Document::aliasproperty('date'), 'DESC');
+		$q->orderBy(Document::aliasproperty('time'), 'DESC');
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Document
+	 * filtered by the tag1, reference1 fields for a Lot
+	 * @param  string $lotserial Lot Number
+	 * @return Document
+	 */
+	public function getImage($lotserial) {
+		$q = $this->docQuery();
 		$q->filterByTag(self::TAG);
 		$q->filterByFolder(self::FOLDER);
 		$q->filterByReference1($lotserial);

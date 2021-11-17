@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Dplus\\DocManagement\\Copier' => $baseDir . '/src/Copier.php',
     'Dplus\\DocManagement\\Finders\\ApInvoice' => $baseDir . '/src/finder/sub/Mpo/ApInvoice.php',
     'Dplus\\DocManagement\\Finders\\Ar' => $baseDir . '/src/finder/sub/Ar.php',
     'Dplus\\DocManagement\\Finders\\Cu' => $baseDir . '/src/finder/sub/Cu.php',

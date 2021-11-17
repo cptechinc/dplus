@@ -95,6 +95,19 @@ class Finder extends WireData {
 	}
 
 	/**
+	 * Return Document
+	 * @param  string $folder   Folder Code
+	 * @param  string $filename File Name
+	 * @return Document
+	 */
+	public function getDocumentByFilename($folder, $filename) {
+		$q = $this->docQuery();
+		$q->filterByFolder($folder);
+		$q->filterByFilename($filename);
+		return $q->findOne();
+	}
+
+	/**
 	 * Return filepath for Document
 	 * @param  string $folder   Document Folder
 	 * @param  string $filename File Name
