@@ -235,13 +235,11 @@ $(function() {
 ============================================================= */
 	$("body").on('show.bs.modal', '#image-modal', function(event) {
 		var button = $(event.relatedTarget);
-		var modal  = $(this);
-		var modalTitle = modal.find('.modal-title');
-		modalTitle.find('.type').text(button.data('type'));
-		modalTitle.find('.id').text(button.data('id'));
-		var img = modal.find('img');
-		img.attr('src', button.data('src'));
-		img.attr('alt', button.data('type') + ' ' + button.data('id'));
+		// var modal  = $(this);
+
+		var modal = ImageModal.getInstance();
+		modal.updateTitle(button.data('type'), button.data('id'));
+		modal.updateImage(button.data('folder'), button.data('file'));
 	});
 });
 
