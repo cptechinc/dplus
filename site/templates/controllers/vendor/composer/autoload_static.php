@@ -11,6 +11,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Json\\Map' => __DIR__ . '/../..' . '/classes/ajax/json/Map.php',
         'Controllers\\Ajax\\Json\\Mar' => __DIR__ . '/../..' . '/classes/ajax/json/Mar.php',
         'Controllers\\Ajax\\Json\\Mci' => __DIR__ . '/../..' . '/classes/ajax/json/Mci.php',
+        'Controllers\\Ajax\\Json\\Mdm' => __DIR__ . '/../..' . '/classes/ajax/json/Mdm.php',
         'Controllers\\Ajax\\Json\\Mgl' => __DIR__ . '/../..' . '/classes/ajax/json/Mgl.php',
         'Controllers\\Ajax\\Json\\Min' => __DIR__ . '/../..' . '/classes/ajax/json/Min.php',
         'Controllers\\Ajax\\Json\\Misc' => __DIR__ . '/../..' . '/classes/ajax/json/Misc.php',
