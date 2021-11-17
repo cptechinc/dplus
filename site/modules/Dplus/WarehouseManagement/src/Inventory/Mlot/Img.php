@@ -10,6 +10,8 @@ use Dplus\Codes\Response;
 /**
  * Img
  * Class for uploading Images and tying them to lots
+ *
+ * @property bool useAutofile Use Dplus Autofiler (otherwise use request methods)
  */
 class Img extends WireData {
 	const FIELDS = [
@@ -20,7 +22,8 @@ class Img extends WireData {
 	private static $instance;
 
 	public function __construct() {
-		$this->sessionID = session_id();
+		$this->sessionID   = session_id();
+		$this->useAutofile = true;
 	}
 
 	public static function getInstance() {
@@ -29,6 +32,18 @@ class Img extends WireData {
 			self::$instance = $instance;
 		}
 		return self::$instance;
+	}
+
+/* =============================================================
+	Field Configs
+============================================================= */
+	/**
+	 * Set the useAutofile Value
+	 * @param  bool   $use Use Autofile?
+	 * @return void
+	 */
+	public function useAutoFile(bool $use = false) {
+		$this->useAutofile = $use;
 	}
 
 /* =============================================================
@@ -109,6 +124,7 @@ class Img extends WireData {
 		$lotserial = $values->text('lotserial');
 
 		$uploader = Uploader::getInstance();
+		$uploader->useAutoFile($this->useAutofile);
 		$uploader->inputName = 'image';
 		$uploader->setFile($_FILES['image']);
 		$uploader->setLotserial($lotserial);
@@ -119,12 +135,9 @@ class Img extends WireData {
 			return false;
 		}
 
-		$updater = new Updater();
-		$updater->directory = $uploader::UPLOAD_DIR;
-		$updater->filelocation  = $uploader->filelocation;
-		$updater->lotserial = $lotserial;
-		$updater->update();
-		exit;
+		if ($this->useAutofile === false) {
+			$this->requestFileUpdate($input, $uploader);
+		}
 
 		$response = Response::responseSuccess("Uploaded $lotserial Image");
 		$response->setKey($values->text('lotserial'));
@@ -149,6 +162,24 @@ class Img extends WireData {
 		$uploader->setDestinationPath('/tmp/');
 		$uploader->setTargetFilename($basefilename . ".$ext");
 		return $uploader;
+	}
+
+	/**
+	 * Make File Update Request
+	 * @param  WireInput $input    Input Data
+	 * @param  Uploader  $uploader File Uploader
+	 * @return bool
+	 */
+	private function requestFileUpdate(WireInput $input, Uploader $uploader) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$lotserial = $values->text('lotserial');
+
+		$updater = new Updater();
+		$updater->directory = $uploader::UPLOAD_DIR;
+		$updater->filelocation  = $uploader->filelocation;
+		$updater->lotserial = $lotserial;
+		return $updater->update();
 	}
 
 /* =============================================================
