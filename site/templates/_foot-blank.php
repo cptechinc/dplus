@@ -5,7 +5,8 @@
 			<script src="<?= $script; ?>"></script>
 		<?php endforeach; ?>
 		<script>
-			var api  = <?= json_encode($config->js('api')); ?>;
+			var api    = <?= json_encode($config->js('api')); ?>;
+			var config = <?= json_encode($config->js('config')); ?>;
 		</script>
 		<?php if ($page->js) : ?>
 			<script>
