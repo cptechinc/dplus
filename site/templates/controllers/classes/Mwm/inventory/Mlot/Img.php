@@ -58,6 +58,7 @@ class Img extends Base {
 		Search::getInstance()->requestSearch($data->scan);
 
 		self::initHooks();
+		self::pw('page')->headline = "Searching for $data->scan";
 		$html = self::displayScanResults($data);
 		self::getImg()->deleteResponse();
 		return $html;
@@ -68,7 +69,7 @@ class Img extends Base {
 		self::copyImage($data);
 
 		self::initHooks();
-		self::pw('page')->headline = "Lot #$data->lotserial";
+		self::pw('page')->headline = "Lotserial #$data->lotserial";
 		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/.js.twig');
 		self::pw('config')->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
 		$html = self::displayLotserial($data);
