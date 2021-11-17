@@ -41,19 +41,21 @@ class Viewer extends WireData {
 
 	/**
 	 * Return URL to file
-	 * @param  string $file  File Name
+	 * @param  string $file    File Name
+	 * @param  string $folder  Folder Code
 	 * @return string
 	 */
-	public function url($file) {
-		return $this->buildUrl($file);
+	public function url($file, $folder = '') {
+		return $this->buildUrl($file, $folder);
 	}
 
 	/**
 	 * Return URL to file based on config
 	 * @param  string $file  File Name
+	 * @param  string $folder Folder Code
 	 * @return string
 	 */
-	private function buildUrl($file) {
+	private function buildUrl($file, $folder = '') {
 		$url = new Purl($this->wire('pages')->get('/')->url);
 		$url->path = $this->configs->urlpath;
 
@@ -61,7 +63,9 @@ class Viewer extends WireData {
 			$url = new Purl($this->configs->url);
 		}
 
+		if ($folder) {
+			$file = strtolower($folder) . '_' . $file;
+		}
 		return $url->getUrl() . $file;
 	}
-
 }

@@ -1,0 +1,15 @@
+<form action="{{ input.url() }}" method="POST" enctype="multipart/form-data" id="img-form">
+	<input type="hidden" name="action" value="update">
+	<input type="hidden" name="lotserial" value="{{ lotserial.lotserial }}">
+	
+	<div class="form-group">
+		<label for="image">Image</label>
+		<div class="custom-file">
+			<input type="file" class="custom-file-input" name="image" id="image" accept="image/*" onchange="showPreview(event);" required>
+			<label class="custom-file-label" for="image">Choose file</label>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-sm btn-success">
+		<i class="fa fa-upload" aria-hidden="true"></i> Upload
+	</button>
+</form>

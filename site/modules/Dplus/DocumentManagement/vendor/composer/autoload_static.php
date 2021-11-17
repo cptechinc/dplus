@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInitfdd038617226e94faa44d44a195565f1
 {
     public static $classMap = array (
+        'Dplus\\DocManagement\\Copier' => __DIR__ . '/../..' . '/src/Copier.php',
         'Dplus\\DocManagement\\Finders\\ApInvoice' => __DIR__ . '/../..' . '/src/finder/sub/Mpo/ApInvoice.php',
         'Dplus\\DocManagement\\Finders\\Ar' => __DIR__ . '/../..' . '/src/finder/sub/Ar.php',
         'Dplus\\DocManagement\\Finders\\Cu' => __DIR__ . '/../..' . '/src/finder/sub/Cu.php',
@@ -16,7 +17,13 @@ class ComposerStaticInitfdd038617226e94faa44d44a195565f1
         'Dplus\\DocManagement\\Finders\\PurchaseOrder' => __DIR__ . '/../..' . '/src/finder/sub/Mpo/PurchaseOrder.php',
         'Dplus\\DocManagement\\Finders\\Qt' => __DIR__ . '/../..' . '/src/finder/sub/Qt.php',
         'Dplus\\DocManagement\\Finders\\SalesOrder' => __DIR__ . '/../..' . '/src/finder/sub/SalesOrder.php',
+        'Dplus\\DocManagement\\Folders' => __DIR__ . '/../..' . '/src/Folders.php',
         'Dplus\\DocManagement\\Mover' => __DIR__ . '/../..' . '/src/Mover.php',
+        'Dplus\\DocManagement\\Updater' => __DIR__ . '/../..' . '/src/updater/Updater.php',
+        'Dplus\\DocManagement\\Updater\\Lt\\Lotimg' => __DIR__ . '/../..' . '/src/updater/Lt/Lotimg.php',
+        'Dplus\\DocManagement\\Updater\\Request' => __DIR__ . '/../..' . '/src/updater/Request.php',
+        'Dplus\\DocManagement\\Uploader' => __DIR__ . '/../..' . '/src/uploader/Uploader.php',
+        'Dplus\\DocManagement\\Uploader\\Lt\\Lotimg' => __DIR__ . '/../..' . '/src/uploader/Lt/Lotimg.php',
         'Dplus\\DocManagement\\Viewer' => __DIR__ . '/../..' . '/src/viewer/Viewer.php',
         'Dplus\\DocManagement\\Viewer\\Config' => __DIR__ . '/../..' . '/src/viewer/Config.php',
     );

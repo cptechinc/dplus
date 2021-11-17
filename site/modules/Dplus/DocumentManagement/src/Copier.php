@@ -3,10 +3,31 @@
 use ProcessWire\WireData;
 
 /**
- * Document Mover
- * Moves / Copies documents
+ * Copier
+ * Copies documents
  */
-class Mover extends WireData {
+class Copier extends WireData {
+	private static $instance;
+
+	public static function getInstance() {
+		if (empty(self::$instance)) {
+			$instance = new self();
+			self::$instance = $instance;
+		}
+		return self::$instance;
+	}
+	
+	public function __construct() {
+		$this->directory = $this->wire('config')->directory_webdocs;
+	}
+
+	public function useDocVwrDirectory() {
+		$this->directory = $this->wire('config')->directoryDocVwr;
+	}
+
+	public function useOrderfilesDirectory() {
+		$this->directory = $this->wire('config')->directory_webdocs;
+	}
 
 /* =============================================================
 	Get Functions
@@ -26,8 +47,8 @@ class Mover extends WireData {
 	 * @param  string $filename File Name
 	 * @return bool             Is the file in the web access directory?
 	 */
-	public function isInWebDirectory($filename) {
-		return $this->exists($this->wire('config')->directory_webdocs, $filename);
+	public function isInDirectory($filename) {
+		return $this->exists($this->directory, $filename);
 	}
 
 /* =============================================================
@@ -44,7 +65,7 @@ class Mover extends WireData {
 		if ($this->exists($directory, $filename) === false) {
 			return false;
 		}
-		$destination = empty($destination) ? $this->wire('config')->directory_webdocs : $destination;
+		$destination = empty($destination) ? $this->directory : $destination;
 		if (file_exists($destination) === false) {
 			return false;
 		}

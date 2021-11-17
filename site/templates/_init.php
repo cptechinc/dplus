@@ -160,3 +160,5 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 
 	$page->js .= $config->twig->render('util/js/variables.js.twig', ['variables' => ['agent' => $config->js('agent')]]);
 }
+
+include ('./_init.js.php');

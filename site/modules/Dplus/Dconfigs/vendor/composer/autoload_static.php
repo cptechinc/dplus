@@ -21,6 +21,7 @@ class ComposerStaticInit4ed415e031ba38684c0dc56114a11d32
         'Dplus\\Configs\\Qt' => __DIR__ . '/../..' . '/src/configs/Qt.php',
         'Dplus\\Configs\\So' => __DIR__ . '/../..' . '/src/configs/So.php',
         'Dplus\\Configs\\Sys' => __DIR__ . '/../..' . '/src/configs/Sys.php',
+        'Dplus\\Configs\\Sysd' => __DIR__ . '/../..' . '/src/configs/Sysd.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

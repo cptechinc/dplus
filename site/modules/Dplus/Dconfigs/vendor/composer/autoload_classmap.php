@@ -20,4 +20,5 @@ return array(
     'Dplus\\Configs\\Qt' => $baseDir . '/src/configs/Qt.php',
     'Dplus\\Configs\\So' => $baseDir . '/src/configs/So.php',
     'Dplus\\Configs\\Sys' => $baseDir . '/src/configs/Sys.php',
+    'Dplus\\Configs\\Sysd' => $baseDir . '/src/configs/Sysd.php',
 );

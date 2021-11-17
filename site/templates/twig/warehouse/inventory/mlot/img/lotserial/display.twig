@@ -1,9 +1,22 @@
-{% include 'warehouse/inventory/mlot/img/lotserial/details.twig' %}
+<div class="mb-3">
+	<a href="{{ page.imgUrl() }}" class="btn btn-primary btn-lg">
+		<i class="fa fa-search" aria-hidden="true"></i> Search
+	</a>
+</div>
 
-<form action="{{ input.url() }}" method="POST">
-	<label for="image">Image</label>
-	<div class="custom-file">
-		<input type="file" class="custom-file-input" name="image" id="image">
-		<label class="custom-file-label" for="image">Choose file</label>
+<div class="row mb-3">
+	<div class="col-sm-6">
+		{% include 'warehouse/inventory/mlot/img/lotserial/details.twig' %}
 	</div>
-</form>
+	<div class="col-sm-6">
+		<div class="text-center">
+			<img src="{{ docm.getViewer().url(docm.getImageFilename(lotserial.lotserial)) }}" class="img-fluid" alt="{{ docm.getFolders().description(docm.getFolder()) ~ ' ' ~ lotserial.lotserial }}">
+		</div>
+	</div>
+</div>
+
+<div class="mb-3">
+	{% include 'warehouse/inventory/mlot/img/lotserial/preview.twig' %}
+</div>
+
+{% include 'warehouse/inventory/mlot/img/lotserial/form.twig' %}

@@ -231,6 +231,21 @@ class Search extends WireData {
 	}
 
 	/**
+	 * Return if Lotserial Exists
+	 * @param  string $lotserial Lot / Serial number
+	 * @param  string $binID     Bin ID
+	 * @return bool
+	 */
+	public function lotserialExists($lotserial, $binID = '') {
+		$q = $this->query();
+		$q->filterByLotserial($lotserial);
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return One Invsearch Record filtered by Lotserial
 	 * @param  string $lotserial Lot / Serial number
 	 * @param  string $binID     Bin ID
@@ -243,6 +258,28 @@ class Search extends WireData {
 			$q->filterByBin($binID);
 		}
 		return $q->findOne();
+	}
+
+	/**
+	 * Return Inventory LotSerial Records for Item ID
+	 * @param  string $itemID  Item ID
+	 * @param  string $binID   *** Optional ***, Bin ID to narrow down
+	 * @param  string $orderby Property to Order By
+	 * @return Invsearch[]|ObjectCollection
+	 */
+	public function getLotserialsDistinctByItemid($itemID, $binID = '', $orderby = '') {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+
+		if (!empty($orderby)) {
+			$q->orderBy($orderby);
+		}
+		$q->groupBy('Lotserial');
+		return $q->find();
 	}
 
 /* =============================================================

@@ -229,6 +229,18 @@ $(function() {
 			button.data('expanded', 'false');
 		}
 	});
+
+/* =============================================================
+	Indexes
+============================================================= */
+	$("body").on('show.bs.modal', '#image-modal', function(event) {
+		var button = $(event.relatedTarget);
+		// var modal  = $(this);
+
+		var modal = ImageModal.getInstance();
+		modal.updateTitle(button.data('type'), button.data('id'));
+		modal.updateImage(button.data('folder'), button.data('file'));
+	});
 });
 
 $.fn.extend({

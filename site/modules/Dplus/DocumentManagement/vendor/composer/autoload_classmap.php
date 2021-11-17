@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Dplus\\DocManagement\\Copier' => $baseDir . '/src/Copier.php',
     'Dplus\\DocManagement\\Finders\\ApInvoice' => $baseDir . '/src/finder/sub/Mpo/ApInvoice.php',
     'Dplus\\DocManagement\\Finders\\Ar' => $baseDir . '/src/finder/sub/Ar.php',
     'Dplus\\DocManagement\\Finders\\Cu' => $baseDir . '/src/finder/sub/Cu.php',
@@ -15,7 +16,13 @@ return array(
     'Dplus\\DocManagement\\Finders\\PurchaseOrder' => $baseDir . '/src/finder/sub/Mpo/PurchaseOrder.php',
     'Dplus\\DocManagement\\Finders\\Qt' => $baseDir . '/src/finder/sub/Qt.php',
     'Dplus\\DocManagement\\Finders\\SalesOrder' => $baseDir . '/src/finder/sub/SalesOrder.php',
+    'Dplus\\DocManagement\\Folders' => $baseDir . '/src/Folders.php',
     'Dplus\\DocManagement\\Mover' => $baseDir . '/src/Mover.php',
+    'Dplus\\DocManagement\\Updater' => $baseDir . '/src/updater/Updater.php',
+    'Dplus\\DocManagement\\Updater\\Lt\\Lotimg' => $baseDir . '/src/updater/Lt/Lotimg.php',
+    'Dplus\\DocManagement\\Updater\\Request' => $baseDir . '/src/updater/Request.php',
+    'Dplus\\DocManagement\\Uploader' => $baseDir . '/src/uploader/Uploader.php',
+    'Dplus\\DocManagement\\Uploader\\Lt\\Lotimg' => $baseDir . '/src/uploader/Lt/Lotimg.php',
     'Dplus\\DocManagement\\Viewer' => $baseDir . '/src/viewer/Viewer.php',
     'Dplus\\DocManagement\\Viewer\\Config' => $baseDir . '/src/viewer/Config.php',
 );
