@@ -3,6 +3,8 @@
 use Purl\Url as Purl;
 // Document Management
 use Dplus\DocManagement\Finders\Lt\Img as Docm;
+use Dplus\DocManagement\Copier;
+use Dplus\DocManagement\Folders;
 // Dplus Inventory Search
 use Dplus\Wm\Inventory\Search;
 // Dplus CRUD
@@ -13,6 +15,8 @@ use Controllers\Wm\Base;
 class Img extends Base {
 	const DPLUSPERMISSION = 'wm';
 	const TITLE = 'Lot Images';
+
+	private static $docm;
 
 /* =============================================================
 	Indexes
@@ -58,11 +62,28 @@ class Img extends Base {
 
 	private static function lotserial($data) {
 		Search::getInstance()->requestSearch($data->lotserial);
+		self::copyImage($data);
+
 		self::initHooks();
 		self::pw('page')->headline = "Lot #$data->lotserial";
 		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/.js.twig');
 		self::pw('config')->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
 		return self::displayLotserial($data);
+	}
+
+	private static function copyImage($data) {
+		$docm = self::getDocm();
+
+		if ($docm->hasImage($data->lotserial)) {
+			$file = $docm->getImage($data->lotserial);
+			$folder = Folders::getInstance()->folder($file->folder);
+			$copier = Copier::getInstance();
+			$copier->useDocVwrDirectory();
+
+			if ($copier->isInDirectory($file->filename) === false) {
+				$copier->copyFile($folder->directory, $file->filename);
+			}
+		}
 	}
 
 /* =============================================================
@@ -96,7 +117,7 @@ class Img extends Base {
 
 		$html  = '';
 		$html .= self::displayResponse($data);
-		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/display.twig', ['lotserial' => $lotserial]);
+		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/display.twig', ['lotserial' => $lotserial, 'docm' => $docm]);
 		return $html;
 	}
 
@@ -131,7 +152,10 @@ class Img extends Base {
 	}
 
 	public static function getDocm() {
-		return new Docm();
+		if (empty(self::$docm)) {
+			self::$docm = new Docm();
+		}
+		return self::$docm;
 	}
 
 	public static function getImg() {
