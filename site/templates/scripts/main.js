@@ -6,7 +6,7 @@ moment().format();
 var nav = '#yt-menu';
 
 $(function() {
-	$('[data-toggle="tooltip"]').tooltip();
+	$('[data-toggle="popover"]').popover();
 	init_datepicker();
 	bsCustomFileInput.init()
 
