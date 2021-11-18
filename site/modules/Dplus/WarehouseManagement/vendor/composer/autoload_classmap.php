@@ -10,6 +10,8 @@ return array(
     'Dplus\\Wm\\Binr' => $baseDir . '/src/Binr/Binr.php',
     'Dplus\\Wm\\Inventory\\Mlot\\Img' => $baseDir . '/src/Inventory/Mlot/Img.php',
     'Dplus\\Wm\\Inventory\\Search' => $baseDir . '/src/Inventory/Search.php',
+    'Dplus\\Wm\\Inventory\\Whse\\Lots\\Lookup' => $baseDir . '/src/Inventory/Whse/Lots/Lookup.php',
+    'Dplus\\Wm\\Inventory\\Whse\\Lots\\Lookup\\ExcludePackBin' => $baseDir . '/src/Inventory/Whse/Lots/ExcludePackBin.php',
     'Dplus\\Wm\\Receiving\\Items' => $baseDir . '/src/Receiving/Items.php',
     'Dplus\\Wm\\Receiving\\Receiving' => $baseDir . '/src/Receiving/Receiving.php',
     'Dplus\\Wm\\Receiving\\Strategies\\CreatePo\\Allow' => $baseDir . '/src/Receiving/Strategies/CreatePo/Allow.php',
