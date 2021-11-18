@@ -24,6 +24,7 @@ return array(
     'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialQty' => $baseDir . '/src/Receiving/Strategies/ReadQty/LotserialQty.php',
     'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialSingle' => $baseDir . '/src/Receiving/Strategies/ReadQty/LotserialSingle.php',
     'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\ReadStrategy' => $baseDir . '/src/Receiving/Strategies/ReadQty/Base.php',
+    'Dplus\\Wm\\Sop\\Picking\\AllocatedLots' => $baseDir . '/src/Sop/Picking/AllocatedLots.php',
     'Dplus\\Wm\\Sop\\Picking\\Inventory' => $baseDir . '/src/Sop/Picking/Inventory.php',
     'Dplus\\Wm\\Sop\\Picking\\Items' => $baseDir . '/src/Sop/Picking/Items.php',
     'Dplus\\Wm\\Sop\\Picking\\Picking' => $baseDir . '/src/Sop/Picking/Picking.php',

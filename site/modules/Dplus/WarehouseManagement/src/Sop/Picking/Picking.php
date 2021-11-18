@@ -11,6 +11,7 @@ use Dplus\Wm\Base;
 use Dplus\Wm\Sop\Picking\Items;
 use Dplus\Wm\Sop\Picking\Strategies\PackBin as PackBinStrategies;
 use Dplus\Wm\Sop\Picking\Strategies\PackBin\PackBin as PackBinStrategy;
+use Dplus\Wm\Sop\Picking\AllocatedLots;
 
 /**
  * Picking
@@ -482,5 +483,12 @@ class Picking extends Base {
 ============================================================= */
 	public function init() {
 
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	public function getAllocatedLotM() {
+		return AllocatedLots::getInstance();
 	}
 }
