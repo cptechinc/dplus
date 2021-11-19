@@ -209,16 +209,16 @@ class Picking extends Base {
 		$writer  = self::getHtmlWriter();
 
 		$html  = '';
-		$html .= self::displaySessionErrors()
+		$html .= self::displaySessionErrors();
 		$html .= self::displayOrderHeader($data);
 
 		if (empty($data->scan)) {
-			$html .= self::scanform($data);
+			$html .= self::displayScanForm($data);
 		}
 
 		if (empty($data->scan) === false) {
 			self::pw('page')->scan = $data->scan;
-			$html .= self::scanResults($data);
+			$html .= self::displayScanResults($data);
 		}
 
 		$html .= self::displayOrderItems($data);
@@ -254,14 +254,14 @@ class Picking extends Base {
 		return self::pw('config')->twig->render('warehouse/picking/unguided/order/actions.twig', ['ordn' => $data->ordn]);
 	}
 
-	private static function scanResults($data) {
+	private static function displayScanResults($data) {
 		$session = self::pw('session');
 		$picking = self::getPicking($data->ordn);
 		$inv     = $picking->inventory->lookup;
 		$q       = $inv->getScanQuery($data->scan);
 
 		if ($session->getFor('picking', 'verify-picked-items')) {
-			return self::scanVerifyPicked($data, $picking);
+			return self::displayScanVerifyPicked($data, $picking);
 		}
 
 		if ($q->count() == 0) {
@@ -272,12 +272,12 @@ class Picking extends Base {
 		}
 
 		if ($q->count() == 1) {
-			return self::scanResultsSingle($data, $picking);
+			return self::displayScanResultsSingle($data, $picking);
 		}
-		return self::scanResultsMultiple($data, $picking);
+		return self::displayScanResultsMultiple($data, $picking);
 	}
 
-	private static function scanVerifyPicked($data, PickingCRUD $picking) {
+	private static function displayScanVerifyPicked($data, PickingCRUD $picking) {
 		$session = self::pw('session');
 		$query = $picking->getWhseitempickQuery(['barcode' => $data->scan, 'recordnumber' => $session->getFor('picking', 'verify-picked-items')]);
 
@@ -291,7 +291,7 @@ class Picking extends Base {
 		return $html;
 	}
 
-	private static function scanResultsMultiple($data, PickingCRUD $picking) {
+	private static function displayScanResultsMultiple($data, PickingCRUD $picking) {
 		/** @var InvLookup */
 		$lookup  = $picking->inventory->lookup;
 		$q       = $lookup->getScanQuery($data->scan);
@@ -305,7 +305,7 @@ class Picking extends Base {
 		return $html;
 	}
 
-	private static function scanResultsSingle($data, PickingCRUD $picking) {
+	private static function displayScanResultsSingle($data, PickingCRUD $picking) {
 		/** @var InvLookup */
 		$lookup  = $picking->inventory->lookup;
 		$config  = self::pw('config');
@@ -338,7 +338,7 @@ class Picking extends Base {
 		}
 	}
 
-	private static function scanform($data) {
+	private static function displayScanForm($data) {
 		$writer = self::getHtmlWriter();
 		$html = $writer->h3('', 'Scan item to pick');
 		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/form.twig');
