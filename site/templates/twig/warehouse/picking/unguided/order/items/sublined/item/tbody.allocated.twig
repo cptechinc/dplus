@@ -1,0 +1,40 @@
+<tbody class="collapse" id="allocated-{{ item.linenbr|attrJS }}">
+	<tr class="bg-gray">
+		<td></td>
+		<td colspan="7">
+			<b>Line # {{ item.linenbr }} Allocated Lotserials</b>
+		</td>
+	</tr>
+	<tr class="bg-light">
+		<td></td>
+		<td>Bin</td>
+		<td>Lotserial</td>
+		<td>Lot Reference</td>
+		<td class="text-right">Allocated Qty</td>
+		<td class="text-right">Picked Qty</td>
+		<td class="text-center">Image</td>
+		<td></td>
+	</tr>
+	{% for lot in lotAllocator.allocatedLotserials(item.ordernbr, item.linenbr) %}
+		<tr>
+			<td></td>
+			<td>{{ lot.bin }}</td>
+			<td>{{ lot.lotserial }}</td>
+			<td>{{ lot.lotref }}</td>
+			<td class="text-right">{{ lot.shipqty|number_format(m_picking.decimalPlacesQty()) }}</td>
+			<td class="text-right">
+				{{ m_picking.getLineLotserialPickedQty(item.ordernbr, item.linenbr, item.sublinenbr, lot.lotserial)|number_format(m_picking.decimalPlacesQty()) }}
+			</td>
+			<td class="text-center">
+				{% if docm.hasImage(lot.lotserial) %}
+					{% set image = docm.getImage(lot.lotserial) %}
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ lot.lotserial }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
+						<i class="fa fa-picture-o" aria-hidden="true"></i>
+						<span class="sr-only">View Image</span>
+					</button>
+				{% endif %}
+			</td>
+			<td></td>
+		</tr>
+	{% endfor %}
+</tbody>

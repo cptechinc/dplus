@@ -1,0 +1,61 @@
+<tr class="first-txn-row {{ item.count_pickeditems() > item.qtyordered ? 'bg-warning text-white'}}">
+	<td class="text-center">{{ item.linenbr }}</td>
+	<td class="text-center">
+		{% if item.count_pickeditems() %}
+			<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#{{ item.linenbr|attrJS }}" aria-expanded="false" aria-controls="{{ item.linenbr|attrJS }}">
+				{{ item.sublinenbr() }}
+			</button>
+		{% else %}
+			{{ item.sublinenbr() }}
+		{% endif %}
+	</td>
+	<td>
+		{% if lotAllocator.hasAllocated(item.ordernbr, item.linenbr) %}
+			<button class="btn btn-primary btn-sm" title="View Allocated Lotserials" data-toggle="collapse" data-target="#allocated-{{ item.linenbr|attrJS }}">
+				<i class="fa fa-list" aria-hidden="true"></i> <span class="sr-only">Allocated</span>
+			</button>
+		{% endif %}
+	</td>
+	<td>
+		{{ item.itemid }}
+		{% if item.description %}
+			<br>
+			<small>{{ item.description }}</small>
+		{% endif %}
+
+		{% if item.qtypulled > item.qtyordered %}
+			<br>
+			<span class="badge badge-warning"> You are Picking more qty than what was ordered </span>
+		{% endif %}
+	</td>
+	<td class="text-right">
+		{{ item.qtyordered|number_format(m_picking.decimalPlacesQty()) }}
+	</td>
+	<td class="text-right">
+		{{ m_picking.getLinePickedQty(item.ordernbr, item.linenbr, item.sublinenbr)|number_format(m_picking.decimalPlacesQty()) }}
+	</td>
+	<td class="text-right">
+		{{ item.qtyremaining|number_format(m_picking.decimalPlacesQty()) }}
+	</td>
+	<td class="text-center">
+		{% if pickingsession.is_subline_being_picked(item) %}
+			{% if pickingsession.is_currentuser_picking(item) %}
+				<span class="badge badge-info">You are picking</span>
+			{% else %}
+				<span class="badge badge-warning">Is being picked</span>
+			{% endif %}
+		{% endif %}
+		{% include 'util/bootstrap/html/button.twig' with {
+				'button': {
+					'text': 'Available Bins',
+					'attributes': {
+						'data-toggle': 'popover',
+						'title': 'Available Bins',
+						'data-html': 'true',
+						'data-content': m_picking.whseLotMaster.getDistinctBinsByItemid(item.itemid)|join('<br>'),
+					}
+				}
+			}
+		%}
+	</td>
+</tr>

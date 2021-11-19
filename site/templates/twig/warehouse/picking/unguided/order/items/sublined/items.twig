@@ -8,23 +8,24 @@
 {% set lotAllocator = m_picking.getAllocatedLotM() %}
 {% set docm = lotAllocator.getDocm() %}
 
-<div class="list-group">
-	<div class="list-group-item bg-dark text-white">
-		<div class="row">
-			<div class="col-sm-1">Line</div>
-			<div class="col-sm-1">Subline</div>
-			<div class="col-sm-1">Allocated</div>
-			<div class="col-sm-3">Item ID / Description</div>
-			<div class="col-sm-1 text-right">Ordered</div>
-			<div class="col-sm-1 text-right">Pulled</div>
-			<div class="col-sm-1 text-right">Remaining</div>
-			<div class="col-sm-2"></div>
-		</div>
-	</div>
-
-	{% for item in lineitems %}
-		{% include 'warehouse/picking/unguided/order/items/sublined/item/item.twig' %}
-		{% include 'warehouse/picking/unguided/order/items/sublined/item/allocated.twig' %}
-		{% include 'warehouse/picking/unguided/order/items/sublined/item/lotserials.twig' %}
-	{% endfor %}
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr>
+				<th class="text-center">Line</th>
+				<th class="text-center">Subline</th>
+				<th>Allocated</th>
+				<th>Item ID / Description</th>
+				<th class="text-right">Ordered</th>
+				<th class="text-right">Pulled</th>
+				<th class="text-right">Remaining</th>
+				<th></th>
+			</tr>
+		</thead>
+		{% for item in lineitems %}
+			{% include 'warehouse/picking/unguided/order/items/sublined/item/tr.item.twig' %}
+			{% include 'warehouse/picking/unguided/order/items/sublined/item/tbody.allocated.twig' %}
+			{% include 'warehouse/picking/unguided/order/items/sublined/item/tbody.lotserials.twig' %}
+		{% endfor %}
+	</table>
 </div>
