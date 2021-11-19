@@ -10,6 +10,7 @@ use WarehouseQuery, Warehouse;
 use SalesOrderQuery, SalesOrder;
 // Dpluso Model
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+use Whsesession;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 use Processwire\SearchInventory, Processwire\WarehouseManagement,ProcessWire\HtmlWriter;
@@ -52,7 +53,7 @@ class Picking extends Base {
 		if ($wSession->is_pickingunguided() === false) {
 			$picking->requestStartPicking();
 		}
-		$html = self::pw('config')->twig->render('warehouse/picking/order/form.twig');
+		$html = self::displayOrderForm();
 		return $html;
 	}
 
@@ -87,16 +88,13 @@ class Picking extends Base {
 		}
 	}
 
-	public static function picking($data) {
+	private static function picking($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
 		$validate = self::getValidatorMso();
 		$wSession = self::getWhsesession();
 
 		if ((empty($data->ordn) === false && $validate->order($data->ordn) === false) || $wSession->is_orderinvalid()) {
-			$html =  self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ordn can not be found"]);
-			$html .= '<div class="mb-3"></div>';
-			$html .= self::pw('config')->twig->render('warehouse/picking/order/form.twig');
-			return $html;
+			return self::displayOrderNotFound();
 		}
 
 		self::pw('page')->headline = "Picking Order # $data->ordn";
@@ -105,13 +103,13 @@ class Picking extends Base {
 		$configInventory = $picking->getConfigInventory();
 
 		if ($wSession->is_orderonhold() || $wSession->is_orderverified() || $wSession->is_orderinvoiced() || $wSession->is_ordernotfound() || (!$configInventory->allow_negativeinventory && $wSession->is_ordershortstocked())) {
-			return self::pw('config')->twig->render('warehouse/picking/order/status.twig', ['whsesession' => $wSession]);
+			return self::displayErrorStatus($wSession->get_statusmessage());
 		}
 		self::pw('config')->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/warehouse/pick-order.js'));
 		return self::pickOrder($data);
 	}
 
-	static protected function pickOrder($data) {
+	protected static function pickOrder($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn', 'data|text']);
 		$config   = self::pw('config');
 		$session  = self::pw('session');
@@ -132,22 +130,23 @@ class Picking extends Base {
 				// TODO
 				// WhseItempickQuery::create()->filterByOrdn($ordn)->filterBySessionid(session_id())->delete();
 			}
-			$html = self::pw('config')->twig->render('warehouse/picking/status.twig', ['whsesession' => $wSession]);
+
+			$html = self::displayErrorStatus($wSession->get_statusmessage());
 			$html .= '<div class="mb-3"></div>';
-			$html .= self::pw('config')->twig->render('warehouse/picking/order/form.twig');
+			$html .= self::displayOrderForm();
 			return $html;
 		}
 
 		if ($session->pickingerror) {
 			$writer = self::getHtmlWriter();
-			$html = $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $session->pickingerror]));
+			$html = $writer->div('class=mb-3', self::displayErrorStatus($session->pickingerror));
 			$session->remove('pickingerror');
 		}
 
 		if ($wSession->has_warning()) {
-			$html .= $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Warning!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $wSession->status]));
+			$html .= $writer->div('class=mb-3', self::displayErrorStatus($wSession->status));
 		} elseif ($wSession->has_message()) {
-			$html .= $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $wSession->status]));
+			$html .= $writer->div('class=mb-3', self::displayErrorStatus($wSession->status));
 		}
 		$html .= self::orderDisplay($data);
 		return $html;
@@ -183,10 +182,25 @@ class Picking extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
+	private static function displayErrorStatus($msg) {
+		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $msg]);
+	}
+
+	private static function displayOrderForm() {
+		return self::pw('config')->twig->render('warehouse/picking/order/form.twig');
+	}
+
+	private static function displayOrderNotFound() {
+		$html  = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ordn can not be found"]);
+		$html .= '<div class="mb-3"></div>';
+		$html .= self::displayOrderForm();
+		return $html;
+	}
+
 	private static function orderDisplay($data) {
 		$writer  = self::getHtmlWriter();
 
-		$html =  self::orderHeader($data);
+		$html = self::orderHeader($data);
 
 		if (empty($data->scan)) {
 			$html .= self::scanform($data);
