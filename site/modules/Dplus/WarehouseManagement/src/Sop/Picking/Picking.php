@@ -12,6 +12,7 @@ use Dplus\Wm\Sop\Picking\Items;
 use Dplus\Wm\Sop\Picking\Strategies\PackBin as PackBinStrategies;
 use Dplus\Wm\Sop\Picking\Strategies\PackBin\PackBin as PackBinStrategy;
 use Dplus\Wm\Sop\Picking\AllocatedLots;
+use Dplus\Wm\Inventory\Whse\Lots\Lookup\ExcludePackBin as WhseLotMaster;
 
 /**
  * Picking
@@ -43,11 +44,15 @@ class Picking extends Base {
 	private $decimalPlacesQty;
 	/** @var PackBinStrategy */
 	private $packBinStrategy;
+	/** @var WhseLotMaster */
+	public $whseLotMaster;
 
 	public function __construct() {
 		$this->items = new Items();
 		$this->inventory = new Inventory();
 		$this->setSessionID(session_id());
+		$this->whseLotMaster = new WhseLotMaster();
+		$this->whseLotMaster->setWhseID($this->wire('user')->whseid);
 	}
 
 	/**
@@ -366,6 +371,39 @@ class Picking extends Base {
 		$q->filterBySublinenbr($orderitem->sublinenbr);
 		$q->groupBy(['bin', 'lotserial']);
 		return $q->find();
+	}
+
+	/**
+	 * Return Pick Item Sum
+	 * @param  PickSalesOrderDetail $orderitem
+	 * @return float
+	 */
+	public function getLinePickedQty($ordn, $linenbr, $sublinenbr = 0) {
+		$q = $this->getWhseitempickQuery();
+		$q->withColumn('SUM(qty)', 'qty');
+		$q->select('qty');
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByOrdn($ordn);
+		$q->filterByLinenbr($linenbr);
+		$q->filterBySublinenbr($sublinenbr);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Pick Item Sum
+	 * @param  PickSalesOrderDetail $orderitem
+	 * @return float
+	 */
+	public function getLineLotserialPickedQty($ordn, $linenbr, $sublinenbr = 0, $lotserial) {
+		$q = $this->getWhseitempickQuery();
+		$q->withColumn('SUM(qty)', 'qty');
+		$q->select('qty');
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByOrdn($ordn);
+		$q->filterByLinenbr($linenbr);
+		$q->filterBySublinenbr($sublinenbr);
+		$q->filterByLotserial($lotserial);
+		return $q->findOne();
 	}
 
 	/**
