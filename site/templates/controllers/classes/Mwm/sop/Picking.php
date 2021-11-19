@@ -137,17 +137,6 @@ class Picking extends Base {
 			return $html;
 		}
 
-		if ($session->pickingerror) {
-			$writer = self::getHtmlWriter();
-			$html = $writer->div('class=mb-3', self::displayErrorStatus($session->pickingerror));
-			$session->remove('pickingerror');
-		}
-
-		if ($wSession->has_warning()) {
-			$html .= $writer->div('class=mb-3', self::displayErrorStatus($wSession->status));
-		} elseif ($wSession->has_message()) {
-			$html .= $writer->div('class=mb-3', self::displayErrorStatus($wSession->status));
-		}
 		$html .= self::orderDisplay($data);
 		return $html;
 	}
@@ -197,10 +186,31 @@ class Picking extends Base {
 		return $html;
 	}
 
+	private static function displaySessionErrors() {
+		$session  = self::pw('session');
+		$wSession = self::getWhsesession();
+		$html = '';
+
+		if ($session->pickingerror) {
+			$writer = self::getHtmlWriter();
+			$html = '<div class="mb-3">' . self::displayErrorStatus($session->pickingerror) . '</div>';
+			$session->remove('pickingerror');
+		}
+
+		if ($wSession->has_warning()) {
+			$html .= '<div class="mb-3">' . self::displayErrorStatus($wSession->status) . '</div>';
+		} elseif ($wSession->has_message()) {
+			$html .= '<div class="mb-3">' . self::displayErrorStatus($wSession->status) . '</div>';
+		}
+		return $html;
+	}
+
 	private static function orderDisplay($data) {
 		$writer  = self::getHtmlWriter();
-
-		$html = self::orderHeader($data);
+		
+		$html  = '';
+		$html .= self::displaySessionErrors()
+		$html .= self::orderHeader($data);
 
 		if (empty($data->scan)) {
 			$html .= self::scanform($data);
