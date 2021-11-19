@@ -41,6 +41,7 @@ class Lookup extends WireData {
 		if (empty($this->whseID) === false) {
 			$q->filterByWhse($this->whseID);
 		}
+		return $q;
 	}
 
 	/**
@@ -49,5 +50,21 @@ class Lookup extends WireData {
 	 */
 	public function queryWhseBins() {
 		return $this->queryWhse();
+	}
+
+/* =============================================================
+	Lookup Functions
+============================================================= */
+	/**
+	 * Return Bins for Item ID
+	 * @param  array|string $itemID Item ID
+	 * @return array
+	 */
+	public function getDistinctBinsByItemid($itemID) {
+		$q = $this->queryWhseBins();
+		$q->filterByItemid($itemID);
+		$q->select(WhseLotserial::aliasproperty('bin'));
+		$q->groupBy(WhseLotserial::aliasproperty('bin'));
+		return $q->find()->toArray();
 	}
 }
