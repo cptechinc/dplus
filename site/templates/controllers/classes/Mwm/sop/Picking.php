@@ -207,10 +207,10 @@ class Picking extends Base {
 
 	private static function orderDisplay($data) {
 		$writer  = self::getHtmlWriter();
-		
+
 		$html  = '';
 		$html .= self::displaySessionErrors()
-		$html .= self::orderHeader($data);
+		$html .= self::displayOrderHeader($data);
 
 		if (empty($data->scan)) {
 			$html .= self::scanform($data);
@@ -221,19 +221,19 @@ class Picking extends Base {
 			$html .= self::scanResults($data);
 		}
 
-		$html .= self::orderItems($data);
+		$html .= self::displayOrderItems($data);
 		$html .= $writer->div('class=mb-3');
-		$html .= self::orderActions($data);
+		$html .= self::displayOrderActions($data);
 		return $html;
 	}
 
-	private static function orderHeader($data) {
+	private static function displayOrderHeader($data) {
 		$wSession = self::getWhsesession();
 		$order = SalesOrderQuery::create()->findOneByOrdernumber($data->ordn);
 		return self::pw('config')->twig->render('warehouse/picking/order/header-info.twig', ['order' => $order, 'whsesession' => $wSession]);
 	}
 
-	private static function orderItems($data) {
+	private static function displayOrderItems($data) {
 		$wSession = self::getWhsesession();
 		$picking  = self::getPicking($data->ordn);
 		$config   = self::pw('config');
@@ -250,7 +250,7 @@ class Picking extends Base {
 		return $config->twig->render('warehouse/picking/unguided/order/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 	}
 
-	private static function orderActions($data) {
+	private static function displayOrderActions($data) {
 		return self::pw('config')->twig->render('warehouse/picking/unguided/order/actions.twig', ['ordn' => $data->ordn]);
 	}
 
