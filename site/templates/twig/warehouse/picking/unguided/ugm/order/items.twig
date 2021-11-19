@@ -69,7 +69,7 @@
 				</div>
 			</div>
 			{% for lotserial in item.get_pickeditems() %}
-				{% set invlot = m_picking.inventory.isItemLotserialized(lotserial.itemid) ? m_picking.inventory.get_invlot(lotserial.itemid, lotserial.lotserial, lotserial.bin) : {'date_expire' : ''} %}
+				{% set invlot = m_picking.inventory.isItemLotserialized(lotserial.itemid) ? m_picking.inventory.getInvlot(lotserial.itemid, lotserial.lotserial, lotserial.bin) : {'date_expire' : ''} %}
 				<div class="list-group-item">
 					<div class="row">
 						<div class="col-sm-1"></div>
