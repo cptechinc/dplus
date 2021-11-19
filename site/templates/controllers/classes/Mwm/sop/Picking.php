@@ -216,7 +216,7 @@ class Picking extends Base {
 		$items    = $picking->items->getItems();
 
 		if ($picking->items->hasSublines()) {
-			return $config->twig->render('warehouse/picking/unguided/order/items-sublined.twig', ['lineitems' => $items, 'm_picking' => $picking]);
+			return $config->twig->render('warehouse/picking/unguided/order/items/sublined/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 		}
 
 		if ($config->twigloader->exists("warehouse/picking/unguided/$config->company/order/items.twig")) {
