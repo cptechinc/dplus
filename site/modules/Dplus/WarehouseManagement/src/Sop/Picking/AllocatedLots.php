@@ -28,12 +28,23 @@ class AllocatedLots extends WireData {
 		return SoAllocatedLotserialQuery::create();
 	}
 
+	/**
+	 * Return Query Filtered by Sales Order Number
+	 * @param  string $ordn  Sales Order Number
+	 * @return SoAllocatedLotserialQuery
+	 */
 	public function querySo($ordn) {
 		$q = $this->query();
 		$q->filterByOrdn($ordn);
 		return $q;
 	}
 
+	/**
+	 * Return Query Filtered by Sales Order Number, Linenumber
+	 * @param  string $ordn     Sales Order Number
+	 * @param  string $linenbr  Line Number
+	 * @return SoAllocatedLotserialQuery
+	 */
 	public function querySoLinenbr($ordn, $linenbr) {
 		$q = $this->querySo($ordn);
 		$q->filterByLine($linenbr);
@@ -43,11 +54,23 @@ class AllocatedLots extends WireData {
 /* =============================================================
 	Read Functions
 ============================================================= */
+	/**
+	 * Return if Order Line has Allocated Lotserials
+	 * @param  string $ordn     Sales Order Number
+	 * @param  string $linenbr  Line Number
+	 * @return bool
+	 */
 	public function hasAllocated($ordn, $linenbr) {
 		$q = $this->querySoLinenbr($ordn, $linenbr);
 		return boolval($q->count());
 	}
 
+	/**
+	 * Return Allocated Lotserials for Order
+	 * @param  string $ordn     Sales Order Number
+	 * @param  string $linenbr  Line Number
+	 * @return SoAllocatedLotserial[]
+	 */
 	public function allocatedLotserials($ordn, $linenbr) {
 		if ($this->hasAllocated($ordn, $linenbr) === false) {
 			return [];
