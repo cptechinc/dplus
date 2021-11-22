@@ -6,9 +6,9 @@
 	soTools                Dplus\Mso\So\Tools
 	order                  SalesOrder
 	order.items            SalesOrderDetail[]|ObjectCollection
-
 #}
 {% set lotAllocator = soTools.getLotAllocatorM() %}
+
 <table class="table">
 	<thead class="bg-dark text-white font-weight-bold">
 		<tr>
@@ -17,7 +17,7 @@
 			<th class="text-right">Price</th>
 			<th class="text-right">Total Price</th>
 			<th class="text-right">Notes</th>
-			<th class="text-center">Has Allocated Lots</th>
+			<th class="text-center">Allocated Lots</th>
 		</tr>
 	</thead>
 	{% for detail in order.items %}
@@ -49,6 +49,7 @@
 				{% endif %}
 			</td>
 		</tr>
+		
 		<tbody class="collapse" id="{{ detail.linenbr|attrJS }}-allocated">
 			<tr class="bg-gray">
 				<th>Line # {{ detail.linenbr }} allocated Lots</th>
