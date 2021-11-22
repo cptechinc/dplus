@@ -15,8 +15,9 @@ use ProcessWire\Page, ProcessWire\Module;
 use Dplus\DocManagement\Finders as DocFinders;
 // Dplus Code Validators
 use Dplus\CodeValidators\Mso as MsoValidator;
+// Dplus Mso
+use Dplus\Mso\So\Tools;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
 use Controllers\Mii\Ii\Ii;
 use Controllers\Mci\Ci\Ci;
 
@@ -118,9 +119,9 @@ class SalesOrder extends Base {
 		$twigloader = $config->twig->getLoader();
 
 		if ($twigloader->exists("sales-orders/sales-order/$config->company/items.twig")) {
-			return $config->twig->render("sales-orders/sales-order/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order]);
+			return $config->twig->render("sales-orders/sales-order/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order, 'soTools' => Tools::getInstance()]);
 		}
-		return $config->twig->render("sales-orders/sales-order/items.twig", ['config' => self::configSo(), 'order' => $order]);
+		return $config->twig->render("sales-orders/sales-order/items.twig", ['config' => self::configSo(), 'order' => $order, 'soTools' => Tools::getInstance()]);
 	}
 
 	protected static function documentsDisplay($data) {
