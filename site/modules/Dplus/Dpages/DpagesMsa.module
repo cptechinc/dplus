@@ -17,21 +17,6 @@ class DpagesMsa extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'msa-lgrp' => array(
-			'name'   => 'msa-lgrp',
-			'fields' => array(),
-			'paginated' => true
-		),
-		'msa-noce' => array(
-			'name'   => 'msa-noce',
-			'fields' => array(),
-			'paginated' => true
-		),
-		'msa-noce-ajax' => array(
-			'name'   => 'msa-noce-ajax',
-			'fields' => array(),
-			'paginated' => true
-		),
 	);
 
 	const PAGES = array(
@@ -42,42 +27,6 @@ class DpagesMsa extends Dpages implements Module {
 			'summary'        => 'System Administration Menu',
 			'parent'         => '/',
 			'dplus_function' => 'msa'
-		),
-		'msa-sysop' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'msa-sysop',
-			'name'           => 'sysop',
-			'title'          => 'System Optional Codes',
-			'summary'        => 'View / Edit System Optional Codes',
-			'parent'         => '/msa/',
-			'dplus_function' => 'sysop'
-		),
-		'msa-lgrp' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'msa-lgrp',
-			'name'           => 'lgrp',
-			'title'          => 'Login Group Entry',
-			'summary'        => 'View / Edit Login Group Entry',
-			'parent'         => '/msa/',
-			'dplus_function' => 'lgrp'
-		),
-		'msa-noce' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'msa-noce',
-			'name'           => 'noce',
-			'title'          => 'Pre-Defined Notes Entry',
-			'summary'        => 'View / Edit Pre-Defined Notes',
-			'parent'         => '/msa/',
-			'dplus_function' => 'noce'
-		),
-		'msa-noce-ajax' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'msa-noce-ajax',
-			'name'           => 'ajax',
-			'title'          => 'Pre-Defined Notes AJAX',
-			'summary'        => 'View / Edit Pre-Defined Notes through AJAX',
-			'parent'         => '/msa/noce/',
-			'dplus_function' => ''
 		),
 	);
 
