@@ -30,7 +30,12 @@
 				['POST',  '', Msa\Logm\Password::class, 'handleCRUD'],
 				['POST',  'web/', Msa\Logm\Password\Web::class, 'handleCRUD'],
 			],
-		]
+		],
+		'sysop' => [
+			['GET',  '', Msa\Lgrp::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Msa\Lgrp::class, 'index'],
+			['POST', '', Msa\Lgrp::class, 'handleCRUD'],
+		],
 	];
 
 	$router = new Mvc\Router();
@@ -42,7 +47,7 @@
 		$config->scripts->append($modules->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
 		$page->show_breadcrumbs = false;
 	}
-	
+
 	if ($config->ajax) {
 		echo $page->body;
 	} else {
