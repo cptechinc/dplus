@@ -32,9 +32,9 @@
 			],
 		],
 		'sysop' => [
-			['GET',  '', Msa\Lgrp::class, 'index'],
-			['GET',  'page{pagenbr:\d+}', Msa\Lgrp::class, 'index'],
-			['POST', '', Msa\Lgrp::class, 'handleCRUD'],
+			['GET',  '', Msa\Sysop::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Msa\Sysop::class, 'index'],
+			['POST', '', Msa\Sysop::class, 'handleCRUD'],
 		],
 	];
 

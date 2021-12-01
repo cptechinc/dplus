@@ -154,6 +154,7 @@ return array(
     'Controllers\\Msa\\Menu' => $baseDir . '/classes/msa/Menu.php',
     'Controllers\\Msa\\Noce' => $baseDir . '/classes/msa/Noce/Noce.php',
     'Controllers\\Msa\\Noce\\Ajax' => $baseDir . '/classes/msa/Noce/Ajax.php',
+    'Controllers\\Msa\\Sysop' => $baseDir . '/classes/msa/Sysop.php',
     'Controllers\\Mso\\Cxm' => $baseDir . '/classes/mso/Cxm.php',
     'Controllers\\Mso\\SalesOrder\\Base' => $baseDir . '/classes/mso/SalesOrder/Base.php',
     'Controllers\\Mso\\SalesOrder\\Documents' => $baseDir . '/classes/mso/SalesOrder/Documents.php',
