@@ -1,6 +1,7 @@
 <?php namespace Dplus\Codes\Msa;
 // Propel Classes
 use Propel\Runtime\Collection\ObjectCollection;
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // Dplus Models
 use MsaSysopCodeQuery, MsaSysopCode;
 // Dplus Record Locker
@@ -59,7 +60,12 @@ class Sysop extends Base {
 /* =============================================================
 	Record Locker Functions
 ============================================================= */
-	public function getRecordlockerKey(MsaSysopCode $code) {
+	/**
+	 * Return Key for Code
+	 * @param  Code   $code
+	 * @return string
+	 */
+	public function getRecordlockerKey(Code $code) {
 		return implode(FunctionLocker::glue(), [$code->system, $code->code]);
 	}
 }

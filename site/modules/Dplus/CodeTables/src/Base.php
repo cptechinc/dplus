@@ -187,7 +187,7 @@ abstract class Base extends WireData {
 
 		$response = new Response();
 		$response->setCode($code->id);
-		$response->setKey($code->id);
+		$response->setKey($this->getRecordlockerKey($code));
 
 		if ($saved) {
 			$response->setSuccess(true);
@@ -232,5 +232,17 @@ abstract class Base extends WireData {
 	 */
 	public function deleteResponse() {
 		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
+	}
+
+/* =============================================================
+	Record Locker Functions
+============================================================= */
+	/**
+	 * Return Key for Code
+	 * @param  Code   $code
+	 * @return string
+	 */
+	public function getRecordlockerKey(Code $code) {
+		return implode(FunctionLocker::glue(), [$code->id]);
 	}
 }
