@@ -50,7 +50,10 @@ class UserFunction extends WireData {
 		return self::$locker;
 	}
 
-
+	/**
+	 * Return GLUE character
+	 * @return string
+	 */
 	public static function glue() {
 		$locker = self::locker();
 		return $locker::GLUE;
