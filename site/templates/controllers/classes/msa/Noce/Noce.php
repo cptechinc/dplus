@@ -129,11 +129,11 @@ class Noce extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(template=test)::menuUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
 		});
 
-		$m->addHook('Page(template=test)::notesDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::notesDeleteUrl', function($event) {
 			$event->return = self::notesDeleteUrl($event->arguments(0));
 		});
 	}

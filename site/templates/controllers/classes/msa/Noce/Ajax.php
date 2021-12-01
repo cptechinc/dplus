@@ -13,7 +13,7 @@ use Dplus\Qnotes\Noce as Qnotes;
 use Controllers\Msa\Base;
 use Controllers\Msa\Noce;
 
-class Ajax extends Base {
+class Ajax extends Noce {
 	const DPLUSPERMISSION = '';
 	const SHOWONPAGE = 10;
 

@@ -195,27 +195,27 @@ class Logm extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(template=test)::menuUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
 		});
 
-		$m->addHook('Page(template=test)::logmUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::logmUrl', function($event) {
 			$event->return = self::logmUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(template=test)::userEditUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::userEditUrl', function($event) {
 			$event->return = self::userEditUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(template=test)::userEditContactUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::userEditContactUrl', function($event) {
 			$event->return = self::userEditContactUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(template=test)::userDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::userDeleteUrl', function($event) {
 			$event->return = self::userDeleteUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(template=test)::userEditPasswordUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::userEditPasswordUrl', function($event) {
 			$event->return = self::userEditPasswordUrl($event->arguments(0));
 		});
 	}

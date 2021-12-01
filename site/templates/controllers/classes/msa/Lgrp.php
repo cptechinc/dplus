@@ -128,11 +128,11 @@ class Lgrp extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(template=test)::menuUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
 		});
 
-		$m->addHook('Page(template=test)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0));
 		});
 	}

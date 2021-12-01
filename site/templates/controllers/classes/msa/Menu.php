@@ -97,11 +97,11 @@ class Menu extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(template=test)::subfunctionUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(template=test)::lgrpUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::lgrpUrl', function($event) {
 			$event->return = self::lgrpUrl($event->arguments(0));
 		});
 	}
