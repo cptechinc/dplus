@@ -15,5 +15,6 @@ return array(
     'Dplus\\Codes\\Mpo\\Cnfm' => $baseDir . '/src/mpo/Cnfm.php',
     'Dplus\\Codes\\Mpr\\Src' => $baseDir . '/src/mpr/Src.php',
     'Dplus\\Codes\\Msa\\Lgrp' => $baseDir . '/src/msa/Lgrp.php',
+    'Dplus\\Codes\\Msa\\Sysop' => $baseDir . '/src/msa/Sysop.php',
     'Dplus\\Codes\\Response' => $baseDir . '/src/Response.php',
 );

@@ -16,6 +16,7 @@ class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
         'Dplus\\Codes\\Mpo\\Cnfm' => __DIR__ . '/../..' . '/src/mpo/Cnfm.php',
         'Dplus\\Codes\\Mpr\\Src' => __DIR__ . '/../..' . '/src/mpr/Src.php',
         'Dplus\\Codes\\Msa\\Lgrp' => __DIR__ . '/../..' . '/src/msa/Lgrp.php',
+        'Dplus\\Codes\\Msa\\Sysop' => __DIR__ . '/../..' . '/src/msa/Sysop.php',
         'Dplus\\Codes\\Response' => __DIR__ . '/../..' . '/src/Response.php',
     );
 
