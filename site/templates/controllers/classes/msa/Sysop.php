@@ -20,18 +20,22 @@ class Sysop extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['system|text', 'code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
+		if (empty($data->code) === false) {
+			return self::code($data);
+		}
 		return self::list($data);
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['system|text', 'code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::sysopUrl();
 		$sysop  = self::getSysop();
@@ -58,12 +62,15 @@ class Sysop extends Base {
 
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
-		self::initHooks();
 
-		// $page->js .= self::pw('config')->twig->render('code-tables/msa/sysop/.js.twig', ['sysop' => self::getSysop()]);
+		self::initHooks();
 		$html = self::displayList($data, $codes);
 		self::getSysop()->deleteResponse();
 		return $html;
+	}
+
+	private static function code($data) {
+		
 	}
 
 /* =============================================================
