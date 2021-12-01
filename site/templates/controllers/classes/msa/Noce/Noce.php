@@ -133,6 +133,10 @@ class Noce extends Base {
 			$event->return = Menu::menuUrl();
 		});
 
+		$m->addHook('Page(pw_template=mgl)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
+		});
+
 		$m->addHook('Page(pw_template=msa)::notesDeleteUrl', function($event) {
 			$event->return = self::notesDeleteUrl($event->arguments(0));
 		});

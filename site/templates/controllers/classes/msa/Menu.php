@@ -10,6 +10,7 @@ use Controllers\Msa\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'msa';
+	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
 		'lgrp' => [
 			'name'       => 'lgrp',
@@ -28,6 +29,12 @@ class Menu extends Base {
 			'permission' => 'logm',
 			'title'      => 'Login ID Entry',
 			'summary'    => 'View / Edit User Logins'
+		],
+		'sysop' => [
+			'name'       => 'sysop',
+			'permission' => 'sysop',
+			'title'      => 'System Optional Codes',
+			'summary'    => 'View / Edit System Optional Codes'
 		]
 	];
 
@@ -51,6 +58,10 @@ class Menu extends Base {
 		return self::pw('pages')->get('pw_template=msa')->url;
 	}
 
+	public static function menuUrl() {
+		return self::msaUrl();
+	}
+
 	public static function subfunctionUrl($key) {
 		$url = new Purl(self::msaUrl());
 		if (array_key_exists($key, self::SUBFUNCTIONS)) {
@@ -69,6 +80,10 @@ class Menu extends Base {
 
 	public static function logmUrl() {
 		return self::subfunctionUrl('logm');
+	}
+
+	public static function sysopUrl() {
+		return self::subfunctionUrl('sysop');
 	}
 
 /* =============================================================

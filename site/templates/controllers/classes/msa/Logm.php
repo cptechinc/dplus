@@ -199,6 +199,10 @@ class Logm extends Base {
 			$event->return = Menu::menuUrl();
 		});
 
+		$m->addHook('Page(pw_template=msa)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
+		});
+
 		$m->addHook('Page(pw_template=msa)::logmUrl', function($event) {
 			$event->return = self::logmUrl($event->arguments(0));
 		});
