@@ -48,7 +48,7 @@ class Menu extends Base {
 	URLs
 ============================================================= */
 	public static function msaUrl() {
-		return self::pw('pages')->get('template=test')->url;
+		return self::pw('pages')->get('pw_template=msa')->url;
 	}
 
 	public static function subfunctionUrl($key) {

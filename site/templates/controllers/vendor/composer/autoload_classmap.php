@@ -176,6 +176,7 @@ return array(
     'Controllers\\Routers\\Mpm' => $baseDir . '/classes/routers/Mpm.php',
     'Controllers\\Routers\\Mpo' => $baseDir . '/classes/routers/Mpo.php',
     'Controllers\\Routers\\Mpr' => $baseDir . '/classes/routers/Mpr.php',
+    'Controllers\\Routers\\Msa' => $baseDir . '/classes/routers/Msa.php',
     'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
     'Controllers\\Wm\\Inventory\\LotReturn' => $baseDir . '/classes/Mwm/inventory/LotReturn/LotReturn.php',
