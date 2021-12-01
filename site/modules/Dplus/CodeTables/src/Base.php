@@ -233,23 +233,4 @@ abstract class Base extends WireData {
 	public function deleteResponse() {
 		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
 	}
-
-/* =============================================================
-	Dplus Requests
-============================================================= */
-	/**
-	 * Sends Dplus Cobol that Code Table has been Update
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return void
-	 */
-	protected function updateDplus($code) {
-		$config  = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
-		$table = static::DPLUS_TABLE;
-		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code"];
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $this->sessionID);
-		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
-	}
 }
