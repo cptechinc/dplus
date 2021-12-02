@@ -22,7 +22,16 @@ class SysopForm {
 			return true;
 		}
 		this.inputs.afterdecimal.attr('readonly', 'true');
-		this.inputs.beforedecimal.attr('readonly', true);
+		this.inputs.beforedecimal.attr('readonly', 'true');
+		return false;
+	}
+
+	enableDisableDocfolder() {
+		if (this.inputs.filename.val() == 'N') {
+			this.inputs.docfolder.attr('readonly', 'true');
+			return true;
+		}
+		this.inputs.docfolder.removeAttr('readonly');
 		return false;
 	}
 

@@ -9,8 +9,11 @@ $(function() {
 	Event Functions
 ============================================================= */
 	$("body").on("change", "select[name=fieldtype]", function(e) {
-		var input = $(this);
 		formSysop.enableDisableDecimalFields();
+	});
+
+	$("body").on("change", "select[name=filename]", function(e) {
+		formSysop.enableDisableDocfolder();
 	});
 
 	$("body").on("change", "input[name=code]", function(e) {
