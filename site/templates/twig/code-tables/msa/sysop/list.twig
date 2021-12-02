@@ -36,7 +36,7 @@
 				<td>{{ code.list_seq == 0 ? '' : code.list_seq }}</td>
 				<td>
 					{% if page.is_print() == false %}
-						{% if manager.recordlocker.isLocked(manager.getRecordlockerKey(code)) == false or  manager.recordlocker.userHasLocked(manager.getRecordlockerKey(code)) %}
+						{% if manager.recordlocker.isLocked(manager.getRecordlockerKey(code)) == false or manager.recordlocker.userHasLocked(manager.getRecordlockerKey(code)) %}
 							<a href="{{ page.codeEditUrl(code.system, code.code) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
