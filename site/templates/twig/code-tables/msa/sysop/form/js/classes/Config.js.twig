@@ -17,5 +17,6 @@ class SysopConfig {
 				maxlength: {{ sysop.fieldAttribute('description', 'maxlength') }}
 			},
 		};
+		this.keyDelimiter = '{{ sysop.recordlocker.glue() }}';
 	}
 }
