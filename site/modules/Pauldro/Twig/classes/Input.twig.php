@@ -32,6 +32,7 @@ class TwigInput extends TwigBaseHtml {
 		$this->addclasses = [];
 		$this->attributes = [];
 		$this->uppercase  = false;
+		$this->lowercase  = false;
 	}
 
 	/**
@@ -63,6 +64,11 @@ class TwigInput extends TwigBaseHtml {
 		if ($this->uppercase === true) {
 			$attributes = $this->attributes;
 			$attributes['oninput'] = 'this.value = this.value.toUpperCase()';
+			$this->attributes = $attributes;
+		}
+		if ($this->lowercase === true) {
+			$attributes = $this->attributes;
+			$attributes['oninput'] = 'this.value = this.value.toLowerCase()';
 			$this->attributes = $attributes;
 		}
 		return parent::attributes();
