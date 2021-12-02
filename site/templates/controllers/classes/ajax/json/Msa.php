@@ -154,15 +154,38 @@ class Msa extends AbstractController {
 	}
 
 	public static function getSysop($data) {
-		$fields = ['system|text', 'sysop|text', 'jqv|bool', 'new|bool'];
+		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
+		if ($data->sysop) {
+			$data->code = $data->sysop;
+		}
 		self::sanitizeParametersShort($data, $fields);
 
 		$sysop = MsaCRUDs\Sysop::getInstance();
 
-		if ($sysop->exists($data->system, $data->sysop) === false) {
+		if ($sysop->exists($data->system, $data->code) === false) {
 			return false;
 		}
-		return $sysop->codeJson($sysop->code($data->system, $data->sysop));
+		return $sysop->codeJson($sysop->code($data->system, $data->code));
+	}
+
+	public static function validateSysopNotecode($data) {
+		$fields = ['notecode|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$sysop = MsaCodes\Sysop::getInstance();
+		$exists = $sysop->notecodeExists($data->notecode);
+
+		if (empty($data->jqv) === false) {
+			if (boolval($data->new) === true) {
+				return $exists ? "Note Code $data->notecode exists" : true;
+			}
+			return $exists ? true : "Note Code $data->notecode not found";
+		}
+		
+		if (boolval($data->new) === true) {
+			return $exists === false;
+		}
+		return $exists;
 	}
 
 	public static function validateSysopSystem($data) {
