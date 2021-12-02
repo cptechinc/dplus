@@ -1,0 +1,27 @@
+<div class="form-group">
+	<label for="system">System</label>
+	<select name="system" class="form-control form-control-sm" id="system" {{ code.system ? 'disabled' : 'autofocus' }}>
+		<option value=""></option>
+		{% for key,label in sysop.fieldAttribute('system', 'options') %}
+			<option value="{{ key }}" {{ code.system == key ? 'selected' : '' }}>
+				{{ key }} - {{ label }}
+			</option>
+		{% endfor %}
+	</select>
+</div>
+
+<div class="form-group">
+	<label for="code">Code</label>
+	{% include 'util/bootstrap/form/input.twig' with {
+			'input': {
+				'name': 'code',
+				'value': code.code,
+				'attributes': {
+					'maxlength': sysop.fieldAttribute('code', 'maxlength'),
+					'disabled': code.id != '',
+					'autofocus': code.id == '',
+				}
+			}
+		}
+	%}
+</div>

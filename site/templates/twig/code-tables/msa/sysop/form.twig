@@ -7,25 +7,10 @@
 #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ code.system }}-{{ code.code }}">
 	<input type="hidden" name="action" value="update-code">
-	
+
 	<div class="row">
 		<div class="col-sm-6">
-			<div class="form-group">
-				<label for="system">System</label>
-				<select name="system" class="form-control form-control-sm" id="system" {{ code.system ? 'disabled' : 'autofocus' }}>
-					<option value="">-- Choose --</option>
-					{% for key,label in sysop.fieldAttribute('system', 'options') %}
-						<option value="{{ key }}" {{ code.system == key ? 'selected' : '' }}>
-							{{ key }} - {{ label }}
-						</option>
-					{% endfor %}
-				</select>
-			</div>
-
-			<div class="form-group">
-				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" value="{{ code.code }}" maxlength="{{ code.get_max_length_code() }}" id="code" {{ code.id ? 'readonly' : 'autofocus' }}>
-			</div>
+			{% include 'code-tables/msa/sysop/form/key.twig' %}
 
 			<div class="form-group">
 				<label for="description">Description</label>
@@ -49,8 +34,17 @@
 			</div>
 
 			<div class="form-group">
-				<label for="web_force">Web Force Entry</label>
-				{% include 'util/select.twig' with {'name': 'web_force', 'id': 'web_force', 'hideblankoption' : 'true', 'selectedvalue': code.web_force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="webforce">Web Force Entry</label>
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+						'select': {
+							'name': 'webforce',
+							'size': 'sm',
+							'value' : code.webforce,
+							'haskeys': true,
+							'options': {'Y': 'Yes', 'N': 'No'}
+						}
+					}
+				%}
 			</div>
 			<!-- end web -->
 		</div>
@@ -58,26 +52,62 @@
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="form-group">
-						<label for="file_name">File Name</label>
-						{% include 'util/select.twig' with {'name': 'file_name', 'id': 'file_name', 'hideblankoption' : 'true', 'selectedvalue': code.file_name, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+						<label for="filename">File Name</label>
+						{% include 'util/bootstrap/form/select-simple.twig' with {
+								'select': {
+									'name': 'filename',
+									'size': 'sm',
+									'value' : code.filename,
+									'haskeys': true,
+									'options': {'Y': 'Yes', 'N': 'No'}
+								}
+							}
+						%}
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="form-group">
 						<label for="validate">Validate</label>
-						{% include 'util/select.twig' with {'name': 'validate', 'id': 'validate', 'hideblankoption' : 'true', 'selectedvalue': code.validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+						{% include 'util/bootstrap/form/select-simple.twig' with {
+								'select': {
+									'name': 'validate',
+									'size': 'sm',
+									'value' : code.validate,
+									'haskeys': true,
+									'options': {'Y': 'Yes', 'N': 'No'}
+								}
+							}
+						%}
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="form-group">
 						<label for="force">Force Entry</label>
-						{% include 'util/select.twig' with {'name': 'force', 'id': 'force', 'hideblankoption' : 'true', 'selectedvalue': code.force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+						{% include 'util/bootstrap/form/select-simple.twig' with {
+								'select': {
+									'name': 'force',
+									'size': 'sm',
+									'value' : code.force,
+									'haskeys': true,
+									'options': {'Y': 'Yes', 'N': 'No'}
+								}
+							}
+						%}
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="form-group">
-						<label for="adv_search">Advanced Search</label>
-						{% include 'util/select.twig' with {'name': 'adv_search', 'id': 'adv_search', 'hideblankoption' : 'true', 'selectedvalue': code.adv_search, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+						<label for="advsearch">Advanced Search</label>
+						{% include 'util/bootstrap/form/select-simple.twig' with {
+								'select': {
+									'name': 'advsearch',
+									'size': 'sm',
+									'value' : code.advsearch,
+									'haskeys': true,
+									'options': {'Y': 'Yes', 'N': 'No'}
+								}
+							}
+						%}
 					</div>
 				</div>
 			</div>
