@@ -2,6 +2,8 @@
 
 $(function() {
 	let formSysop = SysopForm.getInstance();
+	let server    = SysopRequests.getInstance();
+	let alert     = SysopAlerts.getInstance();
 
 /* =============================================================
 	Event Functions
@@ -9,6 +11,31 @@ $(function() {
 	$("body").on("change", "select[name=fieldtype]", function(e) {
 		var input = $(this);
 		formSysop.enableDisableDecimalFields();
+	});
+
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var keys = [formSysop.inputs.system.val(), input.val()];
+
+		if (formSysop.form.data('code') == keys.join(formSysop.config.keyDelimiter)) {
+			return true;
+		}
+
+		server.validateCode(formSysop.inputs.system.val(), input.val(), function(exists) {
+			if (exists) {
+				alert.codeExists(keys.join(' '), function(editCode) {
+					if (editCode) {
+						let uri = URI();
+						uri.setQuery('system', formSysop.inputs.system.val());
+						uri.setQuery('code', input.val());
+						window.location.href = uri.toString();
+						return true;
+					} else {
+						location.reload();
+					}
+				});
+			}
+		});
 	});
 
 /* =============================================================
@@ -41,39 +68,32 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			var formSysop = SysopForm.getInstance();
-			var server   = SysopRequests.getInstance();
-			var code = formSysop.inputs.code.val();
+			var server    = SysopRequests.getInstance();
+			var code      = formSysop.inputs.code.val();
+			var keys      = [formSysop.inputs.system.val(), code];
 
-			// if (formSysop.inputs.form.attr('data-code') == code) {
-			// 	form.submit();
-			// } else {
-			// 	server.validateCode(code, function(exists) {
-			// 		var alert = CodeAlerts.getInstance();
-			// 		if (exists === false) {
-			// 			form.submit();
-			// 			return true;
-			// 		}
-			//
-			// 		alert.codeExists(code, function(editCode) {
-			// 			if (editCode) {
-			// 				var modal = formSysop.form.closest('.modal');
-			//
-			// 				if (editCode) {
-			// 					server.getCode(code, function(response) {
-			// 						if (response) {
-			// 							modal.find('.modal-title').text('Edit Code ' + code);
-			// 							formSysop.updateInputsFromJson(response);
-			// 						}
-			// 					});
-			// 				} else {
-			// 					modal.modal('hide');
-			// 				}
-			// 			} else {
-			// 				form.submit();
-			// 			}
-			// 		});
-			// 	});
-			// }
+			if (formSysop.form.data('code') == keys.join(formSysop.config.keyDelimiter)) {
+				form.submit();
+				return true;
+			}
+
+			server.validateCode(formSysop.inputs.system.val(), code, function(exists) {
+				if (exists) {
+					alert.codeExists(keys.join(' '), function(editCode) {
+						if (editCode) {
+							let uri = URI();
+							uri.setQuery('system', formSysop.inputs.system.val());
+							uri.setQuery('code', input.val());
+							window.location.href = uri.toString();
+							return true;
+						} else {
+							location.reload();
+						}
+					});
+				} else {
+					form.submit();
+				}
+			});
 		}
 	});
 });
