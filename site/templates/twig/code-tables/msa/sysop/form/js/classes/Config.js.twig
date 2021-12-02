@@ -1,9 +1,9 @@
-class SysopConfigs {
+class SysopConfig {
 	static instance = null;
 
 	static getInstance() {
 		if (this.instance === null) {
-			this.instance = new SysopConfigs();
+			this.instance = new SysopConfig();
 		}
 		return this.instance;
 	}
@@ -11,10 +11,10 @@ class SysopConfigs {
 	constructor() {
 		this.fields = {
 			code: {
-				maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
+				maxlength: {{ sysop.fieldAttribute('code', 'maxlength') }}
 			},
 			description: {
-				maxlength: {{ manager.fieldAttribute('description', 'maxlength') }}
+				maxlength: {{ sysop.fieldAttribute('description', 'maxlength') }}
 			},
 		};
 	}
