@@ -25,6 +25,7 @@
 						'value': code.beforedecimal,
 						'attributes': {
 							'max': sysop.fieldAttribute('beforedecimal', 'max'),
+							'disabled': code.isNumeric() == false
 						},
 						'addclasses': ['text-right']
 					}
@@ -42,6 +43,7 @@
 						'value': code.afterdecimal,
 						'attributes': {
 							'max': sysop.fieldAttribute('afterdecimal', 'max'),
+							'disabled': code.isNumeric() == false
 						},
 						'addclasses': ['text-right']
 					}
