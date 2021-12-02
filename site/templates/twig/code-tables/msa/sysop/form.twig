@@ -8,7 +8,7 @@
 <form action="{{ input.url() }}" method="POST" id="code-form" data-code="{{ sysop.getRecordlockerKey(code) }}">
 	<input type="hidden" name="action" value="update-code">
 
-	<div class="row">
+	<div class="row mb-3">
 		<div class="col-sm-6">
 			{% include 'code-tables/msa/sysop/form/key.twig' %}
 
