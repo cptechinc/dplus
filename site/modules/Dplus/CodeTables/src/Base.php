@@ -215,11 +215,21 @@ abstract class Base extends WireData {
 		}
 
 		$response->setFields($invalidfields);
+		$this->addResponseMsgReplacements($code, $response);
 		$response->buildMessage(static::RESPONSE_TEMPLATE);
 		if ($response->hasSuccess()) {
 			$this->updateDplus($code);
 		}
 		return $response;
+	}
+
+	/**
+	 * Add Replacements, values for the Response Message
+	 * @param Code     $code      Code
+	 * @param Response $response  Response
+	 */
+	protected function addResponseMsgReplacements(Code $code, Response $response) {
+
 	}
 
 	/**
