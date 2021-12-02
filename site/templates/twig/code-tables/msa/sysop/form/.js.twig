@@ -48,6 +48,7 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
+			system: {required: true},
 			code: {
 				required: true,
 				maxlength: formSysop.config.fields.code.maxlength,
@@ -58,6 +59,20 @@ $(function() {
 						jqv: 'true',
 						new: function() {
 							return formSysop.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			notecode: {
+				required: false,
+				maxlength: formSysop.config.fields.notecode.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('msa/validate/sysop/notecode/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formSysop.inputs.notecode.attr('data-notecode') == $('#notecode').val() ? 'false' : 'true';
 						},
 					}
 				}
