@@ -1,29 +1,10 @@
 {% include 'code-tables/msa/sysop/form/js/classes.js.twig' %}
 
 $(function() {
-	$("body").on("change", "input[name=code]", function(e) {
+	let formSysop = SysopForm.getInstance();
+
+	$("body").on("change", "select[name=fieldtype]", function(e) {
 		var input = $(this);
-		var code = input.val();
-
-		server.validateCode(code, function(exists) {
-			if (exists === true) {
-				alert.codeExists(code, function(editCode) {
-					if (editCode) {
-						var modal = input.closest('.modal');
-
-						if (editCode) {
-							server.getCode(code, function(response) {
-								if (response) {
-									modal.find('.modal-title').text('Edit Code ' + code);
-									formCode.updateInputsFromJson(response);
-								}
-							});
-						} else {
-							modal.modal('hide');
-						}
-					}
-				});
-			}
-		});
+		formSysop.enableDisableDecimalFields();
 	});
 });

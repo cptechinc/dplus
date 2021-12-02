@@ -13,5 +13,8 @@ class SysopInputs {
 		this.form          = $('#' + this.id),
 		this.code          = this.form.find('input[name=code]');
 		this.description   = this.form.find('input[name=description]');
+		this.fieldtype     = this.form.find('select[name=fieldtype]');
+		this.afterdecimal  = this.form.find('input[name=afterdecimal]');
+		this.beforedecimal = this.form.find('input[name=beforedecimal]');
 	}
 }
