@@ -28,34 +28,19 @@
 
 			<div class="form-group">
 				<label for="notecode">Note Code</label>
-				<input type="text" name="notecode" class="form-control" value="{{ code.note_code }}" maxlength="4" id="note_code">
-			</div>
-
-			<!-- Web -->
-			<div class="form-group">
-				<label for="web_validate">Web Validate</label>
-				{% include 'util/select.twig' with {'name': 'web_validate', 'id': 'web_validate', 'hideblankoption' : 'true', 'selectedvalue': code.web_validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-
-			<div class="form-group">
-				<label for="doc_store_folder">Web Document Storage Folder</label>
-				<input type="text" name="doc_store_folder" class="form-control" value="{{ code.doc_store_folder }}" maxlength="8" id="doc_store_folder">
-			</div>
-
-			<div class="form-group">
-				<label for="webforce">Web Force Entry</label>
-				{% include 'util/bootstrap/form/select-simple.twig' with {
-						'select': {
-							'name': 'webforce',
-							'size': 'sm',
-							'value' : code.webforce,
-							'haskeys': true,
-							'options': {'Y': 'Yes', 'N': 'No'}
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'notecode',
+							'value': code.notecode,
+							'attributes': {
+								'maxlength': sysop.fieldAttribute('notecode', 'maxlength'),
+							}
 						}
 					}
 				%}
 			</div>
-			<!-- end web -->
+			<legend>Web</legend>
+			{% include 'code-tables/msa/sysop/form/web.twig' %}
 		</div>
 		<div class="col-sm-6">
 			<div class="row">
@@ -122,30 +107,20 @@
 			</div>
 
 			<div class="form-group">
-				<label for="list_seq">List Sequence</label>
-				<input type="text" name="list_seq" class="form-control" value="{{ code.list_seq }}" maxlength="3" id="list_seq">
+				<label for="sequence">List Sequence</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'sequence',
+							'type': 'number',
+							'value': code.sequence,
+							'attributes': {
+								'max': sysop.fieldAttribute('sequence', 'max'),
+							}
+						}
+					}
+				%}
 			</div>
-
-			<div class="form-group">
-				<label for="field_type">Field Type</label>
-				{% include 'util/select.twig' with {'name': 'field_type', 'id': 'field_type', 'hideblankoption' : 'true', 'selectedvalue': code.field_type, 'options': {'C': 'Character', 'N': 'Numeric'}} %}
-			</div>
-
-			<!-- if field type = 'N' -->
-			<div class="row">
-				<div class="col-6">
-					<div class="form-group">
-						<label for="before_dec">Digits Before Decimal</label>
-						<input type="text" name="before_dec" class="form-control" value="{{ code.before_dec }}" maxlength="1" id="before_dec">
-					</div>
-				</div>
-				<div class="col-6">
-					<div class="form-group">
-						<label for="after_dec">Digits After Decimal</label>
-						<input type="text" name="after_dec" class="form-control" value="{{ code.after_dec }}" maxlength="1" id="after_dec">
-					</div>
-				</div>
-			</div>
+			{% include 'code-tables/msa/sysop/form/field-type.twig' %}
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
