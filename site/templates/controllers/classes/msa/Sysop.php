@@ -95,9 +95,8 @@ class Sysop extends Base {
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/msa/sysop/list.twig', ['manager' => $sysop, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/msa/sysop/list.twig', ['sysop' => $sysop, 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
-		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $sysop]);
 		return $html;
 	}
 
@@ -135,7 +134,7 @@ class Sysop extends Base {
 		$filter = new Filters\Msa\MsaSysopCode();
 		$keys = explode($sysop->recordlocker->glue(), $focus);
 
-		if ($filter->exists($keys[0], $keys[1]) === false) {
+		if ($sysop->exists($keys[0], $keys[1]) === false) {
 			return Menu::sysopUrl();
 		}
 		$position = $filter->positionQuick($focus);
