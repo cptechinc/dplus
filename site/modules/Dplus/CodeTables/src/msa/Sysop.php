@@ -39,6 +39,9 @@ class Sysop extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 		'notecode'    => ['type' => 'text', 'maxlength' => 4],
 		'sequence'    => ['type' => 'number', 'max' => 999],
+		'fieldtype'   => ['type' => 'text', 'options' => ['C' => 'Character', 'N' => 'Numeric']],
+		'beforedecimal' => ['type' => 'number', 'max' => 9],
+		'afterdecimal' => ['type' => 'number', 'max' => 9],
 	];
 
 	protected static $instance;
