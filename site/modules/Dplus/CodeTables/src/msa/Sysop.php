@@ -39,9 +39,15 @@ class Sysop extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 		'notecode'    => ['type' => 'text', 'maxlength' => 4],
 		'sequence'    => ['type' => 'number', 'max' => 999],
-		'fieldtype'   => ['type' => 'text', 'options' => ['C' => 'Character', 'N' => 'Numeric']],
-		'beforedecimal' => ['type' => 'number', 'max' => 9],
-		'afterdecimal' => ['type' => 'number', 'max' => 9],
+		'fieldtype'   => ['type' => 'text', 'options' => ['C' => 'Character', 'N' => 'Numeric'], 'default' => 'C'],
+		'beforedecimal' => ['type' => 'number', 'max' => 9, 'default' => 0],
+		'afterdecimal' => ['type' => 'number', 'max' => 9, 'default' => 0],
+		'advsearch'    => ['type' => 'text',  'default' => 'N'],
+		'validate'     => ['type' => 'text',  'default' => 'Y'],
+		'force'        => ['type' => 'text',  'default' => 'N'],
+		'webvalidate'  => ['type' => 'text',  'default' => 'N'],
+		'webforce'     => ['type' => 'text',  'default' => 'N'],
+		'filename'     => ['type' => 'text',  'default' => 'N'],
 	];
 
 	protected static $instance;
@@ -117,6 +123,16 @@ class Sysop extends Base {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
+
+		$code->setFilename($this->fieldAttribute('filename', 'default'));
+		$code->setValidate($this->fieldAttribute('validate', 'default'));
+		$code->setForce($this->fieldAttribute('force', 'default'));
+		$code->setWebvalidate($this->fieldAttribute('webvalidate', 'default'));
+		$code->setWebforce($this->fieldAttribute('webforce', 'default'));
+		$code->setFieldtype($this->fieldAttribute('fieldtype', 'default'));
+		$code->setAfterdecimal($this->fieldAttribute('afterdecimal', 'default'));
+		$code->setBeforedecimal($this->fieldAttribute('beforedecimal', 'default'));
+		$code->setAdvsearch($this->fieldAttribute('advsearch', 'default'));
 		return $code;
 	}
 
