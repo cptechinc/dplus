@@ -81,6 +81,31 @@ class Sysop extends Base {
 	}
 
 /* =============================================================
+	Displays
+============================================================= */
+	private static function displayList($data, PropelModelPager $codes) {
+		$config = self::pw('config');
+		$sysop = self::getSysop();
+
+		$html  = '';
+		// $html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
+		$html .= self::displayResponse($data);
+		$html .= $config->twig->render('code-tables/msa/sysop/list.twig', ['manager' => $sysop, 'codes' => $codes]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
+		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $sysop]);
+		return $html;
+	}
+
+	public static function displayResponse($data) {
+		$sysop = self::getSysop();
+		$response = $sysop->getResponse();
+		if (empty($response)) {
+			return '';
+		}
+		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
+	}
+
+/* =============================================================
 	URLs
 ============================================================= */
 	public static function sysopUrl($code = '') {
@@ -117,31 +142,6 @@ class Sysop extends Base {
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function displayList($data, PropelModelPager $codes) {
-		$config = self::pw('config');
-		$sysop = self::getSysop();
-
-		$html  = '';
-		// $html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
-		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/msa/sysop/list.twig', ['manager' => $sysop, 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
-		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $sysop]);
-		return $html;
-	}
-
-	public static function displayResponse($data) {
-		$sysop = self::getSysop();
-		$response = $sysop->getResponse();
-		if (empty($response)) {
-			return '';
-		}
-		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
 /* =============================================================
