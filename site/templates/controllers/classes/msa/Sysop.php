@@ -64,6 +64,7 @@ class Sysop extends Base {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 
 		self::initHooks();
+		$page->js .= self::pw('config')->twig->render('code-tables/msa/sysop/list/.js.twig');
 		$html = self::displayList($data, $codes);
 		self::getSysop()->deleteResponse();
 		return $html;
