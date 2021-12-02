@@ -14,12 +14,21 @@
 
 			<div class="form-group">
 				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'description',
+							'value': code.description,
+							'attributes': {
+								'maxlength': sysop.fieldAttribute('description', 'maxlength'),
+							}
+						}
+					}
+				%}
 			</div>
 
 			<div class="form-group">
-				<label for="note_code">Note Code</label>
-				<input type="text" name="note_code" class="form-control" value="{{ code.note_code }}" maxlength="4" id="note_code">
+				<label for="notecode">Note Code</label>
+				<input type="text" name="notecode" class="form-control" value="{{ code.note_code }}" maxlength="4" id="note_code">
 			</div>
 
 			<!-- Web -->
