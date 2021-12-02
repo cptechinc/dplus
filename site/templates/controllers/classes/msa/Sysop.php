@@ -42,7 +42,7 @@ class Sysop extends Base {
 
 		if ($data->action) {
 			$sysop->processInput(self::pw('input'));
-			$url  = self::sysopUrl($data->code);
+			$url  = self::sysopUrl(implode($sysop->recordlocker->glue(), [$data->system, $data->code]));
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
@@ -123,16 +123,19 @@ class Sysop extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
-	public static function sysopUrl($code = '') {
-		if (empty($code)) {
+	public static function sysopUrl($key = '') {
+		if (empty($key)) {
 			return Menu::sysopUrl();
 		}
-		return self::sysopFocusUrl($code);
+		return self::sysopFocusUrl($key);
 	}
 
 	public static function sysopFocusUrl($focus) {
+		$sysop  = self::getSysop();
 		$filter = new Filters\Msa\MsaSysopCode();
-		if ($filter->exists($focus) === false) {
+		$keys = explode($sysop->recordlocker->glue(), $focus);
+
+		if ($filter->exists($keys[0], $keys[1]) === false) {
 			return Menu::sysopUrl();
 		}
 		$position = $filter->positionQuick($focus);
@@ -151,7 +154,7 @@ class Sysop extends Base {
 		return $url->getUrl();
 	}
 
-	public static function codeDeleteUrl($ystem, $code) {
+	public static function codeDeleteUrl($system, $code) {
 		$url = new Purl(Menu::sysopUrl());
 		$url->query->set('system', $system);
 		$url->query->set('code', $code);
