@@ -5,7 +5,7 @@
 	sysop                  Dplus\Codes\Msa\Sysop
 	code                   MsaSysopCode
 #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ code.system }}-{{ code.code }}">
+<form action="{{ input.url() }}" method="POST" id="code-form" data-code="{{ sysop.getRecordlockerKey(code) }}">
 	<input type="hidden" name="action" value="update-code">
 
 	<div class="row">
@@ -26,19 +26,8 @@
 				%}
 			</div>
 
-			<div class="form-group">
-				<label for="notecode">Note Code</label>
-				{% include 'util/bootstrap/form/input.twig' with {
-						'input': {
-							'name': 'notecode',
-							'value': code.notecode,
-							'attributes': {
-								'maxlength': sysop.fieldAttribute('notecode', 'maxlength'),
-							}
-						}
-					}
-				%}
-			</div>
+			{% include 'code-tables/msa/sysop/form/yn-fields.twig' %}
+
 			<legend>Web</legend>
 			{% include 'code-tables/msa/sysop/form/web.twig' %}
 		</div>
@@ -46,14 +35,15 @@
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="form-group">
-						<label for="filename">File Name</label>
-						{% include 'util/bootstrap/form/select-simple.twig' with {
-								'select': {
-									'name': 'filename',
-									'size': 'sm',
-									'value' : code.filename,
-									'haskeys': true,
-									'options': {'Y': 'Yes', 'N': 'No'}
+						<label for="notecode">Note Code</label>
+						{% include 'util/bootstrap/form/input.twig' with {
+								'input': {
+									'name': 'notecode',
+									'value': code.notecode,
+									'attributes': {
+										'maxlength': sysop.fieldAttribute('notecode', 'maxlength'),
+									},
+									'addclasses': []
 								}
 							}
 						%}
@@ -61,44 +51,16 @@
 				</div>
 				<div class="col-sm-3">
 					<div class="form-group">
-						<label for="validate">Validate</label>
-						{% include 'util/bootstrap/form/select-simple.twig' with {
-								'select': {
-									'name': 'validate',
-									'size': 'sm',
-									'value' : code.validate,
-									'haskeys': true,
-									'options': {'Y': 'Yes', 'N': 'No'}
-								}
-							}
-						%}
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<div class="form-group">
-						<label for="force">Force Entry</label>
-						{% include 'util/bootstrap/form/select-simple.twig' with {
-								'select': {
-									'name': 'force',
-									'size': 'sm',
-									'value' : code.force,
-									'haskeys': true,
-									'options': {'Y': 'Yes', 'N': 'No'}
-								}
-							}
-						%}
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<div class="form-group">
-						<label for="advsearch">Advanced Search</label>
-						{% include 'util/bootstrap/form/select-simple.twig' with {
-								'select': {
-									'name': 'advsearch',
-									'size': 'sm',
-									'value' : code.advsearch,
-									'haskeys': true,
-									'options': {'Y': 'Yes', 'N': 'No'}
+						<label for="sequence">List Sequence</label>
+						{% include 'util/bootstrap/form/input.twig' with {
+								'input': {
+									'name': 'sequence',
+									'type': 'number',
+									'value': code.sequence,
+									'attributes': {
+										'max': sysop.fieldAttribute('sequence', 'max'),
+									},
+									'addclasses': ['text-right']
 								}
 							}
 						%}
@@ -106,20 +68,6 @@
 				</div>
 			</div>
 
-			<div class="form-group">
-				<label for="sequence">List Sequence</label>
-				{% include 'util/bootstrap/form/input.twig' with {
-						'input': {
-							'name': 'sequence',
-							'type': 'number',
-							'value': code.sequence,
-							'attributes': {
-								'max': sysop.fieldAttribute('sequence', 'max'),
-							}
-						}
-					}
-				%}
-			</div>
 			{% include 'code-tables/msa/sysop/form/field-type.twig' %}
 		</div>
 	</div>
