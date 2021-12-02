@@ -247,6 +247,12 @@ class Sysop extends Base {
 			return false;
 		}
 		$code = $this->getOrCreate($values->text('system'), $values->text('code'));
+		
+		if ($this->lockrecord($code) === false) {
+			$msg = "$code->system Code $code->id is Locked By " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($code));
+			$this->setResponse(Response::responseError($msg));
+			return false;
+		}
 		$invalidfields = $this->_inputUpdate($input, $code);
 		$response = $this->saveAndRespond($code, $invalidfields);
 		$this->setResponse($response);
@@ -289,14 +295,29 @@ class Sysop extends Base {
 		return $invalidfields;
 	}
 
-
 	/**
 	 * Delete Code
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
 	protected function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 
+		if ($this->exists($values->text('system'), $values->text('code')) === false) {
+			return true;
+		}
+
+		$code = $this->code($values->text('system'), $values->text('code'));
+		if ($this->lockrecord($code) === false) {
+			$msg = "$code->system Code $code->id is Locked By " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($code));
+			$this->setResponse(Response::responseError($msg));
+			return false;
+		}
+		$code->delete();
+		$response = $this->saveAndRespond($code);
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 /* =============================================================

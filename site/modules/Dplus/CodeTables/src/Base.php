@@ -266,4 +266,18 @@ abstract class Base extends WireData {
 	public function getRecordlockerKey(Code $code) {
 		return implode(FunctionLocker::glue(), [$code->id]);
 	}
+
+	/**
+	 * Lock Code
+	 * @param  Code   $code Code
+	 * @return bool
+	 */
+	public function lockrecord(Code $code) {
+		$key = $this->getRecordlockerKey($code);
+
+		if ($this->recordlocker->isLocked($key) === false) {
+			$this->recordlocker->lock($key);
+		}
+		return $this->recordlocker->userHasLocked($key);
+	}
 }

@@ -79,10 +79,11 @@ class Sysop extends Base {
 		if ($code->isNew()) {
 			$page->headline = "SYSOP: Creating New Code";
 		}
+		$sysop->lockrecord($code);
 		self::initHooks();
 		$page->js .= self::pw('config')->twig->render('code-tables/msa/sysop/form/.js.twig', ['sysop' => $sysop]);
 		$html = self::displayCode($data, $code);
-		self::getSysop()->deleteResponse();
+		$sysop->deleteResponse();
 		return $html;
 	}
 
@@ -107,7 +108,23 @@ class Sysop extends Base {
 
 		$html  = '';
 		$html .= self::displayResponse($data);
+		$html .= self::displayLock($data, $code);
 		$html .= $config->twig->render('code-tables/msa/sysop/form.twig', ['sysop' => $sysop, 'code' => $code]);
+		return $html;
+	}
+
+	private static function displayLock($data, MsaSysopCode $code) {
+		$sysop = self::getSysop();
+		$key   = $sysop->getRecordlockerKey($code);
+
+		if ($sysop->recordlocker->isLocked($key) === false || $sysop->recordlocker->userHasLocked($key)) {
+			return false;
+		}
+
+		$msg = "$data->system $data->code is being locked by " . $sysop->recordlocker->getLockingUser($key);
+		$html = '';
+		$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		$html .= '<div class="mb-3"></div>';
 		return $html;
 	}
 
