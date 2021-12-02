@@ -8,25 +8,25 @@ class SysopRequests {
 		return this.instance;
 	}
 
-	validateSysop(code, callback) {
+	validateCode(system, code, callback) {
 		var ajax = new AjaxRequest(this.validateSysopUrl());
 
-		ajax.setData({code: code});
+		ajax.setData({system: system, code: code});
 		ajax.request(function(response) {
 			callback(response)
 		});
 	}
 
-	getSysop(code, callback) {
-		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/lgrp/') }}');
+	getCode(system, code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/sysop/') }}');
 
-		ajax.setData({code: code});
+		ajax.setData({system: system, code: code});
 		ajax.request(function(response) {
 			callback(response)
 		});
 	}
 
 	validateSysopUrl() {
-		return '{{ page.jsonApiUrl('msa/validate/lgrp/') }}';
+		return '{{ page.jsonApiUrl('msa/validate/sysop/') }}';
 	}
 }
