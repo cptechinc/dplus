@@ -9,7 +9,7 @@
 	<div class="col-sm-6">
 		<div class="form-group">
 			<label for="system">System</label>
-			<select name="system" class="form-control form-control-sm" id="system" {{ code.system ? 'disabled' : 'autofocus' }}>
+			<select name="system" class="form-control form-control-sm" id="system" {{ code.system ? '' : 'autofocus' }}>
 				<option value=""></option>
 				{% for key,label in sysop.fieldAttribute('system', 'options') %}
 					<option value="{{ key }}" {{ code.system == key ? 'selected' : '' }}>
