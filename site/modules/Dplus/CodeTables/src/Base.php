@@ -142,6 +142,7 @@ abstract class Base extends WireData {
 			case 'delete-code':
 				$this->inputDelete($input);
 				break;
+			case 'update-code':
 			case 'edit-code':
 				$this->inputUpdate($input);
 				break;
@@ -161,7 +162,18 @@ abstract class Base extends WireData {
 	 * @param  Code      $code
 	 * @return array
 	 */
-	abstract protected function _inputUpdate(WireInput $input, Code $code);
+	protected function _inputUpdate(WireInput $input, Code $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($code->__isset('description')) { // Some Code tables may not use description
+			$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+		}
+		$code->setDate(date('Ymd'));
+		$code->setTime(date('His'));
+		$code->setDummy('P');
+		return [];
+	}
 
 
 	/**
@@ -205,7 +217,7 @@ abstract class Base extends WireData {
 		$response->setFields($invalidfields);
 		$response->buildMessage(static::RESPONSE_TEMPLATE);
 		if ($response->hasSuccess()) {
-			$this->updateDplus($code->id);
+			$this->updateDplus($code);
 		}
 		return $response;
 	}
