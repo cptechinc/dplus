@@ -133,7 +133,7 @@ class Msa extends AbstractController {
 		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCRUDs\Sysop::getInstance();
+		$sysop = MsaCodes\Sysop::getInstance();
 		if ($data->sysop) {
 			$data->code = $data->sysop;
 		}
@@ -160,7 +160,7 @@ class Msa extends AbstractController {
 		}
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCRUDs\Sysop::getInstance();
+		$sysop = MsaCodes\Sysop::getInstance();
 
 		if ($sysop->exists($data->system, $data->code) === false) {
 			return false;
@@ -181,7 +181,7 @@ class Msa extends AbstractController {
 			}
 			return $exists ? true : "Note Code $data->notecode not found";
 		}
-		
+
 		if (boolval($data->new) === true) {
 			return $exists === false;
 		}
@@ -192,8 +192,8 @@ class Msa extends AbstractController {
 		$fields = ['system|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCRUDs\Sysop::getInstance();
-		$exists = in_array($data->system, $sysop::SYSTEMS);
+		$sysop = MsaCodes\Sysop::getInstance();
+		$exists = in_array($data->system, $sysop->fieldAttribute('system', 'options'));
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -245,7 +245,7 @@ class Msa extends AbstractController {
 		$fields = ['system|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCRUDs\Sysop::getInstance();
+		$sysop = MsaCodes\Sysop::getInstance();
 		return $sysop->getRequiredCodes($data->system);
 	}
 
