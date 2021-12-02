@@ -53,6 +53,29 @@ class Sysop extends Base {
 	protected static $instance;
 
 /* =============================================================
+	Json
+============================================================= */
+	/**
+	 * Return JSON
+	 * @param  Code $opt
+	 * @return array
+	 */
+	public function codeJson(Code $opt) {
+		return [
+			'system'      => $opt->system,
+			'sysop'       => $opt->id,
+			'id'          => $opt->id,
+			'description' => $opt->description,
+			'input' => [
+				'validate' => $opt->validate(),
+				'force'    => $opt->force(),
+				'filename' => $opt->isFilename(),
+				'notetype' => $opt->notecode
+			]
+		];
+	}
+
+/* =============================================================
 	Query Functions
 ============================================================= */
 	/**
@@ -100,6 +123,53 @@ class Sysop extends Base {
 	public function code($system, $id) {
 		$q = $this->queryCode($system, $id);
 		return $q->findOne();
+	}
+
+	/**
+	 * Return Option Code is a Note
+	 * @param  string $system  System
+	 * @param  string $id      Option Code
+	 * @return bool
+	 */
+	public function isNote($system, $id) {
+		$q = $this->queryCode($system, $id);
+		$q->select(MsaSysopCode::aliasproperty('notecode'));
+		return boolval($q->findOne());
+	}
+
+	/**
+	 * Return Option Code is Required
+	 * @param  string $system  System
+	 * @param  string $id      Option Code
+	 * @return bool
+	 */
+	public function isRequired($system, $id) {
+		$q = $this->queryCode($system, $id);
+		$q->select(MsaSysopCode::aliasproperty('force'));
+		return $q->findOne() == MsaSysopCode::YN_TRUE;
+	}
+
+	/**
+	 * Return Option Code Note Code
+	 * @param  string $system  System
+	 * @param  string $id      Option Code
+	 * @return bool
+	 */
+	public function notecode($system, $id) {
+		$q = $this->queryCode($system, $id);
+		$q->select(MsaSysopCode::aliasproperty('notecode'));
+		return $q->findOne();
+	}
+
+	/**
+	 * Return if Note Code Exists
+	 * @param  string $notecode Note Code
+	 * @return bool
+	 */
+	public function notecodeExists($notecode) {
+		$q = $this->query();
+		$q->filterByNotecode($notecode);
+		return boolval($q->count());
 	}
 
 /* =============================================================
