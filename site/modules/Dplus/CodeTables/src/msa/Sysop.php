@@ -262,4 +262,22 @@ class Sysop extends Base {
 	public function getRecordlockerKey(Code $code) {
 		return implode(FunctionLocker::glue(), [$code->system, $code->code]);
 	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return Codes That Are Required
+	 * @param  string $system
+	 * @return array
+	 */
+	public function getRequiredCodes($system = '') {
+		$q = $this->query();
+		if ($system) {
+			$q->filterBySystem($system);
+		}
+		$q->select(MsaSysopCode::aliasproperty('code'));
+		$q->filterByForce(MsaSysopCode::YN_TRUE);
+		return $q->find()->toArray();
+	}
 }
