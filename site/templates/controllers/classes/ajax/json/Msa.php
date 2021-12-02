@@ -193,7 +193,7 @@ class Msa extends AbstractController {
 		self::sanitizeParametersShort($data, $fields);
 
 		$sysop = MsaCodes\Sysop::getInstance();
-		$exists = in_array($data->system, $sysop->fieldAttribute('system', 'options'));
+		$exists = array_key_exists($data->system, $sysop->fieldAttribute('system', 'options'));
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
