@@ -36,7 +36,9 @@ class Sysop extends Base {
 			]
 		],
 		'code'        => ['type' => 'text', 'maxlength' => MsaSysopCode::MAX_LENGTH_CODE],
-		'description' => ['type' => 'text', 'maxlength' => 40],
+		'description' => ['type' => 'text', 'maxlength' => 20],
+		'notecode'    => ['type' => 'text', 'maxlength' => 4],
+		'sequence'    => ['type' => 'number', 'max' => 999],
 	];
 
 	protected static $instance;
