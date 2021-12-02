@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
-use ProspectSource;
+use MsaSysopCode;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -78,6 +78,10 @@ class Sysop extends Base {
 		if ($code->isNew()) {
 			$page->headline = "SYSOP: Creating New Code";
 		}
+		self::initHooks();
+		$html = self::displayCode($data, $code);
+		self::getSysop()->deleteResponse();
+		return $html;
 	}
 
 /* =============================================================
@@ -85,7 +89,7 @@ class Sysop extends Base {
 ============================================================= */
 	private static function displayList($data, PropelModelPager $codes) {
 		$config = self::pw('config');
-		$sysop = self::getSysop();
+		$sysop  = self::getSysop();
 
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
@@ -93,6 +97,16 @@ class Sysop extends Base {
 		$html .= $config->twig->render('code-tables/msa/sysop/list.twig', ['manager' => $sysop, 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $sysop]);
+		return $html;
+	}
+
+	private static function displayCode($data, MsaSysopCode $code) {
+		$config = self::pw('config');
+		$sysop  = self::getSysop();
+
+		$html  = '';
+		$html .= self::displayResponse($data);
+		$html .= $config->twig->render('code-tables/msa/sysop/form.twig', ['sysop' => $sysop, 'code' => $code]);
 		return $html;
 	}
 
@@ -116,7 +130,7 @@ class Sysop extends Base {
 	}
 
 	public static function sysopFocusUrl($focus) {
-		$filter = new Filters\Msa\SysLoginGroup();
+		$filter = new Filters\Msa\MsaSysopCode();
 		if ($filter->exists($focus) === false) {
 			return Menu::sysopUrl();
 		}
@@ -164,6 +178,10 @@ class Sysop extends Base {
 
 		$m->addHook('Page(pw_template=msa)::codeEditUrl', function($event) {
 			$event->return = self::codeEditUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=msa)::sysopUrl', function($event) {
+			$event->return = self::sysopUrl($event->arguments(0));
 		});
 	}
 
