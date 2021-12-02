@@ -70,7 +70,14 @@ class Sysop extends Base {
 	}
 
 	private static function code($data) {
-		
+		$sysop = self::getSysop();
+		$page  = self::pw('page');
+		$page->headline = "SYSOP: Editing $data->system $data->code";
+		$code = $sysop->getOrCreate($data->system, $data->code);
+
+		if ($code->isNew()) {
+			$page->headline = "SYSOP: Creating New Code";
+		}
 	}
 
 /* =============================================================
@@ -165,7 +172,7 @@ class Sysop extends Base {
 ============================================================= */
 	public static function getSysop() {
 		if (empty(self::$sysop)) {
-			self::$sysop = new SysopManager();
+			self::$sysop = SysopManager::getInstance();
 		}
 		return self::$sysop;
 	}
