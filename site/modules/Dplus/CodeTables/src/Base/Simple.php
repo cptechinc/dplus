@@ -128,26 +128,6 @@ abstract class Simple extends Base {
 	}
 
 	/**
-	 * Update Record with Input Data
-	 * @param  WireInput $input Input Data
-	 * @param  Code      $code
-	 * @return array
-	 */
-	protected function _inputUpdate(WireInput $input, Code $code) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		if ($code->__isset('description')) { // Some Code tables may not use description
-			$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
-		}
-		$code->setDate(date('Ymd'));
-		$code->setTime(date('His'));
-		$code->setDummy('P');
-		return [];
-	}
-
-
-	/**
 	 * Delete CNFM Code
 	 * @param  WireInput $input Input Data
 	 * @return bool
@@ -175,15 +155,14 @@ abstract class Simple extends Base {
 ============================================================= */
 	/**
 	 * Sends Dplus Cobol that Code Table has been Update
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
+	 * @param  Code $code  Code
 	 * @return void
 	 */
 	protected function updateDplus($code) {
 		$config  = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$table = static::DPLUS_TABLE;
-		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code"];
+		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code->id"];
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
