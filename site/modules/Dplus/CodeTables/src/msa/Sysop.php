@@ -21,7 +21,7 @@ class Sysop extends Base {
 	const MODEL_TABLE        = 'sys_opt_options';
 	const DESCRIPTION        = 'System Optional Code';
 	const DESCRIPTION_RECORD = 'System Optional Code';
-	const RESPONSE_TEMPLATE  = 'System Optional Code {code} {not} {crud}';
+	const RESPONSE_TEMPLATE  = 'System {system} Code {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'sysop';
 	const DPLUS_TABLE           = 'SYSOP';
 	const FIELD_ATTRIBUTES = [
@@ -94,6 +94,15 @@ class Sysop extends Base {
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
+	/**
+	 * REturn if System Exists
+	 * @param  string $system  System Code
+	 * @return bool
+	 */
+	public function systemExists($system) {
+		return array_key_exists($system, $this->fieldAttribute('system', 'options'));
+	}
+
 	/**
 	 * Return the Code records from Database
 	 * @return ObjectCollection
@@ -228,7 +237,20 @@ class Sysop extends Base {
 	 * @return bool
 	 */
 	protected function inputUpdate(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = [];
+		$system = $values->text('system');
 
+		if ($this->systemExists($system) === false) {
+			$this->setResponse(Response::responseError("System $system not found"));
+			return false;
+		}
+		$code = $this->getOrCreate($values->text('system'), $values->text('code'));
+		$invalidfields = $this->_inputUpdate($input, $code);
+		$response = $this->saveAndRespond($code, $invalidfields);
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 	/**
@@ -238,7 +260,33 @@ class Sysop extends Base {
 	 * @return array
 	 */
 	protected function _inputUpdate(WireInput $input, Code $code) {
+		parent::_inputUpdate($input, $code);
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = [];
 
+		$code->setFilename($values->yn('filename'));
+		$code->setValidate($values->yn('validate'));
+		$code->setForce($values->yn('force'));
+		$code->setAdvsearch($values->yn('advsearch'));
+		$code->setWebvalidate($values->yn('webvalidate'));
+		$code->setWebforce($values->yn('webforce'));
+		$code->setDocfolder($values->yn('docfolder'));
+		$code->setSequence($values->int('sequence', ['max' => $this->fieldAttribute('sequence', 'max')]));
+		$code->setFieldtype($values->yn('fieldtype'));
+
+		if ($code->isNumeric()) {
+			$code->setBeforedecimal($values->int('beforedecimal', ['max' => $this->fieldAttribute('beforedecimal', 'max')]));
+			$code->setAfterdecimal($values->int('afterdecimal', ['max' => $this->fieldAttribute('afterdecimal', 'max')]));
+		}
+		$notecode = strtolower($values->text('notecode', ['maxLength' => $this->fieldAttribute('notecode', 'maxlength')]));
+
+		if ($code->notecode != $notecode && $this->notecodeExists($notecode)) {
+			$invalidfields['notecode'] = "Note Code $notecode exists";
+		} else {
+			$code->setNotecode($notecode);
+		}
+		return $invalidfields;
 	}
 
 
@@ -249,6 +297,36 @@ class Sysop extends Base {
 	 */
 	protected function inputDelete(WireInput $input) {
 
+	}
+
+/* =============================================================
+	CRUD Response
+============================================================= */
+	/**
+	 * Add Replacements, values for the Response Message
+	 * @param Code     $code      Code
+	 * @param Response $response  Response
+	 */
+	protected function addResponseMsgReplacements(Code $code, Response $response) {
+		$response->addMsgReplacement("{system}", $code->system);
+	}
+
+/* =============================================================
+	Dplus Requests
+============================================================= */
+	/**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  Code $code  Code
+	 * @return void
+	 */
+	protected function updateDplus($code) {
+		$config  = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$table = static::DPLUS_TABLE;
+		$data = ["DBNAME=$dplusdb", 'UPDATESYSOP', "SYS=$code->system", "CODE=$code->id"];
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
 	}
 
 /* =============================================================
