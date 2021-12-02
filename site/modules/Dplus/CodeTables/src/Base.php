@@ -148,9 +148,8 @@ abstract class Base extends WireData {
 		}
 	}
 
-
 	/**
-	 * Update CNFM Code from Input Data
+	 * Update Code from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
