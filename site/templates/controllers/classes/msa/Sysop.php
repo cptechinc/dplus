@@ -79,6 +79,7 @@ class Sysop extends Base {
 			$page->headline = "SYSOP: Creating New Code";
 		}
 		self::initHooks();
+		$page->js .= self::pw('config')->twig->render('code-tables/msa/sysop/form/.js.twig', ['sysop' => $sysop]);
 		$html = self::displayCode($data, $code);
 		self::getSysop()->deleteResponse();
 		return $html;

@@ -1,0 +1,32 @@
+class SysopRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SysopRequests();
+		}
+		return this.instance;
+	}
+
+	validateSysop(code, callback) {
+		var ajax = new AjaxRequest(this.validateSysopUrl());
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getSysop(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/lgrp/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateSysopUrl() {
+		return '{{ page.jsonApiUrl('msa/validate/lgrp/') }}';
+	}
+}

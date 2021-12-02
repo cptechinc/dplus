@@ -1,0 +1,21 @@
+class SysopForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SysopForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = SysopInputs.getInstance();
+		this.config = SysopConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+
+	}
+}
