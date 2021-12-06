@@ -1,4 +1,12 @@
-<form action="{{ page.fullURL.getUrl() }}" method="post">
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	m_picking              module Picking
+	item                   PickSalesOrderDetail
+	lotserial              Whseitempick
+#}
+<form action="{{ page.fullURL.getUrl() }}" method="POST">
 	<input type="hidden" name="action" value="delete-lotserial">
 	<input type="hidden" name="ordn" value="{{ item.ordernbr }}">
 	<input type="hidden" name="linenbr" value="{{ lotserial.linenbr }}">

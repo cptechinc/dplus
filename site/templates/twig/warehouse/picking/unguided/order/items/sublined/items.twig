@@ -1,0 +1,31 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	m_picking              module Picking
+	lineitems              PickSalesOrderDetail[]|ObjectCollection
+#}
+{% set lotAllocator = m_picking.getAllocatedLotM() %}
+{% set docm = lotAllocator.getDocm() %}
+
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr>
+				<th class="text-center">Line</th>
+				<th class="text-center">Subline</th>
+				<th>Allocated</th>
+				<th>Item ID / Description</th>
+				<th class="text-right">Ordered</th>
+				<th class="text-right">Pulled</th>
+				<th class="text-right">Remaining</th>
+				<th></th>
+			</tr>
+		</thead>
+		{% for item in lineitems %}
+			{% include 'warehouse/picking/unguided/order/items/sublined/item/tr.item.twig' %}
+			{% include 'warehouse/picking/unguided/order/items/sublined/item/tbody.allocated.twig' %}
+			{% include 'warehouse/picking/unguided/order/items/sublined/item/tbody.lotserials.twig' %}
+		{% endfor %}
+	</table>
+</div>

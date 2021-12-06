@@ -3,47 +3,84 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 	config                 ConfigSalesOrder
+	soTools                Dplus\Mso\So\Tools
 	order                  SalesOrder
 	order.items            SalesOrderDetail[]|ObjectCollection
 #}
-<table class="table table-striped table-borderless">
+{% set lotAllocator = soTools.getLotAllocatorM() %}
+{% set docm = lotAllocator.getDocm() %}
+
+<table class="table">
 	<thead class="bg-dark text-white font-weight-bold">
 		<tr>
-			<th>Item ID</th>
+			<th colspan="2">Item ID</th>
 			<th class="text-right">Qty</th>
 			<th class="text-right">Price</th>
 			<th class="text-right">Total Price</th>
 			<th class="text-right">Notes</th>
+			<th class="text-center">Allocated Lots</th>
 		</tr>
 	</thead>
-	<tbody>
-		{% for detail in order.items %}
-			<tr>
-				<td>
-					<a href="{{ page.iiUrl(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
-						{{ detail.itemid }}
-					</a></br>
-					<small>{{ detail.desc1 }}</small> <br>
-					{% if detail.specialorder != 'N' %}
-						<a href="#specialorder-item-modal" data-toggle="modal" data-ordn="{{ detail.ordernumber }}" data-linenbr="{{ detail.linenbr }}">
-							<span class="badge badge-primary">{{ detail.specialorder()|title }}</span>
-						</a>
-					{% endif %}
-				</td>
-				<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
-				<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
-				<td class="text-right">$ {{ detail.total_price|number_format(config.decimal_places_price) }}</td>
-				<td class="text-right">
-					<a href="{{ page.orderNotesUrl(order.ordernumber, detail.linenbr) }}" class="h4 {{ detail.count_notes() ? 'text-success' : 'text-muted'}}">
-						<i class="fa fa-sticky-note" aria-hidden="true"></i>
+	{% for detail in order.items %}
+		<tr>
+			<td colspan="2">
+				<a href="{{ page.iiUrl(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
+					{{ detail.itemid }}
+				</a></br>
+				<small>{{ detail.desc1 }}</small> <br>
+				{% if detail.specialorder != 'N' %}
+					<a href="#specialorder-item-modal" data-toggle="modal" data-ordn="{{ detail.ordernumber }}" data-linenbr="{{ detail.linenbr }}">
+						<span class="badge badge-primary">{{ detail.specialorder()|title }}</span>
 					</a>
-				</td>
+				{% endif %}
+			</td>
+			<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
+			<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
+			<td class="text-right">$ {{ detail.total_price|number_format(config.decimal_places_price) }}</td>
+			<td class="text-right">
+				<a href="{{ page.orderNotesUrl(order.ordernumber, detail.linenbr) }}" class="h4 {{ detail.count_notes() ? 'text-success' : 'text-muted'}}">
+					<i class="fa fa-sticky-note" aria-hidden="true"></i>
+				</a>
+			</td>
+			<td class="text-center">
+				{% if lotAllocator.hasAllocated(detail.ordernumber, detail.linenbr) %}
+					<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#{{ detail.linenbr|attrJS }}-allocated" aria-expanded="false" aria-controls="{{ detail.linenbr|attrJS }}-allocated">
+						<i class="fa fa-list" aria-hidden="true"></i>
+					</button>
+				{% endif %}
+			</td>
+		</tr>
+
+		<tbody class="collapse" id="{{ detail.linenbr|attrJS }}-allocated">
+			<tr class="bg-gray">
+				<th>Line # {{ detail.linenbr }} allocated Lots</th>
+				<th>Lot / Serial #</th>
+				<th class="text-right">Qty</th>
+				<th>Image</th>
+				<th colspan="3"></th>
 			</tr>
-		{% endfor %}
-	</tbody>
+			{% for lot in lotAllocator.allocatedLotserials(detail.ordernumber, detail.linenbr) %}
+				<tr>
+					<td></td>
+					<td>{{ lot.lotserial }}</td>
+					<td class="text-right">{{ lot.shipqty|number_format(config.decimal_places_qty) }}</td>
+					<td>
+						{% if docm.hasImage(lot.lotserial) %}
+							{% set image = docm.getImage(lot.lotserial) %}
+							<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ lot.lotserial }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
+								<i class="fa fa-picture-o" aria-hidden="true"></i>
+								<span class="sr-only">View Image</span>
+							</button>
+						{% endif %}
+					</td>
+					<td colspan="2"></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	{% endfor %}
 	<tfoot>
 		<tr class="bg-totals">
-			<td>
+			<td colspan="2">
 				Totals
 			</td>
 			<td class="text-right">
@@ -53,6 +90,7 @@
 			<td class="text-right">
 				$ {{ order.subtotal_tax|number_format(config.decimal_places_price) }}
 			</td>
+			<td></td>
 			<td></td>
 		</tr>
 	</tfoot>

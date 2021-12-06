@@ -1,3 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	inventory              Dplus\Wm\Inventory\Search
+	docm                   Dplus\DocManagement\Finders\Lt\Img
+#}
 <table class="table table-sm table-striped">
 	<thead>
 		<tr>
@@ -43,7 +50,7 @@
 				<td>{{ lotserial.qty }}</td>
 				<td>
 					{% if docm.hasImage(lotserial.lotserial) %}
-					{% set image = docm.getImage(lotserial.lotserial) %}
+						{% set image = docm.getImage(lotserial.lotserial) %}
 						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ lotserial.lotserial }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
 							<i class="fa fa-picture-o" aria-hidden="true"></i>
 							<span class="sr-only">View Image</span>

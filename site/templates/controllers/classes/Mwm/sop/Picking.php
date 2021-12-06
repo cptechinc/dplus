@@ -10,6 +10,7 @@ use WarehouseQuery, Warehouse;
 use SalesOrderQuery, SalesOrder;
 // Dpluso Model
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+use Whsesession;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 use Processwire\SearchInventory, Processwire\WarehouseManagement,ProcessWire\HtmlWriter;
@@ -28,14 +29,14 @@ class Picking extends Base {
 	const DPLUSPERMISSION = 'porpk';
 
 	/** @var PickingCRUD */
-	static private $picking;
+	private static $picking;
 	/** @var MsoValidator */
-	static private $validateMso;
+	private static $validateMso;
 
 /* =============================================================
 	Indexes
 ============================================================= */
-	static public function index($data) {
+	public static function index($data) {
 		$fields = ['scan|text', 'action|text', 'ordn|ordn'];
 		self::sanitizeParametersShort($data, $fields);
 
@@ -52,11 +53,11 @@ class Picking extends Base {
 		if ($wSession->is_pickingunguided() === false) {
 			$picking->requestStartPicking();
 		}
-		$html = self::pw('config')->twig->render('warehouse/picking/order/form.twig');
+		$html = self::displayOrderForm();
 		return $html;
 	}
 
-	static public function handleCRUD($data) {
+	public static function handleCRUD($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn', 'scan|text']);
 
 		$validate = self::getValidatorMso();
@@ -87,16 +88,13 @@ class Picking extends Base {
 		}
 	}
 
-	static public function picking($data) {
+	private static function picking($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
 		$validate = self::getValidatorMso();
 		$wSession = self::getWhsesession();
 
 		if ((empty($data->ordn) === false && $validate->order($data->ordn) === false) || $wSession->is_orderinvalid()) {
-			$html =  self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ordn can not be found"]);
-			$html .= '<div class="mb-3"></div>';
-			$html .= self::pw('config')->twig->render('warehouse/picking/order/form.twig');
-			return $html;
+			return self::displayOrderNotFound();
 		}
 
 		self::pw('page')->headline = "Picking Order # $data->ordn";
@@ -105,13 +103,13 @@ class Picking extends Base {
 		$configInventory = $picking->getConfigInventory();
 
 		if ($wSession->is_orderonhold() || $wSession->is_orderverified() || $wSession->is_orderinvoiced() || $wSession->is_ordernotfound() || (!$configInventory->allow_negativeinventory && $wSession->is_ordershortstocked())) {
-			return self::pw('config')->twig->render('warehouse/picking/order/status.twig', ['whsesession' => $wSession]);
+			return self::displayErrorStatus($wSession->get_statusmessage());
 		}
 		self::pw('config')->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/warehouse/pick-order.js'));
 		return self::pickOrder($data);
 	}
 
-	static protected function pickOrder($data) {
+	protected static function pickOrder($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn', 'data|text']);
 		$config   = self::pw('config');
 		$session  = self::pw('session');
@@ -132,23 +130,13 @@ class Picking extends Base {
 				// TODO
 				// WhseItempickQuery::create()->filterByOrdn($ordn)->filterBySessionid(session_id())->delete();
 			}
-			$html = self::pw('config')->twig->render('warehouse/picking/status.twig', ['whsesession' => $wSession]);
+
+			$html = self::displayErrorStatus($wSession->get_statusmessage());
 			$html .= '<div class="mb-3"></div>';
-			$html .= self::pw('config')->twig->render('warehouse/picking/order/form.twig');
+			$html .= self::displayOrderForm();
 			return $html;
 		}
 
-		if ($session->pickingerror) {
-			$writer = self::getHtmlWriter();
-			$html = $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $session->pickingerror]));
-			$session->remove('pickingerror');
-		}
-
-		if ($wSession->has_warning()) {
-			$html .= $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Warning!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $wSession->status]));
-		} elseif ($wSession->has_message()) {
-			$html .= $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $wSession->status]));
-		}
 		$html .= self::orderDisplay($data);
 		return $html;
 	}
@@ -160,7 +148,7 @@ class Picking extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
-	static public function pickingUrl($ordn = '') {
+	public static function pickingUrl($ordn = '') {
 		$url = new Purl(self::pw('pages')->get('pw_template=whse-picking')->url);
 		if ($ordn) {
 			$url->query->set('ordn', $ordn);
@@ -168,13 +156,13 @@ class Picking extends Base {
 		return $url->getUrl();
 	}
 
-	static public function pickScanUrl($ordn, $scan) {
+	public static function pickScanUrl($ordn, $scan) {
 		$url = new Purl(self::pickingUrl($ordn));
 		$url->query->set('scan', $scan);
 		return $url->getUrl();
 	}
 
-	static public function pickingExitUrl($ordn) {
+	public static function pickingExitUrl($ordn) {
 		$url = new Purl(self::pickingUrl($ordn));
 		$url->query->set('action', 'exit-order');
 		return $url->getUrl();
@@ -183,40 +171,76 @@ class Picking extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	static private function orderDisplay($data) {
+	private static function displayErrorStatus($msg) {
+		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $msg]);
+	}
+
+	private static function displayOrderForm() {
+		return self::pw('config')->twig->render('warehouse/picking/order/form.twig');
+	}
+
+	private static function displayOrderNotFound() {
+		$html  = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ordn can not be found"]);
+		$html .= '<div class="mb-3"></div>';
+		$html .= self::displayOrderForm();
+		return $html;
+	}
+
+	private static function displaySessionErrors() {
+		$session  = self::pw('session');
+		$wSession = self::getWhsesession();
+		$html = '';
+
+		if ($session->pickingerror) {
+			$writer = self::getHtmlWriter();
+			$html = '<div class="mb-3">' . self::displayErrorStatus($session->pickingerror) . '</div>';
+			$session->remove('pickingerror');
+		}
+
+		if ($wSession->has_warning()) {
+			$html .= '<div class="mb-3">' . self::displayErrorStatus($wSession->status) . '</div>';
+		} elseif ($wSession->has_message()) {
+			$html .= '<div class="mb-3">' . self::displayErrorStatus($wSession->status) . '</div>';
+		}
+		return $html;
+	}
+
+	private static function orderDisplay($data) {
 		$writer  = self::getHtmlWriter();
 
-		$html =  self::orderHeader($data);
+		$html  = '';
+		$html .= self::displaySessionErrors();
+		$html .= self::displayOrderHeader($data);
 
 		if (empty($data->scan)) {
-			$html .= self::scanform($data);
+			$html .= self::displayScanForm($data);
 		}
 
 		if (empty($data->scan) === false) {
 			self::pw('page')->scan = $data->scan;
-			$html .= self::scanResults($data);
+			$html .= self::displayScanResults($data);
 		}
 
-		$html .= self::orderItems($data);
+		$html .= self::displayOrderItems($data);
 		$html .= $writer->div('class=mb-3');
-		$html .= self::orderActions($data);
+		$html .= self::displayOrderActions($data);
 		return $html;
 	}
 
-	static private function orderHeader($data) {
+	private static function displayOrderHeader($data) {
 		$wSession = self::getWhsesession();
 		$order = SalesOrderQuery::create()->findOneByOrdernumber($data->ordn);
 		return self::pw('config')->twig->render('warehouse/picking/order/header-info.twig', ['order' => $order, 'whsesession' => $wSession]);
 	}
 
-	static private function orderItems($data) {
+	private static function displayOrderItems($data) {
 		$wSession = self::getWhsesession();
 		$picking  = self::getPicking($data->ordn);
 		$config   = self::pw('config');
 		$items    = $picking->items->getItems();
 
 		if ($picking->items->hasSublines()) {
-			return $config->twig->render('warehouse/picking/unguided/order/items-sublined.twig', ['lineitems' => $items, 'm_picking' => $picking]);
+			return $config->twig->render('warehouse/picking/unguided/order/items/sublined/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 		}
 
 		if ($config->twigloader->exists("warehouse/picking/unguided/$config->company/order/items.twig")) {
@@ -226,18 +250,18 @@ class Picking extends Base {
 		return $config->twig->render('warehouse/picking/unguided/order/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 	}
 
-	static private function orderActions($data) {
+	private static function displayOrderActions($data) {
 		return self::pw('config')->twig->render('warehouse/picking/unguided/order/actions.twig', ['ordn' => $data->ordn]);
 	}
 
-	static private function scanResults($data) {
+	private static function displayScanResults($data) {
 		$session = self::pw('session');
 		$picking = self::getPicking($data->ordn);
 		$inv     = $picking->inventory->lookup;
 		$q       = $inv->getScanQuery($data->scan);
 
 		if ($session->getFor('picking', 'verify-picked-items')) {
-			return self::scanVerifyPicked($data, $picking);
+			return self::displayScanVerifyPicked($data, $picking);
 		}
 
 		if ($q->count() == 0) {
@@ -248,12 +272,12 @@ class Picking extends Base {
 		}
 
 		if ($q->count() == 1) {
-			return self::scanResultsSingle($data, $picking);
+			return self::displayScanResultsSingle($data, $picking);
 		}
-		return self::scanResultsMultiple($data, $picking);
+		return self::displayScanResultsMultiple($data, $picking);
 	}
 
-	static private function scanVerifyPicked($data, PickingCRUD $picking) {
+	private static function displayScanVerifyPicked($data, PickingCRUD $picking) {
 		$session = self::pw('session');
 		$query = $picking->getWhseitempickQuery(['barcode' => $data->scan, 'recordnumber' => $session->getFor('picking', 'verify-picked-items')]);
 
@@ -267,7 +291,7 @@ class Picking extends Base {
 		return $html;
 	}
 
-	static private function scanResultsMultiple($data, PickingCRUD $picking) {
+	private static function displayScanResultsMultiple($data, PickingCRUD $picking) {
 		/** @var InvLookup */
 		$lookup  = $picking->inventory->lookup;
 		$q       = $lookup->getScanQuery($data->scan);
@@ -281,7 +305,7 @@ class Picking extends Base {
 		return $html;
 	}
 
-	static private function scanResultsSingle($data, PickingCRUD $picking) {
+	private static function displayScanResultsSingle($data, PickingCRUD $picking) {
 		/** @var InvLookup */
 		$lookup  = $picking->inventory->lookup;
 		$config  = self::pw('config');
@@ -314,7 +338,7 @@ class Picking extends Base {
 		}
 	}
 
-	static private function scanform($data) {
+	private static function displayScanForm($data) {
 		$writer = self::getHtmlWriter();
 		$html = $writer->h3('', 'Scan item to pick');
 		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/form.twig');
@@ -325,14 +349,7 @@ class Picking extends Base {
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
-	static public function validateUserPermission(user $user = null) {
-		if (empty($user)) {
-			$user = self::pw('user');
-		}
-		return $user->has_function(self::DPLUSPERMISSION);
-	}
-
-	static public function getPicking($ordn = '') {
+	public static function getPicking($ordn = '') {
 		self::pw('modules')->get('WarehouseManagement');
 
 		if (empty(self::$picking)) {
@@ -346,7 +363,7 @@ class Picking extends Base {
 		return self::$picking;
 	}
 
-	static public function getValidatorMso() {
+	public static function getValidatorMso() {
 		if (empty(self::$validateMso)) {
 			self::$validateMso = new MsoValidator();
 		}
@@ -356,7 +373,7 @@ class Picking extends Base {
 /* =============================================================
 	Init
 ============================================================= */
-	static public function init() {
+	public static function init() {
 		$m = self::pw('modules')->get('WarehouseManagement');
 
 		$m->addHook('Page::removeScanUrl', function($event) {

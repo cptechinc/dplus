@@ -9,7 +9,8 @@ use WarehouseQuery, Warehouse;
 use BininfoQuery, Bininfo;
 use WhsesessionQuery, Whsesession;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, Processwire\SearchInventory, Processwire\WarehouseManagement;
+use ProcessWire\Page, ProcessWire\Module, ProcessWire\User;
+use Processwire\SearchInventory, Processwire\WarehouseManagement;
 // Dplus Classes
 use Dplus\Wm\Binr as BinrCRUD;
 // Mvc Controllers

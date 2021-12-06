@@ -1,0 +1,41 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	m_picking              module Picking
+	item                   PickSalesOrderDetail
+	lotAllocator           Dplus\Wm\Sop\Picking\AllocatedLots
+	docm                   Dplus\DocManagement\Finders\Lt\Img
+#}
+<tbody class="collapse" id="{{ item.linenbr|attrJS }}">
+	<tr class="bg-gray">
+		<td></td>
+		<td colspan="7">
+			<b>Line # {{ item.linenbr }} Picked Lotserials</b>
+		</td>
+	</tr>
+	<tr class="bg-light">
+		<td></td>
+		<td>Carton</td>
+		<td>Bin</td>
+		<td>Lotserial</td>
+		<td>Lot Reference</td>
+		<td class="text-right">Qty</td>
+		<td></td>
+		<td></td>
+	</tr>
+	{% for lotserial in item.get_pickeditems() %}
+		<tr>
+			<td></td>
+			<td>{{ lotserial.palletnbr }}</td>
+			<td>{{ lotserial.bin }}</td>
+			<td>{{ lotserial.lotserial }}</td>
+			<td>{{ lotserial.lotserialref }}</td>
+			<td class="text-right">{{ lotserial.qty|number_format(m_picking.decimalPlacesQty()) }}</td>
+			<td class="text-center">
+				{% include 'warehouse/picking/unguided/order/remove-picked.twig' %}
+			</td>
+			<td></td>
+		</tr>
+	{% endfor %}
+</tbody>
