@@ -1,6 +1,9 @@
 {% extends 'items/itm/display.twig' %}
 
 {% block body %}
+	<div class="px-3">
+		<span class="badge badge-pill badge-warning">*</span> = Required
+	</div>
 	{% include 'items/itm/options/list.twig' %}
 	{% include 'util/paginator/propel.twig' with {'pager': options} %}
 {% endblock %}

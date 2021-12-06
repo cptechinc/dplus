@@ -12,6 +12,7 @@ use ProcessWire\WireData;
  * @property bool    $error            Was there an error?
  * @property bool    $message          Error Message / Success Message
  * @property string  $key              Key String
+ * @property string  $type             Note Type
  * @property array   $msgReplacements  Key Value of replacement values in the message
  */
 class Response extends WireData {
@@ -31,6 +32,7 @@ class Response extends WireData {
 		$this->error = false;
 		$this->message = '';
 		$this->key     = '';
+		$this->type    = '';
 		$this->fields  = [];
 		$this->msgReplacements = [];
 	}
@@ -61,6 +63,10 @@ class Response extends WireData {
 
 	public function setKey($key) {
 		$this->key = $key;
+	}
+
+	public function setType($type) {
+		$this->type = $type;
 	}
 
 	public function setFields(array $fields) {

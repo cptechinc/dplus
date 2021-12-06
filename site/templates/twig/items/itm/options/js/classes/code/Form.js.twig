@@ -12,6 +12,7 @@ class CodeForm {
 		this.id = 'code-form';
 		this.form = $('#' + this.id);
 		this.inputs = CodeInputs.getInstance();
+		this.config = CodeConfigs.getInstance();
 		this.system = 'IN';
 	}
 
@@ -43,14 +44,16 @@ class CodeForm {
 			required: false,
 		};
 
-		if (json.code) {
-			inputs.submit.delete.removeAttr('disabled');
-		} else {
-			inputs.submit.delete.attr('disabled', 'true');
-		}
 		$('#' + inputs.code.attr('id')).rules('remove', 'required remote');
+
 		this.getCodeJqvRules(json, function(rules) {
 			$('#' + inputs.code.attr('id')).rules('add', rules);
+
+			if (json.code && rules.required === false) {
+				inputs.submit.delete.removeAttr('disabled');
+			} else {
+				inputs.submit.delete.attr('disabled', 'true');
+			}
 		});
 	}
 

@@ -1,0 +1,22 @@
+class NoteInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new NoteInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'note-form',
+		this.form          = $('#' + this.id),
+		this.sysop         = this.form.find('input[name=sysop]');
+		this.itemid        = this.form.find('input[name=itemID]');
+		this.note          = this.form.find('textarea[name=note]');
+		this.submit = {
+			delete: this.form.find('button[type=submit][value=delete]'),
+			update: this.form.find('button[type=submit][value=update]'),
+		}
+	}
+}

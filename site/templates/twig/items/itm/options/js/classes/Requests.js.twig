@@ -33,4 +33,13 @@ class CodeRequests {
 		});
 	}
 
+	getNote(itemID, type, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/itm/options/notes') }}');
+
+		ajax.setData({itemID: itemID, type: type});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 }

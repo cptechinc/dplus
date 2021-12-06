@@ -8,6 +8,7 @@ var nav = '#yt-menu';
 $(function() {
 	$('[data-toggle="tooltip"]').tooltip();
 	init_datepicker();
+	bsCustomFileInput.init()
 
 	$(window).scroll(function() {
 		if ($(this).scrollTop() > 50) {
@@ -227,6 +228,18 @@ $(function() {
 		} else {
 			button.data('expanded', 'false');
 		}
+	});
+
+/* =============================================================
+	Indexes
+============================================================= */
+	$("body").on('show.bs.modal', '#image-modal', function(event) {
+		var button = $(event.relatedTarget);
+		// var modal  = $(this);
+
+		var modal = ImageModal.getInstance();
+		modal.updateTitle(button.data('type'), button.data('id'));
+		modal.updateImage(button.data('folder'), button.data('file'));
 	});
 });
 

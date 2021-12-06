@@ -58,6 +58,11 @@
 			],
 			'umm' => [
 				['GET', 'uom/', Json\Min::class, 'getUom'],
+			],
+			'itm' => [
+				'options' => [
+					['GET', 'notes/', Json\Min::class, 'getInvOptCodeNotes'],
+				]
 			]
 		],
 		'map' => [
@@ -99,6 +104,11 @@
 			'validate' => [
 				['GET', 'custid/', Json\Mci::class, 'validateCustid'],
 			],
+		],
+		'mdm' => [
+			'docs' => [
+				['GET', 'copier/', Json\Mdm::class, 'copyFile'],
+			]
 		],
 		'mgl' => [
 			'validate' => [
@@ -180,6 +190,9 @@
 			'sysop' => [
 				['GET', '', Json\Msa::class, 'getSysop'],
 				['GET', 'option/', Json\Msa::class, 'getSysopOption'],
+				'system' => [
+					['GET', 'required-codes/', Json\Msa::class, 'getSysopRequiredCodes'],
+				]
 			]
 		],
 		'mso' => [

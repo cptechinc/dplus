@@ -102,3 +102,44 @@ class Alerts {
 		});
 	}
 }
+
+class ImageModal {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ImageModal();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'image-modal';
+		this.modal = $('#' + this.id);
+	}
+
+	updateTitle(type, id) {
+		var modalTitle = this.modal.find('.modal-title');
+		modalTitle.find('.type').text(type);
+		modalTitle.find('.id').text(id);
+	}
+
+	updateImage(folder, file) {
+		var modal = this;
+
+		this.requestImageCopy(folder, file, function(success) {
+			if (success) {
+				var img = modal.modal.find('img');
+				img.attr('src', config.urls.docvwr + file);
+			}
+		});
+	}
+
+	requestImageCopy(folder, file, callback) {
+		var ajax = new AjaxRequest(api.urls.mdm.docs.copier);
+		ajax.setData({folder: folder, file:file});
+		ajax.request(function(success) {
+			callback(success);
+		});
+	}
+}

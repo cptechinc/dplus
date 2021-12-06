@@ -5,6 +5,7 @@ $(function() {
 	var server   = CodeRequests.getInstance();
 	var alert    = CodeAlerts.getInstance();
 	var formCode = CodeForm.getInstance();
+	var formNote = NoteForm.getInstance();
 
 	var uri = URI();
 
@@ -31,6 +32,16 @@ $(function() {
 	});
 
 /* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	$("body").on("click", "a:not(a.delete_button, a.paginator-link, #ajax-modal a)", function(e) {
+		if (formCode.config.isMissingRequired) {
+			e.preventDefault();
+			alert.missingRequired();
+		}
+	});
+
+/* =============================================================
 	Edit Modal Functions
 ============================================================= */
 	$('#edit-code-modal').on('show.bs.modal', function (event) {
@@ -48,6 +59,12 @@ $(function() {
 		$('.sysop.bg-success').removeClass('bg-success text-white');
 		$('.highlight').removeClass('highlight');
 		$('.sysop[data-sysop="'+sysop+'"]').addClass('highlight');
+	});
+
+	$('#edit-note-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		var json = button.data('json');
+		formNote.updateFormFromJson(json);
 	});
 
 /* =============================================================
@@ -120,6 +137,39 @@ $(function() {
 			},
 		},
 		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+			form.submit();
+		}
+	});
+
+	formNote.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			sysop: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/sysop') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						system: function() {
+							return $('input[name=system]').val();
+						}
+					}
+				}
+			},
+			note: {
+				required: false,
+			},
+		},
+		errorPlacement: function(error, element) {
+			if (element.hasParent('.form-group')) {
+				element = element.closest('.form-group');
+			}
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		submitHandler: function(form) {

@@ -10,6 +10,7 @@ return array(
     'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',
     'Controllers\\Ajax\\Json\\Mar' => $baseDir . '/classes/ajax/json/Mar.php',
     'Controllers\\Ajax\\Json\\Mci' => $baseDir . '/classes/ajax/json/Mci.php',
+    'Controllers\\Ajax\\Json\\Mdm' => $baseDir . '/classes/ajax/json/Mdm.php',
     'Controllers\\Ajax\\Json\\Mgl' => $baseDir . '/classes/ajax/json/Mgl.php',
     'Controllers\\Ajax\\Json\\Min' => $baseDir . '/classes/ajax/json/Min.php',
     'Controllers\\Ajax\\Json\\Misc' => $baseDir . '/classes/ajax/json/Misc.php',

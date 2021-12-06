@@ -11,12 +11,14 @@ use DocumentQuery, Document;
 // Dplus Document Management
 use Dplus\DocManagement\Mover as FileMover;
 use Dplus\DocManagement\Viewer;
+use Dplus\DocManagement\Folders;
 
 /**
  * Document Finder
  * Decorator for DocumentQuery to find Documents in Database
  */
 class Finder extends WireData {
+	const FOLDER = '';
 	const TAG_ARINVOICE  = 'AR';
 	const TAG_SALESORDER = 'SO';
 	const TAG_QUOTE      = 'QT';
@@ -25,6 +27,7 @@ class Finder extends WireData {
 	const TAG_APINVOICE  = 'AP';
 	const TAG_CUSTOMER   = 'CU';
 	const TAG_WIP        = 'WP';
+	const TAG_LOT        = 'LT';
 
 	const TAG_AR_CHECKS = 'RC';
 
@@ -60,6 +63,14 @@ class Finder extends WireData {
 	}
 
 	/**
+	 * Return Folder Code
+	 * @return string
+	 */
+	public function getFolder() {
+		return static::FOLDER;
+	}
+
+	/**
 	 * Return Document Query
 	 * @return DocumentQuery
 	 */
@@ -84,6 +95,19 @@ class Finder extends WireData {
 	}
 
 	/**
+	 * Return Document
+	 * @param  string $folder   Folder Code
+	 * @param  string $filename File Name
+	 * @return Document
+	 */
+	public function getDocumentByFilename($folder, $filename) {
+		$q = $this->docQuery();
+		$q->filterByFolder($folder);
+		$q->filterByFilename($filename);
+		return $q->findOne();
+	}
+
+	/**
 	 * Return filepath for Document
 	 * @param  string $folder   Document Folder
 	 * @param  string $filename File Name
@@ -93,7 +117,7 @@ class Finder extends WireData {
 		if ($this->exists($folder, $filename) === false) {
 			return '';
 		}
-		$folder = DocumentFolderQuery::create()->findOneByFolder($folder);
+		$folder = $this->getFolders()->folder($folder);
 		return "$folder->directory/$filename";
 	}
 
@@ -128,7 +152,7 @@ class Finder extends WireData {
 			return false;
 		}
 
-		$folder = DocumentFolderQuery::create()->findOneByFolder($folder);
+		$folder = $this->getFolders()->folder($folder);
 		$mover = self::getFileMover();
 		return $mover->copyFile($folder->directory, $filename, $destination);
 	}
@@ -155,5 +179,13 @@ class Finder extends WireData {
 	 */
 	public function getViewer() {
 		return Viewer::getInstance();
+	}
+
+	/**
+	 * Return Folders
+	 * @return Folders
+	 */
+	public function getFolders() {
+		return Folders::getInstance();
 	}
 }

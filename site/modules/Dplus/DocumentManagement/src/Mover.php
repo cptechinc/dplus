@@ -3,9 +3,8 @@
 use ProcessWire\WireData;
 
 /**
- * Document Finder
- *
- * Decorator for DocumentQuery to find Documents in Database
+ * Document Mover
+ * Moves / Copies documents
  */
 class Mover extends WireData {
 

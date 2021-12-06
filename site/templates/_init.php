@@ -108,6 +108,7 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/fuelux.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/moment.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/bootstrap-notify.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/lib/bs-file-input.min.js'));
 	$config->scripts->append('https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js');
 	$config->scripts->append($hasher->getHashUrl('scripts/uri.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/sweetalert2.js'));
@@ -159,3 +160,5 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 
 	$page->js .= $config->twig->render('util/js/variables.js.twig', ['variables' => ['agent' => $config->js('agent')]]);
 }
+
+include ('./_init.js.php');

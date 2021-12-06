@@ -1,0 +1,29 @@
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="note-form">
+	<input type="hidden" name="itemID" id="itemID" value="{{ input.get.text('itemID') }}">
+	<input type="hidden" name="system" id="system" value="IN">
+	<input type="hidden" name="sysop" id="sysop">
+
+	<div class="form-group">
+		<label for="note">Note</label>
+		<div class="form-group d-flex justify-content-between align-items-center">
+			{% include 'util/qnotes-textarea.twig' with {
+					'id': 'note',
+					'rows': 15, 'cols': itmOpt.qnotes.fieldAttribute('note', 'cols'),
+					'val': ''
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button" name="action" value="update">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="submit" class="btn btn-secondary delete_button" name="action" value="delete">
+			<i class="fa fa-eraser" aria-hidden="true"></i> Clear
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

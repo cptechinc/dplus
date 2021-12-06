@@ -3,6 +3,8 @@
 use Purl\Url as Purl;
 // Document Management
 use Dplus\DocManagement\Finders\Lt\Img as Docm;
+use Dplus\DocManagement\Copier;
+use Dplus\DocManagement\Folders;
 // Dplus Inventory Search
 use Dplus\Wm\Inventory\Search;
 // Dplus CRUD
@@ -13,6 +15,8 @@ use Controllers\Wm\Base;
 class Img extends Base {
 	const DPLUSPERMISSION = 'wm';
 	const TITLE = 'Lot Images';
+
+	private static $docm;
 
 /* =============================================================
 	Indexes
@@ -31,6 +35,7 @@ class Img extends Base {
 		if (empty($data->lotserial) === false) {
 			return self::lotserial($data);
 		}
+		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/scan/.js.twig');
 		return self::displayInitialScreen($data);
 	}
 
@@ -39,7 +44,7 @@ class Img extends Base {
 		$url = Menu::imgUrl();
 		$manager = self::getImg();
 		$success = $manager->process(self::pw('input'));
-		
+
 		switch ($data->action) {
 			case 'update':
 				if ($success === false) {
@@ -51,18 +56,46 @@ class Img extends Base {
 	}
 
 	private static function scan($data) {
-		Search::getInstance()->requestSearch($data->scan);
+		$search = Search::getInstance();
+		$search->requestSearch($data->scan);
+
+		if ($search->lotserialExists($data->scan)) {
+			self::pw('session')->redirect(self::lotserialUrl($data->scan), $http301 = false);
+		}
+
 		self::initHooks();
-		return self::displayScanResults($data);
+		self::pw('page')->headline = "Searching for $data->scan";
+		$html = self::displayScanResults($data);
+		self::getImg()->deleteResponse();
+		return $html;
 	}
 
 	private static function lotserial($data) {
 		Search::getInstance()->requestSearch($data->lotserial);
+		self::copyImage($data);
+
 		self::initHooks();
-		self::pw('page')->headline = "Lot #$data->lotserial";
+		self::pw('page')->headline = "Lotserial #$data->lotserial";
 		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/.js.twig');
 		self::pw('config')->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
-		return self::displayLotserial($data);
+		$html = self::displayLotserial($data);
+		self::getImg()->deleteResponse();
+		return $html;
+	}
+
+	private static function copyImage($data) {
+		$docm = self::getDocm();
+
+		if ($docm->hasImage($data->lotserial)) {
+			$file = $docm->getImage($data->lotserial);
+			$folder = Folders::getInstance()->folder($file->folder);
+			$copier = Copier::getInstance();
+			$copier->useDocVwrDirectory();
+
+			if ($copier->isInDirectory($file->filename) === false) {
+				$copier->copyFile($folder->directory, $file->filename);
+			}
+		}
 	}
 
 /* =============================================================
@@ -81,10 +114,11 @@ class Img extends Base {
 
 	private static function displayScanResults($data) {
 		$inventory = Search::getInstance();
+		$docm = self::getDocm();
 
 		$html  = '';
 		$html .= self::displayResponse($data);
-		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/scan/results.twig', ['inventory' => $inventory]);
+		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/scan/results/display.twig', ['inventory' => $inventory, 'docm' => $docm]);
 		return $html;
 	}
 
@@ -95,7 +129,7 @@ class Img extends Base {
 
 		$html  = '';
 		$html .= self::displayResponse($data);
-		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/display.twig', ['lotserial' => $lotserial]);
+		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/display.twig', ['lotserial' => $lotserial, 'docm' => $docm]);
 		return $html;
 	}
 
@@ -127,10 +161,17 @@ class Img extends Base {
 		$m->addHook('Page(pw_template=whse-mlot)::lotserialUrl', function($event) {
 			$event->return = self::lotserialUrl($event->arguments(0));
 		});
+
+		$m->addHook('Page(pw_template=whse-mlot)::imgUrl', function($event) {
+			$event->return = Menu::imgUrl();
+		});
 	}
 
 	public static function getDocm() {
-		return new Docm();
+		if (empty(self::$docm)) {
+			self::$docm = new Docm();
+		}
+		return self::$docm;
 	}
 
 	public static function getImg() {

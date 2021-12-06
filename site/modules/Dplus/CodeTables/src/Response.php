@@ -12,6 +12,7 @@ use ProcessWire\WireData;
  * @property bool    $error    Was there an error?
  * @property bool    $message  Error Message / Success Message
  * @property string  $code     Code ID
+ * @property string  $function Function Code
  * @property string  $key      Key String
  */
 class Response extends WireData {
@@ -32,6 +33,7 @@ class Response extends WireData {
 		$this->message = '';
 		$this->code    = '';
 		$this->key     = '';
+		$this->function = '';
 		$this->fields  = [];
 		$this->msgReplacements = [];
 	}
@@ -62,6 +64,10 @@ class Response extends WireData {
 
 	public function setCode($code) {
 		$this->code = $code;
+	}
+
+	public function setFunction($function) {
+		$this->function = $function;
 	}
 
 	public function setKey($key) {
