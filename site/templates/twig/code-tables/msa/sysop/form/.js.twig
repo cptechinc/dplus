@@ -1,0 +1,117 @@
+{% include 'code-tables/msa/sysop/form/js/classes.js.twig' %}
+
+$(function() {
+	let formSysop = SysopForm.getInstance();
+	let server    = SysopRequests.getInstance();
+	let alert     = SysopAlerts.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "select[name=fieldtype]", function(e) {
+		formSysop.enableDisableDecimalFields();
+	});
+
+	$("body").on("change", "select[name=filename]", function(e) {
+		formSysop.enableDisableDocfolder();
+	});
+
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var keys = [formSysop.inputs.system.val(), input.val()];
+
+		if (formSysop.form.data('code') == keys.join(formSysop.config.keyDelimiter)) {
+			return true;
+		}
+
+		server.validateCode(formSysop.inputs.system.val(), input.val(), function(exists) {
+			if (exists) {
+				alert.codeExists(keys.join(' '), function(editCode) {
+					if (editCode) {
+						let uri = URI();
+						uri.setQuery('system', formSysop.inputs.system.val());
+						uri.setQuery('code', input.val());
+						window.location.href = uri.toString();
+						return true;
+					} else {
+						location.reload();
+					}
+				});
+			}
+		});
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	let validator = formSysop.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			system: {required: true},
+			code: {
+				required: true,
+				maxlength: formSysop.config.fields.code.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('msa/validate/sysop/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formSysop.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			notecode: {
+				required: false,
+				maxlength: formSysop.config.fields.notecode.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('msa/validate/sysop/notecode/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formSysop.inputs.notecode.attr('data-notecode') == $('#notecode').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			description: {
+				maxlength: formSysop.config.fields.description.maxlength,
+			}
+		},
+		submitHandler: function(form) {
+			var formSysop = SysopForm.getInstance();
+			var server    = SysopRequests.getInstance();
+			var code      = formSysop.inputs.code.val();
+			var keys      = [formSysop.inputs.system.val(), code];
+
+			if (formSysop.form.data('code') == keys.join(formSysop.config.keyDelimiter)) {
+				form.submit();
+				return true;
+			}
+
+			server.validateCode(formSysop.inputs.system.val(), code, function(exists) {
+				if (exists) {
+					alert.codeExists(keys.join(' '), function(editCode) {
+						if (editCode) {
+							let uri = URI();
+							uri.setQuery('system', formSysop.inputs.system.val());
+							uri.setQuery('code', input.val());
+							window.location.href = uri.toString();
+							return true;
+						} else {
+							location.reload();
+						}
+					});
+				} else {
+					form.submit();
+				}
+			});
+		}
+	});
+});

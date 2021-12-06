@@ -10,6 +10,7 @@ use Controllers\Msa\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'msa';
+	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
 		'lgrp' => [
 			'name'       => 'lgrp',
@@ -28,6 +29,12 @@ class Menu extends Base {
 			'permission' => 'logm',
 			'title'      => 'Login ID Entry',
 			'summary'    => 'View / Edit User Logins'
+		],
+		'sysop' => [
+			'name'       => 'sysop',
+			'permission' => 'sysop',
+			'title'      => 'System Optional Codes',
+			'summary'    => 'View / Edit System Optional Codes'
 		]
 	];
 
@@ -48,7 +55,11 @@ class Menu extends Base {
 	URLs
 ============================================================= */
 	public static function msaUrl() {
-		return self::pw('pages')->get('template=test')->url;
+		return self::pw('pages')->get('pw_template=msa')->url;
+	}
+
+	public static function menuUrl() {
+		return self::msaUrl();
 	}
 
 	public static function subfunctionUrl($key) {
@@ -69,6 +80,10 @@ class Menu extends Base {
 
 	public static function logmUrl() {
 		return self::subfunctionUrl('logm');
+	}
+
+	public static function sysopUrl() {
+		return self::subfunctionUrl('sysop');
 	}
 
 /* =============================================================
@@ -97,11 +112,11 @@ class Menu extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(template=test)::subfunctionUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(template=test)::lgrpUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::lgrpUrl', function($event) {
 			$event->return = self::lgrpUrl($event->arguments(0));
 		});
 	}

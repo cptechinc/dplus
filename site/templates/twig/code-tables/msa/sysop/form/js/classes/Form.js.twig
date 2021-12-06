@@ -1,0 +1,37 @@
+class SysopForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SysopForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = SysopInputs.getInstance();
+		this.config = SysopConfig.getInstance();
+	}
+
+	enableDisableDecimalFields() {
+		if (this.inputs.fieldtype.val() == 'N') {
+			this.inputs.afterdecimal.removeAttr('readonly');
+			this.inputs.beforedecimal.removeAttr('readonly');
+			return true;
+		}
+		this.inputs.afterdecimal.attr('readonly', 'true');
+		this.inputs.beforedecimal.attr('readonly', 'true');
+		return false;
+	}
+
+	enableDisableDocfolder() {
+		if (this.inputs.filename.val() == 'N') {
+			this.inputs.docfolder.attr('readonly', 'true');
+			return true;
+		}
+		this.inputs.docfolder.removeAttr('readonly');
+		return false;
+	}
+}

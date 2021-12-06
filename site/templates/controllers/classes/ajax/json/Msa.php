@@ -130,44 +130,70 @@ class Msa extends AbstractController {
 	}
 
 	public static function validateSysop($data) {
-		$fields = ['system|text', 'sysop|text', 'jqv|bool', 'new|bool'];
+		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCRUDs\Sysop::getInstance();
-		$exists = $sysop->exists($data->system, $data->sysop);
+		$sysop = MsaCodes\Sysop::getInstance();
+		if ($data->sysop) {
+			$data->code = $data->sysop;
+		}
+		$exists = $sysop->exists($data->system, $data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
 		}
 
 		if (boolval($data->new) === true) {
-			return $exists === false ? true : "$data->system Sysop $data->sysop already exists";
+			return $exists === false ? true : "$data->system Sysop $data->code already exists";
 		}
 
 		if ($exists === false) {
-			return "$data->system Sysop $data->sysop not found";
+			return "$data->system Sysop $data->code not found";
 		}
 		return true;
 	}
 
 	public static function getSysop($data) {
-		$fields = ['system|text', 'sysop|text', 'jqv|bool', 'new|bool'];
+		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
+		if ($data->sysop) {
+			$data->code = $data->sysop;
+		}
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCRUDs\Sysop::getInstance();
+		$sysop = MsaCodes\Sysop::getInstance();
 
-		if ($sysop->exists($data->system, $data->sysop) === false) {
+		if ($sysop->exists($data->system, $data->code) === false) {
 			return false;
 		}
-		return $sysop->codeJson($sysop->code($data->system, $data->sysop));
+		return $sysop->codeJson($sysop->code($data->system, $data->code));
+	}
+
+	public static function validateSysopNotecode($data) {
+		$fields = ['notecode|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$sysop = MsaCodes\Sysop::getInstance();
+		$exists = $sysop->notecodeExists($data->notecode);
+
+		if (empty($data->jqv) === false) {
+			if (boolval($data->new) === true) {
+				return $exists ? "Note Code $data->notecode exists" : true;
+			}
+			return $exists ? true : "Note Code $data->notecode not found";
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false;
+		}
+		return $exists;
 	}
 
 	public static function validateSysopSystem($data) {
 		$fields = ['system|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCRUDs\Sysop::getInstance();
-		$exists = in_array($data->system, $sysop::SYSTEMS);
+		$sysop = MsaCodes\Sysop::getInstance();
+		$exists = array_key_exists($data->system, $sysop->fieldAttribute('system', 'options'));
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -219,7 +245,7 @@ class Msa extends AbstractController {
 		$fields = ['system|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCRUDs\Sysop::getInstance();
+		$sysop = MsaCodes\Sysop::getInstance();
 		return $sysop->getRequiredCodes($data->system);
 	}
 

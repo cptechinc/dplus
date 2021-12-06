@@ -9,7 +9,7 @@ use PoConfirmCodeQuery, PoConfirmCode;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Codes
-use Dplus\Codes\Base;
+use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**

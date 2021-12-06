@@ -185,7 +185,7 @@ class Logm extends WireData {
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	private function updateInput(WireInput $input) {
+	protected function updateInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
@@ -209,7 +209,7 @@ class Logm extends WireData {
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	private function updateInputUser(WireInput $input, DplusUser $user) {
+	protected function updateInputUser(WireInput $input, DplusUser $user) {
 		$rm = strtolower($input->requestMethod());
 		$values  = $input->$rm;
 		$invalid = [];
@@ -244,7 +244,7 @@ class Logm extends WireData {
 	 * @param  DplusUser $user   User
 	 * @return array
 	 */
-	private function updateInputUserValidated(WireInput $input, DplusUser $user) {
+	protected function updateInputUserValidated(WireInput $input, DplusUser $user) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$fields = ['whseid','printerbrowse','printerreport', 'groupid', 'roleid'];
@@ -322,7 +322,7 @@ class Logm extends WireData {
 	 * @param  array     $invalidfields Input fields that require attention
 	 * @return Response
 	 */
-	private function saveAndRespond(DplusUser $user, array $invalidfields = []) {
+	protected function saveAndRespond(DplusUser $user, array $invalidfields = []) {
 		$is_new = $user->isDeleted() ? false : $user->isNew();
 		$saved  = $user->isDeleted() ? $user->isDeleted() : $user->save();
 

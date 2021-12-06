@@ -9,7 +9,7 @@ use GlCodeQuery, GlCode;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Codes
-use Dplus\Codes\Base;
+use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**

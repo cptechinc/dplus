@@ -181,6 +181,7 @@
 					['GET', '', Json\Msa::class, 'validateSysop'],
 					['GET', 'system/', Json\Msa::class, 'validateSysopSystem'],
 					['GET', 'option/', Json\Msa::class, 'validateSysopOption'],
+					['GET', 'notecode/', Json\Msa::class, 'validateSysopNotecode'],
 				]
 			],
 			['GET', 'user/', Json\Msa::class, 'getUser'],

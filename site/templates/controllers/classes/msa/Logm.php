@@ -88,6 +88,7 @@ class Logm extends Base {
 		self::initHooks();
 		$page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
+		self::getLogm()->deleteResponse();
 		return $html;
 	}
 
@@ -128,6 +129,18 @@ class Logm extends Base {
 		return $url->getUrl();
 	}
 
+	public static function userEditContactUrl($id) {
+		$url = new Purl(self::userEditUrl($id));
+		$url->path->add('contact');
+		return $url->getUrl();
+	}
+
+	public static function userEditPasswordUrl($id) {
+		$url = new Purl(self::userEditUrl($id));
+		$url->path->add('password');
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -155,8 +168,8 @@ class Logm extends Base {
 
 	public static function displayLock($data) {
 		$logm = self::getLogm();
-		$logm->recordlocker->userHasLocked($data->id);
-		if ($logm->recordlocker->isLocked($data->id) == false && $logm->recordlocker->userHasLocked($data->id) !== false) {
+
+		if ($logm->recordlocker->isLocked($data->id) && $logm->recordlocker->userHasLocked($data->id) === false) {
 			$msg = "User $data->id is being locked by " . $logm->recordlocker->getLockingUser($data->id);
 			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "User is Locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		}
@@ -169,7 +182,10 @@ class Logm extends Base {
 
 		$html  = '';
 		$html .= '<div class="mb-3">' . self::displayLock($data) . '</div>';
+		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('msa/logm/user.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= $config->twig->render('msa/logm/user/password/modal/pswd.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= $config->twig->render('msa/logm/user/password/modal/pswd-web.twig', ['logm' => $logm, 'duser' => $user]);
 		return $html;
 	}
 
@@ -179,20 +195,32 @@ class Logm extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(template=test)::menuUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
 		});
 
-		$m->addHook('Page(template=test)::logmUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
+		});
+
+		$m->addHook('Page(pw_template=msa)::logmUrl', function($event) {
 			$event->return = self::logmUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(template=test)::userEditUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::userEditUrl', function($event) {
 			$event->return = self::userEditUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(template=test)::userDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=msa)::userEditContactUrl', function($event) {
+			$event->return = self::userEditContactUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=msa)::userDeleteUrl', function($event) {
 			$event->return = self::userDeleteUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=msa)::userEditPasswordUrl', function($event) {
+			$event->return = self::userEditPasswordUrl($event->arguments(0));
 		});
 	}
 

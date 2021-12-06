@@ -1,0 +1,5 @@
+{% set tinput = twiginput(input) %}
+<div class="custom-control custom-checkbox">
+	<input type="checkbox" class="custom-control-input" name="{{ tinput.name }}" id="{{ tinput.id() }}" value="{{ tinput.value }}" {{ tinput.attributes()|raw }}>
+	<label class="custom-control-label" for="{{ tinput.id() }}">{{ input.label }}</label>
+</div>

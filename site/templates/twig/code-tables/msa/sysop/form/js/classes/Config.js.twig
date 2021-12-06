@@ -1,0 +1,30 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	sysop                  Dplus\Codes\Msa\Sysop
+#}
+class SysopConfig {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SysopConfig();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ sysop.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ sysop.fieldAttribute('description', 'maxlength') }}
+			},
+			notecode: {
+				maxlength: {{ sysop.fieldAttribute('notecode', 'maxlength') }}
+			},
+		};
+		this.keyDelimiter = '{{ sysop.recordlocker.glue() }}';
+	}
+}

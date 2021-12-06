@@ -1,0 +1,24 @@
+class SysopInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SysopInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.system        = this.form.find('select[name=system]');
+		this.fieldtype     = this.form.find('select[name=fieldtype]');
+		this.afterdecimal  = this.form.find('input[name=afterdecimal]');
+		this.beforedecimal = this.form.find('input[name=beforedecimal]');
+		this.notecode      = this.form.find('input[name=notecode]');
+		this.filename      = this.form.find('input[name=filename]');
+		this.docfolder     = this.form.find('input[name=docfolder]');
+	}
+}

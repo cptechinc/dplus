@@ -1,103 +1,76 @@
-{# sysop is an instance of MsaSysopCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ sysop.system }}-{{ sysop.code }}">
-	<input type="hidden" name="action" value="update-sysop">
-	<input type="hidden" name="table" value="sysop">
-	<div class="row">
-		<div class="col-sm-6">
-			<div class="form-group">
-				<label for="system">System</label>
-				<select name="system" class="form-control" id="system" {{ sysop.system ? 'disabled' : 'autofocus' }}>
-					<option value="">-- Choose --</option>
-					<option value="AP" {{ sysop.system == 'AP' ? 'selected' : '' }}>AP - Accounts Payable/Vendor</option>
-					<option value="AR" {{ sysop.system == 'AR' ? 'selected' : '' }}>AR - Accounts Receivable/Customer</option>
-					<option value="IN" {{ sysop.system == 'IN' ? 'selected' : '' }}>IN - Inventory/Item</option>
-					<option value="MS" {{ sysop.system == 'MS' ? 'selected' : '' }}>MS - Miscellaneous</option>
-					<option value="PO" {{ sysop.system == 'PO' ? 'selected' : '' }}>PO - Purchase Order</option>
-					<option value="SO" {{ sysop.system == 'SO' ? 'selected' : '' }}>SO - Sales Order</option>
-				</select>
-				{% if sysop.system %}
-					<input type="hidden" name="system" value="{{ sysop.system }}" />
-				{% endif %}
-			</div>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	sysop                  Dplus\Codes\Msa\Sysop
+	code                   MsaSysopCode
+#}
+<form action="{{ input.url() }}" method="POST" id="code-form" data-code="{{ sysop.getRecordlockerKey(code) }}">
+	<input type="hidden" name="action" value="update-code">
 
-			<div class="form-group">
-				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" value="{{ sysop.code }}" maxlength="{{ sysop.get_max_length_code() }}" id="code" {{ sysop.id ? 'readonly' : 'autofocus' }}>
-			</div>
+	<div class="row mb-3">
+		<div class="col-sm-6">
+			{% include 'code-tables/msa/sysop/form/key.twig' %}
 
 			<div class="form-group">
 				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" maxlength="20" value="{{ sysop.description }}" id="description" autofocus>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'description',
+							'value': code.description,
+							'attributes': {
+								'maxlength': sysop.fieldAttribute('description', 'maxlength'),
+							}
+						}
+					}
+				%}
 			</div>
 
-			<div class="form-group">
-				<label for="note_code">Note Code</label>
-				<input type="text" name="note_code" class="form-control" value="{{ sysop.note_code }}" maxlength="4" id="note_code">
-			</div>
+			{% include 'code-tables/msa/sysop/form/yn-fields.twig' %}
 
-			<!-- Web -->
-			<div class="form-group">
-				<label for="web_validate">Web Validate</label>
-				{% include 'util/select.twig' with {'name': 'web_validate', 'id': 'web_validate', 'hideblankoption' : 'true', 'selectedvalue': sysop.web_validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-
-			<div class="form-group">
-				<label for="doc_store_folder">Web Document Storage Folder</label>
-				<input type="text" name="doc_store_folder" class="form-control" value="{{ sysop.doc_store_folder }}" maxlength="8" id="doc_store_folder">
-			</div>
-
-			<div class="form-group">
-				<label for="web_force">Web Force Entry</label>
-				{% include 'util/select.twig' with {'name': 'web_force', 'id': 'web_force', 'hideblankoption' : 'true', 'selectedvalue': sysop.web_force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-			<!-- end web -->
+			<legend>Web</legend>
+			{% include 'code-tables/msa/sysop/form/web.twig' %}
 		</div>
 		<div class="col-sm-6">
-			<div class="form-group">
-				<label for="file_name">File Name</label>
-				{% include 'util/select.twig' with {'name': 'file_name', 'id': 'file_name', 'hideblankoption' : 'true', 'selectedvalue': sysop.file_name, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-
-			<div class="form-group">
-				<label for="validate">Validate</label>
-				{% include 'util/select.twig' with {'name': 'validate', 'id': 'validate', 'hideblankoption' : 'true', 'selectedvalue': sysop.validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-
-			<div class="form-group">
-				<label for="force">Force Entry</label>
-				{% include 'util/select.twig' with {'name': 'force', 'id': 'force', 'hideblankoption' : 'true', 'selectedvalue': sysop.force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-
-			<div class="form-group">
-				<label for="adv_search">Advanced Search</label>
-				{% include 'util/select.twig' with {'name': 'adv_search', 'id': 'adv_search', 'hideblankoption' : 'true', 'selectedvalue': sysop.adv_search, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-
-			<div class="form-group">
-				<label for="list_seq">List Sequence</label>
-				<input type="text" name="list_seq" class="form-control" value="{{ sysop.list_seq }}" maxlength="3" id="list_seq">
-			</div>
-
-			<div class="form-group">
-				<label for="field_type">Field Type</label>
-				{% include 'util/select.twig' with {'name': 'field_type', 'id': 'field_type', 'hideblankoption' : 'true', 'selectedvalue': sysop.field_type, 'options': {'C': 'Character', 'N': 'Numeric'}} %}
-			</div>
-
-			<!-- if field type = 'N' -->
 			<div class="row">
-				<div class="col-6">
+				<div class="col-sm-3">
 					<div class="form-group">
-						<label for="before_dec">Digits Before Decimal</label>
-						<input type="text" name="before_dec" class="form-control" value="{{ sysop.before_dec }}" maxlength="1" id="before_dec">
+						<label for="notecode">Note Code</label>
+						{% include 'util/bootstrap/form/input.twig' with {
+								'input': {
+									'name': 'notecode',
+									'value': code.notecode,
+									'lowercase': true,
+									'attributes': {
+										'maxlength': sysop.fieldAttribute('notecode', 'maxlength'),
+										'data-notecode': code.notecode
+									},
+									'addclasses': []
+								}
+							}
+						%}
 					</div>
 				</div>
-				<div class="col-6">
+				<div class="col-sm-3">
 					<div class="form-group">
-						<label for="after_dec">Digits After Decimal</label>
-						<input type="text" name="after_dec" class="form-control" value="{{ sysop.after_dec }}" maxlength="1" id="after_dec">
+						<label for="sequence">List Sequence</label>
+						{% include 'util/bootstrap/form/input.twig' with {
+								'input': {
+									'name': 'sequence',
+									'type': 'number',
+									'value': code.sequence,
+									'attributes': {
+										'max': sysop.fieldAttribute('sequence', 'max'),
+									},
+									'addclasses': ['text-right']
+								}
+							}
+						%}
 					</div>
 				</div>
 			</div>
+
+			{% include 'code-tables/msa/sysop/form/field-type.twig' %}
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
@@ -107,17 +80,17 @@
 			2. Is a new code
 			NOTE: Only show delete if code already exists.
 		#}
-		{% if recordlocker.function_locked_by_user(page.codetable, [sysop.system, sysop.code]) or sysop.isNew() %}
-			<button type="submit" class="btn btn-success form_button">
+		{% if sysop.recordlocker.isLocked(sysop.getRecordlockerKey(code)) == false or sysop.recordlocker.userHasLocked(sysop.getRecordlockerKey(code)) %}
+			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
-			{% if sysop.isNew() == false %}
-				<a href="{{ page.get_sysop_code_deleteURL(sysop.system, sysop.code) }}" class="btn btn-danger form_button delete_button">
+			{% if code.isNew() == false %}
+				<a href="{{ page.codeDeleteUrl(code.system, code.code) }}" class="btn btn-danger form_button delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.get_codetable_list_sysopURL(page.codetable, sysop.system, sysop.code) }}" class="btn btn-warning pull-right">
+		<a href="{{ page.sysopUrl(sysop.getRecordlockerKey(code)) }}" class="btn btn-warning pull-right">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

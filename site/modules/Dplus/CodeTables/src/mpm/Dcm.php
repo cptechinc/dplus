@@ -4,7 +4,7 @@ use Propel\Runtime\Collection\ObjectCollection;
 // Dplus Models
 use PrWorkCenterQuery, PrWorkCenter;
 // Dplus Codes
-use Dplus\Codes\Base;
+use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**

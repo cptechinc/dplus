@@ -7,7 +7,7 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use PrResourceQuery, PrResource;
 // Dplus Codes
-use Dplus\Codes\Base;
+use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
