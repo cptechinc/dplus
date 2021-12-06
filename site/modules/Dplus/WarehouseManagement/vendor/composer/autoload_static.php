@@ -9,6 +9,7 @@ class ComposerStaticInitbe01d8a824371fa061fc4d032387886e
     public static $classMap = array (
         'Dplus\\Wm\\Base' => __DIR__ . '/../..' . '/src/Base.php',
         'Dplus\\Wm\\Binr' => __DIR__ . '/../..' . '/src/Binr/Binr.php',
+        'Dplus\\Wm\\Inventory\\Lotm' => __DIR__ . '/../..' . '/src/Inventory/Lotm/Lotm.php',
         'Dplus\\Wm\\Inventory\\Mlot\\Img' => __DIR__ . '/../..' . '/src/Inventory/Mlot/Img.php',
         'Dplus\\Wm\\Inventory\\Search' => __DIR__ . '/../..' . '/src/Inventory/Search.php',
         'Dplus\\Wm\\Inventory\\Whse\\Lots\\Lookup' => __DIR__ . '/../..' . '/src/Inventory/Whse/Lots/Lookup.php',

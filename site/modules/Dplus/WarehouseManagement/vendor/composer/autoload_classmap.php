@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Dplus\\Wm\\Base' => $baseDir . '/src/Base.php',
     'Dplus\\Wm\\Binr' => $baseDir . '/src/Binr/Binr.php',
+    'Dplus\\Wm\\Inventory\\Lotm' => $baseDir . '/src/Inventory/Lotm/Lotm.php',
     'Dplus\\Wm\\Inventory\\Mlot\\Img' => $baseDir . '/src/Inventory/Mlot/Img.php',
     'Dplus\\Wm\\Inventory\\Search' => $baseDir . '/src/Inventory/Search.php',
     'Dplus\\Wm\\Inventory\\Whse\\Lots\\Lookup' => $baseDir . '/src/Inventory/Whse/Lots/Lookup.php',
