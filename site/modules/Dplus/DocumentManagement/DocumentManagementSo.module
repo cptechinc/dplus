@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+include_once(__DIR__.'/DocumentManagement.module');
+
 use Dplus\CodeValidators\Mso as MsoValidator;
 
 use Purl\Url;
