@@ -6,6 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Dplus\\DocManagement\\Config' => $baseDir . '/src/Config.php',
+    'Dplus\\DocManagement\\Config\\Config' => $baseDir . '/src/config/Config.php',
+    'Dplus\\DocManagement\\Config\\Folder' => $baseDir . '/src/config/Folder.php',
+    'Dplus\\DocManagement\\Config\\Viewer' => $baseDir . '/src/config/Viewer.php',
     'Dplus\\DocManagement\\Copier' => $baseDir . '/src/Copier.php',
     'Dplus\\DocManagement\\Finders\\ApInvoice' => $baseDir . '/src/finder/sub/Mpo/ApInvoice.php',
     'Dplus\\DocManagement\\Finders\\Ar' => $baseDir . '/src/finder/sub/Ar.php',
@@ -24,5 +28,4 @@ return array(
     'Dplus\\DocManagement\\Uploader' => $baseDir . '/src/uploader/Uploader.php',
     'Dplus\\DocManagement\\Uploader\\Lt\\Lotimg' => $baseDir . '/src/uploader/Lt/Lotimg.php',
     'Dplus\\DocManagement\\Viewer' => $baseDir . '/src/viewer/Viewer.php',
-    'Dplus\\DocManagement\\Viewer\\Config' => $baseDir . '/src/viewer/Config.php',
 );
