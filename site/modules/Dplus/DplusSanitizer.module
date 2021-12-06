@@ -19,7 +19,7 @@ class DplusSanitizer extends WireData implements Module {
 		$this->addHook('Sanitizer::ynbool', function(HookEvent $event) {
 			$sanitizer = $event->object;
 			$value = strtoupper($event->arguments(0));
-			$event->return = $value == 'Y' ? true : false;
+			$event->return = $value == 'Y';
 		});
 
 		$this->addHook('Sanitizer::phoneus', function(HookEvent $event) {
