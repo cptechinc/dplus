@@ -71,7 +71,6 @@ class Qnotes extends WireData implements Module {
 				'QnotesSalesHistory',
 				'QnotesQuote',
 				'QnotesItem',
-				'QnotesPredefined',
 				'Qponotes',
 				'QnotesPo'
 			)

@@ -5,6 +5,8 @@ use PDO;
 use MsaSysopCodeQuery, MsaSysopCode as Model;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Recordlocker
+use Dplus\RecordLocker\Locker as Recordlocker;
 // Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
@@ -68,18 +70,23 @@ class MsaSysopCode extends AbstractFilter {
 	 * @param  Model|string $note MsaSysopCode|Note ID
 	 * @return int
 	 */
-	public function positionQuick($note) {
-		$id = $note;
-		if (is_object($note)) {
-			$id = $note->id;
+	public function positionQuick($code) {
+		$id = $code;
+		if (is_object($code)) {
+			$id     = $code->id;
+			$system = $code->system;
 		}
-		$q = $this->getQueryClass()->executeQuery('SET @rownum = 0');
+		if (is_string($code)) {
+			$keys   = explode(Recordlocker::GLUE, $code);
+			$system = $keys[0];
+			$id     = $keys[1];
+		}
+		$this->getQueryClass()->executeQuery('SET @rownum = 0');
 		$table = $this->getPositionSubSql();
-		$col = Model::aliasproperty('id');
-
-		$sql = "SELECT x.position FROM ($table) x WHERE $col = :id";
+		$sql = "SELECT x.position FROM ($table) x WHERE OptnSystem = :system AND OptnCode = :code";
 		$stmt = $this->getPreparedStatementWrapper($sql);
-		$stmt->bindValue(':id', $id, PDO::PARAM_STR);
+		$stmt->bindValue(':system', $system, PDO::PARAM_STR);
+		$stmt->bindValue(':code', $id, PDO::PARAM_STR);
 		$stmt->execute();
 		return $stmt->fetchColumn();
 	}
@@ -90,8 +97,7 @@ class MsaSysopCode extends AbstractFilter {
 	 */
 	private function getPositionSubSql() {
 		$table = $this->query->getTableMap()::TABLE_NAME;
-		$col = Model::aliasproperty('id');
-		$sql = "SELECT $col, @rownum := @rownum + 1 AS position FROM $table";
+		$sql = "SELECT OptnSystem, OptnCode, @rownum := @rownum + 1 AS position FROM $table";
 		$whereClause = $this->getWhereClauseString();
 
 		if (empty($whereClause) === false) {

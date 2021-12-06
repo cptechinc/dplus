@@ -7,7 +7,7 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use GlTextCodeQuery, GlTextCode;
 // Dplus Codes
-use Dplus\Codes\Base;
+use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
@@ -95,7 +95,7 @@ class Ttm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
-		
+
 		$code->setText1($values->text('text1', ['maxLength' => $this->fieldAttribute('text', 'maxlength')]));
 		$code->setText2($values->text('text2', ['maxLength' => $this->fieldAttribute('text', 'maxlength')]));
 		$code->setText3($values->text('text3', ['maxLength' => $this->fieldAttribute('text', 'maxlength')]));

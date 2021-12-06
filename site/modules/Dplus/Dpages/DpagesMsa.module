@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use Purl\Url;
+use Purl\Url as Purl;
 
 /**
  * class DpagesMsa
@@ -17,21 +17,6 @@ class DpagesMsa extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'msa-lgrp' => array(
-			'name'   => 'msa-lgrp',
-			'fields' => array(),
-			'paginated' => true
-		),
-		'msa-noce' => array(
-			'name'   => 'msa-noce',
-			'fields' => array(),
-			'paginated' => true
-		),
-		'msa-noce-ajax' => array(
-			'name'   => 'msa-noce-ajax',
-			'fields' => array(),
-			'paginated' => true
-		),
 	);
 
 	const PAGES = array(
@@ -43,163 +28,15 @@ class DpagesMsa extends Dpages implements Module {
 			'parent'         => '/',
 			'dplus_function' => 'msa'
 		),
-		'msa-sysop' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'msa-sysop',
-			'name'           => 'sysop',
-			'title'          => 'System Optional Codes',
-			'summary'        => 'View / Edit System Optional Codes',
-			'parent'         => '/msa/',
-			'dplus_function' => 'sysop'
-		),
-		'msa-lgrp' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'msa-lgrp',
-			'name'           => 'lgrp',
-			'title'          => 'Login Group Entry',
-			'summary'        => 'View / Edit Login Group Entry',
-			'parent'         => '/msa/',
-			'dplus_function' => 'lgrp'
-		),
-		'msa-noce' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'msa-noce',
-			'name'           => 'noce',
-			'title'          => 'Pre-Defined Notes Entry',
-			'summary'        => 'View / Edit Pre-Defined Notes',
-			'parent'         => '/msa/',
-			'dplus_function' => 'noce'
-		),
-		'msa-noce-ajax' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'msa-noce-ajax',
-			'name'           => 'ajax',
-			'title'          => 'Pre-Defined Notes AJAX',
-			'summary'        => 'View / Edit Pre-Defined Notes through AJAX',
-			'parent'         => '/msa/noce/',
-			'dplus_function' => ''
-		),
 	);
 
 /* =============================================================
 	URL Module Functions
 ============================================================= */
-	/**
-	 * Return View Code Table URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_viewURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return View Code Table List URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_listURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
-		$url->query->set('focus', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Code Table Code Delete URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_code_deleteURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('table', $table);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Code Table Edit Code URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_code_editURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return List Sysop Codes
-	 * @param  string $table  Table
-	 * @param  string $system System Sysop
-	 * @param  string $code Sysop Code
-	 * @return string
-	 */
-	public function get_codetable_list_sysopURL($table, $system, $code = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
-
-		if ($system == '') {
-			$url->query->set('focus', $code);
-		} else {
-			$url->query->set('focus', $system.'-'.$code);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Delete Sysop Code URL
-	 * @param  string $system System Sysop
-	 * @param  string $code   Sysop Code
-	 * @return string
-	 */
-	public function get_sysop_code_deleteURL($system, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('system', $system);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Edit Sysop Code URL
-	 * @param  string $system System Sysop
-	 * @param  string $code   Sysop Code
-	 * @return string
-	 */
-	public function get_sysop_code_editURL($system, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop")->url);
-		$url->query->set('system', $system);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Noce Note List URL
-	 * @param  string $focus Note Code to focus
-	 * @return string
-	 */
-	public function get_noce_listURL($focus = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-noce")->url);
-		$url->query->set('focus', $focus);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Noce Note Delete URL
-	 * @param  string $focus Note Code to focus
-	 * @return string
-	 */
-	public function get_noce_deleteURL($id) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-noce")->url);
-		$url->query->set('action', 'delete-notes');
-		$url->query->set('id', $id);
+	public function getNoceAjaxUrl() {
+		$url = new Purl($this->wire('pages')->get('pw_template=msa')->httpUrl);
+		$url->path->add('noce');
+		$url->path->add('ajax');
 		return $url->getUrl();
 	}
 
@@ -207,65 +44,10 @@ class DpagesMsa extends Dpages implements Module {
 	ProcessWire Module Functions
 ============================================================= */
 	public function init() {
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Page(pw_template=msa-code-table-menu|msa-sysop|msa-lgrp)::get_codetable_viewURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_viewURL($table, $code);
-		});
+		$this->addHook('Page::search_noceURL', function($event) {
+			$p = $event->object;
 
-		$this->addHook('Page(pw_template=msa-lgrp)::get_codetable_code_deleteURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_deleteURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=msa-lgrp)::get_codetable_code_editURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_editURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=msa-sysop)::get_sysop_code_deleteURL', function($event) {
-			$system = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_sysop_code_deleteURL($system, $code);
-		});
-
-		$this->addHook('Page(pw_template=msa-sysop)::get_sysop_code_editURL', function($event) {
-			$system = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_sysop_code_editURL($system, $code);
-		});
-
-		$this->addHook('Page(pw_template=msa-sysop|msa-lgrp)::get_codetable_listURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_listURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=msa-sysop)::get_codetable_list_sysopURL', function($event) {
-			$table = $event->arguments(0);
-			$system = $event->arguments(1);
-			$code = $event->arguments(2);
-			$event->return = $this->get_codetable_list_sysopURL($table, $system, $code);
-		});
-
-		$this->addHookProperty('Page(pw_template=msa-sysop|msa-lgrp)::codetable', function($event) {
-			$page = $event->object;
-			$event->return = $page->name;
-		});
-
-		$this->addHook('Page(pw_template=msa-noce)::get_list_focusURL', function($event) {
-			$focus = $event->arguments(0);
-			$event->return = $this->get_noce_listURL($focus);
-		});
-
-		$this->addHook('Page(pw_template=msa-noce)::code_deleteURL', function($event) {
-			$code = $event->arguments(0);
-			$event->return = $this->get_noce_deleteURL($code);
+			$event->return = $this->getNoceAjaxUrl();
 		});
 	}
 

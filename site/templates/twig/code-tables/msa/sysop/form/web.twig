@@ -1,0 +1,54 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	sysop                  Dplus\Codes\Msa\Sysop
+	code                   MsaSysopCode
+#}
+<div class="row">
+	<div class="col-sm-3">
+		<div class="form-group">
+			<label for="webvalidate">Validate</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'webvalidate',
+						'size': 'sm',
+						'value' : code.webvalidate,
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="col-sm-3">
+		<div class="form-group">
+			<label for="webforce">Force Entry</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'webforce',
+						'size': 'sm',
+						'value' : code.webforce,
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="form-group">
+			<label for="docfolderr">Document Storage Folder</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'docfolder',
+						'value': code.docfolder,
+						'attributes': {
+							'readonly': code.filename() == false
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+</div>

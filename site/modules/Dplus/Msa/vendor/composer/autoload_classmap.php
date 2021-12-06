@@ -6,7 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Dplus\\Msa\\Logm' => $baseDir . '/src/Logm.php',
+    'Dplus\\Msa\\Logm' => $baseDir . '/src/Logm/Logm.php',
+    'Dplus\\Msa\\Logm\\Contact' => $baseDir . '/src/Logm/Contact.php',
+    'Dplus\\Msa\\Logm\\Password' => $baseDir . '/src/Logm/Password/Password.php',
+    'Dplus\\Msa\\Logm\\Password\\WebPassword' => $baseDir . '/src/Logm/Password/WebPassword.php',
     'Dplus\\Msa\\Lrole' => $baseDir . '/src/Lrole.php',
     'Dplus\\Msa\\Prtd' => $baseDir . '/src/Prtd.php',
     'Dplus\\Msa\\Response' => $baseDir . '/src/Response.php',

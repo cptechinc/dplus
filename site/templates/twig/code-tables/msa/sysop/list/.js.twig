@@ -1,0 +1,9 @@
+$(function() {
+	let uri   = URI();
+	let query = uri.query(true);
+	
+	if (uri.hasQuery('focus') && query.focus != 'new') {
+		$('.code[data-code="' + query.focus + '"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.code[data-code="' + query.focus + '"]').offset().top,},700,'linear');
+	}
+});

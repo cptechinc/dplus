@@ -1,0 +1,60 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	sysop                  Dplus\Codes\Msa\Sysop
+	code                   MsaSysopCode
+#}
+<div class="row">
+	<div class="col-sm-4">
+		<div class="form-group">
+			<label for="fieldtype">Field Type</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'fieldtype',
+						'size': 'sm',
+						'value' : code.fieldtype,
+						'haskeys': true,
+						'options': sysop.fieldAttribute('fieldtype', 'options')
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="col-sm-4">
+		<div class="form-group">
+			<label for="beforedecimal">Digits Before Decimal</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'beforedecimal',
+						'type': 'number',
+						'value': code.beforedecimal,
+						'attributes': {
+							'max': sysop.fieldAttribute('beforedecimal', 'max'),
+							'readonly': code.isNumeric() == false
+						},
+						'addclasses': ['text-right']
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="col-sm-4">
+		<div class="form-group">
+			<label for="after_dec">Digits After Decimal</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'afterdecimal',
+						'type': 'number',
+						'value': code.afterdecimal,
+						'attributes': {
+							'max': sysop.fieldAttribute('afterdecimal', 'max'),
+							'readonly': code.isNumeric() == false
+						},
+						'addclasses': ['text-right']
+					}
+				}
+			%}
+		</div>
+	</div>
+</div>

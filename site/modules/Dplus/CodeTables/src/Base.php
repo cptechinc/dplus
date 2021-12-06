@@ -81,7 +81,7 @@ abstract class Base extends WireData {
 	public function modelClassName() {
 		return $this::MODEL;
 	}
-	
+
 /* =============================================================
 	Query Functions
 ============================================================= */
@@ -110,17 +110,6 @@ abstract class Base extends WireData {
 		return $this->getQueryClass();
 	}
 
-	/**
-	 * Return Query Filtered By ID
-	 * @param  string $id
-	 * @return Query
-	 */
-	public function queryId($id) {
-		$q = $this->query();
-		$q->filterById($id);
-		return $q;
-	}
-
 /* =============================================================
 	CRUD Reads
 ============================================================= */
@@ -133,74 +122,10 @@ abstract class Base extends WireData {
 		return $q->find();
 	}
 
-	/**
-	 * Return the Code records from Database filtered by Code ID
-	 * @param  string $id
-	 * @return Code
-	 */
-	public function code($id) {
-		$q = $this->query();
-		return $q->findOneById($id);
-	}
-
-	/**
-	 * Returns if Code Exists
-	 * @param  string $id
-	 * @return bool
-	 */
-	public function exists($id) {
-		$q = $this->query();
-		return boolval($q->filterById($id)->count());
-	}
-
-	/**
-	 * Return New or Existing Code
-	 * @param  string $id  Code ID
-	 * @return Code
-	 */
-	public function getOrCreate($id = '') {
-		if ($this->exists($id)) {
-			return $this->code($id);
-		}
-		return $this->new($id);
-	}
-
-	/**
-	 * Return Description for Code
-	 * @param  string $id
-	 * @return string
-	 */
-	public function description($id) {
-		if ($this->exists($id) === false) {
-			return '';
-		}
-		$model = static::modelClassName();
-		$q = $this->queryId($id);
-		$q->select($model::aliasproperty('description'));
-		return $q->findOne();
-	}
-
 /* =============================================================
 	CRUD Creates
 ============================================================= */
-	/**
-	 * Return New Code
-	 * @param  string $id
-	 * @return Code
-	 */
-	public function new($id = '') {
-		$code = new Code();
-		$maxlength = $this->fieldAttribute('code', 'maxlength');
 
-		if ($maxlength) {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $maxlength]);
-		}
-		if (empty($id) === false) {
-			$code->setId($id);
-		}
-		$code->setDummy('P');
-		return $code;
-	}
 
 /* =============================================================
 	CRUD Processing
@@ -217,6 +142,7 @@ abstract class Base extends WireData {
 			case 'delete-code':
 				$this->inputDelete($input);
 				break;
+			case 'update-code':
 			case 'edit-code':
 				$this->inputUpdate($input);
 				break;
@@ -224,22 +150,11 @@ abstract class Base extends WireData {
 	}
 
 	/**
-	 * Update CNFM Code from Input Data
+	 * Update Code from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	protected function inputUpdate(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-		$invalidfields = [];
-
-		$code          = $this->getOrCreate($id);
-		$invalidfields = $this->_inputUpdate($input, $code);
-		$response = $this->saveAndRespond($code, $invalidfields);
-		$this->setResponse($response);
-		return $response->hasSuccess();
-	}
+	abstract protected function inputUpdate(WireInput $input);
 
 	/**
 	 * Update Record with Input Data
@@ -262,27 +177,11 @@ abstract class Base extends WireData {
 
 
 	/**
-	 * Delete CNFM Code
+	 * Delete Code
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	protected function inputDelete(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-
-		if ($this->exists($id) === false) {
-			$response = Response::responseSuccess("Code $id was deleted");
-			$response->buildMessage(static::RESPONSE_TEMPLATE);
-			$response->setCode($id);
-			return true;
-		}
-		$code = $this->code($id);
-		$code->delete();
-		$response = $this->saveAndRespond($code);
-		$this->setResponse($response);
-		return $response->hasSuccess();
-	}
+	abstract protected function inputDelete(WireInput $input);
 
 /* =============================================================
 	CRUD Response
@@ -299,7 +198,7 @@ abstract class Base extends WireData {
 
 		$response = new Response();
 		$response->setCode($code->id);
-		$response->setKey($code->id);
+		$response->setKey($this->getRecordlockerKey($code));
 
 		if ($saved) {
 			$response->setSuccess(true);
@@ -316,11 +215,21 @@ abstract class Base extends WireData {
 		}
 
 		$response->setFields($invalidfields);
+		$this->addResponseMsgReplacements($code, $response);
 		$response->buildMessage(static::RESPONSE_TEMPLATE);
 		if ($response->hasSuccess()) {
-			$this->updateDplus($code->id);
+			$this->updateDplus($code);
 		}
 		return $response;
+	}
+
+	/**
+	 * Add Replacements, values for the Response Message
+	 * @param Code     $code      Code
+	 * @param Response $response  Response
+	 */
+	protected function addResponseMsgReplacements(Code $code, Response $response) {
+
 	}
 
 	/**
@@ -347,21 +256,28 @@ abstract class Base extends WireData {
 	}
 
 /* =============================================================
-	Dplus Requests
+	Record Locker Functions
 ============================================================= */
 	/**
-	 * Sends Dplus Cobol that Code Table has been Update
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return void
+	 * Return Key for Code
+	 * @param  Code   $code
+	 * @return string
 	 */
-	protected function updateDplus($code) {
-		$config  = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
-		$table = static::DPLUS_TABLE;
-		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code"];
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $this->sessionID);
-		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	public function getRecordlockerKey(Code $code) {
+		return implode(FunctionLocker::glue(), [$code->id]);
+	}
+
+	/**
+	 * Lock Code
+	 * @param  Code   $code Code
+	 * @return bool
+	 */
+	public function lockrecord(Code $code) {
+		$key = $this->getRecordlockerKey($code);
+
+		if ($this->recordlocker->isLocked($key) === false) {
+			$this->recordlocker->lock($key);
+		}
+		return $this->recordlocker->userHasLocked($key);
 	}
 }

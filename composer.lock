@@ -21,7 +21,7 @@
                 "shasum": ""
             },
             "require": {
-                "propel/propel": "~2.0@dev"
+                "propel/propel": "dev-master#3087361bd27f3598f3ecd70e9fd272a5c2575b88"
             },
             "default-branch": true,
             "type": "library",
@@ -51,12 +51,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "e22b1188f94630e5474c2826b0c110638830f45b"
+                "reference": "9536db816f1bcd5d57702a534ba289ef17f2eb5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/e22b1188f94630e5474c2826b0c110638830f45b",
-                "reference": "e22b1188f94630e5474c2826b0c110638830f45b",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/9536db816f1bcd5d57702a534ba289ef17f2eb5e",
+                "reference": "9536db816f1bcd5d57702a534ba289ef17f2eb5e",
                 "shasum": ""
             },
             "default-branch": true,
@@ -83,7 +83,7 @@
                 "issues": "https://github.com/cptechinc/dpluso-model/issues",
                 "source": "https://github.com/cptechinc/dpluso-model/tree/master"
             },
-            "time": "2021-09-20T15:04:30+00:00"
+            "time": "2021-11-24T15:36:46+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
