@@ -6,8 +6,8 @@ $docView = DocViewer::getInstance();
 $config->js('api', [
 	'urls' => [
 		'mdm' => [
-			'docs' => [
-				'copier' => $page->jsonApiUrl('mdm/docs/copier')
+			'docvwr' => [
+				'copy' => $page->jsonApiUrl('mdm/docvwr/copy')
 			]
 		]
 	]
