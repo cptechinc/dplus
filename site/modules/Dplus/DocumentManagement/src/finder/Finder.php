@@ -99,8 +99,8 @@ class Finder extends WireData {
 	 * @return bool
 	 */
 	public function exists($folder, $filename) {
-		$conf = Config::getInstance();
-		$folder = $config->folder->useLowercase() ? strtolower(self::FOLDER) : self::FOLDER;
+		$config = Config::getInstance();
+		$folder = $config->folder->useLowercase() ? strtolower($folder) : $folder;
 
 		$q = $this->docQuery();
 		$q->filterByFolder($folder);
@@ -115,8 +115,8 @@ class Finder extends WireData {
 	 * @return Document
 	 */
 	public function getDocumentByFilename($folder, $filename) {
-		$conf = Config::getInstance();
-		$folder = $config->folder->useLowercase() ? strtolower(self::FOLDER) : self::FOLDER;
+		$config = Config::getInstance();
+		$folder = $config->folder->useLowercase() ? strtolower($folder) : $folder;
 
 		$q = $this->docQuery();
 		$q->filterByFolder($folder);
