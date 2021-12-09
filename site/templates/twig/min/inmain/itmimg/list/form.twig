@@ -1,0 +1,21 @@
+<form action="{{ input.paginateUrl(1) }}" method="GET" class="allow-enterkey-submit item-search">
+	{% include 'util/bootstrap/form/input-group.twig' with {
+			'inputgroup': {
+				'type': 'append',
+				'input': {
+					'name': 'q',
+					'value': input.get.text('q'),
+					'attributes': {
+						'placeholder': 'Item ID, Description',
+						'aria-label':  'Search Items',
+					}
+				},
+				'button': {
+					'type': 'submit',
+					'colorclass': 'btn-light',
+					'text': 'fa fa-search'|icon,
+				}
+			}
+		}
+	%}
+</form>
