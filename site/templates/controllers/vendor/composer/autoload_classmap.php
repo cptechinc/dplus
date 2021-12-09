@@ -23,6 +23,8 @@ return array(
     'Controllers\\Ajax\\Json\\Mso' => $baseDir . '/classes/ajax/json/Mso.php',
     'Controllers\\Ajax\\Json\\Wm\\Receiving' => $baseDir . '/classes/ajax/json/Wm/Receiving.php',
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
+    'Controllers\\Ajax\\Lookup\\Lookup' => $baseDir . '/classes/ajax/Lookup/Lookup.php',
+    'Controllers\\Ajax\\Lookup\\Mth' => $baseDir . '/classes/ajax/Lookup/Mth.php',
     'Controllers\\Dplus\\Dashboard' => $baseDir . '/classes/dplus/Dashboard.php',
     'Controllers\\Dplus\\Dashboard\\Common' => $baseDir . '/classes/dplus/Dashboard/Common.php',
     'Controllers\\Dplus\\Dashboard\\Slsmgr' => $baseDir . '/classes/dplus/Dashboard/Slsmgr.php',
