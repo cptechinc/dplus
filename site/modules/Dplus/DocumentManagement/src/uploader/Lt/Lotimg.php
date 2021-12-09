@@ -1,9 +1,10 @@
 <?php namespace Dplus\DocManagement\Uploader\Lt;
-// ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
-// Dplus Document Management
+
+use ProcessWire\WireData, ProcessWire\WireInput;
+
 use Dplus\DocManagement\Uploader as Base;
 use Dplus\DocManagement\Config;
+use Dplus\DocManagement\FileUploader;
 
 /**
  * Lotimg
@@ -41,29 +42,18 @@ class Lotimg extends Base {
 		$this->lotserial = strtoupper($this->wire('sanitizer')->text($lotserial));
 	}
 
-	/**
-	 * Return File Name Prefix
-	 * @return string
-	 */
-	public function getFilenamePrefix() {
-		$config = Config::getInstance();
-		return $config->folder->useLowercase() ? strtolower(self::FILENAME_PREFIX) : self::FILENAME_PREFIX;
-	}
-
 /* =============================================================
 	FILE Uploading
 ============================================================= */
 	/**
 	 * Return File Uploader with settings
 	 * @param  array  $file          Element from $_FILES
-	 * @return WireUpload
+	 * @return FileUploader
 	 */
 	protected function getUploader(array $file) {
-		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-
 		$uploader = parent::getUploader($file);
-		$uploader->setTargetFilename(self::FILENAME_PREFIX . $this->lotserial . ".$ext");
 		$uploader->setLowercase(false);
+		$uploader->setTargetFilename($this->getTargetFilename($file, $this->lotserial));
 		return $uploader;
 	}
 }
