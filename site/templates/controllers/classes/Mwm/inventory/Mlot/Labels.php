@@ -67,7 +67,7 @@ class Labels extends Base {
 
 	private static function filterLots($data, Filters\Min\LotMaster $filter) {
 		$filter->inStock();
-		
+
 		self::sanitizeParametersShort($data, ['q|text', 'itemID|text', 'instock|bool']);
 
 		if (empty($data->itemID) === false) {
