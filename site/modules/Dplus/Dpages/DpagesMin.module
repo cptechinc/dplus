@@ -63,7 +63,11 @@ class DpagesMin extends Dpages implements Module {
 		'addm' => [
 			'name'   => 'addm',
 			'fields' => []
-		]
+		],
+		'itmimg' => [
+			'name'   => 'itmimg',
+			'fields' => []
+		],
 	);
 
 	const PAGES = array(
@@ -280,6 +284,15 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'View / Edit Add-On Items',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'addm'
+		),
+		'min-itmimg' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'min-itmimg',
+			'name'           => 'itmimg',
+			'title'          => 'Item Images',
+			'summary'        => 'View / Upload Item Images',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
 		),
 	);
 

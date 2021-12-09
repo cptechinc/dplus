@@ -84,6 +84,7 @@ return array(
     'Controllers\\Min\\Base' => $baseDir . '/classes/min/Base.php',
     'Controllers\\Min\\Inmain\\Addm' => $baseDir . '/classes/min/inmain/Addm.php',
     'Controllers\\Min\\Inmain\\I2i' => $baseDir . '/classes/min/inmain/I2i.php',
+    'Controllers\\Min\\Inmain\\Itmimg' => $baseDir . '/classes/min/inmain/Itmimg.php',
     'Controllers\\Min\\Inmain\\Menu' => $baseDir . '/classes/min/inmain/Menu.php',
     'Controllers\\Min\\Inproc\\Base' => $baseDir . '/classes/min/inproc/Base.php',
     'Controllers\\Min\\Inproc\\Iarn' => $baseDir . '/classes/min/inproc/Iarn.php',
