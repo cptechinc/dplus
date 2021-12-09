@@ -11,6 +11,7 @@ return array(
     'Dplus\\DocManagement\\Config\\Folder' => $baseDir . '/src/config/Folder.php',
     'Dplus\\DocManagement\\Config\\Viewer' => $baseDir . '/src/config/Viewer.php',
     'Dplus\\DocManagement\\Copier' => $baseDir . '/src/Copier.php',
+    'Dplus\\DocManagement\\FileUploader' => $baseDir . '/src/uploader/FileUploader.php',
     'Dplus\\DocManagement\\Finders\\ApInvoice' => $baseDir . '/src/finder/sub/Mpo/ApInvoice.php',
     'Dplus\\DocManagement\\Finders\\Ar' => $baseDir . '/src/finder/sub/Ar.php',
     'Dplus\\DocManagement\\Finders\\Cu' => $baseDir . '/src/finder/sub/Cu.php',
