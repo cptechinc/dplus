@@ -171,6 +171,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mso\\SalesOrder\\PrintSo' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/PrintSo.php',
         'Controllers\\Mso\\SalesOrder\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/SalesOrder.php',
         'Controllers\\Mwm\\Inventory\\Mlot\\Img' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Mlot/Img.php',
+        'Controllers\\Mwm\\Inventory\\Mlot\\Labels' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Mlot/Labels.php',
         'Controllers\\Mwm\\Inventory\\Mlot\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Mlot/Menu.php',
         'Controllers\\Mwm\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/Menu.php',
         'Controllers\\Routers\\Base' => __DIR__ . '/../..' . '/classes/routers/Base.php',

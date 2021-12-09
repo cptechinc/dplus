@@ -13,6 +13,12 @@ class Menu extends WmMenu {
 			'permission' => '',
 			'title'      => 'Lot Images',
 			'summary'    => 'View / Edit Lot Images'
+		],
+		'labels' => [
+			'name'       => 'labels',
+			'permission' => '',
+			'title'      => 'Labels',
+			'summary'    => 'Print Lot Label(s)'
 		]
 	];
 
@@ -57,6 +63,10 @@ class Menu extends WmMenu {
 
 	public static function imgUrl() {
 		return self::subfunctionUrl('img');
+	}
+
+	public static function labelsUrl() {
+		return self::subfunctionUrl('labels');
 	}
 
 	public static function subfunctionUrl($key) {
