@@ -1,0 +1,17 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__."/vendor/autoload.php");
+
+class Mth extends WireData implements Module {
+
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus MTH',
+			'version' => 101,
+			'summary' => 'Autoloads Mth Classes',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

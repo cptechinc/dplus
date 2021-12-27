@@ -30,9 +30,7 @@ class Img extends Finder {
 	 * @return Document[]|ObjectCollection
 	 */
 	public function getDocuments($lotserial) {
-		$q = $this->docQuery();
-		$q->filterByTag(self::TAG);
-		$q->filterByFolder(self::FOLDER);
+		$q = $this->queryTagFolder(self::TAG, self::FOLDER);
 		$q->filterByReference1($lotserial);
 		return $q->find();
 	}
@@ -44,9 +42,7 @@ class Img extends Finder {
 	 * @return int
 	 */
 	public function countDocuments($lotserial) {
-		$q = $this->docQuery();
-		$q->filterByTag(self::TAG);
-		$q->filterByFolder(self::FOLDER);
+		$q = $this->queryTagFolder(self::TAG, self::FOLDER);
 		$q->filterByReference1($lotserial);
 		return $q->count();
 	}
@@ -70,10 +66,8 @@ class Img extends Finder {
 	 * @return string
 	 */
 	public function getImageFilename($lotserial) {
-		$q = $this->docQuery();
+		$q = $this->queryTagFolder(self::TAG, self::FOLDER);
 		$q->select(Document::aliasproperty('filename'));
-		$q->filterByTag(self::TAG);
-		$q->filterByFolder(self::FOLDER);
 		$q->filterByReference1($lotserial);
 		$q->orderBy(Document::aliasproperty('date'), 'DESC');
 		$q->orderBy(Document::aliasproperty('time'), 'DESC');
@@ -87,9 +81,7 @@ class Img extends Finder {
 	 * @return Document
 	 */
 	public function getImage($lotserial) {
-		$q = $this->docQuery();
-		$q->filterByTag(self::TAG);
-		$q->filterByFolder(self::FOLDER);
+		$q = $this->queryTagFolder(self::TAG, self::FOLDER);
 		$q->filterByReference1($lotserial);
 		$q->orderBy(Document::aliasproperty('date'), 'DESC');
 		$q->orderBy(Document::aliasproperty('time'), 'DESC');

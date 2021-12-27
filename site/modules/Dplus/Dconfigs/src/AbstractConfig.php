@@ -1,8 +1,9 @@
 <?php namespace Dplus\Configs;
-
+// Propel ORM Library
 use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
-
+// ProcessWire
+use ProcessWire\ProcessWire;
 
 abstract class AbstractConfig {
 	const MODEL = '';

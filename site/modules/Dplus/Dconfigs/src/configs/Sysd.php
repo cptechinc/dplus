@@ -1,9 +1,9 @@
 <?php namespace Dplus\Configs;
-
-use ConfigSysdQuery, ConfigSysd;
-
+// Propel ORM Library
 use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
+// Dplus Models
+use ConfigSysdQuery, ConfigSysd;
 
 /**
  * ConfigSysd
@@ -24,5 +24,14 @@ class Sysd extends AbstractConfig {
 			static::$config = static::getConfig();
 		}
 		return static::$config;
+	}
+
+	/**
+	 * Return Config from Database
+	 * @return Model
+	 */
+	public static function getConfig() {
+		$q = static::query();
+		return $q->findOneByCompanynbr(self::pw('config')->companynbr);
 	}
 }

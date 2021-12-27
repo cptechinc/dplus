@@ -1,0 +1,18 @@
+<table class="table table-striped" id="code-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Format</th>
+			<th>Description</th>
+			<th>Size</th>
+		</tr>
+	</thead>
+	{% for format in results %}
+		<tr>
+			<td>
+				<a href="#" class="link label-link" data-format="{{ format.id }}">{{ format.id }}</a>
+			</td>
+			<td>{{ format.description }}</td>
+			<td>{{ format.width }} x {{ format.length }}</td>
+		</tr>
+	{% endfor %}
+</table>

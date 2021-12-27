@@ -35,6 +35,7 @@ class Img extends Base {
 		if (empty($data->lotserial) === false) {
 			return self::lotserial($data);
 		}
+		self::pw('page')->headline = self::TITLE;
 		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/scan/.js.twig');
 		return self::displayInitialScreen($data);
 	}

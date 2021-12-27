@@ -1,0 +1,31 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	lot                    InvLot
+	docm                   Dplus\DocManagement\Finders\Lt\Img
+#}
+
+<div class="row">
+	<div class="col-sm-3">
+		<div class="text-center">
+			<img src="{{ docm.getViewer().url(docm.getImageFilename(lot.lotnbr)) }}" class="mw-100" alt="{{ docm.getFolders().description(docm.getFolder()) ~ ' ' ~ lot.lotnbr }}" height="200">
+		</div>
+	</div>
+	<div class="col-sm-5">
+		<table class="table table-sm">
+			<tr>
+				<td>Item ID</td>
+				<td>{{ lot.itemid }}</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>{{ lot.item.description }}</td>
+			</tr>
+			<tr>
+				<td>Lot Reference</td>
+				<td>{{ lot.lotref }}</td>
+			</tr>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,107 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	lot                  Propel\Runtime\Util\PropelModelPager (InvLot)
+	docm                   Dplus\DocManagement\Finders\Lt\Img
+#}
+
+<form action="{{ input.url() }}" method="POST">
+	<input type="hidden" name="action" value="print-label">
+	<input type="hidden" name="lotnbr" value="{{ lot.lotnbr }}">
+
+	{% include 'warehouse/inventory/mlot/labels/lotserial/form/lot-details.twig' %}
+
+	<div class="row">
+		<div class="col-sm-3 mb-3">
+			<label for="printer">Printer</label>
+		</div>
+		<div class="col-sm-9 mb-3">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': 'printer',
+							'value': '',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Printer ID'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Printers',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('msa/printers'),
+								'data-input': '#printer'
+							}
+						}
+					}
+				}
+			%}
+			<small class="form-text text-muted"></small>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-3 mb-3">
+			<label for="format">Label</label>
+		</div>
+		<div class="col-sm-9 mb-3">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': 'format',
+							'value': '',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Label format'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Label Formats',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('mth/labels'),
+								'data-input': '#format'
+							}
+						}
+					}
+				}
+			%}
+			<small class="form-text text-muted"></small>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3 mb-3">
+			<label for="qty">Qty</label>
+		</div>
+		<div class="col-sm-3 mb-3">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'type': 'number',
+						'name': 'qty',
+						'size': 'sm',
+						'value': '1',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Qty'
+						},
+						'addclasses': ['text-right']
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<button type="submit" class="btn btn-success">Submit</button>
+</form>

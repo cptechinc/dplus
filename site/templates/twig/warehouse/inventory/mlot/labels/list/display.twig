@@ -1,0 +1,17 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	lots                   Propel\Runtime\Util\PropelModelPager (InvLot)
+	docm                   Dplus\DocManagement\Finders\Lt\Img
+#}
+
+<div class="mb-3">
+	{% include 'warehouse/inventory/mlot/labels/list/form.twig' %}
+</div>
+
+<div class="mb-3">
+	{% include 'warehouse/inventory/mlot/labels/list/list.twig' %}
+</div>
+
+{% include 'util/paginator/propel.twig' with {'pager': lots} %}

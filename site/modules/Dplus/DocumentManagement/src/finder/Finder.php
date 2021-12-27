@@ -12,6 +12,7 @@ use DocumentQuery, Document;
 use Dplus\DocManagement\Mover as FileMover;
 use Dplus\DocManagement\Viewer;
 use Dplus\DocManagement\Folders;
+use Dplus\DocManagement\Config;
 
 /**
  * Document Finder
@@ -78,6 +79,16 @@ class Finder extends WireData {
 		return DocumentQuery::create();
 	}
 
+	public function queryTagFolder($tag, $folder) {
+		$conf = Config::getInstance();
+		$folder = $conf->folder->useLowercase() ? strtolower($folder) : $folder;
+
+		$q = $this->docQuery();
+		$q->filterByTag($tag);
+		$q->filterByFolder($folder);
+		return $q;
+	}
+
 /* =============================================================
 	Get Functions
 ============================================================= */
@@ -88,6 +99,9 @@ class Finder extends WireData {
 	 * @return bool
 	 */
 	public function exists($folder, $filename) {
+		$config = Config::getInstance();
+		$folder = $config->folder->useLowercase() ? strtolower($folder) : $folder;
+
 		$q = $this->docQuery();
 		$q->filterByFolder($folder);
 		$q->filterByFilename($filename);
@@ -101,6 +115,9 @@ class Finder extends WireData {
 	 * @return Document
 	 */
 	public function getDocumentByFilename($folder, $filename) {
+		$config = Config::getInstance();
+		$folder = $config->folder->useLowercase() ? strtolower($folder) : $folder;
+
 		$q = $this->docQuery();
 		$q->filterByFolder($folder);
 		$q->filterByFilename($filename);
@@ -114,6 +131,9 @@ class Finder extends WireData {
 	 * @return string
 	 */
 	public function documentFilepath($folder, $filename) {
+		$conf = Config::getInstance();
+		$folder = $config->folder->useLowercase() ? strtolower(self::FOLDER) : self::FOLDER;
+
 		if ($this->exists($folder, $filename) === false) {
 			return '';
 		}
@@ -144,6 +164,9 @@ class Finder extends WireData {
 	 * @return bool
 	 */
 	public function moveDocument($folder, $filename, $destination = '') {
+		$conf = Config::getInstance();
+		$folder = $config->folder->useLowercase() ? strtolower(self::FOLDER) : self::FOLDER;
+
 		if (empty($destination) === false && file_exists($destination) === false) {
 			return false;
 		}

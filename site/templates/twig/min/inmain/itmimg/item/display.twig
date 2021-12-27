@@ -1,0 +1,30 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	docm                   Dplus\DocManagement\Finders\It\Img
+	item                   Item Master Item
+#}
+
+<div class="mb-3">
+	<a href="{{ page.imgUrl() }}" class="btn btn-primary btn-lg">
+		<i class="fa fa-search" aria-hidden="true"></i> Search
+	</a>
+</div>
+
+<div class="row mb-3">
+	<div class="col-sm-6">
+		{% include 'min/inmain/itmimg/item/details.twig' %}
+	</div>
+	<div class="col-sm-6">
+		<div class="text-center">
+			<img src="{{ docm.getViewer().url(docm.getImageFilename(item.itemid)) }}" class="img-fluid" alt="{{ docm.getFolders().description(docm.getFolder()) ~ ' ' ~ item.itemid }}">
+		</div>
+	</div>
+</div>
+
+<div class="mb-3">
+	{% include 'min/inmain/itmimg/item/preview.twig' %}
+</div>
+
+{% include 'min/inmain/itmimg/item/form.twig' %}
