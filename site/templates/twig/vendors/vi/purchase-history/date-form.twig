@@ -1,6 +1,6 @@
-<form action="{{ page.get_redirURL() }}" method="post">
-	<input type="hidden" name="action" value="vi-purchase-history">
-	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+<form action="{{ input.url() }}" method="GET">
+	<input type="hidden" name="vendorID" value="{{ input.get.text('vendorID') }}">
+
 	<div class="form-group">
 		<label for="date">Starting Report Date</label>
 		{% include 'util/date-picker.twig' with {'name': 'date', 'value': '', 'id': 'date'} %}

@@ -29,6 +29,13 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function poListVendorUrl($vendorID, $ponbr = '') {
+		$url = new Purl(self::poListUrl($ponbr));
+		$url->path->add('vendor');
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
 	public static function poUrl($ponbr = '') {
 		$url = new Purl(self::pw('pages')->get('pw_template=purchase-order-view')->url);
 		if ($ponbr) {

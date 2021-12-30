@@ -6,6 +6,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
 use DocumentFolderQuery, DocumentFolder;
 use DocumentQuery, Document;
+use ApInvoiceQuery, ApInvoice as ApInvoiceModel;
 use PurchaseOrderQuery, PurchaseOrder as PoModel;
 // ProcessWire
 use ProcessWire\WireData;
@@ -110,7 +111,7 @@ class ApInvoice extends Finder {
 	 * @return string
 	 */
 	private function addConditionInvoicePo(DocumentQuery $q, $invnbr) {
-		$apinvoice = $this->getInvoice($invnbr);
+		$apinvoice = ApInvoiceQuery::create()->findOneByInvnbr($invnbr);
 		return $this->addConditionPo($q, $apinvoice->ponbr);
 	}
 

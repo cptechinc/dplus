@@ -88,6 +88,19 @@ class Cart extends WireData {
 		return $this->items->getItems();
 	}
 
+	/**
+	 * Set Customer and Shipto for Cart
+	 * @param string $custID    Customer ID
+	 * @param string $shiptoID  Customer Shipto ID
+	 */
+	public function setCustid($custID, $shiptoID = '') {
+		$this->header->setCustid($custID);
+
+		if ($shiptoID) {
+			$this->header->setShiptoid($shiptoID);
+		}
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */

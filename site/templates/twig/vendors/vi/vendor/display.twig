@@ -1,0 +1,12 @@
+<div class="row">
+	<div class="col-sm-2 pl-0">
+		{% include 'vendors/vi/vendor/toolbar.twig' with {'vendorID': vendor.id} %}
+	</div>
+	<div class="col-sm-10">
+		{% include 'vendors/vi/vendor/header.twig' with {'vendor': vendor} %}
+	</div>
+</div>
+
+{% include 'vendors/vi/vendor/panels/purchase-orders.twig' with {'orders': data.orders} %}
+
+{% include 'vendors/vi/vendor/panels/ap-invoices.twig' with {'invoices': data.invoices} %}

@@ -21,7 +21,7 @@ class Folder extends Config {
 	}
 
 	public function __construct() {
-		$this->useLowercase = true;
+		$this->useLowerCase = true;
 	}
 
 	public function initConfig($json = []) {
@@ -30,6 +30,6 @@ class Folder extends Config {
 	}
 
 	public function useLowercase() {
-		return boolval($this->useLowercase);
+		return boolval($this->useLowerCase);
 	}
 }

@@ -8,6 +8,7 @@ use DocumentQuery, Document;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Dplus Document Finders
 use Dplus\DocManagement\Finders\SalesOrder as DocumentsSo;
+use Dplus\DocManagement\Copier;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -26,8 +27,13 @@ class Documents extends Base {
 		if ($data->document && $data->folder) {
 			/** @var DocumentsSo **/
 			$docm = self::docm();
-			$docm->moveDocument($data->folder, $data->document);
-			self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
+			$file = $docm->getDocumentByFilename($data->folder, $data->document);
+			$copier = Copier::getInstance();
+			$copier->copyFile($file->getDocumentFolder()->directory, $data->document);
+
+			if ($copier->isInDirectory($data->document)) {
+				self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
+			}
 		}
 		return self::so($data);
 	}

@@ -1,28 +1,10 @@
-{% if json['data'] %}
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="card bg-info">
-                <h5 class="card-header text-white">{{ json['columns']['internal notes']['internal note']['heading'] }}</h5>
-                <ul class="list-group list-group-flush">
-                    {% for i in 1..json['data']['internal notes']|length %}
-                        <li class="list-group-item">{{ json['data']['internal notes'][i]['internal note'] }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="card bg-danger">
-                <h5 class="card-header text-white">{{ json['columns']['purchase order notes']['purchase order note']['heading'] }}</h5>
-                <ul class="list-group list-group-flush">
-                    {% for i in 1..json['data']['purchase order notes']|length %}
-                        <li class="list-group-item">{{ json['data']['purchase order notes'][i]['purchase order note'] }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-{% else %}
-    <div class="alert alert-warning" role="alert">
-        No vendor notes.
-    </div>
-{% endif %}
+<div class="row">
+	<div class="col-sm-6 mb-3">
+		<h3>Purchase Order</h3>
+		<textarea wrap="hard" class="form-control-plaintext w-auto qnotes" rows="10" cols="{{ qnotes.order.cols }}">{{ qnotes.order.notes|join('\n') }}</textarea>
+	</div>
+	<div class="col-sm-6 mb-3">
+		<h3>Internal</h3>
+		<textarea wrap="hard" class="form-control-plaintext w-auto qnotes" rows="10" cols="{{ qnotes.internal.cols }}">{{ qnotes.internal.notes|join('\n') }}</textarea>
+	</div>
+</div>

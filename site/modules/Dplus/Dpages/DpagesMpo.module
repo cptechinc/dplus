@@ -195,9 +195,5 @@ class DpagesMpo extends Dpages implements Module {
 			$ponbr = $event->arguments(0);
 			$event->return = $this->wire('modules')->get('PurchaseOrderEdit')->is_po_editable($ponbr);
 		});
-
-		$this->addHook('Page(pw_template=purchase-orders)::search_vendorsURL', function($event) {
-			$event->return = $this->wire('pages')->get('pw_template=vi-search')->httpUrl;
-		});
 	}
 }

@@ -6,15 +6,34 @@ namespace Composer\Autoload;
 
 class ComposerStaticInite6cdb8e5e8d5442da30953ddd302d993
 {
+    public static $prefixLengthsPsr4 = array (
+        'D' => 
+        array (
+            'Dplus\\Qnotes\\' => 13,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Dplus\\Qnotes\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+    );
+
     public static $classMap = array (
         'Dplus\\Qnotes\\Noce' => __DIR__ . '/../..' . '/src/Noce.php',
         'Dplus\\Qnotes\\Qnotes' => __DIR__ . '/../..' . '/src/Qnotes.php',
         'Dplus\\Qnotes\\Response' => __DIR__ . '/../..' . '/src/Response.php',
+        'Dplus\\Qnotes\\Vend\\Internal' => __DIR__ . '/../..' . '/src/Vend/Internal.php',
+        'Dplus\\Qnotes\\Vend\\Order' => __DIR__ . '/../..' . '/src/Vend/Order.php',
+        'Dplus\\Qnotes\\Vend\\Vend' => __DIR__ . '/../..' . '/src/Vend/Vend.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInite6cdb8e5e8d5442da30953ddd302d993::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInite6cdb8e5e8d5442da30953ddd302d993::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInite6cdb8e5e8d5442da30953ddd302d993::$classMap;
 
         }, null, ClassLoader::class);

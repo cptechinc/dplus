@@ -1,0 +1,7 @@
+<div>
+	{% include 'vendors/vi/ship-froms/search/form.twig' %}
+</div>
+<div class="mb-3">
+	{% include 'vendors/vi/ship-froms/list.twig' %}
+</div>
+{% include 'util/paginator/propel.twig' with {'pager': shipfroms} %}

@@ -7,6 +7,7 @@ use ProcessWire\WireData;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
+use Dplus\DocManagement\Copier;
 
 class Documents extends Base {
 	const JSONCODE       = '';
@@ -27,9 +28,11 @@ class Documents extends Base {
 
 		if ($data->folder && $data->document) {
 			$docm = self::getDocFinderIi();
-			$docm->moveDocument($data->folder, $data->document);
+			$file = $docm->getDocumentByFilename($data->folder, $data->document);
+			$copier = Copier::getInstance();
+			$copier->copyFile($file->getDocumentFolder()->directory, $data->document);
 
-			if ($docm->isInWebDirectory($data->document)) {
+			if ($copier->isInDirectory($data->document)) {
 				self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
 			}
 		}

@@ -19,7 +19,7 @@ abstract class Base extends AbstractController {
 /* =============================================================
 	URLs
 ============================================================= */
-	public static function apInvoiceListUrl($invnbr = '') {
+	public static function listUrl($invnbr = '') {
 		$url = new Purl(self::pw('pages')->get('pw_template=purchase-orders-invoices')->url);
 		if ($invnbr) {
 			$url->query->set('focus', $invnbr);
@@ -27,7 +27,18 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
-	public static function apInvoiceUrl($invnbr = '') {
+	public static function apInvoiceListUrl($invnbr = '') {
+		return self::listUrl($invnbr);
+	}
+
+	public static function listVendorUrl($vendorID, $invnbr = '') {
+		$url = new Purl(self::listUrl($invnbr));
+		$url->path->add('vendor');
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
+	public static function invoiceUrl($invnbr = '') {
 		$url = new Purl(self::apInvoiceListUrl());
 		$url->path->add('invoice');
 		if ($invnbr) {
@@ -36,6 +47,9 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function apInvoiceUrl($invnbr = '') {
+		return self::invoiceUrl($invnbr);
+	}
 
 	public static function apInvoiceDocumentsUrl($invnbr) {
 		$url = new Purl(self::apInvoiceUrl($invnbr));

@@ -37,7 +37,7 @@ class ApInvoice extends Base {
 ============================================================= */
 	private static function listDisplay($data, ModelPager $invoices) {
 		self::initHooks();
-		return self::pw('config')->twig->render('purchase-orders/invoices/display.twig', ['configPo' => self::configPo(), 'invoices' => $invoices]);
+		return self::pw('config')->twig->render('purchase-orders/invoices/display.twig', ['configPo' => Configs\Po::config(), 'invoices' => $invoices]);
 	}
 
 /* =============================================================

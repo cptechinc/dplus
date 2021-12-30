@@ -131,8 +131,8 @@ class Finder extends WireData {
 	 * @return string
 	 */
 	public function documentFilepath($folder, $filename) {
-		$conf = Config::getInstance();
-		$folder = $config->folder->useLowercase() ? strtolower(self::FOLDER) : self::FOLDER;
+		$config = Config::getInstance();
+		$folder = $config->folder->useLowercase() ? strtolower($folder) : $folder;
 
 		if ($this->exists($folder, $filename) === false) {
 			return '';
@@ -164,7 +164,7 @@ class Finder extends WireData {
 	 * @return bool
 	 */
 	public function moveDocument($folder, $filename, $destination = '') {
-		$conf = Config::getInstance();
+		$config = Config::getInstance();
 		$folder = $config->folder->useLowercase() ? strtolower(self::FOLDER) : self::FOLDER;
 
 		if (empty($destination) === false && file_exists($destination) === false) {

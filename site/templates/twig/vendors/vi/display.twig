@@ -1,0 +1,56 @@
+<div class="card">
+	{% block header %}
+		<div class="card-header bg-light">
+			<div class="row">
+				<div class="col-sm-3 col-md-1">
+					<strong>Vendor ID:</strong>
+				</div>
+				<div class="col-sm-6">
+					{{ vendor.id }} - {{ vendor.name }}
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+
+	{% block links %}
+		<div class="p-2 px-3 card-toolbar">
+			<div class="row">
+				<div class="col-4 col-sm-3">
+					<a href="{{ page.viUrl(customer.id) }}" class="btn btn-primary {{ page.is_print() ? 'd-print-none' : ''}}">
+						<i class="fa fa-undo" aria-hidden="true"></i> {{ customer.id }}
+					</a>
+				</div>
+				<div class="col-4 col-sm-3">
+					{% if page.is_print() == false %}
+						<a href="{{ page.get_printURL() }}" class="btn btn-primary">
+							<i class="fa fa-print" aria-hidden="true"></i> Print
+						</a>
+					{% endif %}
+				</div>
+				<div class="col-4 col-sm-3">
+					{% if page.is_print() == false and page.has('refreshurl') %}
+						<a href="{{ page.refreshurl }}" class="btn btn-primary">
+							<i class="fa fa-refresh" aria-hidden="true"></i> Refresh
+						</a>
+					{% endif %}
+				</div>
+				<div class="col-sm-3 text-center pt-2">
+					{% if page.has('lastmodified') %}
+						Data Timestamp: {{ page.lastmodified|date('m/d/Y h:i A') }}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+
+	{% block body %}
+	{% endblock %}
+
+	{% block footer %}
+		<div class="card-footer">
+			<div class="d-flex justify-content-between align-items-center">
+
+			</div>
+		</div>
+	{% endblock %}
+</div>

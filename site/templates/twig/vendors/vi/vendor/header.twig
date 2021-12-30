@@ -1,16 +1,16 @@
 <div class="row mb-4">
 	<div class="col-sm-6 form-group">
 		<div class="mb-3">
-			{% include 'vendors/vi/vendor/info.twig' %}
+			{% include 'vendors/vi/vendor/header/info.twig' %}
 		</div>
-		{% include 'vendors/vi/vendor/ap-data.twig' %}
+		{% include 'vendors/vi/vendor/header/ap-data.twig' %}
 	</div>
 	<div class="col-sm-6 form-group">
 		<div class="text-center form-group">
-			<a href="{# page.po_createURL(vendor.vendorid) #}" class="btn btn-primary">
+			<a href="{{ page.createPoUrl(vendor.id) }}" class="btn btn-primary">
 				<i class="fa fa-plus" aria-hidden="true"></i> Create PO
 			</a>
 		</div>
-		{% include 'vendors/vi/vendor/activity.twig' %}
+		{% include 'vendors/vi/vendor/header/activity.twig' %}
 	</div>
 </div>

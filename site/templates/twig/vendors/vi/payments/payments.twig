@@ -8,7 +8,7 @@
 					{% if blueprint['detail']['rows'][x]['columns'][i] %}
 						{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 						{% set colspan = column['col-length'] %}
-						<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
+						<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['label-justify']) }}">
 							{{ column['label'] }}
 						</th>
 					{% else %}
@@ -38,8 +38,8 @@
 						{% if blueprint['detail']['rows'][x]['columns'][i] %}
 							{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 							{% set colspan = column['col-length'] %}
-							<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-								{{ module_formatter.format_celldata(invoice, column) }} &nbsp;
+							<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+								{{ formatter.format_celldata(invoice, column) }} &nbsp;
 							</td>
 						{% else %}
 							{% if columncount < blueprint['cols'] %}

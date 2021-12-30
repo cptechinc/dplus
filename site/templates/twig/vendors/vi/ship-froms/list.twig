@@ -1,0 +1,52 @@
+<table id="shipfrom-index" class="table table-bordered table-smd">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('shipfromID') }}" class="link">ID</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
+			</th>
+			<th scope="col">Address</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('state') }}" class="link">State</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
+			</th>
+			<th scope="col" class="text-right">
+				<a href="{{ page.get_sortURL('date_lastpurchased') }}" class="link">Last Purchase</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if shipfroms.count() %}
+			{% for shipfrom in shipfroms %}
+				<tr>
+					<td scope="row">
+						<a href="{{ page.viShipfromUrl(shipfrom.vendorid, shipfrom.id) }}" class="link shipfrom-link" data-shipfromid="{{ shipfrom.id }}" data-name="{{ shipfrom.name }}">
+							<strong>{{ shipfrom.id }}</strong>
+						</a>
+					</td>
+					<td>{{ shipfrom.name }}</td>
+					<td>{{ shipfrom.address }}</td>
+					<td>{{ shipfrom.city }}</td>
+					<td>{{ shipfrom.state }}</td>
+					<td>{{ shipfrom.zip }}</td>
+					<td class="text-right">
+						{{ shipfrom.lastpurchasedate ? shipfrom.lastpurchasedate|convertdate : '' }}
+					</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="7" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>

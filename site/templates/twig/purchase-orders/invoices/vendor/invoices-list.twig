@@ -21,7 +21,7 @@
 </div>
 {% if invoices.count > 0 %}
 	{% for invoice in invoices %}
-		<a href="{{ invpage ~ '?invnbr=' ~ invoice.invoicenumber }}" class="list-group-item list-group-item-action">
+		<a href="{{ page.apInvoiceUrl(invoice.invoicenumber) }}" class="list-group-item list-group-item-action">
 			<div class="row">
 				<div class="col">{{ invoice.invoicenumber }}</div>
 				<div class="col">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().ponbr : 'N/A' }}</div>
