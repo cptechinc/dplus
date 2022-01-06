@@ -27,7 +27,10 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Min\\ItemMaster' => __DIR__ . '/../..' . '/src/Min/ItemMaster.php',
         'Dplus\\Filters\\Min\\ItemSubstitute' => __DIR__ . '/../..' . '/src/Min/ItemSubstitute.php',
         'Dplus\\Filters\\Min\\LotMaster' => __DIR__ . '/../..' . '/src/Min/LotMaster.php',
+        'Dplus\\Filters\\Min\\MsdsCode' => __DIR__ . '/../..' . '/src/Min/MsdsCode.php',
+        'Dplus\\Filters\\Min\\TariffCode' => __DIR__ . '/../..' . '/src/Min/TariffCode.php',
         'Dplus\\Filters\\Min\\Upcx' => __DIR__ . '/../..' . '/src/Min/Upcx.php',
+        'Dplus\\Filters\\Min\\Warehouse' => __DIR__ . '/../..' . '/src/Min/Warehouse.php',
         'Dplus\\Filters\\Min\\WarehouseBin' => __DIR__ . '/../..' . '/src/Min/WarehouseBin.php',
         'Dplus\\Filters\\Misc\\CountryCode' => __DIR__ . '/../..' . '/src/Misc/CountryCode.php',
         'Dplus\\Filters\\Misc\\Funcperm' => __DIR__ . '/../..' . '/src/Misc/Funcperm.php',
@@ -49,10 +52,12 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Msa\\SysLoginRole' => __DIR__ . '/../..' . '/src/Msa/SysLoginRole.php',
         'Dplus\\Filters\\Msa\\SysopOptionalCode' => __DIR__ . '/../..' . '/src/Msa/SysopOptionalCode.php',
         'Dplus\\Filters\\Mso\\Cxm' => __DIR__ . '/../..' . '/src/Mso/Cxm.php',
+        'Dplus\\Filters\\Mso\\MotorFreightCode' => __DIR__ . '/../..' . '/src/Mso/MotorFreightCode.php',
         'Dplus\\Filters\\Mso\\SalesHistory' => __DIR__ . '/../..' . '/src/Mso/SalesHistory.php',
         'Dplus\\Filters\\Mso\\SalesHistory\\Detail' => __DIR__ . '/../..' . '/src/Mso/SalesHistory/SalesHistoryDetail.php',
         'Dplus\\Filters\\Mso\\SalesOrder' => __DIR__ . '/../..' . '/src/Mso/SalesOrder.php',
         'Dplus\\Filters\\Mso\\SalesOrder\\SalesOrderDetail' => __DIR__ . '/../..' . '/src/Mso/SalesOrder/SalesOrderDetail.php',
+        'Dplus\\Filters\\Mth\\ThermalLabelFormat' => __DIR__ . '/../..' . '/src/Mth/ThermalLabelFormat.php',
         'Dplus\\Filters\\SortFilter' => __DIR__ . '/../..' . '/src/SortFilter.php',
     );
 
