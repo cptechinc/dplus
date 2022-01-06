@@ -1,0 +1,17 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/vendor/autoload.php');
+
+class UserOptions extends WireData implements Module {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus User Options CRUD',
+			'version' => 101,
+			'summary' => 'Autoloads Options Classes',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}
