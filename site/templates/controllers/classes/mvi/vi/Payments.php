@@ -9,7 +9,7 @@ use Dplus\ScreenFormatters\Vi\Payments as Formatter;
 use Dplus\DocManagement\Finders as DocFinders;
 
 class Payments extends Subfunction {
-	const PERMISSION_VIO = '';
+	const PERMISSION_VIO = 'payments';
 	const JSONCODE       = 'vi-payments';
 
 /* =============================================================

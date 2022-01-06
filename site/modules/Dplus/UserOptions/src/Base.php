@@ -6,7 +6,9 @@ use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as UserRecord;
 use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ProcessWire\WireData;
+use ProcessWire\WireInput;
+use ProcessWire\User;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
@@ -184,6 +186,19 @@ abstract class Base extends WireData {
 			return $this->new($userID);
 		}
 		return $this->user($userID);
+	}
+
+	/**
+	 * Return if User is allowed to II subfunction
+	 * @param  User   $user
+	 * @param  string $option II subfunction
+	 * @return bool
+	 */
+	public function allowUser(User $user, $option = '') {
+		$userID = $this->exists($user->loginid) ? $user->loginid : static::USER_DEFAULT;
+		$permissions = $this->user($userID);
+		$exists = array_key_exists($option, static::SCREENS);
+		return $exists ? $permissions->isTrue($option) : true;
 	}
 
 /* =============================================================
@@ -367,6 +382,7 @@ abstract class Base extends WireData {
 		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
 	}
+
 /* =============================================================
 	Record Locker Functions
 ============================================================= */
