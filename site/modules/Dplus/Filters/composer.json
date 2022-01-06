@@ -1,6 +1,6 @@
 {
-	"name": "dplus/filters",
-	"description": "Filters",
+	"name": "dplus/configs",
+	"description": "configs",
 	"type": "library",
 	"keywords": [ "processwire", "module" ],
 	"homepage": "http://modules.processwire.com",

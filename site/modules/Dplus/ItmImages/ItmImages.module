@@ -1,0 +1,79 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__ . '/vendor/autoload.php');
+use Dotenv;
+
+use Dplus\Urls\ItmImages as Images;
+
+/**
+ * Module for Itm Images configurations
+ */
+class ItmImages extends Process implements ConfigurableModule {
+/* =============================================================
+		ProcessWire Module Functions
+=============================================================== */
+
+	const CONFIG_FIELDS = array(
+		'useExternal' => array(
+			'type'        => 'checkbox',  // TRUE OR FALSE
+			'label'       => 'Use External Source for Image Urls',
+			'description' => 'Use External Source for Image Urls',
+			'notes'       => ""
+		)
+	);
+
+	const DEFAULT_CONFIG = array(
+		'useExternal' => false
+	);
+
+	public function getImageSourcer() {
+		return new Images\Factory();
+	}
+
+
+	public function init() {
+		parent::init();
+
+		$env = Dotenv\Dotenv::createImmutable(__DIR__);
+		$env->load();
+
+		foreach(self::DEFAULT_CONFIG as $key => $value) {
+			if (isset($this->data[$key])) {
+				$this->data[$key] = $this->data[$key];
+			} else {
+				$this->data[$key] = $value;
+			}
+		}
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Itm Images Config',
+			'version' => 101,
+			'summary' => 'Handles Dplus Itm Images Configurations',
+			'singular' => true,
+			'autoload' => true
+		);
+	}
+
+	public static function getModuleConfigInputfields(array $data) {
+		$modules = wire('modules');
+		$fields = new InputfieldWrapper();
+		$data = array_merge(self::DEFAULT_CONFIG, $data);
+
+		$traits = self::CONFIG_FIELDS['useExternal'];
+		$f = $modules->get('InputfieldCheckbox');
+		$f->attr('name', 'useExternal');
+		$f->attr('checked', $data['useExternal'] ? 'checked' : '' );
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$fields->add($f);
+
+		return $fields;
+	}
+}
