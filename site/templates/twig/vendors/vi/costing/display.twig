@@ -1,0 +1,22 @@
+{% extends 'vendors/vi/display.twig' %}
+
+{% block body %}
+	<div class="p-2 bg-light">
+		<a href="{{ page.costingItemUrl(vendor.id, '') }}" class="btn btn-sm btn-warning">
+			New Inquiry
+		</a>
+	</div>
+	{% include 'vendors/vi/costing/costing.twig' %}
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<a href="{{ page.viUrl(vendor.id) }}" class="btn btn-warning btn-sm">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
+	</div>
+{% endblock %}

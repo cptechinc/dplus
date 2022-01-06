@@ -7,6 +7,7 @@ use ProcessWire\WireData;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
+use Dplus\DocManagement\Copier;
 
 class Documents extends Base {
 	const JSONCODE       = '';
@@ -27,9 +28,11 @@ class Documents extends Base {
 
 		if ($data->folder && $data->document) {
 			$docm = self::getDocFinderIi();
-			$docm->moveDocument($data->folder, $data->document);
+			$file = $docm->getDocumentByFilename($data->folder, $data->document);
+			$copier = Copier::getInstance();
+			$copier->copyFile($file->getDocumentFolder()->directory, $data->document);
 
-			if ($docm->isInWebDirectory($data->document)) {
+			if ($copier->isInDirectory($data->document)) {
 				self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
 			}
 		}
@@ -163,10 +166,10 @@ class Documents extends Base {
 				break;
 			case 'AP':
 				self::sanitizeParametersShort($data, ['invnbr|ponbr', 'date|text']);
-				$docm = self::pw('modules')->get('DocumentManagementPo');
+				$docm = new DocFinders\ApInvoice();
 				$list->title = "AP Invoice #$data->invnbr Documents";
 				$list->returnTitle = "AP Invoices";
-				$list->documents = $docm->get_documents_invoice($data->invnbr);
+				$list->documents = $docm->getDocuments($data->invnbr);
 				$list->returnUrl = PurchaseHistory::historyUrl($data->itemID, $data->date);
 				break;
 			case 'PO':

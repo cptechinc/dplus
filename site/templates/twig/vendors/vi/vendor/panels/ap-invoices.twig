@@ -1,0 +1,17 @@
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#vendor-invoices" role="button" aria-expanded="false" aria-controls="vendor-invoices">
+			Invoices &ensp;<i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ invoices.getNbResults() }}</span>
+	</div>
+	<div class="collapse" id="vendor-invoices">
+		{% include 'purchase-orders/invoices/vendor/invoices-list.twig' %}
+
+		<div class="card-footer bg-secondary">
+			<a href="{{ page.apInvoiceListUrl(input.get.text('vendorID')) }}" class="text-white">
+				View More Invoices <i class="fa fa-sign-in" aria-hidden="true"></i>
+			</a>
+		</div>
+	</div>
+</div>

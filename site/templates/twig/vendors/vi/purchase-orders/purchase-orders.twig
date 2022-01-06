@@ -8,7 +8,7 @@
 					{% if blueprint['header']['rows'][x]['columns'][i] %}
 						{% set column = blueprint['header']['rows'][x]['columns'][i] %}
 						{% set colspan = column['col-length'] %}
-						<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
+						<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['label-justify']) }}">
 							{{ column['label'] }}
 						</th>
 					{% else %}
@@ -38,13 +38,13 @@
 						{% if blueprint['header']['rows'][x]['columns'][i] %}
 							{% set column = blueprint['header']['rows'][x]['columns'][i] %}
 							{% set colspan = column['col-length'] %}
-							<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-								{{ module_formatter.format_celldata(order, column) }} &nbsp;
+							<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+								{{ formatter.format_celldata(order, column) }} &nbsp;
 								{% if column['id'] == 'Purchase Order Number' %}
 									{% set ponbr = order['Purchase Order Number'] %}
 									{% set vendorID = json['vendid'] %}
-									{% if docm.count_documents_po(ponbr) %}
-										<a href="{{ page.documentsview_po(vendorID, ponbr) }}" class="text-success" title="View Documents for PO # {{ ponbr }}">
+									{% if docm.countDocumentsPo(ponbr) %}
+										<a href="{{ page.documentListUrl(vendorID, ponbr) }}" class="text-success" title="View Documents for PO # {{ ponbr }}">
 											<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ ponbr }}</span>
 										</a>
 									{% endif %}
@@ -69,7 +69,7 @@
 						{% if blueprint['detail']['rows'][x]['columns'][i] %}
 							{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 							{% set colspan = column['col-length'] %}
-							<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
+							<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['label-justify']) }}">
 								{{ column['label'] }}
 							</th>
 						{% else %}
@@ -92,8 +92,8 @@
 							{% if blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-									{{ module_formatter.format_celldata(detail, column) }}
+								<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+									{{ formatter.format_celldata(detail, column) }}
 								</td>
 							{% else %}
 								{% if columncount < blueprint['cols'] %}
@@ -136,8 +136,8 @@
 							{% if i == 1 %}
 								<td>Total</td>
 							{% else %}
-								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-									{{ module_formatter.format_celldata(order['pototals'], column) }}
+								<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+									{{ formatter.format_celldata(order['pototals'], column) }}
 								</td>
 							{% endif %}
 						{% else %}
@@ -166,8 +166,8 @@
 						{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 						{% set colspan = column['col-length'] %}
 
-						<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-							{{ module_formatter.format_celldata(json['data']['vendortotals'], column) }}
+						<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+							{{ formatter.format_celldata(json['data']['vendortotals'], column) }}
 						</td>
 					{% else %}
 						{% if columncount < blueprint['cols'] %}

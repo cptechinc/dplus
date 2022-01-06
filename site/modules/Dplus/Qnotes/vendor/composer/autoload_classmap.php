@@ -9,4 +9,7 @@ return array(
     'Dplus\\Qnotes\\Noce' => $baseDir . '/src/Noce.php',
     'Dplus\\Qnotes\\Qnotes' => $baseDir . '/src/Qnotes.php',
     'Dplus\\Qnotes\\Response' => $baseDir . '/src/Response.php',
+    'Dplus\\Qnotes\\Vend\\Internal' => $baseDir . '/src/Vend/Internal.php',
+    'Dplus\\Qnotes\\Vend\\Order' => $baseDir . '/src/Vend/Order.php',
+    'Dplus\\Qnotes\\Vend\\Vend' => $baseDir . '/src/Vend/Vend.php',
 );

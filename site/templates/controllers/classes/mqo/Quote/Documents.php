@@ -1,9 +1,9 @@
 <?php namespace Controllers\Mqo\Quote;
-
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager as ModelPager;
 use Propel\Runtime\Collection\ObjectCollection;
-
+// Dplus Docm
+use Dplus\DocManagement\Copier;
 
 class Documents extends Base {
 /* =============================================================
@@ -19,8 +19,13 @@ class Documents extends Base {
 
 		if ($data->document && $data->folder) {
 			$docm = self::docm();
-			$docm->moveDocument($data->folder, $data->document);
-			self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
+			$file = $docm->getDocumentByFilename($data->folder, $data->document);
+			$copier = Copier::getInstance();
+			$copier->copyFile($file->getDocumentFolder()->directory, $data->document);
+
+			if ($copier->isInDirectory($data->document)) {
+				self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
+			}
 		}
 		return self::qt($data);
 	}

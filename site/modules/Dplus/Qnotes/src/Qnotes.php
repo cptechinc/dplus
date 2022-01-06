@@ -19,7 +19,12 @@ abstract class Qnotes extends WireData {
 	];
 
 	protected static $instance;
+	protected $fieldAttributes = [];
 
+	/**
+	 * Return Instance
+	 * @return static
+	 */
 	public static function getInstance() {
 		if (empty(static::$instance)) {
 			static::$instance = new static();
@@ -29,6 +34,7 @@ abstract class Qnotes extends WireData {
 
 	public function __construct() {
 		$this->sessionID = session_id();
+		$this->initFieldAttributes();
 	}
 
 	/**
@@ -53,6 +59,15 @@ abstract class Qnotes extends WireData {
 	Field Configs
 ============================================================= */
 	/**
+	 * Initialize Field Attributes
+	 * NOTE: values may be set from configs
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		$this->fieldAttributes = static::FIELD_ATTRIBUTES;
+	}
+
+	/**
 	 * Return Field Attribute value
 	 * @param  string $field Field Name
 	 * @param  string $attr  Attribute Name
@@ -62,13 +77,13 @@ abstract class Qnotes extends WireData {
 		if (empty($field) || empty($attr)) {
 			return false;
 		}
-		if (array_key_exists($field, static::FIELD_ATTRIBUTES) === false) {
+		if (array_key_exists($field, $this->fieldAttributes) === false) {
 			return false;
 		}
-		if (array_key_exists($attr, static::FIELD_ATTRIBUTES[$field]) === false) {
+		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
 			return false;
 		}
-		return static::FIELD_ATTRIBUTES[$field][$attr];
+		return $this->fieldAttributes[$field][$attr];
 	}
 
 /* =============================================================
@@ -79,7 +94,7 @@ abstract class Qnotes extends WireData {
 	 * @return string
 	 */
 	public function modelClassName() {
-		return $this::MODEL;
+		return static::MODEL;
 	}
 
 /* =============================================================

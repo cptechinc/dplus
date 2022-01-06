@@ -1,0 +1,39 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	items                  Propel\Runtime\Util\PropelModelPager (ItemMasterItem)
+#}
+<table id="item-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">Item ID</th>
+			<th scope="col">Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if items.count() == 0 %}
+			<tr>
+				<td colspan="2" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+
+		{% for item in items %}
+			<tr data-itemid="{{ item.itemid }}">
+				<td>
+					<a href="{{ page.costingItemUrl(input.get.text('vendorID'), item.itemid) }}" class="link">
+						<strong>{{ item.itemid }}</strong>
+					</a>
+				</td>
+				<td>
+					<small>
+						{{ item.desc }} <br>
+						{{ item.desc2 }}
+					</small>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

@@ -14,7 +14,6 @@ class Filters extends WireData implements Module {
 		}
 	}
 
-
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -26,16 +25,7 @@ class Filters extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'FilterQuotes',
-				'FilterPurchaseOrder',
-				'FilterApInvoices',
 				'FilterBookings',
-				'FilterVendors',
-				'FilterItemXrefUpc',
-				'FilterItemMaster',
-				'FilterItemXrefVxm',
-				'FilterQnotes',
-				'FilterCountryCodes',
 			)
 		);
 	}

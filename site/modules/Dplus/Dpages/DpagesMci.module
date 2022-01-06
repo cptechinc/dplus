@@ -33,10 +33,6 @@ class DpagesMci extends Dpages implements Module {
 			'name'   => 'ci-customer-phonebook',
 			'fields' => array(),
 		),
-		'mci-lookup' => array(
-			'name'   => 'mci-lookup',
-			'fields' => array(),
-		),
 		'cio' => array(
 			'name'   => 'cio',
 			'fields' => array(),
@@ -68,15 +64,6 @@ class DpagesMci extends Dpages implements Module {
 			'parent'         => '/mci/admin/',
 			'dplus_function' => 'cio',
 			'pw_template'    => 'cio'
-		),
-		'mci-lookup' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'lookup',
-			'title'          => 'Customer Lookup',
-			'summary'        => 'Lookup Customers',
-			'parent'         => '/mci/',
-			'dplus_function' => '',
-			'pw_template'    => 'mci-lookup'
 		),
 		'ci' => array(
 			'template'       => 'dplus-function',

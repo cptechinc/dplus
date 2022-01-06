@@ -106,8 +106,8 @@
 			],
 		],
 		'mdm' => [
-			'docs' => [
-				['GET', 'copier/', Json\Mdm::class, 'copyFile'],
+			'docvwr' => [
+				['GET', 'copy/', Json\Mdm::class, 'copyFile'],
 			]
 		],
 		'mgl' => [

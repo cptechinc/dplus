@@ -1,0 +1,9 @@
+<div>
+	{% include 'vendors/vi/costing/search/form.twig' %}
+</div>
+<div>
+	<div class="mb-2">
+		{% include 'vendors/vi/costing/search/results.twig' %}
+	</div>
+	{% include 'util/paginator/propel.twig' with {'pager': items} %}
+</div>

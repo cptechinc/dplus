@@ -88,6 +88,12 @@
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'loginRoles'],
 			]
 		],
+		'mth' => [
+			'labels' => [
+				['GET', '', AjaxLookup\Mth::class, 'labels'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mth::class, 'labels'],
+			],
+		],
 	];
 
 	$router = new Mvc\Router();

@@ -1,0 +1,29 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__ . '/vendor/autoload.php');
+// Dotenv
+use Dotenv;
+
+/**
+ * Connections
+ */
+class Connections extends WireData implements Module {
+	public function init() {
+		$env = Dotenv\Dotenv::createImmutable(__DIR__);
+		$env->load();
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 * @return array
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title'    => 'Dplus Connections',
+			'version'  => 101,
+			'summary'  => 'Provides Connections, Clients to Apis',
+			'singular' => true,
+			'autoload' => true
+		);
+	}
+}

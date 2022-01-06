@@ -1,0 +1,82 @@
+{% set headercolumns = array_keys(json['columns']['header']) %}
+{% set detailcolumns = array_keys(json['columns']['details']) %}
+
+{% set columncount = detailcolumns > headercolumns ? detailcolumns|length : headercolumns|length %}
+
+{% if json['data'] %}
+	<table class="table table-striped table-sm">
+		<thead>
+			<tr>
+				{% for column in json['columns']['header'] %}
+					<th class="{{ formatter.get_justifyclass(column['headingjustify']) }}">{{ column['heading'] }}</th>
+				{% endfor %}
+				{% if ((headercolumns|length) < columncount) %}
+					{% for i in 1..(columncount - headercolumns|length) %}
+						<th></th>
+					{% endfor %}
+				{% endif %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for order in json['data']['purchaseorders'] %}
+				<tr>
+					{% for column in headercolumns %}
+						<td class="{{ formatter.get_justifyclass(json['columns']['header'][column]['datajustify']) }}">
+							{{ order[column] }} &nbsp;
+							
+							{% if column == 'Purchase Order Number' %}
+								{% set ponbr = order[column] %}
+								{% set vendorID = json['vendid'] %}
+								{% if docm.countDocumentsPo(ponbr) %}
+									<a href="{{ page.documentListUrl(vendorID, ponbr) }}" class="text-success" title="View Documents for PO # {{ ponbr }}">
+										<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ ponbr }}</span>
+									</a>
+								{% endif %}
+							{% endif %}
+						</td>
+					{% endfor %}
+					{% if ((headercolumns|length) < columncount) %}
+						{% for i in 1..(columncount - (headercolumns|length)) %}
+							<td></td>
+						{% endfor %}
+					{% endif %}
+				</tr>
+				<tr>
+					{% for column in json['columns']['details'] %}
+						<th class="{{ formatter.get_justifyclass(column['headingjustify']) }}">{{ column['heading'] }}</th>
+					{% endfor %}
+				</tr>
+				{% for detail in order['details'] %}
+					<tr>
+						{% for column in detailcolumns %}
+							<td class="{{ formatter.get_justifyclass(json['columns']['details'][column]['datajustify']) }}">{{ detail[column] }}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+
+				{% set total = order['totals'] %}
+				<tr class="bg-primary text-white">
+					{% for column in detailcolumns %}
+						<td class="{{ formatter.get_justifyclass(column['datajustify']) }}">{{ total[column] }}</td>
+					{% endfor %}
+				</tr>
+				<tr>
+					{% set colspan = json['columns']['details']|length %}
+					<td colspan="{{ colspan }}"></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			{% set vendortotals = json['data']['vendortotals'] %}
+			<tr class="bg-secondary text-white">
+				{% for column in detailcolumns %}
+					<td class="{{ formatter.get_justifyclass(column['datajustify']) }}">{{ vendortotals[column] }}</td>
+				{% endfor %}
+			</tr>
+		</tfoot>
+	</table>
+{% else %}
+	<div class="alert alert-warning" role="alert">
+		No uninvoiced orders.
+	</div>
+{% endif %}

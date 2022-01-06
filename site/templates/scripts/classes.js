@@ -136,7 +136,7 @@ class ImageModal {
 	}
 
 	requestImageCopy(folder, file, callback) {
-		var ajax = new AjaxRequest(api.urls.mdm.docs.copier);
+		var ajax = new AjaxRequest(api.urls.mdm.docvwr.copy);
 		ajax.setData({folder: folder, file:file});
 		ajax.request(function(success) {
 			callback(success);

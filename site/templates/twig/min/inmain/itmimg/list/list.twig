@@ -1,0 +1,53 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	items                  Propel\Runtime\Util\PropelModelPager  ItemMasterItem[]|
+	docm                   Dplus\DocManagement\Finders\It\Img
+#}
+
+<table id="item-index" class="table table-sm table-bordered">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th scope="col">Item ID / Description</th>
+			<th scope="col">Group</th>
+			<th scope="col" class="text-center">Has Image</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if items.count() == 0 %}
+			<tr>
+				<td colspan="3" class="bg-gray text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+
+		{% if items.count() %}
+			{% for item in items %}
+				<tr data-itemid="{{ item.itemid }}">
+					<td>
+						<a href="{{ page.itemUrl(item.itemid) }}" class="link">
+							<strong>{{ item.itemid }}</strong>
+						</a> <br>
+						<small class="smaller">
+							{{ item.desc }} ; {{ item.desc2 }}
+						</small>
+					</td>
+					<td>
+						{{ item.itemgroup }}
+					</td>
+					<td class="text-center">
+						{% if docm.hasImage(item.itemid) %}
+							{% set image = docm.getImage(item.itemid) %}
+							<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ item.itemid }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
+								<i class="fa fa-picture-o" aria-hidden="true"></i>
+								<span class="sr-only">View Image</span>
+							</button>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		{% endif %}
+	</tbody>
+</table>

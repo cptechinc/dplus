@@ -18,7 +18,7 @@ class Cart extends AbstractController {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|text', 'custID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -26,6 +26,10 @@ class Cart extends AbstractController {
 			return self::handleCRUD($data);
 		}
 		$cart = self::getCart();
+
+		if (empty($data->custID) === false) {
+			$cart->setCustid($data->custID);
+		}
 
 		if ($cart->hasCustid() === false) {
 			return self::selectCustomer($data);

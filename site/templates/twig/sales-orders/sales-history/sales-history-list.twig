@@ -17,7 +17,12 @@
 			<a href="{{ page.orderUrl(order.ordernumber) }}" class="list-group-item list-group-item-action">
 				<div class="row">
 					<div class="col">{{ order.ordernumber }}</div>
-					<div class="col">{{ order.custid }}</div>
+					<div class="col">
+						<div>
+							{{ order.custid }}
+						</div>
+						<small class="text-muted">{{ order.customer.name }}</small>
+					</div>
 					<div class="col">{{ order.custpo }}</div>
 					<div class="col">{{ order.shiptoid }}</div>
 					<div class="col text-right">$ {{ order.total_total|currency }}</div>

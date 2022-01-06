@@ -1,8 +1,10 @@
 <?php namespace Dplus\DocManagement\Uploader\Lt;
 
-use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
+use ProcessWire\WireData, ProcessWire\WireInput;
 
 use Dplus\DocManagement\Uploader as Base;
+use Dplus\DocManagement\Config;
+use Dplus\DocManagement\FileUploader;
 
 /**
  * Lotimg
@@ -46,14 +48,12 @@ class Lotimg extends Base {
 	/**
 	 * Return File Uploader with settings
 	 * @param  array  $file          Element from $_FILES
-	 * @return WireUpload
+	 * @return FileUploader
 	 */
 	protected function getUploader(array $file) {
-		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-
 		$uploader = parent::getUploader($file);
-		$uploader->setTargetFilename(self::FILENAME_PREFIX . $this->lotserial . ".$ext");
 		$uploader->setLowercase(false);
+		$uploader->setTargetFilename($this->getTargetFilename($file, $this->lotserial));
 		return $uploader;
 	}
 }

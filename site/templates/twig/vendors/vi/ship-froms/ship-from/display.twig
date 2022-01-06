@@ -1,0 +1,8 @@
+<div class="row mb-3">
+	<div class="col-sm-2"></div>
+	<div class="col-sm-10">
+		{% include 'vendors/vi/ship-froms/ship-from/header.twig' %}
+	</div>
+</div>
+
+{% include 'vendors/vi/vendor/panels/purchase-orders.twig' with {'orders': apData.orders} %}

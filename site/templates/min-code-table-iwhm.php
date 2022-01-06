@@ -35,8 +35,6 @@
 				$recordlocker->create_lock($page->codetable, $warehouse->id);
 			}
 		}
-
-		$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'warehouse' => $warehouse, 'm_iwhm' => $module_codetable, 'recordlocker' => $recordlocker]);
 		$page->body .= $config->twig->render("util/ajax-modal.twig", []);
 		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'warehouse' => $warehouse, 'm_iwhm' => $module_codetable]);

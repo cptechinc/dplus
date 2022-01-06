@@ -1,0 +1,32 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	lot                    InvLot
+	docm                   Dplus\DocManagement\Finders\Lt\Img
+#}
+
+<div class="card">
+	<div class="card-header">
+		<div class="d-flex w-100 justify-content-between">
+			<span class="font-weight-bold">Lot #: {{ lot.lotnbr }}</span>
+			<div>
+				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#lotDetails" aria-expanded="false" aria-controls="lotDetails">
+					Details
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="card-body collapse" id="lotDetails">
+		{% include 'warehouse/inventory/mlot/labels/lotserial/details.twig' %}
+	</div>
+
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-6">
+				{% include 'warehouse/inventory/mlot/labels/lotserial/form.twig' %}
+			</div>
+		</div>
+	</div>
+</div>

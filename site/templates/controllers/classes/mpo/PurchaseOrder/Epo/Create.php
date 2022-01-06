@@ -82,6 +82,13 @@ class Create extends Base {
 		return $url->getUrl();
 	}
 
+	public static function createVendorPoUrl($vendorID) {
+		$url = new Purl(self::epoUrl());
+		$url->query->set('action', 'create-po');
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */

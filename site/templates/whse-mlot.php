@@ -8,6 +8,10 @@
 		'img' => [
 			['GET',  '', Mlot\Img::class, 'index'],
 			['POST',  '', Mlot\Img::class, 'handleCRUD'],
+		],
+		'labels' => [
+			['GET',  '', Mlot\Labels::class, 'index'],
+			['POST',  '', Mlot\Labels::class, 'handleCRUD'],
 		]
 	];
 

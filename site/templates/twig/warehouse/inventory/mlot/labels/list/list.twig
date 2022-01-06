@@ -1,0 +1,40 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	lots                   Propel\Runtime\Util\PropelModelPager (InvLot)
+	docm                   Dplus\DocManagement\Finders\Lt\Img
+#}
+
+<table class="table table-sm table-striped">
+	<thead>
+		<tr>
+			<th>Lot #</th>
+			<th>Lot Reference</th>
+			<th>Item ID</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for lot in lots %}
+			<tr>
+				<td>
+					<a href="{{ page.lotserialUrl(lot.lotnbr) }}" class="link">
+						{{ lot.lotnbr }}
+					</a>
+				</td>
+				<td>{{ lot.lotref }}</td>
+				<td>{{ lot.itemid }}</td>
+				<td>
+					{% if docm.hasImage(lot.lotnbr) %}
+						{% set image = docm.getImage(lot.lotnbr) %}
+						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ lot.lotnbr }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
+							<i class="fa fa-picture-o" aria-hidden="true"></i>
+							<span class="sr-only">View Image</span>
+						</button>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

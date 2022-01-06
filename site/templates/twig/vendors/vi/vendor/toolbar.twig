@@ -1,9 +1,9 @@
 <nav class="toolbar-sidebar">
 	<ul class="nav">
-		{% for child in page.children_user_allowed() %}
+		{% for key, data in page.viPermittedSubfunctions() %}
 			<li>
-				<a href="{{ child.url_vendorID(vendorID) }}">
-					{{ child.title }}
+				<a href="{{ page.viSubfunctionUrl(vendorID, key) }}">
+					{{ data.title ? data.title : key|capitalize }}
 				</a>
 			</li>
 		{% endfor %}
