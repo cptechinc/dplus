@@ -3,6 +3,8 @@
 use Purl\Url as Purl;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ii\PurchaseOrders as Formatter;
+// Dplus Document Management
+use Dplus\DocManagement\Finders\PurchaseOrder as Docm;
 
 class PurchaseOrders extends Base {
 	const JSONCODE          = 'ii-purchase-orders';
@@ -114,7 +116,7 @@ class PurchaseOrders extends Base {
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$formatter = new Formatter();
 		$formatter->init_formatter();
-		$docm = self::pw('modules')->get('DocumentManagementPo');
+		$docm = new Docm();
 		return $config->twig->render('items/ii/purchase-orders/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm, 'docm' => $docm]);
 	}
 

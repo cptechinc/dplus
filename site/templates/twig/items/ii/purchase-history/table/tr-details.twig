@@ -11,7 +11,7 @@
 						{{ formatter.format_celldata(invoice, column) }} &nbsp;
 
 						{% if i == 1 and invoice['Purchase Order Number'] %}
-							{% if docm.count_documents_invoice(invoice['Purchase Order Number']) %}
+							{% if docm.countDocuments(invoice['Purchase Order Number']) %}
 								<a href="{{ page.documentListUrl(item.itemid, invoice['Purchase Order Number'], page.wire('input').get.text('date'))}}" class="text-success" title="View Documents for PO # {{ invoice['Purchase Order Number'] }}">
 									<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ invoice['Purchase Order Number'] }}</span>
 								</a>

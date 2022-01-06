@@ -166,10 +166,10 @@ class Documents extends Base {
 				break;
 			case 'AP':
 				self::sanitizeParametersShort($data, ['invnbr|ponbr', 'date|text']);
-				$docm = self::pw('modules')->get('DocumentManagementPo');
+				$docm = new DocFinders\ApInvoice();
 				$list->title = "AP Invoice #$data->invnbr Documents";
 				$list->returnTitle = "AP Invoices";
-				$list->documents = $docm->get_documents_invoice($data->invnbr);
+				$list->documents = $docm->getDocuments($data->invnbr);
 				$list->returnUrl = PurchaseHistory::historyUrl($data->itemID, $data->date);
 				break;
 			case 'PO':

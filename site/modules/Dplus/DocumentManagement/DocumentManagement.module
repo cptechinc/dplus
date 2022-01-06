@@ -121,12 +121,7 @@ class DocumentManagement extends WireData implements Module {
 			'summary' => 'Module for getting Documents / Document Info out of Dplus',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array(
-				'DocumentManagementSo',
-				'DocumentManagementQt',
-				'DocumentManagementPo',
-				'DocumentManagementVi',
-			)
+			'installs' => array()
 		);
 	}
 

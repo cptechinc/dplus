@@ -3,6 +3,8 @@
 use Purl\Url as Purl;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ii\PurchaseHistory as Formatter;
+// Dplus Document Management
+use Dplus\DocManagement\Finders\ApInvoice as Docm;
 
 class PurchaseHistory extends Base {
 	const JSONCODE          = 'ii-purchase-history';
@@ -152,7 +154,7 @@ class PurchaseHistory extends Base {
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$formatter = new Formatter();
 		$formatter->init_formatter();
-		$docm = self::pw('modules')->get('DocumentManagementPo');
+		$docm = new Docm();
 		return $config->twig->render('items/ii/purchase-history/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm, 'docm' => $docm]);
 	}
 
