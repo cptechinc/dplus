@@ -2,7 +2,7 @@
 // Purl URI Library
 use Purl\Url;
 // Propel Classes
-use Propel\Runtime\ActiveQuery\CodeCriteria as Query;
+use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
