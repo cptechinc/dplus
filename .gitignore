@@ -13,6 +13,7 @@ site/config.php
 test.php
 site/modules/Dplus/Configs/configs
 site/modules/Dplus/DocumentManagement/config/config.json
+site/modules/Dplus/Connections/vendor
 
 # Twig Cache
 site/templates/twig/cache/
