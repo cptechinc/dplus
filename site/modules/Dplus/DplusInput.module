@@ -11,6 +11,30 @@ use PurchaseOrder, SalesOrder, Quote;
  */
 class DplusInput extends WireData implements Module {
 
+	/**
+	 * Paginate Url with options
+	 * @param WireInput $input                 [description]
+	 * @param array     $options      Array of options:
+	 * 	                - `includeQueryString` (bool): Whether to include query string. (default=true)
+	 * 	                - `ipagenbr`           (int) : Page Number. (default=1)
+	 * @return string
+	 */
+	public function paginateUrl(WireInput $input, $options = []) {
+		$defaults = array(
+			'includeQueryString' => true,
+			'pagenbr'            => 1
+		);
+		$options = array_merge($defaults, $options);
+		$url = new Purl($input->url());
+
+		if ($options['includeQueryString'] === true) {
+			$url->query = $input->queryString();
+		}
+
+		$this->wire('modules')->get('Dpurl')->paginateSimple($url, $options['pagenbr']);
+		return $url->getUrl();
+	}
+
 	public function init() {
 		$this->addHookProperty('WireInput::values', function(HookEvent $event) {
 			$input = $event->object;
@@ -39,11 +63,12 @@ class DplusInput extends WireData implements Module {
 		$this->addHook('WireInput::paginateUrl', function($event) {
 			$input    = $event->object;
 			$pagenbr = $event->arguments(0);
-			$dpurl   = $this->wire('modules')->get('Dpurl');
-			$url = new Purl($input->url());
-			$url->query = $input->queryString();
-			$dpurl->paginateSimple($url, $pagenbr);
-			$event->return = $url->getUrl();
+			$options = $event->arguments(1);
+			if (empty($options)) {
+				$options = [];
+			}
+			$options['pagenbr'] = $pagenbr;
+			$event->return = $this->paginateUrl($input, $options);
 		});
 	}
 

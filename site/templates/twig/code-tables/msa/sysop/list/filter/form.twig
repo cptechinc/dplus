@@ -1,0 +1,42 @@
+<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET">
+	<input type="hidden" name="filter" value="filter">
+
+	<div class="row">
+		<div class="col-sm-3 mb-3">
+			<label for="system">System</label>
+			<select name="system" id="system" class="form-control form-control-sm">
+				<option value=""></option>
+				{% for value, label in sysop.fieldAttribute('system', 'options') %}
+					<option value="{{ value }}" {{ value == input.get.text('system') ? 'selected' : '' }}>
+						{{ value }} - {{ label }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-sm-3 mb-3">
+			<label for="q">Code / Description</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'q',
+						'value': input.get.text('q'),
+						'attributes': {
+							'placeholder': 'Code / Description'
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="row mb-3">
+		<div class="col-6">
+			<button type="submit" class="btn btn-success btn-block">
+				<i class="fa fa-filter" aria-hidden="true"></i> Submit
+			</button>
+		</div>
+		<div class="col-6">
+			<a href="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" class="btn btn-warning btn-block">
+				<i class="fa fa-eraser" aria-hidden="true"></i> Clear Filter
+			</a>
+		</div>
+	</div>
+</form>

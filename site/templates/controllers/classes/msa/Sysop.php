@@ -48,7 +48,7 @@ class Sysop extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['q|text'];
+		$fields = ['q|text', 'system|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
 		$filter = new Filters\Msa\MsaSysopCode();
@@ -58,6 +58,10 @@ class Sysop extends Base {
 		if (empty($data->q) === false) {
 			$filter->search($data->q);
 			$page->headline = "SYSOP: Searching for '$data->q'";
+		}
+
+		if (empty($data->system) === false) {
+			$filter->system($data->system);
 		}
 
 		$filter->sortby($page);
@@ -97,6 +101,7 @@ class Sysop extends Base {
 		$html  = '';
 		// $html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
+		$html .= $config->twig->render('code-tables/msa/sysop/list/filter.twig', ['sysop' => $sysop]);
 		$html .= $config->twig->render('code-tables/msa/sysop/list.twig', ['sysop' => $sysop, 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		return $html;
