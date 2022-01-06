@@ -7,6 +7,7 @@ site/modules/JqueryDataTables
 site/modules/ProcessExportProfile
 
 # Project Configurations
+.env
 site/config.php
 /vendor
 test.php
