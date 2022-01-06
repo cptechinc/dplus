@@ -93,6 +93,23 @@ class Vio extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function deleteUrl($userID) {
+		$url = new Purl(self::url($userID));
+		$url->query->set('action', 'delete');
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Hooks
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('Mvi');
+
+		$m->addHook('Page(pw_template=vio)::vioDeleteUrl', function($event) {
+			$event->return = self::deleteUrl($event->arguments(0));
+		});
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
@@ -102,7 +119,7 @@ class Vio extends AbstractController {
 
 	public static function validateVendoridPermission($data) {
 		self::sanitizeParametersShort($data, ['vendorID|text']);
-		return self::validateUserPermission($data)
+		return self::validateUserPermission($data);
 	}
 
 	protected static function validateUserPermission($data) {
