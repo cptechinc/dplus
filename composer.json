@@ -36,7 +36,8 @@
 		"cptechinc/dpluso-model": "dev-master",
 		"mikehaertl/phpwkhtmltopdf": "dev-master",
 		"picqer/php-barcode-generator": "dev-master",
-		"phpoffice/phpspreadsheet": "dev-master#11575ef3c416aa9c0be1ae3dfd3cad8d385a418c"
+		"phpoffice/phpspreadsheet": "dev-master#11575ef3c416aa9c0be1ae3dfd3cad8d385a418c",
+		"vlucas/phpdotenv": "5.4.x-dev"
 	},
 	"autoload": {
 		"files": [
