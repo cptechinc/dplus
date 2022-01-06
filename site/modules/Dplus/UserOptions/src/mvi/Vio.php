@@ -21,22 +21,31 @@ class Vio extends Base {
 	const MODEL_TABLE        = 'vi_options';
 	const DESCRIPTION        = 'User Vi Options';
 	const DESCRIPTION_RECORD = 'User Vi Options';
-	const RESPONSE_TEMPLATE  = 'User {userid} {not} {crud}';
+	const RESPONSE_TEMPLATE  = 'User {userid} was {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'vio';
 	const DPLUS_TABLE           = 'VIO';
 	const FIELD_ATTRIBUTES = [
 		'userid'          => ['type' => 'text', 'maxlength' => 6],
-		'payments'        => ['default' => 'Y', 'label' => 'Payments'],
-		'costing'         => ['default' => 'Y', 'label' => 'Costing'],
-		'purchaseorders'  => ['default' => 'Y', 'label' => 'Purchase Orders'],
-		'openinvoices'    => ['default' => 'Y', 'label' => 'Open Invoices'],
-		'purchasehistory' => ['default' => 'Y', 'label' => 'Purchase History'],
-		'unreleased'      => ['default' => 'Y', 'label' => 'Unreleased'],
-		'uninvoiced'      => ['default' => 'Y', 'label' => 'Uninvoiced'],
-		'summary'         => ['default' => 'Y', 'label' => '24 Month Summary'],
+		'payments'        => ['default' => 'Y', 'label' => 'Payments', 'sanitizer' => 'ynbool'],
+		'costing'         => ['default' => 'Y', 'label' => 'Costing', 'sanitizer' => 'ynbool'],
+		'purchaseorders'  => ['default' => 'Y', 'label' => 'Purchase Orders', 'sanitizer' => 'ynbool'],
+		'openinvoices'    => ['default' => 'Y', 'label' => 'Open Invoices', 'sanitizer' => 'ynbool'],
+		'purchasehistory' => ['default' => 'Y', 'label' => 'Purchase History', 'sanitizer' => 'ynbool'],
+		'unreleased'      => ['default' => 'Y', 'label' => 'Unreleased', 'sanitizer' => 'ynbool'],
+		'uninvoiced'      => ['default' => 'Y', 'label' => 'Uninvoiced', 'sanitizer' => 'ynbool'],
+		'summary'         => ['default' => 'Y', 'label' => '24 Month Summary', 'sanitizer' => 'ynbool'],
 	];
 
-	const OPTIONS = OptionsVi::PERMISSIONS;
+	const SCREENS = [
+		'payments',
+		'costing',
+		'purchaseorders',
+		'openinvoices',
+		'purchasehistory',
+		'unreleased',
+		'uninvoiced',
+		'summary',
+	];
 
 	protected static $instance;
 
@@ -64,23 +73,7 @@ class Vio extends Base {
 /* =============================================================
 	CRUD Processing
 ============================================================= */
-	/**
-	 * Update UserRecord from Input Data
-	 * @param  WireInput $input Input Data
-	 * @return bool
-	 */
-	protected function inputUpdate(WireInput $input) {
 
-	}
-
-	/**
-	 * Delete UserRecord
-	 * @param  WireInput $input Input Data
-	 * @return bool
-	 */
-	protected function inputDelete(WireInput $input) {
-
-	}
 
 /* =============================================================
 	CRUD Response

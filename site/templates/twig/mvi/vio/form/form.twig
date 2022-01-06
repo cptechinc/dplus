@@ -1,5 +1,6 @@
-<form action="" id="vio-user-form" method="post">
-	<input type="hidden" name="action" value="update-vio">
+<form action="{{ input.url() }}" id="vio-user-form" method="POST">
+	<input type="hidden" name="action" value="update">
+	
 	<div class="mb-3">
 		{% include 'mvi/vio/form/key.twig' %}
 	</div>
@@ -14,7 +15,7 @@
 				<div class="col-sm-6"></div>
 			</div>
 		</div>
-		{% for option in vio.options() %}
+		{% for option in vio.screens() %}
 			{% include 'mvi/vio/form/screen-options.twig' %}
 		{% endfor %}
 	</div>

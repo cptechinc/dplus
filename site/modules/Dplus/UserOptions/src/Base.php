@@ -16,7 +16,7 @@ abstract class Base extends WireData {
 	const MODEL_TABLE        = '';
 	const DESCRIPTION        = '';
 	const DESCRIPTION_RECORD = '';
-	const RESPONSE_TEMPLATE  = 'User {userid} {not} {crud}';
+	const RESPONSE_TEMPLATE  = 'User {userid} was {not} {crud}';
 	const RECORDLOCKER_FUNCTION = '';
 	const DPLUS_TABLE           = '';
 	const USER_DEFAULT = 'system';
@@ -24,7 +24,7 @@ abstract class Base extends WireData {
 		'userid'        => ['type' => 'text', 'maxlength' => 6],
 	];
 
-	const OPTIONS = [];
+	const SCREENS = [];
 
 	protected static $instance;
 
@@ -46,8 +46,8 @@ abstract class Base extends WireData {
 		$this->recordlocker->setUser($this->wire('user'));
 	}
 
-	public function options() {
-		return static::OPTIONS;
+	public function screens() {
+		return static::SCREENS;
 	}
 
 /* =============================================================
@@ -196,7 +196,7 @@ abstract class Base extends WireData {
 	 */
 	public function new($userID = '') {
 		$class = $this->modelClassName();
-		$r  = $class::new();
+		$r = $class::new();
 
 		if (strlen($userID) && $userID != 'new') {
 			$r->setUserid($userID);
@@ -218,12 +218,11 @@ abstract class Base extends WireData {
 			return $to;
 		}
 		$template = $this->user($from);
-		foreach(static::OPTIONS as $option) {
+		foreach(static::SCREENS as $option) {
 			$to->set($option, $template->$option);
 		}
 		return $to;
 	}
-
 
 /* =============================================================
 	CRUD Processing
@@ -248,38 +247,37 @@ abstract class Base extends WireData {
 	}
 
 	/**
-	 * Update UserRecord from Input Data
+	 * Update User Record from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	abstract protected function inputUpdate(WireInput $input);
-
-	/**
-	 * Update Record with Input Data
-	 * @param  WireInput   $input   Input Data
-	 * @param  UserRecord  $options
-	 * @return array
-	 */
-	protected function _inputUpdate(WireInput $input, UserRecord $options) {
+	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$user = $this->userOrNew($values->text('userID'));
 
-		if ($options->__isset('description')) { // Some UserRecord tables may not use description
-			$options->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+		foreach (static::SCREENS as $key) {
+			$setScreen = "set" . ucfirst($key);
+			$user->$setScreen($values->yn($key));
 		}
-		$options->setDate(date('Ymd'));
-		$options->setTime(date('His'));
-		$options->setDummy('P');
-		return [];
+
+		$user->setDate(date('Ymd'));
+		$user->setTime(date('His'));
+		$user->setDummy('P');
+
+		$response = $this->saveAndRespond($user);
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
-
 	/**
-	 * Delete UserRecord
+	 * Delete User Record
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	abstract protected function inputDelete(WireInput $input);
+	protected function inputDelete(WireInput $input) {
+
+	}
 
 /* =============================================================
 	CRUD Response
@@ -296,7 +294,6 @@ abstract class Base extends WireData {
 
 		$response = new Response();
 		$response->setUserid($options->userid);
-		$response->setKey($this->getRecordlockerKey($options));
 
 		if ($saved) {
 			$response->setSuccess(true);
@@ -353,6 +350,23 @@ abstract class Base extends WireData {
 		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
 	}
 
+/* =============================================================
+	Dplus Requests
+============================================================= */
+	/**
+	 * Sends Dplus Cobol that User Options
+	 * @param  UserRecord $user
+	 * @return void
+	 */
+	protected function updateDplus(UserRecord $user) {
+		$config  = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$table = static::DPLUS_TABLE;
+		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$user->userid"];
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	}
 /* =============================================================
 	Record Locker Functions
 ============================================================= */

@@ -20,6 +20,16 @@ class Vio extends AbstractController {
 		return self::options($data);
 	}
 
+	public static function handleCRUD($data) {
+		self::sanitizeParametersShort($data, ['action|text']);
+
+		if ($data->action) {
+			$vio = self::getVio();
+			$vio->processInput(self::pw('input'));
+		}
+		self::pw('session')->redirect(self::url(), $http301);
+	}
+
 	private static function options($data) {
 		$vio  = self::getVio();
 		$user = $vio->userOrNew($data->userID);
@@ -29,7 +39,9 @@ class Vio extends AbstractController {
 		}
 		$vio->lockrecord($user);
 		self::pw('page')->js .= self::pw('config')->twig->render('mvi/vio/js.twig');
-		return self::displayOptions($data, $user);
+		$html = self::displayOptions($data, $user);
+		$vio->deleteResponse();
+		return $html;
 	}
 
 /* =============================================================
@@ -39,6 +51,7 @@ class Vio extends AbstractController {
 		$vio = self::getVio();
 
 		$html  = '';
+		$html .= self::displayResponse($data);
 		$html .= self::displayLockedAlert($data);
 		$html .= self::pw('config')->twig->render('mvi/vio/display.twig', ['vio' => $vio, 'user' => $user]);
 		return $html;
@@ -57,6 +70,16 @@ class Vio extends AbstractController {
 			return '<div class="mb-3">'. $alert .'</div>';
 		}
 		return '';
+	}
+
+	private static function displayResponse($data) {
+		$vio = self::getVio();
+		$response = $vio->getResponse();
+		if (empty($response)) {
+			return '';
+		}
+		$alert = self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
+		return '<div class="mb-3">'. $alert .'</div>';
 	}
 
 /* =============================================================
@@ -79,29 +102,11 @@ class Vio extends AbstractController {
 
 	public static function validateVendoridPermission($data) {
 		self::sanitizeParametersShort($data, ['vendorID|text']);
-		$user = self::pw('user');
-
-		if (self::validateVendorid($data->vendorID) === false) {
-			return false;
-		}
-
-		if (self::validateUserPermission($data) === false) {
-			return false;
-		}
-		return true;
+		return self::validateUserPermission($data)
 	}
 
 	protected static function validateUserPermission($data) {
 		$user = self::pw('user');
-		// $vio  = self::getVio();
-
-		if ($user->has_function(static::PERMISSION) === false) {
-			return false;
-		}
-
-		// if ($vio->allowUser($user, static::PERMISSION_VIO) === false) {
-		// 	return false;
-		// }
-		return true;
+		return $user->has_function(static::PERMISSION);
 	}
 }

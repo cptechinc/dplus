@@ -62,8 +62,8 @@ class Response extends WireData {
 		$this->message = $message;
 	}
 
-	public function setCode($code) {
-		$this->code = $code;
+	public function setUserid($userid) {
+		$this->userid = $userid;
 	}
 
 	public function setFunction($function) {
@@ -90,7 +90,7 @@ class Response extends WireData {
 
 	protected function getPlaceholderReplaces() {
 		$crud = self::CRUD_DESCRIPTION[$this->action];
-		$replace = ['{code}' => $this->code, '{key}' => $this->key, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
+		$replace = ['{userid}' => $this->userid, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
 		$replace = array_merge($replace, $this->msgReplacements);
 		return $replace;
 	}

@@ -7,6 +7,7 @@ $(function() {
 		var input = $(this);
 
 		validate_userid(input.val(), function(exists) {
+			$('#loading-modal').modal('show');
 			var url = URI('{{ page.url }}');
 			url.addQuery('userID', input.val());
 			window.location.href = url.toString();
