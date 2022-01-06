@@ -118,7 +118,7 @@ abstract class Base extends WireData {
 	 * @return ObjectCollection
 	 */
 	public function codes() {
-		$q = $this->getQueryClass();
+		$q = $this->query();
 		return $q->find();
 	}
 
