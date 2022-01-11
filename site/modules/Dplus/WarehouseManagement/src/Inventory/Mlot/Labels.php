@@ -12,6 +12,7 @@ use Dplus\Mth;
 // Dplus Warehouse Management
 use Dplus\Wm\Base;
 use Dplus\Wm\Inventory\Lotm;
+use Dplus\Wm\LastPrintJob\Lotlbl as UserPrintJobs;
 
 /**
  * Img
@@ -153,5 +154,12 @@ class Labels extends Base {
 	 */
 	public function deleteResponse() {
 		$this->wire('session')->removeFor('response', 'mlot-labels');
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	public function getUserPrintJobs() {
+		return UserPrintJobs::getInstance();
 	}
 }
