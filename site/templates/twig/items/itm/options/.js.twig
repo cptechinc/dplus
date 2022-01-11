@@ -73,7 +73,7 @@ $(function() {
 	modalAjax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = button.data('lookupurl');
+		var url = button.attr('data-lookupurl');
 
 		modal.attr('data-input', button.data('input'));
 		modal.find('.modal-title').text(button.attr('title'));

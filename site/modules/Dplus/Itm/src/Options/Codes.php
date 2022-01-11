@@ -314,7 +314,7 @@ class Codes extends WireData {
 		if ($is_new) {
 			$response->setAction(Response::CRUD_CREATE);
 		} elseif ($code->isDeleted()) {
-			$response->setAction(Response::CRUD_DELETE);
+			$response->setAction(Response::CRUD_CLEAR);
 		} else {
 			$response->setAction(Response::CRUD_UPDATE);
 		}

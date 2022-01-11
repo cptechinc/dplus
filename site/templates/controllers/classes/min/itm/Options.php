@@ -75,6 +75,7 @@ class Options extends Base {
 		$page = self::pw('page');
 		$page->headline = "ITM: $data->itemID Optional Codes";
 		$page->js .= self::pw('config')->twig->render('items/itm/options/.js.twig', ['itmOpt' => self::getItmOptions()]);
+		$page->js .= self::pw('config')->twig->render('items/itm/options/list.js.twig', ['itmOpt' => self::getItmOptions()]);
 		self::initHooks();
 		$html = self::listDisplay($data, $options);
 		self::getItmOptions()->deleteResponse();
@@ -110,6 +111,7 @@ class Options extends Base {
 	public static function optionDeleteUrl($itemID, $sysop) {
 		$url = new Purl(self::itmUrlOptions($itemID));
 		$url->query->set('action', 'delete');
+		$url->query->set('sysop', $sysop);
 		return $url->getUrl();
 	}
 
