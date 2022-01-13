@@ -58,7 +58,7 @@ abstract class Base extends AbstractController {
 	}
 
 	public static function documentUrl($invnbr, $folder, $doc) {
-		$url = new Purl(self::poDocumentsUrl($invnbr));
+		$url = new Purl(self::apInvoiceDocumentsUrl($invnbr));
 		$url->query->set('folder', $folder);
 		$url->query->set('document', $doc);
 		return $url->getUrl();
@@ -67,16 +67,16 @@ abstract class Base extends AbstractController {
 /* =============================================================
 	Displays
 ============================================================= */
-	protected static function invalidPo($data) {
+	protected static function invalidInvoice($data) {
 		$html = '';
-		$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Purchase Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "PO # $data->ponbr can not be found"]);
+		$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Invoice Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Invoice # $data->invnbr can not be found"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::lookupForm();
 		return $html;
 	}
 
 	protected static function lookupForm() {
-		return self::pw('config')->twig->render('purchase-orders/purchase-order/lookup-form.twig');
+		return self::pw('config')->twig->render('purchase-orders/invoices/invoice/lookup-form.twig');
 	}
 
 	protected static function breadCrumbs() {

@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mpo\PurchaseOrder;
+<?php namespace Controllers\Mpo\ApInvoice;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager as ModelPager;
 use Propel\Runtime\Collection\ObjectCollection;
@@ -7,7 +7,7 @@ use DocumentQuery, Document;
 // Dplus CodeValidators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Document Finders
-use Dplus\DocManagement\Finders\PurchaseOrder as DocumentsPo;
+use Dplus\DocManagement\Finders\ApInvoice as Docm;
 use Dplus\DocManagement\Copier;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
@@ -17,10 +17,10 @@ class Documents extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['ponbr|text', 'document|text', 'folder|text'];
+		$fields = ['invnbr|text', 'document|text', 'folder|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		if (empty($data->ponbr)) {
+		if (empty($data->invnbr)) {
 			return self::lookupScreen($data);
 		}
 
@@ -35,37 +35,37 @@ class Documents extends Base {
 				self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
 			}
 		}
-		return self::po($data);
+		return self::invoice($data);
 	}
 
-	public static function po($data) {
-		self::sanitizeParametersShort($data, ['ponbr|ponbr']);
+	public static function invoice($data) {
+		self::sanitizeParametersShort($data, ['invnbr|invnbr']);
 		/** @var MpoValidator **/
 		$validate = self::validator();
 
-		if ($validate->po($data->ponbr) === false && $validate->invoice($data->ponbr) === false) {
+		if ($validate->invoice($data->invnbr) === false && $validate->invoice($data->invnbr) === false) {
 			return self::invalidSo($data);
 		}
-		self::pw('page')->headline = "Purchase Order #$data->ponbr Documents";
+		self::pw('page')->headline = "Invoice #$data->invnbr Documents";
 
-		if ($validate->invoice($data->ponbr) || $validate->po($data->ponbr)) {
+		if ($validate->invoice($data->invnbr) || $validate->invoice($data->invnbr)) {
 			return self::documents($data);
 		}
 	}
 
 	public static function documents($data) {
-		self::sanitizeParametersShort($data, ['ponbr|ponbr']);
+		self::sanitizeParametersShort($data, ['invnbr|text']);
 		$page = self::pw('page');
 		$config   = self::pw('config');
 		/** @var MpoValidator **/
 		$validate = self::validator();
 
-		if ($validate->po($data->ponbr) === false && $validate->invoice($data->ponbr) === false) {
+		if ($validate->invoice($data->invnbr) === false && $validate->invoice($data->invnbr) === false) {
 			return self::invalidPo($data);
 		}
-		/** @var DocumentsPo **/
+		/** @var Docm **/
 		$docm      = self::docm();
-		$documents = $docm->getDocumentsPo($data->ponbr);
+		$documents = $docm->getDocm($data->invnbr);
 		return self::documentsDisplay($data, $documents);
 	}
 
@@ -79,7 +79,7 @@ class Documents extends Base {
 
 	private static function documentsDisplay($data, ObjectCollection $documents) {
 		$html  = self::breadCrumbs();
-		$html .= self::pw('config')->twig->render('purchase-orders/purchase-order/documents.twig', ['documents' => $documents, 'ponbr' => $data->ponbr]);
+		$html .= self::pw('config')->twig->render('purchase-orders/purchase-order/documents.twig', ['documents' => $documents, 'invnbr' => $data->invnbr]);
 		return $html;
 	}
 }

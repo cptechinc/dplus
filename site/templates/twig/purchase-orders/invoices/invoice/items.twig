@@ -19,7 +19,7 @@
 		{% for item in invoice.get_details() %}
 			<tr>
 				<td>
-					<a href="{{ page.ii_itemURL(item.itemid) }}" class="link" target="_blank">{{ item.itemid }}</a></br>
+					<a href="{{ page.iiUrl(item.itemid) }}" class="link" target="_blank">{{ item.itemid }}</a></br>
 					<small>{{ item.description }}</small>
 				</td>
 				<td class="text-right">{{ item.qty_received|number_format(config.so.decimal_places_qty) }}</td>
