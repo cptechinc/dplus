@@ -33,14 +33,14 @@
 				{% endif %}
 			</a>
 		</div>
-		<div class="col">
+		<div class="col text-right">
 			<a href="{{ page.get_sortURL('date_invoiced') }}" class="link">Invoice Date
 				{% if page.orderby_column == 'date_invoiced' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 				{% endif %}
 			</a>
 		</div>
-		<div class="col">
+		<div class="col text-right">
 			<a href="{{ page.get_sortURL('date_ordered') }}" class="link">Order Date
 				{% if page.orderby_column == 'date_ordered' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>

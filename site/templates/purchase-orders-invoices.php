@@ -4,6 +4,9 @@
 	$routes = [
 		['GET', '', Lists\ApInvoice::class, 'index'],
 		['GET', 'page{pagenbr:\d+}', Lists\ApInvoice::class, 'list'],
+		'invoice' => [
+			['GET', '', Lists\ApInvoice::class, 'index'],
+		],
 		'vendor' => [
 			['GET', '', Lists\Vendor::class, 'index'],
 			['GET', 'page{pagenbr:\d+}', Lists\Vendor::class, 'index'],

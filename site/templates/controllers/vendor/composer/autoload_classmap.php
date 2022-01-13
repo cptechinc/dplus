@@ -122,6 +122,7 @@ return array(
     'Controllers\\Mpm\\Pmmain\\Rcm' => $baseDir . '/classes/mpm/pmmain/Rcm.php',
     'Controllers\\Mpo\\ApInvoice\\Base' => $baseDir . '/classes/mpo/ApInvoice/Base.php',
     'Controllers\\Mpo\\ApInvoice\\Lists\\ApInvoice' => $baseDir . '/classes/mpo/ApInvoice/Lists/ApInvoice.php',
+    'Controllers\\Mpo\\ApInvoice\\Lists\\Vendor' => $baseDir . '/classes/mpo/ApInvoice/Lists/Vendor.php',
     'Controllers\\Mpo\\Poadmn\\Base' => $baseDir . '/classes/mpo/poadmn/Base.php',
     'Controllers\\Mpo\\Poadmn\\Cnfm' => $baseDir . '/classes/mpo/poadmn/Cnfm.php',
     'Controllers\\Mpo\\Poadmn\\Menu' => $baseDir . '/classes/mpo/poadmn/Menu.php',
