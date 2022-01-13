@@ -1,0 +1,15 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__ . '/vendor/autoload.php');
+
+class Spreadsheets extends WireData implements Module {
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus SpreadSheets',
+			'version' => 101,
+			'summary' => 'Autoloads Spreadsheet Processing Classes',
+			'singular' => true,
+			'autoload' => true
+		);
+	}
+}
