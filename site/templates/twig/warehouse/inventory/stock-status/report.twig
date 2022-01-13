@@ -1,0 +1,12 @@
+<div class="mb-3">
+	<div class="d-flex justify-content-between">
+		<a href="{{ page.downloadUrl('xlsx') }}" class="btn btn-primary" target="_blank">
+			<i class="fa fa-file-excel-o" aria-hidden="true"></i> Download
+		</a>
+	</div>
+</div>
+
+<div class="table-responsive">
+	{% set table = config.company != 'cptech' ? config.company : 'default' %}
+	{% include 'warehouse/inventory/stock-status/table/' ~ table ~ '.twig' %}
+</div>

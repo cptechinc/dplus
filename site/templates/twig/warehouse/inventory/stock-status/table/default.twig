@@ -1,0 +1,48 @@
+<table class="table table-sm">
+	<thead>
+		<tr>
+			<th></th>
+			{% for key, col in columns.item %}
+				<th class="text-{{ col.justify }}">{{ col.label }}</th>
+			{% endfor %}
+			{% for col in columns.lot %}
+				<th class="text-{{ col.justify }}">{{ col.label }}</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	{% for key, item in data %}
+		<tr class="first-txn-row bg-light">
+			<td>
+				<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#{{ key }}-lots" aria-expanded="true" aria-controls="{{ key }}-lots">
+					Show / Hide
+				</button>
+			</td>
+			{% for col, colData in columns.item %}
+				<td class="text-{{ col.justify }}">
+					{{ item[col] }}
+				</td>
+			{% endfor %}
+			<td class="text-center">
+				{{ item['totals']['lotcount'] }} Lots
+			</td>
+			<td class="text-right">{{ item['totals']['avgage'] }}</td>
+			<td class="text-right">{{ item['totals']['qty'] }}</td>
+		</tr>
+		<tbody id="{{ key }}-lots" class="collapse show">
+			{% for lot in item['lots'] %}
+				<tr>
+					<td></td>
+					{% for col in columns.item %}
+						<td></td>
+					{% endfor %}
+
+					{% for col, colData in columns.lot %}
+						<td class="text-{{ colData.justify }}">
+							{{ col == 'expiredate' ? lot[col]|convertdate('m/d/Y') : lot[col] }}
+						</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	{% endfor %}
+</table>

@@ -204,6 +204,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Wm\\Inventory\\LotReturn' => __DIR__ . '/../..' . '/classes/Mwm/inventory/LotReturn/LotReturn.php',
         'Controllers\\Wm\\Inventory\\Provalley\\Inventory' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Provalley/Inventory.php',
         'Controllers\\Wm\\Inventory\\Provalley\\PrintGs1' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Provalley/PrintGs1.php',
+        'Controllers\\Wm\\Inventory\\StockStatus' => __DIR__ . '/../..' . '/classes/Mwm/inventory/StockStatus.php',
         'Controllers\\Wm\\Receiving\\Receiving' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Receiving/Receiving.php',
         'Controllers\\Wm\\Sop\\Picking\\Picking' => __DIR__ . '/../..' . '/classes/Mwm/sop/Picking.php',
     );
