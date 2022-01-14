@@ -12,7 +12,7 @@ use WarehouseInventoryQuery, WarehouseInventory;
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 
 use ItemMasterItemQuery, ItemMasterItem;
-use InvLotQuery, InvLot;
+use InvLotMasterQuery, InvLotMaster;
 use WhseLotserialQuery, WhseLotserial;
 
 /**

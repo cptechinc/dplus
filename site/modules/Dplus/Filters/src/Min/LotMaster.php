@@ -1,6 +1,6 @@
 <?php namespace Dplus\Filters\Min;
 // Dplus Model
-use InvLot;
+use InvLotMaster;
 use WhseLotserialQuery, WhseLotserial;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
@@ -8,18 +8,18 @@ use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 use Dplus\Filters\AbstractFilter;
 
 /**
- * Wrapper Class for adding Filters to the InvLot class
+ * Wrapper Class for adding Filters to the InvLotMaster class
  */
 class LotMaster extends AbstractFilter {
-	const MODEL = 'InvLot';
+	const MODEL = 'InvLotMaster';
 
 /* =============================================================
 	Abstract Contract / Extensible Functions
 ============================================================= */
 	public function _search($q) {
 		$columns = [
-			InvLot::aliasproperty('lotserial'),
-			InvLot::aliasproperty('itemid'),
+			InvLotMaster::aliasproperty('lotserial'),
+			InvLotMaster::aliasproperty('itemid'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}

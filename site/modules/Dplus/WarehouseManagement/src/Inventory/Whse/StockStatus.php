@@ -2,7 +2,7 @@
 // Dplus Model
 use WhseLotserial as Model;
 use ItemMasterItemQuery, ItemMasterItem;
-use InvLotQuery, InvLot;
+use InvLotMasterQuery, InvLotMaster;
 // ProcessWire
 use ProcessWire\WireData;
 // Dplus Configs
@@ -83,8 +83,8 @@ class StockStatus extends WireData {
 	 * @return string
 	 */
 	protected function getLotRef($lotnbr) {
-		$q = InvLotQuery::create();
-		$q->select(InvLot::aliasproperty('lotref'));
+		$q = InvLotMasterQuery::create();
+		$q->select(InvLotMaster::aliasproperty('lotref'));
 		return $q->findOneByLotnbr($lotnbr);
 	}
 

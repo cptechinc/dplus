@@ -3,7 +3,7 @@
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
-use InvLotQuery, InvLot;
+use InvLotMasterQuery, InvLotMaster;
 // Dpluso Model
 use PickSalesOrderDetailQuery, PickSalesOrderDetail;
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
@@ -97,10 +97,10 @@ class Inventory extends Base {
 	 * @param  string $itemID    Item ID
 	 * @param  string $lotserial Lot / Serial #
 	 * @param  string $binID     Bin ID
-	 * @return InvLot
+	 * @return InvLotMaster
 	 */
 	public function getInvlot($itemID, $lotserial, $binID) {
-		$q = InvLotQuery::create();
+		$q = InvLotMasterQuery::create();
 		$q->filterByWhse($this->getWhsesession()->whseid);
 		$q->filterByItemid($itemID);
 		$q->filterByLotserial($lotserial);
