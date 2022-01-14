@@ -1,6 +1,6 @@
 <?php namespace Dplus\Wm\Inventory\Whse;
 // Dplus Model
-use WhseLotserial as Model;
+use InvWhseLot as Model;
 use ItemMasterItemQuery, ItemMasterItem;
 use InvLotMasterQuery, InvLotMaster;
 // ProcessWire

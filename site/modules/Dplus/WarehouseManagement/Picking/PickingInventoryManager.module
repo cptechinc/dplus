@@ -13,7 +13,7 @@ use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use InvLotMasterQuery, InvLotMaster;
-use WhseLotserialQuery, WhseLotserial;
+use InvWhseLotQuery, InvWhseLot;
 
 /**
  * PickingInventoryManager
@@ -91,7 +91,7 @@ class PickingInventoryManager extends WireData implements Module {
 
 	public function get_invlot($itemID, $lotserial, $bin) {
 		$whsesession = $this->get_whsesession();
-		$q = WhseLotserialQuery::create();
+		$q = InvWhseLotQuery::create();
 		$q->filterByWhse($whsesession->whseid);
 		$q->filterByItemid($itemID);
 		$q->filterByLotserial($lotserial);

@@ -1,7 +1,7 @@
 <?php namespace Dplus\Filters\Min;
 // Dplus Model
 use InvLotMaster;
-use WhseLotserialQuery, WhseLotserial;
+use InvWhseLotQuery, InvWhseLot;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
@@ -31,8 +31,8 @@ class LotMaster extends AbstractFilter {
 	 * Filter To In Stock Lots
 	 */
 	public function inStock() {
-		$q = WhseLotserialQuery::create();
-		$q->select(WhseLotserial::aliasproperty('lotserial'));
+		$q = InvWhseLotQuery::create();
+		$q->select(InvWhseLot::aliasproperty('lotserial'));
 		$lotnbrs = $q->find()->toArray();
 		$this->query->filterByLotnbr($lotnbrs);
 	}

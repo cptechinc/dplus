@@ -1,6 +1,6 @@
 <?php namespace Dplus\Wm\Inventory\Whse\StockStatus;
 // Dplus Model
-use WhseLotserial as Model;
+use InvWhseLot as Model;
 // ProcessWire
 use ProcessWire\WireData;
 // Dplus WM Inventory

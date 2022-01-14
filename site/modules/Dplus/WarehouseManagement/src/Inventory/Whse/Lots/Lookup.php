@@ -1,6 +1,6 @@
 <?php namespace Dplus\Wm\Inventory\Whse\Lots;
 // Dplus Models
-use WhseLotserialQuery, WhseLotserial;
+use InvWhseLotQuery, InvWhseLot;
 // ProcessWire
 use ProcessWire\WireData;
 
@@ -24,16 +24,16 @@ class Lookup extends WireData {
 ============================================================= */
 	/**
 	 * Return Query filtered By Sessionid
-	 * @return WhseLotserialQuery
+	 * @return InvWhseLotQuery
 	 */
 	public function query() {
-		$q = WhseLotserialQuery::create();
+		$q = InvWhseLotQuery::create();
 		return $q;
 	}
 
 	/**
 	 * Return Query Filtered By Warehouse ID if set
-	 * @return WhseLotserialQuery
+	 * @return InvWhseLotQuery
 	 */
 	public function queryWhse() {
 		$q = $this->query();
@@ -46,7 +46,7 @@ class Lookup extends WireData {
 
 	/**
 	 * Return Query
-	 * @return WhseLotserialQuery
+	 * @return InvWhseLotQuery
 	 */
 	public function queryWhseBins() {
 		return $this->queryWhse();
@@ -63,8 +63,8 @@ class Lookup extends WireData {
 	public function getDistinctBinsByItemid($itemID) {
 		$q = $this->queryWhseBins();
 		$q->filterByItemid($itemID);
-		$q->select(WhseLotserial::aliasproperty('bin'));
-		$q->groupBy(WhseLotserial::aliasproperty('bin'));
+		$q->select(InvWhseLot::aliasproperty('bin'));
+		$q->groupBy(InvWhseLot::aliasproperty('bin'));
 		return $q->find()->toArray();
 	}
 }

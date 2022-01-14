@@ -3,7 +3,7 @@ use PDO;
 // Dplus Model
 use InvItem2ItemQuery, InvItem2Item as Model;
 use WarehouseInventoryQuery, WarehouseInventory; // WAREHOUSE ITEM MASTER
-use WhseLotserialQuery, WhseLotserial;
+use InvWhseLotQuery, InvWhseLot;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
