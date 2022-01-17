@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
-use InvLotQuery, InvLot;
+use InvLotMasterQuery, InvLotMaster;
 // Dpluso Model
 use InvsearchQuery, Invsearch;
 // ProcessWire Classes, Modules
@@ -19,12 +19,12 @@ class Base extends AbstractController {
 	Classes, Module Getters
 ============================================================= */
 	/**
-	 * Return InvLot
+	 * Return InvLotMaster
 	 * @param  string $lotnbr Lot Number
 	 * @return string
 	 */
 	protected static function getLot($lotnbr) {
-		return InvLotQuery::create()->findOneByLotnbr($lotnbr);
+		return InvLotMasterQuery::create()->findOneByLotnbr($lotnbr);
 	}
 
 	/**

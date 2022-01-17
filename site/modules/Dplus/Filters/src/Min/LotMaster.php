@@ -1,25 +1,25 @@
 <?php namespace Dplus\Filters\Min;
 // Dplus Model
-use InvLot;
-use WhseLotserialQuery, WhseLotserial;
+use InvLotMaster;
+use InvWhseLotQuery, InvWhseLot;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
 /**
- * Wrapper Class for adding Filters to the InvLot class
+ * Wrapper Class for adding Filters to the InvLotMaster class
  */
 class LotMaster extends AbstractFilter {
-	const MODEL = 'InvLot';
+	const MODEL = 'InvLotMaster';
 
 /* =============================================================
 	Abstract Contract / Extensible Functions
 ============================================================= */
 	public function _search($q) {
 		$columns = [
-			InvLot::aliasproperty('lotserial'),
-			InvLot::aliasproperty('itemid'),
+			InvLotMaster::aliasproperty('lotserial'),
+			InvLotMaster::aliasproperty('itemid'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
@@ -31,8 +31,8 @@ class LotMaster extends AbstractFilter {
 	 * Filter To In Stock Lots
 	 */
 	public function inStock() {
-		$q = WhseLotserialQuery::create();
-		$q->select(WhseLotserial::aliasproperty('lotserial'));
+		$q = InvWhseLotQuery::create();
+		$q->select(InvWhseLot::aliasproperty('lotserial'));
 		$lotnbrs = $q->find()->toArray();
 		$this->query->filterByLotnbr($lotnbrs);
 	}

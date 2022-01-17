@@ -1,6 +1,6 @@
 <?php namespace Dplus\Wm\Inventory\Mlot;
 // Dplus Model
-use InvLot;
+use InvLotMaster;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
 // Dplus Codes
@@ -90,11 +90,11 @@ class Labels extends Base {
 
 	/**
 	 * Print Lot Label
-	 * @param  WireInput $input  Input Data
-	 * @param  InvLot    $lot    Lot
+	 * @param  WireInput       $input  Input Data
+	 * @param  InvLotMaster    $lot    Lot
 	 * @return bool
 	 */
-	private function printLot(WireInput $input, InvLot $lot) {
+	private function printLot(WireInput $input, InvLotMaster $lot) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
