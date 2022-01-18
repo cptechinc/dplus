@@ -12,6 +12,8 @@ use Dplus\Filters;
 use ProcessWire\Page;
 // Dplus Itm
 use Dplus\Min\Inmain\Itm\Options as ItmOptions;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
 class Options extends Base {
 	const PERMISSION_ITMP = 'options';
@@ -54,7 +56,16 @@ class Options extends Base {
 		}
 
 		if (self::pw('config')->ajax === false) {
-			$url = empty($data->redirect) === false ? $data->redirect : self::itmUrlOptions($data->itemID);
+			if (empty($data->redirect) === false) {
+				self::pw('session')->redirect($data->redirect, $http301 = false);
+			}
+
+			$url = self::itmUrlOptions($data->itemID);
+			switch ($data->action) {
+				case 'update':
+					$url = self::optionFocusUrl($data->itemID, $data->sysop);
+					break;
+			}
 			self::pw('session')->redirect($url, $http301 = false);
 		}
 	}
@@ -68,9 +79,13 @@ class Options extends Base {
 		$filter->sortby(self::pw('page'));
 		$filter->query->orderBy(MsaSysopCode::aliasproperty('list_seq'), 'ASC');
 		$filter->query->orderBy(MsaSysopCode::aliasproperty('description'), 'ASC');
+		$options = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 
 		$filter->query->find();
-		$options = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		if (empty($data->q) === false || empty($data->orderby) === false) {
+			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
+			$sortFilter->saveToSession('itm', 'options');
+		}
 
 		$page = self::pw('page');
 		$page->headline = "ITM: $data->itemID Optional Codes";
@@ -112,6 +127,36 @@ class Options extends Base {
 		$url = new Purl(self::itmUrlOptions($itemID));
 		$url->query->set('action', 'delete');
 		$url->query->set('sysop', $sysop);
+		return $url->getUrl();
+	}
+
+	public static function optionFocusUrl($itemID, $sysop = '') {
+		if (empty($sysop)) {
+			return self::itmUrlOptions($itemID);
+		}
+		$url = new Purl(self::itmUrlOptions($itemID));
+		$url->query->set('focus', $sysop);
+
+		$filter = self::getSysOptCodeFilter();
+		$filter->query->orderBy(MsaSysopCode::aliasproperty('list_seq'), 'ASC');
+		$filter->query->orderBy(MsaSysopCode::aliasproperty('description'), 'ASC');
+
+		$sortFilter = Filters\SortFilter::getFromSession('itm', 'options');
+		if ($sortFilter) {
+			$filter->applySortFilter($sortFilter);
+		}
+		$offset  = $filter->positionQuick(implode(FunctionLocker::glue(), ['IN', $sysop]));
+		$pagenbr = self::getPagenbrFromOffset($offset);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'options', $pagenbr);
+
+		if ($sortFilter) {
+			if ($sortFilter->q) {
+				$url->query->set('q', $sortFilter->q);
+			}
+			if ($sortFilter->orderby) {
+				$url->query->set('orderby', $sortFilter->orderby);
+			}
+		}
 		return $url->getUrl();
 	}
 
