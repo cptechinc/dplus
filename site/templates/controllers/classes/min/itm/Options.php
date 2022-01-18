@@ -81,7 +81,6 @@ class Options extends Base {
 		$filter->query->orderBy(MsaSysopCode::aliasproperty('description'), 'ASC');
 		$options = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 
-		$filter->query->find();
 		if (empty($data->q) === false || empty($data->orderby) === false) {
 			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
 			$sortFilter->saveToSession('itm', 'options');
@@ -146,8 +145,8 @@ class Options extends Base {
 			$filter->applySortFilter($sortFilter);
 		}
 		$offset  = $filter->positionQuick(implode(FunctionLocker::glue(), ['IN', $sysop]));
-		$pagenbr = self::getPagenbrFromOffset($offset);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'options', $pagenbr);
+		$pagenbr = self::getPagenbrFromOffset($offset, self::SHOWONPAGE);
+		$url     = self::pw('modules')->get('Dpurl')->paginate($url, 'options', $pagenbr);
 
 		if ($sortFilter) {
 			if ($sortFilter->q) {
