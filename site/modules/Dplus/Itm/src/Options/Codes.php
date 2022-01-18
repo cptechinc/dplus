@@ -49,12 +49,17 @@ class Codes extends WireData {
 	 * @param  InvOptCode  $code Code
 	 * @return array
 	 */
-	public function codeJson($sysop, InvOptCode $code = null) {
-		$code = empty($code) === false ? $code : $this->new('', $sysop);
+	public function codeJson($sysopCode, InvOptCode $code = null) {
+		$code  = empty($code) === false ? $code : $this->new('', $sysopCode);
+		$sysop = $this->getSysop()->code(self::SYSTEM, $sysopCode);
+
 		return [
-			'sysop'       => $code->sysop,
 			'code'        => $code->code,
-			'description' => $code->description
+			'description' => $code->description,
+			'sysop'      => [
+				'sysop'       => $code->sysop,
+				'description' => $sysop->description
+			]
 		];
 	}
 
