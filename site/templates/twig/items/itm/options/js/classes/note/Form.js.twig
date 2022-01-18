@@ -36,8 +36,6 @@ class NoteForm {
 		var form   = this;
 
 		inputs.sysop.val(json.sysop);
-
-
 		$('#' + inputs.note.attr('id')).rules('remove', 'required');
 
 		CodeRequests.getInstance().getNote(inputs.itemid.val(), json.input.notetype, function(note) {
