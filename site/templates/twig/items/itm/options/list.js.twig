@@ -36,7 +36,9 @@ $(function() {
 			buttonsStyling: false,
 			confirmButtonText: 'Yes'
 		}).then((result) => {
-			button.closest('form').submit();
+			if (result.value) {
+				button.closest('form').submit();
+			}
 		});
 	});
 });
