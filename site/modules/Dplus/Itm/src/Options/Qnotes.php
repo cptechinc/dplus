@@ -154,7 +154,7 @@ class Qnotes extends QnotesBase {
 		$sysopM = $this->getSysop();
 		$sysop  = $sysopM->code(self::SYSTEM, $values->text('sysop'));
 
-		if ($sysopM->isNote() === false) {
+		if ($sysopM->isNote(self::SYSTEM, $values->text('sysop')) === false) {
 			return false;
 		}
 
