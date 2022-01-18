@@ -67,6 +67,17 @@ $(function() {
 		formNote.updateFormFromJson(json);
 	});
 
+	$('#edit-note-modal').on('hidden.bs.modal', function (event) {
+		var modal  = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var sysop  = modal.find('input[name=sysop]').val().toString();
+
+		$('.response-alert').remove();
+		$('.sysop.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.sysop[data-sysop="'+sysop+'"]').addClass('highlight');
+	});
+
 /* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
