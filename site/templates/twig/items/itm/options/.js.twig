@@ -11,8 +11,12 @@ $(function() {
 
 	if (uri.hasQuery('focus')) {
 		var query = uri.query(true);
-		$('.sysop[data-sysop="'+query.focus+'"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('.sysop[data-sysop="'+query.focus+'"]').offset().top,},700,'linear');
+		var element = $('.sysop[data-sysop="'+query.focus+'"]');
+
+		if (element.length) {
+			element.addClass('highlight');
+			$('html, body').animate({scrollTop: element.offset().top,},700,'linear');
+		}
 	}
 
 /* =============================================================
