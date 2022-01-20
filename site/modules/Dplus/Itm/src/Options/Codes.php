@@ -230,6 +230,12 @@ class Codes extends WireData {
 			$sysOptOption = $optManager->code(self::SYSTEM, $sysop, $code);
 			$itmOptCode->setCode($code);
 			$itmOptCode->setDescription($sysOptOption->description);
+			return true;
+		}
+
+		if ($sysOption->validate() === false) {
+			$itmOptCode->setCode($code);
+			return true;
 		}
 
 		if ($sysOption->validate() && $code != '') {
