@@ -62,6 +62,7 @@ class Options extends Base {
 
 			$url = self::itmUrlOptions($data->itemID);
 			switch ($data->action) {
+				case 'delete':
 				case 'update':
 					$url = self::optionFocusUrl($data->itemID, $data->sysop);
 					break;
