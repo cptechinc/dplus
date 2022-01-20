@@ -88,10 +88,10 @@ class Options extends Base {
 		}
 
 		$page = self::pw('page');
+		self::initHooks();
 		$page->headline = "ITM: $data->itemID Optional Codes";
 		$page->js .= self::pw('config')->twig->render('items/itm/options/.js.twig', ['itmOpt' => self::getItmOptions()]);
 		$page->js .= self::pw('config')->twig->render('items/itm/options/list.js.twig', ['itmOpt' => self::getItmOptions()]);
-		self::initHooks();
 		$html = self::listDisplay($data, $options);
 		self::getItmOptions()->deleteResponse();
 		return $html;
@@ -160,6 +160,16 @@ class Options extends Base {
 		return $url->getUrl();
 	}
 
+	public static function missingRequiredCodesUrls($itemID) {
+		$urls = [];
+		$itmOpt  = self::getItmOptions();
+
+		foreach ($itmOpt->getMissingRequiredCodes($itemID) as $sysop) {
+			$urls[] = self::optionFocusUrl($itemID, $sysop);
+		}
+		return $urls;
+	}
+
 /* =============================================================
 	Hook functions
 ============================================================= */
@@ -168,6 +178,10 @@ class Options extends Base {
 
 		$m->addHook('Page(pw_template=itm)::optionDeleteUrl', function($event) {
 			$event->return = self::optionDeleteUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=itm)::missingRequiredCodesUrls', function($event) {
+			$event->return = self::missingRequiredCodesUrls($event->arguments(0));
 		});
 	}
 

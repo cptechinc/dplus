@@ -41,7 +41,15 @@ $(function() {
 	$("body").on("click", "a:not(a.delete_button, a.paginator-link, #ajax-modal a)", function(e) {
 		if (formCode.config.isMissingRequired) {
 			e.preventDefault();
-			alert.missingRequired();
+			$('.response-alert').remove();
+			$('.sysop').removeClass('text-white');
+			$('.sysop').removeClass('bg-success');
+			$('.sysop').removeClass('highlight');
+			alert.missingRequired(function(goToMissing) {
+				if (goToMissing) {
+					window.location.href = formCode.config.missingCodes.urls[0];
+				}
+			});
 		}
 	});
 

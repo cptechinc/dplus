@@ -115,6 +115,29 @@ class Options extends WireData {
 		return false;
 	}
 
+	public function getMissingRequiredCodes($itemID) {
+		$sysop = $this->getSysop();
+		$filter = new Filters\Msa\MsaSysopCode();
+		$filter->system(self::SYSTEM);
+		$filter->query->filterById($sysop->getRequiredCodes(self::SYSTEM));
+		$codes = $filter->query->find();
+		$required = [];
+
+		foreach ($codes as $code) {
+			if ($code->isNote()) {
+				if ($this->qnotes->notesExist($itemID, $code->notecode) === false) {
+					$required[] = $code->id;
+				}
+				continue;
+			}
+
+			if ($this->codes->exists($itemID, $code->id) === false) {
+				$required[] = $code->id;
+			}
+		}
+		return $required;
+	}
+
 	public function getSysop() {
 		return Sysop::getInstance();
 	}
