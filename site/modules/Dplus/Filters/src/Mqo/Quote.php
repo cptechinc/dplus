@@ -196,7 +196,7 @@ class Quote extends AbstractFilter {
 			$input->get->status = [];
 			return $this;
 		}
-		return $this->quotestatus($status);
+		return $this->quotestatus($input->get->array('status'));
 	}
 
 	/**

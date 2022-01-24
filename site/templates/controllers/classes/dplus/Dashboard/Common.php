@@ -2,6 +2,7 @@
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
 // Dplus Filters
+use Dplus\Filters;
 use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
 use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 // Mvc Controllers
@@ -77,12 +78,11 @@ class Common extends Controller {
 		$pages  = self::pw('pages');
 		$input  = self::pw('input');
 		$config = self::pw('config');
-		$filter = self::pw('modules')->get('FilterQuotes');
-		$filter->init_query(self::pw('user'));
-		$filter->filter_query($input);
-		$query = $filter->get_query();
-		$query->orderByDate_quoted('DESC');
-		$quotes = $query->paginate($input->pageNum, 10);
+		$filter = new Filters\Mqo\Quote();
+		$filter->user(self::pw('user'));
+		$filter->filterInput($input);
+		$filter->query->orderByDate_quoted('DESC');
+		$quotes = $filter->query->paginate($input->pageNum, 10);
 
 		$params = [
 			'quotes'         => $quotes,
