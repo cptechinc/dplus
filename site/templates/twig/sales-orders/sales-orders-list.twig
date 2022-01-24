@@ -2,13 +2,13 @@
 	<div class="list-group-item list-group-item-action bg-light">
 		{% block header %}
 			<div class="row">
-				<div class="col">Order Number</div>
-				<div class="col">Customer</div>
-				<div class="col">Customer PO</div>
-				<div class="col">Ship-to</div>
-				<div class="col text-right">Order Total</div>
-				<div class="col">Order Date</div>
-				<div class="col">Status</div>
+				<div class="col-2">Order #</div>
+				<div class="col-3">Customer</div>
+				<div class="col-2">Customer PO</div>
+				<div class="col-1">Ship-to</div>
+				<div class="col-2 text-right">Order Total</div>
+				<div class="col-1">Order Date</div>
+				<div class="col-1">Status</div>
 			</div>
 		{% endblock %}
 	</div>
@@ -16,18 +16,18 @@
 		{% for order in orders %}
 			<a href="{{ orderpage ~ '?ordn=' ~ order.ordernumber }}" class="list-group-item list-group-item-action">
 				<div class="row">
-					<div class="col">{{ order.ordernumber }}</div>
-					<div class="col">
-						<div>
-							{{ order.custid }}
-						</div>
+					<div class="col-2">
+						{{ order.ordernumber }}
+					</div>
+					<div class="col-3">
+						<div>{{ order.custid }}</div>
 						<small class="text-muted">{{ order.customer.name }}</small>
 					</div>
-					<div class="col">{{ order.custpo }}</div>
-					<div class="col">{{ order.shiptoid }}</div>
-					<div class="col text-right">$ {{ order.total_total|currency }}</div>
-					<div class="col">{{ order.date_ordered|convertdate }}</div>
-					<div class="col">{{ order.status()|capitalize }}</div>
+					<div class="col-2">{{ order.custpo }}</div>
+					<div class="col-1">{{ order.shiptoid }}</div>
+					<div class="col-2 text-right">$ {{ order.total_total|currency }}</div>
+					<div class="col-1">{{ order.date_ordered|convertdate }}</div>
+					<div class="col-1">{{ order.status()|capitalize }}</div>
 				</div>
 			</a>
 		{% endfor %}

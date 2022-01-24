@@ -8,6 +8,7 @@ use DocumentQuery, Document;
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Document Finders
 use Dplus\DocManagement\Finders\PurchaseOrder as DocumentsPo;
+use Dplus\DocManagement\Copier;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -24,10 +25,15 @@ class Documents extends Base {
 		}
 
 		if ($data->document && $data->folder) {
-			/** @var DocumentsPo **/
+			/** @var Docm **/
 			$docm = self::docm();
-			$docm->moveDocument($data->folder, $data->document);
-			self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
+			$file = $docm->getDocumentByFilename($data->folder, $data->document);
+			$copier = Copier::getInstance();
+			$copier->copyFile($file->getDocumentFolder()->directory, $data->document);
+
+			if ($copier->isInDirectory($data->document)) {
+				self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
+			}
 		}
 		return self::po($data);
 	}

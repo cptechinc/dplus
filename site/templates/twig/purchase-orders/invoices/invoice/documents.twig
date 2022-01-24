@@ -1,5 +1,4 @@
 <div id="documents">
-	<h3 class="font-weight-bold text-secondary">Documents <i class="fa fa-file-text" aria-hidden="true"></i></h3>
 	<table class="table table-striped">
 		<tr class="bg-dark text-white">
 			<th>Title</th>
@@ -12,11 +11,11 @@
 				<tr id="doc-{{ document.filename }}">
 					<td>{{ document.title }}</td>
 					<td>
-						<a href="{{ page.documentload(document.folder, document.filename, invnbr) }}" class="link" target="_blank">
+						<a href="{{ page.documentUrl(input.get.text('invnbr'), document.folder, document.filename) }}" class="link" target="_blank">
 							{{ document.filename }}
 						</a>
 					</td>
-					<td>{{ document.date|("m/d/Y") }}</td>
+					<td>{{ document.date|convertdate }}</td>
 					<td>{{ (document.date ~ document.time[:4])|convertdate("h:i A") }}</td>
 				</tr>
 			{% endfor %}

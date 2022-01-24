@@ -1,6 +1,6 @@
 <?php namespace Dplus\Wm\Inventory\Mlot;
 // Dplus Model
-use InvLot;
+use InvLotMaster;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireUpload;
 // Dplus Codes
@@ -12,6 +12,7 @@ use Dplus\Mth;
 // Dplus Warehouse Management
 use Dplus\Wm\Base;
 use Dplus\Wm\Inventory\Lotm;
+use Dplus\Wm\LastPrintJob\Lotlbl as UserPrintJobs;
 
 /**
  * Img
@@ -89,11 +90,11 @@ class Labels extends Base {
 
 	/**
 	 * Print Lot Label
-	 * @param  WireInput $input  Input Data
-	 * @param  InvLot    $lot    Lot
+	 * @param  WireInput       $input  Input Data
+	 * @param  InvLotMaster    $lot    Lot
 	 * @return bool
 	 */
-	private function printLot(WireInput $input, InvLot $lot) {
+	private function printLot(WireInput $input, InvLotMaster $lot) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
@@ -153,5 +154,12 @@ class Labels extends Base {
 	 */
 	public function deleteResponse() {
 		$this->wire('session')->removeFor('response', 'mlot-labels');
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	public function getUserPrintJobs() {
+		return UserPrintJobs::getInstance();
 	}
 }

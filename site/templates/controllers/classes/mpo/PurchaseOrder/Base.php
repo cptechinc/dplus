@@ -13,6 +13,7 @@ use Dplus\Configs;
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mpo\ApInvoice\Base as ApInvoice;
 
 abstract class Base extends AbstractController {
 	private static $validate;
@@ -51,12 +52,7 @@ abstract class Base extends AbstractController {
 	}
 
 	public static function apInvoiceUrl($invnbr = '') {
-		$url = new Purl(self::poUrl());
-		$url->path->add('invoice');
-		if ($invnbr) {
-			$url->query->set('focus', $invnbr);
-		}
-		return $url->getUrl();
+		return ApInvoice::invoiceUrl($invnbr);
 	}
 
 	public static function poEditUrl($ponbr) {

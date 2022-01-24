@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
-use InvLot;
+use InvLotMaster;
 // Document Management
 use Dplus\DocManagement\Finders\Lt\Img as Docm;
 use Dplus\DocManagement\Copier;
@@ -114,7 +114,7 @@ class Labels extends Base {
 		return $html;
 	}
 
-	private static function displayLotserial($data, InvLot $lot) {
+	private static function displayLotserial($data, InvLotMaster $lot) {
 		$docm = self::getDocm();
 
 		$html  = '';
