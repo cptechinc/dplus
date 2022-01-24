@@ -11,7 +11,7 @@ use ProcessWire\WireData;
 use Dplus\Filters;
 
 class Costing extends Subfunction {
-	const PERMISSION_VIO = '';
+	const PERMISSION_VIO = 'costing';
 	const JSONCODE       = 'vi-costing';
 
 /* =============================================================

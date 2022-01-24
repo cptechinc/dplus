@@ -5,7 +5,7 @@ use Purl\Url as Purl;
 use ProcessWire\WireData;
 
 class Summary extends Subfunction {
-	const PERMISSION_VIO = '';
+	const PERMISSION_VIO = 'summary';
 	const JSONCODE       = 'vi-24monthsummary';
 
 /* =============================================================
@@ -74,7 +74,7 @@ class Summary extends Subfunction {
 		$page  = self::pw('page');
 		$page->refreshurl   = self::summaryUrl($data->vendorID, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		
+
 		self::initHooks();
 		return self::displaySummary($data);
 	}

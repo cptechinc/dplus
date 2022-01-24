@@ -175,6 +175,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mso\\SalesOrder\\Notes' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Notes.php',
         'Controllers\\Mso\\SalesOrder\\PrintSo' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/PrintSo.php',
         'Controllers\\Mso\\SalesOrder\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/SalesOrder.php',
+        'Controllers\\Mvi\\Vi\\Admin\\Vio' => __DIR__ . '/../..' . '/classes/mvi/admin/Vio.php',
         'Controllers\\Mvi\\Vi\\Base' => __DIR__ . '/../..' . '/classes/mvi/vi/Base.php',
         'Controllers\\Mvi\\Vi\\Contacts' => __DIR__ . '/../..' . '/classes/mvi/vi/Contacts.php',
         'Controllers\\Mvi\\Vi\\Costing' => __DIR__ . '/../..' . '/classes/mvi/vi/Costing.php',

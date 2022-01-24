@@ -143,11 +143,11 @@ class Vi extends Base {
 		$m->addHook('Page(pw_template=vi)::viPermittedSubfunctions', function($event) {
 			$user = self::pw('user');
 			$allowed = [];
-			// $vio = self::getVio();
+			$vio = self::getVio();
 			foreach (self::SUBFUNCTIONS as $option => $data) {
-				// if ($vio->allowUser($user, $option)) {
+				if ($vio->allowUser($user, $option)) {
 					$allowed[$option] = $data;
-				// }
+				}
 			}
 			$event->return = $allowed;
 		});

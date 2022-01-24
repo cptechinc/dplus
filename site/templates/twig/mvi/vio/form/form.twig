@@ -1,0 +1,38 @@
+<form action="{{ input.url() }}" id="vio-user-form" method="POST">
+	<input type="hidden" name="action" value="update">
+
+	<div class="mb-3">
+		{% include 'mvi/vio/form/key.twig' %}
+	</div>
+
+	<div class="list-group mb-3">
+		<div class="list-group-item bg-dark text-white">
+			<div class="row">
+				<div class="col-sm-3">Screen Option</div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-2"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-6"></div>
+			</div>
+		</div>
+		{% for option in vio.screens() %}
+			{% include 'mvi/vio/form/screen-options.twig' %}
+		{% endfor %}
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{% if vio.recordlocker.userHasLocked(user.userid) or user.isNew() %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+
+			{% if user.isNew() == false %}
+				<a href="{{ page.vioDeleteUrl(user.userid) }}" class="btn btn-danger delete_button">
+					<i class="fa fa-trash" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ input.url() }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

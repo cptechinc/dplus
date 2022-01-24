@@ -9,7 +9,7 @@ use Dplus\ScreenFormatters\Vi\OpenInvoices as Formatter;
 use Dplus\DocManagement\Finders as DocFinders;
 
 class OpenInvoices extends Subfunction {
-	const PERMISSION_VIO = '';
+	const PERMISSION_VIO = 'openinvoices';
 	const JSONCODE       = 'vi-openinvoices';
 
 /* =============================================================

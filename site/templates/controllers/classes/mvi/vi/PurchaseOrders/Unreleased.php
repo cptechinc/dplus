@@ -12,7 +12,7 @@ use Controllers\Mvi\Vi\Subfunction;
 use Controllers\Mvi\Vi\PurchaseOrders as ViPurchaseOrders;
 
 class Unreleased extends Subfunction {
-	const PERMISSION_VIO = '';
+	const PERMISSION_VIO = 'unreleased';
 	const JSONCODE       = 'vi-unreleased';
 
 /* =============================================================
@@ -71,7 +71,7 @@ class Unreleased extends Subfunction {
 		$page->refreshurl   = self::ordersUrl($data->vendorID, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$vendor  = self::getVendor($data->vendorID);
-		
+
 		self::initHooks();
 		return self::displayOrders($data);
 	}

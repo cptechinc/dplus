@@ -2,7 +2,7 @@
 // Purl URI Library
 use Purl\Url;
 // Propel Classes
-use Propel\Runtime\ActiveQuery\CodeCriteria as Query;
+use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
@@ -118,7 +118,7 @@ abstract class Base extends WireData {
 	 * @return ObjectCollection
 	 */
 	public function codes() {
-		$q = $this->getQueryClass();
+		$q = $this->query();
 		return $q->find();
 	}
 

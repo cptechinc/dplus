@@ -199,7 +199,6 @@ $(function() {
 		modal.find('[role=status]').removeClass('spinner-border');
 	});
 
-
 	$("body").on('focusin', '.qnotes', function(e) {
 		var input = $(this);
 		if (agent.browser == 'chrome') {
