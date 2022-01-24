@@ -4,9 +4,9 @@ use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Misc extends AbstractController {
+class Misc extends Controller {
 	public static function time($data) {
 		$fields = ['format|text'];
 		self::sanitizeParametersShort($data, $fields);

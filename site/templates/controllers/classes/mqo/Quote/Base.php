@@ -10,10 +10,10 @@ use Dplus\CodeValidators\Mqo as MqoValidator;
 // Dplus Filters
 use Dplus\Filters\Mqo\Quote as FilterQuotes;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mii\Ii;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	private static $validate;
 	private static $docm;
 	private static $configQt;
@@ -169,16 +169,5 @@ abstract class Base extends AbstractController {
 			self::$configQt = Configs\Qt::config();
 		}
 		return self::$configQt;
-	}
-
-	/**
-	 * Return Sales Order Config
-	 * @return ProcessWire\FileHasher
-	 */
-	public static function getFileHasher() {
-		if (empty(self::$filehasher)) {
-			self::$filehasher = self::pw('modules')->get('FileHasher');
-		}
-		return self::$filehasher;
 	}
 }

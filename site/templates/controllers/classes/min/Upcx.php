@@ -15,9 +15,9 @@ use Dplus\Configs;
 use Dplus\Filters;
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Upcx extends AbstractController {
+class Upcx extends Controller {
 	private static $upcx;
 
 	public static function index($data) {

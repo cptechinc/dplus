@@ -6,7 +6,7 @@ use SalesOrderQuery, SalesHistoryQuery, CustomerQuery;
 // Dplus Validators
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 class PrintSo extends Base {
 

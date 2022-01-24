@@ -12,10 +12,10 @@ use Dplus\Configs;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mpo\ApInvoice\Base as ApInvoice;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	private static $validate;
 	private static $docm;
 

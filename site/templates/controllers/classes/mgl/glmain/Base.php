@@ -1,6 +1,6 @@
 <?php namespace Controllers\Mgl\Glmain;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 use Controllers\Mgl\Base as BaseMgl;
 

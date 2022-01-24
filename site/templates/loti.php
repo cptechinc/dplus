@@ -11,7 +11,7 @@
 	];
 
 
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->show_breadcrumbs = false;

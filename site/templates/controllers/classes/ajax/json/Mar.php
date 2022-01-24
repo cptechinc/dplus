@@ -7,9 +7,9 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 use Dplus\CodeValidators\Mar       as MarValidator;
 use Dplus\CodeValidators\Mar\Cxm   as CxmValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mar extends AbstractController {
+class Mar extends Controller {
 	public static function test() {
 		return 'test';
 	}

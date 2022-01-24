@@ -6,9 +6,9 @@ use OptionsViQuery, OptionsVi;
 // Dplus User Options
 use Dplus\UserOptions\Mvi\Vio as VioManager;
 // MVC Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Vio extends AbstractController {
+class Vio extends Controller {
 	const PERMISSION     = 'vio';
 
 /* =============================================================

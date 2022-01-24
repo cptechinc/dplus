@@ -10,9 +10,9 @@ use ProcessWire\Page, ProcessWire\Kim as KimCRUD;
 // Dplus Filters
 use Dplus\Filters\Mki\Kim as FilterKim;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Kim extends AbstractController {
+class Kim extends Controller {
 	private static $kim;
 
 	public static function index($data) {

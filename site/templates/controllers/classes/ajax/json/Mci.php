@@ -4,9 +4,9 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Mar as MarValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mci extends AbstractController {
+class Mci extends Controller {
 	public static function test() {
 		return 'test';
 	}

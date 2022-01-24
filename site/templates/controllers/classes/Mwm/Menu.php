@@ -4,7 +4,7 @@ use WhsesessionQuery, Whsesession;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Dplus\Menu as Dmenu;
 
 class Menu extends Dmenu {

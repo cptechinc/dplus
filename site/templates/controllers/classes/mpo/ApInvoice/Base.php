@@ -10,9 +10,9 @@ use Dplus\DocManagement\Finders as DocFinders;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	private static $validate;
 	private static $docm;
 

@@ -2,11 +2,11 @@
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 // Dplus RecordLocker
 use Dplus\RecordLocker;
 
-class Menu extends AbstractController {
+class Menu extends Controller {
 /* =============================================================
 	Indexes
 ============================================================= */

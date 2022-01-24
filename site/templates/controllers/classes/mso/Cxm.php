@@ -14,9 +14,9 @@ use Dplus\Filters\Mso\Cxm as CxmFilter;
 use Dplus\Filters\Mar\Customer as CustomerFilter;
 
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Cxm extends AbstractController {
+class Cxm extends Controller {
 	private static $cxm;
 
 	public static function index($data) {

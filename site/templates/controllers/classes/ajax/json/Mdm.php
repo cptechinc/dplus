@@ -4,9 +4,9 @@ use Dplus\DocManagement\Finders;
 use Dplus\DocManagement\Folders;
 use Dplus\DocManagement\Copier;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mdm extends AbstractController {
+class Mdm extends Controller {
 	public static function test() {
 		return 'test';
 	}

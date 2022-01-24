@@ -6,9 +6,9 @@ use ProcessWire\Page, ProcessWire\PurchaseOrderEdit as EpoModel;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Epo extends AbstractController {
+class Epo extends Controller {
 	public static function index($data) {
 		$fields = ['ponbr|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);

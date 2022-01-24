@@ -5,11 +5,11 @@ use ProcessWire\Page;
 use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
 use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Dplus\Dashboard\Common as DefaultDashboard;
 use Controllers\Mso\SalesOrder\SalesOrder as SoController;
 
-class Dashboard extends AbstractController {
+class Dashboard extends Controller {
 	const DEFAULT = 'common';
 
 	public static function dashboard($data) {

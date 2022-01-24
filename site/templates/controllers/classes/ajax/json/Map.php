@@ -12,9 +12,9 @@ use Dplus\CodeValidators\Map       as MapValidator;
 use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
 use Dplus\CodeValidators\Map\Mxrfe as MxrfeValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Map extends AbstractController {
+class Map extends Controller {
 	public static function test() {
 		return 'test';
 	}

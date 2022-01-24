@@ -230,7 +230,7 @@
 		],
 	];
 
-	$router = new Mvc\JsonRouter();
+	$router = new Mvc\Routers\Json();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$response = $router->route();

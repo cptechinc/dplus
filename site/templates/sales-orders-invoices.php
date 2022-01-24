@@ -11,7 +11,7 @@
 			['GET', 'page{pagenbr:\d+}', Invoices\Customer::class, 'index'],
 		]
 	];
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();

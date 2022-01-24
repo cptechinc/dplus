@@ -11,9 +11,9 @@ use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 use Dplus\Filters\Map\Vendor as VendorFilter;
 use Dplus\Filters\Map\Vxm    as VxmFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Vxm extends AbstractController {
+class Vxm extends Controller {
 	private static $vxm;
 
 	public static function index($data) {

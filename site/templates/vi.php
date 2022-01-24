@@ -31,7 +31,7 @@
 		['GET', 'summary', Vi\Summary::class, 'index'],
 	];
 
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();

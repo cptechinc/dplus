@@ -6,7 +6,7 @@
 		['GET',  '', Base::class, 'index'],
 		['GET',  'customer', Customer::class, 'index'],
 	];
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();

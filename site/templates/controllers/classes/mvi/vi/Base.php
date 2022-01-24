@@ -6,11 +6,11 @@ use VendorQuery, Vendor;
 // Dplus Code Validators
 use Dplus\CodeValidators as Validators;
 // MVC Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 // Dplus User Options
 use Dplus\UserOptions\Mvi\Vio;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const PERMISSION     = 'vi';
 	const PERMISSION_VIO = '';
 

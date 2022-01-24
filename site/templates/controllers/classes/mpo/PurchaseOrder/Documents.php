@@ -10,7 +10,7 @@ use Dplus\CodeValidators\Mpo as MpoValidator;
 use Dplus\DocManagement\Finders\PurchaseOrder as DocumentsPo;
 use Dplus\DocManagement\Copier;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 class Documents extends Base {
 /* =============================================================

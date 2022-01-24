@@ -2,9 +2,9 @@
 // Dplus Lookups
 use Dplus\Lookup\Item\Lookups as Lookups;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class ItemLookup extends AbstractController {
+class ItemLookup extends Controller {
 	static public function test() {
 		return 'test';
 	}

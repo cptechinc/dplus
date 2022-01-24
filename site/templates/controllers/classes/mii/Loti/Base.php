@@ -12,9 +12,9 @@ use ProcessWire\Page, ProcessWire\SearchInventory, ProcessWire\DpagesMii;
 // Dplus Filters
 use Dplus\Filters\Min\LotMaster as LotFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Base extends AbstractController {
+class Base extends Controller {
 /* =============================================================
 	Classes, Module Getters
 ============================================================= */

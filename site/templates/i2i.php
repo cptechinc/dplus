@@ -10,7 +10,7 @@
 		['GET',  'page{pagenbr:\d+}', I2i::class, 'list'],
 		['POST', '', I2i::class, 'handleCRUD'],
 	];
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();

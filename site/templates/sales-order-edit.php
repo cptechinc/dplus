@@ -9,7 +9,7 @@
 		['GET',  'line/', SalesOrder\Edit::class, 'editItem'],
 		['GET',  'new/', SalesOrder\Edit::class, 'editNewOrder'],
 	];
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();

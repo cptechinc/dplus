@@ -10,7 +10,7 @@ use Dplus\CodeValidators\Mso as MsoValidator;
 use Dplus\DocManagement\Finders\SalesOrder as DocumentsSo;
 use Dplus\DocManagement\Copier;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 class Documents extends Base {
 /* =============================================================

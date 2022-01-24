@@ -8,12 +8,12 @@ use ProcessWire\Page;
 // Dplus CRUD
 use Dplus\Cart\Cart as Manager;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mci\Ci\Ci;
 use Controllers\Mqo\Quote\Quote;
 use Controllers\Mso\SalesOrder\SalesOrder;
 
-class Cart extends AbstractController {
+class Cart extends Controller {
 /* =============================================================
 	Indexes
 ============================================================= */

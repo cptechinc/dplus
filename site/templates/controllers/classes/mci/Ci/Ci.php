@@ -15,7 +15,7 @@ use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
 use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 use Dplus\Filters\Mqo\Quote        as QuoteFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mso\SalesOrder as ControllersSalesOrder;
 use Controllers\Mqo\Quote      as ControllersQuote;
 use Controllers\Misc\Cart\Cart;

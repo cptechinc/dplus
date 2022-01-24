@@ -1,6 +1,6 @@
 <?php namespace Controllers\Mpr\Prman;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 use Controllers\Mpr\Base as BaseMpr;
 

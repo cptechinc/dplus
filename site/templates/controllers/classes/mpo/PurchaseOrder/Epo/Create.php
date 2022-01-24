@@ -8,7 +8,7 @@ use ProcessWire\Page, ProcessWire\PurchaseOrderEdit as EpoCRUD;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mpo\PurchaseOrder\Base;
 
 class Create extends Base {

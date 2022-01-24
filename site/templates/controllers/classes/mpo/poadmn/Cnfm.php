@@ -12,7 +12,7 @@ use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes\Mpo\Cnfm as Manager;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 
 class Cnfm extends Base {

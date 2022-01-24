@@ -5,9 +5,9 @@ use ProcessWire\Page;
 use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
 use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Common extends AbstractController {
+class Common extends Controller {
 	public static function dashboard($data) {
 		$html = '';
 		$html .= self::dashboardUserActions($data);

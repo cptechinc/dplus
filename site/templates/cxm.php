@@ -9,7 +9,7 @@
 		['GET',  'page{pagenbr:\d+}', Cxm::class, 'list'],
 		['POST', '', Cxm::class, 'handleCRUD'],
 	];
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();

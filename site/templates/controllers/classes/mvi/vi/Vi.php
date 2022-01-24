@@ -14,7 +14,7 @@ use Dplus\Filters\Map\Vendor     as VendorFilter;
 // Dplus Configs
 use Dplus\Configs;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mpo\PurchaseOrder as ControllersPo;
 use Controllers\Mpo\ApInvoice\Lists\ApInvoice as ControllerApInvoice;
 use Controllers\Mpo\PurchaseOrder\Epo\Create as ControllerPoCreate;

@@ -6,9 +6,9 @@ use CustomerQuery, Customer;
 // Dplus Code Validators
 use Dplus\CodeValidators as Validators;
 // MVC Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const PERMISSION     = 'ci';
 	const PERMISSION_CIO = '';
 

@@ -6,9 +6,9 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Mki\Kim as KimValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mki extends AbstractController {
+class Mki extends Controller {
 	public static function test() {
 		return 'test';
 	}

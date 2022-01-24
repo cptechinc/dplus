@@ -11,9 +11,9 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD, ProcessWire\WireInput;
 use Dplus\Filters\Map\Mxrfe  as MxrfeFilter;
 use Dplus\Filters\Map\Vendor as VendorFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mxrfe extends AbstractController {
+class Mxrfe extends Controller {
 	private static $mxrfe;
 
 	public static function index($data) {

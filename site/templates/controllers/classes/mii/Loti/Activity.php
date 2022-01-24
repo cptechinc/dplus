@@ -10,7 +10,7 @@ use ProcessWire\Page;
 // Dplus Filters
 use Dplus\Filters\Min\LotMaster as LotFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mii\Ii\Activity as IiActivity;
 use Controllers\Mii\Ii\Documents as IiDocuments;
 
