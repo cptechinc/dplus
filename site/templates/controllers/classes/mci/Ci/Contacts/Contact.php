@@ -13,7 +13,7 @@ use Dplus\CodeValidators\Mar as MarValidator;
 // Dplus Filters
 use Dplus\Filters;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mci\Ci\Base;
 use Controllers\Mci\Ci\Shipto;
 

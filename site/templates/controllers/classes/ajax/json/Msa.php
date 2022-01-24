@@ -12,9 +12,9 @@ use Dplus\Qnotes;
 // Dplus Validators
 use Dplus\CodeValidators\Msa as MsaValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Msa extends AbstractController {
+class Msa extends Controller {
 	public static function test() {
 		return 'test';
 	}

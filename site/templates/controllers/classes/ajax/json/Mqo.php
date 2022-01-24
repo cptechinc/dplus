@@ -6,9 +6,9 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Mqo     as MqoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mqo extends AbstractController {
+class Mqo extends Controller {
 	public static function test() {
 		return 'test';
 	}

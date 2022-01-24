@@ -7,9 +7,9 @@ use Purl\Url as Purl;
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 use Dplus\CodeValidators as Validators;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const DPLUSPERMISSION = 'poadmn';
 
 /* =============================================================

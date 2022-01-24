@@ -6,9 +6,9 @@ use Dplus\RecordLocker;
 // Dplus Function Routers
 use Controllers\Routers;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class MainMenu extends AbstractController {
+class MainMenu extends Controller {
 /* =============================================================
 	Indexes
 ============================================================= */

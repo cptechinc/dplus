@@ -4,13 +4,13 @@ use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
-use InvLotQuery, InvLot;
+use InvLotMasterQuery, InvLotMaster;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
 // Dplus Filters
 use Dplus\Filters\Min\LotMaster as LotFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mii\Ii\Activity as IiActivity;
 use Controllers\Mii\Ii\Documents as IiDocuments;
 
@@ -53,7 +53,7 @@ class Activity extends Base {
 ============================================================= */
 	private static function getLotItemid($lotnbr) {
 		$filter = self::getFilter();
-		$filter->query->select(InvLot::aliasproperty('itemid'));
+		$filter->query->select(InvLotMaster::aliasproperty('itemid'));
 		$filter->query->filterByLotnbr($lotnbr);
 		return $filter->query->findOne();
 	}

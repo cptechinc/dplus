@@ -15,9 +15,9 @@ use Dplus\Filters\Mar\Customer      as CustomerFilter;
 use Dplus\Filters\Map\Vendor        as VendorFilter;
 use Dplus\Filters\Map\Vxm           as VxmFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Lookup extends AbstractController {
+class Lookup extends Controller {
 	const FIELDS_LOOKUP = ['q|text'];
 
 	public static function test() {

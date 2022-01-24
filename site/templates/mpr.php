@@ -13,7 +13,7 @@
 			]
 		]
 	];
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();
@@ -22,7 +22,7 @@
 		$config->scripts->append($modules->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
 		$page->show_breadcrumbs = false;
 	}
-	
+
 	if ($input->get->offsetExists('print')) {
 		include __DIR__ . "/blank-page.php";
 	} else {

@@ -9,7 +9,7 @@ use Dplus\ScreenFormatters\Vi\PurchaseHistory as Formatter;
 use Dplus\DocManagement\Finders as DocFinders;
 
 class PurchaseHistory extends Subfunction {
-	const PERMISSION_VIO = '';
+	const PERMISSION_VIO = 'purchasehistory';
 	const JSONCODE       = 'vi-purchase-history';
 
 /* =============================================================

@@ -13,9 +13,9 @@ use Dplus\CodeValidators as  Validators;
 use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\CodeValidators\Min\Upcx as UpcxValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Min extends AbstractController {
+class Min extends Controller {
 	public static function test($data) {
 		return 'test';
 	}

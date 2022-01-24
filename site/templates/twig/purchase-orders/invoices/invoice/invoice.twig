@@ -7,9 +7,15 @@
 	invoice                ApInvoice
 #}
 <div class="mb-3">
-	{% include 'purchase-orders/invoices/invoice/invoice-header.twig' %}
+	{% include 'purchase-orders/invoices/invoice/header.twig' %}
 </div>
 
 <div class="mb-3">
-	{% include 'purchase-orders/invoices/invoice/invoice-items.twig' %}
+	<h3 class="font-weight-bold text-secondary">Items</h3>
+	{% include 'purchase-orders/invoices/invoice/items.twig' %}
+</div>
+
+<div class="mb-3">
+	<h3 class="font-weight-bold text-secondary">Documents <i class="fa fa-file-text" aria-hidden="true"></i></h3>
+	{% include 'purchase-orders/invoices/invoice/documents.twig' %}
 </div>

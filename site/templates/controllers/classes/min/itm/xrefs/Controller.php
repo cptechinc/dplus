@@ -7,7 +7,7 @@ use ProcessWire\Page, ProcessWire\Itm as ItmModel;
 use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Min\ItemMaster as ItemMasterFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 use Controllers\Min\Itm\Xrefs as ItmXrefs;
 use Controllers\Min\Itm\Xrefs\Cxm;
@@ -16,7 +16,7 @@ use Controllers\Min\Itm\Xrefs\Mxrfe;
 use Controllers\Min\Itm\Xrefs\Upcx;
 use Controllers\Min\Itm\Xrefs\Kim;
 
-class Controller extends AbstractController {
+class Controller extends Controller {
 
 	public static function xrefs($data) {
 		return ItmXrefs::index($data);

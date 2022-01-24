@@ -15,7 +15,7 @@ use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Mci\Ci\Contact\Edit as ContactCRUD;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mci\Ci\Base;
 use Controllers\Mci\Ci\Shipto;
 

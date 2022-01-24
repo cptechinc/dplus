@@ -13,7 +13,7 @@ use Controllers\Mvi\Vi\PurchaseOrders as ViPurchaseOrders;
 use Controllers\Mvi\Vi\Documents;
 
 class Uninvoiced extends Subfunction {
-	const PERMISSION_VIO = '';
+	const PERMISSION_VIO = 'uninvoiced';
 	const JSONCODE       = 'vi-uninvoiced';
 
 /* =============================================================
@@ -73,7 +73,7 @@ class Uninvoiced extends Subfunction {
 		$page->refreshurl   = self::ordersUrl($data->vendorID, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$vendor  = self::getVendor($data->vendorID);
-		
+
 		self::initHooks();
 		return self::displayOrders($data);
 	}

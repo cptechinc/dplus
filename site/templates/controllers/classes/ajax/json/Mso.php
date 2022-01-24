@@ -11,9 +11,9 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 use Dplus\CodeValidators\Mso     as MsoValidator;
 use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mso extends AbstractController {
+class Mso extends Controller {
 	public static function test() {
 		return 'test';
 	}

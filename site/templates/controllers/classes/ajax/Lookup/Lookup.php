@@ -8,9 +8,9 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 use Dplus\Filters;
 use Dplus\Filters\AbstractFilter as Filter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-abstract class Lookup extends AbstractController {
+abstract class Lookup extends Controller {
 	const FIELDS_LOOKUP = ['q|text'];
 
 	public static function test() {

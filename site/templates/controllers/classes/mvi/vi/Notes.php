@@ -12,7 +12,7 @@ use Dplus\Filters;
 // Dplus Qnotes
 use Dplus\Qnotes\Vend as Qnotes;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 class Notes extends Base {
 /* =============================================================

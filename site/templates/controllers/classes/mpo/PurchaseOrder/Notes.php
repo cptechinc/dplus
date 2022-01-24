@@ -10,7 +10,7 @@ use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Document Finders
 use Dplus\DocManagement\Finders\PurchaseOrder as DocumentsPo;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 class Notes extends Base {
 /* =============================================================

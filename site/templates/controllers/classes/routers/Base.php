@@ -2,10 +2,10 @@
 // PHP Core
 use Exception;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mpo\Poadmn;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const ROUTES = [
 		// '{key}' => ['{url}', '{className}', '{function}']
 		'cnfm' => ['', Poadmn\Cnfm::class, 'cnfmUrl']

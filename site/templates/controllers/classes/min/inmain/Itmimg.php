@@ -14,7 +14,7 @@ use Dplus\DocManagement\Folders;
 // Dplus CRUD
 use Dplus\Min\Inmain\Itmimg as ImgManager;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Min\Base;
 
 class Itmimg extends Base {

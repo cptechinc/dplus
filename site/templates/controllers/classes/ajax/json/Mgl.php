@@ -9,9 +9,9 @@ use Dplus\Codes\Mgl\Dtm;
 // Dplus Validators
 use Dplus\CodeValidators\Mgl as MglValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mgl extends AbstractController {
+class Mgl extends Controller {
 	public static function test() {
 		return 'test';
 	}

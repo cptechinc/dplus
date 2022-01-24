@@ -22,7 +22,7 @@
 			['POST',  '', Notes::class, 'handleCRUD'],
 		],
 	];
-	$router = new Mvc\Router();
+	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();

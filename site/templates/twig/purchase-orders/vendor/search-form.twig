@@ -65,10 +65,10 @@
 					<div class="col-sm-3">
 						<h5>Status</h5>
 						<label>New</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
+						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.array('status') ? 'checked' : '' }} ></br>
 
 						<label>Closed</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="C" {{ 'C' in input.get.status ? 'checked' : '' }} ></br>
+						<input class="pull-right" type="checkbox" name="status[]" value="C" {{ 'C' in input.get.array('status') ? 'checked' : '' }} ></br>
 					</div>
 				</div>
 				<br>

@@ -14,7 +14,7 @@ use Dplus\Filters\Map\Vendor     as VendorFilter;
 // Dplus Configs
 use Dplus\Configs;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mpo\PurchaseOrder as ControllersPo;
 use Controllers\Mpo\ApInvoice\Lists\ApInvoice as ControllerApInvoice;
 use Controllers\Mpo\PurchaseOrder\Epo\Create as ControllerPoCreate;
@@ -143,11 +143,11 @@ class Vi extends Base {
 		$m->addHook('Page(pw_template=vi)::viPermittedSubfunctions', function($event) {
 			$user = self::pw('user');
 			$allowed = [];
-			// $vio = self::getVio();
+			$vio = self::getVio();
 			foreach (self::SUBFUNCTIONS as $option => $data) {
-				// if ($vio->allowUser($user, $option)) {
+				if ($vio->allowUser($user, $option)) {
 					$allowed[$option] = $data;
-				// }
+				}
 			}
 			$event->return = $allowed;
 		});

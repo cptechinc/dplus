@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
-use InvLotQuery, InvLot;
+use InvLotMasterQuery, InvLotMaster;
 // Dpluso Model
 use InvsearchQuery, Invsearch;
 // ProcessWire Classes, Modules
@@ -12,7 +12,7 @@ use ProcessWire\Page, ProcessWire\SearchInventory, ProcessWire\DpagesMii;
 // Dplus Filters
 use Dplus\Filters\Min\LotMaster as LotFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mii\Loti\Base;
 
 class Loti extends Base {
@@ -113,7 +113,7 @@ class Loti extends Base {
 	/**
 	 * Return Lot List
 	 * @param  object           $data
-	 * @param  PropelModelPager $lots InvLot[]
+	 * @param  PropelModelPager $lots InvLotMaster[]
 	 * @return string           HTML
 	 */
 	private static function listDisplay($data, PropelModelPager $lots) {
@@ -128,7 +128,7 @@ class Loti extends Base {
 	/**
 	 * Return Scan form and Lot List Combined
 	 * @param  object           $data
-	 * @param  PropelModelPager $lots InvLot[]
+	 * @param  PropelModelPager $lots InvLotMaster[]
 	 * @return string           HTML
 	 */
 	private static function formAndlistDisplay($data, PropelModelPager $lots) {

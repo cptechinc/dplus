@@ -5,7 +5,7 @@ use ProcessWire\Page;
 use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
 use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Dplus\Dashboard\Common;
 
 class Slsrep extends Common {

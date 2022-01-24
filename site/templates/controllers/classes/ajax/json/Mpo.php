@@ -9,9 +9,9 @@ use Dplus\Codes\Mpo\Cnfm;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mpo extends AbstractController {
+class Mpo extends Controller {
 	public static function test() {
 		return 'test';
 	}

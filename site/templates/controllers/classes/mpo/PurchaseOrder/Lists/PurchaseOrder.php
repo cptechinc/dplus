@@ -10,7 +10,7 @@ use Dplus\Configs;
 // Dplus Filters
 use Dplus\Filters;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mpo\PurchaseOrder\Base;
 
 class PurchaseOrder extends Base {

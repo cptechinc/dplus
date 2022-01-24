@@ -6,9 +6,11 @@ use VendorQuery, Vendor;
 // Dplus Code Validators
 use Dplus\CodeValidators as Validators;
 // MVC Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
+// Dplus User Options
+use Dplus\UserOptions\Mvi\Vio;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const PERMISSION     = 'vi';
 	const PERMISSION_VIO = '';
 
@@ -128,9 +130,9 @@ abstract class Base extends AbstractController {
 /* =============================================================
 	Supplemental
 ============================================================= */
-	// public static function getVio() {
-	// 	return self::pw('modules')->get('Vio');
-	// }
+	public static function getVio() {
+		return Vio::getInstance();
+	}
 
 	public static function getValidator() {
 		return new Validators\Map();
@@ -165,15 +167,12 @@ abstract class Base extends AbstractController {
 
 	protected static function validateUserPermission($data) {
 		$user = self::pw('user');
-		// $vio  = self::getVio();
 
 		if ($user->has_function(static::PERMISSION) === false) {
 			return false;
 		}
 
-		// if ($vio->allowUser($user, static::PERMISSION_VIO) === false) {
-		// 	return false;
-		// }
-		return true;
+		$vio  = self::getVio();
+		return $vio->allowUser($user, static::PERMISSION_VIO);
 	}
 }

@@ -2,9 +2,9 @@
 // Dplus CRUD
 use Dplus\Codes\Mpr as MprCodes;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mpr extends AbstractController {
+class Mpr extends Controller {
 	public static function test() {
 		return 'test';
 	}

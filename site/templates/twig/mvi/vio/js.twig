@@ -1,0 +1,108 @@
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+	var form = $('#vio-user-form');
+	var input_userID = form.find('input[name=userID]');
+
+	$("body").on('change', 'input[name=userID]', function(e) {
+		var input = $(this);
+
+		validate_userid(input.val(), function(exists) {
+			$('#loading-modal').modal('show');
+			var url = URI('{{ page.url }}');
+			url.addQuery('userID', input.val());
+			window.location.href = url.toString();
+		});
+	});
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.user-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var userID = button.data('userid');
+		input_userID.val(userID).change();
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('click', '.whse-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var whseID = button.data('whseid');
+		var input = modal_ajax.attr('data-input');
+		$(input).val(whseID);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+
+	var validator = form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			userID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/userid/') }}',
+					type: "get",
+					data: {
+						loginID: function() {
+							return $('#userID').val();
+						}
+					}
+				}
+			},
+		},
+		messages: {
+			userID: "Use a valid User ID",
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	function validate_userid(userID, callback) {
+		var url = URI('{{ page.jsonapiURL('msa/validate/userid/') }}');
+		url.addQuery('loginID', userID);
+
+		$.getJSON(url.toString(), function(exists) {
+			callback(exists);
+		});
+	}
+});

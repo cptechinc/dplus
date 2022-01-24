@@ -11,9 +11,9 @@ use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Filters
 use Dplus\Filters\Min\ItemMaster  as ItemMasterFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const PERMISSION     = 'ii';
 	const PERMISSION_IIO = '';
 
@@ -94,13 +94,6 @@ abstract class Base extends AbstractController {
 /* =============================================================
 	Classes, Module Getters
 ============================================================= */
-	protected static function getFileHasher() {
-		if (empty(self::$filehasher)) {
-			self::$filehasher = self::pw('modules')->get('FileHasher');
-		}
-		return self::$filehasher;
-	}
-
 	public static function getValidator() {
 		if (empty(self::$validator)) {
 			self::$validator = new MinValidator();

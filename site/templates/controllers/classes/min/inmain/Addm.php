@@ -16,7 +16,7 @@ use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Min\Inmain\Addm\Addm as Manager;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Min\Base;
 
 class Addm extends Base {

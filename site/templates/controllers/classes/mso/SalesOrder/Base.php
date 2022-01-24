@@ -8,11 +8,11 @@ use Dplus\DocManagement\Finders as DocFinders;
 // Dplus Classes
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mii\Ii;
 use Controllers\Mci\Ci\Ci;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	private static $validate;
 	private static $docm;
 	private static $configSo;
@@ -177,16 +177,5 @@ abstract class Base extends AbstractController {
 			self::$configSo = self::pw('modules')->get('ConfigureSo')->config();
 		}
 		return self::$configSo;
-	}
-
-	/**
-	 * Return Sales Order Config
-	 * @return ProcessWire\FileHasher
-	 */
-	protected static function getFileHasher() {
-		if (empty(self::$filehasher)) {
-			self::$filehasher = self::pw('modules')->get('FileHasher');
-		}
-		return self::$filehasher;
 	}
 }

@@ -2,9 +2,9 @@
 // ProcessWire;
 use ProcessWire\User;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const DPLUSPERMISSION = '';
 
 /* =============================================================

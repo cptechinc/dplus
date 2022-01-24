@@ -108,6 +108,7 @@ class Router extends WireData {
 			'User ID'    => $this->wire('user')->loginid,
 			'Session ID' => session_id(),
 			'Path'       => $this->wire('input')->url(),
+			'Template-PW'   => $this->wire('page')->pw_template
 		]);
 		$whoops = new Whoops();
 		$whoops->allowQuit(false);

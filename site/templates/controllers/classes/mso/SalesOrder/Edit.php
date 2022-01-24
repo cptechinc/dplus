@@ -20,7 +20,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Filters
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mso\SalesOrder\Base;
 
 class Edit extends Base {

@@ -1,0 +1,17 @@
+<div class="list-group-item">
+	<div class="row">
+		<div class="col-sm-3">
+			{{ vio.fieldAttribute(option, 'label') }}
+		</div>
+		<div class="col-sm-1">
+			{% include 'util/form/select.twig' with {
+					'name': option, 'selected_value': attribute(user, option),
+					'options': {
+						'Y': 'Yes',
+						'N': 'No'
+					},
+				}
+			%}
+		</div>
+	</div>
+</div>

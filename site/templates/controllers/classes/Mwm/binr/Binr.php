@@ -13,9 +13,9 @@ use ProcessWire\Page, ProcessWire\Module, Processwire\SearchInventory, Processwi
 // Dplus Classes
 use Dplus\Wm\Binr as BinrCRUD;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Binr extends AbstractController {
+class Binr extends Controller {
 	/** @var SearchInventory **/
 	private static $inventory;
 

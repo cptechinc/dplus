@@ -16,7 +16,7 @@ use Dplus\Configs;
 // Dplus Classes
 use Dplus\CodeValidators\Mqo as MqoValidator;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 use Controllers\Mii\Ii\Ii;
 use Controllers\Mci\Ci\Ci;
 

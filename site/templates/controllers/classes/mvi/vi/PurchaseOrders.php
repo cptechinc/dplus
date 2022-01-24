@@ -9,7 +9,7 @@ use Dplus\ScreenFormatters\Vi\PurchaseOrders as Formatter;
 use Dplus\DocManagement\Finders as DocFinders;
 
 class PurchaseOrders extends Subfunction {
-	const PERMISSION_VIO = '';
+	const PERMISSION_VIO = 'purchaseorders';
 	const JSONCODE       = 'vi-purchase-orders';
 
 /* =============================================================

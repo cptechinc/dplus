@@ -2,9 +2,9 @@
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Process extends AbstractController {
+class Process extends Controller {
 	static $permitted = false;
 	static $templateExists = false;
 	static $template;

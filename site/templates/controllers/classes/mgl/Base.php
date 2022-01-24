@@ -1,8 +1,8 @@
 <?php namespace Controllers\Mgl;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const DPLUSPERMISSION = 'mgl';
 
 /* =============================================================

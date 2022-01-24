@@ -19,6 +19,10 @@ class ComposerStaticInitff1d725dfb3efe0c484110dfa1f529f6
         array (
             'Psr\\Log\\' => 8,
         ),
+        'M' => 
+        array (
+            'Mvc\\' => 4,
+        ),
         'J' => 
         array (
             'Jenssegers\\Agent\\' => 17,
@@ -38,6 +42,10 @@ class ComposerStaticInitff1d725dfb3efe0c484110dfa1f529f6
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Mvc\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
         ),
         'Jenssegers\\Agent\\' => 
         array (
@@ -91,11 +99,12 @@ class ComposerStaticInitff1d725dfb3efe0c484110dfa1f529f6
         'Jenssegers\\Agent\\AgentServiceProvider' => __DIR__ . '/..' . '/jenssegers/agent/src/AgentServiceProvider.php',
         'Jenssegers\\Agent\\Facades\\Agent' => __DIR__ . '/..' . '/jenssegers/agent/src/Facades/Agent.php',
         'Mobile_Detect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
-        'Mvc\\Controllers\\AbstractController' => __DIR__ . '/../..' . '/classes/AbstractController.php',
-        'Mvc\\JsonRouter' => __DIR__ . '/../..' . '/classes/JsonRouter.php',
-        'Mvc\\Router' => __DIR__ . '/../..' . '/classes/Router.php',
-        'Mvc\\Whoops\\Handlers\\JsonHandler' => __DIR__ . '/../..' . '/classes/Whoops/Handlers/JsonHandler.php',
-        'Mvc\\Whoops\\Handlers\\PageHandler' => __DIR__ . '/../..' . '/classes/Whoops/Handlers/PageHandler.php',
+        'Mvc\\Controllers\\Controller' => __DIR__ . '/../..' . '/src/Controllers/Controller.php',
+        'Mvc\\Routers\\Json' => __DIR__ . '/../..' . '/src/Routers/Json.php',
+        'Mvc\\Routers\\Router' => __DIR__ . '/../..' . '/src/Routers/Router.php',
+        'Mvc\\Whoops\\Handlers\\EmailPage' => __DIR__ . '/../..' . '/src/Whoops/Handlers/EmailPage.php',
+        'Mvc\\Whoops\\Handlers\\Json' => __DIR__ . '/../..' . '/src/Whoops/Handlers/Json.php',
+        'Mvc\\Whoops\\Handlers\\Page' => __DIR__ . '/../..' . '/src/Whoops/Handlers/Page.php',
         'Psr\\Log\\AbstractLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/AbstractLogger.php',
         'Psr\\Log\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/log/Psr/Log/InvalidArgumentException.php',
         'Psr\\Log\\LogLevel' => __DIR__ . '/..' . '/psr/log/Psr/Log/LogLevel.php',

@@ -9,9 +9,9 @@ use ProcessWire\Page, ProcessWire\Spm as SpmManager;
 // Dplus Validators
 use Dplus\Filters\Mar\SalesPerson as FilterSalesPerson;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Spm extends AbstractController {
+class Spm extends Controller {
 	private static $spm;
 
 /* =============================================================

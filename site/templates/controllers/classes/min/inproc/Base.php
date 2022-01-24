@@ -6,9 +6,9 @@ use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-abstract class Base extends AbstractController {
+abstract class Base extends Controller {
 	const DPLUSPERMISSION = 'inproc';
 
 /* =============================================================

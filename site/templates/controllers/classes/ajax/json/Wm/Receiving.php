@@ -11,9 +11,9 @@ use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Wm
 use Dplus\Wm\Receiving\Receiving as ReceivingCRUD;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Receiving extends AbstractController {
+class Receiving extends Controller {
 
 	public static function requireLotserial($data) {
 		$fields = ['itemID|text', 'jqv|bool', 'lotserial|text'];

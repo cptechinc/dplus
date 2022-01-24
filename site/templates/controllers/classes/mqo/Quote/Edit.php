@@ -12,7 +12,7 @@ use Quothed as EditableQuote;
 // Dplus Configs
 use Dplus\Configs;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
 class Edit extends Base {
 

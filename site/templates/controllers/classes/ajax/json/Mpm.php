@@ -6,9 +6,9 @@ use Dplus\Mpm\Pmmain\Bmm;
 use Dplus\Codes\Mpm\Dcm;
 use Dplus\Codes\Mpm\Rcm;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
+use Mvc\Controllers\Controller;
 
-class Mpm extends AbstractController {
+class Mpm extends Controller {
 	public static function test() {
 		return 'test';
 	}

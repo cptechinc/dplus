@@ -1,18 +1,8 @@
 {
-	"name": "pauldro/woodstock",
-	"description": "Woodstock",
-	"type": "pw-module",
-	"keywords": [ "processwire", "module" ],
-	"homepage": "http://modules.processwire.com",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Paul Gomez",
-			"email": "pauldro952@hotmail.com"
-		}
-	],
 	"autoload": {
-		"classmap": ["classes/"]
+		"psr-4": {
+			"Mvc\\": "src/"
+		}
 	},
 	"require": {
 		"jenssegers/agent": "^2.6",
