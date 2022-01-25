@@ -36,6 +36,7 @@ return array(
     'Controllers\\Dplus\\Process' => $baseDir . '/classes/dplus/Process.php',
     'Controllers\\Map\\Mxrfe' => $baseDir . '/classes/map/Mxrfe.php',
     'Controllers\\Map\\Vxm' => $baseDir . '/classes/map/Vxm.php',
+    'Controllers\\Mar\\Armain\\Roptm' => $baseDir . '/classes/mar/armain/Roptm.php',
     'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',
     'Controllers\\Mci\\Ci\\Base' => $baseDir . '/classes/mci/Ci/Base.php',
     'Controllers\\Mci\\Ci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
