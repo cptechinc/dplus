@@ -1,0 +1,38 @@
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white p-3">
+			<th class="pt-3 pb-3">Code</th>
+			<th class="pt-3 pb-3">Description</th>
+			<th class="pt-3 pb-3 text-right">
+				<a href="{#{ page.codeAddUrl(code.code) #}" class="btn btn-light btn-sm">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if codes.count() == 0 %}
+			<tr>
+				<td colspan="3" class="text-center bg-light">
+					<strong>No Codes Found</strong>
+				</td>
+			</tr>
+		{% endif %}
+
+		{% for code in codes %}
+			<tr data-id="{{ code.id }}">
+				<td>{{ code.id }}</td>
+				<td>{{ code.description }}</td>
+				<td class="text-right">
+					<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</button>
+					&nbsp; &nbsp;
+					<a href="{#{ page.codeDeleteUrl(code.code) #}" class="btn btn-danger btn-sm delete_button">
+						<i class="fa fa-trash" aria-hidden="true"></i> Delete
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
