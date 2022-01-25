@@ -42,6 +42,8 @@ abstract class SysopOptionalCode extends Base {
 	 */
 	public function codeJson(Code $code) {
 		return [
+			'system'      => $code->system,
+			'sysopcode'   => $code->sysop,
 			'id'          => $code->id,
 			'description' => $code->description,
 		];
