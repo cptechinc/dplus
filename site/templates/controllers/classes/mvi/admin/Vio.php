@@ -115,6 +115,10 @@ class Vio extends Controller {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMvi');
 
+		$m->addHook('Page(pw_template=vio)::viAdminUrl', function($event) {
+			$event->return = self::pw('pages')->get('dplus_function=viadmn')->url;
+		});
+
 		$m->addHook('Page(pw_template=vio)::vioDeleteUrl', function($event) {
 			$event->return = self::deleteUrl($event->arguments(0));
 		});
