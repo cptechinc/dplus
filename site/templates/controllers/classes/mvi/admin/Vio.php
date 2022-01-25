@@ -42,8 +42,8 @@ class Vio extends Controller {
 
 		if ($user->isNew() === false) {
 			self::pw('page')->headline = "VIO: $data->userID";
+			$vio->lockrecord($user);
 		}
-		$vio->lockrecord($user);
 		self::pw('page')->js .= self::pw('config')->twig->render('mvi/vio/js.twig');
 		$html = self::displayOptions($data, $user);
 		$vio->deleteResponse();
@@ -58,7 +58,9 @@ class Vio extends Controller {
 
 		$html  = '';
 		$html .= self::displayResponse($data);
-		$html .= self::displayLockedAlert($data);
+		if ($user->isNew() === false) {
+			$html .= self::displayLockedAlert($data);
+		}
 		$html .= self::pw('config')->twig->render('mvi/vio/display.twig', ['vio' => $vio, 'user' => $user]);
 		return $html;
 	}
