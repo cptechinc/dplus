@@ -3,7 +3,7 @@
 
 	use Controllers\Mvi\Vi\Admin;
 
-	// Admin\Vio::initHooks();
+	Admin\Vio::initHooks();
 
 	$routes = [
 		['GET',  '', Admin\Vio::class, 'index'],

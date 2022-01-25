@@ -21,13 +21,19 @@ class Vio extends Controller {
 	}
 
 	public static function handleCRUD($data) {
-		self::sanitizeParametersShort($data, ['action|text']);
+		self::sanitizeParametersShort($data, ['action|text', 'userID|text']);
+		$url = self::url();
 
 		if ($data->action) {
 			$vio = self::getVio();
 			$vio->processInput(self::pw('input'));
+			switch ($data->action) {
+				case 'update':
+					$url = self::url($data->userID);
+					break;
+			}
 		}
-		self::pw('session')->redirect(self::url(), $http301);
+		self::pw('session')->redirect($url, $http301);
 	}
 
 	private static function options($data) {
@@ -103,7 +109,7 @@ class Vio extends Controller {
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('Mvi');
+		$m = self::pw('modules')->get('DpagesMvi');
 
 		$m->addHook('Page(pw_template=vio)::vioDeleteUrl', function($event) {
 			$event->return = self::deleteUrl($event->arguments(0));
