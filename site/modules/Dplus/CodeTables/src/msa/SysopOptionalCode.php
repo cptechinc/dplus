@@ -45,6 +45,7 @@ abstract class SysopOptionalCode extends Base {
 			'system'      => $code->system,
 			'sysopcode'   => $code->sysop,
 			'id'          => $code->id,
+			'code'        => $code->id,
 			'description' => $code->description,
 		];
 	}

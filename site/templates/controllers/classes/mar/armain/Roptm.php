@@ -47,7 +47,7 @@ class Roptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
-		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/roptm/sysop/edit/js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/roptm/sysop/edit/js.twig', ['roptm' => self::getRoptm()]);
 		return self::displaySysop($data, $sysop, $codes);
 	}
 
@@ -91,7 +91,7 @@ class Roptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('mar/armain/roptm/sysop/display.twig', ['sysop' => $sysop, 'codes' => $codes]);
+		$html .= $config->twig->render('mar/armain/roptm/sysop/display.twig', ['roptm' => self::getRoptm(), 'sysop' => $sysop, 'codes' => $codes]);
 		return $html;
 	}
 

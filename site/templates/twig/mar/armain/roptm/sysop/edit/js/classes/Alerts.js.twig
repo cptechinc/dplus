@@ -1,0 +1,10 @@
+class RoptmAlerts extends CodeAlerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new RoptmAlerts();
+		}
+		return this.instance;
+	}
+}

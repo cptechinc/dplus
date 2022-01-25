@@ -1,0 +1,36 @@
+{% include 'mar/armain/roptm/sysop/edit/js/classes.js.twig' %}
+
+
+$(function() {
+	var ajaxModal = $('#ajax-modal');
+	var alert     = RoptmAlerts.getInstance();
+	var formCode  = CodeForm.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$('#edit-code-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+
+		modal.find('.modal-title').text('Add Code');
+		if (code) {
+			modal.find('.modal-title').text('Edit Code ' + code);
+		}
+		formCode.updateInputsFromJson(button.data('json'));
+	});
+
+	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+
+		if (code) {
+			formCode.inputs.description.focus();
+		} else {
+			formCode.inputs.code.focus();
+		}
+	});
+
+});
