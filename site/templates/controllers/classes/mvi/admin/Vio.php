@@ -40,8 +40,10 @@ class Vio extends Controller {
 		$vio  = self::getVio();
 		$user = $vio->userOrNew($data->userID);
 
+		self::pw('page')->headline = 'Vendor Information Options';
+
 		if ($user->isNew() === false) {
-			self::pw('page')->headline = "VIO: $data->userID";
+			self::pw('page')->headline = "Vendor Information Options: $data->userID";
 			$vio->lockrecord($user);
 		}
 		self::pw('page')->js .= self::pw('config')->twig->render('mvi/vio/js.twig');
