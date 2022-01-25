@@ -197,7 +197,7 @@ abstract class Base extends WireData {
 	public function allowUser(User $user, $option = '') {
 		$userID = $this->exists($user->loginid) ? $user->loginid : static::USER_DEFAULT;
 		$permissions = $this->user($userID);
-		$exists = array_key_exists($option, static::SCREENS);
+		$exists = in_array($option, static::SCREENS);
 		return $exists ? $permissions->isTrue($option) : true;
 	}
 
