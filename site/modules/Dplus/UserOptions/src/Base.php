@@ -212,6 +212,7 @@ abstract class Base extends WireData {
 	public function new($userID = '') {
 		$class = $this->modelClassName();
 		$r = $class::new();
+		$r->setDummy('P');
 
 		if (strlen($userID) && $userID != 'new') {
 			$r->setUserid($userID);
