@@ -17,6 +17,10 @@ class Vio extends Controller {
 	public static function index($data) {
 		$fields = ['userID|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->userID)) {
+			$vio = self::getVio();
+			$vio->recordlocker->deleteLock();
+		}
 		return self::options($data);
 	}
 
@@ -80,8 +84,8 @@ class Vio extends Controller {
 		$vio = self::getVio();
 
 		if ($vio->recordlocker->getLockingUser($data->userID) != self::pw('user')->loginid) {
-			$msg = "IIO $data->userID is being locked by " . $vio->recordlocker->getLockingUser($data->userID);
-			$alert = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "IIO $data->userID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			$msg = "VIO $data->userID is being locked by " . $vio->recordlocker->getLockingUser($data->userID);
+			$alert = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "VIO $data->userID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			return '<div class="mb-3">'. $alert .'</div>';
 		}
 		return '';
