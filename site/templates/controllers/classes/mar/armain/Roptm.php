@@ -72,12 +72,21 @@ class Roptm extends Controller {
 	CRUD
 ============================================================= */
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'id|text'];
+		$fields = ['action|text', 'sysop|text', 'code|text'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
 
 		if ($data->action) {
 			self::getRoptm()->processInput(self::pw('input'));
+
+			switch ($data->action) {
+				case 'update':
+					$url = self::sysopFocusUrl($data->sysop, $data->code);
+					break;
+				default:
+					$url = self::sysopUrl($data->sysop);
+					break;
+			}
 		}
 
 		self::pw('session')->redirect($url, $http301 = false);
@@ -133,19 +142,20 @@ class Roptm extends Controller {
 		return $url->getUrl();
 	}
 
-	public static function codeListUrl($focus = '') {
-		if (empty($focus) || self::getRoptm()->exists($focus) === false) {
-			return self::url();
+	public function sysopFocusUrl($sysop, $focus) {
+		if (empty($focus) || self::getRoptm()->exists($sysop, $focus) === false) {
+			return self::sysopUrl($sysop);
 		}
-		$filter = new FilterSalesPerson();
-		$filter->init();
+		$filter = new Filters\Msa\SysopOptionalCode();
+		$filter->system(self::SYSTEM);
+		$filter->query->filterBySysop($data->sysop);
 		$position = $filter->positionQuick($focus);
-		$url = new Purl(self::_repListUrl());
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=roptm')->name, self::getPagenbrFromOffset($position, self::pw('session')->display));
+
+		$url = new Purl(self::sysopUrl($sysop));
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'roptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
 		$url->query->set('focus', $focus);
 		return $url->getUrl();
 	}
-
 
 	public static function url() {
 		return self::pw('pages')->get('pw_template=roptm')->url;
