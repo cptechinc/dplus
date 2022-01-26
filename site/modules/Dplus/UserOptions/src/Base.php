@@ -292,7 +292,25 @@ abstract class Base extends WireData {
 	 * @return bool
 	 */
 	protected function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$userID = $values->text('userID');
 
+		if ($this->exists($userID) === false) {
+			return true;
+		}
+
+		$user = $this->user($userID);
+
+		if ($this->lockrecord($user) === false) {
+			$message = "User ($userID) was not deleted, it is locked by " . $this->recordlocker->getLockingUser($userID);
+			$this->setResponse(Response::responseError($message));
+			return false;
+		}
+		$user->delete();
+		$response = $this->saveAndRespond($user);
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 /* =============================================================
