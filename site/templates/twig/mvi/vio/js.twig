@@ -25,8 +25,8 @@ $(function() {
 ============================================================= */
 	origForm = formVio.form.serialize();
 
-	$("body").on("click", "a:not(#kit-component-form .form-link, #ajax-modal a, [data-target=#ajax-modal])", function(e) {
-		if (formVio.form.serialize() !== origForm) {
+	$("body").on("click", "a:not(#ajax-modal a, [data-target=#ajax-modal])", function(e) {
+		if (formVio.form.serialize() !== origForm || formVio.form.data('new') === true) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');

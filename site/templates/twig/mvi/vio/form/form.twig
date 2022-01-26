@@ -1,4 +1,4 @@
-<form action="{{ input.url() }}" id="vio-user-form" method="POST">
+<form action="{{ input.url() }}" id="vio-user-form" method="POST" data-new="{{ user.isNew() ? 'true' : 'false' }}">
 	<input type="hidden" name="action" value="update">
 
 	<div class="mb-3">
