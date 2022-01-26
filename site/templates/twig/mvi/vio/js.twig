@@ -1,28 +1,58 @@
-$(function() {
-	var modal_ajax = $('#ajax-modal');
-	var form = $('#vio-user-form');
-	var input_userID = form.find('input[name=userID]');
+{% include 'mvi/vio/form/js/classes.js.twig' %}
 
+$(function() {
+	var modalAjax = $('#ajax-modal');
+	var formVio   = VioForm.getInstance();
+	var server    = VioRequests.getInstance();
+	var alert     = VioAlerts.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
 	$("body").on('change', 'input[name=userID]', function(e) {
 		var input = $(this);
 
-		validate_userid(input.val(), function(exists) {
+		server.validateUserid(input.val(), function(exists) {
 			$('#loading-modal').modal('show');
-			var url = URI('{{ page.url }}');
+			var url = URI('{{ input.url() }}');
 			url.addQuery('userID', input.val());
 			window.location.href = url.toString();
 		});
 	});
 
 /* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formVio.form.serialize();
+
+	$("body").on("click", "a:not(#kit-component-form .form-link, #ajax-modal a, [data-target=#ajax-modal])", function(e) {
+		if (formVio.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) { // If OL to save was clicked
+					formVio.form.find('button[type=submit]').click();
+				} else {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ input.url() }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
 	Lookup Modal Functions
 ============================================================= */
-	modal_ajax.on('show.bs.modal', function (event) {
+	modalAjax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal = $(this);
-		var url = button.data('lookupurl');
-		modal.attr('data-input', button.data('input'));
+		var modal  = $(this);
+		var url    = button.data('lookupurl');
 
+		modal.attr('data-input', button.data('input'));
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {});
@@ -32,23 +62,16 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var userID = button.data('userid');
-		input_userID.val(userID).change();
-		modal_ajax.modal('hide');
-	});
-
-	$("body").on('click', '.whse-link', function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var whseID = button.data('whseid');
-		var input = modal_ajax.attr('data-input');
-		$(input).val(whseID);
-		modal_ajax.modal('hide');
+		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
+		input.val(userID).change();
+		modal.modal('hide');
 	});
 
 	$("body").on('submit', '#ajax-modal form', function(e) {
 		e.preventDefault();
 		var form = $(this);
-		var query = form.serialize();
+		var query  = form.serialize();
 		var action = form.attr('action');
 		var search = form.find('input[name=q]').val();
 		var url = action + '?' + query;
@@ -58,15 +81,16 @@ $(function() {
 
 	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
 		e.preventDefault();
-		var href = $(this).attr('href');
-		modal_ajax.find('.modal-body').load(href);
+		var button = $(this);
+		var href   = button.attr('href');
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(href);
 	});
 
 /* =============================================================
 	Validation Functions
 ============================================================= */
-
-	var validator = form.validate({
+	var validator = formVio.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -79,6 +103,7 @@ $(function() {
 					url: '{{ page.jsonapiURL('msa/validate/userid/') }}',
 					type: "get",
 					data: {
+						jqv: true,
 						loginID: function() {
 							return $('#userID').val();
 						}
@@ -93,16 +118,4 @@ $(function() {
 			form.submit();
 		}
 	});
-
-/* =============================================================
-	AJAX Request Functions
-============================================================= */
-	function validate_userid(userID, callback) {
-		var url = URI('{{ page.jsonapiURL('msa/validate/userid/') }}');
-		url.addQuery('loginID', userID);
-
-		$.getJSON(url.toString(), function(exists) {
-			callback(exists);
-		});
-	}
 });

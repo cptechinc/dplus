@@ -1,0 +1,19 @@
+class VioRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VioRequests();
+		}
+		return this.instance;
+	}
+
+	validateUserid(userID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('msa/validate/userid/') }}');
+
+		ajax.setData({userID: userID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}
