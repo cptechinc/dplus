@@ -6,6 +6,14 @@ $(function() {
 	var alert     = RoptmAlerts.getInstance();
 	var formCode  = CodeForm.getInstance();
 
+	var uri = URI();
+	var query = uri.query(true);
+
+	if (query.focus != '' && query.focus != 'new') {
+		$('.code[data-id="'+query.focus+'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.code[data-id="'+query.focus+'"]').offset().top,},700,'linear');
+	}
+
 /* =============================================================
 	Event Functions
 ============================================================= */
@@ -13,6 +21,10 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal  = $(this);
 		var code   = button.data('code');
+
+		$('.code-table-alert').remove();
+		$('.codes-list .highlight').removeClass('highlight')
+		$('.codes-list .bg-success').removeClass('bg-success').removeClass('text-white');
 
 		modal.find('.modal-title').text('Add Code');
 		if (code) {

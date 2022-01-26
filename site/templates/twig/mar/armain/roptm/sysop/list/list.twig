@@ -1,3 +1,5 @@
+{% set response = roptm.getResponse() %}
+
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
@@ -20,7 +22,10 @@
 		{% endif %}
 
 		{% for code in codes %}
-			<tr data-id="{{ code.id }}">
+			{% set class = code.id == input.get.text('focus') ? 'highlight' : '' %}
+			{% set class = roptm.getRecordlockerKey(code) == response.key ? 'bg-success text-white' : class %}
+
+			<tr data-id="{{ code.id }}" class="code {{ class }}">
 				<td>{{ code.id }}</td>
 				<td>{{ code.description }}</td>
 				<td class="text-right">
