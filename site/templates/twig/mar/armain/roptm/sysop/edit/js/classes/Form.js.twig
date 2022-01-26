@@ -17,9 +17,7 @@ class CodeForm {
 
 	updateInputsFromJson(json = null) {
 		if (json) {
-			this.inputs.form.attr('data-sysop', json.sysopcode);
 			this.inputs.form.attr('data-code', json.code);
-			this.inputs.sysop.val(json.sysopcode);
 			this.inputs.code.val(json.code);
 			this.inputs.code.attr('readonly', 'true');
 			this.inputs.description.val(json.description);
@@ -27,9 +25,7 @@ class CodeForm {
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
 		}
-		this.inputs.form.attr('data-sysop', '');
 		this.inputs.form.attr('data-code', '');
-		this.inputs.sysop.val('');
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');
 		this.inputs.description.val('');
