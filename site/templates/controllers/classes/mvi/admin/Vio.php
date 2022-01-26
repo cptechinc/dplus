@@ -59,6 +59,7 @@ class Vio extends Controller {
 		$vio = self::getVio();
 
 		$html  = '';
+		$html .= '<div class="mb-3">'.self::displayBreadcrumbs($data).'</div>';
 		$html .= self::displayResponse($data);
 		if ($user->isNew() === false) {
 			$html .= self::displayLockedAlert($data);
@@ -69,6 +70,10 @@ class Vio extends Controller {
 
 	private static function displayInvalidPermission($data) {
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Access Denied', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You don't have access to this function"]);
+	}
+
+	private static function displayBreadcrumbs($data) {
+		return self::pw('config')->twig->render('mvi/vio/bread-crumbs.twig');
 	}
 
 	private static function displayLockedAlert($data) {
