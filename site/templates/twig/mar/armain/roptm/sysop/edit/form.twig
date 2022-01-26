@@ -6,8 +6,8 @@
 #}
 
 {# data-code is for verifying edit vs new #}
-<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-sysop="" data-code="">
-	<input type="hidden" name="sysop" value="">
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="sysop" value="{{ input.get.text('sysop') }}">
 
 	<div class="form-group">
 		<label for="code">Code</label>
