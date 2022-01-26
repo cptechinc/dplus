@@ -1,5 +1,13 @@
+{% set response = roptm.getResponse() %}
+
 <div class="mb-3">
 	{% include 'mar/armain/roptm/bread-crumbs.twig' %}
 </div>
+
+{% if response %}
+	<div class="mb-3">
+		{% include 'code-tables/response.twig' %}
+	</div>
+{% endif %}
 
 {% include 'mar/armain/roptm/list/list.twig' %}
