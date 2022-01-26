@@ -103,6 +103,16 @@ class Roptm extends Controller {
 		return $html;
 	}
 
+	private static function displayResponse($data) {
+		$response = self::getRoptm()->getResponse();
+
+		if (empty($response)) {
+			return '';
+		}
+		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
+	}
+
+
 /* =============================================================
 	Classes, Module Getters
 ============================================================= */
