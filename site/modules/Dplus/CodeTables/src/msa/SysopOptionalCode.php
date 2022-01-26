@@ -102,7 +102,7 @@ abstract class SysopOptionalCode extends Base {
 	 * @return SysopOptionalCode
 	 */
 	public function new($sysop = '', $id = '') {
-		$code = new SysopOptionalCode();
+		$code = new Model();
 		$code->setSystem(static::SYSTEM);
 		$code->setSysop($sysop);
 
@@ -216,7 +216,7 @@ abstract class SysopOptionalCode extends Base {
 		$config  = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$table = static::DPLUS_TABLE;
-		$data = ["DBNAME=$dplusdb", 'UPDATESYSOP', "SYS=$code->system", "CODE=$code->id"];
+		$data = ["DBNAME=$dplusdb", 'UPDATEOPTCODE', "SYS=$code->system", "CODE=$code->sysop", "ID=$code->id"];
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
