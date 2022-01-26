@@ -247,7 +247,7 @@ class Sysop extends Base {
 			return false;
 		}
 		$code = $this->getOrCreate($values->text('system'), $values->text('code'));
-		
+
 		if ($this->lockrecord($code) === false) {
 			$msg = "$code->system Code $code->id is Locked By " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($code));
 			$this->setResponse(Response::responseError($msg));
@@ -378,5 +378,14 @@ class Sysop extends Base {
 		$q->select(MsaSysopCode::aliasproperty('code'));
 		$q->filterByForce(MsaSysopCode::YN_TRUE);
 		return $q->find()->toArray();
+	}
+
+	/**
+	 * Validate System Code
+	 * @param  string[2] $system System Code
+	 * @return bool
+	 */
+	public static function validateSystem($system) {
+		return array_key_exists($system, self::FIELD_ATTRIBUTES['system']['options']);
 	}
 }
