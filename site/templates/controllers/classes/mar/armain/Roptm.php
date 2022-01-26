@@ -108,7 +108,6 @@ class Roptm extends Controller {
 
 		$html = '';
 		$html .= $config->twig->render('mar/armain/roptm/list/page.twig', ['sysopM' => self::getSysop(), 'roptm' => self::getRoptm(), 'codes' => $codes]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $codes]);
 		return $html;
 	}
 
