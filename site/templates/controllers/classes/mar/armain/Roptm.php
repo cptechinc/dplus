@@ -35,10 +35,9 @@ class Roptm extends Controller {
 		return self::listSysops($data);
 	}
 
-	public static function sysop($data) {
+	private static function sysop($data) {
 		$page = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
-
 		$page->headline = "ROPTM: $data->sysop Optional Codes";
 
 		$filter = new Filters\Msa\SysopOptionalCode();
@@ -51,8 +50,8 @@ class Roptm extends Controller {
 		return self::displaySysop($data, $sysop, $codes);
 	}
 
-	public static function listSysops($data) {
-		$data = self::sanitizeParametersShort($data, ['q|text']);
+	private static function listSysops($data) {
+		self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
 		self::getSysop()->recordlocker->deleteLock();
 
@@ -75,13 +74,13 @@ class Roptm extends Controller {
 	public static function handleCRUD($data) {
 		$fields = ['action|text', 'id|text'];
 		self::sanitizeParameters($data, $fields);
+		$url = self::url();
 
 		if ($data->action) {
-			$roptm = self::pw('modules')->get('Roptm');
-			$roptm->process_input(self::pw('input'));
+			self::getRoptm()->processInput(self::pw('input'));
 		}
 
-		self::pw('session')->redirect(self::redirectUrl($data), $http301 = false);
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 /* =============================================================
@@ -99,7 +98,7 @@ class Roptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('mar/armain/roptm/list/page.twig', ['sysopM' => self::getSysop(), 'codes' => $codes]);
+		$html .= $config->twig->render('mar/armain/roptm/list/page.twig', ['sysopM' => self::getSysop(), 'roptm' => self::getRoptm(), 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $codes]);
 		return $html;
 	}
