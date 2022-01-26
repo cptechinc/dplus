@@ -36,7 +36,7 @@ class Roptm extends Controller {
 	}
 
 	private static function sysop($data) {
-		$page = self::pw('page');
+		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
 		$page->headline = "ROPTM: $data->sysop Optional Codes";
 
@@ -45,9 +45,12 @@ class Roptm extends Controller {
 		$filter->query->filterBySysop($data->sysop);
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		self::getRoptm()->recordlocker->deleteLock();
 
 		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/roptm/sysop/edit/js.twig', ['roptm' => self::getRoptm()]);
-		return self::displaySysop($data, $sysop, $codes);
+		$html = self::displaySysop($data, $sysop, $codes);
+		self::getRoptm()->deleteResponse();
+		return $html;
 	}
 
 	private static function listSysops($data) {
@@ -64,8 +67,9 @@ class Roptm extends Controller {
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
-		// $page->js .= self::pw('config')->twig->render('mar/armain/roptm/list/.js.twig');
-		return self::displaySysopList($data, $codes);
+		$html = self::displaySysopList($data, $codes);
+		self::getRoptm()->deleteResponse();
+		return $html;
 	}
 
 /* =============================================================
@@ -156,6 +160,13 @@ class Roptm extends Controller {
 		return $url->getUrl();
 	}
 
+	public static function codeDeleteUrl($sysop, $code) {
+		$url = new Purl(self::sysopUrl($sysop));
+		$url->query->set('action', 'delete');
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
 	public static function url() {
 		return self::pw('pages')->get('pw_template=roptm')->url;
 	}
@@ -170,9 +181,8 @@ class Roptm extends Controller {
 			$event->return = self::sysopUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=roptm)::codeListUrl', function($event) {
-			$id = $event->arguments(0);
-			$event->return = self::codeListUrl($id);
+		$m->addHook('Page(pw_template=roptm)::codeDeleteUrl', function($event) {
+			$event->return = self::codeDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=roptm)::roptmUrl', function($event) {
