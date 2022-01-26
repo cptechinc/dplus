@@ -270,7 +270,13 @@ abstract class Base extends WireData {
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$user = $this->userOrNew($values->text('userID'));
+		$user   = $this->userOrNew($values->text('userID'));
+
+		if ($user->isNew() === false && $this->lockrecord($user) === false) {
+			$message = "User ($userID) was not saved, it is locked by " . $this->recordlocker->getLockingUser($userID);
+			$this->setResponse(Response::responseError($message));
+			return false;
+		}
 
 		foreach (static::SCREENS as $key) {
 			$setScreen = "set" . ucfirst($key);
