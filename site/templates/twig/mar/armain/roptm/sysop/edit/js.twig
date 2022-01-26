@@ -33,4 +33,10 @@ $(function() {
 		}
 	});
 
+	$('#edit-code-modal').on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var code  = modal.find('input[name=code]').val();
+		var row   = $('.codes-list').find('[data-id="'+code+'"]');
+		row.addClass('highlight');
+	});
 });
