@@ -15,8 +15,11 @@ class Vio extends Controller {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['userID|text'];
+		$fields = ['userID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
 		if (empty($data->userID)) {
 			$vio = self::getVio();
 			$vio->recordlocker->deleteLock();
