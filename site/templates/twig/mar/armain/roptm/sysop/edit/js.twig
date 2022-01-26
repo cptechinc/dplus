@@ -5,6 +5,7 @@ $(function() {
 	var ajaxModal = $('#ajax-modal');
 	var alert     = RoptmAlerts.getInstance();
 	var formCode  = CodeForm.getInstance();
+	var server    = CodeRequests.getInstance();
 
 	var uri = URI();
 	var query = uri.query(true);
@@ -15,7 +16,34 @@ $(function() {
 	}
 
 /* =============================================================
-	Event Functions
+	Edit Modal Functions
+============================================================= */
+	$("body").on('change', 'input[name=code]', function(e) {
+		var input = $(this);
+
+		server.validateCode(formCode.inputs.sysop.val(), input.val(), function(exists) {
+			if (exists) {
+				alert.codeExists(input.val(), function(editCode) {
+					var modal = input.closest('.modal');
+
+					if (editCode === false) {
+						formCode.form.validate().resetForm();
+						modal.modal('hide');
+						return false;
+					}
+
+					server.getCode(formCode.inputs.sysop.val(), input.val(), function(response) {
+						if (response) {
+							modal.find('.modal-title').text('Edit Code ' + input.val());
+							formCode.updateInputsFromJson(response);
+						}
+					});
+				});
+			}
+		});
+	});
+/* =============================================================
+	Edit Modal Functions
 ============================================================= */
 	$('#edit-code-modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
@@ -50,5 +78,39 @@ $(function() {
 		var code  = modal.find('input[name=code]').val();
 		var row   = $('.codes-list').find('[data-id="'+code+'"]');
 		row.addClass('highlight');
+		formCode.form.validate().resetForm();
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/sysop/option/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						system: 'AR',
+						sysop: function() {
+							return $('input[name=sysop]').val();
+						},
+						new: function() {
+							return $('#code-form').attr('data-code') == '' ? 'true' : 'false';
+						}
+					}
+				}
+			},
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
 	});
 });
