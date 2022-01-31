@@ -9,6 +9,7 @@
 					'qty-input'
 				],
 				'attributes': {
+					'data-original': detail.price|number_format(cart.decimalPlacesPrice()),
 					'data-allowdiscount': item.allow_discount() ? 'Y' : 'N',
 					'data-itemid': detail.itemid,
 				}

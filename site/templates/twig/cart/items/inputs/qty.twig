@@ -7,6 +7,7 @@
 				'qty-input'
 			],
 			'attributes': {
+				'data-original': detail.qty|number_format(cart.decimalPlacesQty()),
 				'data-avgweight': item.weight|number_format(cart.decimalPlacesQty())
 			}
 		}
