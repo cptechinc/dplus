@@ -25,6 +25,12 @@ $(function() {
 		form.setForm(input.closest('form'));
 		input.val(price.toFixed(form.config.fields.price.precision));
 		form.updateTotals();
+		var row   = input.closest('.cart-item');
+		row.removeClass('highlight');
+
+		if (parseFloat(input.data('original')) != parseFloat(price)) {
+			row.addClass('highlight');
+		}
 
 		serverCart.validatePriceMargin(input.data('itemid'), price, function(isValid) {
 			if (isValid === false) {
@@ -43,5 +49,11 @@ $(function() {
 		form.setForm(input.closest('form'));
 		input.val(qty.toFixed(form.config.fields.qty.precision));
 		form.updateTotals();
+		var row   = input.closest('.cart-item');
+		row.removeClass('highlight');
+
+		if (parseFloat(input.data('original')) != parseFloat(qty)) {
+			row.addClass('highlight');
+		}
 	});
 });

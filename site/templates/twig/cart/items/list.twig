@@ -17,7 +17,6 @@
 		<div class="col-sm-3 "></div>
 	</div>
 </div>
-<div class="pb-3"></div>
 {% for detail in cart.getItems() %}
 	{% set item = cart.getItmItem(detail.itemid) %}
 
@@ -28,7 +27,7 @@
 		<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
 		<input type="hidden" name="itemID" value="{{ detail.itemid }}">
 
-		<div class="form-row px-3 cart-item">
+		<div class="form-row p-3 cart-item">
 			<div class="col-sm-4">
 				{{ detail.itemid }} <br>
 				<small>{{ detail.desc1 }}</small> <br>
