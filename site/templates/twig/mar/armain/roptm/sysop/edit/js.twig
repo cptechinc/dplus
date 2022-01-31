@@ -10,7 +10,7 @@ $(function() {
 	var uri = URI();
 	var query = uri.query(true);
 
-	if (query.focus != '' && query.focus != 'new') {
+	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
 		$('.code[data-id="'+query.focus+'"]').addClass('highlight');
 		$('html, body').animate({scrollTop: $('.code[data-id="'+query.focus+'"]').offset().top,},700,'linear');
 	}
@@ -42,7 +42,7 @@ $(function() {
 			}
 		});
 	});
-	
+
 /* =============================================================
 	Edit Modal Functions
 ============================================================= */
@@ -58,6 +58,9 @@ $(function() {
 		modal.find('.modal-title').text('Add Code');
 		if (code) {
 			modal.find('.modal-title').text('Edit Code ' + code);
+		} else {
+			console.log('add');
+			modal.find('.modal-title').text('Add Code');
 		}
 		formCode.updateInputsFromJson(button.data('json'));
 	});
