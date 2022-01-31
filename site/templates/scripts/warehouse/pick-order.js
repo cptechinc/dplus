@@ -13,6 +13,14 @@ $(function() {
 	 * 4. Remove Sales Order Locks
 	 */
 
+var uri = URI();
+var query = uri.query(true);
+
+if (query.hasOwnProperty('scan') === false) {
+	var input = $('input[name=scan]');
+	input.focus();
+	$('html, body').animate({scrollTop: input.offset().top,},700,'linear');
+}
 /////////////////////////////////////
 // 1. Select / Enter Sales Order
 ////////////////////////////////////
