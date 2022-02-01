@@ -34,12 +34,12 @@ $(function() {
 			}
 		},
 		submitHandler: function(form) {
-			serverLookup.validateItemid(itemID, function(exists) {
+			serverLookup.validateItemid(formLookup.inputs.itemid.val(), function(exists) {
 				if (exists) {
-					if (input_qty.val() != '') {
+					if (formLookup.inputs.qty.val() != '') {
 						form.submit();
 					} else {
-						input_qty.focus();
+						formLookup.inputs.qty.focus();
 					}
 				} else {
 					formLookup.validateItemidEntry();
@@ -64,7 +64,6 @@ $(function() {
 
 	$("body").on('change', '#add-item-form input[name=itemID]', function(e) {
 		var input = $(this);
-		var config = formLookup.config;
 		formLookup.validateItemidEntry();
 	});
 
