@@ -67,6 +67,7 @@ class Roptm extends Controller {
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+				self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/roptm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getRoptm()->deleteResponse();
 		return $html;
@@ -171,6 +172,22 @@ class Roptm extends Controller {
 		return self::pw('pages')->get('pw_template=roptm')->url;
 	}
 
+	public static function urlFocus($focus = '') {
+		$sysopM = self::getSysop();
+
+		if (empty($focus) || $sysopM->exists(self::SYSTEM, $focus) === false) {
+			return self::url();
+		}
+		$sysop = $sysopM->code(self::SYSTEM, $focus);
+		$filter = new Filters\Msa\MsaSysopCode();
+		$filter->system(self::SYSTEM);
+		$position = $filter->positionQuick($sysop);
+		$url = new Purl(self::url());
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'roptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Hooks
 ============================================================= */
@@ -186,7 +203,7 @@ class Roptm extends Controller {
 		});
 
 		$m->addHook('Page(pw_template=roptm)::roptmUrl', function($event) {
-			$event->return = self::url();
+			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}
 }
