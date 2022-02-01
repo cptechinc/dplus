@@ -1,7 +1,7 @@
-{% set response = roptm.getResponse() %}
+{% set response = soptm.getResponse() %}
 
 <div class="mb-3">
-	{% include 'mar/armain/roptm/bread-crumbs.twig' %}
+	{% include 'mso/somain/soptm/bread-crumbs.twig' %}
 </div>
 
 {% if response %}
@@ -12,10 +12,10 @@
 
 <div class="card">
 	<div class="card-header bg-light">
-		AR Optional Codes for {{ sysop.id }}
+		SO Optional Codes for {{ sysop.id }}
 	</div>
 
-	{% include 'mar/armain/roptm/sysop/list/list.twig' %}
+	{% include 'mso/somain/soptm/sysop/list/list.twig' %}
 
 	<div class="card-body">
 		{% include 'util/paginator/propel.twig' with {'pager': codes} %}
@@ -26,7 +26,7 @@
 			<div></div>
 			<div></div>
 			<div>
-				<a href="{{ page.roptmUrl(sysop.id) }}" class="btn btn-sm btn-warning">
+				<a href="{{ page.soptmUrl(sysop.id) }}" class="btn btn-sm btn-warning">
 					<i class="fa fa-times" aria-hidden="true"></i> Close
 				</a>
 			</div>
@@ -34,4 +34,4 @@
 	</div>
 </div>
 
-{% include 'mar/armain/roptm/sysop/edit/modal.twig' %}
+{% include 'mso/somain/soptm/sysop/edit/modal.twig' %}

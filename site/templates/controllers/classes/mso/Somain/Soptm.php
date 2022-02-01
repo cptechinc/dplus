@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mar\Armain;
+<?php namespace Controllers\Mso\Somain;
 use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
@@ -13,8 +13,8 @@ use Dplus\Codes;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
-class Roptm extends Controller {
-	const SYSTEM = 'AR';
+class Soptm extends Controller {
+	const SYSTEM = 'SO';
 
 /* =============================================================
 	Indexes
@@ -38,16 +38,16 @@ class Roptm extends Controller {
 	private static function sysop($data) {
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
-		$page->headline = "ROPTM: $data->sysop Optional Codes";
+		$page->headline = "SOPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
-		self::getRoptm()->recordlocker->deleteLock();
+		self::getSoptm()->recordlocker->deleteLock();
 
-		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/roptm/sysop/edit/js.twig', ['roptm' => self::getRoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('mso/somain/soptm/sysop/edit/js.twig', ['soptm' => self::getSoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
-		self::getRoptm()->deleteResponse();
+		self::getSoptm()->deleteResponse();
 		return $html;
 	}
 
@@ -59,15 +59,15 @@ class Roptm extends Controller {
 		$filter = self::getFilterSysop();
 
 		if ($data->q) {
-			$page->headline = "ROPTM: Searching Sysop '$data->q'";
+			$page->headline = "SOPTM: Searching Sysop '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
-		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/roptm/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('mso/somain/soptm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
-		self::getRoptm()->deleteResponse();
+		self::getSoptm()->deleteResponse();
 		return $html;
 	}
 
@@ -80,7 +80,7 @@ class Roptm extends Controller {
 		$url = self::url();
 
 		if ($data->action) {
-			self::getRoptm()->processInput(self::pw('input'));
+			self::getSoptm()->processInput(self::pw('input'));
 
 			switch ($data->action) {
 				case 'update':
@@ -102,7 +102,7 @@ class Roptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('mar/armain/roptm/sysop/display.twig', ['roptm' => self::getRoptm(), 'sysop' => $sysop, 'codes' => $codes]);
+		$html .= $config->twig->render('mso/somain/soptm/sysop/display.twig', ['soptm' => self::getSoptm(), 'sysop' => $sysop, 'codes' => $codes]);
 		return $html;
 	}
 
@@ -110,12 +110,12 @@ class Roptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('mar/armain/roptm/list/page.twig', ['sysopM' => self::getSysop(), 'roptm' => self::getRoptm(), 'codes' => $codes]);
+		$html .= $config->twig->render('mso/somain/soptm/list/page.twig', ['sysopM' => self::getSysop(), 'soptm' => self::getSoptm(), 'codes' => $codes]);
 		return $html;
 	}
 
 	private static function displayResponse($data) {
-		$response = self::getRoptm()->getResponse();
+		$response = self::getSoptm()->getResponse();
 
 		if (empty($response)) {
 			return '';
@@ -127,8 +127,8 @@ class Roptm extends Controller {
 /* =============================================================
 	Classes, Module Getters
 ============================================================= */
-	public static function getRoptm() {
-		return Codes\Mar\Roptm::getInstance();
+	public static function getSoptm() {
+		return Codes\Mso\Soptm::getInstance();
 	}
 
 	public static function getSysop() {
@@ -161,14 +161,14 @@ class Roptm extends Controller {
 	}
 
 	public function sysopFocusUrl($sysop, $focus) {
-		if (empty($focus) || self::getRoptm()->exists($sysop, $focus) === false) {
+		if (empty($focus) || self::getSoptm()->exists($sysop, $focus) === false) {
 			return self::sysopUrl($sysop);
 		}
 		$filter   = self::getFilterSysopOptions($sysop);
 		$position = $filter->positionQuick($focus);
 
 		$url = new Purl(self::sysopUrl($sysop));
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'roptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'soptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
 		$url->query->set('focus', $focus);
 		return $url->getUrl();
 	}
@@ -181,7 +181,7 @@ class Roptm extends Controller {
 	}
 
 	public static function url() {
-		return self::pw('pages')->get('pw_template=roptm')->url;
+		return self::pw('pages')->get('pw_template=soptm')->url;
 	}
 
 	public static function urlFocus($focus = '') {
@@ -194,7 +194,7 @@ class Roptm extends Controller {
 		$filter   = self::getFilterSysop();
 		$position = $filter->positionQuick($sysop);
 		$url = new Purl(self::url());
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'roptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'soptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
 		$url->query->set('focus', $focus);
 		return $url->getUrl();
 	}
@@ -205,15 +205,15 @@ class Roptm extends Controller {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMar');
 
-		$m->addHook('Page(pw_template=roptm)::sysopUrl', function($event) {
+		$m->addHook('Page(pw_template=soptm)::sysopUrl', function($event) {
 			$event->return = self::sysopUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=roptm)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=soptm)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=roptm)::roptmUrl', function($event) {
+		$m->addHook('Page(pw_template=soptm)::soptmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

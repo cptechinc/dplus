@@ -1,9 +1,9 @@
-{% include 'mar/armain/roptm/sysop/edit/js/classes.js.twig' %}
+{% include 'mso/somain/soptm/sysop/edit/js/classes.js.twig' %}
 
 
 $(function() {
 	var ajaxModal = $('#ajax-modal');
-	var alert     = RoptmAlerts.getInstance();
+	var alert     = SoptmAlerts.getInstance();
 	var formCode  = CodeForm.getInstance();
 	var server    = CodeRequests.getInstance();
 
@@ -101,7 +101,7 @@ $(function() {
 					type: "get",
 					data: {
 						jqv: 'true',
-						system: 'AR',
+						system: 'SO',
 						sysop: function() {
 							return $('input[name=sysop]').val();
 						},

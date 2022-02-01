@@ -1,0 +1,15 @@
+{% set response = soptm.getResponse() %}
+
+<div class="mb-3">
+	{% include 'mso/somain/soptm/bread-crumbs.twig' %}
+</div>
+
+{% if response %}
+	<div class="mb-3">
+		{% include 'code-tables/response.twig' %}
+	</div>
+{% endif %}
+
+{% include 'mso/somain/soptm/list/list.twig' %}
+
+{% include 'util/paginator/propel.twig' with {'pager': codes} %}

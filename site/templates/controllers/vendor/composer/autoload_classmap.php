@@ -175,6 +175,7 @@ return array(
     'Controllers\\Mso\\SalesOrder\\Notes' => $baseDir . '/classes/mso/SalesOrder/Notes.php',
     'Controllers\\Mso\\SalesOrder\\PrintSo' => $baseDir . '/classes/mso/SalesOrder/PrintSo.php',
     'Controllers\\Mso\\SalesOrder\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder/SalesOrder.php',
+    'Controllers\\Mso\\Somain\\Soptm' => $baseDir . '/classes/mso/Somain/Soptm.php',
     'Controllers\\Mvi\\Vi\\Admin\\Vio' => $baseDir . '/classes/mvi/admin/Vio.php',
     'Controllers\\Mvi\\Vi\\Base' => $baseDir . '/classes/mvi/vi/Base.php',
     'Controllers\\Mvi\\Vi\\Contacts' => $baseDir . '/classes/mvi/vi/Contacts.php',

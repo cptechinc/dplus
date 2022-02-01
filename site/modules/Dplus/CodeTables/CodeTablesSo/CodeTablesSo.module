@@ -27,11 +27,7 @@ class CodeTablesSo extends WireData implements Module {
 		'rgarc' => array(
 			'code'   => 'rgarc',
 			'module' => 'CodeTablesRgarc'
-		),
-		'soptm' => array(
-			'code'   => 'soptm',
-			'module' => 'CodeTablesSoptm'
-		),
+		)
 	);
 
 	public function get_codetables() {

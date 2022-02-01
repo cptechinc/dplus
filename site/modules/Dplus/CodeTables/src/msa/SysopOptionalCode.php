@@ -27,7 +27,7 @@ abstract class SysopOptionalCode extends Base {
 	const SYSTEM = '';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => Model::MAX_LENGTH_CODE],
-		'description' => ['type' => 'text', 'maxlength' => 20],
+		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
 	protected static $instance;
