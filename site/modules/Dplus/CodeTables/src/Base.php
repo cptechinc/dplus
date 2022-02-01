@@ -139,10 +139,12 @@ abstract class Base extends WireData {
 		$values = $input->$rm;
 
 		switch ($values->text('action')) {
+			case 'delete':
 			case 'delete-code':
 				$this->inputDelete($input);
 				break;
 			case 'update-code':
+			case 'update':
 			case 'edit-code':
 				$this->inputUpdate($input);
 				break;

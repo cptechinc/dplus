@@ -1,0 +1,120 @@
+{% include 'mar/armain/roptm/sysop/edit/js/classes.js.twig' %}
+
+
+$(function() {
+	var ajaxModal = $('#ajax-modal');
+	var alert     = RoptmAlerts.getInstance();
+	var formCode  = CodeForm.getInstance();
+	var server    = CodeRequests.getInstance();
+
+	var uri = URI();
+	var query = uri.query(true);
+
+	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
+		$('.code[data-id="'+query.focus+'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.code[data-id="'+query.focus+'"]').offset().top,},700,'linear');
+	}
+
+/* =============================================================
+	Edit Modal Functions
+============================================================= */
+	$("body").on('change', 'input[name=code]', function(e) {
+		var input = $(this);
+
+		server.validateCode(formCode.inputs.sysop.val(), input.val(), function(exists) {
+			if (exists) {
+				alert.codeExists(input.val(), function(editCode) {
+					var modal = input.closest('.modal');
+
+					if (editCode === false) {
+						formCode.form.validate().resetForm();
+						modal.modal('hide');
+						return false;
+					}
+
+					server.getCode(formCode.inputs.sysop.val(), input.val(), function(response) {
+						if (response) {
+							modal.find('.modal-title').text('Edit Code ' + input.val());
+							formCode.updateInputsFromJson(response);
+						}
+					});
+				});
+			}
+		});
+	});
+
+/* =============================================================
+	Edit Modal Functions
+============================================================= */
+	$('#edit-code-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+
+		$('.code-table-alert').remove();
+		$('.codes-list .highlight').removeClass('highlight')
+		$('.codes-list .bg-success').removeClass('bg-success').removeClass('text-white');
+
+		modal.find('.modal-title').text('Add Code');
+		if (code) {
+			modal.find('.modal-title').text('Edit Code ' + code);
+		} else {
+			console.log('add');
+			modal.find('.modal-title').text('Add Code');
+		}
+		formCode.updateInputsFromJson(button.data('json'));
+	});
+
+	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+
+		if (code) {
+			formCode.inputs.description.focus();
+		} else {
+			formCode.inputs.code.focus();
+		}
+	});
+
+	$('#edit-code-modal').on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var code  = modal.find('input[name=code]').val();
+		var row   = $('.codes-list').find('[data-id="'+code+'"]');
+		row.addClass('highlight');
+		formCode.form.validate().resetForm();
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('msa/validate/sysop/option/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						system: 'AR',
+						sysop: function() {
+							return $('input[name=sysop]').val();
+						},
+						new: function() {
+							return $('#code-form').attr('data-code') == '' ? 'true' : 'false';
+						}
+					}
+				}
+			},
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+});

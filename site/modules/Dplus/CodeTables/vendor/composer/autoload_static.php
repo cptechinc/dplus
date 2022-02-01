@@ -9,6 +9,7 @@ class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
     public static $classMap = array (
         'Dplus\\Codes\\Base' => __DIR__ . '/../..' . '/src/Base.php',
         'Dplus\\Codes\\Base\\Simple' => __DIR__ . '/../..' . '/src/Base/Simple.php',
+        'Dplus\\Codes\\Mar\\Roptm' => __DIR__ . '/../..' . '/src/mar/Roptm.php',
         'Dplus\\Codes\\Mgl\\Dtm' => __DIR__ . '/../..' . '/src/mgl/Dtm.php',
         'Dplus\\Codes\\Mgl\\Mhm' => __DIR__ . '/../..' . '/src/mgl/Mhm.php',
         'Dplus\\Codes\\Mgl\\Ttm' => __DIR__ . '/../..' . '/src/mgl/Ttm.php',
@@ -18,6 +19,7 @@ class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
         'Dplus\\Codes\\Mpr\\Src' => __DIR__ . '/../..' . '/src/mpr/Src.php',
         'Dplus\\Codes\\Msa\\Lgrp' => __DIR__ . '/../..' . '/src/msa/Lgrp.php',
         'Dplus\\Codes\\Msa\\Sysop' => __DIR__ . '/../..' . '/src/msa/Sysop.php',
+        'Dplus\\Codes\\Msa\\SysopOptionalCode' => __DIR__ . '/../..' . '/src/msa/SysopOptionalCode.php',
         'Dplus\\Codes\\Response' => __DIR__ . '/../..' . '/src/Response.php',
     );
 

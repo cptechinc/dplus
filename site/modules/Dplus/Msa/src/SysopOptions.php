@@ -103,6 +103,7 @@ class SysopOptions extends WireData {
 		return [
 			'system'       => $code->system,
 			'sysop'        => $code->sysop,
+			'sysopcode'    => $code->sysop,
 			'code'         => $code->id,
 			'id'           => $code->id,
 			'description'  => $code->description,
