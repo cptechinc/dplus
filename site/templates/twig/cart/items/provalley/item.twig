@@ -1,0 +1,57 @@
+<div class="p-3 border-1 border-bottom border-dark cart-item">
+	{% set item = cart.getItmItem(detail.itemid) %}
+
+	<form action="{{ page.url }}" class="allow-enterkey-submit">
+		<input type="hidden" name="action" value="update-item-quick">
+		<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+
+		<div class="form-row">
+			<div class="col-sm-3">
+				{{ detail.itemid }}
+				<br>
+				<small>{{ detail.desc1 }}</small>
+				<br>
+				<small>Avg Wgt: {{ item.weight|number_format(cart.decimalPlacesQty()) }}</small>
+			</div>
+			<div class="col-6 col-sm-1 mb-2 text-right">
+				<div class="d-block d-sm-none">
+					<b>Qty</b>
+				</div>
+				{% include 'cart/items/inputs/qty.twig' %}
+
+				<div class="d-block d-sm-none mt-1">
+
+					<b>Weight:</b> <span class="total-weight">{{ (item.weight * detail.qty)|number_format(cart.decimalPlacesQty()) }}</span>
+				</div>
+			</div>
+			<div class="d-none d-sm-block col-sm-1 mb-2 text-right">
+				<p class="form-control-plaintext form-control-sm">
+					<span class="total-weight">{{ (item.weight * detail.qty)|number_format(cart.decimalPlacesQty()) }}</span>
+				</p>
+			</div>
+			<div class="col-6 col-sm-2 mb-2 text-right">
+				<div class="d-block d-sm-none">
+					<b>Price</b>
+				</div>
+				{% include 'cart/items/inputs/price.twig' %}
+			</div>
+			<div class="col-sm-2 mb-2 text-right">
+				<div class="d-block d-sm-none">
+					<b>Total</b>
+				</div>
+				<p class="form-control-plaintext form-control-sm">
+					$ <span class="total-price">{{ (item.weight * detail.qty * detail.price)|currency }}</span>
+				</p>
+			</div>
+			<div class="col-sm-3 text-right">
+				<button type="submit" class="btn btn-sm btn-success">
+					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+				</button>
+				&nbsp;
+				<a href="{{ page.deleteItemUrl(detail.linenbr) }}" class="btn btn-sm btn-danger exclude">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			</div>
+		</div>
+	</form>
+</div>

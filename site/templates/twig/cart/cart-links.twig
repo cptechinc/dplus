@@ -1,6 +1,6 @@
 <div class="form-group">
 	<div class="row">
-		<div class="col">
+		<div class="col-sm-6 mb-3">
 			{% if cart.hasShiptoid() %}
 				<a href="{{ page.ciShiptoUrl(shipto.custid, shipto.shiptoid) }}" class="btn btn-primary">
 					<i class="fa fa-user" aria-hidden="true"></i> View Shipto {{ shipto.name }}
@@ -16,7 +16,7 @@
 				<i class="fa fa-eraser" aria-hidden="true"></i> Clear Cart
 			</a>
 		</div>
-		<div class="col">
+		<div class="col-sm-6 mb-3">
 			<form action="{{ input.url() }}" method="get">
 				<input type="hidden" name="action" value="set-shiptoid">
 				<input type="hidden" name="custID" value="{{ customer.id }}">
