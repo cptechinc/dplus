@@ -238,7 +238,7 @@ class SalesOrderEdit extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ordn = $values->ordn('ordn');
-		$linenbr = $values->int('linenbr');
+		$linenbr = $values->int('linenbr');	
 
 		$q = OrdrdetQuery::create();
 		$q->filterbySessionid(session_id())->filterByOrderno($ordn)->filterByLinenbr($linenbr);
