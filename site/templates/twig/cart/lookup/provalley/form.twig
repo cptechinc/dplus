@@ -3,26 +3,17 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 #}
-<div class="bg-dark text-white font-weight-bold pt-3 px-3 pb-1">
-	<div class="row">
-		<div class="col-sm-3">Item</div>
-		<div class="col-sm-1 text-right">Cases</div>
-		<div class="col-sm-1 text-right">Weight</div>
-		<div class="col-sm-2 text-right"></div>
-		<div class="col-sm-2 text-right"></div>
-		<div class="col-sm-3 "></div>
-	</div>
-</div>
 
-<form action="{{ page.url }}" class="pt-3 allow-enterkey-submit" id="add-item-form">
+<form action="{{ page.url }}" class="p-3 allow-enterkey-submit" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
 
-	<div class="row">
-		<div class="col-sm-3">
+	<div class="form-row">
+		<div class="col-sm-3 mb-2">
 			<div class="form-group">
+				<label>Item</label>
 				{% include 'cart/lookup/form/input-itemid.twig' %}
 			</div>
-			<div class="mt-2">
+			<div class="mt-1">
 				<ul class="list-unstyled">
 					<li>
 						<small class="desc1"></small>
@@ -36,46 +27,77 @@
 				</ul>
 			</div>
 		</div>
-		<div class="col-sm-1 text-right">
+		<div class="col-sm-1 col-6 mb-2 text-right">
 			<div class="form-group">
-				{% include 'util/form/input.twig' with {
-						'type': 'number',
-						'name': 'qty', 'id': 'addqty', 'value': '',
-						'class_add': [
-							'text-right',
-							'qty-input'
-						],
-						'attributes': {
-							'disabled': false
+				<label>Qty</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'qty',
+							'id': 'addqty',
+							'type': 'number',
+							'value': '',
+							'addclasses': [
+								'text-right',
+								'qty-input'
+							]
 						}
 					}
 				%}
 				<small class="text-muted" id="qty-weight"></small>
 			</div>
 		</div>
-		<div class="col-sm-1 text-right">
+		<div class="col-6 col-sm-1 mb-2 text-right">
+			<label>Weight</label>
 			<div class="form-group">
-				{% include 'util/form/input.twig' with {
-						'type': 'number',
-						'name': 'weight', 'value': '',
-						'class_add': [
-							'text-right',
-							'qty-input',
-							'ignore'
-						],
-						'attributes': {
-							'disabled': false
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'weight',
+							'id': 'addweight',
+							'type': 'number',
+							'value': '',
+							'addclasses': [
+								'text-right',
+								'qty-input',
+								'ignore'
+							],
+							'attributes': {
+								'disabled': false
+							}
 						}
 					}
 				%}
 			</div>
 		</div>
 		<div class="col-sm-2 text-right">
-			<div class="input-group">
-				<button type="submit" class="btn btn-primary">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add
-				</button>
+			<label>Price</label>
+			<div class="form-group">
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'input': {
+								'name': 'price',
+								'id': 'addprice',
+								'addclasses': [
+									'text-right',
+									'qty-input',
+									'ignore'
+								],
+								'attributes': {}
+							},
+							'span': {
+								'colorclass': 'bg-light',
+								'text': '$'
+							}
+						}
+					}
+				%}
 			</div>
+		</div>
+		<div class="col-sm-2 text-right">
+			<label>&nbsp;</label><br>
+			<button type="submit" class="btn btn-primary">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add
+			</button>
 		</div>
 		<div class="col-sm-5"></div>
 	</div>

@@ -4,15 +4,16 @@
 	page                   ProcessWire\Page
 #}
 
-<form action="{{ page.url }}" class="pt-3 allow-enterkey-submit" id="add-item-form">
+<form action="{{ page.url }}" class="p-3 allow-enterkey-submit" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
 
-	<div class="row">
-		<div class="col-sm-3">
+	<div class="form-row">
+		<div class="col-sm-4 mb-2">
 			<div class="form-group">
+				<label>Item</label>
 				{% include 'cart/lookup/form/input-itemid.twig' %}
 			</div>
-			<div class="mt-2">
+			<div class="mt-1">
 				<ul class="list-unstyled">
 					<li>
 						<small class="desc1"></small>
@@ -23,11 +24,14 @@
 				</ul>
 			</div>
 		</div>
-		<div class="col-sm-1 text-right">
+		<div class="col-6 col-sm-1 mb-2 text-right">
 			<div class="form-group">
+				<label>Qty</label>
 				{% include 'util/bootstrap/form/input.twig' with {
 						'input': {
 							'name': 'qty',
+							'id': 'addqty',
+							'type': 'number',
 							'value': '',
 							'addclasses': [
 								'text-right',
@@ -38,12 +42,33 @@
 				%}
 			</div>
 		</div>
-		<div class="col-sm-2 text-right">
-			<div class="input-group">
-				<button type="submit" class="btn btn-primary">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add
-				</button>
+		<div class="col-6 col-sm-2 mb-2 text-right">
+			<div class="form-group">
+				<label>Price</label>
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'input': {
+								'name': 'price',
+								'addclasses': [
+									'text-right',
+									'qty-input'
+								],
+							},
+							'span': {
+								'colorclass': 'bg-light',
+								'text': '$'
+							}
+						}
+					}
+				%}
 			</div>
+		</div>
+		<div class="col-sm-2 text-right">
+			<label>&nbsp;</label><br>
+			<button type="submit" class="btn btn-primary">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add
+			</button>
 		</div>
 		<div class="col-sm-5"></div>
 	</div>
