@@ -210,7 +210,8 @@ class Cart extends WireData {
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
 		$qty    = $values->float('qty');
-		$this->requestAddItem($itemID, $qty);
+		$price  = $values->text('price');
+		$this->requestAddItem($itemID, $qty, $price);
 		return true;
 	}
 
@@ -375,9 +376,12 @@ class Cart extends WireData {
 	 * Request Item Add to cart for CustID
 	 * @param string $itemID Item ID
 	 * @param float  $qty    Qty to be added
+	 * @param string $price  Price to Set
 	 */
-	private function requestAddItem($itemID, $qty) {
-		$data = ['CARTDET', "ITEMID=$itemID", "QTY=$qty"];
+	private function requestAddItem($itemID, $qty, $price = '') {
+		$sanitizer = $this->wire('sanitizer');
+		$price = empty($price) ? '' : $sanitizer->float($price, ['precision' => $this->decimalPlacesQty()]);
+		$data = ['CARTDET', "ITEMID=$itemID", "QTY=$qty", "PRICE=$price"];
 		$this->requestDplus($data);
 	}
 
