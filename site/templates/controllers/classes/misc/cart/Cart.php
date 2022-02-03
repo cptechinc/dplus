@@ -179,6 +179,7 @@ class Cart extends Controller {
 		}
 
 		$html .= $config->twig->render('cart/actions.twig');
+		$html .= $config->twig->render('cart/lookup/modal-pricing.twig');
 		return $html;
 	}
 

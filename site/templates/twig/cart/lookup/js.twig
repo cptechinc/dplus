@@ -64,7 +64,29 @@ $(function() {
 
 	$("body").on('change', '#add-item-form input[name=itemID]', function(e) {
 		var input = $(this);
-		formLookup.validateItemidEntry();
+
+		if (input.val() != '') {
+			formLookup.validateItemidEntry();
+		}
+	});
+
+	$("body").on('change', '#add-item-form input[name=qty]', function(e) {
+		var input = $(this);
+
+		if (input.val() != '') {
+			var inputs = formLookup.inputs;
+			var json   = inputs.price.attr('data-json');
+
+			if (json) {
+				var pricing = JSON.parse(inputs.price.attr('data-json'));
+				formLookup.updatePricingInput(pricing);
+			} else {
+				$('#loading-modal').modal('show');
+				formLookup.updatePricing(function() {
+					$('#loading-modal').modal('hide');
+				});
+			}
+		}
 	});
 
 /* =============================================================
