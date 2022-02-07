@@ -1,7 +1,20 @@
 $(function() {
 	var form = $('#customer-search-form');
-
 	var modal_ajax = $('#ajax-modal');
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change', 'input[name=custID]', function(e) {
+		var input = $(this);
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/customer/') }}');
+		ajax.setData({custID: input.val()});
+		ajax.request(function(customer) {
+			if (customer) {
+				input.val(customer.id);
+			}
+		})
+	});
 
 /* =============================================================
 	Validation Functions
