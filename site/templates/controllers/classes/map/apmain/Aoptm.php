@@ -65,7 +65,7 @@ class Aoptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
-		// self::pw('page')->js .= self::pw('config')->twig->render('code-tables/map/aoptm/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/map/aoptm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getAoptm()->deleteResponse();
 		return $html;
