@@ -4,7 +4,7 @@
 	page                   ProcessWire\Page
 #}
 
-<form action="{{ page.url }}" class="p-3 allow-enterkey-submit" id="add-item-form">
+<form action="{{ input.url() }}" class="p-3 allow-enterkey-submit" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
 
 	<div class="form-row">
