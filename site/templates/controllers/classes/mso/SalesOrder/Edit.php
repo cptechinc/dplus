@@ -141,7 +141,7 @@ class Edit extends Base {
 		$html = '';
 		$html .= self::soEditHeader($eso, $order);
 		$html .= self::soEditItems($eso, $order);
-		$html .= self::itemLookupForm($order);
+		$html .= self::itemLookupForm($eso, $order);
 		$html .= self::qnotes($order->ordernumber);
 		$html .= self::setupCstkLastSold($order);
 		$html .= self::js($eso, $order->ordernumber);
@@ -169,18 +169,19 @@ class Edit extends Base {
 		$html = '';
 		$config = self::pw('config');
 
-		if ($config->twigloader->exists("sales-orders/sales-order/edit/$config->company/order-items.twig")) {
-			$html .= $config->twig->render("sales-orders/sales-order/edit/$config->company/order-items.twig", ['order' => $order, 'eso' => $eso]);
+		if ($config->twigloader->exists("sales-orders/sales-order/edit/$config->company/items.twig")) {
+			$html .= $config->twig->render("sales-orders/sales-order/edit/$config->company/items.twig", ['order' => $order, 'eso' => $eso]);
 		} else {
-			$html .= $config->twig->render('sales-orders/sales-order/edit/order-items.twig', ['order' => $order, 'eso' => $eso]);
+			$html .= $config->twig->render('sales-orders/sales-order/edit/items.twig', ['order' => $order, 'eso' => $eso]);
 		}
 		$html .= $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['ordn' => $order->ordernumber]);
 		self::pw('page')->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $order->ordernumber]);
 		return $html;
 	}
 
-	private static function itemLookupForm(SalesOrderEditable $order) {
+	private static function itemLookupForm(EsoCRUD $eso, SalesOrderEditable $order) {
 		$html = '';
+
 		if (self::pw('user')->is_editingorder($order->ordernumber) === false) {
 			return $html;
 		}
