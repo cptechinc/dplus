@@ -118,9 +118,8 @@ class Lookup extends Controller {
 	public static function users($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		self::pw('page')->headline = "Users";
-		$filter = self::pw('modules')->get('FilterDplusUsers');
-		$filter->init_query();
-		return self::moduleFilterResults($filter, $data);
+		$filter = $filter = new Filters\Msa\DplusUser();
+		return self::filterResults($filter, $data);
 	}
 
 	/**

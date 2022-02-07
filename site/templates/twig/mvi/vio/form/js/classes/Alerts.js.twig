@@ -1,0 +1,10 @@
+class VioAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VioAlerts();
+		}
+		return this.instance;
+	}
+}
