@@ -205,6 +205,7 @@ class Edit extends Base {
 			$results = PricingQuery::create()->findBySessionid(session_id());
 			$html .= $config->twig->render('sales-orders/sales-order/edit/lookup/results.twig', ['q' => $q, 'results' => $results, 'soconfig' => $eso->config('so') ]);
 		}
+		$html .= $config->twig->render('cart/lookup/modal-pricing.twig');
 		return $html;
 	}
 
