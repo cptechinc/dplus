@@ -1,0 +1,48 @@
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white p-3">
+			<th class="pt-3 pb-3">Code</th>
+			<th class="pt-3 pb-3">Description</th>
+			<th class="pt-3 pb-3">Validate</th>
+			<th class="pt-3 pb-3">Force</th>
+			<th class="pt-3 pb-3">Note Seq</th>
+			<th class="pt-3 pb-3 text-center"></th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if codes.count() == 0 %}
+			<tr>
+				<td colspan="6" class="text-center bg-light">
+					<strong>No Codes Found</strong>
+				</td>
+			</tr>
+		{% endif %}
+
+		{% for code in codes %}
+			<tr data-id="{{ code.id }}">
+				<td>{{ code.id }}</td>
+				<td>{{ code.description }}</td>
+				<td>{{ code.validate|yesorno|capitalize }}</td>
+				<td>{{ code.force|yesorno|capitalize }}</td>
+				<td>{{ code.notecode }}</td>
+				<td class="text-center">
+					{% if code.isNote() %}
+						<button class="btn btn-sm btn-warning" disabled>
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					{% else %}
+						{% if sysopM.recordlocker.isLocked(sysopM.getRecordlockerKey(code)) == false or sysopM.recordlocker.userHasLocked(sysopM.getRecordlockerKey(code)) %}
+							<a href="{{ page.sysopUrl(code.id) }}" class="btn btn-warning btn-sm">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+						{% else %}
+							<span class="badge badge-secondary">
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ sysopM.recordlocker.getLockingUser(sysopM.getRecordlockerKey(code)) }}
+							</span>
+						{% endif %}
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

@@ -84,7 +84,7 @@ class DpagesMap extends Dpages implements Module {
 		),
 		'ap-aoptm' => array(
 			'template'       => 'dplus-function',
-			'pw_template'    => 'ap-code-table',
+			'pw_template'    => 'aoptm',
 			'name'           => 'aoptm',
 			'title'          => 'Accounts Payable Optional Code',
 			'summary'        => 'View / Edit Accounts Payable Optional Code',

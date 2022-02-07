@@ -35,6 +35,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Dplus\\MainMenu' => __DIR__ . '/../..' . '/classes/dplus/MainMenu.php',
         'Controllers\\Dplus\\Menu' => __DIR__ . '/../..' . '/classes/dplus/Menu.php',
         'Controllers\\Dplus\\Process' => __DIR__ . '/../..' . '/classes/dplus/Process.php',
+        'Controllers\\Map\\Apmain\\Aoptm' => __DIR__ . '/../..' . '/classes/map/apmain/Aoptm.php',
         'Controllers\\Map\\Mxrfe' => __DIR__ . '/../..' . '/classes/map/Mxrfe.php',
         'Controllers\\Map\\Vxm' => __DIR__ . '/../..' . '/classes/map/Vxm.php',
         'Controllers\\Mar\\Armain\\Roptm' => __DIR__ . '/../..' . '/classes/mar/armain/Roptm.php',

@@ -34,6 +34,7 @@ return array(
     'Controllers\\Dplus\\MainMenu' => $baseDir . '/classes/dplus/MainMenu.php',
     'Controllers\\Dplus\\Menu' => $baseDir . '/classes/dplus/Menu.php',
     'Controllers\\Dplus\\Process' => $baseDir . '/classes/dplus/Process.php',
+    'Controllers\\Map\\Apmain\\Aoptm' => $baseDir . '/classes/map/apmain/Aoptm.php',
     'Controllers\\Map\\Mxrfe' => $baseDir . '/classes/map/Mxrfe.php',
     'Controllers\\Map\\Vxm' => $baseDir . '/classes/map/Vxm.php',
     'Controllers\\Mar\\Armain\\Roptm' => $baseDir . '/classes/mar/armain/Roptm.php',
