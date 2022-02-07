@@ -1,0 +1,18 @@
+class LookupInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LookupInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'add-item-form';
+		this.form = $('#' + this.id);
+		this.itemid = this.form.find('input[name=itemID]');
+		this.qty    = this.form.find('input[name=qty]');
+		this.price  = this.form.find('input[name=price]');
+	}
+}

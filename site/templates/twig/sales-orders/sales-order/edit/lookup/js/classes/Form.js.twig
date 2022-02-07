@@ -1,0 +1,129 @@
+class LookupForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LookupForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'add-item-form';
+		this.form = $('#' + this.id);
+		this.inputs = LookupInputs.getInstance();
+		this.config = LookupConfig.getInstance();
+		this.modal  = $('#ajax-modal');
+	}
+
+	validateItemidEntry() {
+		var serverLookup = LookupRequests.getInstance();
+		var inputs = this.inputs;
+		var config = this.config;
+		var form   = this;
+
+		serverLookup.validateItemidEntry(inputs.itemid.val(), config.custid, config.shiptoid, function(response) {
+			if (response.exists) {
+				inputs.itemid.val(response.itemid);
+				var validator = form.form.validate();
+				validator.element('#' + inputs.itemid.attr('id'));
+				$('#loading-modal').modal('show');
+
+				form.updateItmItemDescription(function() {
+					form.updatePricing(function() {
+						$('#loading-modal').modal('hide');
+
+						if (inputs.qty.val() == '') {
+							inputs.qty.focus();
+						}
+					});
+				});
+			} else if (response.matches.itm > 0) {
+				form.searchItemsAjax();
+			} else {
+				alertsLookup.itemNotFound(inputs.itemid.val(), function(makeAdvancedSearch) {
+					if (makeAdvancedSearch) {
+						var url = URI();
+						url.setQuery('q', inputs.itemid.val());
+						window.location.replace(url.toString());
+					}
+				})
+			}
+		});
+	}
+
+	updatePricing(callback) {
+		var serverLookup = LookupRequests.getInstance();
+		var inputs   = this.inputs;
+		var config   = this.config;
+		var form     = this;
+
+		serverLookup.getPricing(inputs.itemid.val(), config.custid, function(pricing) {
+			var pricingModal = PricingModal.getInstance();
+			pricingModal.clear();
+
+			if (pricing) {
+				inputs.price.attr('data-json', JSON.stringify(pricing));
+				pricingModal.populateFromJson(pricing);
+				pricingModal.enableToggleButton();
+				form.updatePricingInput(pricing, function() {
+					callback();
+				});
+			}
+			callback();
+		});
+	}
+
+	updatePricingInput(pricing, callback) {
+		var form   = this;
+		var inputs = this.inputs;
+		var config = this.config;
+
+		if (inputs.qty.val() == '') {
+			inputs.price.val(pricing.price);
+			callback();
+		}
+
+		var qty   = parseFloat(inputs.qty.val());
+		var price = pricing.price;
+
+		pricing.pricebreaks.forEach(pricebreak => {
+			if (qty >= parseFloat(pricebreak.qty)) {
+				price = pricebreak.price;
+			}
+		});
+		inputs.price.val(price);
+		callback();
+	}
+
+	updateItmItemDescription(callback) {
+		var serverLookup = LookupRequests.getInstance();
+		var inputs = this.inputs;
+		var original = inputs.itemid.val();
+
+		serverLookup.getItmItem(inputs.itemid.val(), ['uom_purchase','weight'], function(item) {
+			if (item) {
+				$('small.desc1').text(item.description);
+				$('small.desc2').text(item.description2);
+				$('span.item-weight').text(item.weight);
+				$('small.weight-desc').addClass('show');
+			}
+			callback();
+		});
+	}
+
+	searchItemsAjax() {
+		var inputs = this.inputs;
+		var modal  = this.modal;
+		var q = inputs.itemid.val();
+		inputs.itemid.val('');
+		var url = inputs.itemid.closest('.input-group').find('button').data('lookupurl');
+		url = URI(url);
+		url.addQuery('q', q);
+		modal.find('.modal-title').text('Searching for ' + q);
+		modal.resizeModal('xl');
+		modal.modal('show');
+		modal.attr('data-input', '#'+inputs.itemid.attr('id'));
+		modal.find('.modal-body').loadin(url.toString(), function() {});
+	}
+}

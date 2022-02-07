@@ -1,0 +1,56 @@
+class LookupRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LookupRequests();
+		}
+		return this.instance;
+	}
+
+	validateItemid(itemID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itemid/') }}');
+
+		ajax.setData({itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateItemidEntry(itemID, custID, shiptoID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('item-lookup/') }}');
+
+		ajax.setData({itemID: itemID, custID: custID, shiptoID: shiptoID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getItmItem(itemID, fields, callback) {
+		var fields = Array.isArray(fields) ? fields.join(',') : fields;
+		var ajax   = new AjaxRequest('{{ page.jsonapiURL('inv/item/') }}');
+
+		ajax.setData({itemID: itemID, fields: fields});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getPricing(itemID, custID, callback) {
+		var ajax   = new AjaxRequest('{{ page.jsonapiURL('mso/eso/pricing') }}');
+
+		ajax.setData({itemID: itemID, custID: custID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCustomer(custID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('mar/customer/') }}');
+
+		ajax.setData({custID: custID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

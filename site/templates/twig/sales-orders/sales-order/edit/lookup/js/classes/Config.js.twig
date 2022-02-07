@@ -1,0 +1,16 @@
+class LookupConfig {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LookupConfig();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.custid = '{{ order.custid }}';
+		this.shiptoid = '{{ order.shiptoid }}';
+	}
+
+}
