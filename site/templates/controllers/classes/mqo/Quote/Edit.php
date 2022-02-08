@@ -153,6 +153,7 @@ class Edit extends Base {
 
 		$html = '';
 		$html .= self::pw('config')->twig->render('quotes/quote/edit/items.twig', ['quote' => $quote, 'eqo' => $eqo]);
+		$html .= self::pw('config')->twig->render('cart/lookup/modal-pricing.twig');
 		return $html;
 	}
 

@@ -111,7 +111,8 @@ class Items extends WireData  {
 		$qnbr   = $values->text('qnbr');
 		$itemID = $values->text('itemID');
 		$qty    = $values->int('qty');
-		$this->requestAddItem($qnbr, $itemID, $qty);
+		$price  = $values->text('price');
+		$this->requestAddItem($qnbr, $itemID, $qty, $price);
 	}
 
 	private function addItems(WireInput $input) {
@@ -168,10 +169,13 @@ class Items extends WireData  {
 	 * @param  string $qnbr    Quote Number
 	 * @param  string $itemID  Item ID
 	 * @param  float  $qty     Qty to Add
+	 * @param string $price  Price to Set
 	 * @return void
 	 */
-	private function requestAddItem($qnbr, $itemID, $qty) {
-		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "ITEMID=$itemID", "QTY=$qty"];
+	private function requestAddItem($qnbr, $itemID, $qty, $price = '') {
+		$sanitizer = $this->wire('sanitizer');
+		$price = empty($price) ? '' : $sanitizer->float($price, ['precision' => 3]);
+		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "ITEMID=$itemID", "QTY=$qty", "PRICE=$price"];
 		$this->requestDplus($data);
 	}
 

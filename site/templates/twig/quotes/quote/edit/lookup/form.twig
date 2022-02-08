@@ -10,9 +10,7 @@
 	<div class="row">
 		<div class="col-sm-4">
 			<div class="form-group">
-				<div class="d-block d-sm-none">
-					<b>Item</b>
-				</div>
+				<label>Item</label>
 				{% include 'util/form/input-with-modal-lookup.twig' with {
 						'name': 'itemID', 'id': 'additemID', 'value': '', 'placeholder': 'Item ID',
 						'small': false,
@@ -33,9 +31,7 @@
 		</div>
 		<div class="col-6 col-sm-1 mb-2 text-right">
 			<div class="form-group">
-				<div class="d-block d-sm-none">
-					<b>Qty</b>
-				</div>
+				<label>Qty</label>
 				{% include 'util/form/input.twig' with {
 						'type': 'number',
 						'name': 'qty', 'id': 'qty', 'value': '',
@@ -71,13 +67,15 @@
 				%}
 			</div>
 		</div>
-		<div class="col-sm-2 text-right">
-			<div class="input-group">
-				<button type="submit" class="btn btn-primary">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add
-				</button>
-			</div>
+		<div class="col-sm-5 text-right">
+			<label>&nbsp;</label><br>
+			<button type="submit" class="btn btn-primary">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add
+			</button>
+			&nbsp; &nbsp;
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pricingModal" disabled>
+				<i class="fa fa-table" aria-hidden="true"></i> Pricing
+			</button>
 		</div>
-		<div class="col-sm-5"></div>
 	</div>
 </form>
