@@ -45,7 +45,7 @@ class Aoptm extends Controller {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getAoptm()->recordlocker->deleteLock();
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/map/aoptm/sysop/edit/js.twig', ['aoptm' => self::getAoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getAoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getAoptm()->deleteResponse();
 		return $html;
@@ -65,7 +65,7 @@ class Aoptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/map/aoptm/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getAoptm()->deleteResponse();
 		return $html;
@@ -102,7 +102,7 @@ class Aoptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('code-tables/map/aoptm/sysop/display.twig', ['aoptm' => self::getAoptm(), 'sysop' => $sysop, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/optm/sysop/display.twig', ['optm' => self::getAoptm(), 'sysop' => $sysop, 'codes' => $codes]);
 		return $html;
 	}
 
@@ -110,7 +110,7 @@ class Aoptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('code-tables/map/aoptm/list/page.twig', ['sysopM' => self::getSysop(), 'aoptm' => self::getAoptm(), 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/optm/list/page.twig', ['sysopM' => self::getSysop(), 'optm' => self::getAoptm(), 'codes' => $codes]);
 		return $html;
 	}
 
@@ -214,6 +214,10 @@ class Aoptm extends Controller {
 		});
 
 		$m->addHook('Page(pw_template=aoptm)::aoptmUrl', function($event) {
+			$event->return = self::urlFocus($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=aoptm)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

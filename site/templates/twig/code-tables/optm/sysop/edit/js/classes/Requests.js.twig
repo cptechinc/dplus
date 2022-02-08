@@ -1,0 +1,44 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+	optm                   Dplus\Codes\{Min\Ioptm | Map\Aoptm | Mar\Roptm| Mso\Soptm}
+#}
+
+class CodeRequests {
+	static instance = null;
+
+	constructor() {
+		this.system = '{{ constant('SYSTEM', optm) }}';
+	}
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeRequests();
+		}
+		return this.instance;
+	}
+
+	validateCode(sysop, code, callback) {
+		var ajax = new AjaxRequest(this.validateCodeUrl());
+
+		ajax.setData({system: this.system, sysop: sysop, code: code});
+		ajax.request(function(response) {
+			callback(response);
+		});
+	}
+
+	getCode(sysop, code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/sysop/option/') }}');
+
+		ajax.setData({system: this.system, sysop: sysop, code: code});
+		ajax.request(function(response) {
+			callback(response);
+		});
+	}
+
+	validateCodeUrl() {
+		return '{{ page.jsonApiUrl('msa/validate/sysop/option/') }}';
+	}
+}

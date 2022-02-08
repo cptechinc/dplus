@@ -45,7 +45,7 @@ class Soptm extends Controller {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getSoptm()->recordlocker->deleteLock();
 
-		self::pw('page')->js .= self::pw('config')->twig->render('mso/somain/soptm/sysop/edit/js.twig', ['soptm' => self::getSoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getSoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getSoptm()->deleteResponse();
 		return $html;
@@ -65,7 +65,7 @@ class Soptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
-		self::pw('page')->js .= self::pw('config')->twig->render('mso/somain/soptm/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mso/soptm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getSoptm()->deleteResponse();
 		return $html;
@@ -102,7 +102,7 @@ class Soptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('mso/somain/soptm/sysop/display.twig', ['soptm' => self::getSoptm(), 'sysop' => $sysop, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/optm/sysop/display.twig', ['optm' => self::getSoptm(), 'sysop' => $sysop, 'codes' => $codes]);
 		return $html;
 	}
 
@@ -110,7 +110,7 @@ class Soptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('mso/somain/soptm/list/page.twig', ['sysopM' => self::getSysop(), 'soptm' => self::getSoptm(), 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/optm/list/page.twig', ['sysopM' => self::getSysop(), 'optm' => self::getSoptm(), 'codes' => $codes]);
 		return $html;
 	}
 
@@ -214,6 +214,10 @@ class Soptm extends Controller {
 		});
 
 		$m->addHook('Page(pw_template=soptm)::soptmUrl', function($event) {
+			$event->return = self::urlFocus($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=soptm)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

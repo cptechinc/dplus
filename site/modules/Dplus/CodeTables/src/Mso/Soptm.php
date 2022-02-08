@@ -1,4 +1,4 @@
-<?php namespace Dplus\Codes\Mar;
+<?php namespace Dplus\Codes\Mso;
 // Propel Classes
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
@@ -19,5 +19,4 @@ class Soptm extends SysopOptionalCode {
 	const RECORDLOCKER_FUNCTION = 'soptm';
 	const DPLUS_TABLE           = '';
 	const SYSTEM = 'SO';
-
 }

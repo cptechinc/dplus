@@ -1,9 +1,0 @@
-$(function() {
-	var uri = URI();
-	var query = uri.query(true);
-	console.log(query);
-	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
-		$('tr[data-id="'+query.focus+'"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('tr[data-id="'+query.focus+'"]').offset().top,},700,'linear');
-	}
-});

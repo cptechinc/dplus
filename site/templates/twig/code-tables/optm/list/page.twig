@@ -1,0 +1,23 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+	optm                   Dplus\Codes\{Min\Ioptm | Map\Aoptm | Mar\Roptm| Mso\Soptm}
+#}
+
+{% set response = optm.getResponse() %}
+
+<div class="mb-3">
+	{% include 'code-tables/optm/bread-crumbs.twig' %}
+</div>
+
+{% if response %}
+	<div class="mb-3">
+		{% include 'code-tables/response.twig' %}
+	</div>
+{% endif %}
+
+{% include 'code-tables/optm/list/list.twig' %}
+
+{% include 'util/paginator/propel.twig' with {'pager': codes} %}
