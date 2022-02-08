@@ -380,7 +380,7 @@ class Cart extends WireData {
 	 */
 	private function requestAddItem($itemID, $qty, $price = '') {
 		$sanitizer = $this->wire('sanitizer');
-		$price = empty($price) ? '' : $sanitizer->float($price, ['precision' => $this->decimalPlacesQty()]);
+		$price = empty($price) ? '' : $sanitizer->float($price, ['precision' => $this->decimalPlacesPrice()]);
 		$data = ['CARTDET', "ITEMID=$itemID", "QTY=$qty", "PRICE=$price"];
 		$this->requestDplus($data);
 	}
