@@ -11,7 +11,7 @@ class CodeRequests {
 	validateCode(sysop, code, callback) {
 		var ajax = new AjaxRequest(this.validateCodeUrl());
 
-		ajax.setData({system: 'AR', sysop: sysop, code: code});
+		ajax.setData({system: 'AP', sysop: sysop, code: code});
 		ajax.request(function(response) {
 			callback(response);
 		});
@@ -20,7 +20,7 @@ class CodeRequests {
 	getCode(sysop, code, callback) {
 		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/sysop/option/') }}');
 
-		ajax.setData({system: 'AR', sysop: sysop, code: code});
+		ajax.setData({system: 'AP', sysop: sysop, code: code});
 		ajax.request(function(response) {
 			callback(response);
 		});
