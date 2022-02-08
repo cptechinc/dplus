@@ -28,10 +28,6 @@ class DpagesMap extends Dpages implements Module {
 			'name'   => 'ap-code-table',
 			'fields' => array()
 		),
-		'ap-code-table-aoptm' => array(
-			'name'   => 'ap-code-table-aoptm',
-			'fields' => array()
-		),
 		'mxrfe' => array(
 			'name'   => 'mxrfe',
 			'fields' => array()
