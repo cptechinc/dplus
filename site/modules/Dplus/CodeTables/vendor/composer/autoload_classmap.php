@@ -14,6 +14,7 @@ return array(
     'Dplus\\Codes\\Mgl\\Dtm' => $baseDir . '/src/mgl/Dtm.php',
     'Dplus\\Codes\\Mgl\\Mhm' => $baseDir . '/src/mgl/Mhm.php',
     'Dplus\\Codes\\Mgl\\Ttm' => $baseDir . '/src/mgl/Ttm.php',
+    'Dplus\\Codes\\Min\\Ioptm' => $baseDir . '/src/min/Ioptm.php',
     'Dplus\\Codes\\Mpm\\Dcm' => $baseDir . '/src/mpm/Dcm.php',
     'Dplus\\Codes\\Mpm\\Rcm' => $baseDir . '/src/mpm/Rcm.php',
     'Dplus\\Codes\\Mpo\\Cnfm' => $baseDir . '/src/mpo/Cnfm.php',

@@ -1,9 +1,9 @@
-{% include 'code-tables/map/aoptm/sysop/edit/js/classes.js.twig' %}
+{% include 'code-tables/min/ioptm/sysop/edit/js/classes.js.twig' %}
 
 
 $(function() {
 	var ajaxModal = $('#ajax-modal');
-	var alert     = RoptmAlerts.getInstance();
+	var alert     = IoptmAlerts.getInstance();
 	var formCode  = CodeForm.getInstance();
 	var server    = CodeRequests.getInstance();
 
@@ -101,7 +101,7 @@ $(function() {
 					type: "get",
 					data: {
 						jqv: 'true',
-						system: 'AP',
+						system: 'IN',
 						sysop: function() {
 							return $('input[name=sysop]').val();
 						},
