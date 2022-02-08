@@ -6,6 +6,20 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
 {
+    public static $prefixLengthsPsr4 = array (
+        'D' => 
+        array (
+            'Dplus\\Codes\\' => 12,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Dplus\\Codes\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+    );
+
     public static $classMap = array (
         'Dplus\\Codes\\Base' => __DIR__ . '/../..' . '/src/Base.php',
         'Dplus\\Codes\\Base\\Simple' => __DIR__ . '/../..' . '/src/Base/Simple.php',
@@ -29,6 +43,8 @@ class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915::$classMap;
 
         }, null, ClassLoader::class);
