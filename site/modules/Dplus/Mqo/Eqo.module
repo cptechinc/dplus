@@ -86,6 +86,16 @@ class Eqo extends WireData implements Module {
 		return Configs\So::config();
 	}
 
+	public function getPrecisionQty() {
+		$config = Configs\So::config();
+		return $config->decimal_places_qty;
+	}
+
+	public function getPrecisionPrice() {
+		$config = Configs\So::config();
+		return $config->decimal_places_price;
+	}
+
 	/**
 	 * Sends HTTP GET request to send Dplus Item Search Request
 	 * @param  string $q Query or Item ID

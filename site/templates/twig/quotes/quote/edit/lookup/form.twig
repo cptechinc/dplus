@@ -3,13 +3,16 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 #}
-<form action="{{ input.url() }}" class="pt-3 px-3 allow-enterkey-submit" id="add-item-form">
+<form action="{{ input.url() }}" class="p-3 allow-enterkey-submit" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
 	<input type="hidden" name="qnbr" value="{{ input.get.text('qnbr') }}">
 
 	<div class="row">
 		<div class="col-sm-4">
 			<div class="form-group">
+				<div class="d-block d-sm-none">
+					<b>Item</b>
+				</div>
 				{% include 'util/form/input-with-modal-lookup.twig' with {
 						'name': 'itemID', 'id': 'additemID', 'value': '', 'placeholder': 'Item ID',
 						'small': false,
@@ -28,8 +31,11 @@
 				<small class="desc2"></small>
 			</div>
 		</div>
-		<div class="col-sm-1 text-right">
+		<div class="col-6 col-sm-1 mb-2 text-right">
 			<div class="form-group">
+				<div class="d-block d-sm-none">
+					<b>Qty</b>
+				</div>
 				{% include 'util/form/input.twig' with {
 						'type': 'number',
 						'name': 'qty', 'id': 'qty', 'value': '',
@@ -38,6 +44,29 @@
 							'text-right',
 							'qty-input'
 						],
+					}
+				%}
+			</div>
+		</div>
+		<div class="col-6 col-sm-2 mb-2 text-right">
+			<div class="form-group">
+				<label>Price</label>
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'input': {
+								'name': 'price',
+								'id': 'addprice',
+								'addclasses': [
+									'text-right',
+									'qty-input'
+								],
+							},
+							'span': {
+								'colorclass': 'bg-light',
+								'text': '$'
+							}
+						}
 					}
 				%}
 			</div>

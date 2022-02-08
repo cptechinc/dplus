@@ -19,7 +19,7 @@
 				<div class="d-block d-sm-none">
 					<b>Qty</b>
 				</div>
-				<input type="text" class="form-control form-control-sm text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}">
+				<input type="text" class="form-control form-control-sm text-right" size="4" name="qty" value="{{ detail.qty|number_format(eqo.getPrecisionQty()) }}">
 			</div>
 			<div class="col-6 col-sm-2 mb-2 text-right">
 				<div class="d-block d-sm-none">
@@ -29,14 +29,14 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">$</span>
 					</div>
-					<input type="text" name="price" id="price" class="form-control form-control-sm text-right qty-input" value="{{ detail.price|number_format(3) }}" data-value="{{ detail.price|number_format(3) }}">
+					<input type="text" name="price" id="price" class="form-control form-control-sm text-right qty-input" value="{{ detail.price|number_format(eqo.getPrecisionPrice()) }}" data-value="{{ detail.price|number_format(3) }}">
 				</div>
 			</div>
 			<div class="col-6 col-sm-1 mb-2 text-right">
 				<div class="d-block d-sm-none">
 					<b>Total</b>
 				</div>
-				<p class="form-control-plaintext">$ {{ detail.price_total|number_format(3) }}</p>
+				<p class="form-control-plaintext">$ {{ detail.price_total|number_format(2) }}</p>
 			</div>
 			<div class="col-6 col-sm-2 mb-2 text-right">
 				<div class="pull-right">
