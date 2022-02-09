@@ -8,10 +8,12 @@ $baseDir = dirname($vendorDir);
 return array(
     'Dplus\\Codes\\Base' => $baseDir . '/src/Base.php',
     'Dplus\\Codes\\Base\\Simple' => $baseDir . '/src/Base/Simple.php',
-    'Dplus\\Codes\\Mar\\Roptm' => $baseDir . '/src/Mso/Soptm.php',
+    'Dplus\\Codes\\Map\\Aoptm' => $baseDir . '/src/map/Aoptm.php',
+    'Dplus\\Codes\\Mar\\Roptm' => $baseDir . '/src/mar/Roptm.php',
     'Dplus\\Codes\\Mgl\\Dtm' => $baseDir . '/src/mgl/Dtm.php',
     'Dplus\\Codes\\Mgl\\Mhm' => $baseDir . '/src/mgl/Mhm.php',
     'Dplus\\Codes\\Mgl\\Ttm' => $baseDir . '/src/mgl/Ttm.php',
+    'Dplus\\Codes\\Min\\Ioptm' => $baseDir . '/src/min/Ioptm.php',
     'Dplus\\Codes\\Mpm\\Dcm' => $baseDir . '/src/mpm/Dcm.php',
     'Dplus\\Codes\\Mpm\\Rcm' => $baseDir . '/src/mpm/Rcm.php',
     'Dplus\\Codes\\Mpo\\Cnfm' => $baseDir . '/src/mpo/Cnfm.php',
@@ -19,6 +21,6 @@ return array(
     'Dplus\\Codes\\Msa\\Lgrp' => $baseDir . '/src/msa/Lgrp.php',
     'Dplus\\Codes\\Msa\\Sysop' => $baseDir . '/src/msa/Sysop.php',
     'Dplus\\Codes\\Msa\\SysopOptionalCode' => $baseDir . '/src/msa/SysopOptionalCode.php',
-    'Dplus\\Codes\\Mso\\Soptm' => $baseDir . '/src/mar/Roptm.php',
+    'Dplus\\Codes\\Mso\\Soptm' => $baseDir . '/src/Mso/Soptm.php',
     'Dplus\\Codes\\Response' => $baseDir . '/src/Response.php',
 );

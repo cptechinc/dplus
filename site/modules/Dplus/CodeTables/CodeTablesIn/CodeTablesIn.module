@@ -64,10 +64,6 @@ class CodeTablesIn extends WireData implements Module {
 			'code'   => 'iarn',
 			'module' => 'CodeTablesIarn'
 		),
-		'ioptm' => array(
-			'code'   => 'ioptm',
-			'module' => 'CodeTablesIoptm'
-		)
 	);
 
 	public function get_codetables() {

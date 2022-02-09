@@ -197,7 +197,7 @@ abstract class Base extends WireData {
 	public function allowUser(User $user, $option = '') {
 		$userID = $this->exists($user->loginid) ? $user->loginid : static::USER_DEFAULT;
 		$permissions = $this->user($userID);
-		$exists = array_key_exists($option, static::SCREENS);
+		$exists = in_array($option, static::SCREENS);
 		return $exists ? $permissions->isTrue($option) : true;
 	}
 
@@ -212,6 +212,7 @@ abstract class Base extends WireData {
 	public function new($userID = '') {
 		$class = $this->modelClassName();
 		$r = $class::new();
+		$r->setDummy('P');
 
 		if (strlen($userID) && $userID != 'new') {
 			$r->setUserid($userID);
@@ -269,7 +270,13 @@ abstract class Base extends WireData {
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$user = $this->userOrNew($values->text('userID'));
+		$user   = $this->userOrNew($values->text('userID'));
+
+		if ($user->isNew() === false && $this->lockrecord($user) === false) {
+			$message = "User ($userID) was not saved, it is locked by " . $this->recordlocker->getLockingUser($userID);
+			$this->setResponse(Response::responseError($message));
+			return false;
+		}
 
 		foreach (static::SCREENS as $key) {
 			$setScreen = "set" . ucfirst($key);
@@ -291,7 +298,25 @@ abstract class Base extends WireData {
 	 * @return bool
 	 */
 	protected function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$userID = $values->text('userID');
 
+		if ($this->exists($userID) === false) {
+			return true;
+		}
+
+		$user = $this->user($userID);
+
+		if ($this->lockrecord($user) === false) {
+			$message = "User ($userID) was not deleted, it is locked by " . $this->recordlocker->getLockingUser($userID);
+			$this->setResponse(Response::responseError($message));
+			return false;
+		}
+		$user->delete();
+		$response = $this->saveAndRespond($user);
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 /* =============================================================

@@ -109,7 +109,7 @@ abstract class Base extends Controller {
 			return self::displayInvalidVendorid($data);
 		}
 
-		if (self::validateUserPermission($data)) {
+		if (self::validateUserPermission($data) === false) {
 			return self::displayInvalidPermission($data);
 		}
 		return '';
@@ -147,10 +147,6 @@ abstract class Base extends Controller {
 		$user = self::pw('user');
 
 		if (self::validateVendorid($data->vendorID) === false) {
-			return false;
-		}
-
-		if ($user->has_customer($data->vendorID) === false) {
 			return false;
 		}
 

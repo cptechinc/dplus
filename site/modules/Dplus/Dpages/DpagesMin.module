@@ -28,10 +28,6 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'min-code-table-tarm',
 			'fields' => array()
 		),
-		'min-code-table-ioptm' => array(
-			'name'   => 'min-code-table-ioptm',
-			'fields' => array()
-		),
 		'upcx' => array(
 			'name'   => 'upcx',
 			'fields' => array()

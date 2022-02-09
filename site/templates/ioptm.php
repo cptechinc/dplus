@@ -1,13 +1,13 @@
 <?php
-	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	use Controllers\Min\Inmain\Ioptm;
 
-	use Controllers\Mvi\Vi\Admin;
-
-	Admin\Vio::initHooks();
+	Ioptm::initHooks();
 
 	$routes = [
-		['GET',  '', Admin\Vio::class, 'index'],
-		['POST', '', Admin\Vio::class, 'handleCRUD'],
+		['GET',  '', Ioptm::class, 'index'],
+		['GET',  'page{pagenbr:\d+}', Ioptm::class, 'index'],
+		['POST', '', Ioptm::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

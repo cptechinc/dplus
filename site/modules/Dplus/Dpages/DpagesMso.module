@@ -34,10 +34,6 @@ class DpagesMso extends Dpages implements Module {
 			'name'   => 'so-code-table',
 			'fields' => array()
 		),
-		'so-code-table-soptm' => array(
-			'name'   => 'so-code-table-soptm',
-			'fields' => array()
-		),
 		'so-code-table-code' => array(
 			'name'   => 'so-code-table-code',
 			'fields' => array()

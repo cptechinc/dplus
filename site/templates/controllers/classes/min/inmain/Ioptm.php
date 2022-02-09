@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mso\Somain;
+<?php namespace Controllers\Min\Inmain;
 use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
@@ -13,8 +13,8 @@ use Dplus\Codes;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
-class Soptm extends Controller {
-	const SYSTEM = 'SO';
+class Ioptm extends Controller {
+	const SYSTEM = 'IN';
 
 /* =============================================================
 	Indexes
@@ -38,16 +38,16 @@ class Soptm extends Controller {
 	private static function sysop($data) {
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
-		$page->headline = "SOPTM: $data->sysop Optional Codes";
+		$page->headline = "IOPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
-		self::getSoptm()->recordlocker->deleteLock();
+		self::getIoptm()->recordlocker->deleteLock();
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getSoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getIoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
-		self::getSoptm()->deleteResponse();
+		self::getIoptm()->deleteResponse();
 		return $html;
 	}
 
@@ -59,15 +59,15 @@ class Soptm extends Controller {
 		$filter = self::getFilterSysop();
 
 		if ($data->q) {
-			$page->headline = "SOPTM: Searching Sysop '$data->q'";
+			$page->headline = "IOPTM: Searching Sysop '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mso/soptm/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
-		self::getSoptm()->deleteResponse();
+		self::getIoptm()->deleteResponse();
 		return $html;
 	}
 
@@ -80,7 +80,7 @@ class Soptm extends Controller {
 		$url = self::url();
 
 		if ($data->action) {
-			self::getSoptm()->processInput(self::pw('input'));
+			self::getIoptm()->processInput(self::pw('input'));
 
 			switch ($data->action) {
 				case 'update':
@@ -102,7 +102,7 @@ class Soptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('code-tables/optm/sysop/display.twig', ['optm' => self::getSoptm(), 'sysop' => $sysop, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/optm/sysop/display.twig', ['optm' => self::getIoptm(), 'sysop' => $sysop, 'codes' => $codes]);
 		return $html;
 	}
 
@@ -110,12 +110,12 @@ class Soptm extends Controller {
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('code-tables/optm/list/page.twig', ['sysopM' => self::getSysop(), 'optm' => self::getSoptm(), 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/optm/list/page.twig', ['sysopM' => self::getSysop(), 'optm' => self::getIoptm(), 'codes' => $codes]);
 		return $html;
 	}
 
 	private static function displayResponse($data) {
-		$response = self::getSoptm()->getResponse();
+		$response = self::getIoptm()->getResponse();
 
 		if (empty($response)) {
 			return '';
@@ -127,8 +127,8 @@ class Soptm extends Controller {
 /* =============================================================
 	Classes, Module Getters
 ============================================================= */
-	public static function getSoptm() {
-		return Codes\Mso\Soptm::getInstance();
+	public static function getIoptm() {
+		return Codes\Min\Ioptm::getInstance();
 	}
 
 	public static function getSysop() {
@@ -161,14 +161,14 @@ class Soptm extends Controller {
 	}
 
 	public function sysopFocusUrl($sysop, $focus) {
-		if (empty($focus) || self::getSoptm()->exists($sysop, $focus) === false) {
+		if (empty($focus) || self::getIoptm()->exists($sysop, $focus) === false) {
 			return self::sysopUrl($sysop);
 		}
 		$filter   = self::getFilterSysopOptions($sysop);
 		$position = $filter->positionQuick($focus);
 
 		$url = new Purl(self::sysopUrl($sysop));
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'soptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'ioptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
 		$url->query->set('focus', $focus);
 		return $url->getUrl();
 	}
@@ -181,7 +181,7 @@ class Soptm extends Controller {
 	}
 
 	public static function url() {
-		return self::pw('pages')->get('pw_template=soptm')->url;
+		return self::pw('pages')->get('pw_template=ioptm')->url;
 	}
 
 	public static function urlFocus($focus = '') {
@@ -194,7 +194,7 @@ class Soptm extends Controller {
 		$filter   = self::getFilterSysop();
 		$position = $filter->positionQuick($sysop);
 		$url = new Purl(self::url());
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'soptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'ioptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
 		$url->query->set('focus', $focus);
 		return $url->getUrl();
 	}
@@ -205,19 +205,19 @@ class Soptm extends Controller {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMar');
 
-		$m->addHook('Page(pw_template=soptm)::sysopUrl', function($event) {
+		$m->addHook('Page(pw_template=ioptm)::sysopUrl', function($event) {
 			$event->return = self::sysopUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=soptm)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=ioptm)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=soptm)::soptmUrl', function($event) {
+		$m->addHook('Page(pw_template=ioptm)::ioptmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=soptm)::optmUrl', function($event) {
+		$m->addHook('Page(pw_template=ioptm)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

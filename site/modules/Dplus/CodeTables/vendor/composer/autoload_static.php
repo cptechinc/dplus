@@ -6,13 +6,29 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
 {
+    public static $prefixLengthsPsr4 = array (
+        'D' => 
+        array (
+            'Dplus\\Codes\\' => 12,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Dplus\\Codes\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+    );
+
     public static $classMap = array (
         'Dplus\\Codes\\Base' => __DIR__ . '/../..' . '/src/Base.php',
         'Dplus\\Codes\\Base\\Simple' => __DIR__ . '/../..' . '/src/Base/Simple.php',
-        'Dplus\\Codes\\Mar\\Roptm' => __DIR__ . '/../..' . '/src/Mso/Soptm.php',
+        'Dplus\\Codes\\Map\\Aoptm' => __DIR__ . '/../..' . '/src/map/Aoptm.php',
+        'Dplus\\Codes\\Mar\\Roptm' => __DIR__ . '/../..' . '/src/mar/Roptm.php',
         'Dplus\\Codes\\Mgl\\Dtm' => __DIR__ . '/../..' . '/src/mgl/Dtm.php',
         'Dplus\\Codes\\Mgl\\Mhm' => __DIR__ . '/../..' . '/src/mgl/Mhm.php',
         'Dplus\\Codes\\Mgl\\Ttm' => __DIR__ . '/../..' . '/src/mgl/Ttm.php',
+        'Dplus\\Codes\\Min\\Ioptm' => __DIR__ . '/../..' . '/src/min/Ioptm.php',
         'Dplus\\Codes\\Mpm\\Dcm' => __DIR__ . '/../..' . '/src/mpm/Dcm.php',
         'Dplus\\Codes\\Mpm\\Rcm' => __DIR__ . '/../..' . '/src/mpm/Rcm.php',
         'Dplus\\Codes\\Mpo\\Cnfm' => __DIR__ . '/../..' . '/src/mpo/Cnfm.php',
@@ -20,13 +36,15 @@ class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
         'Dplus\\Codes\\Msa\\Lgrp' => __DIR__ . '/../..' . '/src/msa/Lgrp.php',
         'Dplus\\Codes\\Msa\\Sysop' => __DIR__ . '/../..' . '/src/msa/Sysop.php',
         'Dplus\\Codes\\Msa\\SysopOptionalCode' => __DIR__ . '/../..' . '/src/msa/SysopOptionalCode.php',
-        'Dplus\\Codes\\Mso\\Soptm' => __DIR__ . '/../..' . '/src/mar/Roptm.php',
+        'Dplus\\Codes\\Mso\\Soptm' => __DIR__ . '/../..' . '/src/Mso/Soptm.php',
         'Dplus\\Codes\\Response' => __DIR__ . '/../..' . '/src/Response.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915::$classMap;
 
         }, null, ClassLoader::class);

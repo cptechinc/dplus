@@ -1,0 +1,16 @@
+class VioInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VioInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'vio-user-form';
+		this.form = $('#' + this.id);
+		this.userid     = this.form.find('input[name=userID]');
+	}
+}

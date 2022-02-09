@@ -1,0 +1,51 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+	optm                   Dplus\Codes\{Min\Ioptm | Map\Aoptm | Mar\Roptm| Mso\Soptm}
+#}
+
+{% set response = optm.getResponse() %}
+
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white p-3">
+			<th class="p-3">Code</th>
+			<th class="p-3">Description</th>
+			<th class="p-3 text-right">
+				<button class="btn btn-light btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-json="">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			</th>
+		</tr>
+	</thead>
+	<tbody class="codes-list">
+		{% if codes.count() == 0 %}
+			<tr>
+				<td colspan="3" class="text-center bg-light">
+					<strong>No Codes Found</strong>
+				</td>
+			</tr>
+		{% endif %}
+
+		{% for code in codes %}
+			{% set class = code.id == input.get.text('focus') ? 'highlight' : '' %}
+			{% set class = optm.getRecordlockerKey(code) == response.key ? 'bg-success text-white' : class %}
+
+			<tr data-id="{{ code.id }}" class="code {{ class }}">
+				<td>{{ code.id }}</td>
+				<td>{{ code.description }}</td>
+				<td class="text-right">
+					<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ optm.codeJson(code)|json_encode }}">
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</button>
+					&nbsp; &nbsp;
+					<a href="{{ page.codeDeleteUrl(code.sysop, code.id) }}" class="btn btn-danger btn-sm delete_button">
+						<i class="fa fa-trash" aria-hidden="true"></i> Delete
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

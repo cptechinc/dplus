@@ -7,7 +7,11 @@
 				'name': 'userID', 'value': user.userid,
 				'modaltarget': '#ajax-modal',
 				'modaldescription': 'Search for / Choose User ID',
-				'attributes_button': {'data-search': 'user', 'data-lookupurl': page.searchLookupUrl('users')},
+				'attributes_button': {
+					'data-search': 'user',
+					'data-lookupurl': page.searchLookupUrl('users'),
+					'data-input': '#userID'
+				},
 				'class_add': ['ajax-lookup'],
 				'small': true,
 				'attributes': {

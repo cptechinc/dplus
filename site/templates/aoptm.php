@@ -1,13 +1,13 @@
 <?php
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-	use Controllers\Mar\Armain\Roptm;
+	use Controllers\Map\Apmain\Aoptm;
 
-	Roptm::initHooks();
+	Aoptm::initHooks();
 
 	$routes = [
-		['GET',  '', Roptm::class, 'index'],
-		['GET',  'page{pagenbr:\d+}', Roptm::class, 'index'],
-		['POST', '', Roptm::class, 'handleCRUD'],
+		['GET',  '', Aoptm::class, 'index'],
+		['GET',  'page{pagenbr:\d+}', Aoptm::class, 'index'],
+		['POST', '', Aoptm::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
