@@ -20,16 +20,10 @@ site/modules/Dplus/ItmImages/vendor
 site/templates/twig/cache/
 
 # Code Editor Files
-
-# VS Code files
 .vscode
-
-# Atom files
 .ftpconfig
 .ftpignore
 project.cson
-
-
 
 # DW Dreamweaver added files
 _notes
