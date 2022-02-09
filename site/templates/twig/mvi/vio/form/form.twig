@@ -1,4 +1,4 @@
-<form action="{{ input.url() }}" id="vio-user-form" method="POST">
+<form action="{{ input.url() }}" id="vio-user-form" method="POST" data-new="{{ user.isNew() ? 'true' : 'false' }}">
 	<input type="hidden" name="action" value="update">
 
 	<div class="mb-3">
@@ -31,7 +31,7 @@
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ input.url() }}" class="btn btn-warning">
+		<a href="{{ input.get.offsetExists('userID') ? input.url() : page.viAdminUrl() }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

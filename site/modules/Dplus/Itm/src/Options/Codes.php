@@ -49,12 +49,17 @@ class Codes extends WireData {
 	 * @param  InvOptCode  $code Code
 	 * @return array
 	 */
-	public function codeJson($sysop, InvOptCode $code = null) {
-		$code = empty($code) === false ? $code : $this->new('', $sysop);
+	public function codeJson($sysopCode, InvOptCode $code = null) {
+		$code  = empty($code) === false ? $code : $this->new('', $sysopCode);
+		$sysop = $this->getSysop()->code(self::SYSTEM, $sysopCode);
+
 		return [
-			'sysop'       => $code->sysop,
 			'code'        => $code->code,
-			'description' => $code->description
+			'description' => $code->description,
+			'sysop'      => [
+				'sysop'       => $code->sysop,
+				'description' => $sysop->description
+			]
 		];
 	}
 
@@ -225,6 +230,12 @@ class Codes extends WireData {
 			$sysOptOption = $optManager->code(self::SYSTEM, $sysop, $code);
 			$itmOptCode->setCode($code);
 			$itmOptCode->setDescription($sysOptOption->description);
+			return true;
+		}
+
+		if ($sysOption->validate() === false) {
+			$itmOptCode->setCode($code);
+			return true;
 		}
 
 		if ($sysOption->validate() && $code != '') {
@@ -314,7 +325,7 @@ class Codes extends WireData {
 		if ($is_new) {
 			$response->setAction(Response::CRUD_CREATE);
 		} elseif ($code->isDeleted()) {
-			$response->setAction(Response::CRUD_DELETE);
+			$response->setAction(Response::CRUD_CLEAR);
 		} else {
 			$response->setAction(Response::CRUD_UPDATE);
 		}

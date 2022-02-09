@@ -20,7 +20,7 @@ abstract class Writer extends WireData {
 	const EXTENSION = 'xlsx';
 
 	public function __construct() {
-		$this->directory = $this->wire('config')->directory_webdocs;;
+		$this->directory = $this->wire('config')->directory_webdocs;
 
 		$this->filename   = 'spreadsheet';
 		$this->fileprefix = session_id();

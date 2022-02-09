@@ -15,29 +15,44 @@ class Vio extends Controller {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['userID|text'];
+		$fields = ['userID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
+		if (empty($data->userID)) {
+			$vio = self::getVio();
+			$vio->recordlocker->deleteLock();
+		}
 		return self::options($data);
 	}
 
 	public static function handleCRUD($data) {
-		self::sanitizeParametersShort($data, ['action|text']);
+		self::sanitizeParametersShort($data, ['action|text', 'userID|text']);
+		$url = self::url();
 
 		if ($data->action) {
 			$vio = self::getVio();
 			$vio->processInput(self::pw('input'));
+			switch ($data->action) {
+				case 'update':
+					$url = self::url($data->userID);
+					break;
+			}
 		}
-		self::pw('session')->redirect(self::url(), $http301);
+		self::pw('session')->redirect($url, $http301);
 	}
 
 	private static function options($data) {
 		$vio  = self::getVio();
 		$user = $vio->userOrNew($data->userID);
 
+		self::pw('page')->headline = 'Vendor Information Options';
+
 		if ($user->isNew() === false) {
-			self::pw('page')->headline = "VIO: $data->userID";
+			self::pw('page')->headline = "Vendor Information Options: $data->userID";
+			$vio->lockrecord($user);
 		}
-		$vio->lockrecord($user);
 		self::pw('page')->js .= self::pw('config')->twig->render('mvi/vio/js.twig');
 		$html = self::displayOptions($data, $user);
 		$vio->deleteResponse();
@@ -51,8 +66,11 @@ class Vio extends Controller {
 		$vio = self::getVio();
 
 		$html  = '';
+		$html .= '<div class="mb-3">'.self::displayBreadcrumbs($data).'</div>';
 		$html .= self::displayResponse($data);
-		$html .= self::displayLockedAlert($data);
+		if ($user->isNew() === false) {
+			$html .= self::displayLockedAlert($data);
+		}
 		$html .= self::pw('config')->twig->render('mvi/vio/display.twig', ['vio' => $vio, 'user' => $user]);
 		return $html;
 	}
@@ -61,12 +79,16 @@ class Vio extends Controller {
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Access Denied', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You don't have access to this function"]);
 	}
 
+	private static function displayBreadcrumbs($data) {
+		return self::pw('config')->twig->render('mvi/vio/bread-crumbs.twig');
+	}
+
 	private static function displayLockedAlert($data) {
 		$vio = self::getVio();
 
 		if ($vio->recordlocker->getLockingUser($data->userID) != self::pw('user')->loginid) {
-			$msg = "IIO $data->userID is being locked by " . $vio->recordlocker->getLockingUser($data->userID);
-			$alert = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "IIO $data->userID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			$msg = "VIO $data->userID is being locked by " . $vio->recordlocker->getLockingUser($data->userID);
+			$alert = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "VIO $data->userID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			return '<div class="mb-3">'. $alert .'</div>';
 		}
 		return '';
@@ -103,7 +125,11 @@ class Vio extends Controller {
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('Mvi');
+		$m = self::pw('modules')->get('DpagesMvi');
+
+		$m->addHook('Page(pw_template=vio)::viAdminUrl', function($event) {
+			$event->return = self::pw('pages')->get('dplus_function=viadmn')->url;
+		});
 
 		$m->addHook('Page(pw_template=vio)::vioDeleteUrl', function($event) {
 			$event->return = self::deleteUrl($event->arguments(0));

@@ -186,6 +186,15 @@ class DpagesMar extends Dpages implements Module {
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'spm'
 		),
+		'roptm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'roptm',
+			'name'           => 'roptm',
+			'title'          => 'Accounts Receivable Optional Codes',
+			'summary'        => 'View / Edit AR Optional Codes',
+			'parent'         => '/mar/armain/',
+			'dplus_function' => 'roptm'
+		),
 	);
 
 /* =============================================================

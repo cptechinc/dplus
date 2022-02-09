@@ -18,7 +18,7 @@ class NoteForm {
 
 	updateFormFromJson(json = null) {
 		var modal = this.form.closest('.modal');
-		var pieces = ['Editing', this.inputs.itemid.val(), json.description, 'notes'];
+		var pieces = ['Editing', this.inputs.itemid.val(), json.description, '('+ json.sysop +')', 'notes'];
 		modal.find('.modal-title').text(pieces.join(' '));
 		modal.find('.notetype').text(json.sysop);
 		modal.find('.sysopdesc').text(json.description);
@@ -36,8 +36,6 @@ class NoteForm {
 		var form   = this;
 
 		inputs.sysop.val(json.sysop);
-
-
 		$('#' + inputs.note.attr('id')).rules('remove', 'required');
 
 		CodeRequests.getInstance().getNote(inputs.itemid.val(), json.input.notetype, function(note) {

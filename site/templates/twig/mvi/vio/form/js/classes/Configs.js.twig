@@ -1,0 +1,16 @@
+class VioConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VioConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+
+		};
+	}
+}

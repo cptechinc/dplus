@@ -144,8 +144,6 @@ class Spreadsheet extends WireData {
 	 */
 	protected function writeBody() {
 		$sheet = $this->spreadsheet->getActiveSheet();
-		$sanitizer = $this->wire('sanitizer');
-
 		foreach ($this->reportData as $item) {
 			$this->writeItemRow($item);
 			$this->writeItemLotsRows($item['lots']);
@@ -191,7 +189,7 @@ class Spreadsheet extends WireData {
 			'justify' => 'right',
 			'value'   => $sanitizer->text($item['totals']['qty']),
 		];
-		
+
 		$index = $i;
 
 		foreach ($cols as $col) {

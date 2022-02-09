@@ -3,16 +3,20 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 #}
+{% include 'quotes/quote/edit/lookup/js/classes.js.twig' %}
+
 $(function() {
 	var formHeader  = new HeaderForm();
-	var formAddItem = new AddItemForm();
+	var formLookup   = LookupForm.getInstance();
+	var serverLookup = LookupRequests.getInstance();
+	var alertsLookup = LookupAlerts.getInstance();
 
-	var modal_ajax = $('#ajax-modal');
+	var modalAjax = $('#ajax-modal');
 
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	var validator = formAddItem.form.validate({
+	var validator = formLookup.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -38,16 +42,15 @@ $(function() {
 			}
 		},
 		submitHandler: function(form) {
-			var server = new EqoRequests();
-			server.validateItem(formAddItem.fields.itemid.val(), function(exists) {
+			serverLookup.validateItemid(formLookup.inputs.itemid.val(), function(exists) {
 				if (exists) {
-					if (validator.element('#'+formAddItem.fields.qty.attr('id'))) {
+					if (formLookup.inputs.qty.val() != '') {
 						form.submit();
 					} else {
-						formAddItem.fields.qty.focus();
+						formLookup.inputs.qty.focus();
 					}
 				} else {
-					formAddItem.validateGetItem();
+					formLookup.validateItemidEntry();
 				}
 			});
 		}
@@ -61,61 +64,21 @@ $(function() {
 
 		var button = $(this);
 		var itemID = button.data('itemid');
-		formAddItem.fields.itemid.val(itemID);
-		formAddItem.fields.qty.focus();
+		formLookup.inputs.itemid.val(itemID);
+		var validator = formLookup.form.validate();
+		validator.element('#' + inputs.itemid.attr('id'));
+		formLookup.inputs.qty.focus();
 	});
 
 	$("body").on('change', '#add-item-form input[name=itemID]', function(e) {
 		var input = $(this);
-		formAddItem.validateGetItem();
-		if (validator.element('#'+input.attr('id'))) {
-			if (validator.element('#'+formAddItem.fields.qty.attr('id'))) {
-				formAddItem.form.submit();
-			} else {
-				formAddItem.fields.qty.focus();
-			}
-		}
+		formLookup.validateItemidEntry();
 	});
-
-	// function validate_get_item() {
-	// 	var server = new EqoRequests();
-	// 	server.validateItemEntry(formAddItem.fields.itemid.val(), formHeader.fields.custid.val(), formHeader.fields.shiptoid.val(), function(response) {
-	// 		if (response.exists) {
-	// 			formAddItem.fields.itemid.addClass('is-valid');
-	// 			var server = new EqoRequests();
-	// 			server.itmItem(formAddItem.fields.itemid.val(), function(item) {
-	// 				if (item) {
-	// 					$('small.desc1').text(item.description);
-	// 					$('small.desc2').text(item.description2);
-	// 				}
-	// 			});
-	// 		} else if (response.matches.itm > 0) {
-	// 			var q = formAddItem.fields.itemid.val();
-	// 			formAddItem.fields.itemid.val('');
-	// 			var url = URI(formAddItem.fields.itemid.closest('.input-group').find('button').data('lookupurl'));
-	// 			url.addQuery('q', q);
-	// 			var modal_ajax = $('#ajax-modal');
-	// 			modal_ajax.find('.modal-title').text('Searching for ' + q);
-	// 			modal_ajax.resizeModal('xl');
-	// 			modal_ajax.modal('show');
-	// 			modal_ajax.find('.modal-body').loadin(url.toString(), function() {});
-	// 		} else {
-	// 			var alerts = EqoAlerts();
-	// 			alerts.notFound(formAddItem.fields.itemid.val(), function(useAdvancedSearch) {
-	// 				if (useAdvancedSearch === true) {
-	// 					var url = URI('');
-	// 					url.setQuery('q', formAddItem.fields.itemid.val());
-	// 					window.location.replace(url.toString());
-	// 				}
-	// 			});
-	// 		}
-	// 	});
-	// }
 
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */
-	modal_ajax.on('show.bs.modal', function (event) {
+	modalAjax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
 		var url = button.data('lookupurl');
@@ -140,7 +103,7 @@ $(function() {
 	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
 		e.preventDefault();
 		var href = $(this).attr('href');
-		modal_ajax.find('.modal-body').load(href);
+		modalAjax.find('.modal-body').load(href);
 	});
 
 	$("body").on('click', '.item-link', function(e) {
@@ -150,6 +113,6 @@ $(function() {
 		var modal = button.closest('.modal');
 		var input = $(modal.attr('data-input'));
 		input.val(itemID).change();
-		modal_ajax.modal('hide');
+		modalAjax.modal('hide');
 	});
 });

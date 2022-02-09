@@ -83,7 +83,7 @@ class MsaSysopCode extends AbstractFilter {
 		}
 		$this->getQueryClass()->executeQuery('SET @rownum = 0');
 		$table = $this->getPositionSubSql();
-		$sql = "SELECT x.position FROM ($table) x WHERE OptnSystem = :system AND OptnCode = :code";
+		$sql  = "SELECT x.position FROM ($table) x WHERE OptnSystem = :system AND OptnCode = :code";
 		$stmt = $this->getPreparedStatementWrapper($sql);
 		$stmt->bindValue(':system', $system, PDO::PARAM_STR);
 		$stmt->bindValue(':code', $id, PDO::PARAM_STR);
@@ -99,9 +99,14 @@ class MsaSysopCode extends AbstractFilter {
 		$table = $this->query->getTableMap()::TABLE_NAME;
 		$sql = "SELECT OptnSystem, OptnCode, @rownum := @rownum + 1 AS position FROM $table";
 		$whereClause = $this->getWhereClauseString();
+		$orderByClause = $this->getOrderByClause();
 
 		if (empty($whereClause) === false) {
 			$sql .= ' WHERE ' . $whereClause;
+		}
+
+		if (empty($orderByClause) === false) {
+			$sql .= ' ORDER BY ' . $orderByClause;
 		}
 		return $sql;
 	}

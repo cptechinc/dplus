@@ -27,16 +27,19 @@ class Vio extends Base {
 	const FIELD_ATTRIBUTES = [
 		'userid'          => ['type' => 'text', 'maxlength' => 6],
 		'payments'        => ['default' => 'Y', 'label' => 'Payments', 'sanitizer' => 'ynbool'],
+		'contacts'        => ['default' => 'Y', 'label' => 'Contacts', 'sanitizer' => 'ynbool'],
 		'costing'         => ['default' => 'Y', 'label' => 'Costing', 'sanitizer' => 'ynbool'],
 		'purchaseorders'  => ['default' => 'Y', 'label' => 'Purchase Orders', 'sanitizer' => 'ynbool'],
 		'openinvoices'    => ['default' => 'Y', 'label' => 'Open Invoices', 'sanitizer' => 'ynbool'],
 		'purchasehistory' => ['default' => 'Y', 'label' => 'Purchase History', 'sanitizer' => 'ynbool'],
 		'unreleased'      => ['default' => 'Y', 'label' => 'Unreleased', 'sanitizer' => 'ynbool'],
 		'uninvoiced'      => ['default' => 'Y', 'label' => 'Uninvoiced', 'sanitizer' => 'ynbool'],
+		'notes'           => ['default' => 'Y', 'label' => 'Notes', 'sanitizer' => 'ynbool'],
 		'summary'         => ['default' => 'Y', 'label' => '24 Month Summary', 'sanitizer' => 'ynbool'],
 	];
 
 	const SCREENS = [
+		'contacts',
 		'payments',
 		'costing',
 		'purchaseorders',
@@ -44,6 +47,7 @@ class Vio extends Base {
 		'purchasehistory',
 		'unreleased',
 		'uninvoiced',
+		'notes',
 		'summary',
 	];
 

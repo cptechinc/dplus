@@ -1,0 +1,45 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+	optm                   Dplus\Codes\{Min\Ioptm | Map\Aoptm | Mar\Roptm| Mso\Soptm}
+#}
+
+{% set response = optm.getResponse() %}
+
+<div class="mb-3">
+	{% include 'code-tables/optm/bread-crumbs.twig' %}
+</div>
+
+{% if response %}
+	<div class="mb-3">
+		{% include 'code-tables/response.twig' %}
+	</div>
+{% endif %}
+
+<div class="card">
+	<div class="card-header bg-light">
+		{{ constant('SYSTEM', optm)}} Optional Codes for {{ sysop.id }}
+	</div>
+
+	{% include 'code-tables/optm/sysop/list/list.twig' %}
+
+	<div class="card-body">
+		{% include 'util/paginator/propel.twig' with {'pager': codes} %}
+	</div>
+
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<div>
+				<a href="{{ page.optmUrl(sysop.id) }}" class="btn btn-sm btn-warning">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% include 'code-tables/optm/sysop/edit/modal.twig' %}

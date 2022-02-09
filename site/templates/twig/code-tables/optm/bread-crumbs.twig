@@ -1,0 +1,29 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+	optm                   Dplus\Codes\{Min\Ioptm | Map\Aoptm | Mar\Roptm| Mso\Soptm}
+#}
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values      = input.get %}
+
+{% block current_page %}
+	{% if values.offsetExists('sysop') == false %}
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ page.name|upper }}
+		</li>
+	{% endif %}
+
+	{% if values.offsetExists('sysop') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url() }}">
+				<i class="fa fa-list" aria-hidden="true"></i> {{ page.name|upper }}
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ values.text('sysop') }}
+		</li>
+	{% endif %}
+{% endblock %}

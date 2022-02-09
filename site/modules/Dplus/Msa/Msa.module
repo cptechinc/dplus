@@ -8,10 +8,6 @@ include_once(__DIR__."/MsaResponse.php");
 class Msa extends WireData implements Module {
 
 	const CODE_TABLES = array(
-		'sysop' => array(
-			'code'        		 => 'sysop',
-			'module'   			 => 'MsaSysop'
-		),
 		'lgrp' => array(
 			'code'        		 => 'lgrp',
 			'module'   			 => 'MsaLgrp'
@@ -65,7 +61,6 @@ class Msa extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'MsaSysop',
 				'MsaLgrp',
 			)
 		);

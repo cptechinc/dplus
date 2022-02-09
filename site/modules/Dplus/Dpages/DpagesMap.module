@@ -28,10 +28,6 @@ class DpagesMap extends Dpages implements Module {
 			'name'   => 'ap-code-table',
 			'fields' => array()
 		),
-		'ap-code-table-aoptm' => array(
-			'name'   => 'ap-code-table-aoptm',
-			'fields' => array()
-		),
 		'mxrfe' => array(
 			'name'   => 'mxrfe',
 			'fields' => array()
@@ -84,7 +80,7 @@ class DpagesMap extends Dpages implements Module {
 		),
 		'ap-aoptm' => array(
 			'template'       => 'dplus-function',
-			'pw_template'    => 'ap-code-table',
+			'pw_template'    => 'aoptm',
 			'name'           => 'aoptm',
 			'title'          => 'Accounts Payable Optional Code',
 			'summary'        => 'View / Edit Accounts Payable Optional Code',
