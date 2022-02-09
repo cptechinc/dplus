@@ -26,11 +26,13 @@ class Response extends WireData {
 	const CRUD_CREATE = 1;
 	const CRUD_UPDATE = 2;
 	const CRUD_DELETE = 3;
+	const CRUD_CLEAR  = 4;
 
 	const CRUD_DESCRIPTION = [
 		1 => 'created',
 		2 => 'updated',
-		3 => 'deleted'
+		3 => 'deleted',
+		4 => 'cleared'
 	];
 
 	public function __construct() {

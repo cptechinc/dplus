@@ -11,8 +11,12 @@ $(function() {
 
 	if (uri.hasQuery('focus')) {
 		var query = uri.query(true);
-		$('.sysop[data-sysop="'+query.focus+'"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('.sysop[data-sysop="'+query.focus+'"]').offset().top,},700,'linear');
+		var element = $('.sysop[data-sysop="'+query.focus+'"]');
+
+		if (element.length) {
+			element.addClass('highlight');
+			$('html, body').animate({scrollTop: element.offset().top,},700,'linear');
+		}
 	}
 
 /* =============================================================
@@ -37,7 +41,15 @@ $(function() {
 	$("body").on("click", "a:not(a.delete_button, a.paginator-link, #ajax-modal a)", function(e) {
 		if (formCode.config.isMissingRequired) {
 			e.preventDefault();
-			alert.missingRequired();
+			$('.response-alert').remove();
+			$('.sysop').removeClass('text-white');
+			$('.sysop').removeClass('bg-success');
+			$('.sysop').removeClass('highlight');
+			alert.missingRequired(function(goToMissing) {
+				if (goToMissing) {
+					window.location.href = formCode.config.missingCodes.urls[0];
+				}
+			});
 		}
 	});
 
@@ -67,13 +79,24 @@ $(function() {
 		formNote.updateFormFromJson(json);
 	});
 
+	$('#edit-note-modal').on('hidden.bs.modal', function (event) {
+		var modal  = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var sysop  = modal.find('input[name=sysop]').val().toString();
+
+		$('.response-alert').remove();
+		$('.sysop.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.sysop[data-sysop="'+sysop+'"]').addClass('highlight');
+	});
+
 /* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
 	modalAjax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = button.data('lookupurl');
+		var url = button.attr('data-lookupurl');
 
 		modal.attr('data-input', button.data('input'));
 		modal.find('.modal-title').text(button.attr('title'));

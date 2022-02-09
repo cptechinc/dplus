@@ -1,0 +1,44 @@
+$(function() {
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('click', 'a.clear-option', function(e) {
+		e.preventDefault();
+		var link = $(this);
+
+		swal2.fire({
+			title: "Confirm Clear",
+			text: "Are you sure you want to Clear Option Value?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonClass: 'btn btn-success',
+			cancelButtonClass: 'btn btn-danger',
+			buttonsStyling: false,
+			confirmButtonText: 'Yes'
+		}).then((result) => {
+			if (result.value) {
+				window.location.href = link.attr('href');
+			}
+		});
+	});
+
+	$("body").on('click', 'button[type=submit].clear-option', function(e) {
+		e.preventDefault();
+		var button = $(this);
+
+		swal2.fire({
+			title: "Confirm Clear",
+			text: "Are you sure you want to Clear Option Value?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonClass: 'btn btn-success',
+			cancelButtonClass: 'btn btn-danger',
+			buttonsStyling: false,
+			confirmButtonText: 'Yes'
+		}).then((result) => {
+			if (result.value) {
+				button.closest('form').submit();
+			}
+		});
+	});
+});

@@ -481,7 +481,6 @@ class Min extends Controller {
 		return $exists ? true : "Add-On Item not found";
 	}
 
-
 	public static function getInvOptCodeNotes($data) {
 		$fields = ['itemID|text', 'type|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -491,7 +490,6 @@ class Min extends Controller {
 		}
 		return $qnotes->notesJson($data->itemID, $data->type);
 	}
-
 
 	private static function validator() {
 		return new MinValidator();

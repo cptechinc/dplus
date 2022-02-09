@@ -154,7 +154,7 @@ class Qnotes extends QnotesBase {
 		$sysopM = $this->getSysop();
 		$sysop  = $sysopM->code(self::SYSTEM, $values->text('sysop'));
 
-		if ($sysopM->isNote() === false) {
+		if ($sysopM->isNote(self::SYSTEM, $values->text('sysop')) === false) {
 			return false;
 		}
 
@@ -162,7 +162,7 @@ class Qnotes extends QnotesBase {
 
 		if ($sysop->force() && empty($values->textarea('note'))) {
 			$responseQnotes = Response::responseError("$sysop->notecode Notes are required");
-			$responseQnotes->setAction(Response::CRUD_DELETE);
+			$responseQnotes->setAction(Response::CRUD_CLEAR);
 			$response = $this->responseItmFromQnoteResponse($responseQnotes, $sysop, $itemID);
 			$this->setResponseItmFromQnoteResponse($response, $sysop, $itemID);
 			return false;

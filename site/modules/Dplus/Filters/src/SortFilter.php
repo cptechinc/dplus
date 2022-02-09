@@ -42,7 +42,7 @@ class SortFilter extends WireData {
 	 * @param  string $key Key
 	 * @return void
 	 */
-	public function saveToSession( $ns = '', $key = '') {
+	public function saveToSession($ns = '', $key = '') {
 		$key = self::getSessionKey($key);
 		if (empty($ns) === false) {
 			return self::pw('session')->setFor($ns, $key, $this);
