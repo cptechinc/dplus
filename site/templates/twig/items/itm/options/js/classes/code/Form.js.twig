@@ -18,7 +18,8 @@ class CodeForm {
 
 	updateFormFromJson(json = null) {
 		var modal = this.form.closest('.modal');
-		modal.find('.modal-title').text('Editing ' + json.sysop);
+		var title = 'Editing ' + json.sysop.description + ' (' + json.sysop.sysop  + ')';
+		modal.find('.modal-title').text(title);
 		this.updateInputsFromJson(json);
 	}
 
@@ -26,6 +27,7 @@ class CodeForm {
 		this.inputs.sysop.val('');
 		this.inputs.code.val('');
 		this.inputs.description.text('');
+		this.inputs.descriptionSysop.text('');
 	}
 
 	updateInputsFromJson(json = null) {
@@ -33,12 +35,13 @@ class CodeForm {
 
 		var inputs = this.inputs;
 		var server   = CodeRequests.getInstance();
-		var url      = server.codeOptionsUrl(this.system, json.sysop);
+		var url      = server.codeOptionsUrl(this.system, json.sysop.sysop);
 
 		inputs.code.closest('.input-group').find('button[data-lookupurl]').attr('data-lookupurl', url);
-		inputs.sysop.val(json.sysop);
+		inputs.sysop.val(json.sysop.sysop);
 		inputs.code.val(json.code);
 		inputs.description.text(json.description);
+		inputs.descriptionSysop.text(json.sysop.description);
 
 		var rules = {
 			required: false,
@@ -62,7 +65,7 @@ class CodeForm {
 		var form = this;
 		var server   = CodeRequests.getInstance();
 
-		server.getSysop(this.system, json.sysop, function(sysop) {
+		server.getSysop(this.system, json.sysop.sysop, function(sysop) {
 			rules.required = sysop.input.force;
 			if (sysop.input.validate) {
 				rules.remote = form.getCodeJqvRemoteData();

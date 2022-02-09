@@ -308,7 +308,7 @@ abstract class AbstractFilter extends WireData {
 				}
 			}
 		}
-		return $orderByClause;
+		return implode(',', $orderByClause);
 	}
 
 	/**
