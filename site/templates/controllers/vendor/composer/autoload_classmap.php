@@ -25,6 +25,8 @@ return array(
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
     'Controllers\\Ajax\\Lookup\\Lookup' => $baseDir . '/classes/ajax/Lookup/Lookup.php',
     'Controllers\\Ajax\\Lookup\\Mth' => $baseDir . '/classes/ajax/Lookup/Mth.php',
+    'Controllers\\Aproc\\Base' => $baseDir . '/classes/mar/arproc/Base.php',
+    'Controllers\\Aproc\\Menu' => $baseDir . '/classes/mar/arproc/Menu.php',
     'Controllers\\Dplus\\Dashboard' => $baseDir . '/classes/dplus/Dashboard.php',
     'Controllers\\Dplus\\Dashboard\\Common' => $baseDir . '/classes/dplus/Dashboard/Common.php',
     'Controllers\\Dplus\\Dashboard\\Slsmgr' => $baseDir . '/classes/dplus/Dashboard/Slsmgr.php',
