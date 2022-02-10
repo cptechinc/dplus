@@ -1,4 +1,4 @@
-<?php namespace Controllers\Aproc;
+<?php namespace Controllers\Arproc;
 
 use stdClass;
 // Purl Library
@@ -6,7 +6,7 @@ use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 // Mvc Controllers
-use Controllers\Aproc\Base;
+use Controllers\Arproc\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = '';

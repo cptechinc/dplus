@@ -1,9 +1,12 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-	use Controllers\Aproc;
+	use Controllers\Arproc;
 
 	$routes = [
-		['GET',  '', Aproc\Menu::class, 'index'],
+		['GET',  '', Arproc\Menu::class, 'index'],
+		'ecr' => [
+			['GET',  '', Arproc\Ecr::class, 'index'],
+		]
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

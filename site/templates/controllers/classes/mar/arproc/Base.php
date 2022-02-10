@@ -1,4 +1,4 @@
-<?php namespace Controllers\Aproc;
+<?php namespace Controllers\Arproc;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
