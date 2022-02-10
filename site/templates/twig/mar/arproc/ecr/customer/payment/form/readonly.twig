@@ -1,0 +1,50 @@
+<div class="row">
+	<div class="col-sm-4 mb-1">
+		<label>Invoice Number</label>
+	</div>
+	<div class="col-sm-8 mb-1">
+		<p class="form-control-plaintext form-control-sm">
+			{{ payment.invoicenbr }}
+		</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 mb-1">
+		<label>Terms Code</label>
+	</div>
+	<div class="col-sm-8 mb-1">
+		<p class="form-control-plaintext form-control-sm">
+			{{ payment.termcode }}
+		</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 mb-1">
+		<label>Invoice Date</label>
+	</div>
+	<div class="col-sm-8 mb-1">
+		<p class="form-control-plaintext form-control-sm">
+			{{ invoice.invoicedate|convertdate }}
+		</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 mb-1">
+		<label>Due Date</label>
+	</div>
+	<div class="col-sm-8 mb-1">
+		<p class="form-control-plaintext form-control-sm">
+			{{ invoice.duedate|convertdate }}
+		</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 mb-1">
+		<label>Order Number</label>
+	</div>
+	<div class="col-sm-8 mb-1">
+		<p class="form-control-plaintext form-control-sm">
+			{{ payment.ordn }}
+		</p>
+	</div>
+</div>

@@ -48,6 +48,10 @@ class Menu extends Base {
 		return $url->getUrl();
 	}
 
+	public static function ecrUrl() {
+		return self::subfunctionUrl('ecr');
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */

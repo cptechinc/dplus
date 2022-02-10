@@ -27,7 +27,7 @@
 					<td class="text-right">{{ invoice.getArPayment().amountpaid|currency }}</td>
 					<td class="text-right"></td>
 					<td class="text-center">
-						<a href="#" class="btn btn-primary btn-sm">
+						<a href="{{ page.invoiceUrl(invoice.invoicenumber) }}" class="btn btn-primary btn-sm">
 							<i class="fa fa-money" aria-hidden="true"></i> Pay
 						</a>
 					</td>
