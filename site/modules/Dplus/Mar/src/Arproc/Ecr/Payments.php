@@ -1,6 +1,8 @@
 <?php namespace Dplus\Mar\Arproc\Ecr;
 // Dplus Model
 use ArPaymentQuery, ArPayment;
+// Dplus Codes
+use Dplus\Codes\Mar\Trm;
 // ProcessWire
 use ProcessWire\WireData;
 
@@ -59,5 +61,17 @@ class Payments extends WireData {
 			return false;
 		}
 		return $this->queryInvnbr($invnbr)->findOne();
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return Terms Code Description
+	 * @param  string $id AR Terms Code
+	 * @return string
+	 */
+	public function getTrmDescription($id) {
+		return Trm::getInstance()->description($id);
 	}
 }
