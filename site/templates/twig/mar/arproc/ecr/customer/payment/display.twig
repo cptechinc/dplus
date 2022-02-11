@@ -56,13 +56,15 @@
 												'title': 'Search Cash Accounts',
 												'data-toggle': 'modal',
 												'data-target': '#ajax-modal',
-												'data-lookupurl': page.search_lookupURL('customers'),
-												'data-input': '#cashacct'
+												'data-lookupurl': page.searchLookupUrl('mgl/mhm/'),
+												'data-input': '#cashacct',
+												'data-update': 'cashacct description'
 											}
 										}
 									}
 								}
 							%}
+							<small class="text-muted cashacct description">Desc</small>
 						</div>
 					</div>
 				</div>
