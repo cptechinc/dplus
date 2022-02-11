@@ -14,7 +14,7 @@
 	</div>
 	<div class="col-sm-8 mb-1">
 		<p class="form-control-plaintext form-control-sm">
-			{{ payment.termcode }}
+			{{ payment.termcode }} - {{ ecr.payments.getTrmDescription(payment.termcode) }}
 		</p>
 	</div>
 </div>
