@@ -2,7 +2,7 @@
 
 {% block body %}
 	<div class="card-body">
-		<form action="">
+		<form action="" id="payment-form">
 			<div class="row">
 				<div class="col-sm-6">
 					{% include 'mar/arproc/ecr/customer/payment/form/readonly.twig' %}
@@ -56,9 +56,9 @@
 												'title': 'Search Cash Accounts',
 												'data-toggle': 'modal',
 												'data-target': '#ajax-modal',
-												'data-lookupurl': page.searchLookupUrl('mgl/mhm/'),
+												'data-lookupurl': page.searchLookupUrl('mgl/mhm'),
 												'data-input': '#cashacct',
-												'data-update': 'cashacct description'
+												'data-update': '.cashacct.description'
 											}
 										}
 									}
