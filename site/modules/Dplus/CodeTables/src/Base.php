@@ -26,6 +26,10 @@ abstract class Base extends WireData {
 
 	protected static $instance;
 
+	public static function instance() {
+		return static::getInstance();
+	}
+
 	public static function getInstance() {
 		if (empty(static::$instance)) {
 			static::$instance = new static();
