@@ -65,9 +65,9 @@ class Ecr extends Base {
 		}
 		$payment = $ecr->payments->payment($data->invnbr);
 		$invoice = ArInvoiceQuery::create()->filterByInvoicenumber($data->invnbr)->findOne();
+		self::pw('page')->js .= self::pw('config')->twig->render('mar/arproc/ecr/customer/payment/pay.js.twig');
 		return self::displayPayment($data, $payment, $invoice);
 	}
-
 
 /* =============================================================
 	URLs
@@ -94,8 +94,10 @@ class Ecr extends Base {
 	}
 
 	private static function displayPayment($data, ArPayment $payment, ArInvoice $invoice) {
+		$ecr = Arproc\Ecr::instance();
+
 		$html = '';
-		$html .= self::pw('config')->twig->render('mar/arproc/ecr/customer/payment/display.twig', ['customer' => $invoice->customer, 'payment' => $payment, 'invoice' => $invoice]);
+		$html .= self::pw('config')->twig->render('mar/arproc/ecr/customer/payment/display.twig', ['ecr' => $ecr, 'customer' => $invoice->customer, 'payment' => $payment, 'invoice' => $invoice]);
 		return $html;
 	}
 
