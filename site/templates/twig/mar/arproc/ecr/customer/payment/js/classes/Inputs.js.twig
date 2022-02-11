@@ -1,0 +1,15 @@
+class EcrInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new EcrInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id   = 'payment-form';
+		this.form = $('#' + this.id);
+	}
+}

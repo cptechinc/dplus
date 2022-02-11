@@ -1,5 +1,25 @@
+{% include 'mar/arproc/ecr/customer/payment/js/classes.js.twig' %}
+
 $(function() {
+	var alert     = EcrAlerts.getInstance();
+	var formEcr   = EcrForm.getInstance();
+	var server    = EcrRequests.getInstance();
+
 	var modalAjax = $('#ajax-modal');
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change', 'input[name=cashacct]', function(e) {
+		e.preventDefault();
+		var input  = $(this);
+
+		server.getGlCode(input.val(), function(code) {
+			if (code) {
+				$('.cashacct.description').text(code.description);
+			}
+		});
+	});
 
 /* =============================================================
 	AJAX Lookup Modal Functions
