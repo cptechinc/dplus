@@ -40,8 +40,10 @@ $(function() {
 		var button = $(this);
 		var id     = button.data('code');
 		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
 
-		$(modal.attr('data-input')).val(id);
+		input.val(id);
+		input.change();
 		modal.modal('hide');
 	});
 
