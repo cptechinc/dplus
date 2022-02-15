@@ -1,6 +1,6 @@
 <?php namespace Dplus\Mar\Arproc\Ecr;
 // Dplus Model
-use ArPaymentQuery, ArPayment;
+use ArPaymentPendingQuery, ArPaymentPending;
 // Dplus Codes
 use Dplus\Codes\Mar\Trm;
 // ProcessWire
@@ -9,7 +9,7 @@ use ProcessWire\WireData;
 /**
  * Payments
  *
- * Handles CRUD for ArPayments
+ * Handles CRUD for ArPaymentPendings
  */
 class Payments extends WireData {
 	private static $instance;
@@ -27,16 +27,16 @@ class Payments extends WireData {
 
 	/**
 	 * Return Query
-	 * @return ArPaymentQuery
+	 * @return ArPaymentPendingQuery
 	 */
 	public function query() {
-		return ArPaymentQuery::create();
+		return ArPaymentPendingQuery::create();
 	}
 
 	/**
 	 * Return Query filtered by Invoice Number
 	 * @param  string $invnbr Invoice Number
-	 * @return ArPaymentQuery
+	 * @return ArPaymentPendingQuery
 	 */
 	public function queryInvnbr($invnbr) {
 		return $this->query()->filterByInvoicenbr($invnbr);
@@ -54,7 +54,7 @@ class Payments extends WireData {
 	/**
 	 * Return Payment for Invoice Number
 	 * @param  string $invnbr Invoice Number
-	 * @return ArPayment
+	 * @return ArPaymentPending
 	 */
 	public function payment($invnbr) {
 		if ($this->exists($invnbr) === false) {
