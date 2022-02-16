@@ -1,0 +1,142 @@
+<form action="{{ input.url() }}" method="POST">
+	<div class="row mb-3">
+		<div class="col-sm-4">
+			<label for="checknbr">Check Number</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'checknbr',
+						'size': 'sm',
+						'value': ''
+					}
+				}
+			%}
+		</div>
+	</div>
+
+
+	<h6>Invoice Number</h6>
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-10">
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="invnbr-from">From</label>
+				</div>
+				<div class="col-sm-8">
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {
+								'name': 'invnbr-from',
+								'size': 'sm',
+								'value': ''
+							}
+						}
+					%}
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="invnbr-thru">Through</label>
+				</div>
+				<div class="col-sm-8">
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {
+								'name': 'invnbr-thru',
+								'size': 'sm',
+								'value': ''
+							}
+						}
+					%}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<h6>Invoice Date</h6>
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-10">
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="invdate-from">From</label>
+				</div>
+				<div class="col-sm-8">
+					{% include 'util/bootstrap/form/date-picker.twig' with {
+							'inputgroup': {
+								'input': {
+									'name': 'invdate-from',
+									'size': 'sm',
+									'value': '',
+									'addclasses': [
+										'text-right',
+									]
+								}
+							}
+						}
+					%}
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="invdate-thru">Through</label>
+				</div>
+				<div class="col-sm-8">
+					{% include 'util/bootstrap/form/date-picker.twig' with {
+							'inputgroup': {
+								'input': {
+									'name': 'invdate-thru',
+									'size': 'sm',
+									'value': '',
+									'addclasses': [
+										'text-right',
+									]
+								}
+							}
+						}
+					%}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<h6>Customer PO</h6>
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-10">
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="custpo-from">From</label>
+				</div>
+				<div class="col-sm-8">
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {
+								'name': 'custpo-from',
+								'size': 'sm',
+								'value': ''
+							}
+						}
+					%}
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="custpo-thru">Through</label>
+				</div>
+				<div class="col-sm-8">
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {
+								'name': 'custpo-thru',
+								'size': 'sm',
+								'value': ''
+							}
+						}
+					%}
+				</div>
+			</div>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary">
+		<i class="fa fa-money" aria-hidden="true"></i> Pay
+	</button>
+</form>
