@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\Mar\\Arproc\\Ecr' => $baseDir . '/src/Arproc/Ecr.php',
+    'Dplus\\Mar\\Arproc\\Ecr\\Header' => $baseDir . '/src/Arproc/Ecr/Header.php',
     'Dplus\\Mar\\Arproc\\Ecr\\Payments' => $baseDir . '/src/Arproc/Ecr/Payments.php',
 );

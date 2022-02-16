@@ -22,6 +22,7 @@ class ComposerStaticInitef38ce8b72e6d445f9cdec5d22de5cbd
 
     public static $classMap = array (
         'Dplus\\Mar\\Arproc\\Ecr' => __DIR__ . '/../..' . '/src/Arproc/Ecr.php',
+        'Dplus\\Mar\\Arproc\\Ecr\\Header' => __DIR__ . '/../..' . '/src/Arproc/Ecr/Header.php',
         'Dplus\\Mar\\Arproc\\Ecr\\Payments' => __DIR__ . '/../..' . '/src/Arproc/Ecr/Payments.php',
     );
 

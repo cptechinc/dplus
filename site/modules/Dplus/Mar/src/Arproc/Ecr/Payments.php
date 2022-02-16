@@ -74,4 +74,17 @@ class Payments extends WireData {
 	public function getTrmDescription($id) {
 		return Trm::getInstance()->description($id);
 	}
+
+	/**
+	 * [getTotalDue description]
+	 * @return [type] [description]
+	 */
+	public function getTotalPaid($custID) {
+		$col = ArPaymentPending::aliasproperty('amtpaid');
+		$q = $this->query();
+		$q->filterByCustid($custID);
+		$q->withColumn("SUM($col)", 'total');
+		$q->select('total');
+		return floatval($q->findOne());
+	}
 }
