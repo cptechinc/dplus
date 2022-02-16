@@ -5,8 +5,11 @@
 				<div class="col-sm-2">
 					<strong>Customer:</strong>
 				</div>
-				<div class="col-sm-10">
+				<div class="col-sm-6">
 					{{ customer.id }} -{{ customer.name }}
+				</div>
+				<div class="col-sm-4 text-right">
+					{{ invoices.getNbResults() }} Invoices
 				</div>
 			</div>
 		</div>
@@ -14,9 +17,20 @@
 
 	{% block body %}
 		<div class="card-body">
+			<div class="row">
+				<div class="col-sm-4">
 
+				</div>
+				<div class="col-sm-4">
+					{% include 'mar/arproc/ecr/customer/header-form.twig' %}
+				</div>
+				<div class="col-sm-4">
+					{% include 'mar/arproc/ecr/customer/ecr-totals.twig' %}
+				</div>
+			</div>
 		</div>
 		{% include 'mar/arproc/ecr/customer/invoices.twig' %}
+		{% include 'util/paginator/propel.twig' with {'pager': invoices} %}
 	{% endblock %}
 
 	{% block footer %}

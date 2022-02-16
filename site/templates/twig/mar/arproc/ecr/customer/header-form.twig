@@ -1,0 +1,67 @@
+<form action="{{ input.url() }}" method="POST">
+	<input type="hidden" name="action" value="update-header">
+	<input type="hidden" name="custID" value="{{ arCashHeader.custid }}">
+
+	<div class="form-row">
+		<div class="col-sm-6 mb-1">
+			<label for="amount">Amount Received</label>
+		</div>
+		<div class="col-sm-6 mb-2">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': 'amount', 'value': arCashHeader.amount,
+							'addclasses': [
+								'text-right',
+							]
+						},
+						'button': {
+							'colorclass': 'btn-light',
+							'text': '$'
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="form-row">
+		<div class="col-sm-6 mb-1">
+			<label for="dateReceived">Date Received</label>
+		</div>
+		<div class="col-sm-6 mb-2">
+			{% include 'util/bootstrap/form/date-picker.twig' with {
+					'inputgroup': {
+						'input': {
+							'name': 'glPeriod',
+							'size': 'sm',
+							'value': ecrSession.dateReceived,
+							'addclasses': [
+								'text-right',
+							]
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="form-row">
+		<div class="col-sm-6">
+			<label for="glPeriod">GL Period</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'glPeriod',
+						'size': 'sm',
+						'value': ecrSession.glPeriod,
+						'addclasses': [
+							'text-right',
+						]
+					}
+				}
+			%}
+		</div>
+	</div>
+</form>

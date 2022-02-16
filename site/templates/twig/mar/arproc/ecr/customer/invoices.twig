@@ -18,13 +18,13 @@
 			{% for invoice in invoices %}
 				<tr>
 					<td>{{ invoice.invoicenumber }}</td>
-					<td>{{ invoice.getArPayment().paid|capitalize }}</td>
+					<td>{{ invoice.getArPaymentPending().paid|capitalize }}</td>
 					<td>{{ invoice.invoicedate|convertdate }}</td>
 					<td>{{ invoice.duedate|convertdate }}</td>
-					<td>{{ invoice.getArPayment().termcode }}</td>
-					<td>{{ invoice.getArPayment().checknbr }}</td>
+					<td>{{ invoice.getArPaymentPending().termcode }}</td>
+					<td>{{ invoice.getArPaymentPending().checknbr }}</td>
 					<td class="text-right">{{ invoice.total|currency }}</td>
-					<td class="text-right">{{ invoice.getArPayment().amountpaid|currency }}</td>
+					<td class="text-right">{{ invoice.getArPaymentPending().amountpaid|currency }}</td>
 					<td class="text-right"></td>
 					<td class="text-center">
 						<a href="{{ page.invoiceUrl(invoice.invoicenumber) }}" class="btn btn-primary btn-sm">
@@ -34,5 +34,17 @@
 				</tr>
 			{% endfor %}
 		</tbody>
+		<tfoot>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td class="text-right">{{ ecr.invoices.getTotalDue()|currency }}</td>
+			<td class="text-right"></td>
+			<td class="text-right"></td>
+			<td></td>
+		</tfoot>
 	</table>
 </div>
