@@ -6,7 +6,8 @@ use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use CustomerQuery, Customer;
 use ArInvoiceQuery, ArInvoice;
-use ArPaymentQuery, ArPayment;
+use ArPaymentPendingQuery, ArPaymentPending;
+use ArCashHeadQuery, ArCashHead;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 // Dplus Filters
@@ -50,12 +51,18 @@ class Ecr extends Base {
 		if (boolval($q->count()) === false) {
 
 		}
-		$customer = $q->findOne();
+		$ecr = Arproc\Ecr::instance($data->custID);
+		if ($ecr->headerIsLocked()) {
+			return self::displayCustomerIsLocked($data);
+		}
 		$filter = new Filters\Mar\ArInvoice();
 		$filter->custid($data->custID);
 		$invoices = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 
-		return self::displayCustomerInvoices($data, $customer, $invoices);
+
+		$header = $ecr->header->header($data->custID);
+		self::pw('page')->headline = "ECR: {$header->customer->name} Invoices";
+		return self::displayCustomerInvoices($data, $header, $invoices);
 	}
 
 	private static function payment($data) {
@@ -87,9 +94,11 @@ class Ecr extends Base {
 		return $html;
 	}
 
-	private static function displayCustomerInvoices($data, Customer $customer, PropelModelPager $invoices) {
+	private static function displayCustomerInvoices($data, ArCashHead $header, PropelModelPager $invoices) {
+		$ecr = Arproc\Ecr::instance();
+
 		$html = '';
-		$html .= self::pw('config')->twig->render('mar/arproc/ecr/customer/display.twig', ['customer' => $customer, 'invoices' => $invoices]);
+		$html .= self::pw('config')->twig->render('mar/arproc/ecr/customer/display.twig', ['ecr' => $ecr, 'ecrSession' => $ecr->session, 'arCashHeader' => $header, 'customer' => $header->customer, 'invoices' => $invoices]);
 		return $html;
 	}
 
@@ -98,6 +107,15 @@ class Ecr extends Base {
 
 		$html = '';
 		$html .= self::pw('config')->twig->render('mar/arproc/ecr/customer/payment/display.twig', ['ecr' => $ecr, 'customer' => $invoice->customer, 'payment' => $payment, 'invoice' => $invoice]);
+		return $html;
+	}
+
+	private static function displayCustomerIsLocked($data) {
+		$ecr = Arproc\Ecr::instance();
+		$ecrHeader = $ecr->header->header();
+
+		$html = '';
+		$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Customer $data->custID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => "Customer $data->custID is locked by $ecrHeader->clerkid"]);
 		return $html;
 	}
 
