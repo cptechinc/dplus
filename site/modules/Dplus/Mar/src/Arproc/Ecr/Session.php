@@ -11,7 +11,7 @@ use ProcessWire\WireData;
  * Holds Data for ECR Session
  *
  * @property int    $glPeriod
- * @property string $dateReceived 
+ * @property string $dateReceived
  */
 class Session extends WireData {
 	/**
