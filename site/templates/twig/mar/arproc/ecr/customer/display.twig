@@ -29,6 +29,7 @@
 				</div>
 			</div>
 		</div>
+		{% include 'mar/arproc/ecr/customer/toolbar.twig' %}
 		{% include 'mar/arproc/ecr/customer/invoices.twig' %}
 		{% include 'util/paginator/propel.twig' with {'pager': invoices} %}
 	{% endblock %}
@@ -41,7 +42,4 @@
 		</div>
 	{% endblock %}
 </div>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#payRangeModal">
-  Launch demo modal
-</button>
 {% include 'mar/arproc/ecr/customer/pay-range-modal.twig' %}

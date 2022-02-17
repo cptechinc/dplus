@@ -58,9 +58,8 @@ class Ecr extends Base {
 		$filter = new Filters\Mar\ArInvoice();
 		$filter->custid($data->custID);
 		$invoices = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
-
-
 		$header = $ecr->header->header($data->custID);
+
 		self::pw('page')->headline = "ECR: {$header->customer->name} Invoices";
 		return self::displayCustomerInvoices($data, $header, $invoices);
 	}
@@ -102,7 +101,7 @@ class Ecr extends Base {
 		return $html;
 	}
 
-	private static function displayPayment($data, ArPayment $payment, ArInvoice $invoice) {
+	private static function displayPayment($data, ArPaymentPending $payment, ArInvoice $invoice) {
 		$ecr = Arproc\Ecr::instance();
 
 		$html = '';

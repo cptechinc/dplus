@@ -1,6 +1,7 @@
 <?php namespace Dplus\Mar\Arproc\Ecr;
 // Dplus Model
 use ArPaymentPendingQuery, ArPaymentPending;
+use GlCodeQuery, GlCode;
 // Dplus Codes
 use Dplus\Codes\Mar\Trm;
 // ProcessWire
@@ -73,6 +74,18 @@ class Payments extends WireData {
 	 */
 	public function getTrmDescription($id) {
 		return Trm::getInstance()->description($id);
+	}
+
+	/**
+	 * Return GL Code Description
+	 * @param  string $id GL Code
+	 * @return string
+	 */
+	public function getGlCodeDescription($id) {
+		$q = GlCodeQuery::create();
+		$q->select(GlCode::aliasproperty('description'));
+		$q->filterById($id);
+		return $q->findOne();
 	}
 
 	/**

@@ -60,7 +60,7 @@
 							}
 						}
 					%}
-					<small class="text-muted cashacct description">Desc</small>
+					<small class="text-muted cashacct description">{{ ecr.payments.getGlCodeDescription(payment.cashacct) }}</small>
 				</div>
 			</div>
 			<div class="row">
@@ -94,7 +94,7 @@
 							}
 						}
 					%}
-					<small class="text-muted creditacct description">Desc</small>
+					<small class="text-muted creditacct description">{{ ecr.payments.getGlCodeDescription(payment.creditacct) }}</small>
 				</div>
 			</div>
 		</div>
