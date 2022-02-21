@@ -1,103 +1,10 @@
 <form action="" id="payment-form">
 	<div class="row">
-		<div class="col-sm-6">
-			{% include 'mar/arproc/ecr/customer/payment/form/readonly.twig' %}
-			<div class="row">
-				<div class="col-sm-4 mb-3">
-					<label for="checknbr">Check Number</label>
-				</div>
-				<div class="col-sm-8 mb-3">
-					{% include 'util/bootstrap/form/input.twig' with {
-							'input': {
-								'name': 'checknbr',
-								'size': 'sm',
-								'value': payment.checknbr,
-								'attributes': {
-									'placeholder': '',
-									'aria-label':  'Check Number'
-								}
-							}
-						}
-					%}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-4 mb-3">
-					<label for="paymentdate">Payment Date</label>
-				</div>
-				<div class="col-sm-8 mb-3">
-					{% include 'util/date-picker.twig' with {'name': 'paymentdate', 'id': 'paymentdate', 'value': ''} %}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-4 mb-3">
-					<label for="cashacct">Cash Account</label>
-				</div>
-				<div class="col-sm-8 mb-3">
-					{% include 'util/bootstrap/form/input-group.twig' with {
-							'inputgroup': {
-								'type': 'prepend',
-								'input': {
-									'name': 'cashacct',
-									'value': payment.cashacct,
-									'attributes': {
-										'placeholder': '',
-										'aria-label':  'Cash Account Numbers'
-									}
-								},
-								'button': {
-									'colorclass': 'btn-secondary',
-									'text': 'fa fa-search'|icon,
-									'attributes': {
-										'title': 'Search Cash Accounts',
-										'data-toggle': 'modal',
-										'data-target': '#ajax-modal',
-										'data-lookupurl': page.searchLookupUrl('mgl/mhm'),
-										'data-input': '#cashacct',
-										'data-update': '.cashacct.description'
-									}
-								}
-							}
-						}
-					%}
-					<small class="text-muted cashacct description">{{ ecr.payments.getGlCodeDescription(payment.cashacct) }}</small>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-4 mb-3">
-					<label for="creditacct">Credit Account</label>
-				</div>
-				<div class="col-sm-8 mb-3">
-					{% include 'util/bootstrap/form/input-group.twig' with {
-							'inputgroup': {
-								'type': 'prepend',
-								'input': {
-									'name': 'creditacct',
-									'value': payment.creditacct,
-									'attributes': {
-										'placeholder': '',
-										'aria-label':  'Credit Account Numbers'
-									}
-								},
-								'button': {
-									'colorclass': 'btn-secondary',
-									'text': 'fa fa-search'|icon,
-									'attributes': {
-										'title': 'Search Credit Accounts',
-										'data-toggle': 'modal',
-										'data-target': '#ajax-modal',
-										'data-lookupurl': page.searchLookupUrl('mgl/mhm'),
-										'data-input': '#creditacct',
-										'data-update': '.creditacct.description'
-									}
-								}
-							}
-						}
-					%}
-					<small class="text-muted creditacct description">{{ ecr.payments.getGlCodeDescription(payment.creditacct) }}</small>
-				</div>
-			</div>
+		<div class="col-sm-8">
+			{% include 'mar/arproc/ecr/customer/payment/form/left.twig' %}
 		</div>
-		<div class="col-sm-6"></div>
+		<div class="col-sm-4">
+			{% include 'mar/arproc/ecr/customer/payment/form/right.twig' %}
+		</div>
 	</div>
 </form>

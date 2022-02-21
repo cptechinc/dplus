@@ -1,0 +1,118 @@
+<div class="row">
+	<div class="col-sm-4 mb-3">
+		<label for="amountdue">Amount Due</label>
+	</div>
+	<div class="col-sm-8 mb-3">
+		<p class="form-control-plaintext form-control-sm text-right" id="amountdue">
+			{{ invoice.total|currency }}
+		</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 mb-3">
+		<label for="amountpaid">Amount Paid</label>
+	</div>
+	<div class="col-sm-8 mb-3">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'amountpaid',
+						'value': invoice.total,
+						'addclasses': ['text-right'],
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Amount Paid'
+						}
+					},
+					'span': {
+						'colorclass': 'btn-secondary',
+						'text': '$',
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 mb-3">
+		<label for="discount">Discount Applied</label>
+	</div>
+	<div class="col-sm-8 mb-3">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'discount',
+						'value': payment.discount,
+						'addclasses': ['text-right'],
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Discount Applied'
+						}
+					},
+					'span': {
+						'colorclass': 'btn-secondary',
+						'text': '$',
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 mb-3">
+		<label for="writeoff">Write-Off</label>
+	</div>
+	<div class="col-sm-8 mb-3">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'writeoff',
+						'value': payment.writeoff,
+						'addclasses': ['text-right'],
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Write-Off'
+						}
+					},
+					'span': {
+						'colorclass': 'btn-secondary',
+						'text': '$',
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 mb-3">
+		<label for="allowfreight">Freight Allow</label>
+	</div>
+	<div class="col-sm-8 mb-3">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'allowfreight',
+						'value': payment.allowfreight,
+						'addclasses': ['text-right'],
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Freight Allow'
+						}
+					},
+					'span': {
+						'colorclass': 'btn-secondary',
+						'text': '$',
+					}
+				}
+			}
+		%}
+	</div>
+</div>
