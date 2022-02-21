@@ -1,4 +1,4 @@
-<?php namespace Controllers\Map;
+<?php namespace Controllers\Map\Apmain;
 // Purl URI Library
 use Purl\Url as Purl;
 // Propel ORM Ljbrary
@@ -11,20 +11,26 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD, ProcessWire\WireInput;
 use Dplus\Filters\Map\Mxrfe  as MxrfeFilter;
 use Dplus\Filters\Map\Vendor as VendorFilter;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
+use Controllers\Map\Apmain\Base;
 
-class Mxrfe extends Controller {
+class Mxrfe extends Base {
 	private static $mxrfe;
 
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['mnfrID|text', 'mnfritemID|text', 'q|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
+		$page->title = 'Manufacturer Item X-Ref';
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
+		self::initHooks();
 
 		if (empty($data->mnfrID) === false) {
 			if (empty($data->mnfritemID) === false) {
@@ -37,7 +43,7 @@ class Mxrfe extends Controller {
 
 	public static function handleCRUD($data) {
 		$fields = ['action|text'];
-		$data = self::sanitizeParameters($data, $fields);
+		self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 
 		if ($data->action) {
@@ -47,7 +53,7 @@ class Mxrfe extends Controller {
 		self::pw('session')->redirect(self::mxrfeRedirUrl($input), $http301 = false);
 	}
 
-	public static function xref($data) {
+	private static function xref($data) {
 		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
@@ -66,11 +72,53 @@ class Mxrfe extends Controller {
 			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
 		}
 		$page->js   .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
-		$html = self::xrefDisplay($data, $xref);
+		$html = self::displayXref($data, $xref);
 		return $html;
 	}
 
-	private static function xrefDisplay($data, ItemXrefManufacturer $xref) {
+	public static function listMnfrs($data) {
+		self::sanitizeParametersShort($data, ['q|text']);
+		$page   = self::pw('page');
+		$page->show_breadcrumbs = false;
+		$mxrfe  = self::mxrfeMaster();
+		$mxrfe->recordlocker->deleteLock();
+		$filter = new VendorFilter();
+		$filter->init();
+		$filter->vendorid($mxrfe->vendorids());
+		if ($data->q) {
+			$page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
+			$filter->search($data->q);
+		}
+		$filter->sortby($page);
+		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$page->js .= self::pw('config')->twig->render('items/mxrfe/search/vendor/js.twig');
+		$html = self::displayListMnfrs($data, $vendors);
+		return $html;
+	}
+
+	public static function mnfrXrefs($data) {
+		self::sanitizeParametersShort($data, ['mnfrID|text']);
+		$page   = self::pw('page');
+		$mxrfe  = self::mxrfeMaster();
+		$mxrfe->recordlocker->deleteLock();
+
+		$filter = new MxrfeFilter();
+		$filter->vendorid($data->mnfrID);
+		$filter->sortby($page);
+		$page->headline = "MXRFE: Mnfr $data->mnfrID";
+		if ($data->q) {
+			$page->headline = "MXRFE: Searching $data->mnfrID X-Refs for '$data->q'";
+			$filter->search($data->q);
+		}
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$html  = self::displayMnfrXrefs($data, $xrefs);
+		return $html;
+	}
+
+/* =============================================================
+	Displays
+============================================================= */
+	private static function displayXref($data, ItemXrefManufacturer $xref) {
 		$config = self::pw('config');
 		$mxrfe  = self::mxrfeMaster();
 		$mxrfe->init_field_attributes_config();
@@ -126,35 +174,7 @@ class Mxrfe extends Controller {
 		return $html;
 	}
 
-	public static function list($data) {
-		$data = self::sanitizeParametersShort($data, ['mnfrID|text']);
-		if ($data->mnfrID) {
-			return self::mnfrXrefs($data);
-		}
-		return self::listMnfrs($data);
-	}
-
-	public static function listMnfrs($data) {
-		$data   = self::sanitizeParametersShort($data, ['q|text']);
-		$page   = self::pw('page');
-		$page->show_breadcrumbs = false;
-		$mxrfe  = self::mxrfeMaster();
-		$mxrfe->recordlocker->deleteLock();
-		$filter = new VendorFilter();
-		$filter->init();
-		$filter->vendorid($mxrfe->vendorids());
-		if ($data->q) {
-			$page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
-			$filter->search($data->q);
-		}
-		$filter->sortby($page);
-		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
-		$page->js .= self::pw('config')->twig->render('items/mxrfe/search/vendor/js.twig');
-		$html = self::listMnfrsDisplay($data, $vendors);
-		return $html;
-	}
-
-	private static function listMnfrsDisplay($data, PropelModelPager $vendors) {
+	private static function displayListMnfrs($data, PropelModelPager $vendors) {
 		$config = self::pw('config');
 
 		$html = '';
@@ -165,26 +185,7 @@ class Mxrfe extends Controller {
 		return $html;
 	}
 
-	public static function mnfrXrefs($data) {
-		$data = self::sanitizeParametersShort($data, ['mnfrID|text']);
-		$page   = self::pw('page');
-		$mxrfe  = self::mxrfeMaster();
-		$mxrfe->recordlocker->deleteLock();
-
-		$filter = new MxrfeFilter();
-		$filter->vendorid($data->mnfrID);
-		$filter->sortby($page);
-		$page->headline = "MXRFE: Mnfr $data->mnfrID";
-		if ($data->q) {
-			$page->headline = "MXRFE: Searching $data->mnfrID X-Refs for '$data->q'";
-			$filter->search($data->q);
-		}
-		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
-		$html  = self::mnfrXrefsDisplay($data, $xrefs);
-		return $html;
-	}
-
-	private static function mnfrXrefsDisplay($data, $xrefs) {
+	private static function displayMnfrXrefs($data, $xrefs) {
 		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
 		$mxrfe  = self::mxrfeMaster();
 		$vendor = $mxrfe->vendor($data->mnfrID);
@@ -216,7 +217,8 @@ class Mxrfe extends Controller {
 	 * @return string
 	 */
 	public static function xrefUrl($mnfrID, $mnfritemID, $itemID) {
-		$url = new Purl(self::pw('pages')->get('pw_template=mxrfe')->url);
+		$url = new Purl(Menu::mxrfeUrl());
+		$url->path->add('mxrfe');
 		$url->query->set('mnfrID', $mnfrID);
 		$url->query->set('mnfritemID', $mnfritemID);
 		$url->query->set('itemID', $itemID);
@@ -242,7 +244,7 @@ class Mxrfe extends Controller {
 	 * @return string
 	 */
 	public static function _mnfrUrl($mnfrID) {
-		$url = new Purl(self::pw('pages')->get('pw_template=mxrfe')->url);
+		$url = new Purl(Menu::mxrfeUrl());
 		$url->query->set('mnfrID', $mnfrID);
 		return $url->getUrl();
 	}
@@ -277,7 +279,7 @@ class Mxrfe extends Controller {
 		$filter->vendorid($mnfrID);
 		$position = $filter->position($xref);
 		$pagenbr = self::getPagenbrFromOffset($position);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=mxrfe')->name, $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=apmain')->name, $pagenbr);
 		return $url->getUrl();
 	}
 
@@ -310,7 +312,7 @@ class Mxrfe extends Controller {
 
 		$url = new Purl(self::_mnfrListUrl());
 		$url->query->set('focus', $mnfrID);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=mxrfe')->name, $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=apmain')->name, $pagenbr);
 		return $url->getUrl();
 	}
 
@@ -319,7 +321,7 @@ class Mxrfe extends Controller {
 	 * @return string
 	 */
 	public static function _mnfrListUrl() {
-		return self::pw('pages')->get('pw_template=mxrfe')->url;
+		return Menu::mxrfeUrl();
 	}
 
 	/**
@@ -334,7 +336,7 @@ class Mxrfe extends Controller {
 		$values = $input->$rm;
 
 		if (empty($values->text('mnfrID')) && $values->text('action') != 'update-notes') {
-			return self::pw('pages')->get('pw_template=mxrfe')->url;
+			return Menu::mxrfeUrl();
 		}
 
 		$mnfrID     = $values->text('mnfrID');
@@ -344,7 +346,7 @@ class Mxrfe extends Controller {
 
 		if (in_array($values->text('action'), ['delete-xref', 'update-notes']) === false) {
 			if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
-				return self::pw('pages')->get('pw_template=mxrfe')->url;
+				return self::pw('pages')->get('pw_template=apmain')->url;
 			}
 		}
 
@@ -363,40 +365,46 @@ class Mxrfe extends Controller {
 					$mnfrID     = $values->text('vendorID');
 					$mnfritemID = $values->text('vendoritemID');
 				}
-
 				return self::xrefUrl($mnfrID, $mnfritemID, $itemID);
 				break;
 		}
 	}
 
-	public static function init() {
-		$m = self::pw('modules')->get('XrefMxrfe');
+/* =============================================================
+	Hooks
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(pw_template=mxrfe)::mnfrUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::menuUrl', function($event) {
+			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=apmain)::mnfrUrl', function($event) {
 			$event->return = self::mnfrUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=mxrfe)::xrefUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::xrefUrl', function($event) {
 			$mnfrID        = $event->arguments(0);
 			$mnfritemID    = $event->arguments(1);
 			$itemID        = $event->arguments(2);
 			$event->return = self::xrefUrl($mnfrID, $mnfritemID, $itemID);
 		});
 
-		$m->addHook('Page(pw_template=mxrfe)::xrefExitUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::xrefExitUrl', function($event) {
 			$m = self::pw('modules')->get('XrefMxrfe');
 			$xref = $event->arguments(0);
 			$event->return = self::mnfrUrl($xref->vendorid, $m->get_recordlocker_key($xref));
 		});
 
-		$m->addHook('Page(pw_template=mxrfe)::xrefDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::xrefDeleteUrl', function($event) {
 			$mnfrID        = $event->arguments(0);
 			$mnfritemID    = $event->arguments(1);
 			$itemID        = $event->arguments(2);
 			$event->return = self::xrefDeleteUrl($mnfrID, $mnfritemID, $itemID);
 		});
 
-		$m->addHook('Page(pw_template=mxrfe)::mnfrListUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::mnfrListUrl', function($event) {
 			$event->return = self::mnfrListUrl($event->arguments(0));
 		});
 	}

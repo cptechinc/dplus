@@ -8,7 +8,9 @@ $baseDir = dirname($vendorDir);
 return array(
     'Dplus\\Filters\\AbstractFilter' => $baseDir . '/src/AbstractFilter.php',
     'Dplus\\Filters\\CodeFilter' => $baseDir . '/src/CodeFilter.php',
+    'Dplus\\Filters\\Map\\ApBuyer' => $baseDir . '/src/Map/ApBuyer.php',
     'Dplus\\Filters\\Map\\ApContact' => $baseDir . '/src/Map/ApContact.php',
+    'Dplus\\Filters\\Map\\ApTypeCode' => $baseDir . '/src/Map/ApTypeCode.php',
     'Dplus\\Filters\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
     'Dplus\\Filters\\Map\\Vendor' => $baseDir . '/src/Map/Vendor.php',
     'Dplus\\Filters\\Map\\VendorShipfrom' => $baseDir . '/src/Map/VendorShipfrom.php',

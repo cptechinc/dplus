@@ -66,10 +66,19 @@
 			]
 		],
 		'map' => [
+			'bum' => [
+				['GET', 'code/', Json\Map::class, 'getBumCode'],
+			],
 			'validate' => [
+				'bum' => [
+					['GET', 'code/', Json\Map::class, 'validateBumCode'],
+				],
 				['GET', 'vendorid/', Json\Map::class, 'validateVendorid'],
 				'vendor' => [
 					['GET', 'shipfromid/', Json\Map::class, 'validateVendorShipfromid'],
+				],
+				'vtm' => [
+					['GET', 'code/', Json\Map::class, 'validateVtmCode'],
 				],
 				'vxm' => [
 					['GET', '', Json\Map::class, 'validateVxm'],
@@ -80,6 +89,9 @@
 				],
 				['GET', 'mxrfe/', Json\Map::class, 'validateMxrfe'],
 				['GET', 'mxrfe/new/', Json\Map::class, 'validateMxrfeNew'],
+			],
+			'vtm' => [
+				['GET', 'code/', Json\Map::class, 'getVtmCode'],
 			],
 			'vxm' => [
 				['GET', '', Json\Map::class, 'getVxm'],

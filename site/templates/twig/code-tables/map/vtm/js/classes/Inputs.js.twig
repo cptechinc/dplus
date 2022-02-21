@@ -1,0 +1,20 @@
+class VtmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VtmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.fabricator    = this.form.find('select[name=fabricator]');
+		this.production    = this.form.find('select[name=production]');
+		this.competitor    = this.form.find('select[name=competitor]');
+	}
+}

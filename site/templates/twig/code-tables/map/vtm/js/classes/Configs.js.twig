@@ -1,0 +1,30 @@
+class VtmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VtmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ vtm.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ vtm.fieldAttribute('description', 'maxlength') }}
+			},
+			fabricator: {
+				default: '{{ vtm.fieldAttribute('fabricator', 'default') }}'
+			},
+			production: {
+				default: '{{ vtm.fieldAttribute('production', 'default') }}'
+			},
+			competitor: {
+				default: '{{ vtm.fieldAttribute('competitor', 'default') }}'
+			},
+		};
+	}
+}

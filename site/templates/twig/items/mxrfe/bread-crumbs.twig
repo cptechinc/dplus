@@ -3,10 +3,16 @@
 {% set values = page.wire('input').get %}
 
 {% block current_page %}
+	<li class="breadcrumb-item">
+		<a href="{{ page.menuUrl() }}">
+			<i class="fa fa-list" aria-hidden="true"></i> APMAIN
+		</a>
+	</li>
+
 	{% if values.offsetExists('mnfrID') %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.mnfrListUrl(input.get.text('mnfrID')) }}">
-				<i class="fa fa-arrows" aria-hidden="true"></i> {{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+				<i class="fa fa-arrows" aria-hidden="true"></i> MXRFE
 			</a>
 		</li>
 		{% if (values.offsetExists('mnfritemID')) %}

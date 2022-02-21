@@ -1,40 +1,60 @@
 {# vtm is an instance of ApTypeCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
-	<input type="hidden" name="table" value="vtm">
-	<input type="hidden" name="serialized" value="" disabled>
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
 
 	<div class="form-group">
 		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" maxlength="{{ max_length_code }}" value="" id="code">
+		<input type="text" name="code" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
+		<input type="text" name="description" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 	</div>
 
-	<div class="form-group">
-		<label for="fabricator">Fabricator</label>
-		<select name="fabricator" class="form-control select-group" id="fabricator">
-			<option value="N">No</option>
-			<option value="Y">Yes</option>
-		</select>
-	</div>
+	<div class="row mb-3">
+		<div class="col-sm-4 mb-3">
+			<label for="fabricator">Fabricator</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'fabricator',
+						'value' : manager.fieldAttribute('fabricator', 'default'),
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'},
+						'attributes': {
+							'data-json': 'json',
+							'readonly': manager.fieldAttribute('fabricator', 'disabled'),
+							'disabled': manager.fieldAttribute('fabricator', 'disabled'),
+						}
+					}
+				}
+			%}
+		</div>
+		<div class="col-sm-4 mb-3">
+			<label for="production">Production</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'production',
+						'value' : manager.fieldAttribute('production', 'default'),
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
 
-	<div class="form-group">
-		<label for="production">Production</label>
-		<select name="production" class="form-control select-group" id="production">
-			<option value="N">No</option>
-			<option value="Y">Yes</option>
-		</select>
-	</div>
-
-	<div class="form-group">
-		<label for="competitor">Competitor</label>
-		<select name="competitor" class="form-control select-group" id="competitor">
-			<option value="N">No</option>
-			<option value="Y">Yes</option>
-		</select>
+					}
+				}
+			%}
+		</div>
+		<div class="col-sm-4 mb-3">
+			<label for="competitor">Competitor</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'competitor',
+						'value' : manager.fieldAttribute('competitor', 'default'),
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
+					}
+				}
+			%}
+		</div>
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">

@@ -6,10 +6,26 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
 {
+    public static $prefixLengthsPsr4 = array (
+        'D' => 
+        array (
+            'Dplus\\Filters\\' => 14,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Dplus\\Filters\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+    );
+
     public static $classMap = array (
         'Dplus\\Filters\\AbstractFilter' => __DIR__ . '/../..' . '/src/AbstractFilter.php',
         'Dplus\\Filters\\CodeFilter' => __DIR__ . '/../..' . '/src/CodeFilter.php',
+        'Dplus\\Filters\\Map\\ApBuyer' => __DIR__ . '/../..' . '/src/Map/ApBuyer.php',
         'Dplus\\Filters\\Map\\ApContact' => __DIR__ . '/../..' . '/src/Map/ApContact.php',
+        'Dplus\\Filters\\Map\\ApTypeCode' => __DIR__ . '/../..' . '/src/Map/ApTypeCode.php',
         'Dplus\\Filters\\Map\\Mxrfe' => __DIR__ . '/../..' . '/src/Map/Mxrfe.php',
         'Dplus\\Filters\\Map\\Vendor' => __DIR__ . '/../..' . '/src/Map/Vendor.php',
         'Dplus\\Filters\\Map\\VendorShipfrom' => __DIR__ . '/../..' . '/src/Map/VendorShipfrom.php',
@@ -64,6 +80,8 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d::$classMap;
 
         }, null, ClassLoader::class);

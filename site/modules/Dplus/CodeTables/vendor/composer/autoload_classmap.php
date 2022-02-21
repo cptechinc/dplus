@@ -9,6 +9,8 @@ return array(
     'Dplus\\Codes\\Base' => $baseDir . '/src/Base.php',
     'Dplus\\Codes\\Base\\Simple' => $baseDir . '/src/Base/Simple.php',
     'Dplus\\Codes\\Map\\Aoptm' => $baseDir . '/src/map/Aoptm.php',
+    'Dplus\\Codes\\Map\\Bum' => $baseDir . '/src/map/Bum.php',
+    'Dplus\\Codes\\Map\\Vtm' => $baseDir . '/src/map/Vtm.php',
     'Dplus\\Codes\\Mar\\Roptm' => $baseDir . '/src/mar/Roptm.php',
     'Dplus\\Codes\\Mgl\\Dtm' => $baseDir . '/src/mgl/Dtm.php',
     'Dplus\\Codes\\Mgl\\Mhm' => $baseDir . '/src/mgl/Mhm.php',

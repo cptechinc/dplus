@@ -1,0 +1,39 @@
+class VtmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VtmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = VtmInputs.getInstance();
+		this.config = VtmConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.fabricator.val(json.fabricator);
+			this.inputs.production.val(json.production);
+			this.inputs.competitor.val(json.competitor);
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.fabricator.val(this.config.fields.fabricator.default);
+		this.inputs.production.val(this.config.fields.production.default);
+		this.inputs.competitor.val(this.config.fields.competitor.default);
+	}
+}
