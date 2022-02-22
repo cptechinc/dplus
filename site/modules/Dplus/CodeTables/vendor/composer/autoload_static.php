@@ -30,6 +30,7 @@ class ComposerStaticInit430c49f36b741f9836c2f39ed5bfc915
         'Dplus\\Codes\\Mgl\\Dtm' => __DIR__ . '/../..' . '/src/mgl/Dtm.php',
         'Dplus\\Codes\\Mgl\\Mhm' => __DIR__ . '/../..' . '/src/mgl/Mhm.php',
         'Dplus\\Codes\\Mgl\\Ttm' => __DIR__ . '/../..' . '/src/mgl/Ttm.php',
+        'Dplus\\Codes\\Min\\Csccm' => __DIR__ . '/../..' . '/src/min/Csccm.php',
         'Dplus\\Codes\\Min\\Ioptm' => __DIR__ . '/../..' . '/src/min/Ioptm.php',
         'Dplus\\Codes\\Min\\Iwhm' => __DIR__ . '/../..' . '/src/min/Iwhm.php',
         'Dplus\\Codes\\Mpm\\Dcm' => __DIR__ . '/../..' . '/src/mpm/Dcm.php',
