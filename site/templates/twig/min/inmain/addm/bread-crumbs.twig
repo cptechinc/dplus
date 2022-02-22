@@ -12,6 +12,12 @@
 {% set lastsegment = segments[segments|length] %}
 
 {% block current_page %}
+	<li class="breadcrumb-item">
+		<a href="{{ page.menuUrl() }}">
+			<i class="fa fa-list" aria-hidden="true"></i> INMAIN
+		</a>
+	</li>
+	
 	{% if values.offsetExists('itemID') and values.text('itemID') != 'new'  %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.xrefListUrl([values.text('itemID'), values.text('addonID')]|join(addm.recordlocker.glue())) }}">

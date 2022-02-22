@@ -1,7 +1,5 @@
 <?php namespace Controllers\Min\Inmain;
-
-use stdClass;
-// Purl Library
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
@@ -35,7 +33,7 @@ class Menu extends Base {
 ============================================================= */
 	public static function menuUrl() {
 		$url = new Purl(parent::menuUrl());
-		$url->path->add('inmain');
+		$url->path->add('main');
 		return $url->getUrl();
 	}
 
@@ -71,7 +69,7 @@ class Menu extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMin');
 
-		$m->addHook('Page(pw_template=min)::subfunctionUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
 		});
 	}
