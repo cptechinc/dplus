@@ -22,6 +22,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Iasm::class, 'index'],
 			['POST',  '', Inmain\Iasm::class, 'handleCRUD'],
 		],
+		'igcm' => [
+			['GET',  '', Inmain\Igcm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Igcm::class, 'index'],
+			['POST',  '', Inmain\Igcm::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

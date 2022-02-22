@@ -26,7 +26,13 @@ class Menu extends Base {
 			'name'       => 'iasm',
 			'permission' => 'iasm',
 			'title'      => 'Inventory Assortment Code',
-			'summary'    => 'View / Edit Inventory Assortment Codel'
+			'summary'    => 'View / Edit Inventory Assortment Code'
+		],
+		'igcm' => [
+			'name'       => 'igcm',
+			'permission' => 'igcm',
+			'title'      => 'Inventory Commission Code',
+			'summary'    => 'View / Edit Inventory Commission Code'
 		],
 	];
 
@@ -68,6 +74,10 @@ class Menu extends Base {
 
 	public static function iasmUrl() {
 		return self::subfunctionUrl('iasm');
+	}
+
+	public static function igcmUrl() {
+		return self::subfunctionUrl('igcm');
 	}
 
 /* =============================================================
