@@ -92,6 +92,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mii\\Loti\\Loti' => __DIR__ . '/../..' . '/classes/mii/Loti/Loti.php',
         'Controllers\\Min\\Base' => __DIR__ . '/../..' . '/classes/min/Base.php',
         'Controllers\\Min\\Inmain\\Addm' => __DIR__ . '/../..' . '/classes/min/inmain/Addm.php',
+        'Controllers\\Min\\Inmain\\Csccm' => __DIR__ . '/../..' . '/classes/min/inmain/Csccm.php',
         'Controllers\\Min\\Inmain\\I2i' => __DIR__ . '/../..' . '/classes/min/inmain/I2i.php',
         'Controllers\\Min\\Inmain\\Ioptm' => __DIR__ . '/../..' . '/classes/min/inmain/Ioptm.php',
         'Controllers\\Min\\Inmain\\Itmimg' => __DIR__ . '/../..' . '/classes/min/inmain/Itmimg.php',

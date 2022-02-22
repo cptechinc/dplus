@@ -8,12 +8,19 @@ use Controllers\Min\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'inmain';
+	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
 		'addm' => [
 			'name'       => 'addm',
 			'permission' => 'addm',
 			'title'      => 'Add-On Item Maintenance',
 			'summary'    => 'View / Edit Add-On Items'
+		],
+		'csccm' => [
+			'name'       => 'csccm',
+			'permission' => 'csccm',
+			'title'      => 'Customer Stocking Cell',
+			'summary'    => 'View / Edit Customer Stocking Cell'
 		]
 	];
 
@@ -47,6 +54,10 @@ class Menu extends Base {
 
 	public static function addmUrl() {
 		return self::subfunctionUrl('addm');
+	}
+	
+	public static function csccmUrl() {
+		return self::subfunctionUrl('csccm');
 	}
 
 /* =============================================================
