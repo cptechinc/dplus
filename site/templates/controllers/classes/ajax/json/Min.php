@@ -8,6 +8,8 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus CRUD
 use Dplus\Min\Inmain\Itm\Substitutes as ItmSub;
 use Dplus\Min\Inmain\Itm\Options as ItmOptions;
+// Dplus Codes
+use Dplus\Codes;
 // Dplus Validators
 use Dplus\CodeValidators as  Validators;
 use Dplus\CodeValidators\Min as MinValidator;
@@ -490,6 +492,42 @@ class Min extends Controller {
 		}
 		return $qnotes->notesJson($data->itemID, $data->type);
 	}
+
+	public static function validateCsccmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Min\Csccm::getInstance();
+		$exists = $bum->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Customer Stocking Cell Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Customer Stocking Cell Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCsccmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Min\Csccm::getInstance();
+
+		if ($bum->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $bum->code($data->code);
+		return $bum->codeJson($code);
+	}
+
 
 	private static function validator() {
 		return new MinValidator();

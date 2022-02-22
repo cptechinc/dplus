@@ -13,7 +13,9 @@
 			]
 		],
 		'inv' => [
+			['GET', 'csccm/code/', Json\Min::class, 'getCsccmCode'],
 			'validate' => [
+				['GET', 'csccm/code/', Json\Min::class, 'validateCsccmCode'],
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
@@ -253,7 +255,7 @@
 			],
 		],
 	];
-
+	$routes['min'] = $routes['inv'];
 	$router = new Mvc\Routers\Json();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
