@@ -15,7 +15,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the IWHM code table
+ * Class that handles the CRUD of the IASM code table
  */
 class Iasm extends Base {
 	const MODEL              = 'InvAssortmentCode';
