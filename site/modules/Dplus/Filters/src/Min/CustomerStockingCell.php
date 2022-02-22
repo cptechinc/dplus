@@ -9,6 +9,6 @@ use Dplus\Filters\CodeFilter;
 /**
  * Wrapper Class for CustomerStockingCellQuery
  */
-class CustomerStockingCell extends AbstractFilter {
+class CustomerStockingCell extends CodeFilter {
 	const MODEL = 'CustomerStockingCell';
 }
