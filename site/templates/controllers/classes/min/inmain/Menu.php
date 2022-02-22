@@ -21,7 +21,13 @@ class Menu extends Base {
 			'permission' => 'csccm',
 			'title'      => 'Customer Stocking Cell',
 			'summary'    => 'View / Edit Customer Stocking Cell'
-		]
+		],
+		'iasm' => [
+			'name'       => 'iasm',
+			'permission' => 'iasm',
+			'title'      => 'Inventory Assortment Code',
+			'summary'    => 'View / Edit Inventory Assortment Codel'
+		],
 	];
 
 /* =============================================================
@@ -55,9 +61,13 @@ class Menu extends Base {
 	public static function addmUrl() {
 		return self::subfunctionUrl('addm');
 	}
-	
+
 	public static function csccmUrl() {
 		return self::subfunctionUrl('csccm');
+	}
+
+	public static function iasmUrl() {
+		return self::subfunctionUrl('iasm');
 	}
 
 /* =============================================================

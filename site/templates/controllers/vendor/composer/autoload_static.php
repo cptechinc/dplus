@@ -94,6 +94,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Min\\Inmain\\Addm' => __DIR__ . '/../..' . '/classes/min/inmain/Addm.php',
         'Controllers\\Min\\Inmain\\Csccm' => __DIR__ . '/../..' . '/classes/min/inmain/Csccm.php',
         'Controllers\\Min\\Inmain\\I2i' => __DIR__ . '/../..' . '/classes/min/inmain/I2i.php',
+        'Controllers\\Min\\Inmain\\Iasm' => __DIR__ . '/../..' . '/classes/min/inmain/Iasm.php',
         'Controllers\\Min\\Inmain\\Ioptm' => __DIR__ . '/../..' . '/classes/min/inmain/Ioptm.php',
         'Controllers\\Min\\Inmain\\Itmimg' => __DIR__ . '/../..' . '/classes/min/inmain/Itmimg.php',
         'Controllers\\Min\\Inmain\\Menu' => __DIR__ . '/../..' . '/classes/min/inmain/Menu.php',

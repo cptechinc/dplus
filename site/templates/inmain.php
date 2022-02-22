@@ -17,6 +17,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Csccm::class, 'index'],
 			['POST',  '', Inmain\Csccm::class, 'handleCRUD'],
 		],
+		'iasm' => [
+			['GET',  '', Inmain\Iasm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Iasm::class, 'index'],
+			['POST',  '', Inmain\Iasm::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
