@@ -26,6 +26,7 @@ return array(
     'Dplus\\Filters\\Min\\I2i' => $baseDir . '/src/Min/I2i.php',
     'Dplus\\Filters\\Min\\InvAdjustmentReason' => $baseDir . '/src/Min/InvAdjustmentReason.php',
     'Dplus\\Filters\\Min\\InvAssortmentCode' => $baseDir . '/src/Min/InvAssortmentCode.php',
+    'Dplus\\Filters\\Min\\InvCommissionCode' => $baseDir . '/src/Min/InvCommissionCode.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
     'Dplus\\Filters\\Min\\ItemMaster' => $baseDir . '/src/Min/ItemMaster.php',
     'Dplus\\Filters\\Min\\ItemSubstitute' => $baseDir . '/src/Min/ItemSubstitute.php',
