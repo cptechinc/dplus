@@ -28,7 +28,7 @@ class Iwhm extends Base {
 	const DPLUS_TABLE           = 'IWHM';
 	const FIELD_ATTRIBUTES = [
 		'code' => ['type' => 'text', 'maxlength' => Warehouse::MAX_LENGTH_CODE],
-		'name' => ['type' => 'text', 'maxlength' => 300],
+		'name' => ['type' => 'text', 'maxlength' => 30],
 	];
 
 	protected static $instance;
@@ -96,7 +96,6 @@ class Iwhm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
-		$code->setUpdateinventorywatch($values->yn('updateinventorywatch'));
 		return $invalidfields;
 	}
 }
