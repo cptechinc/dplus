@@ -208,10 +208,22 @@
 			]
 		],
 		'mso' => [
+			'lsm' => [
+				['GET', 'code/', Json\Mso::class, 'getLsmCode'],
+			],
+			['GET', 'mfcm/code/', Json\Mso::class, 'getMfcmCode'],
+			['GET', 'rgarc/code/', Json\Mso::class, 'getRgarcCode'],
+			['GET', 'rgasc/code/', Json\Mso::class, 'getRgascCode'],
 			'validate' => [
 				['GET', 'freight-code/', Json\Mso::class, 'validateFreightCode'],
 				['GET', 'price-discount/', Json\Mso::class, 'validatePriceDiscount'],
 				['GET', 'cxm/', Json\Mso::class, 'validateCxm'],
+				'lsm' => [
+					['GET', 'code/', Json\Mso::class, 'validateLsmCode'],
+				],
+				['GET', 'mfcm/code/', Json\Mso::class, 'validateMfcmCode'],
+				['GET', 'rgarc/code/', Json\Mso::class, 'validateRgarcCode'],
+				['GET', 'rgasc/code/', Json\Mso::class, 'validateRgascCode'],
 			],
 			['GET', 'lowest-price/', Json\Mso::class, 'getLowestPrice'],
 			'sales-order' => [

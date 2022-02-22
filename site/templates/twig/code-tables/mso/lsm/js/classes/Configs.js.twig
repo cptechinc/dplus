@@ -1,0 +1,21 @@
+class LsmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LsmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ lsm.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ lsm.fieldAttribute('description', 'maxlength') }}
+			},
+		};
+	}
+}

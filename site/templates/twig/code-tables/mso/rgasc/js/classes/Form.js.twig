@@ -1,0 +1,38 @@
+class RgascForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new RgascForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = RgascInputs.getInstance();
+		this.config = RgascConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.whseid.val(json.whseid);
+			this.inputs.acctnbr.val(json.acctnbr);
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.whseid.val('');
+		this.inputs.acctnbr.val('');
+	}
+}

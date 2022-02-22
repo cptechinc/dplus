@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mso;
+<?php namespace Controllers\Mso\Somain;
 // Purl URI Library
 use Purl\Url as Purl;
 // Propel ORM Ljbrary
@@ -27,7 +27,7 @@ class Cxm extends Controller {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
-
+		self::initHooks();
 		if (empty($data->custID) === false) {
 			if (empty($data->custitemID) === false) {
 				return self::xref($data);
@@ -145,6 +145,7 @@ class Cxm extends Controller {
 	}
 
 	public static function list($data) {
+		self::initHooks();
 		self::sanitizeParametersShort($data, ['custID|text']);
 		if ($data->custID) {
 			return self::custXrefs($data);
@@ -246,7 +247,7 @@ class Cxm extends Controller {
 	 * @return string
 	 */
 	public static function custUrl($custID) {
-		$url = new Purl(self::pw('pages')->get('pw_template=cxm')->url);
+		$url = new Purl(Menu::cxmUrl());
 		$url->query->set('custID', $custID);
 		return $url->getUrl();
 	}
@@ -279,7 +280,7 @@ class Cxm extends Controller {
 		$url->query->set('offset', $offset);
 
 		$pagenbr = self::getPagenbrFromOffset($offset);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=cxm')->name, $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'cxm', $pagenbr);
 
 		if ($sortFilter) {
 			if ($sortFilter->q) {
@@ -309,7 +310,7 @@ class Cxm extends Controller {
 	}
 
 	public static function _custListUrl() {
-		return self::pw('pages')->get('pw_template=cxm')->url;
+		return Menu::cxmUrl();
 	}
 
 	public static function custListFocusUrl($custID) {
@@ -331,7 +332,7 @@ class Cxm extends Controller {
 
 		$offset = $filter->positionQuick($custID);
 		$pagenbr = self::getPagenbrFromOffset($offset);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=cxm')->name, $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'cxm', $pagenbr);
 		$url->query->set('focus', $custID);
 
 		if ($sortFilter) {
@@ -352,7 +353,7 @@ class Cxm extends Controller {
 	 * @return string
 	 */
 	public static function xrefUrl($custID, $custitemID) {
-		$url = new Purl(self::pw('pages')->get('pw_template=cxm')->url);
+		$url = new Purl(Menu::cxmUrl());
 		$url->query->set('custID', $custID);
 		$url->query->set('custitemID', $custitemID);
 		return $url->getUrl();
@@ -373,43 +374,45 @@ class Cxm extends Controller {
 /* =============================================================
 	Hook Functions
 ============================================================= */
-	public static function init() {
+	public static function initHooks() {
 		$m = self::getCxm();
 
-		$m->addHook("Page(pw_template=cxm)::custUrl", function($event) {
-			$p = $event->object;
+		$m->addHook('Page(pw_template=somain)::menuUrl', function($event) {
+			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=somain)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
+		});
+
+		$m->addHook("Page(pw_template=somain)::custUrl", function($event) {
 			$custID = $event->arguments(0); // To focus on
 			$event->return = self::custUrl($custID);
 		});
 
-		$m->addHook("Page(pw_template=cxm)::custListUrl", function($event) {
-			$p = $event->object;
+		$m->addHook("Page(pw_template=somain)::custListUrl", function($event) {
 			$custID = $event->arguments(0); // To focus on
 			$event->return = self::custListUrl($custID);
 		});
 
-		$m->addHook('Page(pw_template=cxm)::xrefExitUrl', function($event) {
-			$p = $event->object;
+		$m->addHook('Page(pw_template=somain)::xrefExitUrl', function($event) {
 			$xref = $event->arguments(0); // Xref
 			$cxm  = self::getCxm();
 			$event->return = self::xrefListUrl($xref->custid, $cxm->get_recordlocker_key($xref));
 		});
 
-		$m->addHook('Page(pw_template=cxm)::xrefUrl', function($event) {
-			$p = $event->object;
+		$m->addHook('Page(pw_template=somain)::xrefUrl', function($event) {
 			$custID     = $event->arguments(0);
 			$custitemID = $event->arguments(1);
 			$event->return = self::xrefUrl($custID, $custitemID);
 		});
 
-		$m->addHook('Page(pw_template=cxm)::xrefNewUrl', function($event) {
-			$p = $event->object;
+		$m->addHook('Page(pw_template=somain)::xrefNewUrl', function($event) {
 			$custID     = $event->arguments(0);
 			$event->return = self::xrefUrl($custID, 'new');
 		});
 
-		$m->addHook('Page(pw_template=cxm)::xrefDeleteUrl', function($event) {
-			$p = $event->object;
+		$m->addHook('Page(pw_template=somain)::xrefDeleteUrl', function($event) {
 			$custID     = $event->arguments(0);
 			$custitemID = $event->arguments(1);
 			$event->return = self::xrefDeleteUrl($custID, $custitemID);

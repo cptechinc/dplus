@@ -1,4 +1,5 @@
 <?php namespace Controllers\Mso\Somain;
+// Purl URI Library
 use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
@@ -10,10 +11,8 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Soptm extends Controller {
+class Soptm extends Base {
 	const SYSTEM = 'SO';
 
 /* =============================================================
@@ -24,11 +23,12 @@ class Soptm extends Controller {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
+		$page->headline = 'Sales Order Optional Code';
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
-
+		self::initHooks();
 		if (empty($data->sysop) === false) {
 			return self::sysop($data);
 		}
@@ -65,7 +65,7 @@ class Soptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mso/soptm/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getSoptm()->deleteResponse();
 		return $html;
@@ -123,7 +123,6 @@ class Soptm extends Controller {
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
-
 /* =============================================================
 	Classes, Module Getters
 ============================================================= */
@@ -154,6 +153,25 @@ class Soptm extends Controller {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::soptmUrl();
+	}
+
+	public static function urlFocus($focus = '') {
+		$sysopM = self::getSysop();
+
+		if (empty($focus) || $sysopM->exists(self::SYSTEM, $focus) === false) {
+			return self::url();
+		}
+		$sysop = $sysopM->code(self::SYSTEM, $focus);
+		$filter   = self::getFilterSysop();
+		$position = $filter->positionQuick($sysop);
+		$url = new Purl(self::url());
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'soptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
+	}
+
 	public static function sysopUrl($id) {
 		$url = new Purl(self::url());
 		$url->query->set('sysop', $id);
@@ -180,44 +198,25 @@ class Soptm extends Controller {
 		return $url->getUrl();
 	}
 
-	public static function url() {
-		return self::pw('pages')->get('pw_template=soptm')->url;
-	}
-
-	public static function urlFocus($focus = '') {
-		$sysopM = self::getSysop();
-
-		if (empty($focus) || $sysopM->exists(self::SYSTEM, $focus) === false) {
-			return self::url();
-		}
-		$sysop = $sysopM->code(self::SYSTEM, $focus);
-		$filter   = self::getFilterSysop();
-		$position = $filter->positionQuick($sysop);
-		$url = new Purl(self::url());
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'soptm', self::getPagenbrFromOffset($position, self::pw('session')->display));
-		$url->query->set('focus', $focus);
-		return $url->getUrl();
-	}
-
 /* =============================================================
 	Hooks
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMar');
 
-		$m->addHook('Page(pw_template=soptm)::sysopUrl', function($event) {
+		$m->addHook('Page(pw_template=somain)::sysopUrl', function($event) {
 			$event->return = self::sysopUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=soptm)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=somain)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=soptm)::soptmUrl', function($event) {
+		$m->addHook('Page(pw_template=somain)::soptmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=soptm)::optmUrl', function($event) {
+		$m->addHook('Page(pw_template=somain)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

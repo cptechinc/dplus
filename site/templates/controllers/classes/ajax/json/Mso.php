@@ -10,6 +10,8 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Mso     as MsoValidator;
 use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
+// Dplus Codes
+use Dplus\Codes;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -138,6 +140,146 @@ class Mso extends Controller {
 			return "X-ref $data->custID-$data->custitemID not found";
 		}
 		return $exists;
+	}
+
+	public static function validateLsmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Mso\Lsm::getInstance();
+		$exists = $bum->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Lost Sales Reason $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Lost Sales Reason $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getLsmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Mso\Lsm::getInstance();
+
+		if ($bum->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $bum->code($data->code);
+		return $bum->codeJson($code);
+	}
+
+	public static function validateMfcmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Mso\Mfcm::getInstance();
+		$exists = $bum->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Motor Freight Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Motor Freight Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getMfcmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Mso\Mfcm::getInstance();
+
+		if ($bum->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $bum->code($data->code);
+		return $bum->codeJson($code);
+	}
+
+	public static function validateRgarcCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Mso\Rgarc::getInstance();
+		$exists = $bum->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "RGA/Return Reason Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "RGA/Return Reason Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getRgarcCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Mso\Rgarc::getInstance();
+
+		if ($bum->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $bum->code($data->code);
+		return $bum->codeJson($code);
+	}
+
+	public static function validateRgascCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Mso\Rgasc::getInstance();
+		$exists = $bum->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "RGA/Return Ship Via Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "RGA/Return Ship Via Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getRgascCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Mso\Rgasc::getInstance();
+
+		if ($bum->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $bum->code($data->code);
+		return $bum->codeJson($code);
 	}
 
 	private static function validator() {

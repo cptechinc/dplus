@@ -4,12 +4,12 @@ use MotorFreightCodeQuery, MotorFreightCode as Model;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
  * Wrapper Class for MotorFreightCodeQuery
  */
-class MotorFreightCode extends AbstractFilter {
+class MotorFreightCode extends CodeFilter {
 	const MODEL = 'MotorFreightCode';
 
 /* =============================================================

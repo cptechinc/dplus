@@ -1,0 +1,21 @@
+class MfcmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new MfcmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.description2   = this.form.find('input[name=description2]');
+		this.description3   = this.form.find('input[name=description3]');
+		this.description4   = this.form.find('input[name=description4]');
+		this.class          = this.form.find('select[name=class]');
+	}
+}

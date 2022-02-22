@@ -759,7 +759,7 @@ class XrefCxm extends WireData implements Module {
 		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
 		$this->recordlocker->setUser($this->wire('user'));
 
-		$this->addHook('Page(pw_template=cxm|itm-xrefs-cxm)::search_notesURL', function($event) {
+		$this->addHook('Page(pw_template=somain|itm-xrefs-cxm)::search_notesURL', function($event) {
 			$event->return = $this->wire('pages')->get('pw_template=msa-noce-ajax')->url;
 		});
 	}

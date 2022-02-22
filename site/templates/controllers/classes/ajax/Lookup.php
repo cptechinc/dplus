@@ -89,9 +89,8 @@ class Lookup extends Controller {
 	public static function warehouses($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		self::pw('page')->headline = "Warehouses";
-		$filter = self::pw('modules')->get('FilterWarehouses');
-		$filter->init_query();
-		return self::moduleFilterResults($filter, $data);
+		$filter = new Filters\Min\Warehouse();
+		return self::filterResults($filter, $data);
 	}
 
 	/**
