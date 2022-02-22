@@ -528,6 +528,41 @@ class Min extends Controller {
 		return $bum->codeJson($code);
 	}
 
+	public static function validateIasmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Min\Iasm::getInstance();
+		$exists = $bum->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Assortment Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Assortment Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIasmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Min\Iasm::getInstance();
+
+		if ($bum->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $bum->code($data->code);
+		return $bum->codeJson($code);
+	}
+
 
 	private static function validator() {
 		return new MinValidator();

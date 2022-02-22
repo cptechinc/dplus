@@ -14,8 +14,10 @@
 		],
 		'inv' => [
 			['GET', 'csccm/code/', Json\Min::class, 'getCsccmCode'],
+			['GET', 'iasm/code/', Json\Min::class, 'getIasmCode'],
 			'validate' => [
 				['GET', 'csccm/code/', Json\Min::class, 'validateCsccmCode'],
+				['GET', 'iasm/code/', Json\Min::class, 'validateiasmCode'],
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
