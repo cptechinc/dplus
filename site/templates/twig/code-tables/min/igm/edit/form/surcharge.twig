@@ -19,7 +19,10 @@
 						'name': 'surchargetype',
 						'value' : invgroup.surchargetype,
 						'haskeys': true,
-						'options': igm.fieldAttribute('surchargetype', 'options')
+						'options': igm.fieldAttribute('surchargetype', 'options'),
+						'attributes': {
+							'readonly': invgroup.hasSurcharge() == false
+						}
 					}
 				}
 			%}
@@ -32,7 +35,8 @@
 							'name': 'surchargeamount', 'value': invgroup.surchargeamount|number_format(igm.fieldAttribute('surchargeamount', 'precision')),
 							'addclasses': ['text-right'],
 							'attributes': {
-								'precision': igm.fieldAttribute('surchargeamount', 'precision')
+								'precision': igm.fieldAttribute('surchargeamount', 'precision'),
+								'readonly': invgroup.hasSurcharge() == false or invgroup.surchargetype != 'D'
 							}
 						}
 					}
@@ -47,7 +51,8 @@
 							'name': 'surchargepercent', 'value': invgroup.surchargepercent|number_format(igm.fieldAttribute('surchargepercent', 'precision')),
 							'addclasses': ['text-right'],
 							'attributes': {
-								'precision': igm.fieldAttribute('surchargepercent', 'precision')
+								'precision': igm.fieldAttribute('surchargepercent', 'precision'),
+								'readonly': invgroup.hasSurcharge() == false or invgroup.surchargetype == 'D'
 							}
 						}
 					}

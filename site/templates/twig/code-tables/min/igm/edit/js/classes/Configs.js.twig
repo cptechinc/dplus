@@ -1,0 +1,21 @@
+class IgmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new IgmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ igm.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ igm.fieldAttribute('description', 'maxlength') }}
+			},
+		};
+	}
+}

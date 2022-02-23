@@ -4,7 +4,7 @@ $(function() {
 	var ajaxModal = $('#ajax-modal');
 	var server   = IgmRequests.getInstance();
 	var alert    = CodeAlerts.getInstance();
-	// var formCode = CodeForm.getInstance();
+	var formCode = IgmForm.getInstance();
 
 /* =============================================================
 	Event Functions
@@ -41,10 +41,39 @@ $(function() {
 			}
 		});
 	});
-	
+
 	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
 		if (formCode.inputs.code.val() == '') {
 			formCode.inputs.code.focus();
+		}
+	});
+
+	$("body").on("change", "select[name=surcharge]", function(e) {
+		var input = $(this);
+
+		if (input.val() === 'Y') {
+			formCode.inputs.surchargetype.removeAttr('readonly');
+			formCode.inputs.surchargetype.change();
+		} else {
+			formCode.inputs.surchargetype.attr('readonly', 'true');
+			formCode.inputs.surchargepercent.attr('readonly', 'true');
+			formCode.inputs.surchargepercent.val('0.000');
+			formCode.inputs.surchargeamount.attr('readonly', 'true');
+			formCode.inputs.surchargeamount.val('0.00');
+		}
+	});
+
+	$("body").on("change", "select[name=surchargetype]", function(e) {
+		var input = $(this);
+
+		if (input.val() === 'D') {
+			formCode.inputs.surchargeamount.removeAttr('readonly');
+			formCode.inputs.surchargepercent.attr('readonly', 'true');
+			formCode.inputs.surchargepercent.val('0.000');
+		} else {
+			formCode.inputs.surchargepercent.removeAttr('readonly');
+			formCode.inputs.surchargeamount.attr('readonly', 'true');
+			formCode.inputs.surchargeamount.val('0.00');
 		}
 	});
 

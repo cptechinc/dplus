@@ -1,0 +1,17 @@
+class IgmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new IgmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = IgmInputs.getInstance();
+		this.config = IgmConfigs.getInstance();
+	}
+}
