@@ -16,7 +16,18 @@
 			<i class="fa fa-list" aria-hidden="true"></i> INMAIN
 		</a>
 	</li>
-	<li class="breadcrumb-item active" aria-current="page">
-		<i class="fa fa-microchip" aria-hidden="true"></i> IGM
-	</li>
+	{% if values.offsetExists('code') == false %}
+		<li class="breadcrumb-item active" aria-current="page">
+			<i class="fa fa-microchip" aria-hidden="true"></i> IGM
+		</li>
+	{% else %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.codeListUrl(values.text('code')) }}">
+				<i class="fa fa-microchip" aria-hidden="true"></i> IGM
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ values.text('code') }}
+		</li>
+	{% endif %}
 {% endblock %}

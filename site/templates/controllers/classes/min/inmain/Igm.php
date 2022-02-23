@@ -3,6 +3,8 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
+// Dplus Model
+use InvGroupCode;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -28,6 +30,10 @@ class Igm extends Base {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
+		if (empty($data->code) === false) {
+			return self::code($data);
+		}
 		return self::list($data);
 	}
 
@@ -47,6 +53,7 @@ class Igm extends Base {
 	private static function list($data) {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
+		self::getIgm()->deleteLock();
 		$page   = self::pw('page');
 		$page->headline = "Inventory Group Code";
 
@@ -54,7 +61,7 @@ class Igm extends Base {
 
 		if (empty($data->q) === false) {
 			$filter->search($data->q);
-			$page->headline = "IGCM: Searching for '$data->q'";
+			$page->headline = "IGM: Searching for '$data->q'";
 		}
 
 		$filter->sortby($page);
@@ -66,6 +73,20 @@ class Igm extends Base {
 		$html = self::displayList($data, $codes);
 		self::getIgm()->deleteResponse();
 		return $html;
+	}
+
+	private static function code($data) {
+		self::pw('page')->headline = "IGM: Adding New Code";
+
+		$igm = self::getIgm();
+		$invGroup = $igm->code($data->code);
+
+		if ($invGroup->isNew() === false) {
+			self::pw('page')->headline = "IGM: Editing $data->code";
+			$igm->lockrecord($invGroup);
+		}
+		self::initHooks();
+		return self::displayCode($data, $invGroup);
 	}
 
 /* =============================================================
@@ -92,9 +113,14 @@ class Igm extends Base {
 		return $url->getUrl();
 	}
 
-	public static function codeDeleteUrl($code) {
+	public static function codeEditUrl($code) {
 		$url = new Purl(Menu::igmUrl());
 		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	public static function codeDeleteUrl($code) {
+		$url = new Purl(self::codeEditUrl($code));
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();
 	}
@@ -109,7 +135,7 @@ class Igm extends Base {
 		$html  = '';
 		$html .= $config->twig->render('code-tables/min/igm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $igm, 'codes' => $codes]);
+		$html .= $config->twig->render('code-tables/min/igm/list.twig', ['manager' => $igm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {
 			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		}
@@ -117,13 +143,34 @@ class Igm extends Base {
 		return $html;
 	}
 
-	public static function displayResponse($data) {
+	private static function displayCode($data, InvGroupCode $invGroup) {
+		$config = self::pw('config');
+		$igm = self::getIgm();
+
+		$html  = '';
+		$html .= $config->twig->render('code-tables/min/igm/bread-crumbs.twig');
+		$html .= self::displayResponse($data);
+		$html .= self::displayLocked($data);
+		return $html;
+	}
+
+	private static function displayResponse($data) {
 		$igm = self::getIgm();
 		$response = $igm->getResponse();
 		if (empty($response)) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
+	}
+
+	private static function displayLocked($data) {
+		$igm = self::getIgm();
+
+		if ($igm->recordlocker->isLocked($data->code) && $igm->recordlocker->userHasLocked($data->code) === false) {
+			$msg = "Group Code $data->code is being locked by " . $igm->recordlocker->getLockingUser($data->code);
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Code $data->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		}
+		return '';
 	}
 
 /* =============================================================
@@ -138,6 +185,14 @@ class Igm extends Base {
 
 		$m->addHook('Page(pw_template=inmain)::menuTitle', function($event) {
 			$event->return = Menu::TITLE;
+		});
+
+		$m->addHook('Page(pw_template=inmain)::codeListUrl', function($event) {
+			$event->return = self::igmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=inmain)::codeEditUrl', function($event) {
+			$event->return = self::codeEditUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=inmain)::codeDeleteUrl', function($event) {
