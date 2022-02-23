@@ -497,8 +497,8 @@ class Min extends Controller {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Csccm::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Min\Csccm::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -518,22 +518,20 @@ class Min extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Csccm::getInstance();
+		$manager = Codes\Min\Csccm::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 	public static function validateIasmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Iasm::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Min\Iasm::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -553,22 +551,20 @@ class Min extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Iasm::getInstance();
+		$manager = Codes\Min\Iasm::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 	public static function validateIgcmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Igcm::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Min\Igcm::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -588,22 +584,20 @@ class Min extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Igcm::getInstance();
+		$manager = Codes\Min\Igcm::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 	public static function validateIgmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Igm::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Min\Igm::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -623,22 +617,20 @@ class Min extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Igm::getInstance();
+		$manager = Codes\Min\Igm::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 	public static function validateIplmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Iplm::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Min\Iplm::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -658,14 +650,12 @@ class Min extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Min\Iplm::getInstance();
+		$manager = Codes\Min\Iplm::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 
