@@ -11,6 +11,7 @@ use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
+use Dplus\Codes;
 use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
@@ -29,10 +30,14 @@ class Igm extends Base {
 	const FIELD_ATTRIBUTES = [
 		'code'             => ['type' => 'text', 'maxlength' => InvGroupCode::MAX_LENGTH_CODE],
 		'description'      => ['type' => 'text', 'maxlength' => 20],
+		'freightgroup'     => ['type' => 'text', 'maxlength' => 2],
 		'surchargetype'    => ['type' => 'text', 'options' => ['D' => 'Dollar', 'P' => 'Percent']],
 		'surchargeamount'  => ['type' => 'number', 'precision' => 2],
 		'surchargepercent' => ['type' => 'number', 'precision' => 3],
-		'webgroup'         => ['type' => 'text', 'disabled' => true],
+		'webgroup'         => ['type' => 'text', 'disabled' => true, 'default' => 'N'],
+		'salesprogram'     => ['type' => 'text', 'disabled' => true, 'default' => 'N'],
+		'ecommdesc'        => ['type' => 'text', 'disabled' => true],
+		'coop'             => ['type' => 'text', 'default' => 'N'],
 	];
 
 	private $fieldAttributes;
@@ -44,9 +49,12 @@ class Igm extends Base {
 	public function initFieldAttributes() {
 		$configAr = Configs\Ar::config();
 		$configSo = Configs\So::config();
+		$custID   = Configs\Sys::custid();
+
 		$attributes = self::FIELD_ATTRIBUTES;
-		$attributes['webgroup']['disabled'] = $configAr->isWebGroup() === false || Configs\Sys::custid() == 'ALUMAC';
+		$attributes['webgroup']['disabled']     = $configAr->isWebGroup() === false || $custID == 'ALUMAC';
 		$attributes['salesprogram']['disabled'] = $configSo->isRequestProgram() === false;
+		$attributes['ecommdesc']['disabled']    =  $custID != 'LINDST';
 		$this->fieldAttributes = $attributes;
 	}
 
@@ -103,5 +111,28 @@ class Igm extends Base {
 			$code->setId($id);
 		}
 		return $code;
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return GL Code Description
+	 * @param  string $id GL Code
+	 * @return string
+	 */
+	public function glCodeDescription($id) {
+		$mhm = Codes\Mgl\Mhm::getInstance();
+		return $mhm->description($id);
+	}
+
+	/**
+	 * Return Product Line Code Description
+	 * @param  string $id Product Line Code
+	 * @return string
+	 */
+	public function productLineCodeDescription($id) {
+		$iplm = Codes\Min\Iplm::getInstance();
+		return $iplm->description($id);
 	}
 }
