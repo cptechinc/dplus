@@ -82,8 +82,6 @@ class Igm extends Base {
 		return $this->fieldAttributes[$field][$attr];
 	}
 
-
-
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
@@ -111,6 +109,56 @@ class Igm extends Base {
 			$code->setId($id);
 		}
 		return $code;
+	}
+
+/* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Update Record with Input Data
+	 * @param  WireInput $input Input Data
+	 * @param  Code      $code
+	 * @return array
+	 */
+	protected function _inputUpdate(WireInput $input, Code $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields   = parent::_inputUpdate($input, $code);
+		$invalidfieldsGL = $this->inputUpdateGlAccts($input, $code);
+		$invalidfields = array_merge($invalidfields, $invalidfieldsGL);
+		return $invalidfields;
+	}
+
+	/**
+	 * Update GL codes for record
+	 * @param  WireInput    $input Input Data
+	 * @param  InvGroupCode $code
+	 * @return array
+	 */
+	private function inputUpdateGlAccts(WireInput $input, InvGroupCode $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$fields = [
+			'sales'     => 'Sales GL Account',
+			'credits'   => 'Credits GL Account',
+			'cogs'      => 'Cost of Goods Sold GL Account',
+			'inventory' => 'Inventory GL Account',
+			'dropship'  => 'Drop Ship GL Account',
+		];
+		$invalidfields = [];
+		$mhm = Codes\Mgl\Mhm::getInstance();
+
+		foreach ($fields as $name => $description) {
+			$exists = $mhm->exists($values->text($name));
+
+			if ($exists === false) {
+				$invalidfields[$name] = $description;
+				continue;
+			}
+			$setField = 'set'.ucfirst($name);
+			$code->$setField($values->text($name));
+		}
+		return $invalidfields;
 	}
 
 /* =============================================================
