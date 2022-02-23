@@ -175,68 +175,110 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	// var validator = formCode.form.validate({
-	// 	errorClass: "is-invalid",
-	// 	validClass: "is-valid",
-	// 	errorPlacement: function(error, element) {
-	// 		error.insertAfter(element).addClass('invalid-feedback');
-	// 	},
-	// 	rules: {
-	// 		code: {
-	// 			required: true,
-	// 			maxlength: formCode.config.fields.code.maxlength,
-	// 			remote: {
-	// 				url: '{{ page.jsonApiUrl('min/validate/igm/code/') }}',
-	// 				type: "get",
-	// 				data: {
-	// 					jqv: 'true',
-	// 					new: function() {
-	// 						return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
-	// 					},
-	// 				}
-	// 			}
-	// 		},
-	// 		description: {
-	// 			maxlength: formCode.config.fields.description.maxlength,
-	// 		}
-	// 	},
-	// 	submitHandler: function(form) {
-	// 		var formCode = IgmForm.getInstance();
-	// 		var server   = IgmRequests.getInstance();
-	// 		var code = formCode.inputs.code.val();
-	//
-	// 		if (formCode.inputs.form.attr('data-code') == code) {
-	// 			form.submit();
-	// 		} else {
-	// 			server.validateCode(code, function(exists) {
-	// 				var alert = IgmAlerts.getInstance();
-	// 				if (exists === false) {
-	// 					form.submit();
-	// 					return true;
-	// 				}
-	//
-	// 				alert.codeExists(code, function(editCode) {
-	// 					if (editCode) {
-	// 						var modal = formCode.form.closest('.modal');
-	//
-	// 						if (editCode) {
-	// 							server.getCode(code, function(response) {
-	// 								if (response) {
-	// 									modal.find('.modal-title').text('Edit Code ' + code);
-	// 									formCode.updateInputsFromJson(response);
-	// 								}
-	// 							});
-	// 						} else {
-	// 							modal.modal('hide');
-	// 						}
-	// 					} else {
-	// 						form.submit();
-	// 					}
-	// 				});
-	// 			});
-	// 		}
-	// 	}
-	// });
+	var validator = formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: formCode.config.fields.code.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('min/validate/igm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			description: {
+				maxlength: formCode.config.fields.description.maxlength,
+			},
+			sales: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.form.find('input[name=sales]').val();
+						},
+					}
+				}
+			},
+			credit: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.form.find('input[name=credit]').val();
+						},
+					}
+				}
+			},
+			cogs: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.form.find('input[name=cogs]').val();
+						},
+					}
+				}
+			},
+			inventory: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.form.find('input[name=inventory]').val();
+						},
+					}
+				}
+			},
+			dropship: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.form.find('input[name=dropship]').val();
+						},
+					}
+				}
+			},
+			surchargeamount: {
+				required: function() {
+					return formCode.inputs.surcharge.val() == 'Y' && formCode.inputs.surchargetype.val() == 'D';
+				}
+			},
+			surchargepercent: {
+				required: function() {
+					return formCode.inputs.surcharge.val() == 'Y' && formCode.inputs.surchargetype.val() == 'P';
+				}
+			}
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
 
 /* =============================================================
 	Form Functions
