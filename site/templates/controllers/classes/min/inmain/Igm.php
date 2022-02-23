@@ -135,7 +135,7 @@ class Igm extends Base {
 
 		$html  = '';
 		$html .= $config->twig->render('code-tables/min/igm/bread-crumbs.twig');
-		$html .= self::displayResponse($data);
+		$html .= '<div class="mb-3">'.self::displayResponse($data).'</div>';
 		$html .= $config->twig->render('code-tables/min/igm/list.twig', ['manager' => $igm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {
 			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
@@ -151,8 +151,8 @@ class Igm extends Base {
 
 		$html  = '';
 		$html .= $config->twig->render('code-tables/min/igm/bread-crumbs.twig');
-		$html .= self::displayResponse($data);
-		$html .= self::displayLocked($data);
+		$html .= '<div class="mb-3">'.self::displayResponse($data).'</div>';
+		$html .= '<div class="mb-3">'.self::displayLocked($data).'</div>';
 		$html .= $config->twig->render('code-tables/min/igm/edit/display.twig', ['igm' => $igm, 'invgroup' => $invGroup]);
 		return $html;
 	}

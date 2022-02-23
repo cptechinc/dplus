@@ -135,7 +135,7 @@
 	</div>
 	<hr>
 	<div class="d-flex justify-content-between align-items-center">
-		{% if manager.recordlocker.isLocked(code.code) == false or manager.recordlocker.isLockedByUser(code.code) %}
+		{% if igm.recordlocker.isLocked(invgroup.code) == false or igm.recordlocker.userHasLocked(invgroup.code) %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>

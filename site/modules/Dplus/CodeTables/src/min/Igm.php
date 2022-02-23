@@ -25,8 +25,8 @@ class Igm extends Base {
 	const DESCRIPTION        = 'Inventory Group Code';
 	const DESCRIPTION_RECORD = 'Inventory Group Code';
 	const RESPONSE_TEMPLATE  = 'Inventory Group Code {code} {not} {crud}';
-	const RECORDLOCKER_FUNCTION = 'iasm';
-	const DPLUS_TABLE           = 'IASM';
+	const RECORDLOCKER_FUNCTION = 'igm';
+	const DPLUS_TABLE           = 'IGM';
 	const FIELD_ATTRIBUTES = [
 		'code'             => ['type' => 'text', 'maxlength' => InvGroupCode::MAX_LENGTH_CODE],
 		'description'      => ['type' => 'text', 'maxlength' => 20],
