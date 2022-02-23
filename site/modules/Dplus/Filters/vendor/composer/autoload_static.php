@@ -42,6 +42,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Min\\InvAdjustmentReason' => __DIR__ . '/../..' . '/src/Min/InvAdjustmentReason.php',
         'Dplus\\Filters\\Min\\InvAssortmentCode' => __DIR__ . '/../..' . '/src/Min/InvAssortmentCode.php',
         'Dplus\\Filters\\Min\\InvCommissionCode' => __DIR__ . '/../..' . '/src/Min/InvCommissionCode.php',
+        'Dplus\\Filters\\Min\\InvGroupCode' => __DIR__ . '/../..' . '/src/Min/InvGroupCode.php',
         'Dplus\\Filters\\Min\\ItemGroup' => __DIR__ . '/../..' . '/src/Min/ItemGroup.php',
         'Dplus\\Filters\\Min\\ItemMaster' => __DIR__ . '/../..' . '/src/Min/ItemMaster.php',
         'Dplus\\Filters\\Min\\ItemSubstitute' => __DIR__ . '/../..' . '/src/Min/ItemSubstitute.php',
