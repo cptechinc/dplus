@@ -34,6 +34,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Commission Code',
 			'summary'    => 'View / Edit Inventory Commission Code'
 		],
+		'igm' => [
+			'name'       => 'igm',
+			'permission' => 'igm',
+			'title'      => 'Inventory Group Code',
+			'summary'    => 'View / Edit Inventory Group Code'
+		],
 	];
 
 /* =============================================================
@@ -78,6 +84,10 @@ class Menu extends Base {
 
 	public static function igcmUrl() {
 		return self::subfunctionUrl('igcm');
+	}
+
+	public static function igmUrl() {
+		return self::subfunctionUrl('igm');
 	}
 
 /* =============================================================
