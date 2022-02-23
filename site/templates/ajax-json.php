@@ -17,11 +17,13 @@
 			['GET', 'iasm/code/', Json\Min::class, 'getIasmCode'],
 			['GET', 'igcm/code/', Json\Min::class, 'getIgcmCode'],
 			['GET', 'igm/code/', Json\Min::class, 'getIgmCode'],
+			['GET', 'iplm/code/', Json\Min::class, 'getIplmCode'],
 			'validate' => [
 				['GET', 'csccm/code/', Json\Min::class, 'validateCsccmCode'],
 				['GET', 'iasm/code/', Json\Min::class, 'validateIasmCode'],
 				['GET', 'igcm/code/', Json\Min::class, 'validateIgcmCode'],
 				['GET', 'igm/code/', Json\Min::class, 'validateIgmCode'],
+				['GET', 'iplm/code/', Json\Min::class, 'validateIplmCode'],
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],

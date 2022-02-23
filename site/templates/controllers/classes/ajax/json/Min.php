@@ -633,6 +633,41 @@ class Min extends Controller {
 		return $bum->codeJson($code);
 	}
 
+	public static function validateIplmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Min\Iplm::getInstance();
+		$exists = $bum->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Product Line Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Product Line Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIplmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Min\Iplm::getInstance();
+
+		if ($bum->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $bum->code($data->code);
+		return $bum->codeJson($code);
+	}
+
 
 	private static function validator() {
 		return new MinValidator();
