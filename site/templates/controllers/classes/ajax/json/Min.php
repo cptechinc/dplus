@@ -658,6 +658,39 @@ class Min extends Controller {
 		return $manager->codeJson($manager->code($data->code));
 	}
 
+	public static function validateIgpmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Igpm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Price Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Price Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIgpmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Igpm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
 
 	private static function validator() {
 		return new MinValidator();
