@@ -24,6 +24,7 @@ return array(
     'Controllers\\Ajax\\Json\\Wm\\Receiving' => $baseDir . '/classes/ajax/json/Wm/Receiving.php',
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
     'Controllers\\Ajax\\Lookup\\Lookup' => $baseDir . '/classes/ajax/Lookup/Lookup.php',
+    'Controllers\\Ajax\\Lookup\\Min' => $baseDir . '/classes/ajax/Lookup/Min.php',
     'Controllers\\Ajax\\Lookup\\Mth' => $baseDir . '/classes/ajax/Lookup/Mth.php',
     'Controllers\\Dplus\\Dashboard' => $baseDir . '/classes/dplus/Dashboard.php',
     'Controllers\\Dplus\\Dashboard\\Common' => $baseDir . '/classes/dplus/Dashboard/Common.php',

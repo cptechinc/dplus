@@ -25,6 +25,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Json\\Wm\\Receiving' => __DIR__ . '/../..' . '/classes/ajax/json/Wm/Receiving.php',
         'Controllers\\Ajax\\Lookup' => __DIR__ . '/../..' . '/classes/ajax/Lookup.php',
         'Controllers\\Ajax\\Lookup\\Lookup' => __DIR__ . '/../..' . '/classes/ajax/Lookup/Lookup.php',
+        'Controllers\\Ajax\\Lookup\\Min' => __DIR__ . '/../..' . '/classes/ajax/Lookup/Min.php',
         'Controllers\\Ajax\\Lookup\\Mth' => __DIR__ . '/../..' . '/classes/ajax/Lookup/Mth.php',
         'Controllers\\Dplus\\Dashboard' => __DIR__ . '/../..' . '/classes/dplus/Dashboard.php',
         'Controllers\\Dplus\\Dashboard\\Common' => __DIR__ . '/../..' . '/classes/dplus/Dashboard/Common.php',
