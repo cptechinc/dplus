@@ -19,6 +19,7 @@ return array(
     'Dplus\\Codes\\Min\\Iasm' => $baseDir . '/src/min/Iasm.php',
     'Dplus\\Codes\\Min\\Igcm' => $baseDir . '/src/min/Igcm.php',
     'Dplus\\Codes\\Min\\Igm' => $baseDir . '/src/min/Igm.php',
+    'Dplus\\Codes\\Min\\Igpm' => $baseDir . '/src/min/Igpm.php',
     'Dplus\\Codes\\Min\\Ioptm' => $baseDir . '/src/min/Ioptm.php',
     'Dplus\\Codes\\Min\\Iplm' => $baseDir . '/src/min/Iplm.php',
     'Dplus\\Codes\\Min\\Iwhm' => $baseDir . '/src/min/Iwhm.php',
