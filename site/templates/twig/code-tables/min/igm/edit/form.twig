@@ -99,7 +99,8 @@
 								'value': invgroup.productline,
 								'attributes': {
 									'placeholder': 'Product Line',
-									'aria-label':  'Product Line'
+									'aria-label':  'Product Line',
+									'data-jqv': 'true'
 								}
 							},
 							'button': {
@@ -116,7 +117,7 @@
 						}
 					}
 				%}
-				<small class="text-muted product-line">{{ igm.productLineCodeDescription(invgroup.productline) }}</small>
+				<small class="text-muted productline-desc">{{ igm.productLineCodeDescription(invgroup.productline) }}</small>
 			</div>
 
 			{% if igm.fieldAttribute('ecommdesc', 'disabled') == false %}

@@ -43,4 +43,22 @@ class IgmRequests {
 			callback(response)
 		});
 	}
+
+	validateProductLineCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('min/validate/iplm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getProductLineCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('min/iplm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
 }

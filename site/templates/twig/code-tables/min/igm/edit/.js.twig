@@ -77,6 +77,20 @@ $(function() {
 		}
 	});
 
+	$("body").on("change", "input[name=productline]", function(e) {
+		var input = $(this);
+		var code = input.val();
+
+		var span = $('.productline-desc');
+		span.text('');
+
+		server.getProductLineCode(code, function(productline) {
+			if (productline) {
+				span.text(productline.description);
+			}
+		});
+	});
+
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */
