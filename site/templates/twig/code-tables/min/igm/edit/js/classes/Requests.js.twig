@@ -9,7 +9,7 @@ class IgmRequests {
 	}
 
 	validateCode(code, callback) {
-		var ajax = new AjaxRequest(this.validateCodeUrl());
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/validate/igm/code/') }}');
 
 		ajax.setData({code: code});
 		ajax.request(function(response) {
@@ -26,7 +26,21 @@ class IgmRequests {
 		});
 	}
 
-	validateCodeUrl() {
-		return '{{ page.jsonApiUrl('inv/validate/igm/code/') }}';
+	validateGlCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mgl/validate/gl-code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getGlCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mgl/gl-code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
 	}
 }

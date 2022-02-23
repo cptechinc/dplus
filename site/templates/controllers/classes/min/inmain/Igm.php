@@ -86,6 +86,7 @@ class Igm extends Base {
 			$igm->lockrecord($invGroup);
 		}
 		self::initHooks();
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/igm/edit/.js.twig', ['igm' => $igm]);
 		return self::displayCode($data, $invGroup);
 	}
 
