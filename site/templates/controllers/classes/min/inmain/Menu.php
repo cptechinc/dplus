@@ -46,6 +46,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Price Code',
 			'summary'    => 'View / Edit Inventory Price Code'
 		],
+		'iplm' => [
+			'name'       => 'iplm',
+			'permission' => 'iplm',
+			'title'      => 'Inventory Product Line Code',
+			'summary'    => 'View / Edit Inventory Product Line Code'
+		],
 	];
 
 /* =============================================================
@@ -98,6 +104,10 @@ class Menu extends Base {
 
 	public static function igpmUrl() {
 		return self::subfunctionUrl('igpm');
+	}
+
+	public static function iplmUrl() {
+		return self::subfunctionUrl('iplm');
 	}
 
 /* =============================================================

@@ -37,6 +37,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Igpm::class, 'index'],
 			['POST',  '', Inmain\Igpm::class, 'handleCRUD'],
 		],
+		'iplm' => [
+			['GET',  '', Inmain\Iplm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Iplm::class, 'index'],
+			['POST',  '', Inmain\Iplm::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
