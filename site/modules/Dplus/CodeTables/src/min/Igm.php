@@ -124,9 +124,10 @@ class Igm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields   = parent::_inputUpdate($input, $code);
-		$invalidfieldsGL = $this->inputUpdateGlAccts($input, $code);
-		$invalidfieldsSu = $this->inputUpdateSurcharge($input, $code);
-		$invalidfields = array_merge($invalidfields, $invalidfieldsGL, $invalidfieldsSu);
+		$invalidfieldsGL  = $this->inputUpdateGlAccts($input, $code);
+		$invalidfieldsSu  = $this->inputUpdateSurcharge($input, $code);
+		$invalidfieldsIgm = $this->inputUpdateIgm($input, $code);
+		$invalidfields = array_merge($invalidfields, $invalidfieldsGL, $invalidfieldsSu, $invalidfieldsIgm);
 		return $invalidfields;
 	}
 
@@ -163,7 +164,7 @@ class Igm extends Base {
 	}
 
 	/**
-	 * Update GL Accts for record
+	 * Update Surcharge fields for record
 	 * @param  WireInput    $input Input Data
 	 * @param  InvGroupCode $code
 	 * @return array
@@ -189,6 +190,47 @@ class Igm extends Base {
 		}
 		$code->setSurchargepercent($values->float('surchargepercent', ['precision' => $this->fieldAttribute('surchargepercent', 'precision')]));
 		$code->setSurchargeamount(0.00);
+		return $invalidfields;
+	}
+
+	/**
+	 * Update Surcharge fields for record
+	 * @param  WireInput    $input Input Data
+	 * @param  InvGroupCode $code
+	 * @return array
+	 */
+	private function inputUpdateIgm(WireInput $input, InvGroupCode $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = [];
+
+		$code->setFreightgroup($values->text('freightgroup', ['maxLength' => $this->fieldAttribute('freightgroup', 'maxlength')]));
+
+		if ($this->fieldAttribute('webgroup', 'disabled') === false) {
+			$code->setWebgroup($values->text('webgroup'));
+		}
+
+		if ($this->fieldAttribute('salesprogram', 'disabled') === false) {
+			$code->setSalesprogram($values->text('salesprogram'));
+		}
+
+		if ($this->fieldAttribute('ecommdesc', 'disabled') === false) {
+			$code->setEcommdesc($values->text('ecommdesc'));
+		}
+
+		if ($values->text('productline') == '') {
+			$code->setProductline($values->text('productline'));
+			return $invalidfields;
+		}
+
+		$iplm = Codes\Min\Iplm::getInstance();
+
+		if ($iplm->exists($values->text('productline')) === false) {
+			$invalidfields['productline'] = 'Product Line';
+			return $invalidfields;
+		}
+
+		$code->setProductline($values->text('productline'));
 		return $invalidfields;
 	}
 
