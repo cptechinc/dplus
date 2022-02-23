@@ -31,13 +31,16 @@ class Igm extends Base {
 		'code'             => ['type' => 'text', 'maxlength' => InvGroupCode::MAX_LENGTH_CODE],
 		'description'      => ['type' => 'text', 'maxlength' => 20],
 		'freightgroup'     => ['type' => 'text', 'maxlength' => 2],
-		'surchargetype'    => ['type' => 'text', 'options' => ['D' => 'Dollar', 'P' => 'Percent']],
+		'surchargetype'    => ['type' => 'text', 'options' => ['D' => 'Dollar', 'P' => 'Percent'], 'default' => 'D'],
 		'surchargeamount'  => ['type' => 'number', 'precision' => 2],
 		'surchargepercent' => ['type' => 'number', 'precision' => 3],
 		'webgroup'         => ['type' => 'text', 'disabled' => true, 'default' => 'N'],
 		'salesprogram'     => ['type' => 'text', 'disabled' => true, 'default' => 'N'],
 		'ecommdesc'        => ['type' => 'text', 'disabled' => true],
 		'coop'             => ['type' => 'text', 'default' => 'N'],
+		'maxqtysmall'      => ['type' => 'number', 'precision' => 0, 'default' => 0],
+		'maxqtymedium'      => ['type' => 'number', 'precision' => 0, 'default' => 0],
+		'maxqtylarge'      => ['type' => 'number', 'precision' => 0, 'default' => 0],
 	];
 
 	private $fieldAttributes;
@@ -99,15 +102,24 @@ class Igm extends Base {
 	CRUD Creates
 ============================================================= */
 	/**
-	 * Return New Code
+	 * Return new InvGroupCode
+	 * @param  string $id Code
 	 * @return InvGroupCode
 	 */
 	public function new($id = '') {
+		$this->initFieldAttributes();
 		$code = new InvGroupCode();
+
 		if (empty($id) === false && strtolower($id) != 'new') {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
+		$code->setSurchargetype($this->fieldAttribute('surchargetype', 'default'));
+		$code->setWebgroup($this->fieldAttribute('webgroup', 'default'));
+		$code->setSalesprogram($this->fieldAttribute('salesprogram', 'default'));
+		$code->setMaxqtysmall($this->fieldAttribute('maxqtysmall', 'default'));
+		$code->setMaxqtymedium($this->fieldAttribute('maxqtymedium', 'default'));
+		$code->setMaxqtylarge($this->fieldAttribute('maxqtylarge', 'default'));
 		return $code;
 	}
 
