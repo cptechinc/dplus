@@ -53,7 +53,7 @@ class Igm extends Base {
 	private static function list($data) {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
-		self::getIgm()->deleteLock();
+		self::getIgm()->recordlocker->deleteLock();
 		$page   = self::pw('page');
 		$page->headline = "Inventory Group Code";
 
@@ -69,7 +69,7 @@ class Igm extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
-		$page->js .= self::pw('config')->twig->render('code-tables/min/igm/.js.twig', ['igm' => self::getIgm()]);
+		$page->js .= self::pw('config')->twig->render('code-tables/min/igm/list/.js.twig');
 		$html = self::displayList($data, $codes);
 		self::getIgm()->deleteResponse();
 		return $html;
@@ -79,7 +79,7 @@ class Igm extends Base {
 		self::pw('page')->headline = "IGM: Adding New Code";
 
 		$igm = self::getIgm();
-		$invGroup = $igm->code($data->code);
+		$invGroup = $igm->getOrCreate($data->code);
 
 		if ($invGroup->isNew() === false) {
 			self::pw('page')->headline = "IGM: Editing $data->code";
@@ -191,6 +191,10 @@ class Igm extends Base {
 
 		$m->addHook('Page(pw_template=inmain)::codeListUrl', function($event) {
 			$event->return = self::igmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=inmain)::codeAddUrl', function($event) {
+			$event->return = self::codeEditUrl('new');
 		});
 
 		$m->addHook('Page(pw_template=inmain)::codeEditUrl', function($event) {
