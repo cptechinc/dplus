@@ -16,6 +16,12 @@ class IgmConfigs {
 			description: {
 				maxlength: {{ igm.fieldAttribute('description', 'maxlength') }}
 			},
+			surchargeamount: {
+				precision: {{ igm.fieldAttribute('surchargeamount', 'precision') }}
+			},
+			surchargepercent: {
+				precision: {{ igm.fieldAttribute('surchargepercent', 'precision') }}
+			},
 		};
 	}
 }

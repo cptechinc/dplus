@@ -32,7 +32,6 @@ $(function() {
 		}
 	});
 
-
 /* =============================================================
 	Event Functions
 ============================================================= */
@@ -116,6 +115,18 @@ $(function() {
 				span.text(productline.description);
 			}
 		});
+	});
+
+	$("body").on("change", "input[name=surchargeamount]", function(e) {
+		var input = $(this);
+		var amt = floatParse(input.val());
+		input.val(amt.toFixed(formCode.config.fields.surchargeamount.precision));
+	});
+
+	$("body").on("change", "input[name=surchargepercent]", function(e) {
+		var input = $(this);
+		var amt = floatParse(input.val());
+		input.val(amt.toFixed(formCode.config.fields.surchargepercent.precision));
 	});
 
 /* =============================================================
