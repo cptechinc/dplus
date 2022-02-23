@@ -125,12 +125,13 @@ class Igm extends Base {
 		$values = $input->$rm;
 		$invalidfields   = parent::_inputUpdate($input, $code);
 		$invalidfieldsGL = $this->inputUpdateGlAccts($input, $code);
-		$invalidfields = array_merge($invalidfields, $invalidfieldsGL);
+		$invalidfieldsSu = $this->inputUpdateSurcharge($input, $code);
+		$invalidfields = array_merge($invalidfields, $invalidfieldsGL, $invalidfieldsSu);
 		return $invalidfields;
 	}
 
 	/**
-	 * Update GL codes for record
+	 * Update GL Accts for record
 	 * @param  WireInput    $input Input Data
 	 * @param  InvGroupCode $code
 	 * @return array
@@ -158,6 +159,36 @@ class Igm extends Base {
 			$setField = 'set'.ucfirst($name);
 			$code->$setField($values->text($name));
 		}
+		return $invalidfields;
+	}
+
+	/**
+	 * Update GL Accts for record
+	 * @param  WireInput    $input Input Data
+	 * @param  InvGroupCode $code
+	 * @return array
+	 */
+	private function inputUpdateSurcharge(WireInput $input, InvGroupCode $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = [];
+
+		$code->setSurcharge($values->yn('surcharge'));
+
+		if ($values->ynbool('surcharge') === false) {
+			$code->setSurchargeamount('0.00');
+			$code->setSurchargepercent('0.000');
+			return $invalidfields;
+		}
+		$code->setSurchargetype($values->text('surchargetype'));
+
+		if ($code->surchargetype == 'D') {
+			$code->setSurchargepercent('0.000');
+			$code->setSurchargeamount($values->float('surchargeamount', ['precision' => $this->fieldAttribute('surchargeamount', 'precision')]));
+			return $invalidfields;
+		}
+		$code->setSurchargepercent($values->float('surchargepercent', ['precision' => $this->fieldAttribute('surchargepercent', 'precision')]));
+		$code->setSurchargeamount(0.00);
 		return $invalidfields;
 	}
 
