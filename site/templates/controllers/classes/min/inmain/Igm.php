@@ -121,7 +121,7 @@ class Igm extends Base {
 
 	public static function codeDeleteUrl($code) {
 		$url = new Purl(self::codeEditUrl($code));
-		$url->query->set('action', 'delete-code');
+		$url->query->set('action', 'delete');
 		return $url->getUrl();
 	}
 
@@ -146,11 +146,13 @@ class Igm extends Base {
 	private static function displayCode($data, InvGroupCode $invGroup) {
 		$config = self::pw('config');
 		$igm = self::getIgm();
+		$igm->initFieldAttributes();
 
 		$html  = '';
 		$html .= $config->twig->render('code-tables/min/igm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= self::displayLocked($data);
+		$html .= $config->twig->render('code-tables/min/igm/edit/display.twig', ['igm' => $igm, 'invgroup' => $invGroup]);
 		return $html;
 	}
 
