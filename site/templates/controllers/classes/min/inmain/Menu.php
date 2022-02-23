@@ -40,6 +40,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Group Code',
 			'summary'    => 'View / Edit Inventory Group Code'
 		],
+		'igpm' => [
+			'name'       => 'igpm',
+			'permission' => 'igpm',
+			'title'      => 'Inventory Price Code',
+			'summary'    => 'View / Edit Inventory Price Code'
+		],
 	];
 
 /* =============================================================
@@ -88,6 +94,10 @@ class Menu extends Base {
 
 	public static function igmUrl() {
 		return self::subfunctionUrl('igm');
+	}
+
+	public static function igpmUrl() {
+		return self::subfunctionUrl('igpm');
 	}
 
 /* =============================================================

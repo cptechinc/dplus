@@ -97,6 +97,7 @@ return array(
     'Controllers\\Min\\Inmain\\Iasm' => $baseDir . '/classes/min/inmain/Iasm.php',
     'Controllers\\Min\\Inmain\\Igcm' => $baseDir . '/classes/min/inmain/Igcm.php',
     'Controllers\\Min\\Inmain\\Igm' => $baseDir . '/classes/min/inmain/Igm.php',
+    'Controllers\\Min\\Inmain\\Igpm' => $baseDir . '/classes/min/inmain/Igpm.php',
     'Controllers\\Min\\Inmain\\Ioptm' => $baseDir . '/classes/min/inmain/Ioptm.php',
     'Controllers\\Min\\Inmain\\Itmimg' => $baseDir . '/classes/min/inmain/Itmimg.php',
     'Controllers\\Min\\Inmain\\Menu' => $baseDir . '/classes/min/inmain/Menu.php',
