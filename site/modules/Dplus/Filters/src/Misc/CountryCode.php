@@ -22,6 +22,6 @@ class CountryCode extends AbstractFilter {
 			Model::aliasproperty('numeric'),
 			Model::aliasproperty('description'),
 		];
-		$this->query->search_filter($columns, strtoupper($q));
+		$this->query->searchFilter($columns, strtoupper($q));
 	}
 }
