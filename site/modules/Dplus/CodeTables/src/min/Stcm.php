@@ -21,9 +21,9 @@ class Stcm extends Base {
 	const MODEL              = 'InvStockCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_stcm_code';
-	const DESCRIPTION        = 'Stock Code';
-	const DESCRIPTION_RECORD = 'Stock Code';
-	const RESPONSE_TEMPLATE  = 'Stock Code {code} {not} {crud}';
+	const DESCRIPTION        = 'Inventory Stock Code';
+	const DESCRIPTION_RECORD = 'Inventory Stock Code';
+	const RESPONSE_TEMPLATE  = 'Inventory Stock Code {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'stcm';
 	const DPLUS_TABLE           = 'STCM';
 	const FIELD_ATTRIBUTES = [
