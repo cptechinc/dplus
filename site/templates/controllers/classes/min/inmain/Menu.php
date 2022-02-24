@@ -71,7 +71,7 @@ class Menu extends Base {
 			'summary'    => 'View / Edit Stock Code'
 		],
 		'tarm' => [
-			'name'       => 'tarn',
+			'name'       => 'tarm',
 			'permission' => 'tarm',
 			'title'      => 'Tariff Code',
 			'summary'    => 'View / Edit Tariff Code'
