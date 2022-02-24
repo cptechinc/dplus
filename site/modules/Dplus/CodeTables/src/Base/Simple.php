@@ -122,7 +122,7 @@ abstract class Simple extends Base {
 
 		$code          = $this->getOrCreate($id);
 		$invalidfields = $this->_inputUpdate($input, $code);
-		$response = $this->saveAndRespond($code, $invalidfields);
+		$response      = $this->saveAndRespond($code, $invalidfields);
 		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
