@@ -30,6 +30,7 @@ return array(
     'Dplus\\Filters\\Min\\InvGroupCode' => $baseDir . '/src/Min/InvGroupCode.php',
     'Dplus\\Filters\\Min\\InvPriceCode' => $baseDir . '/src/Min/InvPriceCode.php',
     'Dplus\\Filters\\Min\\InvProductLineCode' => $baseDir . '/src/Min/InvProductLineCode.php',
+    'Dplus\\Filters\\Min\\InvSpecialCode' => $baseDir . '/src/Min/InvSpecialCode.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
     'Dplus\\Filters\\Min\\ItemMaster' => $baseDir . '/src/Min/ItemMaster.php',
     'Dplus\\Filters\\Min\\ItemSubstitute' => $baseDir . '/src/Min/ItemSubstitute.php',
