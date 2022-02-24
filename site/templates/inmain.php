@@ -57,6 +57,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Stcm::class, 'index'],
 			['POST',  '', Inmain\Stcm::class, 'handleCRUD'],
 		],
+		'umm' => [
+			['GET',  '', Inmain\Umm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Umm::class, 'index'],
+			['POST',  '', Inmain\Umm::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
