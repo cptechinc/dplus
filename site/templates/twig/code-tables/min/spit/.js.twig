@@ -101,7 +101,7 @@ $(function() {
 				form.submit();
 			} else {
 				server.validateCode(code, function(exists) {
-					var alert = SpitAlerts.getInstance();
+					var alert = CodeAlerts.getInstance();
 					if (exists === false) {
 						form.submit();
 						return true;
