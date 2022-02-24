@@ -625,27 +625,6 @@ class Min extends Controller {
 		return $manager->codeJson($manager->code($data->code));
 	}
 
-	public static function validateIplmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Min\Iplm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Inventory Product Line Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Inventory Product Line Code $data->code not found";
-		}
-		return true;
-	}
-
 	public static function validateIgpmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -679,6 +658,27 @@ class Min extends Controller {
 		return $manager->codeJson($manager->code($data->code));
 	}
 
+	public static function validateIplmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Iplm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Product Line Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Product Line Code $data->code not found";
+		}
+		return true;
+	}
+
 	public static function getIplmCode($data) {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -691,9 +691,9 @@ class Min extends Controller {
 		return $manager->codeJson($manager->code($data->code));
 	}
 
-
-
-
+/* =============================================================
+	Supplemental
+============================================================= */
 	private static function validator() {
 		return new MinValidator();
 	}
