@@ -109,7 +109,7 @@ class Rgasc extends Base {
 		$rgasc = self::getRgasc();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/mso/rgasc/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mso/rgasc/list.twig', ['manager' => $rgasc, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {
