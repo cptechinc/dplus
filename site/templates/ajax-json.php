@@ -22,6 +22,7 @@
 			['GET', 'msdsm/code/', Json\Min::class, 'getMsdsmCode'],
 			['GET', 'spit/code/', Json\Min::class, 'getSpitCode'],
 			['GET', 'stcm/code/', Json\Min::class, 'getStcmCode'],
+			['GET', 'tarm/code/', Json\Min::class, 'getTarmCode'],
 			['GET', 'umm/code/', Json\Min::class, 'getUmmCode'],
 			'validate' => [
 				['GET', 'csccm/code/', Json\Min::class, 'validateCsccmCode'],
@@ -33,6 +34,7 @@
 				['GET', 'msdsm/code/', Json\Min::class, 'validateMsdsmCode'],
 				['GET', 'spit/code/', Json\Min::class, 'validateSpitCode'],
 				['GET', 'stcm/code/', Json\Min::class, 'validateStcmCode'],
+				['GET', 'tarm/code/', Json\Min::class, 'validateTarmCode'],
 				['GET', 'umm/code/', Json\Min::class, 'validateUmmCode'],
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
