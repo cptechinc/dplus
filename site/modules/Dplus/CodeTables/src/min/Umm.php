@@ -98,8 +98,8 @@ class Umm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-		$code = $this->code($id);
-		
+		$code   = $this->code($id);
+
 		$success = parent::inputDelete($input);
 		if ($success === false) {
 			return $success;
