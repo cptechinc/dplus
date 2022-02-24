@@ -132,7 +132,7 @@ class Cnfm extends Base {
 	}
 
 	private static function displayBreadcrumbs($data) {
-		return self::pw('config')->twig->render('code-tables/mpo/cnfm/bread-crumbs.twig');
+		return self::pw('config')->twig->render('code-tables/bread-crumbs.twig');
 	}
 
 /* =============================================================
@@ -147,6 +147,14 @@ class Cnfm extends Base {
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMpo');
+
+		$m->addHook('Page(pw_template=poadmn)::menuUrl', function($event) {
+			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=poadmn)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
+		});
 
 		$m->addHook('Page(pw_template=poadmn)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0));

@@ -10,6 +10,7 @@ use Controllers\Min\Inproc\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'poadmn';
+	const TITLE = 'Administration';
 	const SUBFUNCTIONS = [
 		'cnfm' => [
 			'name'       => 'cnfm',
@@ -34,11 +35,21 @@ class Menu extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function menuUrl() {
+		return self::pw('pages')->get('pw_template=poadmn')->url;
+	}
+
 	public static function subfunctionUrl($key) {
-		$url = new Purl(self::pw('pages')->get('pw_template=poadmn')->url);
+		$url = new Purl(self::menuUrl());
 		if (array_key_exists($key, self::SUBFUNCTIONS)) {
 			$url->path->add($key);
 		}
+		return $url->getUrl();
+	}
+
+	public static function cnfmUrl() {
+		$url = new Purl(self::menuUrl());
+		$url->path->add('cnfm');
 		return $url->getUrl();
 	}
 
