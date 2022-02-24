@@ -724,6 +724,39 @@ class Min extends Controller {
 		return $manager->codeJson($manager->code($data->code));
 	}
 
+	public static function validateSpitCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Spit::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Special Item Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Special Item Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getSpitCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Spit::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
