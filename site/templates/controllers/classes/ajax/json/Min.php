@@ -646,18 +646,6 @@ class Min extends Controller {
 		return true;
 	}
 
-	public static function getIplmCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Min\Iplm::getInstance();
-
-		if ($manager->exists($data->code) === false) {
-			return false;
-		}
-		return $manager->codeJson($manager->code($data->code));
-	}
-
 	public static function validateIgpmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -690,6 +678,20 @@ class Min extends Controller {
 		}
 		return $manager->codeJson($manager->code($data->code));
 	}
+
+	public static function getIplmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Iplm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+
 
 
 	private static function validator() {
