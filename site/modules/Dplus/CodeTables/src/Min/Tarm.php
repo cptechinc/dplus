@@ -8,6 +8,8 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 use TariffCodeQuery, TariffCode;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
+// Dplus Filters
+use Dplus\Filters;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
@@ -78,7 +80,6 @@ class Tarm extends Base {
 	 * @return TariffCode
 	 */
 	public function new($id = '') {
-		$this->initFieldAttributes();
 		$code = new TariffCode();
 
 		if (empty($id) === false && strtolower($id) != 'new') {
@@ -91,6 +92,46 @@ class Tarm extends Base {
 /* =============================================================
 	CRUD Processing
 ============================================================= */
+	/**
+	 * Update Tarm from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function inputUpdate(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values  = $input->$rm;
+		$success = parent::inputUpdate($input);
+		$id      = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$code    = $this->code($id);
+
+		if ($success === false) {
+			return false;
+		}
+		if (empty($code)) {
+			return $success;
+		}
+		$this->inputUpdateTariffCountries($input, $code);
+	}
+
+	/**
+	 * Update Tarm from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values  = $input->$rm;
+		$id      = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$success = parent::inputDelete($input);
+
+		if ($success === false) {
+			return false;
+		}
+		$this->countriesM->deleteForCode($id);
+		$code = $this->new($id);
+		$this->sendTariffCountryUpdate($code);
+	}
+
 	/**
 	 * Update Record with Input Data
 	 * @param  WireInput $input Input Data
@@ -131,5 +172,39 @@ class Tarm extends Base {
 		);
 
 		return $invalidfields;
+	}
+
+	/**
+	 * Update Tariff Code Countries
+	 * @param  WireInput   $input Input Data
+	 * @param  TariffCode  $code
+	 * @return
+	 */
+	private function inputUpdateTariffCountries(WireInput $input, TariffCode $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$countries = $values->array('country');
+		$this->countriesM->deleteForCode($code->code);
+
+		$filterCC = new Filters\Misc\CountryCode();
+
+		foreach ($countries as $country) {
+			if ($filterCC->existsIso3($country)) {
+				$tariffCountry = $this->countriesM->new($code->code, $country);
+				$tariffCountry->setDate(date('Ymd'));
+				$tariffCountry->setTime(date('His'));
+				$tariffCountry->save();
+			}
+		}
+		$this->sendTariffCountryUpdate($code);
+	}
+
+/* =============================================================
+	Dplus Requests
+============================================================= */
+	private function sendTariffCountryUpdate(TariffCode $code) {
+		$data = self::generateRequestData($code);
+		$data[] = 'CTRY=UPDATED';
+		$this->sendDplusRequest($data);
 	}
 }

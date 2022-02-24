@@ -7,7 +7,8 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
-// Dplus Record Locker
+// Dplus Codes
+use Dplus\Codes\Response;
 use Dplus\Codes\Base;
 
 abstract class Simple extends Base {
@@ -154,17 +155,35 @@ abstract class Simple extends Base {
 	Dplus Requests
 ============================================================= */
 	/**
+	 * Return Request Data Neeeded for Dplus Update
+	 * @param  Code $code  Code
+	 * @return array
+	 */
+	protected function generateRequestData($code) {
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$table   = static::DPLUS_TABLE;
+		return ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code->id"];
+	}
+
+	/**
+	 * Send Request do Dplus
+	 * @param  array  $data  Request Data
+	 * @return void
+	 */
+	protected function sendDplusRequest(array $data) {
+		$config    = $this->wire('config');
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	}
+
+	/**
 	 * Sends Dplus Cobol that Code Table has been Update
 	 * @param  Code $code  Code
 	 * @return void
 	 */
 	protected function updateDplus($code) {
-		$config  = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
-		$table = static::DPLUS_TABLE;
-		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code->id"];
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $this->sessionID);
-		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+		$data = $this->generateRequestData($code);
+		$this->sendDplusRequest($data);
 	}
 }

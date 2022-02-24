@@ -50,6 +50,7 @@ class Countries extends Base {
 		$code = new TariffCodeCountry();
 		$code->setId($id);
 		$code->setCountry($iso3);
+		$code->setDummy('P');
 		return $code;
 	}
 
