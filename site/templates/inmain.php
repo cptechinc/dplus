@@ -47,6 +47,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Msdsm::class, 'index'],
 			['POST',  '', Inmain\Msdsm::class, 'handleCRUD'],
 		],
+		'spit' => [
+			['GET',  '', Inmain\Spit::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Spit::class, 'index'],
+			['POST',  '', Inmain\Spit::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

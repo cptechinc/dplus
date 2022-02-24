@@ -58,6 +58,12 @@ class Menu extends Base {
 			'title'      => 'Material Safety Data Sheet Code',
 			'summary'    => 'View / Edit Material Safety Data Sheet Code'
 		],
+		'spit' => [
+			'name'       => 'spit',
+			'permission' => 'spit',
+			'title'      => 'Special Item Code',
+			'summary'    => 'View / Edit Special Item Code'
+		],
 	];
 
 /* =============================================================
@@ -118,6 +124,10 @@ class Menu extends Base {
 
 	public static function msdsmUrl() {
 		return self::subfunctionUrl('msdsm');
+	}
+
+	public static function spitUrl() {
+		return self::subfunctionUrl('spit');
 	}
 
 /* =============================================================
