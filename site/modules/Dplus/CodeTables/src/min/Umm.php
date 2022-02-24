@@ -30,7 +30,7 @@ class Umm extends Base {
 		'code'          => ['type' => 'text', 'maxlength' => UnitofMeasureSale::MAX_LENGTH_CODE],
 		'description'   => ['type' => 'text', 'maxlength' => 20],
 		'conversion'    => ['type' => 'number', 'precision' => 5, 'max' => 9999999.00000],
-		'stockbyweight' => ['type' => 'text', 'default' => 'N'],
+		'stockbycase' => ['type' => 'text', 'default' => 'N'],
 		'pricebyweight' => ['type' => 'text', 'default' => 'N'],
 	];
 
@@ -44,7 +44,7 @@ class Umm extends Base {
 			'code'          => $code->code,
 			'description'   => $code->description,
 			'conversion'    => $code->conversion,
-			'stockbyweight' => $code->stockbyweight,
+			'stockbycase' => $code->stockbycase,
 			'pricebyweight' => $code->pricebyweight,
 		];
 	}
@@ -100,7 +100,7 @@ class Umm extends Base {
 			)
 		);
 		$code->setPricebyweight($values->yn('pricebyweight'));
-		$code->setStockbyweight($values->yn('stockbyweight'));
+		$code->setStockbyweight($values->yn('stockbycase'));
 		return $invalidfields;
 	}
 
@@ -120,7 +120,7 @@ class Umm extends Base {
 		$code->setEffectivedate(date($this->fieldAttribute('effectivedate', 'dateformat')));
 		$code->setConversion(1.00000);
 		$code->setPricebyweight($this->fieldAttribute('pricebyweight', 'default'));
-		$code->setStockbyweight($this->fieldAttribute('stockbyweight', 'default'));
+		$code->setStockbyweight($this->fieldAttribute('stockbycase', 'default'));
 		return $code;
 	}
 }
