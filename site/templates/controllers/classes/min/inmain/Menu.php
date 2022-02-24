@@ -70,6 +70,12 @@ class Menu extends Base {
 			'title'      => 'Stock Code',
 			'summary'    => 'View / Edit Stock Code'
 		],
+		'umm' => [
+			'name'       => 'umm',
+			'permission' => 'umm',
+			'title'      => 'Unit of Measure Code',
+			'summary'    => 'View / Edit Unit of Measure Code'
+		],
 	];
 
 /* =============================================================
@@ -138,6 +144,10 @@ class Menu extends Base {
 
 	public static function stcmUrl() {
 		return self::subfunctionUrl('stcm');
+	}
+
+	public static function ummUrl() {
+		return self::subfunctionUrl('umm');
 	}
 
 /* =============================================================
