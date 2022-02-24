@@ -110,7 +110,7 @@ abstract class Simple extends Base {
 	CRUD Processing
 ============================================================= */
 	/**
-	 * Update CNFM Code from Input Data
+	 * Update Code from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
@@ -128,7 +128,7 @@ abstract class Simple extends Base {
 	}
 
 	/**
-	 * Delete CNFM Code
+	 * Delete Code
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
