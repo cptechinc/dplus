@@ -1,7 +1,7 @@
 {% include 'code-tables/min/spit/js/classes.js.twig' %}
 
 $(function() {
-	var server   = IasmRequests.getInstance();
+	var server   = SpitRequests.getInstance();
 	var alert    = CodeAlerts.getInstance();
 	var formCode = CodeForm.getInstance();
 
@@ -93,15 +93,15 @@ $(function() {
 			}
 		},
 		submitHandler: function(form) {
-			var formCode = IasmForm.getInstance();
-			var server   = IasmRequests.getInstance();
+			var formCode = SpitForm.getInstance();
+			var server   = SpitRequests.getInstance();
 			var code = formCode.inputs.code.val();
 
 			if (formCode.inputs.form.attr('data-code') == code) {
 				form.submit();
 			} else {
 				server.validateCode(code, function(exists) {
-					var alert = IasmAlerts.getInstance();
+					var alert = SpitAlerts.getInstance();
 					if (exists === false) {
 						form.submit();
 						return true;
