@@ -24,4 +24,16 @@ class CountryCode extends AbstractFilter {
 		];
 		$this->query->searchFilter($columns, strtoupper($q));
 	}
+
+/* =============================================================
+	4. Misc Query Functions
+============================================================= */
+	/**
+	 * Return if Code Exists
+	 * @param  string $code
+	 * @return bool
+	 */
+	public function existsIso3($code) {
+		return boolval($this->getQueryClass()->filterByIso3($code)->count());
+	}
 }
