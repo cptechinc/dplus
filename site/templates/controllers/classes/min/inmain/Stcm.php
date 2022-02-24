@@ -109,7 +109,7 @@ class Stcm extends Base {
 		$stcm = self::getStcm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/min/stcm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $stcm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

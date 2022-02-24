@@ -109,7 +109,7 @@ class Umm extends Base {
 		$umm = self::getUmm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/min/umm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/min/umm/list.twig', ['manager' => $umm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

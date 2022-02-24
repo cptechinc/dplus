@@ -109,7 +109,7 @@ class Igpm extends Base {
 		$igpm = self::getIgpm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/min/igpm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $igpm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

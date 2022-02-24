@@ -109,7 +109,7 @@ class Msdsm extends Base {
 		$msdsm = self::getMsdsm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/min/msdsm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/min/msdsm/list.twig', ['manager' => $msdsm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

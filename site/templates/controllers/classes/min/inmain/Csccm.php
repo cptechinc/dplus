@@ -109,7 +109,7 @@ class Csccm extends Base {
 		$csccm = self::getCsccm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/min/csccm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $csccm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

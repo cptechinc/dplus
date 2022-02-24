@@ -9,14 +9,15 @@
 {% set values      = input.get %}
 {% set segments    = input.urlSegments() %}
 {% set lastsegment = segments[segments|length] %}
+{% set menu = input.urlSegment(-2) ? input.urlSegment(-2) : page.name %}
 
 {% block current_page %}
 	<li class="breadcrumb-item">
 		<a href="{{ page.menuUrl() }}">
-			<i class="fa fa-list" aria-hidden="true"></i> INMAIN
+			<i class="fa fa-list" aria-hidden="true"></i> {{ menu|upper }}
 		</a>
 	</li>
 	<li class="breadcrumb-item active" aria-current="page">
-		<i class="fa fa-microchip" aria-hidden="true"></i> CSCCM
+		<i class="fa fa-microchip" aria-hidden="true"></i> {{ input.urlSegmentLast()|upper }}
 	</li>
 {% endblock %}

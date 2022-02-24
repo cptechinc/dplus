@@ -109,7 +109,7 @@ class Iasm extends Base {
 		$iasm = self::getIasm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/min/iasm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $iasm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {
