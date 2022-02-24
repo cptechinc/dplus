@@ -34,6 +34,28 @@ class Tarm extends Base {
 		'percent'          => ['type' => 'number', 'precision' => 2, 'max' => 999.99],
 	];
 
+	public function __construct() {
+		parent::__construct();
+		$this->countriesM = Tarm\Countries::getInstance();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		$sanitizer = $this->wire('sanitizer');
+
+		return [
+			'code'          => $code->code,
+			'description'   => $code->description,
+			'number'        => $code->number,
+			'percent'       => $sanitizer->float($code->percent, ['precision' => $this->fieldAttribute('percent', 'precision')]),
+			'countries'     => $this->countriesM->codesForTariffCode($code->code)
+		];
+	}
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
@@ -101,8 +123,8 @@ class Tarm extends Base {
 		}
 		$code->setNumber($values->text('number', ['maxLength' => $this->fieldAttribute('number', 'maxlength')]));
 		$code->setPercent(
-			$values->float('number', [
-					'precision' => $this->fieldAttribute('percent', 'percent'),
+			$values->float('percent', [
+					'precision' => $this->fieldAttribute('percent', 'precision'),
 					'max' => $this->fieldAttribute('percent', 'max'),
 				]
 			)
