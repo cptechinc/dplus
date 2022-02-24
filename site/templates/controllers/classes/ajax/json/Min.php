@@ -757,6 +757,39 @@ class Min extends Controller {
 		return $manager->codeJson($manager->code($data->code));
 	}
 
+	public static function validateStcmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Stcm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Stock Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Stock Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getStcmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Stcm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
