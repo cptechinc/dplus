@@ -12,6 +12,13 @@
 {% set menu = input.urlSegment(-2) ? input.urlSegment(-2) : page.name %}
 
 {% block current_page %}
+	{% if menu and menu != page.name %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				<i class="fa fa-list" aria-hidden="true"></i> {{ page.dplus_function ? page.dplus_function|upper : page.title }}
+			</a>
+		</li>
+	{% endif %}
 	<li class="breadcrumb-item">
 		<a href="{{ page.menuUrl() }}">
 			<i class="fa fa-list" aria-hidden="true"></i> {{ menu|upper }}
