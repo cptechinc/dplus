@@ -1,0 +1,36 @@
+class MsdsmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new MsdsmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = MsdsmInputs.getInstance();
+		this.config = MsdsmConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.effectivedate.val(moment(json.effectivedate).format(this.config.fields.effectivedate.momentformat));
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.effectivedate.val(moment().format(this.config.fields.effectivedate.momentformat));
+	}
+}
