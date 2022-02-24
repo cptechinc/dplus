@@ -6,6 +6,7 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
+use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Configs
@@ -66,6 +67,75 @@ class Umm extends Base {
 	CRUD Processing
 ============================================================= */
 	/**
+	 * Update Code from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function inputUpdate(WireInput $input) {
+		$success = parent::inputUpdate($input);
+		if ($success === false) {
+			return $success;
+		}
+
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$invalidfields = [];
+
+		$code = $this->code($id);
+		if (empty($code)) {
+			return false;
+		}
+		return $this->copyCodeToUomPurchase($code);
+	}
+
+	/**
+	 * Delete Code
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$code = $this->code($id);
+		
+		$success = parent::inputDelete($input);
+		if ($success === false) {
+			return $success;
+		}
+
+		if (empty($code)) {
+			return false;
+		}
+		return $this->copyCodeToUomPurchase($code);
+	}
+
+	/**
+	 * Copy / Delete Code to Unit of Measure Purchase table
+	 * @param  UnitofMeasureSale $code
+	 * @return bool
+	 */
+	private function copyCodeToUomPurchase(UnitofMeasureSale $code) {
+		$q = UnitofMeasurePurchaseQuery::create()->filterByCode($code->id);
+
+		if ($q->count()) {
+			$uomPur = $q->findOne();
+		} else {
+			$uomPur = new UnitofMeasurePurchase();
+		}
+
+		$uomPur->setCode($code->id);
+		$uomPur->fromArray($code->toArray());
+		$uomPur->save();
+
+		if ($code->isDeleted()) {
+			return $uomPur->delete();
+		}
+		return $uomPur->save();
+	}
+
+	/**
 	 * Update Record with Input Data
 	 * @param  WireInput $input Input Data
 	 * @param  Code      $code
@@ -117,7 +187,6 @@ class Umm extends Base {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
-		$code->setEffectivedate(date($this->fieldAttribute('effectivedate', 'dateformat')));
 		$code->setConversion(1.00000);
 		$code->setPricebyweight($this->fieldAttribute('pricebyweight', 'default'));
 		$code->setStockbycase($this->fieldAttribute('stockbycase', 'default'));
