@@ -39,19 +39,19 @@ $(function() {
 		server.validateCode(code, function(exists) {
 			if (exists === true) {
 				alert.codeExists(code, function(editCode) {
-					if (editCode) {
-						var modal = input.closest('.modal');
+					var modal = formCode.form.closest('.modal');
 
-						if (editCode) {
-							server.getCode(code, function(response) {
-								if (response) {
-									modal.find('.modal-title').text('Edit Code ' + code);
-									formCode.updateInputsFromJson(response);
-								}
-							});
-						} else {
-							modal.modal('hide');
-						}
+					if (editCode) {
+						server.getCode(code, function(response) {
+							if (response) {
+								modal.find('.modal-title').text('Edit Code ' + code);
+								formCode.updateInputsFromJson(response);
+							} else {
+								modal.modal('hide');
+							}
+						});
+					} else {
+						modal.modal('hide');
 					}
 				});
 			}
