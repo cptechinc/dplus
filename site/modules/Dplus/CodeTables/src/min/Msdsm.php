@@ -29,7 +29,7 @@ class Msdsm extends Base {
 	const FIELD_ATTRIBUTES = [
 		'code'          => ['type' => 'text', 'maxlength' => MsdsCode::MAX_LENGTH_CODE],
 		'description'   => ['type' => 'text', 'maxlength' => 20],
-		'effectivedate' => ['type' => 'text', 'dateformat' => 'Ymd'],
+		'effectivedate' => ['type' => 'text', 'dateformat' => 'Ymd', 'displayformat' => 'm/d/Y'],
 	];
 
 	/**
@@ -72,7 +72,7 @@ class Msdsm extends Base {
 		$values = $input->$rm;
 		$invalidfields     = parent::_inputUpdate($input, $code);
 		$invalidfieldsMsds = $this->inputUpdateMsds($input, $code);
-		$invalidfields = array_merge($invalidfields, $invalidfieldsGL, $invalidfieldsSu, $invalidfieldsIgm);
+		$invalidfields = array_merge($invalidfields, $invalidfieldsMsds);
 		return $invalidfields;
 	}
 
@@ -87,7 +87,7 @@ class Msdsm extends Base {
 		$values = $input->$rm;
 		$invalidfields = [];
 
-		$date = $values->date('effectivedate', ['returnFormat' => $this->fieldAttribute('effectivedate', 'dateformat')]);
+		$date = $values->date('effectivedate', $format = $this->fieldAttribute('effectivedate', 'displayformat'), ['returnFormat' => $this->fieldAttribute('effectivedate', 'dateformat')]);
 		$code->setEffectivedate($date);
 		return $invalidfields;
 	}
