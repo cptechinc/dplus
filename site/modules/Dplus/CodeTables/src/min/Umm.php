@@ -100,7 +100,7 @@ class Umm extends Base {
 			)
 		);
 		$code->setPricebyweight($values->yn('pricebyweight'));
-		$code->setStockbyweight($values->yn('stockbycase'));
+		$code->setStockbycase($values->yn('stockbycase'));
 		return $invalidfields;
 	}
 
@@ -120,7 +120,7 @@ class Umm extends Base {
 		$code->setEffectivedate(date($this->fieldAttribute('effectivedate', 'dateformat')));
 		$code->setConversion(1.00000);
 		$code->setPricebyweight($this->fieldAttribute('pricebyweight', 'default'));
-		$code->setStockbyweight($this->fieldAttribute('stockbycase', 'default'));
+		$code->setStockbycase($this->fieldAttribute('stockbycase', 'default'));
 		return $code;
 	}
 }
