@@ -103,6 +103,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Min\\Inmain\\Iplm' => __DIR__ . '/../..' . '/classes/min/inmain/Iplm.php',
         'Controllers\\Min\\Inmain\\Itmimg' => __DIR__ . '/../..' . '/classes/min/inmain/Itmimg.php',
         'Controllers\\Min\\Inmain\\Menu' => __DIR__ . '/../..' . '/classes/min/inmain/Menu.php',
+        'Controllers\\Min\\Inmain\\Msdsm' => __DIR__ . '/../..' . '/classes/min/inmain/Msdsm.php',
         'Controllers\\Min\\Inproc\\Base' => __DIR__ . '/../..' . '/classes/min/inproc/Base.php',
         'Controllers\\Min\\Inproc\\Iarn' => __DIR__ . '/../..' . '/classes/min/inproc/Iarn.php',
         'Controllers\\Min\\Inproc\\Menu' => __DIR__ . '/../..' . '/classes/min/inproc/Menu.php',

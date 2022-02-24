@@ -52,6 +52,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Product Line Code',
 			'summary'    => 'View / Edit Inventory Product Line Code'
 		],
+		'msdsm' => [
+			'name'       => 'msdsm',
+			'permission' => 'msdsm',
+			'title'      => 'Material Safety Data Sheet Code',
+			'summary'    => 'View / Edit Material Safety Data Sheet Code'
+		],
 	];
 
 /* =============================================================
@@ -108,6 +114,10 @@ class Menu extends Base {
 
 	public static function iplmUrl() {
 		return self::subfunctionUrl('iplm');
+	}
+
+	public static function msdsmUrl() {
+		return self::subfunctionUrl('msdsm');
 	}
 
 /* =============================================================

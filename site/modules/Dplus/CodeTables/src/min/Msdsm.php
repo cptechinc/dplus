@@ -94,7 +94,7 @@ class Msdsm extends Base {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
-		$code->setEffectivedate(date($this->fieldAttribute('effectivedate', 'dateformat')))
+		$code->setEffectivedate(date($this->fieldAttribute('effectivedate', 'dateformat')));
 		return $code;
 	}
 }
