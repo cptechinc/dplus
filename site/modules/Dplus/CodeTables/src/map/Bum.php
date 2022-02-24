@@ -17,7 +17,7 @@ use Dplus\Codes\Response;
 /**
  * Class that handles the CRUD of the TTM code table
  */
-class Lsm extends Base {
+class Bum extends Base {
 	const MODEL              = 'ApBuyer';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ap_buyr_code';
