@@ -57,6 +57,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Stcm::class, 'index'],
 			['POST',  '', Inmain\Stcm::class, 'handleCRUD'],
 		],
+		'tarm' => [
+			['GET',  '', Inmain\Tarm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Tarm::class, 'index'],
+			['POST',  '', Inmain\Tarm::class, 'handleCRUD'],
+		],
 		'umm' => [
 			['GET',  '', Inmain\Umm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Inmain\Umm::class, 'index'],

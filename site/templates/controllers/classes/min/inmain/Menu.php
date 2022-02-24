@@ -70,6 +70,12 @@ class Menu extends Base {
 			'title'      => 'Stock Code',
 			'summary'    => 'View / Edit Stock Code'
 		],
+		'tarm' => [
+			'name'       => 'tarn',
+			'permission' => 'tarm',
+			'title'      => 'Tariff Code',
+			'summary'    => 'View / Edit Tariff Code'
+		],
 		'umm' => [
 			'name'       => 'umm',
 			'permission' => 'umm',
@@ -144,6 +150,10 @@ class Menu extends Base {
 
 	public static function stcmUrl() {
 		return self::subfunctionUrl('stcm');
+	}
+
+	public static function tarmUrl() {
+		return self::subfunctionUrl('tarm');
 	}
 
 	public static function ummUrl() {
