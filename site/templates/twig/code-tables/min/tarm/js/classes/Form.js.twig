@@ -1,0 +1,45 @@
+class TarmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new TarmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = TarmInputs.getInstance();
+		this.config = TarmConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		var inputs = this.inputs;
+		this.inputs.country.prop('checked', false);
+
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.number.val(json.number);
+			this.inputs.percent.val(json.percent);
+			json.countries.forEach(function (iso3) {
+				inputs.form.find('.country-checkbox[value="'+iso3+'"]').prop('checked', true);
+			});
+
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.number.val('');
+		this.inputs.percent.val('');
+	}
+}

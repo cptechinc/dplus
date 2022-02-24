@@ -1,0 +1,20 @@
+class TarmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new TarmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.number        = this.form.find('input[name=number]');
+		this.percent       = this.form.find('input[name=percent]');
+		this.country       = this.form.find('.country-checkbox');
+	}
+}
