@@ -64,6 +64,12 @@ class Menu extends Base {
 			'title'      => 'Special Item Code',
 			'summary'    => 'View / Edit Special Item Code'
 		],
+		'stcm' => [
+			'name'       => 'stcm',
+			'permission' => 'stcm',
+			'title'      => 'Stock Code',
+			'summary'    => 'View / Edit Stock Code'
+		],
 	];
 
 /* =============================================================
@@ -128,6 +134,10 @@ class Menu extends Base {
 
 	public static function spitUrl() {
 		return self::subfunctionUrl('spit');
+	}
+
+	public static function stcmUrl() {
+		return self::subfunctionUrl('stcm');
 	}
 
 /* =============================================================

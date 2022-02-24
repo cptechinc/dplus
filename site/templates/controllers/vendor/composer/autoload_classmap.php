@@ -104,6 +104,7 @@ return array(
     'Controllers\\Min\\Inmain\\Menu' => $baseDir . '/classes/min/inmain/Menu.php',
     'Controllers\\Min\\Inmain\\Msdsm' => $baseDir . '/classes/min/inmain/Msdsm.php',
     'Controllers\\Min\\Inmain\\Spit' => $baseDir . '/classes/min/inmain/Spit.php',
+    'Controllers\\Min\\Inmain\\Stcm' => $baseDir . '/classes/min/inmain/Stcm.php',
     'Controllers\\Min\\Inproc\\Base' => $baseDir . '/classes/min/inproc/Base.php',
     'Controllers\\Min\\Inproc\\Iarn' => $baseDir . '/classes/min/inproc/Iarn.php',
     'Controllers\\Min\\Inproc\\Menu' => $baseDir . '/classes/min/inproc/Menu.php',
