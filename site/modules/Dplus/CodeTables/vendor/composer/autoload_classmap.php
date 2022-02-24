@@ -25,6 +25,7 @@ return array(
     'Dplus\\Codes\\Min\\Iwhm' => $baseDir . '/src/min/Iwhm.php',
     'Dplus\\Codes\\Min\\Msdsm' => $baseDir . '/src/min/Msdsm.php',
     'Dplus\\Codes\\Min\\Spit' => $baseDir . '/src/min/Spit.php',
+    'Dplus\\Codes\\Min\\Stcm' => $baseDir . '/src/min/Stcm.php',
     'Dplus\\Codes\\Mpm\\Dcm' => $baseDir . '/src/mpm/Dcm.php',
     'Dplus\\Codes\\Mpm\\Rcm' => $baseDir . '/src/mpm/Rcm.php',
     'Dplus\\Codes\\Mpo\\Cnfm' => $baseDir . '/src/mpo/Cnfm.php',
