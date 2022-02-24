@@ -32,6 +32,18 @@ class Msdsm extends Base {
 		'effectivedate' => ['type' => 'text', 'dateformat' => 'Ymd'],
 	];
 
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return [
+			'code'          => $code->code,
+			'description'   => $code->description,
+			'effectivedate' => $code->effectivedate,
+		];
+	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
