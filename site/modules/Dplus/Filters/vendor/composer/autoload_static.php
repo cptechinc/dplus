@@ -53,6 +53,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Min\\LotMaster' => __DIR__ . '/../..' . '/src/Min/LotMaster.php',
         'Dplus\\Filters\\Min\\MsdsCode' => __DIR__ . '/../..' . '/src/Min/MsdsCode.php',
         'Dplus\\Filters\\Min\\TariffCode' => __DIR__ . '/../..' . '/src/Min/TariffCode.php',
+        'Dplus\\Filters\\Min\\UnitofMeasure' => __DIR__ . '/../..' . '/src/Min/UnitofMeasure.php',
         'Dplus\\Filters\\Min\\Upcx' => __DIR__ . '/../..' . '/src/Min/Upcx.php',
         'Dplus\\Filters\\Min\\Warehouse' => __DIR__ . '/../..' . '/src/Min/Warehouse.php',
         'Dplus\\Filters\\Min\\WarehouseBin' => __DIR__ . '/../..' . '/src/Min/WarehouseBin.php',

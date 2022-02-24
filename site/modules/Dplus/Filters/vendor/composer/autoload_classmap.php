@@ -38,6 +38,7 @@ return array(
     'Dplus\\Filters\\Min\\LotMaster' => $baseDir . '/src/Min/LotMaster.php',
     'Dplus\\Filters\\Min\\MsdsCode' => $baseDir . '/src/Min/MsdsCode.php',
     'Dplus\\Filters\\Min\\TariffCode' => $baseDir . '/src/Min/TariffCode.php',
+    'Dplus\\Filters\\Min\\UnitofMeasure' => $baseDir . '/src/Min/UnitofMeasure.php',
     'Dplus\\Filters\\Min\\Upcx' => $baseDir . '/src/Min/Upcx.php',
     'Dplus\\Filters\\Min\\Warehouse' => $baseDir . '/src/Min/Warehouse.php',
     'Dplus\\Filters\\Min\\WarehouseBin' => $baseDir . '/src/Min/WarehouseBin.php',
