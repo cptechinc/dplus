@@ -28,7 +28,7 @@ class Spit extends Base {
 	const DPLUS_TABLE           = 'SPIT';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => InvSpecialCode::MAX_LENGTH_CODE],
-		'description' => ['type' => 'text', 'maxlength' => 20],
+		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
 

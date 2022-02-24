@@ -28,7 +28,7 @@ class Iplm extends Base {
 	const DPLUS_TABLE           = 'IPLM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => InvProductLineCode::MAX_LENGTH_CODE],
-		'description' => ['type' => 'text', 'maxlength' => 20],
+		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
 
