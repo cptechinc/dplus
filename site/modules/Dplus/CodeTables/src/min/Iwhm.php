@@ -29,6 +29,15 @@ class Iwhm extends Base {
 	const FIELD_ATTRIBUTES = [
 		'code' => ['type' => 'text', 'maxlength' => Warehouse::MAX_LENGTH_CODE],
 		'name' => ['type' => 'text', 'maxlength' => 30],
+		'address'  => ['type' => 'text', 'maxlength' => 30],
+		'address2' => ['type' => 'text', 'maxlength' => 30],
+		'city'     => ['type' => 'text', 'maxlength' => 16],
+		'zip'      => ['type' => 'text', 'maxlength' => 10],
+		'qcbin'    => ['type' => 'text', 'maxlength' => 8],
+		'productionbin'   => ['type' => 'text', 'maxlength' => 8],
+		'binarrangement'  => ['type' => 'text', 'default' => 'L', 'options' => ['L' => 'List', 'R' => 'Range']],
+		'pickdetail'      => ['type' => 'text', 'default' => 'N', 'options' => ['A' => 'Available', 'S' => 'Selected', 'N' => 'No']],
+		'consignment'     => ['type' => 'text', 'default' => 'N'],
 	];
 
 	protected static $instance;
