@@ -1,0 +1,62 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	warehouse              Warehouse
+	recordlocker           module RecordLockerUser
+	m_iwhm                 module CodeTablesIwhm
+#}
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-whseid="{{ warehouse.id }}">
+	<input type="hidden" name="table" value="update-iwhm">
+	<input type="hidden" name="table" value="{{ page.codetable }}">
+	<input type="hidden" name="code" value="{{ warehouse.id }}">
+
+	<div class="form-row form-group">
+		<div class="col-2">
+			<label for="whseID">Code</label>
+		</div>
+		<div class="col-10">
+			<input type="text" name="whseID" class="form-control" maxlength="{{ warehouse.get_max_code_length() }}" value="{{ warehouse.id }}" id="whseID" {{ warehouse.id ? 'readonly' : 'autofocus' }}>
+		</div>
+	</div>
+	<div class="form-row form-group">
+		<div class="col-2">
+			<label for="name">Name</label>
+		</div>
+		<div class="col-10">
+			<input type="text" name="name" class="form-control" maxlength="30" value="{{ warehouse.name }}" id="name" autofocus>
+		</div>
+	</div>
+	<hr class="border-top border-primary">
+
+	<div class="row">
+		<div class="col-sm-7 border-right border-primary">
+			{% include 'code-tables/min/iwhm/form-address-fields.twig' %}
+		</div>
+		<div class="col-sm-5">
+			{% include 'code-tables/min/iwhm/form-warehouse-fields.twig' %}
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the Warehouse is
+			1. Locked for editing by the User
+			2. Is a new Warehouse
+			NOTE: Only show delete if warehouse already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.codetable, warehouse.id) or warehouse.isNew() %}
+			<button type="submit" class="btn btn-success form_button" name="action" value="update-code">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if warehouse.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.id) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>
+<hr class="border-top border-primary">

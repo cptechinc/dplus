@@ -1,0 +1,28 @@
+class IwhmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new IwhmRequests();
+		}
+		return this.instance;
+	}
+
+	validateCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/validate/iwhm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/iwhm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

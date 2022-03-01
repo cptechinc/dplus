@@ -1,0 +1,100 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	warehouse              Warehouse
+	recordlocker           module RecordLockerUser
+	m_iwhm                 module CodeTablesIwhm
+#}
+{% set config_in = m_iwhm.get_config_in() %}
+<div class="form-row form-group">
+	<div class="col-sm-4"><label for="custID">Cash Customer</label></div>
+	<div class="col-sm-8">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': warehouse.whseid == '' ? true : false
+					},
+					'input': {
+						'name': 'custID',
+						'id': 'custID',
+						'value': warehouse.cash_customer,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Customer ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Customers',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('customers'),
+							'data-input': '#custID'
+						}
+					}
+				}
+			}
+		%}
+		<input type="text" name="cash_name" class="form-control-plaintext" value="{{ warehouse.cashCustomer.name }}" id="cash_name" disabled>
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-sm-4">
+		<label for="pickdetail">Pick Detail</label>
+	</div>
+	<div class="col-sm-8">
+		<select name="pickdetail" class="form-control" id="pickdetail" required>
+			<option value="A" {{ (warehouse.pickdetail == 'A') ? 'selected' : '' }}>Available</option>
+			<option value="S" {{ (warehouse.pickdetail == 'S') ? 'selected' : '' }}>Selected</option>
+			<option value="N" {{ (warehouse.pickdetail == 'N') ? 'selected' : '' }}>No</option>
+		</select>
+	</div>
+</div>
+
+{% if config_in.use_controlbin() %}
+	<div class="form-row form-group">
+		<div class="col-sm-4">
+			<label for="bin_production">Production Bin</label>
+		</div>
+		<div class="col-sm-8">
+			<input type="text" name="bin_production" class="form-control" value="{{ warehouse.bin_production }}" id="bin_production">
+		</div>
+	</div>
+{% endif %}
+
+<div class="form-row form-group">
+	<div class="col-sm-4">
+		<label for="bin_qcrga">QC / RGA Bin</label>
+	</div>
+	<div class="col-sm-8">
+		<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ warehouse.bin_qcrga }}" id="bin_qcrga">
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-sm-4">
+		<label for="consignment">Consignment</label>
+	</div>
+	<div class="col-sm-8">
+		<select name="consignment" class="form-control" id="C" required>
+			<option value="Y" {{ (warehouse.consignment == 'Y') ? 'selected' : '' }}>Yes</option>
+			<option value="N" {{ (warehouse.consignment == 'N') ? 'selected' : '' }}>No</option>
+		</select>
+	</div>
+</div>
+
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_profit', 'label': 'Profit Whse', 'value': warehouse.whse_profit, 'warehouses': m_iwhm.get_codes()} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_asset', 'label': 'Asset Whse', 'value': warehouse.whse_asset, 'warehouses': m_iwhm.get_codes()} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_supply', 'label': 'Supply Whse', 'value': warehouse.whse_supply, 'warehouses': m_iwhm.get_codes()} %}
+
+<div class="form-row form-group">
+	<div class="col-sm-4">
+		<label for="arrangement">Bin Arrangement</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/select.twig' with {'name': 'arranged', 'id': 'arranged', 'hideblankoption' : 'true', 'selectedvalue': (warehouse.arranged ? warehouse.arranged : 'R'), 'options': warehouse.get_arrangement_options()} %}
+	</div>
+</div>
