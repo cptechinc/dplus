@@ -1,0 +1,29 @@
+<h3>Notes</h3>
+
+<table class="table table-sm">
+	<thead>
+		<tr>
+			<th>Type</th>
+			<th>Has Notes</th>
+			<th class="text-right">Action</th>
+		</tr>
+	</thead>
+	{% for qnotesSub in qnotes.getQnotes() %}
+		<tr>
+			<td>{{ qnotesSub.typeDescription()|capitalize }}</td>
+			<td>{{ qnotesSub.notesExist(warehouse.whseid)|yesorno|capitalize }}</td>
+			<td class="text-right">
+				<textarea class="collapse" id="notes-{{ qnotesSub.type() }}" cols="{{ qnotesSub.fieldAttribute('note', 'cols') }}">{{ qnotesSub.getNotesArray(warehouse.id)|join('\r') }}</textarea>
+				{% if module_notes.notes_exist(notetype, warehouse.whseid) %}
+					<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#notes-modal" data-type="{{ qnotesSub.type() }}" data-description="{{ qnotesSub.typeDescription()|capitalize }}">
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</button>
+				{% else %}
+					<button type="button" class="btn btn-secondary btn-sm notes_button" data-toggle="modal" data-target="#notes-modal" data-type="{{ qnotesSub.type() }}" data-description="{{ qnotesSub.typeDescription()|capitalize }}">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add
+					</button>
+				{% endif %}
+			</td>
+		</tr>
+	{% endfor %}
+</table>
