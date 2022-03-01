@@ -22,6 +22,12 @@ class Menu extends Base {
 			'title'      => 'Customer Stocking Cell',
 			'summary'    => 'View / Edit Customer Stocking Cell'
 		],
+		'i2i' => [
+			'name'       => 'i2i',
+			'permission' => 'i2i',
+			'title'      => 'Item To Item',
+			'summary'    => 'View / Edit Item To Item X-Ref'
+		],
 		'iasm' => [
 			'name'       => 'iasm',
 			'permission' => 'iasm',
@@ -130,6 +136,10 @@ class Menu extends Base {
 
 	public static function csccmUrl() {
 		return self::subfunctionUrl('csccm');
+	}
+
+	public static function i2iUrl() {
+		return self::subfunctionUrl('i2i');
 	}
 
 	public static function iasmUrl() {

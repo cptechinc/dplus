@@ -17,6 +17,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Csccm::class, 'index'],
 			['POST',  '', Inmain\Csccm::class, 'handleCRUD'],
 		],
+		'i2i' => [
+			['GET',  '', Inmain\I2i::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\I2i::class, 'index'],
+			['POST',  '', Inmain\I2i::class, 'handleCRUD'],
+		],
 		'iasm' => [
 			['GET',  '', Inmain\Iasm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Inmain\Iasm::class, 'index'],

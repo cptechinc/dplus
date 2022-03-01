@@ -35,6 +35,7 @@ class I2i extends Base {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+		self::initHooks();
 
 		if (empty($data->parentID) === false) {
 			return self::xref($data);
@@ -84,7 +85,8 @@ class I2i extends Base {
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
 		self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/list/.js.twig');
-		$html = self::listDisplay($data, $xrefs);
+		$html = self::displayList($data, $xrefs);
+		$i2i->deleteResponse();
 		return $html;
 	}
 
@@ -109,26 +111,28 @@ class I2i extends Base {
 			}
 		}
 		self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/xref/form/.js.twig');
-		return self::xrefDisplay($data, $xref);
+		$html = self::displayXref($data, $xref);;
+		$i2i->deleteResponse();
+		return $html;
 	}
 
 /* =============================================================
 	Display Functions
 ============================================================= */
-	private static function listDisplay($data, PropelModelPager $xrefs) {
+	private static function displayList($data, PropelModelPager $xrefs) {
 		$i2i = self::geti2i();
 		$config = self::pw('config');
 
 		$html  = '';
-		$html .= self::breadCrumbsDisplay($data);
-		$html .= self::responseDisplay($data);
+		$html .= self::displayBreadcrumbs($data);
+		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('min/i2i/list/display.twig', ['i2i' => $i2i, 'xrefs' => $xrefs]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		return $html;
 	}
 
-	private static function lockXrefDisplay(InvItem2Item $xref) {
+	private static function displayLock(InvItem2Item $xref) {
 		$config = self::pw('config');
 		$i2i = self::getI2i();
 		$html = '';
@@ -147,23 +151,24 @@ class I2i extends Base {
 		return $html;
 	}
 
-	private static function xrefDisplay($data, InvItem2Item $xref) {
-		$html  = self::breadCrumbsDisplay($data);
-		$html .= self::responseDisplay($xref);
-		$html .= self::lockXrefDisplay($xref);
+	private static function displayXref($data, InvItem2Item $xref) {
+		$html  = self::displayBreadcrumbs($data);
+		$html .= self::displayResponse($xref);
+		$html .= self::displayLock($xref);
 		$html .= self::pw('config')->twig->render('min/i2i/xref/display.twig', ['xref' => $xref, 'i2i' => self::geti2i()]);
 		return $html;
 	}
 
-	private static function responseDisplay($data) {
-		$response = self::pw('session')->getFor('response', 'i2i');
-		if ($response) {
-			return self::pw('config')->twig->render('items/itm/response-alert.twig', ['response' => $response]);
+	private static function displayResponse($data) {
+		$response = self::getI2i()->getResponse();
+
+		if (empty($response)) {
+			return '';
 		}
-		return '';
+		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
-	private static function breadCrumbsDisplay($data) {
+	private static function displayBreadcrumbs($data) {
 		return self::pw('config')->twig->render('min/i2i/bread-crumbs.twig');
 	}
 
@@ -171,7 +176,7 @@ class I2i extends Base {
 	URL Functions
 ============================================================= */
 	public static function i2iUrl() {
-		return self::pw('pages')->get('pw_template=i2i')->url;
+		return Menu::i2iUrl();
 	}
 
 	public static function xrefListUrl($focus = '') {
@@ -252,23 +257,31 @@ class I2i extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMin');
 
-		$m->addHook('Page(pw_template=i2i)::xrefUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::menuUrl', function($event) {
+			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=inmain)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
+		});
+
+		$m->addHook('Page(pw_template=inmain)::xrefUrl', function($event) {
 			$event->return = self::xrefUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=i2i)::xrefDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::xrefDeleteUrl', function($event) {
 			$event->return = self::xrefDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=i2i)::xrefNewUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::xrefNewUrl', function($event) {
 			$event->return = self::xrefNewUrl();
 		});
 
-		$m->addHook('Page(pw_template=i2i)::xrefListUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::xrefListUrl', function($event) {
 			$event->return = self::xrefListUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=i2i)::xrefListFocusUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::xrefListFocusUrl', function($event) {
 			$event->return = self::xrefListFocusUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
