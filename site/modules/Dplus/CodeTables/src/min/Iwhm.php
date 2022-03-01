@@ -6,6 +6,9 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use WarehouseQuery, Warehouse;
+// Dpluso Models
+use StatesQuery, States;
+use CountryQuery, Country;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Configs
@@ -29,18 +32,57 @@ class Iwhm extends Base {
 	const FIELD_ATTRIBUTES = [
 		'code' => ['type' => 'text', 'maxlength' => Warehouse::MAX_LENGTH_CODE],
 		'name' => ['type' => 'text', 'maxlength' => 30],
-		'address'  => ['type' => 'text', 'maxlength' => 30],
-		'address2' => ['type' => 'text', 'maxlength' => 30],
-		'city'     => ['type' => 'text', 'maxlength' => 16],
-		'zip'      => ['type' => 'text', 'maxlength' => 10],
+		'address'   => ['type' => 'text', 'maxlength' => 30],
+		'address2'  => ['type' => 'text', 'maxlength' => 30],
+		'city'      => ['type' => 'text', 'maxlength' => 16],
+		'zip'       => ['type' => 'text', 'maxlength' => 10],
+		'extension' => ['type' => 'text', 'maxlength' => 7],
 		'qcbin'    => ['type' => 'text', 'maxlength' => 8],
-		'productionbin'   => ['type' => 'text', 'maxlength' => 8],
+		'productionbin'   => ['type' => 'text', 'maxlength' => 8, 'disabled' => true],
 		'binarrangement'  => ['type' => 'text', 'default' => 'L', 'options' => ['L' => 'List', 'R' => 'Range']],
 		'pickdetail'      => ['type' => 'text', 'default' => 'N', 'options' => ['A' => 'Available', 'S' => 'Selected', 'N' => 'No']],
 		'consignment'     => ['type' => 'text', 'default' => 'N'],
 	];
 
 	protected static $instance;
+	private $fieldAttributes;
+
+/* =============================================================
+	Field Configs
+============================================================= */
+
+	public function initFieldAttributes() {
+		$configIn = Configs\In::config();
+		$custID   = Configs\Sys::custid();
+
+		$attributes = self::FIELD_ATTRIBUTES;
+		$attributes['productionbin']['disabled'] = $configIn->useControlbin() === false && $custID != 'ALUMAC';
+		$this->fieldAttributes = $attributes;
+	}
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
+		}
+
+		if (array_key_exists($field, $this->fieldAttributes) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
+			return false;
+		}
+		return $this->fieldAttributes[$field][$attr];
+	}
 
 	/**
 	 * Return Array ready for JSON
@@ -76,6 +118,21 @@ class Iwhm extends Base {
 		return $this->code($id);
 	}
 
+	/**
+	 * Return Warehouse Name
+	 * @param  string $id Warehouse ID
+	 * @return string
+	 */
+	public function name($id) {
+		if ($this->exists($id) === false) {
+			return '';
+		}
+		$model = static::modelClassName();
+		$q = $this->queryId($id);
+		$q->select($model::aliasproperty('name'));
+		return $q->findOne();
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */
@@ -106,5 +163,24 @@ class Iwhm extends Base {
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
 		return $invalidfields;
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return States
+	 * @return States[]|ObjectCollection
+	 */
+	public function getStates() {
+		return StatesQuery::create()->find();
+	}
+
+	/**
+	 * Return Countries
+	 * @return Country[]|ObjectCollection
+	 */
+	public function getCountries() {
+		return CountryQuery::create()->find();
 	}
 }
