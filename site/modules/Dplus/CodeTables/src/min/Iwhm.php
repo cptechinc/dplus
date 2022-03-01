@@ -14,6 +14,7 @@ use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
+use Dplus\Codes;
 use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
@@ -146,6 +147,9 @@ class Iwhm extends Base {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
+		$code->setPickdetail($this->fieldAttribute('pickdetail', 'default'));
+		$code->setConsignment($this->fieldAttribute('consignment', 'default'));
+		$code->setBinarrangement($this->fieldAttribute('binarrangement', 'default'));
 		return $code;
 	}
 
@@ -162,6 +166,106 @@ class Iwhm extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
+		$invalidfieldsIwhm = $this->_inputUpdateIwhm($input, $code);
+		$invalidfields = array_merge($invalidfields, $invalidfieldsIwhm);
+		return $invalidfields;
+	}
+
+	/**
+	 * Update Warehouse IWHM fields
+	 * @param  WireInput $input     Input Data
+	 * @param  Warehouse $warehouse
+	 * @return array
+	 */
+	private function _inputUpdateIwhm(WireInput $input, Warehouse $warehouse) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$warehouse->setName($values->text('name', ['maxLength' => $this->fieldAttribute('name', 'maxlength')]));
+		$invalidfields = [
+			'address' => $this->_inputUpdateWhseAddress($input, $warehouse),
+			'contact' => $this->_inputUpdateWhseContact($input, $warehouse),
+			'setup'   => $this->_inputUpdateWhseSetup($input, $warehouse)
+		];
+		return array_merge($invalidfields['address'], $invalidfields['contact'], $invalidfields['setup']);
+	}
+
+	/**
+	 * Update Warehouse Address fields
+	 * @param  WireInput $input     Input Data
+	 * @param  Warehouse $warehouse
+	 * @return array
+	 */
+	private function _inputUpdateWhseAddress(WireInput $input, Warehouse $warehouse) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$warehouse->setName($values->text('name', ['maxLength' => $this->fieldAttribute('name', 'maxlength')]));
+		$warehouse->setAddress($values->text('address', ['maxLength' => $this->fieldAttribute('address', 'maxlength')]));
+		$warehouse->setAddress2($values->text('address2', ['maxLength' => $this->fieldAttribute('address2', 'maxlength')]));
+		$warehouse->setCity($values->text('city', ['maxLength' => $this->fieldAttribute('city', 'maxlength')]));
+		$warehouse->setState($values->text('state', ['maxLength' => 2]));
+		$warehouse->setZip($values->text('zip', ['maxLength' => $this->fieldAttribute('zip', 'maxlength')]));
+		return [];
+	}
+
+	/**
+	 * Update Warehouse Contact fields
+	 * @param  WireInput $input     Input Data
+	 * @param  Warehouse $warehouse
+	 * @return array
+	 */
+	private function _inputUpdateWhseContact(WireInput $input, Warehouse $warehouse) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$warehouse->setExtension($values->text('extension', ['maxLength' => $this->fieldAttribute('extension', 'maxlength')]));
+		$warehouse->setEmail($values->email('email'));
+
+		$phone_arr = explode('-', $values->text('phone'));
+		$warehouse->setPhone_area($phone_arr[0]);
+		$warehouse->setPhone_prefix($phone_arr[1]);
+		$warehouse->setPhone_line($phone_arr[2]);
+
+		$fax_arr = explode('-', $values->text('fax'));
+		$warehouse->setFax_area($fax_arr[0]);
+		$warehouse->setFax_prefix($fax_arr[1]);
+		$warehouse->setFax_line($fax_arr[2]);
+		return [];
+	}
+
+	/**
+	 * Update Warehouse Setup fields
+	 * @param  WireInput $input     Input Data
+	 * @param  Warehouse $warehouse
+	 * @return array
+	 */
+	private function _inputUpdateWhseSetup(WireInput $input, Warehouse $warehouse) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = [];
+
+		// Pick Detail
+		$pickdetail = in_array($values->text('pickdetail'), array_keys($this->fieldAttribute('pickdetail', 'options'))) ? $values->text('pickdetail') : $this->fieldAttribute('pickdetail', 'default');
+		$warehouse->setPickdetail($pickdetail);
+		// Bin Arrangement
+		$binarrangement = in_array($values->text('binarrangement'), array_keys($this->fieldAttribute('binarrangement', 'options'))) ? $values->text('binarrangement') : $this->fieldAttribute('binarrangement', 'default');
+		$warehouse->setBinarrangement($binarrangement);
+
+		$warehouse->setConsignment($values->yn('consignment'));
+		$warehouse->setQcbin($values->text('qcbin', ['maxLength' => $this->fieldAttribute('qcbin', 'maxlength')]));
+		$warehouse->setProductionbin($values->text('productionbin', ['maxLength' => $this->fieldAttribute('productionbin', 'maxlength')]));
+
+		if ($this->fieldAttribute('productionbin', 'disabled')) {
+			$warehouse->setProductionbin('');
+		}
+
+		if (Codes\Mar\Cmm::getInstance()->exists($values->text('custid')) === false) {
+			$invalidfields['custid'] = 'Cash Customer';
+		} else {
+			$warehouse->setCustid($values->text('custid'));
+		}
+
 		return $invalidfields;
 	}
 
