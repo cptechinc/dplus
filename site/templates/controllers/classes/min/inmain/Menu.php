@@ -58,6 +58,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Optional Codes',
 			'summary'    => 'View / Edit Inventory Optional Code'
 		],
+		'iwhm' => [
+			'name'       => 'iwhm',
+			'permission' => 'iwhm',
+			'title'      => 'Warehouse',
+			'summary'    => 'View / Edit Warehouse'
+		],
 		'msdsm' => [
 			'name'       => 'msdsm',
 			'permission' => 'msdsm',
@@ -148,6 +154,10 @@ class Menu extends Base {
 
 	public static function ioptmUrl() {
 		return self::subfunctionUrl('ioptm');
+	}
+
+	public static function iwhmUrl() {
+		return self::subfunctionUrl('iwhm');
 	}
 
 	public static function msdsmUrl() {

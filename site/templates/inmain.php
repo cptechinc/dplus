@@ -47,6 +47,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Ioptm::class, 'index'],
 			['POST',  '', Inmain\Ioptm::class, 'handleCRUD'],
 		],
+		'iwhm' => [
+			['GET',  '', Inmain\Iwhm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Iwhm::class, 'index'],
+			['POST',  '', Inmain\Iwhm::class, 'handleCRUD'],
+		],
 		'msdsm' => [
 			['GET',  '', Inmain\Msdsm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Inmain\Msdsm::class, 'index'],
