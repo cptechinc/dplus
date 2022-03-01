@@ -52,6 +52,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Product Line Code',
 			'summary'    => 'View / Edit Inventory Product Line Code'
 		],
+		'ioptm' => [
+			'name'       => 'ioptm',
+			'permission' => 'ioptm',
+			'title'      => 'Inventory Optional Codes',
+			'summary'    => 'View / Edit Inventory Optional Code'
+		],
 		'msdsm' => [
 			'name'       => 'msdsm',
 			'permission' => 'msdsm',
@@ -138,6 +144,10 @@ class Menu extends Base {
 
 	public static function iplmUrl() {
 		return self::subfunctionUrl('iplm');
+	}
+
+	public static function ioptmUrl() {
+		return self::subfunctionUrl('ioptm');
 	}
 
 	public static function msdsmUrl() {

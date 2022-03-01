@@ -45,6 +45,7 @@ class Ioptm extends Controller {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getIoptm()->recordlocker->deleteLock();
 
+		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getIoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getIoptm()->deleteResponse();
@@ -65,6 +66,7 @@ class Ioptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
+		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getIoptm()->deleteResponse();
@@ -181,7 +183,7 @@ class Ioptm extends Controller {
 	}
 
 	public static function url() {
-		return self::pw('pages')->get('pw_template=ioptm')->url;
+		return Menu::ioptmUrl();
 	}
 
 	public static function urlFocus($focus = '') {
@@ -203,21 +205,21 @@ class Ioptm extends Controller {
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMar');
+		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(pw_template=ioptm)::sysopUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::sysopUrl', function($event) {
 			$event->return = self::sysopUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=ioptm)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=ioptm)::ioptmUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::ioptmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=ioptm)::optmUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

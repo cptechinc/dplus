@@ -42,6 +42,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Iplm::class, 'index'],
 			['POST',  '', Inmain\Iplm::class, 'handleCRUD'],
 		],
+		'ioptm' => [
+			['GET',  '', Inmain\Ioptm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Ioptm::class, 'index'],
+			['POST',  '', Inmain\Ioptm::class, 'handleCRUD'],
+		],
 		'msdsm' => [
 			['GET',  '', Inmain\Msdsm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Inmain\Msdsm::class, 'index'],
