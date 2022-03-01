@@ -856,6 +856,45 @@ class Min extends Controller {
 		return $manager->codeJson($manager->code($data->code));
 	}
 
+	public static function validateIwhmCode($data) {
+		$fields = ['id|text', 'code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->id) === false) {
+			$data->code = $data->id;
+		}
+
+		$manager = Codes\Min\Iwhm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Warehouse $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Warehouse $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIwhmCode($data) {
+		$fields = ['id|text', 'code|text'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->id) === false) {
+			$data->code = $data->id;
+		}
+
+		$manager = Codes\Min\Iwhm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
