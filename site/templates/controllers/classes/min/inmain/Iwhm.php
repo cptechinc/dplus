@@ -38,14 +38,25 @@ class Iwhm extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|text', 'whseID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::iwhmUrl();
 		$iwhm = self::getIwhm();
 
 		if ($data->action) {
-			$iwhm->processInput(self::pw('input'));
-			$url = self::iwhmUrl($data->code);
+			switch ($data->action) {
+				case 'update-notes':
+				case 'delete-notes':
+					$iwhm->qnotes->processInput(self::pw('input'));
+					$url = self::codeEditUrl($data->whseID);
+					break;
+				default:
+					$iwhm->processInput(self::pw('input'));
+					if ($data->action != 'delete') {
+						$url = self::codeEditUrl($data->code);
+					}
+					break;
+			}
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
@@ -72,6 +83,7 @@ class Iwhm extends Base {
 		$page->js .= self::pw('config')->twig->render('code-tables/min/iwhm/list/.js.twig');
 		$html = self::displayList($data, $codes);
 		self::getIwhm()->deleteResponse();
+		self::getIwhm()->qnotes->iwhs->deleteResponse();
 		return $html;
 	}
 
@@ -88,7 +100,15 @@ class Iwhm extends Base {
 		}
 		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/iwhm/edit/.js.twig', ['iwhm' => $iwhm]);
-		return self::displayCode($data, $warehouse);
+
+		if ($warehouse->isNew() === false) {
+			self::pw('page')->js .= self::pw('config')->twig->render('msa/noce/ajax/js.twig');
+			self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/iwhm/edit/qnotes/js.twig', ['iwhm' => $iwhm]);
+		}
+		$html = self::displayCode($data, $warehouse);
+		self::getIwhm()->deleteResponse();
+		self::getIwhm()->qnotes->iwhs->deleteResponse();
+		return $html;
 	}
 
 /* =============================================================
@@ -137,6 +157,7 @@ class Iwhm extends Base {
 		$html  = '';
 		$html .= $config->twig->render('code-tables/min/iwhm/bread-crumbs.twig');
 		$html .= '<div class="mb-3">'.self::displayResponse($data).'</div>';
+		$html .= '<div class="mb-3">'.self::displayResponseQnotes($data).'</div>';
 		$html .= $config->twig->render('code-tables/min/iwhm/list.twig', ['manager' => $iwhm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {
 			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
@@ -152,14 +173,29 @@ class Iwhm extends Base {
 		$html  = '';
 		$html .= $config->twig->render('code-tables/min/iwhm/bread-crumbs.twig');
 		$html .= '<div class="mb-3">'.self::displayResponse($data).'</div>';
+		$html .= '<div class="mb-3">'.self::displayResponseQnotes($data).'</div>';
 		$html .= '<div class="mb-3">'.self::displayLocked($data).'</div>';
-		$html .= $config->twig->render('code-tables/min/iwhm/edit/display.twig', ['iwhm' => $iwhm, 'warehouse' => $warehouse]);
+		$html .= '<div class="mb-3">'.$config->twig->render('code-tables/min/iwhm/edit/display.twig', ['iwhm' => $iwhm, 'warehouse' => $warehouse]).'</div>';
+
+		if ($warehouse->isNew() === false) {
+			$html .= $config->twig->render('code-tables/min/iwhm/edit/qnotes/display.twig', ['iwhm' => $iwhm, 'qnotes' => $iwhm->qnotes, 'warehouse' => $warehouse]);
+			$html .= $config->twig->render('msa/noce/ajax/notes-modal.twig');
+		}
 		return $html;
 	}
 
 	private static function displayResponse($data) {
 		$iwhm = self::getIwhm();
 		$response = $iwhm->getResponse();
+		if (empty($response)) {
+			return '';
+		}
+		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
+	}
+
+	private static function displayResponseQnotes($data) {
+		$iwhm = self::getIwhm();
+		$response = $iwhm->qnotes->iwhs->getResponse();
 		if (empty($response)) {
 			return '';
 		}
