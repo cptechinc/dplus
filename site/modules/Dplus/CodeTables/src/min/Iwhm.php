@@ -20,6 +20,8 @@ use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the IWHM code table
+ *
+ * @property Iwhm\Qnotes $qnotes
  */
 class Iwhm extends Base {
 	const MODEL              = 'Warehouse';
@@ -47,6 +49,11 @@ class Iwhm extends Base {
 
 	protected static $instance;
 	private $fieldAttributes;
+
+	public function __construct() {
+		parent::__construct();
+		$this->qnotes = Iwhm\Qnotes::instance();
+	}
 
 /* =============================================================
 	Field Configs
