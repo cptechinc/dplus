@@ -255,7 +255,7 @@ class Upcx extends Controller {
 		return self::$upcx;
 	}
 
-	public static function init() {
+	public static function initHooks() {
 		$m = self::pw('modules')->get('XrefUpc');
 
 		$m->addHook('Page(pw_template=upcx)::upcUrl', function($event) {
