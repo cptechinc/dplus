@@ -12,15 +12,6 @@
 			<label for="loginID">Login ID</label>
 		</div>
 		<div class="col-sm-8">
-			{# include 'util/form/input-with-modal-lookup.twig' with {
-					'name': 'loginID', 'value': '',
-					'modaltarget': '#ajax-modal',
-					'modaldescription': 'Search for / Choose User Login ID',
-					'attributes_button': {'data-search': 'user', 'data-lookupurl': page.search_lookupURL('users')},
-					'class_add': 'ajax-lookup',
-					'attributes': {'data-loginid': '', 'data-validate': 'loginid', 'data-ajaxfields': ''}
-				}
-			#}
 			{% include 'util/bootstrap/form/input-group.twig' with {
 					'inputgroup': {
 						'type': 'prepend',
@@ -39,7 +30,7 @@
 								'title': 'Search Users',
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
-								'data-lookupurl': page.search_lookupURL('users'),
+								'data-lookupurl': page.searchLookupUrl('users'),
 								'data-input': '#loginID'
 							}
 						}
