@@ -4,9 +4,8 @@ use DplusUserQuery, DplusUser;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Codes
+use Dplus\Codes;
 use Dplus\Codes\Msa as MsaCodes;
-// Dplus Msa
-use Dplus\Msa as MsaCRUDs;
 // Dplus Qnotes
 use Dplus\Qnotes;
 // Dplus Validators
@@ -133,7 +132,7 @@ class Msa extends Controller {
 		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCodes\Sysop::getInstance();
+		$sysop = Codes\Msa\Sysop::getInstance();
 		if ($data->sysop) {
 			$data->code = $data->sysop;
 		}
@@ -160,7 +159,7 @@ class Msa extends Controller {
 		}
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCodes\Sysop::getInstance();
+		$sysop = Codes\Msa\Sysop::getInstance();
 
 		if ($sysop->exists($data->system, $data->code) === false) {
 			return false;
@@ -172,7 +171,7 @@ class Msa extends Controller {
 		$fields = ['notecode|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCodes\Sysop::getInstance();
+		$sysop = Codes\Msa\Sysop::getInstance();
 		$exists = $sysop->notecodeExists($data->notecode);
 
 		if (empty($data->jqv) === false) {
@@ -192,8 +191,8 @@ class Msa extends Controller {
 		$fields = ['system|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCodes\Sysop::getInstance();
-		$exists = array_key_exists($data->system, $sysop->fieldAttribute('system', 'options'));
+		$sysop = Codes\Msa\Sysop::getInstance();
+		$exists = $sysop->systemExists($data->system);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -213,8 +212,23 @@ class Msa extends Controller {
 		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$crud   = MsaCRUDs\SysopOptions::getInstance();
-		$exists = $crud->exists($data->system, $data->sysop, $data->code);
+		switch ($data->system) {
+			case 'AP':
+				$crud = Codes\Min\Aoptm::getInstance();
+				break;
+			case 'AR':
+				$crud = Codes\Min\Roptm::getInstance();
+				break;
+			case 'IN':
+				$crud = Codes\Min\Ioptm::getInstance();
+				break;
+			case 'PO':
+				break;
+			case 'SO':
+				$crud = Codes\Min\Soptm::getInstance();
+				break;
+		}
+		$exists = $crud->exists($data->sysop, $data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -245,7 +259,7 @@ class Msa extends Controller {
 		$fields = ['system|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$sysop = MsaCodes\Sysop::getInstance();
+		$sysop = Codes\Msa\Sysop::getInstance();
 		return $sysop->getRequiredCodes($data->system);
 	}
 
