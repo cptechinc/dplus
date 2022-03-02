@@ -1,0 +1,21 @@
+class ItmpConfig {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmpConfig();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			{% for field, default in itmp.defaultPermissions() %}
+				{{ field }}: {
+					default: "{{ default }}"
+				},
+			{% endfor %}
+		};
+		this.permissions = {{ itmp.defaultPermissions()|keys|json_encode|raw }};
+	}
+}

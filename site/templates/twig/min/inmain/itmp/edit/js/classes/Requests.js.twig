@@ -1,0 +1,32 @@
+class ItmpRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmpRequests();
+		}
+		return this.instance;
+	}
+
+	validateUserid(userID, callback) {
+		var ajax = new AjaxRequest(this.validateUseridUrl());
+
+		ajax.setData({userID: userID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getItmpUser(userID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('min/itmp/user/') }}');
+
+		ajax.setData({userID: userID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateUseridUrl() {
+		return '{{ page.jsonApiUrl('msa/validate/logm/id/') }}';
+	}
+}
