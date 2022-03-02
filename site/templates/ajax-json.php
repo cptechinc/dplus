@@ -19,6 +19,7 @@
 			['GET', 'igm/code/', Json\Min::class, 'getIgmCode'],
 			['GET', 'igpm/code/', Json\Min::class, 'getIgpmCode'],
 			['GET', 'iplm/code/', Json\Min::class, 'getIplmCode'],
+			['GET', 'itmp/user/', Json\Min::class, 'getItmpUser'],
 			'iwhm' => [
 				['GET', 'code/', Json\Min::class, 'getIwhmCode'],
 				['GET', 'whse/', Json\Min::class, 'getIwhmCode'],
@@ -215,6 +216,9 @@
 		],
 		'msa' => [
 			'validate' => [
+				'logm' => [
+					['GET', 'id/', Json\Msa::class, 'validateUserid'],
+				],
 				['GET', 'lgrp/', Json\Msa::class, 'validateLgrp'],
 				['GET', 'loginid/', Json\Msa::class, 'validateUserid'],
 				['GET', 'userid/', Json\Msa::class, 'validateUserid'],
@@ -227,6 +231,9 @@
 					['GET', 'option/', Json\Msa::class, 'validateSysopOption'],
 					['GET', 'notecode/', Json\Msa::class, 'validateSysopNotecode'],
 				]
+			],
+			'logm' => [
+				['GET', 'user/', Json\Msa::class, 'getUser'],
 			],
 			['GET', 'user/', Json\Msa::class, 'getUser'],
 			['GET', 'lgrp/', Json\Msa::class, 'getLgrp'],

@@ -6,6 +6,7 @@ use WarehouseBinQuery, WarehouseBin;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus CRUD
+use Dplus\Min as MinMaintenance;
 use Dplus\Min\Inmain\Itm\Substitutes as ItmSub;
 use Dplus\Min\Inmain\Itm\Options as ItmOptions;
 // Dplus Codes
@@ -893,6 +894,14 @@ class Min extends Controller {
 			return false;
 		}
 		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function getItmpUser($data) {
+		$fields = ['userID|text', 'code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = MinMaintenance\Itmp::instance();
+		return $manager->userJson($manager->userItmp($data->userID));
 	}
 
 /* =============================================================
