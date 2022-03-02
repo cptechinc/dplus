@@ -52,6 +52,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Ioptm::class, 'index'],
 			['POST',  '', Inmain\Ioptm::class, 'handleCRUD'],
 		],
+		'itmp' => [
+			['GET',  '', Inmain\Itmp::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Itmp::class, 'index'],
+			['POST',  '', Inmain\Itmp::class, 'handleCRUD'],
+		],
 		'iwhm' => [
 			['GET',  '', Inmain\Iwhm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Inmain\Iwhm::class, 'index'],

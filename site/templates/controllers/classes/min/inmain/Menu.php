@@ -64,6 +64,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Optional Codes',
 			'summary'    => 'View / Edit Inventory Optional Code'
 		],
+		'itmp' => [
+			'name'       => 'itmp',
+			'permission' => 'itmp',
+			'title'      => 'Item Maintenance Permissions',
+			'summary'    => 'View / Edit ITM Permissions'
+		],
 		'iwhm' => [
 			'name'       => 'iwhm',
 			'permission' => 'iwhm',
@@ -164,6 +170,10 @@ class Menu extends Base {
 
 	public static function ioptmUrl() {
 		return self::subfunctionUrl('ioptm');
+	}
+
+	public static function itmpmUrl() {
+		return self::subfunctionUrl('itmp');
 	}
 
 	public static function iwhmUrl() {
