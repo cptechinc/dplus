@@ -12,5 +12,6 @@ return array(
     'Dplus\\Min\\Inmain\\I2i\\Response' => $baseDir . '/src/Inmain/I2i/Response.php',
     'Dplus\\Min\\Inmain\\Itmimg' => $baseDir . '/src/Inmain/Itmimg/Itmimg.php',
     'Dplus\\Min\\Inproc\\Iarn\\Iarn' => $baseDir . '/src/Inproc/Iarn.php',
+    'Dplus\\Min\\Itmp' => $baseDir . '/src/Inmain/Itmp.php',
     'Dplus\\Min\\Response' => $baseDir . '/src/Response.php',
 );

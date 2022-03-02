@@ -13,6 +13,7 @@ class ComposerStaticInitca74aaafdb38d46af24f78169485a1ba
         'Dplus\\Min\\Inmain\\I2i\\Response' => __DIR__ . '/../..' . '/src/Inmain/I2i/Response.php',
         'Dplus\\Min\\Inmain\\Itmimg' => __DIR__ . '/../..' . '/src/Inmain/Itmimg/Itmimg.php',
         'Dplus\\Min\\Inproc\\Iarn\\Iarn' => __DIR__ . '/../..' . '/src/Inproc/Iarn.php',
+        'Dplus\\Min\\Itmp' => __DIR__ . '/../..' . '/src/Inmain/Itmp.php',
         'Dplus\\Min\\Response' => __DIR__ . '/../..' . '/src/Response.php',
     );
 

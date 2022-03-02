@@ -25,7 +25,6 @@ class Itmp extends WireData {
 		'pricing'   => 'prices',
 		'xrefs'     => 'x-refs',
 		'misc'      => 'misc',
-		// 'packaging' => 'pkg / dim',
 		'options'   => 'options'
 	];
 	const PERMISSIONS_DEFAULT = [
@@ -34,7 +33,6 @@ class Itmp extends WireData {
 		'pricing'   => 'Y',
 		'xrefs'     => 'Y',
 		'misc'      => 'Y',
-		// 'packaging' => 'Y',
 		'options'   => 'Y',
 	];
 
@@ -69,6 +67,15 @@ class Itmp extends WireData {
 		return self::PERMISSIONS_DEFAULT;
 	}
 
+	public function userJson(UserPermissionsItm $u) {
+		$json = ['userid' => $u->userid, 'permissions' => []];
+
+		foreach (self::PERMISSIONS_DEFAULT as $key => $label) {
+			$json['permissions'][$key] = $u->$key;
+		}
+		return $json;
+	}
+
 /* =============================================================
 	Query Functions
 ============================================================= */
@@ -84,7 +91,7 @@ class Itmp extends WireData {
 	 * Return Query filtered By User ID
 	 * @return UserPermissionsItmQuery
 	 */
-	public function query($userID) {
+	public function queryUserid($userID) {
 		$q = $this->query();
 		$q->filterByUserid($userID);
 		return $q;
@@ -103,54 +110,62 @@ class Itmp extends WireData {
 	}
 
 	/**
+	 * Return User IDs
+	 * @return array
+	 */
+	public function userids() {
+		$q = $this->query();
+		$q->select(UserPermissionsItm::aliasproperty('userid'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return if User Permissions Exists
-	 * @param  string $loginID Login ID
+	 * @param  string $userID Login ID
 	 * @return bool
 	 */
-	public function exists($loginID) {
-		$q = $this->query();
-		$q->filterByUserid($loginID);
+	public function exists($userID) {
+		$q = $this->queryUserid($userID);
 		return boolval($q->count());
 	}
 
 	/**
 	 * Return UserPermissionsItm
-	 * @param  string $loginID Login ID
+	 * @param  string $userID Login ID
 	 * @return UserPermissionsItm
 	 */
-	public function user($loginID) {
-		$q = $this->query();
-		$q->filterByUserid($loginID);
+	public function user($userID) {
+		$q = $this->queryUserid($userID);
 		return $q->findOne();
 	}
 
 	/**
 	 * Return new UserPermissionsItm
-	 * @param  string $loginID
+	 * @param  string $userID
 	 * @return UserPermissionsItm
 	 */
-	public function new($loginID = '') {
+	public function new($userID = '') {
 		$user = new UserPermissionsItm();
 		foreach (self::PERMISSIONS_DEFAULT as $key => $value) {
 			$setFunction = "set".ucfirst($key);
 			$user->$setFunction($value);
 		}
-		if (strlen($loginID) && $loginID != 'new') {
-			$user->setUserid($loginID);
+		if (strlen($userID) && $userID != 'new') {
+			$user->setUserid($userID);
 		}
 		return $user;
 	}
 
 	/**
 	 * Return New or Existing User
-	 * @param  string $loginID
+	 * @param  string $userID
 	 * @return UserPermissionsItm
 	 */
-	public function getOrCreate($loginID) {
-		if ($this->exists($loginID)) {
-			return $this->user($loginID);
+	public function getOrCreate($userID) {
+		if ($this->exists($userID)) {
+			return $this->user($userID);
 		}
-		return $this->new($loginID);
+		return $this->new($userID);
 	}
 
 	/**
@@ -166,7 +181,7 @@ class Itmp extends WireData {
 		if ($this->exists(self::USER_DEFAULT)) {
 			return $this->user(self::USER_DEFAULT);
 		}
-		return $this->new($loginID);
+		return $this->new($userID);
 	}
 
 	/**
@@ -210,9 +225,9 @@ class Itmp extends WireData {
 	protected function update(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$loginID = $values->text('loginID');
+		$userID = $values->text('loginID');
 		$invalidfields = [];
-		$record = $this->getOrreate($loginID);
+		$record = $this->getOrreate($userID);
 
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record->loginid)) {
@@ -316,7 +331,7 @@ class Itmp extends WireData {
 	 * @param Response $response  Response
 	 */
 	protected function addResponseMsgReplacements(UserPermissionsItm $itmperm, Response $response) {
-		$response->addMsgReplacement('{loginid}', $itmperm->loginid)
+		$response->addMsgReplacement('{loginid}', $itmperm->loginid);
 	}
 
 	/**
