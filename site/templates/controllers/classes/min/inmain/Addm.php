@@ -45,6 +45,9 @@ class Addm extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['itemID|text', 'addonID|text', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 		$addm = self::getAddm();
@@ -156,6 +159,10 @@ class Addm extends Base {
 /* =============================================================
 	URL Functions
 ============================================================= */
+	public static function url() {
+		return Menu::addmUrl();
+	}
+
 	public static function addmUrl() {
 		return Menu::addmUrl();
 	}

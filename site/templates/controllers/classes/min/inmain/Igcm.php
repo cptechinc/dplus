@@ -35,6 +35,9 @@ class Igcm extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::igcmUrl();
@@ -74,6 +77,10 @@ class Igcm extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::igcmUrl();
+	}
+
 	public static function igcmUrl($code = '') {
 		if (empty($code)) {
 			return Menu::igcmUrl();

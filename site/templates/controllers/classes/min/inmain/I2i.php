@@ -46,6 +46,9 @@ class I2i extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['parentID|text', 'childID|text', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 		$i2i = self::getI2i();
@@ -178,6 +181,10 @@ class I2i extends Base {
 /* =============================================================
 	URL Functions
 ============================================================= */
+	public static function url() {
+		return Menu::i2iUrl();
+	}
+	
 	public static function i2iUrl() {
 		return Menu::i2iUrl();
 	}

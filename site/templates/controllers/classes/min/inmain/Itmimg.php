@@ -42,6 +42,9 @@ class Itmimg extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['itemID|text', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 		$imgM = self::getImg();

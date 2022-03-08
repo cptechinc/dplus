@@ -39,6 +39,9 @@ class Itmp extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::itmpUrl();
@@ -80,6 +83,10 @@ class Itmp extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::itmpUrl();
+	}
+	
 	public static function itmpUrl($code = '') {
 		if (empty($code)) {
 			return Menu::itmpUrl();

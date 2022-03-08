@@ -15,6 +15,7 @@ use Mvc\Controllers\Controller;
 
 class Ioptm extends Controller {
 	const SYSTEM = 'IN';
+	const DPLUSPERMISSION = 'ioptm';
 
 /* =============================================================
 	Indexes
@@ -80,6 +81,9 @@ class Ioptm extends Controller {
 	CRUD
 ============================================================= */
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['action|text', 'sysop|text', 'code|text'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();

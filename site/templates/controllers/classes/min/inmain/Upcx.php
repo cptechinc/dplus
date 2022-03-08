@@ -43,6 +43,9 @@ class Upcx extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['action|text', 'upc|text', 'itemID|text',];
 		self::sanitizeParameters($data, $fields);
 

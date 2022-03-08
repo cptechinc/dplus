@@ -37,6 +37,9 @@ class Spit extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::spitUrl();
@@ -76,6 +79,10 @@ class Spit extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::spitUrl();
+	}
+	
 	public static function spitUrl($code = '') {
 		if (empty($code)) {
 			return Menu::spitUrl();

@@ -22,23 +22,25 @@ class Iplm extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['code|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-
 		if (self::validateUserPermission() === false) {
 			return self::displayAlertUserPermission($data);
 		}
+		// Sanitize Params, parse route from params
+		$fields = ['code|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
 
 		self::pw('page')->show_breadcrumbs = false;
-		self::pw('page')->headline = 'Inventory Product Line Code';
 		return self::list($data);
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::iplmUrl();
@@ -78,6 +80,10 @@ class Iplm extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::iplmUrl();
+	}
+
 	public static function iplmUrl($code = '') {
 		if (empty($code)) {
 			return Menu::iplmUrl();

@@ -38,6 +38,9 @@ class Csccm extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url   = self::csccmUrl();
@@ -77,6 +80,10 @@ class Csccm extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::csccmUrl();
+	}
+	
 	public static function csccmUrl($code = '') {
 		if (empty($code)) {
 			return Menu::csccmUrl();

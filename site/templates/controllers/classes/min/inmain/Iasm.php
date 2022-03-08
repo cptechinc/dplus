@@ -37,6 +37,9 @@ class Iasm extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::iasmUrl();
@@ -76,6 +79,10 @@ class Iasm extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::iasmUrl();
+	}
+
 	public static function iasmUrl($code = '') {
 		if (empty($code)) {
 			return Menu::iasmUrl();

@@ -35,6 +35,9 @@ class Tarm extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::tarmUrl();
@@ -74,6 +77,10 @@ class Tarm extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::tarmUrl();
+	}
+	
 	public static function tarmUrl($code = '') {
 		if (empty($code)) {
 			return Menu::tarmUrl();
