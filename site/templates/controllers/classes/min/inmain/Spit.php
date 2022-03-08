@@ -42,7 +42,7 @@ class Spit extends Base {
 		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url  = self::spitUrl();
+		$url  = self::url();
 		$spit = self::getSpit();
 
 		if ($data->action) {
@@ -82,10 +82,10 @@ class Spit extends Base {
 	public static function url() {
 		return Menu::spitUrl();
 	}
-	
+
 	public static function spitUrl($code = '') {
 		if (empty($code)) {
-			return Menu::spitUrl();
+			return self::url();
 		}
 		return self::spitFocusUrl($code);
 	}
@@ -93,19 +93,19 @@ class Spit extends Base {
 	public static function spitFocusUrl($focus) {
 		$filter = new Filters\Min\InvSpecialCode();
 		if ($filter->exists($focus) === false) {
-			return Menu::spitUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::spitUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'spit', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::spitUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

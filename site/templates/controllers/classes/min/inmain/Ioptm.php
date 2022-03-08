@@ -163,6 +163,10 @@ class Ioptm extends Controller {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::ioptmUrl();
+	}
+
 	public static function sysopUrl($id) {
 		$url = new Purl(self::url());
 		$url->query->set('sysop', $id);
@@ -187,10 +191,6 @@ class Ioptm extends Controller {
 		$url->query->set('action', 'delete');
 		$url->query->set('code', $code);
 		return $url->getUrl();
-	}
-
-	public static function url() {
-		return Menu::ioptmUrl();
 	}
 
 	public static function urlFocus($focus = '') {

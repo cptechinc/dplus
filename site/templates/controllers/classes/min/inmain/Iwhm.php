@@ -124,10 +124,10 @@ class Iwhm extends Base {
 	public static function url() {
 		return Menu::iwhmUrl();
 	}
-	
+
 	public static function iwhmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::iwhmUrl();
+			return self::url();
 		}
 		return self::iwhmFocusUrl($code);
 	}
@@ -135,12 +135,12 @@ class Iwhm extends Base {
 	public static function iwhmFocusUrl($focus) {
 		$filter = new Filters\Min\Warehouse();
 		if ($filter->exists($focus) === false) {
-			return Menu::iwhmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::iwhmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'iwhm', $pagenbr);
 		return $url->getUrl();

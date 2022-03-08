@@ -184,14 +184,14 @@ class I2i extends Base {
 	public static function url() {
 		return Menu::i2iUrl();
 	}
-	
+
 	public static function i2iUrl() {
-		return Menu::i2iUrl();
+		return self::url();
 	}
 
 	public static function xrefListUrl($focus = '') {
 		if (empty($focus)) {
-			return self::i2iUrl();
+			return self::url();
 		}
 		return self::xrefListFocusUrl($focus);
 	}

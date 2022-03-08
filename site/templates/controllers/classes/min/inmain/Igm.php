@@ -105,7 +105,7 @@ class Igm extends Base {
 
 	public static function igmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::igmUrl();
+			return self::url();
 		}
 		return self::igmFocusUrl($code);
 	}
@@ -113,19 +113,19 @@ class Igm extends Base {
 	public static function igmFocusUrl($focus) {
 		$filter = new Filters\Min\InvGroupCode();
 		if ($filter->exists($focus) === false) {
-			return Menu::igmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::igmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'igm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeEditUrl($code) {
-		$url = new Purl(Menu::igmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		return $url->getUrl();
 	}

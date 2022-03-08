@@ -85,7 +85,7 @@ class Iasm extends Base {
 
 	public static function iasmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::iasmUrl();
+			return self::url();
 		}
 		return self::iasmFocusUrl($code);
 	}
@@ -98,14 +98,14 @@ class Iasm extends Base {
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::iasmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'iasm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::iasmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

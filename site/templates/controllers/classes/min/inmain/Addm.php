@@ -164,12 +164,12 @@ class Addm extends Base {
 	}
 
 	public static function addmUrl() {
-		return Menu::addmUrl();
+		return self::url();
 	}
 
 	public static function xrefListUrl($focus = '') {
 		if (empty($focus)) {
-			return self::addmUrl();
+			return self::url();
 		}
 		return self::xrefListFocusUrl($focus);
 	}
@@ -178,7 +178,7 @@ class Addm extends Base {
 		$addm = self::getAddm();
 
 		if ($addm->existsFromRecordlockerKey($focus) === false) {
-			return self::addmUrl();
+			return self::url();
 		}
 
 		$xref = $addm->xrefFromRecordlockerKey($focus);
@@ -192,7 +192,7 @@ class Addm extends Base {
 		$offset  = $filter->positionQuick($xref->itemid);
 		$pagenbr = self::getPagenbrFromOffset($offset);
 
-		$url = new Purl(self::addmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'addm', $pagenbr);
 		if ($sortFilter) {
@@ -207,7 +207,7 @@ class Addm extends Base {
 	}
 
 	public static function xrefUrl($itemID, $addonID) {
-		$url = new Purl(self::addmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('itemID', $itemID);
 		$url->query->set('addonID', $addonID);
 		return $url->getUrl();

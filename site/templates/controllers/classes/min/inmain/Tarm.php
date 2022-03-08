@@ -40,7 +40,7 @@ class Tarm extends Base {
 		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url  = self::tarmUrl();
+		$url   = self::url();
 		$tarm  = self::getTarm();
 
 		if ($data->action) {
@@ -80,10 +80,10 @@ class Tarm extends Base {
 	public static function url() {
 		return Menu::tarmUrl();
 	}
-	
+
 	public static function tarmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::tarmUrl();
+			return self::url();
 		}
 		return self::tarmFocusUrl($code);
 	}
@@ -91,19 +91,19 @@ class Tarm extends Base {
 	public static function tarmFocusUrl($focus) {
 		$filter = new Filters\Min\TariffCode();
 		if ($filter->exists($focus) === false) {
-			return Menu::tarmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::tarmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'tarm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::tarmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

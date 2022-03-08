@@ -74,7 +74,7 @@ class Itmimg extends Base {
 		$mItm = self::pw('modules')->get('Itm');
 
 		if ($mItm->exists($data->itemID) === false) {
-			self::pw('session')->redirect(self::itmurl(), $http301 = false);
+			self::pw('session')->redirect(self::url(), $http301 = false);
 		}
 		self::copyImage($data);
 		$item = $mItm->item($data->itemID);

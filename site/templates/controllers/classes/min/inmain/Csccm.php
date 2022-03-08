@@ -83,10 +83,10 @@ class Csccm extends Base {
 	public static function url() {
 		return Menu::csccmUrl();
 	}
-	
+
 	public static function csccmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::csccmUrl();
+			return self::url();
 		}
 		return self::csccmFocusUrl($code);
 	}
@@ -94,19 +94,19 @@ class Csccm extends Base {
 	public static function csccmFocusUrl($focus) {
 		$filter = new Filters\Min\CustomerStockingCell();
 		if ($filter->exists($focus) === false) {
-			return Menu::csccmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::csccmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'csccm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::csccmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

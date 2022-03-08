@@ -85,7 +85,7 @@ class Igpm extends Base {
 
 	public static function igpmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::igpmUrl();
+			return self::url();
 		}
 		return self::igpmFocusUrl($code);
 	}
@@ -93,19 +93,19 @@ class Igpm extends Base {
 	public static function igpmFocusUrl($focus) {
 		$filter = new Filters\Min\InvPriceCode();
 		if ($filter->exists($focus) === false) {
-			return Menu::igpmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::igpmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'igpm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::igpmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

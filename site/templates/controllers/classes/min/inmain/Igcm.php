@@ -83,7 +83,7 @@ class Igcm extends Base {
 
 	public static function igcmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::igcmUrl();
+			return self::url();
 		}
 		return self::igcmFocusUrl($code);
 	}
@@ -91,19 +91,19 @@ class Igcm extends Base {
 	public static function igcmFocusUrl($focus) {
 		$filter = new Filters\Min\InvCommissionCode();
 		if ($filter->exists($focus) === false) {
-			return Menu::igcmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::igcmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'igcm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::igcmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

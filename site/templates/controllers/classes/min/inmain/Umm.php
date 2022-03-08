@@ -42,7 +42,7 @@ class Umm extends Base {
 		}
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url  = self::ummUrl();
+		$url  = self::url();
 		$umm  = self::getUmm();
 
 		if ($data->action) {
@@ -85,7 +85,7 @@ class Umm extends Base {
 
 	public static function ummUrl($code = '') {
 		if (empty($code)) {
-			return Menu::ummUrl();
+			return self::url();
 		}
 		return self::ummFocusUrl($code);
 	}
@@ -93,19 +93,19 @@ class Umm extends Base {
 	public static function ummFocusUrl($focus) {
 		$filter = new Filters\Min\UnitofMeasure();
 		if ($filter->exists($focus) === false) {
-			return Menu::ummUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::ummUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'umm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::ummUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

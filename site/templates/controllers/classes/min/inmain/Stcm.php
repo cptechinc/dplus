@@ -85,7 +85,7 @@ class Stcm extends Base {
 
 	public static function stcmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::stcmUrl();
+			return self::url();
 		}
 		return self::stcmFocusUrl($code);
 	}
@@ -93,19 +93,19 @@ class Stcm extends Base {
 	public static function stcmFocusUrl($focus) {
 		$filter = new Filters\Min\InvStockCode();
 		if ($filter->exists($focus) === false) {
-			return Menu::stcmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::stcmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'stcm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::stcmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

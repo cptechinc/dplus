@@ -86,10 +86,10 @@ class Itmp extends Base {
 	public static function url() {
 		return Menu::itmpUrl();
 	}
-	
+
 	public static function itmpUrl($code = '') {
 		if (empty($code)) {
-			return Menu::itmpUrl();
+			return self::url();
 		}
 		return self::itmpFocusUrl($code);
 	}
@@ -97,19 +97,19 @@ class Itmp extends Base {
 	public static function itmpFocusUrl($focus) {
 		$filter = new Filters\Min\UserPermissionsItm();
 		if ($filter->exists($focus) === false) {
-			return Menu::itmpUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::itmpUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'itmp', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::itmpUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

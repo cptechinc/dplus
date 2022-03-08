@@ -85,7 +85,7 @@ class Msdsm extends Base {
 
 	public static function msdsmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::msdsmUrl();
+			return self::url();
 		}
 		return self::msdsmFocusUrl($code);
 	}
@@ -93,19 +93,19 @@ class Msdsm extends Base {
 	public static function msdsmFocusUrl($focus) {
 		$filter = new Filters\Min\MsdsCode();
 		if ($filter->exists($focus) === false) {
-			return Menu::msdsmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::msdsmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'msdsm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::msdsmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

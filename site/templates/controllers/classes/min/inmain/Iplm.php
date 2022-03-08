@@ -86,7 +86,7 @@ class Iplm extends Base {
 
 	public static function iplmUrl($code = '') {
 		if (empty($code)) {
-			return Menu::iplmUrl();
+			return self::url();
 		}
 		return self::iplmFocusUrl($code);
 	}
@@ -94,19 +94,19 @@ class Iplm extends Base {
 	public static function iplmFocusUrl($focus) {
 		$filter = new Filters\Min\InvProductLineCode();
 		if ($filter->exists($focus) === false) {
-			return Menu::iplmUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::iplmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'iplm', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::iplmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();
