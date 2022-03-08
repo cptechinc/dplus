@@ -72,11 +72,13 @@ class Upcx extends Base {
 		$upcx = self::getUpcx();
 		$xref = $upcx->getCreateXref($data->upc, $data->itemID);
 		$page = self::pw('page');
-		$page->headline = "UPCX: $xref->upc - $xref->itemid";
+		$page->headline = "UPCX: Create X-Ref";
 
-		if ($xref->isNew()) {
-			$page->headline = "UPCX: Create X-Ref";
+		if ($xref->isNew() === false) {
+			$upcx->lockrecord($xref);
+			$page->headline = "UPCX: $xref->upc - $xref->itemid";
 		}
+
 		$configs = new WireData();
 		$configs->in = Configs\In::config();
 		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
@@ -130,32 +132,30 @@ class Upcx extends Base {
 	private static function displayUpc($data, ItemXrefUpc $xref) {
 		$html = '';
 		$html .= self::pw('config')->twig->render('items/upcx/bread-crumbs.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
-		$html .= self::lockXref($xref);
+		$html .= '<div class="mb-3">'.self::displayLocked($data, $xref).'</div>';
 		$html .= self::pw('config')->twig->render('items/upcx/form/page.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
 		return $html;
 	}
 
-	public static function lockXref(ItemXrefUpc $xref) {
-		$config = self::pw('config');
+	private static function displayLocked($data, ItemXrefUpc $xref) {
 		$upcx = self::getUpcx();
-		$html = '';
-
-		$key = $upcx->getRecordlockerKey($xref);
+		$key  = $upcx->getRecordlockerKey($xref);
 
 		if ($upcx->recordlocker->isLocked($key) && $upcx->recordlocker->userHasLocked($key) === false) {
 			$msg = "UPC $xref->upc - $xref->itemid is being locked by " . $upcx->recordlocker->getLockingUser($key);
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->upc - $xref->itemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-		} elseif ($upcx->recordlocker->isLocked($key) === false) {
-			$upcx->recordlocker->lock($key);
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		}
+		return '';
+	}
 
-		if ($xref->isNew()) {
-			if ($xref->upc != '') {
-				$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "UPC not found, you may create it below"]);
-			}
+	private static function displayResponse($data) {
+		$upcx = self::getUpcx();
+		$response = self::pw('session')->getFor('response', 'upcx');
+
+		if (empty($response)) {
+			return '';
 		}
-		$html .= '<div class="mb-3"></div>';
-		return $html;
+		return self::pw('config')->twig->render('items/itm/response-alert.twig', ['response' => $response]);
 	}
 
 /* =============================================================
