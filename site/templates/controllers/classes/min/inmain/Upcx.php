@@ -21,6 +21,9 @@ class Upcx extends Base {
 	const DPLUSPERMISSION = 'upcx';
 	private static $upcx;
 
+/* =============================================================
+	Index Functions
+============================================================= */
 	public static function index($data) {
 		$fields = ['upc|text', 'itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -42,11 +45,10 @@ class Upcx extends Base {
 	public static function handleCRUD($data) {
 		$fields = ['action|text', 'upc|text', 'itemID|text',];
 		self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
 
 		if (empty($data->action) === false) {
 			$upcx = self::getUpcx();
-			$upcx->process_input($input);
+			$upcx->process_input(self::pw('input'));
 
 			switch($data->action) {
 				case 'delete-upcx':
@@ -63,7 +65,7 @@ class Upcx extends Base {
 		self::pw('session')->redirect(self::upcUrl($data->upc, $data->itemID), $http301 = false);
 	}
 
-	public static function upc($data) {
+	private static function upc($data) {
 		self::sanitizeParametersShort($data, ['upc|text', 'itemID|text', 'action|text']);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -79,11 +81,53 @@ class Upcx extends Base {
 		$configs->in = Configs\In::config();
 		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
 		self::initHooks();
-		$html = self::upcDisplay($data, $xref);
+		$html = self::displayUpc($data, $xref);
 		return $html;
 	}
 
-	private static function upcDisplay($data, ItemXrefUpc $xref) {
+	private static function list($data) {
+		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
+		self::pw('session')->removeFor('upcx', 'sortfilter');
+		self::pw('page')->show_breadcrumbs = false;
+
+		$upcx = self::getUpcx();
+		$upcx->recordlocker->deleteLock();
+		$filter = new UpcxFilter();
+
+		if ($data->q) {
+			self::pw('page')->headline = "UPCX: Searching for '$data->q'";
+			$filter->search(strtoupper($data->q));
+		}
+		$filter->sortby(self::pw('page'));
+
+		if (empty($data->q) === false || empty($data->orderby) === false) {
+			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
+			$sortFilter->saveToSession('upcx');
+		}
+
+		$filter->query->orderBy(ItemXrefUpc::aliasproperty('upc'), 'ASC');
+		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
+
+		self::pw('page')->js .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
+		self::initHooks();
+		$html = self::displayList($data, $upcs);
+		return $html;
+	}
+
+/* =============================================================
+	Display Functions
+============================================================= */
+	private static function displayList($data, PropelModelPager $xrefs) {
+		$upcx = self::getUpcx();
+		$config = self::pw('config');
+
+		$html = '';
+		$html .= $config->twig->render('items/upcx/list/page.twig', ['upcx' => $upcx, 'upcs' => $xrefs]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
+		return $html;
+	}
+
+	private static function displayUpc($data, ItemXrefUpc $xref) {
 		$html = '';
 		$html .= self::pw('config')->twig->render('items/upcx/bread-crumbs.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
 		$html .= self::lockXref($xref);
@@ -111,45 +155,6 @@ class Upcx extends Base {
 			}
 		}
 		$html .= '<div class="mb-3"></div>';
-		return $html;
-	}
-
-	public static function list($data) {
-		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
-		self::pw('session')->removeFor('upcx', 'sortfilter');
-		self::pw('page')->show_breadcrumbs = false;
-
-		$upcx = self::getUpcx();
-		$upcx->recordlocker->deleteLock();
-		$filter = new UpcxFilter();
-
-		if ($data->q) {
-			self::pw('page')->headline = "UPCX: Searching for '$data->q'";
-			$filter->search(strtoupper($data->q));
-		}
-		$filter->sortby(self::pw('page'));
-
-		if (empty($data->q) === false || empty($data->orderby) === false) {
-			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
-			$sortFilter->saveToSession('upcx');
-		}
-
-		$filter->query->orderBy(ItemXrefUpc::aliasproperty('upc'), 'ASC');
-		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
-
-		self::pw('page')->js .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
-		self::initHooks();
-		$html = self::listDisplay($data, $upcs);
-		return $html;
-	}
-
-	private static function listDisplay($data, PropelModelPager $xrefs) {
-		$upcx = self::getUpcx();
-		$config = self::pw('config');
-
-		$html = '';
-		$html .= $config->twig->render('items/upcx/list/page.twig', ['upcx' => $upcx, 'upcs' => $xrefs]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		return $html;
 	}
 
@@ -265,6 +270,9 @@ class Upcx extends Base {
 		return self::$upcx;
 	}
 
+/* =============================================================
+	Hook Functions
+============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
 
