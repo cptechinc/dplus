@@ -25,12 +25,12 @@ class Upcx extends Base {
 	Index Functions
 ============================================================= */
 	public static function index($data) {
-		$fields = ['upc|text', 'itemID|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-
 		if (self::validateUserPermission() === false) {
 			return self::displayAlertUserPermission($data);
 		}
+		// Sanitize Params, parse route from params
+		$fields = ['upc|text', 'itemID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);

@@ -25,17 +25,19 @@ class I2i extends Base {
 	private static $i2i;
 
 	public static function index($data) {
-		$fields = ['parentID|text', 'childID|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission() === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		self::pw('page')->show_breadcrumbs = false;
+
+		// Sanitize Params, parse route from params
+		$fields = ['parentID|text', 'childID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
 		self::initHooks();
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->parentID) === false) {
 			return self::xref($data);
@@ -64,6 +66,7 @@ class I2i extends Base {
 	public static function list($data) {
 		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
 		self::pw('session')->removeFor('upcx', 'sortfilter');
+		self::pw('page')->headline = "Item 2 Item";
 
 		$i2i = self::getI2i();
 		$i2i->recordlocker->deleteLock();

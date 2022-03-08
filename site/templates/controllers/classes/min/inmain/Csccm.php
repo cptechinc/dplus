@@ -22,21 +22,25 @@ class Csccm extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
+		if (self::validateUserPermission() === false) {
+			return self::displayAlertUserPermission($data);
+		}
+		// Sanitize Params, parse route from params
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		self::pw('page')->show_breadcrumbs = false;
-		self::pw('page')->headline = 'Customer Stocking Cell Code';
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+		self::pw('page')->show_breadcrumbs = false;
+		self::pw('page')->headline = 'Customer Stocking Cell Code';
 		return self::list($data);
 	}
 
 	public static function handleCRUD($data) {
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$url  = self::csccmUrl();
+		$url   = self::csccmUrl();
 		$csccm = self::getCsccm();
 
 		if ($data->action) {

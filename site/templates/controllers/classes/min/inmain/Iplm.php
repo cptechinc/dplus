@@ -24,12 +24,17 @@ class Iplm extends Base {
 	public static function index($data) {
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		self::pw('page')->show_breadcrumbs = false;
-		self::pw('page')->headline = 'Inventory Product Line Code';
+
+		if (self::validateUserPermission() === false) {
+			return self::displayAlertUserPermission($data);
+		}
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
+		self::pw('page')->show_breadcrumbs = false;
+		self::pw('page')->headline = 'Inventory Product Line Code';
 		return self::list($data);
 	}
 

@@ -23,14 +23,18 @@ class Itmp extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
+		if (self::validateUserPermission() === false) {
+			return self::displayAlertUserPermission($data);
+		}
+		// Sanitize Params, parse route from params
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		self::pw('page')->show_breadcrumbs = false;
-		self::pw('page')->headline = self::TITLE;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
+		self::pw('page')->show_breadcrumbs = false;
 		return self::list($data);
 	}
 

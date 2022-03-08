@@ -22,16 +22,18 @@ class Itmimg extends Base {
 	private static $docm;
 
 	public static function index($data) {
-		$fields = ['itemID|text', 'q|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission() === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		self::pw('page')->show_breadcrumbs = false;
+		// Sanitize Params, parse route from params
+		$fields = ['itemID|text', 'q|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->itemID) === false) {
 			return self::item($data);

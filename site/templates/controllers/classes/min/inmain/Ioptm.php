@@ -20,10 +20,12 @@ class Ioptm extends Controller {
 	Indexes
 ============================================================= */
 	public static function index($data) {
+		if (self::validateUserPermission() === false) {
+			return self::displayAlertUserPermission($data);
+		}
+		// Sanitize Params, parse route from params
 		$fields = ['sysop|text', 'code|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
-		$page->show_breadcrumbs = false;
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -32,6 +34,7 @@ class Ioptm extends Controller {
 		if (empty($data->sysop) === false) {
 			return self::sysop($data);
 		}
+		self::pw('page')->show_breadcrumbs = false;
 		return self::listSysops($data);
 	}
 

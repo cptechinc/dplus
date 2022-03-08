@@ -24,21 +24,22 @@ class Addm extends Base {
 	private static $addm;
 
 	public static function index($data) {
-		$fields = ['itemID|text', 'addonID|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission() === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		self::pw('page')->show_breadcrumbs = false;
+		// Sanitize Params, parse route from params
+		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
 		self::initHooks();
-		if (empty($data->itemID) === false) {
-			if (empty($data->addonID) === false) {
-				return self::xref($data);
-			}
+		self::pw('page')->show_breadcrumbs = false;
+
+		if (empty($data->itemID) === false && empty($data->addonID) === false) {
+			return self::xref($data);
 		}
 		return self::list($data);
 	}
