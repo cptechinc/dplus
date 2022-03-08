@@ -92,6 +92,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\Umm::class, 'index'],
 			['POST',  '', Inmain\Umm::class, 'handleCRUD'],
 		],
+		'upcx' => [
+			['GET',  '', Inmain\Upcx::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Upcx::class, 'index'],
+			['POST',  '', Inmain\Upcx::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

@@ -1,4 +1,4 @@
-<?php namespace Controllers\Min;
+<?php namespace Controllers\Min\Inmain;
 // Purl URI Library
 use Purl\Url as Purl;
 // Propel ORM Ljbrary
@@ -15,16 +15,19 @@ use Dplus\Configs;
 use Dplus\Filters;
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
+use Controllers\Min\Base;
 
-class Upcx extends Controller {
+class Upcx extends Base {
+	const DPLUSPERMISSION = 'upcx';
 	private static $upcx;
 
 	public static function index($data) {
 		$fields = ['upc|text', 'itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
-		$page->show_breadcrumbs = false;
+
+		if (self::validateUserPermission() === false) {
+			return self::displayAlertUserPermission($data);
+		}
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -38,7 +41,7 @@ class Upcx extends Controller {
 
 	public static function handleCRUD($data) {
 		$fields = ['action|text', 'upc|text', 'itemID|text',];
-		$data  = self::sanitizeParameters($data, $fields);
+		self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 
 		if (empty($data->action) === false) {
@@ -62,10 +65,7 @@ class Upcx extends Controller {
 
 	public static function upc($data) {
 		self::sanitizeParametersShort($data, ['upc|text', 'itemID|text', 'action|text']);
-
-		if ($data->action) {
-			return self::handleCRUD($data);
-		}
+		self::pw('page')->show_breadcrumbs = false;
 
 		$upcx = self::getUpcx();
 		$xref = $upcx->getCreateXref($data->upc, $data->itemID);
@@ -78,6 +78,7 @@ class Upcx extends Controller {
 		$configs = new WireData();
 		$configs->in = Configs\In::config();
 		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
+		self::initHooks();
 		$html = self::upcDisplay($data, $xref);
 		return $html;
 	}
@@ -116,6 +117,7 @@ class Upcx extends Controller {
 	public static function list($data) {
 		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
 		self::pw('session')->removeFor('upcx', 'sortfilter');
+		self::pw('page')->show_breadcrumbs = false;
 
 		$upcx = self::getUpcx();
 		$upcx->recordlocker->deleteLock();
@@ -136,6 +138,7 @@ class Upcx extends Controller {
 		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
 		self::pw('page')->js .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
+		self::initHooks();
 		$html = self::listDisplay($data, $upcs);
 		return $html;
 	}
@@ -154,13 +157,21 @@ class Upcx extends Controller {
 	URL Functions
 ============================================================= */
 	/**
+	 * Return URL to UPCX
+	 * @return string
+	 */
+	public static function url() {
+		return Menu::upcxUrl();
+	}
+
+	/**
 	 * Return URL to view / edit UPC
 	 * @param  string $upc    UPC Code
 	 * @param  string $itemID Item ID
 	 * @return string
 	 */
 	public static function upcUrl($upc, $itemID = '') {
-		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
+		$url = new Purl(self::pw('pages')->get("pw_template=inmain")->url);
 		$url->query->set('upc', $upc);
 
 		if ($itemID) {
@@ -176,7 +187,7 @@ class Upcx extends Controller {
 	 */
 	public static function upcListUrl($focus = '') {
 		if ($focus == '') {
-			return self::pw('pages')->get("pw_template=upcx")->url;
+			return self::pw('pages')->get("pw_template=inmain")->url;
 		}
 		return self::upcListFocusUrl($focus);
 	}
@@ -188,7 +199,7 @@ class Upcx extends Controller {
 	 */
 	public static function upcListFocusUrl($focus = '') {
 		$upcx = self::getUpcx();
-		$page = self::pw('pages')->get("pw_template=upcx");
+		$page = self::pw('pages')->get("pw_template=inmain");
 
 		if ($focus == '' || $upcx->xrefExistsByKey($focus) === false) {
 			return $page->url;
@@ -228,7 +239,7 @@ class Upcx extends Controller {
 	 * @return string
 	 */
 	public static function upcDeleteUrl($upc, $itemID) {
-		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
+		$url = new Purl(self::pw('pages')->get("pw_template=inmain")->url);
 		$url->query->set('action', 'delete-upcx');
 		$url->query->set('upc', $upc);
 		if ($itemID) {
@@ -243,7 +254,7 @@ class Upcx extends Controller {
 	 * @return string
 	 */
 	public static function itemUpcsUrl($itemID) {
-		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
+		$url = new Purl(self::pw('pages')->get("pw_template=inmain")->url);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
@@ -256,30 +267,30 @@ class Upcx extends Controller {
 	}
 
 	public static function initHooks() {
-		$m = self::pw('modules')->get('XrefUpc');
+		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(pw_template=upcx)::upcUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::upcUrl', function($event) {
 			$event->return = self::upcUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=upcx)::upcListUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::upcListUrl', function($event) {
 			$event->return = self::upcListUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=upcx)::itemUpcsUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::itemUpcsUrl', function($event) {
 			$itemID = $event->arguments(0);
 			$event->return = self::itemUpcsUrl($itemID);
 		});
 
-		$m->addHook('Page(pw_template=upcx)::upcCreateUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::upcCreateUrl', function($event) {
 			$event->return = self::upcUrl('new');
 		});
 
-		$m->addHook('Page(pw_template=upcx)::upcDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::upcDeleteUrl', function($event) {
 			$event->return = self::upcDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=upcx)::upcCreateItemidUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::upcCreateItemidUrl', function($event) {
 			$event->return = self::upcUrl('new', $event->arguments(0));
 		});
 	}

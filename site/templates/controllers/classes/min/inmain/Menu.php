@@ -112,6 +112,12 @@ class Menu extends Base {
 			'title'      => 'Unit of Measure Code',
 			'summary'    => 'View / Edit Unit of Measure Code'
 		],
+		'upcx' => [
+			'name'       => 'upcx',
+			'permission' => 'upcx',
+			'title'      => 'UPC Item X-Ref',
+			'summary'    => 'View / Edit UPC Item X-Refs'
+		],
 	];
 
 /* =============================================================
@@ -208,6 +214,10 @@ class Menu extends Base {
 
 	public static function ummUrl() {
 		return self::subfunctionUrl('umm');
+	}
+
+	public static function upcxUrl() {
+		return self::subfunctionUrl('upcx');
 	}
 
 /* =============================================================
