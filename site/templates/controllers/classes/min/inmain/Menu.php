@@ -64,6 +64,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Optional Codes',
 			'summary'    => 'View / Edit Inventory Optional Code'
 		],
+		'itmimg' => [
+			'name'       => 'itmimg',
+			'permission' => 'itm',
+			'title'      => 'Item Images',
+			'summary'    => 'View / Edit Item Images'
+		],
 		'itmp' => [
 			'name'       => 'itmp',
 			'permission' => 'itmp',
@@ -170,6 +176,10 @@ class Menu extends Base {
 
 	public static function ioptmUrl() {
 		return self::subfunctionUrl('ioptm');
+	}
+
+	public static function itmimgUrl() {
+		return self::subfunctionUrl('itmimg');
 	}
 
 	public static function itmpmUrl() {
