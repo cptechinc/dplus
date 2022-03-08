@@ -171,7 +171,7 @@ class Upcx extends Base {
 	 * @return string
 	 */
 	public static function upcUrl($upc, $itemID = '') {
-		$url = new Purl(self::pw('pages')->get("pw_template=inmain")->url);
+		$url = new Purl(self::url());
 		$url->query->set('upc', $upc);
 
 		if ($itemID) {
@@ -187,7 +187,7 @@ class Upcx extends Base {
 	 */
 	public static function upcListUrl($focus = '') {
 		if ($focus == '') {
-			return self::pw('pages')->get("pw_template=inmain")->url;
+			return self::url();
 		}
 		return self::upcListFocusUrl($focus);
 	}
@@ -199,10 +199,9 @@ class Upcx extends Base {
 	 */
 	public static function upcListFocusUrl($focus = '') {
 		$upcx = self::getUpcx();
-		$page = self::pw('pages')->get("pw_template=inmain");
 
 		if ($focus == '' || $upcx->xrefExistsByKey($focus) === false) {
-			return $page->url;
+			return self::url();
 		}
 
 		$sortFilter = Filters\SortFilter::getFromSession('upcx');
@@ -217,8 +216,8 @@ class Upcx extends Base {
 		$offset = $filter->position($xref);
 		$pagenbr = self::getPagenbrFromOffset($offset);
 
-		$url = new Purl($page->url);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		$url = new Purl(self::url());
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'upcx', $pagenbr);
 		$url->query->set('focus', $focus);
 
 		if ($sortFilter) {
@@ -239,7 +238,7 @@ class Upcx extends Base {
 	 * @return string
 	 */
 	public static function upcDeleteUrl($upc, $itemID) {
-		$url = new Purl(self::pw('pages')->get("pw_template=inmain")->url);
+		$url = new Purl(self::url());
 		$url->query->set('action', 'delete-upcx');
 		$url->query->set('upc', $upc);
 		if ($itemID) {
@@ -254,7 +253,7 @@ class Upcx extends Base {
 	 * @return string
 	 */
 	public static function itemUpcsUrl($itemID) {
-		$url = new Purl(self::pw('pages')->get("pw_template=inmain")->url);
+		$url = new Purl(self::url());
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
@@ -268,6 +267,14 @@ class Upcx extends Base {
 
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
+
+		$m->addHook('Page(pw_template=inmain)::menuUrl', function($event) {
+			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=inmain)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
+		});
 
 		$m->addHook('Page(pw_template=inmain)::upcUrl', function($event) {
 			$event->return = self::upcUrl($event->arguments(0), $event->arguments(1));

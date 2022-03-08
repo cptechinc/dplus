@@ -1,16 +1,27 @@
 {% extends 'util/bread-crumbs.twig' %}
 
-{% set values = page.wire('input').get %}
+{% set values = input.get %}
 
 {% block current_page %}
+	<li class="breadcrumb-item">
+		<i class="fa fa-list" aria-hidden="true"></i>
+		<a href="{{ page.menuUrl() }}">{{ page.menuTitle() }}</a>
+	</li>
+
 	{% if values.offsetExists('upc') == false and values.offsetExists('itemID') == false  %}
-		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			<i class="fa fa-arrows" aria-hidden="true"></i>
+			UPCX
+		</li>
 	{% endif %}
 
 	{% if values.offsetExists('upc') %}
 		<li class="breadcrumb-item">
-			<i class="fa fa-arrows" aria-hidden="true"></i>  <a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}">UPCX</a>
+			<i class="fa fa-arrows" aria-hidden="true"></i>
+			<a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}">UPCX</a>
 		</li>
-		<li class="breadcrumb-item active" aria-current="page">{{ values.text('upc') }} - {{ values.text('itemID') }}</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ values.text('upc') }} - {{ values.text('itemID') }}
+		</li>
 	{% endif %}
 {% endblock %}
