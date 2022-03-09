@@ -190,11 +190,15 @@ class Menu extends Base {
 		return self::subfunctionUrl('ioptm');
 	}
 
+	public static function itmUrl() {
+		return self::subfunctionUrl('itm');
+	}
+
 	public static function itmimgUrl() {
 		return self::subfunctionUrl('itmimg');
 	}
 
-	public static function itmpmUrl() {
+	public static function itmpUrl() {
 		return self::subfunctionUrl('itmp');
 	}
 
