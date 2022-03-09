@@ -94,6 +94,7 @@ class Upcx extends Base {
 		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
 		self::pw('session')->removeFor('upcx', 'sortfilter');
 		self::pw('page')->show_breadcrumbs = false;
+		self::pw('page')->headline = "UPC Item X-Ref";
 
 		$upcx = self::getUpcx();
 		$upcx->recordlocker->deleteLock();
