@@ -22,10 +22,6 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'po-code-table' => array(
-			'name'   => 'po-code-table',
-			'fields' => array()
-		),
 	);
 
 	const PAGES = array(
@@ -38,8 +34,8 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_function' => 'mpo'
 		),
 		'poadmn' => array(
-			'template'       => 'dplus-menu',
-			'name'           => 'admin',
+			'template'       => 'poadmn',
+			'name'           => 'poadmn',
 			'title'          => 'Administration',
 			'summary'        => 'Purchase Order Administration',
 			'parent'         => '/mpo/',
@@ -75,71 +71,8 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_permission' => 'epo',
 			'pw_template'      => '',
 			'function_url'     => '/mpo/purchase-orders/epo/'
-		),
-		'po-cnfm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'po-code-table',
-			'name'           => 'cnfm',
-			'title'          => 'Confirmation Code',
-			'summary'        => 'View / Edit Confirmation Code',
-			'parent'         => '/mpo/admin/',
-			'dplus_function' => 'cnfm'
-		),
+		)
 	);
-
-/* =============================================================
-	URL Functions
-============================================================= */
-	/**
-	 * Return View Code Table URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_viewURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return View Code Table List URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_listURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
-		$url->query->set('focus', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Code Table Code Delete URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_code_deleteURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('table', $table);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Code Table Edit Code URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_code_editURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
 
 /* =============================================================
 	ProcessWire Module Functions
@@ -156,34 +89,6 @@ class DpagesMpo extends Dpages implements Module {
 	}
 
 	public function init() {
-		$this->addHook('Page(pw_template=po-code-table-menu|po-code-table)::get_codetable_viewURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_viewURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=po-code-table)::get_codetable_code_deleteURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_deleteURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=po-code-table)::get_codetable_code_editURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_editURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=po-code-table)::get_codetable_listURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_listURL($table, $code);
-		});
-
-		$this->addHookProperty('Page(pw_template=po-code-table)::codetable', function($event) {
-			$page = $event->object;
-			$event->return = $page->name;
-		});
 
 		$this->addHook('User::permitted_edit_po', function($event) {
 			$user = $event->object;

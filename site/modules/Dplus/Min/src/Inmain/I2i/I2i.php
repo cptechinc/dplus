@@ -210,7 +210,7 @@ class I2i extends WireData {
 			default:
 				$key = implode('-', [$values->text('parentID'), $values->text('childID')]);
 				$message = self::DESCRIPTION_RECORD . " ($key) was not saved, no action was specified";
-				$this->wire('session')->setFor('response', 'i2i', Response::response_error($key, $message));
+				$this->setResponse(Response::responseError($key, $message));
 				return false;
 				break;
 		}
@@ -230,13 +230,13 @@ class I2i extends WireData {
 
 		if ($this->lockrecord($xref) === false && $xref->isNew() === false) {
 			$message = self::DESCRIPTION_RECORD . " ($xref->parentID-$xref->childID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($xref));
-			$this->wire('session')->setFor('response', 'i2i', Response::response_error($this->getRecordlockerKey($xref), $message));
+			$this->setResponse(Response::responseError($this->getRecordlockerKey($xref), $message));
 			return false;
 		}
 		$invalidFields = $this->updateXrefInput($xref, $input);
 		$response = $this->saveAndRespond($xref, $invalidFields);
-		$this->wire('session')->setFor('response', 'i2i', $response);
-		return $this->wire('session')->getFor('response', 'i2i')->has_success();
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 	/**
@@ -256,13 +256,13 @@ class I2i extends WireData {
 			if ($this->lockrecord($xref) === false) {
 				$key = $this->getRecordlockerKey($xref);
 				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($xref);
-				$this->wire('session')->setFor('response', 'i2i', Response::response_error($key, $message));
+				$this->setResponse(Response::responseError($key, $message));
 				return false;
 			}
 			$xref->delete();
 			$response = $this->saveAndRespond($xref);
-			$this->wire('session')->setFor('response', 'i2i', $response);
-			return $response->has_success();
+			$this->setResponse($response);
+			return $response->hasSuccess();
 		}
 		return true;
 	}
@@ -281,28 +281,60 @@ class I2i extends WireData {
 		$saved  = $xref->isDeleted() ? $xref->isDeleted() : $xref->save();
 
 		$response = new Response();
-		$response->set_key($this->getRecordlockerKey($xref));
+		$response->setKey($this->getRecordlockerKey($xref));
 
 		if ($saved) {
-			$response->set_success(true);
+			$response->setSuccess(true);
 		} else {
-			$response->set_error(true);
+			$response->setError(true);
 		}
 
 		if ($is_new) {
-			$response->set_action(Response::CRUD_CREATE);
+			$response->setAction(Response::CRUD_CREATE);
 		} elseif ($xref->isDeleted()) {
-			$response->set_action(Response::CRUD_DELETE);
+			$response->setAction(Response::CRUD_DELETE);
 		} else {
-			$response->set_action(Response::CRUD_UPDATE);
+			$response->setAction(Response::CRUD_UPDATE);
 		}
 
-		$response->build_message(self::RESPONSE_TEMPLATE);
+		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
-		if ($response->has_success() && empty($invalidfields)) {
+		if ($response->hasSuccess() && empty($invalidfields)) {
 			$this->updateDplusServer($xref);
 		}
 		return $response;
+	}
+
+	/**
+	 * Add Replacements, values for the Response Message
+	 * @param UserPermissionsItm     $itmperm      Code
+	 * @param Response $response  Response
+	 */
+	protected function addResponseMsgReplacements(UserPermissionsItm $itmperm, Response $response) {
+		$response->addMsgReplacement('{loginid}', $itmperm->loginid);
+	}
+
+	/**
+	 * Set Session Response
+	 * @param Response $response
+	 */
+	public function setResponse(Response $response) {
+		$this->wire('session')->setFor('response', static::RECORDLOCKER_FUNCTION, $response);
+	}
+
+	/**
+	 * Return Session Response
+	 * @return Response
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', static::RECORDLOCKER_FUNCTION);
+	}
+
+	/**
+	 * Delete Session Response
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
 	}
 
 /* =============================================================

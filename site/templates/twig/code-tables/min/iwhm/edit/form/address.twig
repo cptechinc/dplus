@@ -1,0 +1,167 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	warehouse              Warehouse
+	iwhm                   Dplus\Codes\Iwhm
+#}
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label for="address">Address 1</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'address', 'value': warehouse.address,
+					'size': 'sm',
+					'attributes': {
+						'maxlength': iwhm.fieldAttribute('address', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label for="address2">Address 2</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'address2', 'value': warehouse.address2,
+					'size': 'sm',
+					'attributes': {
+						'maxlength': iwhm.fieldAttribute('address2', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label>City, State, Zip</label>
+	</div>
+	<div class="col-sm-9">
+		<div class="form-row">
+			<div class="col-6">
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'city', 'value': warehouse.city,
+							'size': 'sm',
+							'attributes': {
+								'maxlength': iwhm.fieldAttribute('city', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+			<div class="col-2">
+				<select name="state" class="form-control form-control-sm validate-ignore selectpicker" data-style="" data-styleBase="form-control" id="state">
+					<option value=""></option>
+					{% for state in iwhm.getStates() %}
+						<option value="{{ state.abbreviation }}" title="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>
+							{{ state.abbreviation }} - {{ state.name }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-4">
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'zip', 'value': warehouse.zip,
+							'size': 'sm',
+							'attributes': {
+								'maxlength': iwhm.fieldAttribute('zip', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label for="country">Country</label>
+	</div>
+	<div class="col-sm-9">
+		<select name="country" class="form-control form-control-sm" id="country">
+			<option value=""></option>
+			{% for country in iwhm.getCountries() %}
+				<option value="{{ country.iso }}" {{ country.iso == warehouse.country ? 'selected' : ''}}>
+					{{ country.iso }} - {{ country.name }}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label for="phone">Phone</label>
+	</div>
+	<div class="col-sm-9">
+		<div class="form-row">
+			<div class="col-sm-7">
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'phone', 'value': warehouse.phone|phone_us,
+							'size': 'sm',
+							'addclasses': ['phone-input']
+						}
+					}
+				%}
+			</div>
+			<div class="col-sm-5">
+				<div class="row">
+					<div class="col-sm-4">
+						<label for="phone_ext">Ext</label>
+					</div>
+					<div class="col-sm-8">
+						{% include 'util/bootstrap/form/input.twig' with {
+								'input': {
+									'name': 'extension', 'value': warehouse.extension,
+									'size': 'sm',
+									'attributes': {
+										'maxlength': iwhm.fieldAttribute('extension', 'maxlength')
+									}
+								}
+							}
+						%}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label for="fax">Fax</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'fax', 'value': warehouse.fax|phone_us,
+					'size': 'sm',
+					'addclasses': ['phone-input']
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label for="email">Email</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'email', 'value': warehouse.email,
+					'size': 'sm',
+					'type': 'email'
+				}
+			}
+		%}
+	</div>
+</div>

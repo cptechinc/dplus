@@ -9,6 +9,7 @@ use ProcessWire\WireInput;
 abstract class Qnotes extends WireData {
 	const MODEL                = '';
 	const MODEL_KEY            = 'id';
+	const MODEL_TABLE          = '';
 	const DESCRIPTION          = 'Notes';
 	const DESCRIPTION_RECORD   = 'Notes';
 	const DESCRIPTION_RESPONSE = 'Note ';
@@ -26,6 +27,14 @@ abstract class Qnotes extends WireData {
 	 * @return static
 	 */
 	public static function getInstance() {
+		return static::instance();
+	}
+
+	/**
+	 * Return Instance
+	 * @return static
+	 */
+	public static function instance() {
 		if (empty(static::$instance)) {
 			static::$instance = new static();
 		}
@@ -55,6 +64,14 @@ abstract class Qnotes extends WireData {
 		return $lines;
 	}
 
+	/**
+	 * Return Note Type
+	 * @return string
+	 */
+	public function type() {
+		return static::TYPE;
+	}
+
 /* =============================================================
 	Field Configs
 ============================================================= */
@@ -76,6 +93,9 @@ abstract class Qnotes extends WireData {
 	public function fieldAttribute($field = '', $attr = '') {
 		if (empty($field) || empty($attr)) {
 			return false;
+		}
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
 		}
 		if (array_key_exists($field, $this->fieldAttributes) === false) {
 			return false;
@@ -151,9 +171,11 @@ abstract class Qnotes extends WireData {
 
 		switch ($values->text('action')) {
 			case 'delete':
+			case 'delete-notes':
 				$this->inputDelete($input);
 				break;
 			case 'update':
+			case 'update-notes':
 				$this->inputUpdate($input);
 				break;
 		}

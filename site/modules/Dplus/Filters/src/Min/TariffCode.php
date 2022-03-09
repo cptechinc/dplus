@@ -4,12 +4,12 @@ use TariffCodeQuery, TariffCode as Model;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
  * Wrapper Class for TariffCodeQuery
  */
-class TariffCode extends AbstractFilter {
+class TariffCode extends CodeFilter {
 	const MODEL = 'TariffCode';
 
 /* =============================================================

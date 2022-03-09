@@ -1,33 +1,51 @@
-{# rgasc is an instance of SoRgaCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
-	<input type="hidden" name="table" value="rgasc">
-	<input type="hidden" name="serialized" value="" disabled>
+{# mfcm is an instance of MotorFreightCode #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
 
 	<div class="form-group">
 		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" maxlength="{{ max_length_code }}" value="" id="code">
+		<input type="text" name="code" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="35" value="" id="description">
+		<input type="text" name="description" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 	</div>
 
 	<div class="form-group">
-		<label for="warehouse">Warehouse</label>
-		<select name="warehouse" class="form-control" id="warehouse">
-			<option value=""></option>
-			{% for whse in warehouses %}
-				<option value="{{ whse.id }}" {{ whse.id == value ? 'selected' : ''}}>
-					{{ whse.id }} - {{ whse.name }}
-				</option>
-			{% endfor %}
-		</select>
+		<label for="whseid">Warehouse</label>
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'whseid',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Warehouse ID',
+							'data-jqv': 'true'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search for / Choose Warehouse',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('warehouses'),
+							'data-input': '#whseid',
+							'data-search': 'warehouseid',
+						}
+					}
+				}
+			}
+		%}
 	</div>
 
 	<div class="form-group">
-		<label for="account_number">Shipping Account Number</label>
-		<input type="text" name="account_number" class="form-control" maxlength="10" value="" id="account_number">
+		<label for="acctnbr">Shipping Account Number</label>
+		<input type="text" name="acctnbr" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('acctnbr', 'maxlength') }}" id="acctnbr">
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">

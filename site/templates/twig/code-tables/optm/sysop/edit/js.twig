@@ -65,8 +65,6 @@ $(function() {
 		modal.find('.modal-title').text('Add Code');
 		if (code) {
 			modal.find('.modal-title').text('Edit Code ' + code);
-		} else {
-			modal.find('.modal-title').text('Add Code');
 		}
 		formCode.updateInputsFromJson(button.data('json'));
 	});

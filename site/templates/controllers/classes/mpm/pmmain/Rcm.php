@@ -105,7 +105,7 @@ class Rcm extends Base {
 		$rcm = self::getRcm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/mpm/rcm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mpm/rcm/list.twig', ['manager' => $rcm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

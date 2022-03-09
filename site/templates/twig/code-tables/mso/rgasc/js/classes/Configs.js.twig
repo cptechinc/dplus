@@ -1,0 +1,21 @@
+class RgascConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new RgascConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ rgasc.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ rgasc.fieldAttribute('description', 'maxlength') }}
+			},
+		};
+	}
+}

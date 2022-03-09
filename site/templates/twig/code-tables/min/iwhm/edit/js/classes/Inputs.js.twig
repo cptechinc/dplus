@@ -1,0 +1,23 @@
+class IwhmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new IwhmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id     = 'code-form',
+		this.form    = $('#' + this.id),
+		this.code   = this.form.find('input[name=code]');
+		this.name   = this.form.find('input[name=name]');
+		this.warehouses = {
+			profit: this.form.find('input[name=whseprofit]'),
+			asset: this.form.find('input[name=whseasset]'),
+			supply: this.form.find('input[name=whsesupply]')
+		}
+	}
+
+}

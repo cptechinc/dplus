@@ -1,0 +1,36 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	itmp                   Dplus\Min\Itmp
+#}
+$(function() {
+/* =============================================================
+	List Highlighting Functions
+============================================================= */
+	var uri = URI();
+	var query = uri.query(true);
+
+	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
+		$('div[data-userid="'+query.focus+'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('div[data-userid="'+query.focus+'"]').offset().top,},700,'linear');
+	}
+
+
+/* =============================================================
+	Edit Modal Close Functions
+============================================================= */
+	$('#edit-modal').on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var loginID = modal.find('input[name=loginID]').val().toString();
+
+		$('.response-alert').remove();
+		$('.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.user-row[data-userid="'+loginID+'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.user-row[data-userid="'+loginID+'"]').offset().top,},700,'linear');
+	});
+
+});
+{% include 'min/inmain/itmp/edit/js.twig' %}

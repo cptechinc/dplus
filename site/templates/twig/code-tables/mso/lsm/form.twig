@@ -1,21 +1,28 @@
-{# lsm is an instance of LostSalesCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
-	<input type="hidden" name="table" value="lsm">
-	<input type="hidden" name="serialized" value="" disabled>
+{# vtm is an instance of ApTypeCode #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
 
 	<div class="form-group">
 		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" maxlength="{{ max_length_code }}" value="" id="code">
+		<input type="text" name="code" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
+		<input type="text" name="description" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 	</div>
 
 	<div class="form-group">
 		<label for="updateinventorywatch">Update Inventory Watch?</label>
-		{% include 'util/select.twig' with {'name': 'updateinventorywatch', 'id': 'updateinventorywatch', 'hideblankoption' : 'true', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'updateinventorywatch',
+					'value' : 'N',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
+				}
+			}
+		%}
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">

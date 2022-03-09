@@ -6,8 +6,11 @@ use WarehouseBinQuery, WarehouseBin;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus CRUD
+use Dplus\Min as MinMaintenance;
 use Dplus\Min\Inmain\Itm\Substitutes as ItmSub;
 use Dplus\Min\Inmain\Itm\Options as ItmOptions;
+// Dplus Codes
+use Dplus\Codes;
 // Dplus Validators
 use Dplus\CodeValidators as  Validators;
 use Dplus\CodeValidators\Min as MinValidator;
@@ -491,6 +494,419 @@ class Min extends Controller {
 		return $qnotes->notesJson($data->itemID, $data->type);
 	}
 
+	public static function validateCsccmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Csccm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Customer Stocking Cell Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Customer Stocking Cell Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCsccmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Csccm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateIasmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Iasm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Assortment Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Assortment Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIasmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Iasm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateIgcmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Igcm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Commission Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Commission Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIgcmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Igcm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateIgmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Igm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Group Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Group Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIgmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Igm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateIgpmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Igpm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Price Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Price Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIgpmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Igpm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateIplmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Iplm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Inventory Product Line Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Inventory Product Line Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIplmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Iplm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateMsdsmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Msdsm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Material Safety Data Sheet Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Material Safety Data Sheet Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getMsdsmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Msdsm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateSpitCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Spit::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Special Item Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Special Item Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getSpitCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Spit::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateStcmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Stcm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Stock Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Stock Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getStcmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Stcm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateTarmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Tarm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Tariff Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Tariff Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getTarmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Tarm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateUmmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Umm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Unit of Measure $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Unit of Measure $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getUmmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Min\Umm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function validateIwhmCode($data) {
+		$fields = ['id|text', 'code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->id) === false) {
+			$data->code = $data->id;
+		}
+
+		$manager = Codes\Min\Iwhm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Warehouse $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Warehouse $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getIwhmCode($data) {
+		$fields = ['id|text', 'code|text'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->id) === false) {
+			$data->code = $data->id;
+		}
+
+		$manager = Codes\Min\Iwhm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
+
+	public static function getItmpUser($data) {
+		$fields = ['userID|text', 'code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = MinMaintenance\Itmp::instance();
+		return $manager->userJson($manager->userItmp($data->userID));
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
 	private static function validator() {
 		return new MinValidator();
 	}

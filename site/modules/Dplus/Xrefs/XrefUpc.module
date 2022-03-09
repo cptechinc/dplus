@@ -243,7 +243,7 @@ class XrefUpc extends WireData implements Module {
 			$this->update_primary_record($record);
 		}
 		$this->wire('session')->setFor('response', 'upcx', $response);
-		return $this->wire('session')->getFor('response', 'upcx')->has_success();
+		return $response->has_success();
 	}
 
 	/**

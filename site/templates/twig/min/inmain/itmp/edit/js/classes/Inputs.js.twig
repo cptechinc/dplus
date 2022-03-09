@@ -1,0 +1,19 @@
+class ItmpInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmpInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itmp-form',
+		this.form = $('#' + this.id),
+		this.userid  = this.form.find('input[name=userID]');
+		{% for field, label in itmp.permissionsLabels() %}
+			this.{{ field }} = this.form.find('select[name={{ field }}]');
+		{% endfor %}
+	}
+}

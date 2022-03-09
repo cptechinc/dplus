@@ -11,28 +11,8 @@ use Dplus\Filters\Map\Vxm as VxmFilter;
  * NOTE: Also installs the basic fields, templates, to build the rest of the Application
  */
 class DpagesMap extends Dpages implements Module {
-	const FIELDS = array();
-
-	const TEMPLATES = array(
-		'vxm' => array(
-			'name'   => 'vxm',
-			'fields' => array(),
-			'paginated' => true
-		),
-		'vxm-validate' => array(
-			'name'   => 'vxm',
-			'fields' => array(),
-			'paginated' => true
-		),
-		'ap-code-table' => array(
-			'name'   => 'ap-code-table',
-			'fields' => array()
-		),
-		'mxrfe' => array(
-			'name'   => 'mxrfe',
-			'fields' => array()
-		),
-	);
+	const FIELDS    = [];
+	const TEMPLATES = [];
 
 	const PAGES = array(
 		'map' => array(
@@ -44,122 +24,14 @@ class DpagesMap extends Dpages implements Module {
 			'dplus_function' => 'map'
 		),
 		'apmain' => array(
-			'template'       => 'dplus-menu',
+			'template'       => 'apmain',
 			'name'           => 'apmain',
 			'title'          => 'Maintenance',
 			'summary'        => 'Accounts Payable Maintenance',
 			'parent'         => '/map/',
 			'dplus_function' => 'apmain'
 		),
-		'ap-vxm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'vxm',
-			'name'           => 'vxm',
-			'title'          => 'Vendor Item X-Ref',
-			'summary'        => 'View Vendor Item X-Ref',
-			'parent'         => '/map/apmain/',
-			'dplus_function' => 'vxm'
-		),
-		'ap-bum' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ap-code-table',
-			'name'           => 'bum',
-			'title'          => 'Vendor Buyer',
-			'summary'        => 'View / Edit Vendor Buyer',
-			'parent'         => '/map/apmain/',
-			'dplus_function' => 'bum'
-		),
-		'ap-vtm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ap-code-table',
-			'name'           => 'vtm',
-			'title'          => 'Vendor Type Code',
-			'summary'        => 'View / Edit Vendor Type Code',
-			'parent'         => '/map/apmain/',
-			'dplus_function' => 'vtm'
-		),
-		'ap-aoptm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'aoptm',
-			'name'           => 'aoptm',
-			'title'          => 'Accounts Payable Optional Code',
-			'summary'        => 'View / Edit Accounts Payable Optional Code',
-			'parent'         => '/map/apmain/',
-			'dplus_function' => 'aoptm'
-		),
-		'mxrfe' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'mxrfe',
-			'name'           => 'mxrfe',
-			'title'          => 'Mnfr / Competitor Item X-Ref',
-			'summary'        => 'View / Edit Manufacturer / Competitor X-Ref',
-			'parent'         => '/map/apmain/',
-			'dplus_function' => 'mxrfe'
-		),
 	);
-
-/* =============================================================
-	URL Functions
-============================================================= */
-
-	/**
-	 * Return View Code Table URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_viewURL($table, $code = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-
-		if ($table == 'aoptm') {
-			$url->query->set('sysop', $code);
-		} else {
-			$url->query->set('code', $code);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return View Code Table List URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_listURL($table, $code = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		if ($table == 'aoptm') {
-			$url->query->set('sysop', $code);
-		} else {
-			$url->query->set('focus', $code);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Code Table Code Delete URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_code_deleteURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('table', $table);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Code Table Edit Code URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_code_editURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
 
 /* =============================================================
 	ProcessWire Module Functions
@@ -174,38 +46,5 @@ class DpagesMap extends Dpages implements Module {
 			'requires' => array('DplusPwPages', 'Dpages'),
 			'installs' => array(),
 		);
-	}
-
-	public function init() {
-		// Code Tables
-		$this->addHook('Page(pw_template=ap-code-table-menu|ap-code-table)::get_codetable_viewURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_viewURL($table, $code);
-		});
-
-
-		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_code_deleteURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_deleteURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_code_editURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_editURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_listURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_listURL($table, $code);
-		});
-
-		$this->addHookProperty('Page(pw_template=ap-code-table)::codetable', function($event) {
-			$page = $event->object;
-			$event->return = $page->name;
-		});
 	}
 }

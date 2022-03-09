@@ -3,10 +3,16 @@
 {% set values = page.wire('input').get %}
 
 {% block current_page %}
+	<li class="breadcrumb-item">
+		<a href="{{ page.menuUrl() }}">
+			<i class="fa fa-list" aria-hidden="true"></i> APMAIN
+		</a>
+	</li>
+
 	{% if values.offsetExists('vendorID') %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.vendorListUrl(values.text('vendorID')) }}">
-				<i class="fa fa-arrows" aria-hidden="true"></i> {{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+				<i class="fa fa-arrows" aria-hidden="true"></i> VXM
 			</a>
 		</li>
 		{% if (values.offsetExists('vendoritemID')) %}
@@ -23,7 +29,9 @@
 		{% endif %}
 	{% elseif values.offsetExists('itemID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.url }}">{{ page.title }}</a>
+			<a href="{{ page.url }}">
+				<i class="fa fa-list" aria-hidden="true"></i> APMAIN
+			</a>
 		</li>
 		<li class="breadcrumb-item active" aria-current="page">Item: {{ values.text('itemID') }}</li>
 	{% else %}

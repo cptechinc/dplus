@@ -24,6 +24,7 @@ class DplusUser extends CodeFilter {
 		];
 		$this->query->searchFilter($columns, strtoupper($q));
 	}
+	
 /* =============================================================
 	2. Base Filter Functions
 ============================================================= */

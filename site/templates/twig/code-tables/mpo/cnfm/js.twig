@@ -12,10 +12,10 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal  = $(this);
 		var code   = button.data('code');
+		modal.find('.modal-title').text('Add Code');
+
 		if (code) {
 			modal.find('.modal-title').text('Edit Code ' + code);
-		} else {
-			modal.find('.modal-title').text('Add Code');
 		}
 		formCode.updateInputsFromJson(button.data('json'));
 	});
@@ -39,18 +39,19 @@ $(function() {
 		server.validateCode(code, function(exists) {
 			if (exists === true) {
 				alert.codeExists(code, function(editCode) {
-					if (editCode) {
-						var modal = input.closest('.modal');
+					var modal = formCode.form.closest('.modal');
 
-						if (editCode) {
-							server.getCode(code, function(response) {
-								if (response) {
-									formCode.updateInputsFromJson(response);
-								}
-							});
-						} else {
-							modal.modal('hide');
-						}
+					if (editCode) {
+						server.getCode(code, function(response) {
+							if (response) {
+								modal.find('.modal-title').text('Edit Code ' + code);
+								formCode.updateInputsFromJson(response);
+							} else {
+								modal.modal('hide');
+							}
+						});
+					} else {
+						modal.modal('hide');
 					}
 				});
 			}
@@ -109,20 +110,19 @@ $(function() {
 						return true;
 					}
 					alert.codeExists(code, function(editCode) {
-						if (editCode) {
-							var modal = formCode.form.closest('.modal');
+						var modal = formCode.form.closest('.modal');
 
-							if (editCode) {
-								server.getCode(code, function(response) {
-									if (response) {
-										formCode.updateInputsFromJson(response);
-									}
-								});	
-							} else {
-								modal.modal('hide');
-							}
+						if (editCode) {
+							server.getCode(code, function(response) {
+								if (response) {
+									modal.find('.modal-title').text('Edit Code ' + code);
+									formCode.updateInputsFromJson(response);
+								} else {
+									modal.modal('hide');
+								}
+							});
 						} else {
-							form.submit();
+							modal.modal('hide');
 						}
 					});
 				});

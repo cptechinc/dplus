@@ -1,0 +1,19 @@
+class RgascInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new RgascInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.whseid        = this.form.find('input[name=whseid]');
+		this.acctnbr       = this.form.find('input[name=acctnbr]');
+	}
+}

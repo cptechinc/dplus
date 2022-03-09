@@ -29,6 +29,8 @@ class Aoptm extends Controller {
 			return self::handleCRUD($data);
 		}
 
+		self::initHooks();
+
 		if (empty($data->sysop) === false) {
 			return self::sysop($data);
 		}
@@ -181,7 +183,7 @@ class Aoptm extends Controller {
 	}
 
 	public static function url() {
-		return self::pw('pages')->get('pw_template=aoptm')->url;
+		return Menu::aoptmUrl();
 	}
 
 	public static function urlFocus($focus = '') {
@@ -203,21 +205,21 @@ class Aoptm extends Controller {
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMar');
+		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(pw_template=aoptm)::sysopUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::sysopUrl', function($event) {
 			$event->return = self::sysopUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=aoptm)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=aoptm)::aoptmUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::aoptmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=aoptm)::optmUrl', function($event) {
+		$m->addHook('Page(pw_template=apmain)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

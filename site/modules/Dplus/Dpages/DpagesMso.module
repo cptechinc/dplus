@@ -30,18 +30,6 @@ class DpagesMso extends Dpages implements Module {
 			'name'   => 'sales-order-edit',
 			'fields' => array()
 		),
-		'so-code-table' => array(
-			'name'   => 'so-code-table',
-			'fields' => array()
-		),
-		'so-code-table-code' => array(
-			'name'   => 'so-code-table-code',
-			'fields' => array()
-		),
-		'cxm' => array(
-			'name'   => 'cxm',
-			'fields' => array()
-		),
 	);
 
 	const PAGES = array(
@@ -60,60 +48,6 @@ class DpagesMso extends Dpages implements Module {
 			'summary'        => 'Sales Order Maintenance',
 			'parent'         => '/mso/',
 			'dplus_function' => 'somain'
-		),
-		'so-lsm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'so-code-table',
-			'name'           => 'lsm',
-			'title'          => 'Lost Sales Reason Code',
-			'summary'        => 'View / Edit Lost Sales Reason Code',
-			'parent'         => '/mso/somain/',
-			'dplus_function' => 'lsm'
-		),
-		'so-mfcm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'so-code-table',
-			'name'           => 'mfcm',
-			'title'          => 'Motor Freight Code',
-			'summary'        => 'View / Edit Motor Freight Code',
-			'parent'         => '/mso/somain/',
-			'dplus_function' => 'mfcm'
-		),
-		'so-rgarc' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'so-code-table',
-			'name'           => 'rgarc',
-			'title'          => 'RGA/Return Reason Code',
-			'summary'        => 'View / Edit RGA/Return Reason Code',
-			'parent'         => '/mso/somain/',
-			'dplus_function' => 'rgarc'
-		),
-		'so-rgasc' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'so-code-table',
-			'name'           => 'rgasc',
-			'title'          => 'RGA/Return Ship Via Code',
-			'summary'        => 'View / Edit RGA/Return Ship Via Code',
-			'parent'         => '/mso/somain/',
-			'dplus_function' => 'rgasc'
-		),
-		'mso-soptm' => [
-			'template'       => 'dplus-function',
-			'pw_template'    => 'soptm',
-			'name'           => 'soptm',
-			'title'          => 'Sales Order Optional Code',
-			'summary'        => 'View / Edit Sales Order Optional Code',
-			'parent'         => '/mso/somain/',
-			'dplus_function' => 'soptm'
-		],
-		'cxm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'cxm',
-			'name'           => 'cxm',
-			'title'          => 'Customer Item X-Ref',
-			'summary'        => 'View / Edit Customer Item X-Ref',
-			'parent'         => '/mso/somain/',
-			'dplus_function' => 'cxm'
 		),
 		'sales-orders' => array(
 			'template'         => 'dplus-function',
@@ -137,9 +71,6 @@ class DpagesMso extends Dpages implements Module {
 		),
 	);
 
-	public function init_salesorder_hooks() {
-
-	}
 
 /* =============================================================
 	URL Functions
@@ -155,65 +86,6 @@ class DpagesMso extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	/**
-	 * Return View Code Table URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_viewURL($table, $code = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
-
-		if ($table == 'soptm') {
-			$url->query->set('sysop', $code);
-		} else {
-			$url->query->set('code', $code);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return View Code Table List URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_listURL($table, $code = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
-		if ($table == 'soptm') {
-			$url->query->set('sysop', $code);
-		} else {
-			$url->query->set('socus', $code);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Code Table Code Delete URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_code_deleteURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('table', $table);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Code Table Edit Code URL
-	 * @param  string $table Code Table
-	 * @param  string $code  Code
-	 * @return string
-	 */
-	public function get_codetable_code_editURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
 
 /* =============================================================
 	ProcessWire Module Functions
@@ -227,39 +99,5 @@ class DpagesMso extends Dpages implements Module {
 			'autoload' => true,
 			'requires' => array('DplusPwPages', 'Dpages'),
 		);
-	}
-
-	public function init() {
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Page(pw_template=so-code-table-menu|so-code-table)::get_codetable_viewURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_viewURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=so-code-table)::get_codetable_code_deleteURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_deleteURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=so-code-table)::get_codetable_code_editURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_editURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=so-code-table)::get_codetable_listURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_listURL($table, $code);
-		});
-
-		$this->addHookProperty('Page(pw_template=so-code-table)::codetable', function($event) {
-			$page = $event->object;
-			$event->return = $page->name;
-		});
 	}
 }

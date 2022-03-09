@@ -1,0 +1,93 @@
+{% include 'min/inmain/itmp/edit/js/classes.js.twig' %}
+
+$(function() {
+	var modalEdit = $('#edit-modal');
+	var modalAjax = $('#ajax-modal');
+	var formItmp  = ItmpForm.getInstance();
+	var server    = ItmpRequests.getInstance();
+	var alert     = ItmpAlerts.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	modalEdit.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var userID = button.data('userid');
+		modal.find('.modal-title').text('Add ITM User Permissions');
+		formItmp.form.attr('data-userid', '');
+
+		if (userID) {
+			formItmp.form.attr('data-userid', userID);
+			modal.find('.modal-title').text('Edit User ' + userID);
+		}
+		formItmp.updateInputsFromUserid(userID);
+	});
+
+	modalEdit.on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		
+		if (formItmp.inputs.userid.val() == '') {
+			formItmp.inputs.userid.focus();
+		}
+	});
+
+	$("body").on('change', 'input[name=userID]', function(e) {
+		e.preventDefault();
+
+		var input = $(this);
+		server.getItmpUser(input.val(), function(permissions) {
+			if (input.val() == permissions.userid) {
+				alert.exists(permissions.userid, function(goEdit) {
+					if (goEdit) {
+						formItmp.updateInputsFromJson(permissions.userid, permissions);
+					} else {
+						formItmp.updateInputsFromJson();
+					}
+				});
+			}
+		});
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modalAjax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.user-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var userID = button.data('userid');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(userID).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var href   = $(this).attr('href');
+		button.closest('.modal').find('.modal-body').load(href);
+	});
+});

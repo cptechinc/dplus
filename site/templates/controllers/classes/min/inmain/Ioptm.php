@@ -15,15 +15,18 @@ use Mvc\Controllers\Controller;
 
 class Ioptm extends Controller {
 	const SYSTEM = 'IN';
+	const DPLUSPERMISSION = 'ioptm';
 
 /* =============================================================
 	Indexes
 ============================================================= */
 	public static function index($data) {
+		if (self::validateUserPermission() === false) {
+			return self::displayAlertUserPermission($data);
+		}
+		// Sanitize Params, parse route from params
 		$fields = ['sysop|text', 'code|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
-		$page->show_breadcrumbs = false;
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -32,6 +35,7 @@ class Ioptm extends Controller {
 		if (empty($data->sysop) === false) {
 			return self::sysop($data);
 		}
+		self::pw('page')->show_breadcrumbs = false;
 		return self::listSysops($data);
 	}
 
@@ -45,6 +49,7 @@ class Ioptm extends Controller {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getIoptm()->recordlocker->deleteLock();
 
+		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getIoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getIoptm()->deleteResponse();
@@ -65,6 +70,7 @@ class Ioptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
+		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getIoptm()->deleteResponse();
@@ -75,6 +81,9 @@ class Ioptm extends Controller {
 	CRUD
 ============================================================= */
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['action|text', 'sysop|text', 'code|text'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
@@ -154,6 +163,10 @@ class Ioptm extends Controller {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::ioptmUrl();
+	}
+
 	public static function sysopUrl($id) {
 		$url = new Purl(self::url());
 		$url->query->set('sysop', $id);
@@ -180,10 +193,6 @@ class Ioptm extends Controller {
 		return $url->getUrl();
 	}
 
-	public static function url() {
-		return self::pw('pages')->get('pw_template=ioptm')->url;
-	}
-
 	public static function urlFocus($focus = '') {
 		$sysopM = self::getSysop();
 
@@ -203,21 +212,21 @@ class Ioptm extends Controller {
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMar');
+		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(pw_template=ioptm)::sysopUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::sysopUrl', function($event) {
 			$event->return = self::sysopUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=ioptm)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=ioptm)::ioptmUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::ioptmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=ioptm)::optmUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

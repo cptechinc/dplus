@@ -1,0 +1,64 @@
+class IgmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new IgmRequests();
+		}
+		return this.instance;
+	}
+
+	validateCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/validate/igm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/igm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateGlCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mgl/validate/gl-code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getGlCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mgl/gl-code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateProductLineCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('min/validate/iplm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getProductLineCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('min/iplm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}
