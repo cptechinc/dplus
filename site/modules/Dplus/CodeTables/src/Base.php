@@ -23,6 +23,8 @@ abstract class Base extends WireData {
 		'code'        => ['type' => 'text', 'maxlength' => 4],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
+	/** DPlus Permission Code */
+	const PERMISSION = '';
 
 	protected static $instance;
 
@@ -255,6 +257,21 @@ abstract class Base extends WireData {
 	 */
 	public function deleteResponse() {
 		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
+	}
+
+/* =============================================================
+	Permission Functions
+============================================================= */
+	/**
+	 * Validate User Permission
+	 * @return bool
+	 */
+	public function validateUserPermission() {
+		if (empty(static::PERMISSION)) {
+			return true;
+		}
+		$user = $this->user ? $this->user : $this->wire('user');
+		return $user->hasPermissionCode(static::PERMISSION);
 	}
 
 /* =============================================================
