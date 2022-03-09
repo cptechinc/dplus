@@ -1,0 +1,42 @@
+class PricingModal {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new PricingModal();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.modal = $('#pricingModal');
+	}
+
+	clear() {
+		this.modal.find('.qty-break').remove();
+		this.modal.attr('data-itemid', '');
+		this.modal.find('.itemid').text('');
+	}
+
+	populateFromJson(json) {
+		this.modal.attr('data-itemid', json.itemid);
+		this.modal.find('.itemid').text(json.itemid);
+		var table   = this.modal.find('.pricing-table');
+		var example = table.find('.example');
+		var clone   = example.clone();
+
+		json.pricebreaks.forEach(pricebreak => {
+			clone.removeClass('example');
+			clone.removeClass('collapse');
+			clone.addClass('qty-break');
+			clone.find('.qty').text(pricebreak.qty);
+			clone.find('.price').text(pricebreak.price);
+			table.find('tbody').append(clone);
+		});
+	}
+
+	enableToggleButton() {
+		$('button[data-toggle=modal][data-target="#pricingModal"]').removeAttr('disabled');
+	}
+
+}

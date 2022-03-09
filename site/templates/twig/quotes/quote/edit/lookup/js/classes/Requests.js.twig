@@ -36,6 +36,15 @@ class LookupRequests {
 		});
 	}
 
+	getPricing(itemID, custID, callback) {
+		var ajax   = new AjaxRequest('{{ page.jsonapiURL('mso/eso/pricing') }}');
+
+		ajax.setData({itemID: itemID, custID: custID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	getCustomer(custID, callback) {
 		var ajax = new AjaxRequest('{{ page.jsonapiURL('mar/customer/') }}');
 

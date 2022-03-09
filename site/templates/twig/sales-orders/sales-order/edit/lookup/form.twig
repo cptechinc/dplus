@@ -4,13 +4,14 @@
 	page                   ProcessWire\Page
 	order                  SalesOrder
 #}
-<form action="{{ page.formurl }}" class="pt-3 px-3 allow-enterkey-submit" id="add-item-form">
+<form action="{{ input.url() }}" class="p-3 allow-enterkey-submit" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
 	<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
 
 	<div class="row">
 		<div class="col-sm-4">
 			<div class="form-group">
+				<label>Item</label>
 				{% include 'util/form/input-with-modal-lookup.twig' with {
 						'name': 'itemID', 'id': 'additemID', 'value': '', 'placeholder': 'Item ID',
 						'small': false,
@@ -39,25 +40,51 @@
 				</ul>
 			</div>
 		</div>
-		<div class="col-sm-1 text-right">
+		<div class="col-6 col-sm-1 text-right">
 			<div class="form-group">
+				<label>Qty</label>
 				{% include 'util/form/input.twig' with {
 						'type': 'number',
 						'name': 'qty', 'id': 'qty', 'value': '',
 						'class_input': 'form-control',
 						'class_add': [
 							'text-right',
-							'qty-input'
 						],
 					}
 				%}
 			</div>
 		</div>
-		<div class="col-sm-4 text-right">
+		<div class="col-6 col-sm-2 mb-2 text-right">
+			<div class="form-group">
+				<label>Price</label>
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'input': {
+								'name': 'price',
+								'addclasses': [
+									'text-right',
+								],
+							},
+							'span': {
+								'colorclass': 'bg-light',
+								'text': '$'
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+		<div class="col-sm-5 text-right">
+			<label>&nbsp;</label><br>
 			<button type="submit" class="btn btn-primary">
 				<i class="fa fa-plus" aria-hidden="true"></i> Add
 			</button>
-			&nbsp;
+			&nbsp; &nbsp;
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pricingModal" disabled>
+				<i class="fa fa-table" aria-hidden="true"></i> Pricing
+			</button>
+			&nbsp; &nbsp;
 			<button type="button" class="btn btn-primary add-nonstock">
 				<i class="fa fa-window-restore" aria-hidden="true"></i> Add Non-stock
 			</button>

@@ -19,6 +19,8 @@ use StatesQuery, States;
 use ShipviaQuery, Shipvia;
 use LogpermQuery, Logperm;
 
+use Dplus\Configs;
+
 class SalesOrderEdit extends WireData implements Module {
 	const PERMISSION_DPLUS = 'eso';
 
@@ -144,6 +146,9 @@ class SalesOrderEdit extends WireData implements Module {
 			case 'update-item-quick':
 				$this->input_update_item_quick($input);
 				break;
+			case 'add-item':
+				$this->input_add_item($input);
+				break;
 			case 'update-item':
 				$this->input_update_item($input);
 				break;
@@ -201,6 +206,22 @@ class SalesOrderEdit extends WireData implements Module {
 		$saved  = $editorder->save();
 		$unlock = $values->exit ? true : false;
 		$this->request_so_update_header($ordn, $unlock);
+	}
+
+	/**
+	 * Update Sales Order Item
+	 * @param WireInput $input Input data
+	 * @return void
+	 */
+	public function input_add_item(WireInput $input) {
+		$config = Configs\So::config();
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
+		$itemID  = $values->text('itemID');
+		$qty     = $values->float('qty', ['precision' => $config->decimal_places_qty]);
+		$price   = $values->float('price', ['precision' => $config->decimal_places_price]);
+		$this->request_so_add_detail($ordn, $itemID, $qty, $price);
 	}
 
 	/**
@@ -354,6 +375,15 @@ class SalesOrderEdit extends WireData implements Module {
 	public function decimal_places_price() {
 		$config = $this->config('so');
 		return $config->decimal_places_price;
+	}
+
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimalPlacesQty() {
+		$config = Configs\So::config();
+		return $config->decimal_places_qty;
 	}
 
 	/**
@@ -554,6 +584,19 @@ class SalesOrderEdit extends WireData implements Module {
 	public function request_so_update_detail($ordn, int $linenbr) {
 		$custID = SalesOrderQuery::create()->get_custid($ordn);
 		$data = array('SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Send SO Detail Update Request
+	 * @param  string $ordn Sales Order Number
+	 * @return void
+	 */
+	public function request_so_add_detail($ordn, $itemID, $qty, $price = '') {
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$sanitizer = $this->wire('sanitizer');
+		$price = empty($price) ? '' : $sanitizer->float($price, ['precision' => $this->decimalPlacesQty()]);
+		$data  = ['SALEDET', "ORDERNO=$ordn", "ITEMID=$itemID", "QTY=$qty", "PRICE=$price", "CUSTID=$custID"];
 		$this->request_dplus($data);
 	}
 

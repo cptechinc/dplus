@@ -1,0 +1,30 @@
+class LookupAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LookupAlerts();
+		}
+		return this.instance;
+	}
+
+	itemNotFound(itemid, callback) {
+		swal2.fire({
+			title: 'Item not found.',
+			text: itemid + ' cannot be found.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Make advanced search?',
+			cancelButtonText: 'No',
+		}).then(function (result) {
+			if (result.value) {
+				callback(result.value);
+				return true;
+			} else {
+				callback(false);
+				return false;
+			}
+		});
+	}
+
+}

@@ -1,6 +1,23 @@
 $(function() {
 	var formHeader = new HeaderForm();
 
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change', 'input[name=price]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var price = parseFloat(input.val());
+		input.val(price.toFixed({{ eqo.getPrecisionPrice() }}));
+	});
+
+	$("body").on('change', 'input[name=qty]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var price = parseFloat(input.val());
+		input.val(price.toFixed({{ eqo.getPrecisionQty() }}));
+	});
+
 	$("body").on("change", 'select[name=shiptoid]', function () {
 		var select   = $(this);
 		var shiptoid = select.val();
