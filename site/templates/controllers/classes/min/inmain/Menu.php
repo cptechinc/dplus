@@ -64,6 +64,12 @@ class Menu extends Base {
 			'title'      => 'Inventory Optional Codes',
 			'summary'    => 'View / Edit Inventory Optional Code'
 		],
+		'itm' => [
+			'name'       => 'itm',
+			'permission' => 'itm',
+			'title'      => 'Item Maintenance',
+			'summary'    => 'View / Edit Item'
+		],
 		'itmimg' => [
 			'name'       => 'itmimg',
 			'permission' => 'itm',
@@ -136,7 +142,7 @@ class Menu extends Base {
 ============================================================= */
 	public static function menuUrl() {
 		$url = new Purl(parent::menuUrl());
-		$url->path->add('main');
+		$url->path->add('inmain');
 		return $url->getUrl();
 	}
 
