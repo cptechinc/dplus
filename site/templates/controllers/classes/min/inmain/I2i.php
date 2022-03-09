@@ -90,7 +90,7 @@ class I2i extends Base {
 
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
-		self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inmain/i2i/list/.js.twig');
 		$html = self::displayList($data, $xrefs);
 		$i2i->deleteResponse();
 		return $html;
@@ -116,7 +116,7 @@ class I2i extends Base {
 				$i2i->recordlocker->lock($i2i->getRecordlockerKey($xref));
 			}
 		}
-		self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/xref/form/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inmain/i2i/xref/form/.js.twig');
 		$html = self::displayXref($data, $xref);;
 		$i2i->deleteResponse();
 		return $html;
@@ -132,7 +132,7 @@ class I2i extends Base {
 		$html  = '';
 		$html .= self::displayBreadcrumbs($data);
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('min/i2i/list/display.twig', ['i2i' => $i2i, 'xrefs' => $xrefs]);
+		$html .= $config->twig->render('min/inmain/i2i/list/display.twig', ['i2i' => $i2i, 'xrefs' => $xrefs]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		return $html;
@@ -161,7 +161,7 @@ class I2i extends Base {
 		$html  = self::displayBreadcrumbs($data);
 		$html .= self::displayResponse($xref);
 		$html .= self::displayLock($xref);
-		$html .= self::pw('config')->twig->render('min/i2i/xref/display.twig', ['xref' => $xref, 'i2i' => self::geti2i()]);
+		$html .= self::pw('config')->twig->render('min/inmain/i2i/xref/display.twig', ['xref' => $xref, 'i2i' => self::geti2i()]);
 		return $html;
 	}
 
@@ -175,7 +175,7 @@ class I2i extends Base {
 	}
 
 	private static function displayBreadcrumbs($data) {
-		return self::pw('config')->twig->render('min/i2i/bread-crumbs.twig');
+		return self::pw('config')->twig->render('min/inmain/i2i/bread-crumbs.twig');
 	}
 
 /* =============================================================
