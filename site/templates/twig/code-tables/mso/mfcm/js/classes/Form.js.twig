@@ -1,0 +1,42 @@
+class MfcmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new MfcmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = MfcmInputs.getInstance();
+		this.config = MfcmConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.description2.val(json.description2);
+			this.inputs.description3.val(json.description3);
+			this.inputs.description4.val(json.description4);
+			this.inputs.class.val(json.class);
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.description2.val('');
+		this.inputs.description3.val('');
+		this.inputs.description4.val('');
+		this.inputs.class.val('');
+	}
+}

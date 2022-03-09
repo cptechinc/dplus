@@ -1,23 +1,32 @@
-{# msdsm is an instance of MsdsCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
-	<input type="hidden" name="table" value="msdsm">
-	<input type="hidden" name="serialized" value="" disabled>
+{# mfcm is an instance of MotorFreightCode #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
 
 	<div class="form-group">
 		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" maxlength="{{ max_length_code }}" value="" id="code">
+		<input type="text" name="code" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
+		<input type="text" name="description" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 	</div>
 
 	<div class="form-group">
-		<label for="effective_date">Effective Date</label>
-		{% set name = 'effective_date' %}
-		{% set value = input.get.text('effective_date') %}
-		{% include 'util/date-picker.twig' %}
+		<label for="effectivedate">Effective Date</label>
+		{% include 'util/bootstrap/form/date-picker.twig' with {
+				'inputgroup': {
+					'input': {
+						'name': 'effectivedate',
+						'value': '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Effective Date'
+						}
+					}
+				}
+			}
+		%}
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">

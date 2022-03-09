@@ -11,6 +11,8 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 use Dplus\CodeValidators\Map       as MapValidator;
 use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
 use Dplus\CodeValidators\Map\Mxrfe as MxrfeValidator;
+// Dplus Codes
+use Dplus\Codes;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -272,5 +274,75 @@ class Map extends Controller {
 			]
 		];
 		return $response;
+	}
+
+	public static function validateVtmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$vtm = Codes\Map\Vtm::getInstance();
+		$exists = $vtm->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Vendor Type $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Vendor Type $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getVtmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$vtm = Codes\Map\Vtm::getInstance();
+
+		if ($vtm->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $vtm->code($data->code);
+		return $vtm->codeJson($code);
+	}
+
+	public static function validateBumCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Map\Bum::getInstance();
+		$exists = $bum->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "AP Buyer $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "AP Buyer $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getBumCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$bum = Codes\Map\Bum::getInstance();
+
+		if ($bum->exists($data->code) === false) {
+			return false;
+		}
+
+		$code = $bum->code($data->code);
+		return $bum->codeJson($code);
 	}
 }

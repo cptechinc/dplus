@@ -379,9 +379,5 @@ class Kim extends WireData implements Module {
 		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
 		$this->recordlocker->setUser($this->wire('user'));
 		$this->component = $this->wire('modules')->get('KimComponent');
-
-		$this->addHook("Page(pw_template=kim)::itemlookupURL", function($event) {
-			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;
-		});
 	}
 }

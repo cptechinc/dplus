@@ -1,0 +1,30 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	itmp                   module Itmp
+#}
+<form action="{{ input.url() }}" id="itmp-form" data-userid="" method="POST">
+	<input type="hidden" name="action" value="update">
+
+	<div class="row mb-3">
+		<div class="col-sm-8">
+			{% include 'min/inmain/itmp/edit/form/key.twig' %}
+			{% include 'min/inmain/itmp/edit/form/permissions.twig' %}
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+
+		<a href="{# page.delete_userURL('') #}" class="btn btn-danger delete_button" data-delete="ITMP permissions">
+			<i class="fa fa-trash" aria-hidden="true"></i> Delete
+		</a>
+
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

@@ -22,16 +22,18 @@ class Itmimg extends Base {
 	private static $docm;
 
 	public static function index($data) {
-		$fields = ['itemID|text', 'q|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission() === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		self::pw('page')->show_breadcrumbs = false;
+		// Sanitize Params, parse route from params
+		$fields = ['itemID|text', 'q|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->itemID) === false) {
 			return self::item($data);
@@ -40,12 +42,15 @@ class Itmimg extends Base {
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['itemID|text', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 		$imgM = self::getImg();
 		$imgM->process(self::pw('input'));
-		
-		self::pw('session')->redirect(self::imgUrl(), $http301 = false);
+
+		self::pw('session')->redirect(self::url(), $http301 = false);
 	}
 
 	public static function list($data) {
@@ -69,13 +74,13 @@ class Itmimg extends Base {
 		$mItm = self::pw('modules')->get('Itm');
 
 		if ($mItm->exists($data->itemID) === false) {
-			self::pw('session')->redirect(self::itmimgUrl(), $http301 = false);
+			self::pw('session')->redirect(self::url(), $http301 = false);
 		}
 		self::copyImage($data);
+		$item = $mItm->item($data->itemID);
 
 		self::pw('page')->headline = "Item Image: #$data->itemID";
 		self::initHooks();
-		$item = $mItm->item($data->itemID);
 		self::pw('page')->js .= self::pw('config')->twig->render('min/inmain/itmimg/item/.js.twig');
 		return self::displayItem($data, $item);
 	}
@@ -134,12 +139,12 @@ class Itmimg extends Base {
 /* =============================================================
 	URL Functions
 ============================================================= */
-	public static function imgUrl() {
-		return self::pw('pages')->get('pw_template=min-itmimg')->url;
+	public static function url() {
+		return Menu::itmimgUrl();
 	}
 
 	public static function itemUrl($itemID) {
-		$url = new Purl(self::imgUrl());
+		$url = new Purl(self::url());
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
@@ -162,12 +167,12 @@ class Itmimg extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMin');
 
-		$m->addHook('Page(pw_template=min-itmimg)::itemUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::itemUrl', function($event) {
 			$event->return = self::itemUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=min-itmimg)::imgUrl', function($event) {
-			$event->return = self::imgUrl($event->arguments(0));
+		$m->addHook('Page(pw_template=inmain)::imgUrl', function($event) {
+			$event->return = self::url($event->arguments(0));
 		});
 	}
 }

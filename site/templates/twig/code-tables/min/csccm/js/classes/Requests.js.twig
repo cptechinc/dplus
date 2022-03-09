@@ -1,0 +1,32 @@
+class CsccmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CsccmRequests();
+		}
+		return this.instance;
+	}
+
+	validateCode(code, callback) {
+		var ajax = new AjaxRequest(this.validateCodeUrl());
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/csccm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateCodeUrl() {
+		return '{{ page.jsonApiUrl('inv/validate/csccm/code/') }}';
+	}
+}

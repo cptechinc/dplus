@@ -11,12 +11,14 @@ class Factory extends WireData {
 	private $router = null;
 
 	const ROUTERS = [
-		Routers\Mpo::class,
+		Routers\Map::class,
+		Routers\Mgl::class,
 		Routers\Min::class,
 		Routers\Mpm::class,
+		Routers\Mpo::class,
 		Routers\Mpr::class,
-		Routers\Mgl::class,
 		Routers\Msa::class,
+		Routers\Mso::class,
 	];
 
 	/**

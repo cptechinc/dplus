@@ -1,0 +1,28 @@
+class TarmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new TarmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ tarm.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ tarm.fieldAttribute('description', 'maxlength') }}
+			},
+			number: {
+				maxlength: {{ tarm.fieldAttribute('number', 'maxlength') }}
+			},
+			percent: {
+				precision: {{ tarm.fieldAttribute('percent', 'precision') }},
+				max: {{ tarm.fieldAttribute('percent', 'max') }},
+			},
+		};
+	}
+}

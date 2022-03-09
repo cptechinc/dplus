@@ -1,0 +1,17 @@
+class IwhmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new IwhmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = IwhmInputs.getInstance();
+		this.config = IwhmConfigs.getInstance();
+	}
+}

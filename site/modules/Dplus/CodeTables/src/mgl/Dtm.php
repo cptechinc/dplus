@@ -22,7 +22,7 @@ class Dtm extends Base {
 	const DESCRIPTION        = 'Distribution Code';
 	const DESCRIPTION_RECORD = 'Distribution Code';
 	const RESPONSE_TEMPLATE  = 'Distribution Code {code} {not} {crud}';
-	const RECORDLOCKER_FUNCTION = 'text';
+	const RECORDLOCKER_FUNCTION = 'dtm';
 	const DPLUS_TABLE           = 'DTM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 6],

@@ -1,0 +1,43 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	warehouse              Warehouse
+	iwhm                   Dplus\Codes\Iwhm
+#}
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label for="code">ID</label>
+	</div>
+	<div class="col-sm-3">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'code', 'value': warehouse.code,
+					'size': 'sm',
+					'attributes': {
+						'maxlength': iwhm.fieldAttribute('code', 'maxlength'),
+						'readonly': warehouse.isNew() == false
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="form-row form-group">
+	<div class="col-sm-3">
+		<label for="name">Name</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'name', 'value': warehouse.name,
+					'size': 'sm',
+					'attributes': {
+						'maxlength': iwhm.fieldAttribute('name', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>

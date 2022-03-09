@@ -1,0 +1,49 @@
+<div class="form-group">
+	{% include 'code-tables/min/igm/edit/form/gl-account.twig' with {
+			'name': 'sales',
+			'value': invgroup.sales,
+			'label': 'Sales',
+			'description': igm.glCodeDescription(invgroup.sales)
+		}
+	%}
+</div>
+
+<div class="form-group">
+	{% include 'code-tables/min/igm/edit/form/gl-account.twig' with {
+			'name': 'credit',
+			'value': invgroup.credit,
+			'label': 'Credits',
+			'description': igm.glCodeDescription(invgroup.credit)
+		}
+	%}
+</div>
+
+<div class="form-group">
+	{% include 'code-tables/min/igm/edit/form/gl-account.twig' with {
+			'name': 'cogs',
+			'value': invgroup.cogs,
+			'label': 'Cost of Goods Sold',
+			'description': igm.glCodeDescription(invgroup.cogs)
+		}
+	%}
+</div>
+
+<div class="form-group">
+	{% include 'code-tables/min/igm/edit/form/gl-account.twig' with {
+			'name': 'inventory',
+			'value': invgroup.inventory,
+			'label': 'Inventory',
+			'description': igm.glCodeDescription(invgroup.inventory)
+		}
+	%}
+</div>
+
+<div class="form-group">
+	{% include 'code-tables/min/igm/edit/form/gl-account.twig' with {
+			'name': 'dropship',
+			'value': invgroup.dropship,
+			'label': 'Drop Ship',
+			'description': igm.glCodeDescription(invgroup.dropship)
+		}
+	%}
+</div>

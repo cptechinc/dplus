@@ -1,0 +1,29 @@
+class ItmpAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmpAlerts();
+		}
+		return this.instance;
+	}
+
+	exists(userID, callback) {
+		swal2.fire({
+			title: 'User Already Exists',
+			text: 'Do you want to edit ' + userID +  '?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-pencil-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				callback(true);
+				return true;
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+				return false;
+			}
+		});
+	}
+}

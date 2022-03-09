@@ -1,0 +1,40 @@
+class UmmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new UmmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = UmmInputs.getInstance();
+		this.config = UmmConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.conversion.val(json.conversion);
+			this.inputs.pricebyweight.val(json.pricebyweight);
+			this.inputs.stockbycase.val(json.stockbycase);
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.conversion.val(1);
+		this.inputs.pricebyweight.val(this.config.fields.pricebyweight.default);
+		this.inputs.stockbycase.val(this.config.fields.stockbycase.default);
+	}
+}

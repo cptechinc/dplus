@@ -34,64 +34,64 @@ class Response  {
 		$this->fields = array();
 	}
 
-	public function set_action(int $action = 0) {
+	public function setAction(int $action = 0) {
 		$this->action = $action;
 	}
 
-	public function has_success() {
+	public function hasSuccess() {
 		return boolval($this->success);
 	}
 
-	public function has_error() {
+	public function hasError() {
 		return boolval($this->error);
 	}
 
-	public function set_success(bool $success) {
+	public function setSuccess(bool $success) {
 		$this->success = $success;
 	}
 
-	public function set_error(bool $error) {
+	public function setError(bool $error) {
 		$this->error = $error;
 	}
 
-	public function set_message($message) {
+	public function setMessage($message) {
 		$this->message = $message;
 	}
 
-	public function set_key($key) {
+	public function setKey($key) {
 		$this->key = $key;
 	}
 
-	public function set_fields(array $fields) {
+	public function setFields(array $fields) {
 		$this->fields = $fields;
 	}
 
-	public function has_field($field) {
+	public function hasField($field) {
 		return array_key_exists($field, $this->fields);
 	}
 
-	public function build_message($template) {
+	public function buildMessage($template) {
 		$crud = self::CRUD_DESCRIPTION[$this->action];
-		$replace = ['{key}' => $this->key, '{not}' => $this->has_success() ? '' : 'not', '{crud}' => $crud];
+		$replace = ['{key}' => $this->key, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
 		$msg = str_replace(array_keys($replace), array_values($replace), $template);
 		$this->message = $msg;
 	}
 
-	public static function response_error($key, $message) {
+	public static function responseError($key, $message) {
 		$response = new Response();
 		$response->key = $key;
 		$response->message = $message;
-		$response->set_error(true);
-		$response->set_success(false);
+		$response->setError(true);
+		$response->setSuccess(false);
 		return $response;
 	}
 
-	public static function response_success($key, $message) {
+	public static function responseSuccess($key, $message) {
 		$response = new Response();
 		$response->key = $key;
 		$response->message = $message;
-		$response->set_error(false);
-		$response->set_success(true);
+		$response->setError(false);
+		$response->setSuccess(true);
 		return $response;
 	}
 }

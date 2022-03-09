@@ -22,6 +22,18 @@ class CountryCode extends AbstractFilter {
 			Model::aliasproperty('numeric'),
 			Model::aliasproperty('description'),
 		];
-		$this->query->search_filter($columns, strtoupper($q));
+		$this->query->searchFilter($columns, strtoupper($q));
+	}
+
+/* =============================================================
+	4. Misc Query Functions
+============================================================= */
+	/**
+	 * Return if Code Exists
+	 * @param  string $code
+	 * @return bool
+	 */
+	public function existsIso3($code) {
+		return boolval($this->getQueryClass()->filterByIso3($code)->count());
 	}
 }
