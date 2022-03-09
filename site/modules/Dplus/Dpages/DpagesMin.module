@@ -12,34 +12,14 @@ class DpagesMin extends Dpages implements Module {
 	const FIELDS = array();
 
 	const TEMPLATES = array(
-		'upcx' => array(
-			'name'   => 'upcx',
-			'fields' => array()
-		),
 		'itm' => array(
 			'name'   => 'itm',
-			'fields' => array()
-		),
-		'itm-json' => array(
-			'name'   => 'itm-json',
-			'fields' => array()
-		),
-		'itm-search' => array(
-			'name'   => 'itm-search',
-			'fields' => array()
-		),
-		'min-itmp' => array(
-			'name'   => 'itm-itmp',
 			'fields' => array()
 		),
 		'inproc' => array(
 			'name'   => 'inproc',
 			'fields' => array()
 		),
-		'itmimg' => [
-			'name'   => 'itmimg',
-			'fields' => []
-		],
 	);
 
 	const PAGES = array(
@@ -59,24 +39,6 @@ class DpagesMin extends Dpages implements Module {
 			'parent'         => '/min/',
 			'dplus_function' => 'inmain'
 		),
-		'min-upcx' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'upcx',
-			'name'           => 'upcx',
-			'title'          => 'UPC X-ref',
-			'summary'        => 'View / Edit UPCs',
-			'parent'         => '/min/inmain/',
-			'dplus_function' => 'upcx'
-		),
-		'min-itmp' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'itmp',
-			'name'           => 'itmp',
-			'title'          => 'Item Maintenance Permissions',
-			'summary'        => 'View / Edit User Item Maintenance Permissions',
-			'parent'         => '/min/inmain/',
-			'dplus_function' => 'itmp'
-		),
 		'itm' => array(
 			'template'       => 'dplus-function',
 			'pw_template'    => 'itm',
@@ -86,24 +48,6 @@ class DpagesMin extends Dpages implements Module {
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'itm'
 		),
-		'itm-json' => array(
-			'template'       => 'dplus-json',
-			'pw_template'    => 'itm-json',
-			'name'           => 'itm',
-			'title'          => 'ITM',
-			'summary'        => 'View / Edit Item',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
-		),
-		'itm-search' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'itm-search',
-			'name'           => 'search',
-			'title'          => 'Search',
-			'summary'        => 'Search ITM Items',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
-		),
 		'inproc' => array(
 			'template'       => 'dplus-menu',
 			'pw_template'    => 'inproc',
@@ -112,15 +56,6 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'Processing',
 			'parent'         => '/min/',
 			'dplus_function' => '' // TODO
-		),
-		'min-itmimg' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'min-itmimg',
-			'name'           => 'itmimg',
-			'title'          => 'Item Images',
-			'summary'        => 'View / Upload Item Images',
-			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
 		),
 	);
 

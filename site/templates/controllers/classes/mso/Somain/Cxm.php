@@ -77,9 +77,7 @@ class Cxm extends Controller {
 		if ($xref->isNew() === false) {
 			$page->headline = "CXM: $xref->custid $xref->custitemid";
 		}
-		$pages = self::pw('pages');
-		$page->searchcustomersURL = $page->searchLookupUrl('customers');
-		$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
+
 		$page->js .= $config->twig->render('items/cxm/xref/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
 
 		$html = self::xrefDisplay($data, $xref);
