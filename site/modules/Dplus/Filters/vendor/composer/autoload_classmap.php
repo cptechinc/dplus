@@ -15,6 +15,7 @@ return array(
     'Dplus\\Filters\\Map\\Vendor' => $baseDir . '/src/Map/Vendor.php',
     'Dplus\\Filters\\Map\\VendorShipfrom' => $baseDir . '/src/Map/VendorShipfrom.php',
     'Dplus\\Filters\\Map\\Vxm' => $baseDir . '/src/Map/Vxm.php',
+    'Dplus\\Filters\\Mar\\ArInvoice' => $baseDir . '/src/Mar/ArInvoice.php',
     'Dplus\\Filters\\Mar\\Customer' => $baseDir . '/src/Mar/Customer.php',
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
     'Dplus\\Filters\\Mar\\Shipto' => $baseDir . '/src/Mar/Shipto.php',

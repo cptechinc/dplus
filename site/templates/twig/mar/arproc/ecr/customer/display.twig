@@ -1,0 +1,45 @@
+<div class="card">
+	{% block header %}
+		<div class="card-header">
+			<div class="row">
+				<div class="col-sm-2">
+					<strong>Customer:</strong>
+				</div>
+				<div class="col-sm-6">
+					{{ customer.id }} -{{ customer.name }}
+				</div>
+				<div class="col-sm-4 text-right">
+					{{ invoices.getNbResults() }} Invoices
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+
+	{% block body %}
+		<div class="card-body">
+			<div class="row">
+				<div class="col-sm-4">
+
+				</div>
+				<div class="col-sm-4">
+					{% include 'mar/arproc/ecr/customer/header-form.twig' %}
+				</div>
+				<div class="col-sm-4">
+					{% include 'mar/arproc/ecr/customer/ecr-totals.twig' %}
+				</div>
+			</div>
+		</div>
+		{% include 'mar/arproc/ecr/customer/toolbar.twig' %}
+		{% include 'mar/arproc/ecr/customer/invoices.twig' %}
+		{% include 'util/paginator/propel.twig' with {'pager': invoices} %}
+	{% endblock %}
+
+	{% block footer %}
+		<div class="card-footer">
+			<div class="d-flex justify-content-between align-items-center">
+
+			</div>
+		</div>
+	{% endblock %}
+</div>
+{% include 'mar/arproc/ecr/customer/pay-range-modal.twig' %}

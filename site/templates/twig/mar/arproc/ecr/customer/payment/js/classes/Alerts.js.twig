@@ -1,0 +1,10 @@
+class EcrAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new EcrAlerts();
+		}
+		return this.instance;
+	}
+}
