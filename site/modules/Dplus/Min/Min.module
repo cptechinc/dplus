@@ -31,9 +31,6 @@ class Min extends WireData implements Module {
 			'summary' => 'Handles Min Modules Installation & Updates',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array(
-				'Itmp'
-			)
 		);
 	}
 }
