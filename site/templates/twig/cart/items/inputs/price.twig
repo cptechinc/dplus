@@ -6,7 +6,6 @@
 				'name': 'price', 'value': detail.price|number_format(cart.decimalPlacesPrice()),
 				'addclasses': [
 					'text-right',
-					'qty-input'
 				],
 				'attributes': {
 					'data-original': detail.price|number_format(cart.decimalPlacesPrice()),
@@ -14,8 +13,8 @@
 					'data-itemid': detail.itemid,
 				}
 			},
-			'button': {
-				'colorclass': 'btn-light',
+			'span': {
+				'colorclass': 'bg-light',
 				'text': '$'
 			}
 		}

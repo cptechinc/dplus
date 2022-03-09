@@ -97,10 +97,11 @@ class Edit extends Base {
 	}
 
 	protected static function quoteJs($data) {
+		$eqo = self::getEqo($data->qnbr);
 		$config = self::pw('config');
 		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		self::pw('page')->js .= $config->twig->render('quotes/quote/edit/classes.js.twig');
-		self::pw('page')->js .= $config->twig->render('quotes/quote/edit/.js.twig');
+		self::pw('page')->js .= $config->twig->render('quotes/quote/edit/.js.twig', ['eqo' => $eqo]);
 	}
 
 	protected static function setPageTitle($data) {
@@ -152,6 +153,7 @@ class Edit extends Base {
 
 		$html = '';
 		$html .= self::pw('config')->twig->render('quotes/quote/edit/items.twig', ['quote' => $quote, 'eqo' => $eqo]);
+		$html .= self::pw('config')->twig->render('cart/lookup/modal-pricing.twig');
 		return $html;
 	}
 

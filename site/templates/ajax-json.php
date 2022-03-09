@@ -269,6 +269,9 @@
 				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
 			],
 			['GET', 'freight-code/', Json\Mso::class, 'getFreightCode'],
+			'eso' => [
+				['GET', 'pricing/', Json\Mso::class, 'getPricing'],
+			],
 		],
 		'mqo' => [
 			'quote' => [

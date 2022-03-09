@@ -3,6 +3,8 @@
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 use Purl\Url;
 
+include_once(__DIR__.'/WhseLabelPrinter.module');
+
 class WhseLabelPrinterProvalley extends WhseLabelPrinter implements Module {
 
 	public function process_input(WireInput $input) {
