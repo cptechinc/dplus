@@ -108,7 +108,7 @@ class Bum extends Base {
 		$bum = self::getBum();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/map/bum/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/map/bum/list.twig', ['manager' => $bum, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

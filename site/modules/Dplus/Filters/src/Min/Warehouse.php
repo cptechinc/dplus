@@ -6,12 +6,12 @@ use WarehouseQuery, Warehouse as Model;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
  * Wrapper Class for WarehouseQuery
  */
-class Warehouse extends AbstractFilter {
+class Warehouse extends CodeFilter {
 	const MODEL = 'Warehouse';
 
 /* =============================================================

@@ -24,26 +24,30 @@ class Addm extends Base {
 	private static $addm;
 
 	public static function index($data) {
-		$fields = ['itemID|text', 'addonID|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission() === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		self::pw('page')->show_breadcrumbs = false;
+		// Sanitize Params, parse route from params
+		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
 
-		if (empty($data->itemID) === false) {
-			if (empty($data->addonID) === false) {
-				return self::xref($data);
-			}
+		self::initHooks();
+		self::pw('page')->show_breadcrumbs = false;
+
+		if (empty($data->itemID) === false && empty($data->addonID) === false) {
+			return self::xref($data);
 		}
 		return self::list($data);
 	}
 
 	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 		$fields = ['itemID|text', 'addonID|text', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 		$addm = self::getAddm();
@@ -64,6 +68,7 @@ class Addm extends Base {
 	private static function list($data) {
 		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
 		self::pw('session')->removeFor('addm', 'sortfilter');
+		self::pw('page')->headline = "Add-On Item Maintenance";
 
 		$addm = self::getAddm();
 		$addm->recordlocker->deleteLock();
@@ -71,7 +76,7 @@ class Addm extends Base {
 		$filter = new Filters\Min\AddonItem();
 
 		if ($data->q) {
-			self::pw('page')->headline = "Addm: Searching for '$data->q'";
+			self::pw('page')->headline = "ADDM: Searching for '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
 
@@ -154,13 +159,17 @@ class Addm extends Base {
 /* =============================================================
 	URL Functions
 ============================================================= */
+	public static function url() {
+		return Menu::addmUrl();
+	}
+
 	public static function addmUrl() {
-		return self::pw('pages')->get('pw_template=addm')->url;
+		return self::url();
 	}
 
 	public static function xrefListUrl($focus = '') {
 		if (empty($focus)) {
-			return self::addmUrl();
+			return self::url();
 		}
 		return self::xrefListFocusUrl($focus);
 	}
@@ -169,7 +178,7 @@ class Addm extends Base {
 		$addm = self::getAddm();
 
 		if ($addm->existsFromRecordlockerKey($focus) === false) {
-			return self::addmUrl();
+			return self::url();
 		}
 
 		$xref = $addm->xrefFromRecordlockerKey($focus);
@@ -183,7 +192,7 @@ class Addm extends Base {
 		$offset  = $filter->positionQuick($xref->itemid);
 		$pagenbr = self::getPagenbrFromOffset($offset);
 
-		$url = new Purl(self::addmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'addm', $pagenbr);
 		if ($sortFilter) {
@@ -198,7 +207,7 @@ class Addm extends Base {
 	}
 
 	public static function xrefUrl($itemID, $addonID) {
-		$url = new Purl(self::addmUrl());
+		$url = new Purl(self::url());
 		$url->query->set('itemID', $itemID);
 		$url->query->set('addonID', $addonID);
 		return $url->getUrl();
@@ -231,19 +240,27 @@ class Addm extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMin');
 
-		$m->addHook('Page(pw_template=addm)::xrefUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::menuUrl', function($event) {
+			$event->return = Menu::menuUrl();
+		});
+
+		$m->addHook('Page(pw_template=inmain)::menuTitle', function($event) {
+			$event->return = Menu::TITLE;
+		});
+
+		$m->addHook('Page(pw_template=inmain)::xrefUrl', function($event) {
 			$event->return = self::xrefUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=addm)::xrefDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::xrefDeleteUrl', function($event) {
 			$event->return = self::xrefDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=addm)::xrefNewUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::xrefNewUrl', function($event) {
 			$event->return = self::xrefNewUrl();
 		});
 
-		$m->addHook('Page(pw_template=addm)::xrefListUrl', function($event) {
+		$m->addHook('Page(pw_template=inmain)::xrefListUrl', function($event) {
 			$event->return = self::xrefListUrl($event->arguments(0));
 		});
 	}

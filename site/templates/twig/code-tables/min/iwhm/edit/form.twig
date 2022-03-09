@@ -1,0 +1,40 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	warehouse              Warehouse
+	iwhm                   Dplus\Codes\Iwhm
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="{{ warehouse.code }}">
+	<input type="hidden" name="action" value="update">
+
+	<div class="row">
+		<div class="col-sm-6">
+			{% include 'code-tables/min/iwhm/edit/form/key.twig' %}
+			{% include 'code-tables/min/iwhm/edit/form/address.twig' %}
+		</div>
+		<div class="col-sm-6">
+			{% include 'code-tables/min/iwhm/edit/form/whse.twig' %}
+		</div>
+	</div>
+	<hr>
+	<div class="d-flex justify-content-between align-items-center">
+		{% if iwhm.recordlocker.isLocked(warehouse.code) == false or iwhm.recordlocker.userHasLocked(warehouse.code) %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+
+			{% if warehouse.isNew() == false %}
+				<a href="{{ page.codeDeleteUrl(warehouse.code) }}" class="btn btn-danger delete_button">
+					<i class="fa fa-trash" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+
+		<a href="{{ page.codeListUrl(warehouse.code) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

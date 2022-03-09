@@ -1,0 +1,30 @@
+<label for="{{ name }}">{{ label }}</label>
+{% include 'util/bootstrap/form/input-group.twig' with {
+		'inputgroup': {
+			'type': 'prepend',
+			'size': 'sm',
+			'input': {
+				'name': name,
+				'value': value,
+				'addclasses': ['gl-account'],
+				'attributes': {
+					'placeholder': label ~ ' GL Account',
+					'aria-label':  label ~ ' GL Account',
+					'data-jqv': 'true',
+				}
+			},
+			'button': {
+				'colorclass': 'btn-secondary',
+				'text': 'fa fa-search'|icon,
+				'attributes': {
+					'title': 'Search GL Accounts',
+					'data-toggle': 'modal',
+					'data-target': '#ajax-modal',
+					'data-lookupurl': page.searchLookupUrl('gl-codes'),
+					'data-input': '#' ~ name
+				}
+			}
+		}
+	}
+%}
+<small class="text-muted gl-desc" data-acct="{{ name }}">{{ description }}</small>

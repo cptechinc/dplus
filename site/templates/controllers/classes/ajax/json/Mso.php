@@ -146,8 +146,8 @@ class Mso extends Controller {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Mso\Lsm::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Mso\Lsm::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -167,22 +167,20 @@ class Mso extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Mso\Lsm::getInstance();
+		$manager = Codes\Mso\Lsm::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 	public static function validateMfcmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Mso\Mfcm::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Mso\Mfcm::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -202,22 +200,20 @@ class Mso extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Mso\Mfcm::getInstance();
+		$manager = Codes\Mso\Mfcm::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 	public static function validateRgarcCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Mso\Rgarc::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Mso\Rgarc::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -237,22 +233,20 @@ class Mso extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Mso\Rgarc::getInstance();
+		$manager = Codes\Mso\Rgarc::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 	public static function validateRgascCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Mso\Rgasc::getInstance();
-		$exists = $bum->exists($data->code);
+		$manager = Codes\Mso\Rgasc::getInstance();
+		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
 			return boolval($data->new) ? $exists === false : $exists;
@@ -272,14 +266,12 @@ class Mso extends Controller {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$bum = Codes\Mso\Rgasc::getInstance();
+		$manager = Codes\Mso\Rgasc::getInstance();
 
-		if ($bum->exists($data->code) === false) {
+		if ($manager->exists($data->code) === false) {
 			return false;
 		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		return $manager->codeJson($manager->code($data->code));
 	}
 
 	private static function validator() {

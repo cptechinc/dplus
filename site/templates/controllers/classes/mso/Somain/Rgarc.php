@@ -109,7 +109,7 @@ class Rgarc extends Base {
 		$rgarc = self::getRgarc();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/mso/rgarc/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $rgarc, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

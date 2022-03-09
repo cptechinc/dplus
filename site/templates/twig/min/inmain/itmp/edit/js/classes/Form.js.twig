@@ -1,0 +1,52 @@
+class ItmpForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmpForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itmp-form';
+		this.form = $('#' + this.id);
+		this.inputs = ItmpInputs.getInstance();
+		this.config = ItmpConfig.getInstance();
+	}
+
+	updateInputsFromUserid(userID = '') {
+		var server = ItmpRequests.getInstance();
+		var form   = this;
+		server.getItmpUser(userID, function(permissions) {
+			form.updateInputsFromJson(userID, permissions);
+		});
+	}
+
+	updateInputsFromJson(userID = '', json = null) {
+		var inputs = this.inputs;
+		var config = this.config;
+
+		inputs.form.attr('data-userid', '');
+		inputs.userid.val('');
+		inputs.userid.removeAttr('readonly');
+
+		config.permissions.forEach(function(key) {
+			inputs[key].val(config.fields[key].default);
+		});
+
+		if (json) {
+			if (userID) {
+				inputs.form.attr('data-userid', json.userid);
+				inputs.userid.val(json.userid);
+				inputs.userid.attr('readonly', 'true');
+			}
+			config.permissions.forEach(function(key) {
+				inputs[key].val(json.permissions[key]);
+			});
+			var validator = inputs.form.validate();
+			validator.element('#' + inputs.userid.attr('id'));
+			return true;
+		}
+	}
+}

@@ -1,0 +1,154 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	igm                    Dplus\Codes\Min\Igm
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="{{ invgroup.code }}">
+	<input type="hidden" name="action" value="update">
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="code">Code</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'code', 'value': invgroup.code,
+							'attributes': {
+								'maxlength': igm.fieldAttribute('code', 'maxlength'),
+								'readonly': invgroup.isNew() == false
+							}
+						}
+					}
+				%}
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'description', 'value': invgroup.description,
+							'attributes': {
+								'maxlength': igm.fieldAttribute('description', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+
+			{% if igm.fieldAttribute('webgroup', 'disabled') == false %}
+				<div class="form-group">
+					<label for="webgroup">Web Group</label>
+					{% include 'util/bootstrap/form/select-simple.twig' with {
+							'select': {
+								'name': 'webgroup',
+								'value' : invgroup.webgroup,
+								'haskeys': true,
+								'options': {'Y': 'Yes', 'N': 'No'}
+							}
+						}
+					%}
+				</div>
+			{% endif %}
+
+			{% if igm.fieldAttribute('salesprogram', 'disabled') == false %}
+				<div class="form-group">
+					<label for="salesprogram">Web Group</label>
+					{% include 'util/bootstrap/form/select-simple.twig' with {
+							'select': {
+								'name': 'salesprogram',
+								'value' : invgroup.salesprogram,
+								'haskeys': true,
+								'options': {'Y': 'Yes', 'N': 'No'}
+							}
+						}
+					%}
+				</div>
+			{% endif %}
+
+			<legend>GL Accounts</legend>
+			{% include 'code-tables/min/igm/edit/form/gl-accounts.twig' %}
+		</div>
+		<div class="col-sm-6">
+			{% include 'code-tables/min/igm/edit/form/surcharge.twig' %}
+
+			<div class="form-group">
+				<label for="freightgroup">Freight Group</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'freightgroup', 'freightgroup': invgroup.freightgroup,
+							'addclasses': ['w-25'],
+							'attributes': {
+								'maxlength': igm.fieldAttribute('freightgroup', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+
+			<div class="form-group">
+				<label for="productline">Product Line</label>
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'productline',
+								'value': invgroup.productline,
+								'attributes': {
+									'placeholder': 'Product Line',
+									'aria-label':  'Product Line',
+									'data-jqv': 'true'
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search Product Lines',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.searchLookupUrl('min/iplm'),
+									'data-input': '#productline'
+								}
+							}
+						}
+					}
+				%}
+				<small class="text-muted productline-desc">{{ igm.productLineCodeDescription(invgroup.productline) }}</small>
+			</div>
+
+			{% if igm.fieldAttribute('ecommdesc', 'disabled') == false %}
+				<div class="form-group">
+					<label for="ecommdesc">Ecomm Desc</label>
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {
+								'name': 'ecommdesc', 'value': invgroup.ecommdesc
+							}
+						}
+					%}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+	<hr>
+	<div class="d-flex justify-content-between align-items-center">
+		{% if igm.recordlocker.isLocked(invgroup.code) == false or igm.recordlocker.userHasLocked(invgroup.code) %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+
+			{% if invgroup.isNew() == false %}
+				<a href="{{ page.codeDeleteUrl(invgroup.code) }}" class="btn btn-danger delete_button">
+					<i class="fa fa-trash" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+
+		<a href="{{ page.codeListUrl(invgroup.code) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

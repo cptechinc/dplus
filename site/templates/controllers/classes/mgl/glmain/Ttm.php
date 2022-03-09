@@ -109,7 +109,7 @@ class Ttm extends Base {
 
 		$html  = '';
 		if (self::pw('input')->get->offsetExists('print') === false) {
-			$html .= $config->twig->render('code-tables/mgl/bread-crumbs.twig');
+			$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		}
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mgl/ttm/display.twig', ['manager' => $ttm, 'codes' => $codes]);

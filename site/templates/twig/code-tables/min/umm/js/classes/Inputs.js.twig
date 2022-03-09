@@ -1,0 +1,20 @@
+class UmmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new UmmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.conversion    = this.form.find('input[name=conversion]');
+		this.stockbycase   = this.form.find('select[name=stockbycase]');
+		this.pricebyweight = this.form.find('select[name=pricebyweight]');
+	}
+}

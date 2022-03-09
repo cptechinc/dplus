@@ -15,6 +15,12 @@ use Dplus\Configs;
 class Uploader extends WireData {
 	const UPLOAD_DIR = '/tmp/';
 	const FIELDS = [];
+	const FILENAME_PREFIX = '';
+	const REPLACE_IN_FILENAME = [
+		' ' => '^',
+		'-' => '~',
+		'/' => '{'
+	];
 
 	private static $instance;
 
@@ -82,6 +88,40 @@ class Uploader extends WireData {
 	}
 
 /* =============================================================
+	FILE Naming
+============================================================= */
+	/**
+	 * Return File name sanitized for use
+	 * @param  string $filename file Name
+	 * @return string
+	 */
+	public function getAcceptableFilename($filename) {
+		return str_replace(array_keys(self::REPLACE_IN_FILENAME), array_values(self::REPLACE_IN_FILENAME), $filename);
+	}
+
+	/**
+	 * Return Target File name
+	 * @param  array  $file      Node from $_FILES
+	 * @param string $filename  File Name
+	 * @return string
+	 */
+	public function getTargetFilename(array $file, $filename) {
+		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+		return $this->getFilenamePrefix(). $this->getAcceptableFilename($filename) . ".$ext";
+	}
+
+	/**
+	 * Return File Name Prefix
+	 * @return string
+	 */
+	public function getFilenamePrefix() {
+		$config = Config::getInstance();
+		return $config->folder->useLowercase() ? strtolower(static::FILENAME_PREFIX) : static::FILENAME_PREFIX;
+	}
+
+
+
+/* =============================================================
 	FILE Uploading
 ============================================================= */
 	/**
@@ -96,6 +136,8 @@ class Uploader extends WireData {
 			return false;
 		}
 		$this->filelocation = $this->uploadDirectory . $files[0];
+		echo $this->filelocation;
+		exit;
 		return true;
 	}
 

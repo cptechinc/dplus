@@ -1,0 +1,16 @@
+{% for field, label in itmp.permissionsLabels() %}
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="{{ field }}">{{ label|title }}</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/select.twig' with {
+					'name': field, 'selected_value': 'N',
+					'options': {'Y': 'Yes', 'N': 'No'},
+					'class_add': [],
+					'attributes': {}
+				}
+			%}
+		</div>
+	</div>
+{% endfor %}

@@ -109,7 +109,7 @@ class Mfcm extends Base {
 		$mfcm = self::getMfcm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/mso/mfcm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/mso/mfcm/list.twig', ['manager' => $mfcm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

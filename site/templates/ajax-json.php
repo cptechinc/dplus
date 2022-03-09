@@ -13,13 +13,46 @@
 			]
 		],
 		'inv' => [
+			['GET', 'csccm/code/', Json\Min::class, 'getCsccmCode'],
+			['GET', 'iasm/code/', Json\Min::class, 'getIasmCode'],
+			['GET', 'igcm/code/', Json\Min::class, 'getIgcmCode'],
+			['GET', 'igm/code/', Json\Min::class, 'getIgmCode'],
+			['GET', 'igpm/code/', Json\Min::class, 'getIgpmCode'],
+			['GET', 'iplm/code/', Json\Min::class, 'getIplmCode'],
+			['GET', 'itmp/user/', Json\Min::class, 'getItmpUser'],
+			'iwhm' => [
+				['GET', 'code/', Json\Min::class, 'getIwhmCode'],
+				['GET', 'whse/', Json\Min::class, 'getIwhmCode'],
+			],
+			['GET', 'msdsm/code/', Json\Min::class, 'getMsdsmCode'],
+			['GET', 'spit/code/', Json\Min::class, 'getSpitCode'],
+			['GET', 'stcm/code/', Json\Min::class, 'getStcmCode'],
+			['GET', 'tarm/code/', Json\Min::class, 'getTarmCode'],
+			['GET', 'umm/code/', Json\Min::class, 'getUmmCode'],
 			'validate' => [
+				['GET', 'csccm/code/', Json\Min::class, 'validateCsccmCode'],
+				['GET', 'iasm/code/', Json\Min::class, 'validateIasmCode'],
+				['GET', 'igcm/code/', Json\Min::class, 'validateIgcmCode'],
+				['GET', 'igm/code/', Json\Min::class, 'validateIgmCode'],
+				['GET', 'igpm/code/', Json\Min::class, 'validateIgpmCode'],
+				['GET', 'iplm/code/', Json\Min::class, 'validateIplmCode'],
+				'iwhm' => [
+					['GET', 'code/', Json\Min::class, 'validateIwhmCode'],
+					['GET', 'whse/', Json\Min::class, 'validateIwhmCode'],
+				],
+				['GET', 'msdsm/code/', Json\Min::class, 'validateMsdsmCode'],
+				['GET', 'spit/code/', Json\Min::class, 'validateSpitCode'],
+				['GET', 'stcm/code/', Json\Min::class, 'validateStcmCode'],
+				['GET', 'tarm/code/', Json\Min::class, 'validateTarmCode'],
+				['GET', 'umm/code/', Json\Min::class, 'validateUmmCode'],
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
 				['GET', 'itemid/', Json\Min::class, 'validateItemid'],
-				['GET', 'warehouse/', Json\Min::class, 'validateWarehouseid'],
-				['GET', 'warehouse/bin/', Json\Min::class, 'validateWarehouseBinid'],
+				'warehouse' => [
+					['GET', '', Json\Min::class, 'validateWarehouseid'],
+					['GET', 'bin/', Json\Min::class, 'validateWarehouseBinid'],
+				],
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
 				['GET', 'item-group/', Json\Min::class, 'validateInvGroupCode'],
 				'upcx' => [
@@ -183,6 +216,9 @@
 		],
 		'msa' => [
 			'validate' => [
+				'logm' => [
+					['GET', 'id/', Json\Msa::class, 'validateUserid'],
+				],
 				['GET', 'lgrp/', Json\Msa::class, 'validateLgrp'],
 				['GET', 'loginid/', Json\Msa::class, 'validateUserid'],
 				['GET', 'userid/', Json\Msa::class, 'validateUserid'],
@@ -195,6 +231,9 @@
 					['GET', 'option/', Json\Msa::class, 'validateSysopOption'],
 					['GET', 'notecode/', Json\Msa::class, 'validateSysopNotecode'],
 				]
+			],
+			'logm' => [
+				['GET', 'user/', Json\Msa::class, 'getUser'],
 			],
 			['GET', 'user/', Json\Msa::class, 'getUser'],
 			['GET', 'lgrp/', Json\Msa::class, 'getLgrp'],
@@ -253,7 +292,7 @@
 			],
 		],
 	];
-
+	$routes['min'] = $routes['inv'];
 	$router = new Mvc\Routers\Json();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);

@@ -1,0 +1,27 @@
+class UmmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new UmmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ umm.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ umm.fieldAttribute('description', 'maxlength') }}
+			},
+			pricebyweight: {
+				default: '{{ umm.fieldAttribute('pricebyweight', 'default') }}'
+			},
+			stockbycase: {
+				default: '{{ umm.fieldAttribute('stockbycase', 'default') }}'
+			},
+		};
+	}
+}

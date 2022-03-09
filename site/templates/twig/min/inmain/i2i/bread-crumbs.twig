@@ -1,0 +1,23 @@
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values = input.get %}
+
+{% block current_page %}
+	<li class="breadcrumb-item">
+		<i class="fa fa-list" aria-hidden="true"></i>
+		<a href="{{ page.menuUrl() }}">
+			INMAIN
+		</a>
+	</li>
+
+	{% if values.offsetExists('parentID') and values.text('parentID') != 'new' %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.xrefListFocusUrl(values.text('parentID'), values.text('childID')) }}">
+				I2I
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ [values.text('parentID'), values.text('childID')]|join('-') }}</li>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">I2I</li>
+	{% endif %}
+{% endblock %}

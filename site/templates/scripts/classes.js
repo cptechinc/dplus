@@ -101,6 +101,25 @@ class Alerts {
 			}
 		});
 	}
+
+	delete(callback) {
+		swal2.fire({
+			title: 'Confirm Deletion',
+			text: "Are you sure you want to delete?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonClass: 'btn btn-success',
+			cancelButtonClass: 'btn btn-danger'
+		}).then((result) => {
+			if (result.value) {
+				callback(true);
+				return true;
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+				return false;
+			}
+		});
+	}
 }
 
 class ImageModal {

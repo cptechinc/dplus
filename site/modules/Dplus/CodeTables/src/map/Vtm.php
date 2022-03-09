@@ -74,7 +74,11 @@ class Vtm extends Base {
 		if (empty($field) || empty($attr)) {
 			return false;
 		}
-		$this->initFieldAttributes();
+
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
+		}
+		
 		if (array_key_exists($field, $this->fieldAttributes) === false) {
 			return false;
 		}

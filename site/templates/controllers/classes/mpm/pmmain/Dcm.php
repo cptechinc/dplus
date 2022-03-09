@@ -105,7 +105,7 @@ class Dcm extends Base {
 		$dcm = self::getDcm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/mpm/dcm/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $dcm, 'codes' => $codes]);
 		if (self::pw('input')->get->offsetExists('print') === false) {

@@ -1,0 +1,10 @@
+<div class="mb-3">
+	{% include 'min/inmain/itmp/list.twig' %}
+</div>
+
+{% if input.get.offsetExists('print') == false %}
+	{% include 'util/paginator/propel.twig' with {'pager': users} %}
+{% endif %}
+
+
+{% include 'min/inmain/itmp/modal.twig' %}

@@ -1,4 +1,6 @@
 <?php namespace Controllers\Min;
+// Purl URI Manipulation Library
+use Purl\Url as Purl;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 

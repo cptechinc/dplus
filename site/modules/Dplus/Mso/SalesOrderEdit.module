@@ -26,10 +26,6 @@ class SalesOrderEdit extends WireData implements Module {
 
 	const HOOK_FUNCTIONS_LOOKUPS = array(
 		// Hook     =>  PW Template
-		'itm_json'    => 'itm-json',
-		'itm_lookup'  => 'itm-lookup',
-		'search_items'     => 'itm-search',
-		'search_customers'   => 'ci-search',
 	);
 
 	/**
