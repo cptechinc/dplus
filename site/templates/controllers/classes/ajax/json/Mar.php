@@ -172,4 +172,37 @@ class Mar extends Controller {
 		}
 		return $manager->codeJson($manager->code($data->code));
 	}
+
+	public static function validateCrtmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Crtm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Route $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Route Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCrtmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Crtm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
+	}
 }

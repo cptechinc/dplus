@@ -47,6 +47,7 @@ return array(
     'Controllers\\Map\\Apmain\\Vxm' => $baseDir . '/classes/map/apmain/Vxm.php',
     'Controllers\\Mar\\Armain\\Base' => $baseDir . '/classes/mar/armain/Base.php',
     'Controllers\\Mar\\Armain\\Ccm' => $baseDir . '/classes/mar/armain/Ccm.php',
+    'Controllers\\Mar\\Armain\\Crtm' => $baseDir . '/classes/mar/armain/Crtm.php',
     'Controllers\\Mar\\Armain\\Menu' => $baseDir . '/classes/mar/armain/Menu.php',
     'Controllers\\Mar\\Armain\\Roptm' => $baseDir . '/classes/mar/armain/Roptm.php',
     'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',

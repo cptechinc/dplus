@@ -10,6 +10,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Ccm::class, 'index'],
 			['POST', '', Armain\Ccm::class, 'handleCRUD'],
 		],
+		'crtm' => [
+			['GET',  '', Armain\Crtm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Crtm::class, 'index'],
+			['POST', '', Armain\Crtm::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);
