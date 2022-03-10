@@ -12,6 +12,7 @@ class Factory extends WireData {
 
 	const ROUTERS = [
 		Routers\Map::class,
+		Routers\Mar::class,
 		Routers\Mgl::class,
 		Routers\Min::class,
 		Routers\Mpm::class,

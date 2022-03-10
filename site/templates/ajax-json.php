@@ -141,9 +141,11 @@
 				['GET', 'salespersonid/', Json\Mar::class, 'validateSalesPersonId'],
 				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
+				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
 			],
 			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
 			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
+			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
 		],
 		'mci' => [
 			'validate' => [

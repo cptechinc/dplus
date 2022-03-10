@@ -5,6 +5,11 @@
 
 	$routes = [
 		['GET',  '', Armain\Menu::class, 'index'],
+		'ccm' => [
+			['GET',  '', Armain\Ccm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Ccm::class, 'index'],
+			['POST', '', Armain\Ccm::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

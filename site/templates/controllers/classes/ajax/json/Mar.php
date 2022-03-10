@@ -6,6 +6,8 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Mar       as MarValidator;
 use Dplus\CodeValidators\Mar\Cxm   as CxmValidator;
+// Dplus Codes
+use Dplus\Codes;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -136,5 +138,38 @@ class Mar extends Controller {
 				'zip'      => $shipto->zip,
 			]
 		];
+	}
+
+	public static function validateCcmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Ccm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Commission $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Commission Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCcmCode($data) {
+		$fields = ['code|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Ccm::getInstance();
+
+		if ($manager->exists($data->code) === false) {
+			return false;
+		}
+		return $manager->codeJson($manager->code($data->code));
 	}
 }
