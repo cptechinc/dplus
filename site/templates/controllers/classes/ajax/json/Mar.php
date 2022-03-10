@@ -8,6 +8,7 @@ use Dplus\CodeValidators\Mar       as MarValidator;
 use Dplus\CodeValidators\Mar\Cxm   as CxmValidator;
 // Dplus Codes
 use Dplus\Codes;
+use Dplus\Codes\Base as CodeTable;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -141,43 +142,42 @@ class Mar extends Controller {
 	}
 
 	public static function validateCcmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
 		$manager = Codes\Mar\Ccm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Commission $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Commission Code $data->code not found";
-		}
-		return true;
+		return self::validateCodeTableSimpleCode($manager, $data);
 	}
 
 	public static function getCcmCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
 		$manager = Codes\Mar\Ccm::getInstance();
-
-		if ($manager->exists($data->code) === false) {
-			return false;
-		}
-		return $manager->codeJson($manager->code($data->code));
+		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
 	public static function validateCrtmCode($data) {
+		$manager = Codes\Mar\Crtm::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getCrtmCode($data) {
+		$manager = Codes\Mar\Crtm::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
+/* =============================================================
+	Abstracted Code Table functions
+============================================================= */
+	/**
+	 * Validate Simple Code using CodeTable
+	 * NOTE: only works for Simple Keys
+	 * @param  CodeTable $manager  CodeTable
+	 * @param  object    $data
+	 *                        ->code  (string) Key
+	 *                        ->jqv   (bool)   Send Response in JqueryValidate format
+	 *                        ->new   (bool)   Validate if key can be used for a new code
+	 * @return mixed
+	 */
+	private static function validateCodeTableSimpleCode(CodeTable $manager, $data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$manager = Codes\Mar\Crtm::getInstance();
 		$exists = $manager->exists($data->code);
 
 		if (boolval($data->jqv) === false) {
@@ -185,24 +185,31 @@ class Mar extends Controller {
 		}
 
 		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Route $data->code already exists";
+			return $exists === false ? true : $manager::DESCRIPTION . " $data->code already exists";
 		}
 
 		if ($exists === false) {
-			return "Route Code $data->code not found";
+			return $manager::DESCRIPTION . " $data->code not found";
 		}
-		return true;
 	}
 
-	public static function getCrtmCode($data) {
+	/**
+	 * Return Code JSON, using CodeTable
+	 * NOTE: only works for Simple Keys
+	 * @param  CodeTable $manager     CodeTable
+	 * @param  object    $data
+	 *                        ->code  (string) Key
+	 * @return false|array
+	 */
+	private static function getCodeTableSimpleCode(CodeTable $manager, $data) {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Crtm::getInstance();
 
 		if ($manager->exists($data->code) === false) {
 			return false;
 		}
 		return $manager->codeJson($manager->code($data->code));
 	}
+
+
 }
