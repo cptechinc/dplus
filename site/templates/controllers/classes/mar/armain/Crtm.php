@@ -43,7 +43,7 @@ class Crtm extends Base {
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::crtmUrl();
-		$crtm = self::getcrtm();
+		$crtm = self::getCrtm();
 
 		if ($data->action) {
 			$crtm->processInput(self::pw('input'));
@@ -70,9 +70,9 @@ class Crtm extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
-		$page->js .= self::pw('config')->twig->render('code-tables/mar/crtm/.js.twig', ['crtm' => self::getcrtm()]);
+		$page->js .= self::pw('config')->twig->render('code-tables/mar/crtm/.js.twig', ['crtm' => self::getCrtm()]);
 		$html = self::displayList($data, $codes);
-		self::getcrtm()->deleteResponse();
+		self::getCrtm()->deleteResponse();
 		return $html;
 	}
 
@@ -116,7 +116,7 @@ class Crtm extends Base {
 ============================================================= */
 	private static function displayList($data, PropelModelPager $codes) {
 		$config = self::pw('config');
-		$crtm = self::getcrtm();
+		$crtm = self::getCrtm();
 
 		$html  = '';
 		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
@@ -130,7 +130,7 @@ class Crtm extends Base {
 	}
 
 	public static function displayResponse($data) {
-		$crtm = self::getcrtm();
+		$crtm = self::getCrtm();
 		$response = $crtm->getResponse();
 		if (empty($response)) {
 			return '';
@@ -160,7 +160,7 @@ class Crtm extends Base {
 /* =============================================================
 	Supplemental
 ============================================================= */
-	public static function getcrtm() {
+	public static function getCrtm() {
 		if (empty(self::$crtm)) {
 			self::$crtm = new CrtmManager();
 		}

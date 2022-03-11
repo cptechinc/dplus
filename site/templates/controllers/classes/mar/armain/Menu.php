@@ -28,6 +28,12 @@ class Menu extends Base {
 			'title'      => 'Salesperson Group Code',
 			'summary'    => 'View / Edit Salesperson Group Code'
 		],
+		'spm' => [
+			'name'       => 'spm',
+			'permission' => 'spm',
+			'title'      => 'Salesperson Maintenance',
+			'summary'    => 'View / Edit Salesperson'
+		],
 		'suc' => [
 			'name'       => 'suc',
 			'permission' => 'suc',
@@ -83,6 +89,10 @@ class Menu extends Base {
 
 	public static function spgpmUrl() {
 		return self::subfunctionUrl('spgpm');
+	}
+
+	public static function spmUrl() {
+		return self::subfunctionUrl('spm');
 	}
 
 	public static function sucUrl() {

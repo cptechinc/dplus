@@ -1,11 +1,8 @@
-<form action="{{ page.fullURL.getURL() }}" method="POST" id="spm-form" data-new="{{ person.isNew() ? 'true' : 'false'}}">
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="spm-form" data-new="{{ rep.isNew() ? 'true' : 'false'}}">
 	<input type="hidden" name="action" value="update">
+
 	<div class="mb-3">
-		<div class="row">
-			<div class="col-sm-8">
-				{% include 'mar/armain/spm/form/fields.twig' %}
-			</div>
-		</div>
+		{% include 'code-tables/mar/spm/rep/form/fields.twig' %}
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
 		{#
@@ -14,19 +11,19 @@
 			2. Is a new Item
 			NOTE: Only show delete if item already exists.
 		#}
-		{% if spm.recordlocker.userHasLocked(person.id) or person.isNew() %}
+		{% if spm.recordlocker.userHasLocked(rep.id) or rep.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 
 			{% if item.isNew() == false %}
-				<a href="{{ page.repDeleteUrl(person.id) }}" class="btn btn-danger delete_button">
+				<a href="{{ page.repDeleteUrl(rep.id) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
 
-		<a href="{{ page.repListUrl(person.id) }}" class="btn btn-warning">
+		<a href="{{ page.repListUrl(rep.id) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

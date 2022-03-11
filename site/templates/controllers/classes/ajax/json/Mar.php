@@ -180,4 +180,14 @@ class Mar extends Base {
 		$manager = Codes\Mar\Suc::getInstance();
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
+
+	public static function validateSpmCode($data) {
+		$manager = Codes\Mar\Spm::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getSpmCode($data) {
+		$manager = Codes\Mar\Spm::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
 }

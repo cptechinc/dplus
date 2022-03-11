@@ -56,6 +56,11 @@
 		// Country Codes
 		['GET', 'country-codes/', AjaxLookup::class, 'countryCodes'],
 		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'countryCodes'],
+		'mar' => [
+			// Salesperson Group Codes
+			['GET', 'spgpm/', AjaxLookup\Mar::class, 'salespersonGroupCodes'],
+			['GET', 'spgpm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'salespersonGroupCodes'],
+		],
 		'mgl' => [
 			// General Ledger Codes
 			['GET', 'mhm/', AjaxLookup::class, 'generalLedgerCodes'],
@@ -66,6 +71,7 @@
 				['GET', '', AjaxLookup\Min::class, 'productLines'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Min::class, 'productLines'],
 			]
+		],
 		'mpo' => [
 			['GET', 'ap-invoices/', AjaxLookup::class, 'purchaseOrders'],
 			['GET', 'ap-invoices/page{pagenbr:\d+}/', AjaxLookup::class, 'purchaseOrders'],

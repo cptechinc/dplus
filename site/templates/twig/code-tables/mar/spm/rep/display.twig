@@ -5,15 +5,15 @@
 				<strong>ID:</strong>
 			</div>
 			<div class="col-sm-10">
-				{% if (person.isNew()) %}
+				{% if (rep.isNew()) %}
 					New Sales Person
 				{% else %}
-					{{ person.id }} - {{ person.name }}
+					{{ rep.id }} - {{ rep.name }}
 				{% endif %}
 			</div>
 		</div>
 	</div>
 	<div class="card-body">
-		{% include 'mar/armain/spm/form/form.twig' %}
+		{% include 'code-tables/mar/spm/rep/form.twig' %}
 	</div>
 </div>

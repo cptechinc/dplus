@@ -144,6 +144,7 @@
 				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
 				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
 				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
+				['GET', 'spm/code/', Json\Mar::class, 'validateSpmCode'],
 				['GET', 'suc/code/', Json\Mar::class, 'validateSucCode'],
 			],
 			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
@@ -151,6 +152,7 @@
 			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
 			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],
 			['GET', 'spgpm/code/', Json\Mar::class, 'getSpgpmCode'],
+			['GET', 'spm/code/', Json\Mar::class, 'getSpmCode'],
 			['GET', 'suc/code/', Json\Mar::class, 'getSucCode'],
 		],
 		'mci' => [

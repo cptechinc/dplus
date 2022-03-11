@@ -217,8 +217,8 @@ class Iwhm extends Base {
 		$iwhm = self::getIwhm();
 
 		if ($iwhm->recordlocker->isLocked($data->code) && $iwhm->recordlocker->userHasLocked($data->code) === false) {
-			$msg = "Group Code $data->code is being locked by " . $iwhm->recordlocker->getLockingUser($data->code);
-			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Code $data->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			$msg = "Warehouse $data->code is being locked by " . $iwhm->recordlocker->getLockingUser($data->code);
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Warehouse $data->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		}
 		return '';
 	}

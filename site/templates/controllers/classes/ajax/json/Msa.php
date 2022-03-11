@@ -10,12 +10,20 @@ use Dplus\Codes\Msa as MsaCodes;
 use Dplus\Qnotes;
 // Dplus Validators
 use Dplus\CodeValidators\Msa as MsaValidator;
+// Dplus Msa
+use Dplus\Msa as CrudsMsa;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
-class Msa extends Controller {
-	public static function test() {
-		return 'test';
+class Msa extends Base {
+
+	public static function getUser($data) {
+		$fields = ['userID|text', 'loginID|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$userID = $data->loginID ? $data->loginID : $data->userID;
+
+		$logm = CrudsMsa\Logm::getInstance();
+		return $logm->exists($userID) ? $logm->userJson($logm->user($userID)) : false;
 	}
 
 	public static function validateUserid($data) {
