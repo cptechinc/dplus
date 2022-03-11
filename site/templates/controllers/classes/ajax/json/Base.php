@@ -23,7 +23,7 @@ class Base extends Controller {
 	 *                        ->new   (bool)   Validate if key can be used for a new code
 	 * @return mixed
 	 */
-	private static function validateCodeTableSimpleCode(CodeTable $manager, $data) {
+	protected static function validateCodeTableSimpleCode(CodeTable $manager, $data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
@@ -51,7 +51,7 @@ class Base extends Controller {
 	 *                        ->code  (string) Key
 	 * @return false|array
 	 */
-	private static function getCodeTableSimpleCode(CodeTable $manager, $data) {
+	protected static function getCodeTableSimpleCode(CodeTable $manager, $data) {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
