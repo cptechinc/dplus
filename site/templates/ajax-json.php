@@ -143,11 +143,13 @@
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
 				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
+				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
 			],
 			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
 			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
 			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
 			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],
+			['GET', 'spgpm/code/', Json\Mar::class, 'getSpgpmCode'],
 		],
 		'mci' => [
 			'validate' => [

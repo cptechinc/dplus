@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
 {
     public static $classMap = array (
+        'Controllers\\Ajax\\Json\\Base' => __DIR__ . '/../..' . '/classes/ajax/json/Base.php',
         'Controllers\\Ajax\\Json\\ItemLookup' => __DIR__ . '/../..' . '/classes/ajax/json/ItemLookup.php',
         'Controllers\\Ajax\\Json\\Map' => __DIR__ . '/../..' . '/classes/ajax/json/Map.php',
         'Controllers\\Ajax\\Json\\Mar' => __DIR__ . '/../..' . '/classes/ajax/json/Mar.php',
@@ -51,6 +52,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mar\\Armain\\Crtm' => __DIR__ . '/../..' . '/classes/mar/armain/Crtm.php',
         'Controllers\\Mar\\Armain\\Menu' => __DIR__ . '/../..' . '/classes/mar/armain/Menu.php',
         'Controllers\\Mar\\Armain\\Roptm' => __DIR__ . '/../..' . '/classes/mar/armain/Roptm.php',
+        'Controllers\\Mar\\Armain\\Spgpm' => __DIR__ . '/../..' . '/classes/mar/armain/Spgpm.php',
         'Controllers\\Mar\\Spm' => __DIR__ . '/../..' . '/classes/mar/Spm.php',
         'Controllers\\Mci\\Ci\\Base' => __DIR__ . '/../..' . '/classes/mci/Ci/Base.php',
         'Controllers\\Mci\\Ci\\Ci' => __DIR__ . '/../..' . '/classes/mci/Ci/Ci.php',

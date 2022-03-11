@@ -8,5 +8,6 @@ class Mar extends Base {
 		'armain' => ['', Ar\Armain\Menu::class, 'armainUrl'],
 		'ccm'    => ['', Ar\Armain\Menu::class, 'ccmUrl'],
 		'crtm'   => ['', Ar\Armain\Menu::class, 'crtmUrl'],
+		'spgpm'  => ['', Ar\Armain\Menu::class, 'spgpmUrl'],
 	];
 }

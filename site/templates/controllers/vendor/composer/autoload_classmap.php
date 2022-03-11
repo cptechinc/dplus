@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Controllers\\Ajax\\Json\\Base' => $baseDir . '/classes/ajax/json/Base.php',
     'Controllers\\Ajax\\Json\\ItemLookup' => $baseDir . '/classes/ajax/json/ItemLookup.php',
     'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',
     'Controllers\\Ajax\\Json\\Mar' => $baseDir . '/classes/ajax/json/Mar.php',
@@ -50,6 +51,7 @@ return array(
     'Controllers\\Mar\\Armain\\Crtm' => $baseDir . '/classes/mar/armain/Crtm.php',
     'Controllers\\Mar\\Armain\\Menu' => $baseDir . '/classes/mar/armain/Menu.php',
     'Controllers\\Mar\\Armain\\Roptm' => $baseDir . '/classes/mar/armain/Roptm.php',
+    'Controllers\\Mar\\Armain\\Spgpm' => $baseDir . '/classes/mar/armain/Spgpm.php',
     'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',
     'Controllers\\Mci\\Ci\\Base' => $baseDir . '/classes/mci/Ci/Base.php',
     'Controllers\\Mci\\Ci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
