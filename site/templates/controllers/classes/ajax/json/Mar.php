@@ -12,10 +12,7 @@ use Dplus\Codes\Base as CodeTable;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
-class Mar extends Controller {
-	public static function test() {
-		return 'test';
-	}
+class Mar extends Base {
 
 	public static function validateSalesPersonId($data) {
 		$valid = false;
@@ -141,6 +138,9 @@ class Mar extends Controller {
 		];
 	}
 
+/* =============================================================
+	CodeTable functions
+============================================================= */
 	public static function validateCcmCode($data) {
 		$manager = Codes\Mar\Ccm::getInstance();
 		return self::validateCodeTableSimpleCode($manager, $data);
@@ -161,55 +161,13 @@ class Mar extends Controller {
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
-/* =============================================================
-	Abstracted Code Table functions
-============================================================= */
-	/**
-	 * Validate Simple Code using CodeTable
-	 * NOTE: only works for Simple Keys
-	 * @param  CodeTable $manager  CodeTable
-	 * @param  object    $data
-	 *                        ->code  (string) Key
-	 *                        ->jqv   (bool)   Send Response in JqueryValidate format
-	 *                        ->new   (bool)   Validate if key can be used for a new code
-	 * @return mixed
-	 */
-	private static function validateCodeTableSimpleCode(CodeTable $manager, $data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : $manager::DESCRIPTION . " $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return $manager::DESCRIPTION . " $data->code not found";
-		}
+	public static function validateSpgpmCode($data) {
+		$manager = Codes\Mar\Spgpm::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
 	}
 
-	/**
-	 * Return Code JSON, using CodeTable
-	 * NOTE: only works for Simple Keys
-	 * @param  CodeTable $manager     CodeTable
-	 * @param  object    $data
-	 *                        ->code  (string) Key
-	 * @return false|array
-	 */
-	private static function getCodeTableSimpleCode(CodeTable $manager, $data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		if ($manager->exists($data->code) === false) {
-			return false;
-		}
-		return $manager->codeJson($manager->code($data->code));
+	public static function getSpgpmCode($data) {
+		$manager = Codes\Mar\Spgpm::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
 	}
-
-
 }
