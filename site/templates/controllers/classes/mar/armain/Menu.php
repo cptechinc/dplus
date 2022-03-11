@@ -40,6 +40,12 @@ class Menu extends Base {
 			'title'      => 'Ship-To User Code',
 			'summary'    => 'View / Edit Ship-To User Code'
 		],
+		'worm' => [
+			'name'       => 'worm',
+			'permission' => 'worm',
+			'title'      => 'Customer Write-Off Code',
+			'summary'    => 'View / Edit Customer Write-Off Code'
+		],
 	];
 
 /* =============================================================
@@ -97,6 +103,10 @@ class Menu extends Base {
 
 	public static function sucUrl() {
 		return self::subfunctionUrl('suc');
+	}
+
+	public static function wormUrl() {
+		return self::subfunctionUrl('worm');
 	}
 
 /* =============================================================

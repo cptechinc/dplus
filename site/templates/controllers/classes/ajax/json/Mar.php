@@ -171,6 +171,16 @@ class Mar extends Base {
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
+	public static function validateSpmCode($data) {
+		$manager = Codes\Mar\Spm::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getSpmCode($data) {
+		$manager = Codes\Mar\Spm::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
 	public static function validateSucCode($data) {
 		$manager = Codes\Mar\Suc::getInstance();
 		return self::validateCodeTableSimpleCode($manager, $data);
@@ -181,13 +191,13 @@ class Mar extends Base {
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
-	public static function validateSpmCode($data) {
-		$manager = Codes\Mar\Spm::getInstance();
+	public static function validateWormCode($data) {
+		$manager = Codes\Mar\Worm::getInstance();
 		return self::validateCodeTableSimpleCode($manager, $data);
 	}
 
-	public static function getSpmCode($data) {
-		$manager = Codes\Mar\Spm::getInstance();
+	public static function getWormCode($data) {
+		$manager = Codes\Mar\Worm::getInstance();
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 }
