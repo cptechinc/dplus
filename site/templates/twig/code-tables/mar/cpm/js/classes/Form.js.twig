@@ -1,0 +1,49 @@
+class CpmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CpmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CpmInputs.getInstance();
+		this.config = CpmConfigs.getInstance();
+	}
+
+	updateAfterSurcharge() {
+		if (this.inputs.surcharge.val() == 'Y') {
+			this.inputs.percent.removeAttr('readonly');
+			return true;
+		}
+		this.inputs.percent.val(0.000);
+		this.inputs.percent.attr('readonly', 'true');
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.surcharge.val(json.surchargeYN);
+			var percent = floatParse(json.percent);
+			this.inputs.percent.val(percent.toFixed(this.config.fields.percent.precision));
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.surcharge.val(this.config.fields.surcharge.default);
+		this.inputs.percent.val(0.000);
+		this.inputs.percent.attr('readonly', 'true');
+	}
+}
