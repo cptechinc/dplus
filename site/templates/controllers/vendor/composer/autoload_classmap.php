@@ -57,7 +57,6 @@ return array(
     'Controllers\\Mar\\Armain\\Spm' => $baseDir . '/classes/mar/armain/Spm.php',
     'Controllers\\Mar\\Armain\\Suc' => $baseDir . '/classes/mar/armain/Suc.php',
     'Controllers\\Mar\\Armain\\Worm' => $baseDir . '/classes/mar/armain/Worm.php',
-    'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',
     'Controllers\\Mci\\Ci\\Base' => $baseDir . '/classes/mci/Ci/Base.php',
     'Controllers\\Mci\\Ci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
     'Controllers\\Mci\\Ci\\Contacts' => $baseDir . '/classes/mci/Ci/Contacts/Contacts.php',

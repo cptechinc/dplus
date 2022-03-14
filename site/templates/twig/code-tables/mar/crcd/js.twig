@@ -43,7 +43,7 @@ $(function () {
 		var custID = $(this).val();
 		custID = custID.toUpperCase();
 		$(this).val(custID);
-		var apiurl = new URI("{{ pages.jsonApiUrl('mar/customer/') }}");
+		var apiurl = new URI("{{ page.jsonApiUrl('mar/customer/') }}");
 		apiurl.addQuery('custID', custID);
 
 		$.getJSON(apiurl.toString(), function(customer) {
