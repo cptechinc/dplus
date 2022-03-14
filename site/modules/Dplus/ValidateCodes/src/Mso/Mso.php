@@ -5,6 +5,9 @@ use ProcessWire\WireData, ProcessWire\User;
 use SalesOrderQuery, SalesOrder;
 use SalesHistoryQuery, SalesHistory;
 
+// Dplus Codes
+use Dplus\Codes;
+
 /**
  * Mso
  * Class for Validating SO table codes, IDs
@@ -80,7 +83,6 @@ class Mso extends WireData {
 	 * @return bool
 	 */
 	public function freightcode($code) {
-		$stcm = $this->modules->get('CodeTablesMfcm');
-		return $stcm->code_exists($code);
+		return Codes\Min\Mfcm::getInstance()->exists($id);
 	}
 }
