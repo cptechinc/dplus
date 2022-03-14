@@ -34,6 +34,12 @@ class Menu extends Base {
 			'title'      => 'Salesperson Maintenance',
 			'summary'    => 'View / Edit Salesperson'
 		],
+		'sic' => [
+			'name'       => 'sic',
+			'permission' => 'sic',
+			'title'      => 'Standard Industrial Class',
+			'summary'    => 'View / Edit Standard Industrial Class Code'
+		],
 		'suc' => [
 			'name'       => 'suc',
 			'permission' => 'suc',
@@ -99,6 +105,10 @@ class Menu extends Base {
 
 	public static function spmUrl() {
 		return self::subfunctionUrl('spm');
+	}
+
+	public static function sicUrl() {
+		return self::subfunctionUrl('sic');
 	}
 
 	public static function sucUrl() {

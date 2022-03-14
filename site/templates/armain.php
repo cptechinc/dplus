@@ -25,6 +25,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Spm::class, 'index'],
 			['POST', '', Armain\Spm::class, 'handleCRUD'],
 		],
+		'sic' => [
+			['GET',  '', Armain\Sic::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Sic::class, 'index'],
+			['POST', '', Armain\Sic::class, 'handleCRUD'],
+		],
 		'suc' => [
 			['GET',  '', Armain\Suc::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Suc::class, 'index'],
