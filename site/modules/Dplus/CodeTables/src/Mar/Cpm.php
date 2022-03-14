@@ -31,7 +31,7 @@ class Cpm extends Base {
 		'code'        => ['type' => 'text', 'maxlength' => ArPriceCode::MAX_LENGTH_CODE],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 		'surcharge'   => ['type' => 'text', 'default' => 'N', 'required' => true],
-		'percent'     => ['type' => 'text', 'precision' => 3, 'max' => 99.999],
+		'percent'     => ['type' => 'number', 'precision' => 3, 'max' => 99.999],
 	];
 
 	protected static $instance;
