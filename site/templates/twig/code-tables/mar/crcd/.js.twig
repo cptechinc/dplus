@@ -1,0 +1,303 @@
+{% include 'code-tables/mar/crcd/js/classes.js.twig' %}
+
+$(function() {
+	var server   = CrcdRequests.getInstance();
+	var alert    = CodeAlerts.getInstance();
+	var formCode = CrcdForm.getInstance();
+	var ajaxModal = $('#ajax-modal');
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$('#edit-code-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+		modal.find('.modal-title').text('Add Code');
+
+		if (code) {
+			modal.find('.modal-title').text('Edit Code ' + code);
+		}
+		formCode.updateInputsFromJson(button.data('json'));
+	});
+
+	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+
+		if (code) {
+			formCode.inputs.description.focus();
+		} else {
+			formCode.inputs.code.focus();
+		}
+	});
+
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var code = input.val();
+
+		server.validateCode(code, function(exists) {
+			if (exists === true) {
+				alert.codeExists(code, function(editCode) {
+					var modal = formCode.form.closest('.modal');
+
+					if (editCode) {
+						server.getCode(code, function(response) {
+							if (response) {
+								modal.find('.modal-title').text('Edit Code ' + code);
+								formCode.updateInputsFromJson(response);
+							} else {
+								modal.modal('hide');
+							}
+						});
+					} else {
+						modal.modal('hide');
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
+		if (formCode.inputs.code.val() == '') {
+			formCode.inputs.code.focus();
+		}
+	});
+
+	$("body").on("change", "input[name=custid]", function(e) {
+		var input  = $(this);
+
+		$('.customer-name').text('');
+
+		if (input.val() == '') {
+			return true;
+		}
+
+		server.getCustomer(input.val(), function(customer) {
+			if (customer) {
+				$('.customer-name').text(customer.name);
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=glaccountnbr]", function(e) {
+		var input  = $(this);
+
+		$('.gl-acct-name').text('');
+
+		if (input.val() == '') {
+			return true;
+		}
+
+		server.getGlAcct(input.val(), function(glAcct) {
+			if (glAcct) {
+				$('.gl-acct-name').text(glAcct.description);
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=glchargeaccountnbr]", function(e) {
+		var input  = $(this);
+
+		$('.gl-charge-acct-name').text('');
+
+		if (input.val() == '') {
+			return true;
+		}
+
+		server.getGlAcct(input.val(), function(glAcct) {
+			if (glAcct) {
+				$('.gl-charge-acct-name').text(glAcct.description);
+			}
+		});
+	});
+
+	$("body").on("change", "input[data-precision]", function(e) {
+		var input  = $(this);
+
+		if (input.val() == '') {
+			return true;
+		}
+
+		var value = floatParse(input.val());
+		var precision = intParse(input.data('precision'));
+		input.val(value.toFixed(precision));
+	});
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	ajaxModal.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(button.data('lookupurl'), function() {});
+	});
+
+	$("body").on('click', '.code-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('code'));
+		if (input.data('jqv')) {
+			input.change();
+		}
+		modal.modal('hide');
+	});
+
+	$("body").on('click', '.customer-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('custid'));
+		input.change();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(button.attr('href'));
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: formCode.config.fields.code.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/crcd/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			description: {
+				maxlength: formCode.config.fields.description.maxlength,
+			},
+			custid: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/custid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						custID: function() {
+							return formCode.inputs.custid.val();
+						}
+					}
+				}
+			},
+			glaccountnbr: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.inputs.glaccountnbr.val();
+						}
+					}
+				}
+			},
+			glchargeaccountnbr: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.inputs.glchargeaccountnbr.val();
+						}
+					}
+				}
+			},
+		},
+		submitHandler: function(form) {
+			var formCode = CrcdForm.getInstance();
+			var server   = CrcdRequests.getInstance();
+			var code = formCode.inputs.code.val();
+
+			if (formCode.inputs.form.attr('data-code') == code) {
+				form.submit();
+			} else {
+				server.validateCode(code, function(exists) {
+					var alert = CodeAlerts.getInstance();
+					if (exists === false) {
+						form.submit();
+						return true;
+					}
+
+					alert.codeExists(code, function(editCode) {
+						var modal = formCode.form.closest('.modal');
+
+						if (editCode) {
+							server.getCode(code, function(response) {
+								if (response) {
+									modal.find('.modal-title').text('Edit Code ' + code);
+									formCode.updateInputsFromJson(response);
+								} else {
+									modal.modal('hide');
+								}
+							});
+						} else {
+							modal.modal('hide');
+						}
+					});
+				});
+			}
+		}
+	});
+
+/* =============================================================
+	Form Functions
+============================================================= */
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		var form = formCode.inputs.form;
+		form.validate().resetForm();
+		form.find('.is-invalid').removeClass("is-invalid");
+		form.find('.is-valid').removeClass("is-valid");
+		form.find('.invalid-feedback').remove();
+		form.find('.valid-feedback').remove();
+
+		if (form.attr('data-code')) {
+			$('.code-table-alert').remove();
+			$('.bg-crcdcess').removeClass('bg-crcdcess text-white');
+			$('.highlight').removeClass('highlight');
+			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
+			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
+		}
+	});
+})

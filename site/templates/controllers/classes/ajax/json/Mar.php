@@ -161,6 +161,16 @@ class Mar extends Base {
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
+	public static function validateCrcdCode($data) {
+		$manager = Codes\Mar\Crcd::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getCrcdCode($data) {
+		$manager = Codes\Mar\Crcd::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
 	public static function validateCrtmCode($data) {
 		$manager = Codes\Mar\Crtm::getInstance();
 		return self::validateCodeTableSimpleCode($manager, $data);

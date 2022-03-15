@@ -1,0 +1,63 @@
+class CrcdForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CrcdForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CrcdInputs.getInstance();
+		this.config = CrcdConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		this.updateInputsServiceChargesFromJson(json);
+		
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.custid.val(json.custid);
+			this.inputs.custid.change();
+
+			this.inputs.glaccountnbr.val(json.glAcct.id);
+			this.inputs.glaccountnbr.change();
+			this.inputs.glchargeaccountnbr.val(json.glAcctCharge.id);
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.custid.val('');
+		this.inputs.custid.change();
+
+		this.inputs.glaccountnbr.val('');
+		this.inputs.glaccountnbr.change();
+		this.inputs.glchargeaccountnbr.val('');
+	}
+
+	updateInputsServiceChargesFromJson(json = null) {
+		if (json) {
+			var rate = floatParse(json.servicerate);
+			this.inputs.servicerate.val(rate.toFixed(this.config.fields.servicerate.precision));
+			var transactioncost = floatParse(json.transactioncost);
+			this.inputs.transactioncost.val(transactioncost.toFixed(this.config.fields.transactioncost.precision));
+			var surchargepercentcc = floatParse(json.surchargepercentcc);
+			this.inputs.surchargepercentcc.val(surchargepercentcc.toFixed(this.config.fields.surchargepercentcc.precision));
+			return true;
+		}
+		this.inputs.servicerate.val('');
+		this.inputs.transactioncost.val('');
+		this.inputs.surchargepercentcc.val('');
+	}
+}

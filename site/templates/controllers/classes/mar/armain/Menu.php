@@ -22,6 +22,12 @@ class Menu extends Base {
 			'title'      => 'Customer Price Code',
 			'summary'    => 'View / Edit Customer Price Code'
 		],
+		'crcd' => [
+			'name'       => 'crcd',
+			'permission' => 'crcd',
+			'title'      => 'Credit Card',
+			'summary'    => 'View / Edit Credit Card Code'
+		],
 		'crtm' => [
 			'name'       => 'crtm',
 			'permission' => 'crtm',
@@ -103,6 +109,10 @@ class Menu extends Base {
 
 	public static function cpmUrl() {
 		return self::subfunctionUrl('cpm');
+	}
+
+	public static function crcdUrl() {
+		return self::subfunctionUrl('crcd');
 	}
 
 	public static function crtmUrl() {
