@@ -10,6 +10,7 @@ class Mar extends Base {
 		'cpm'    => ['', Ar\Armain\Menu::class, 'cpmUrl'],
 		'crcd'   => ['', Ar\Armain\Menu::class, 'crcdUrl'],
 		'crtm'   => ['', Ar\Armain\Menu::class, 'crtmUrl'],
+		'ctm'    => ['', Ar\Armain\Menu::class, 'ctmUrl'],
 		'spgpm'  => ['', Ar\Armain\Menu::class, 'spgpmUrl'],
 		'spm'    => ['', Ar\Armain\Menu::class, 'spmUrl'],
 		'sic'    => ['', Ar\Armain\Menu::class, 'sicUrl'],

@@ -1,0 +1,17 @@
+class CtmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CtmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CtmInputs.getInstance();
+		this.config = CtmConfigs.getInstance();
+	}
+}

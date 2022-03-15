@@ -1,4 +1,4 @@
-<?php namespace Dplus\Codes\Min\Iwhm;
+<?php namespace Dplus\Codes\Mar\Ctm;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Qnotes
@@ -15,12 +15,14 @@ class Qnotes extends WireData {
 	}
 
 	public function __construct() {
-		$this->iwhs = QnotesNs\Iwhs::instance();
-		$this->swhs = QnotesNs\Swhs::instance();
+		$this->ictp = QnotesNs\CustType\Ictp::instance();
+		$this->kctp = QnotesNs\CustType\Kctp::instance();
+		$this->pctp = QnotesNs\CustType\Pctp::instance();
+		$this->sctp = QnotesNs\CustType\Sctp::instance();
 	}
 
 	public function getQnotes() {
-		return [$this->iwhs, $this->swhs];
+		return [$this->ictp, $this->kctp, $this->pctp, $this->sctp];
 	}
 
 /* =============================================================
@@ -35,11 +37,17 @@ class Qnotes extends WireData {
 		$values = $input->$rm;
 
 		switch ($values->text('type')) {
-			case 'IWHS':
-				$this->iwhs->processInput($input);
+			case 'ICTP':
+				$this->ictp->processInput($input);
 				break;
-			case 'SWHS':
-				$this->swhs->processInput($input);
+			case 'KCTP':
+				$this->kctp->processInput($input);
+				break;
+			case 'PCTP':
+				$this->pctp->processInput($input);
+				break;
+			case 'SCTP':
+				$this->sctp->processInput($input);
 				break;
 		}
 	}

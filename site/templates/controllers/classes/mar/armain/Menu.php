@@ -34,6 +34,12 @@ class Menu extends Base {
 			'title'      => 'Customer Route Code',
 			'summary'    => 'View / Edit Customer Route Code'
 		],
+		'ctm' => [
+			'name'       => 'ctm',
+			'permission' => 'ctm',
+			'title'      => 'Customer Type Code',
+			'summary'    => 'View / Edit Customer Type Code'
+		],
 		'spgpm' => [
 			'name'       => 'spgpm',
 			'permission' => 'spgpm',
@@ -117,6 +123,10 @@ class Menu extends Base {
 
 	public static function crtmUrl() {
 		return self::subfunctionUrl('crtm');
+	}
+
+	public static function ctmUrl() {
+		return self::subfunctionUrl('ctm');
 	}
 
 	public static function spgpmUrl() {

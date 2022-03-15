@@ -10,7 +10,7 @@ $(function() {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var notetype = button.data('type'); // Extract info from data-* attributes
 		var description = button.data('description');
-		var ele_notes = $('#notes-' + notetype);
+		var ele_notes = $('textarea.qnotes[readonly][data-type="'+ notetype+'"]');
 		// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
 		// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 		var modal = $(this);
@@ -36,24 +36,12 @@ $(function() {
 		submitHandler: function(form) {
 			var submittedform = $(form);
 			var values = {};
+			
 			$.each(submittedform.serializeArray(), function() {
 				values[this.name] = this.value;
 			});
 
-			if (values.action == 'delete-notes') {
-				alert.delete(function(goAheadAndDelete) {
-					if (goAheadAndDelete) {
-						var url = URI(submittedform.attr('action'));
-						url.setQuery(values);
-						window.location.href = url.toString();
-					}
-				});
-			} else {
-				var url = URI(submittedform.attr('action'));
-				url.setQuery(values);
-				window.location.href = url.toString();
-				form.submit();
-			}
+			form.submit();
 		}
 	});
 });
