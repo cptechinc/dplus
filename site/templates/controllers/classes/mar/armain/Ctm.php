@@ -206,7 +206,7 @@ class Ctm extends Base {
 	private static function displayResponseQnotes($data) {
 		$ctm = self::getCtm();
 		$html = '';
-
+		
 		foreach ($ctm->qnotes->getResponses() as $response) {
 			$html .= '<div class="mb-3">'. self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]) .'</div>';
 		}

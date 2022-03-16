@@ -70,7 +70,7 @@ class Qnotes extends WireData {
 			}
 			$responses[] = $response;
 		}
-		$responses;
+		return $responses;
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Qnotes extends WireData {
 	 */
 	public function deleteResponses() {
 		foreach ($this->getQnotes() as $qnotes) {
-			$qnotes->deleteResponse()
+			$qnotes->deleteResponse();
 		}
 	}
 }
