@@ -25,8 +25,13 @@ class Cmm extends Base {
 	const RECORDLOCKER_FUNCTION = 'cmm';
 	const DPLUS_TABLE           = 'CMM';
 	const FIELD_ATTRIBUTES = [
-		'id'          => ['type' => 'text', 'maxlength' => 6],
-		'name' => ['type' => 'text', 'maxlength' => 20],
+		'id'    => ['type' => 'text', 'maxlength' => 6],
+		'name'  => ['type' => 'text', 'maxlength' => 30],
+		'address'  => ['type' => 'text', 'maxlength' => 30],
+		'address2'  => ['type' => 'text', 'maxlength' => 30],
+		'city'     => ['type' => 'text', 'maxlength' => 16],
+		'state'     => ['type' => 'text', 'maxlength' => 2],
+		'zip'     => ['type' => 'text', 'maxlength' => 10],
 	];
 
 	protected static $instance;
@@ -37,7 +42,6 @@ class Cmm extends Base {
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
-		$mhm = Mhm::getInstance();
 		$json = [
 			'id'    => $code->id,
 			'name'  => $code->name,
