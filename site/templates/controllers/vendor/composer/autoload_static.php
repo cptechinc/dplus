@@ -54,6 +54,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mar\\Armain\\Crcd' => __DIR__ . '/../..' . '/classes/mar/armain/Crcd.php',
         'Controllers\\Mar\\Armain\\Crtm' => __DIR__ . '/../..' . '/classes/mar/armain/Crtm.php',
         'Controllers\\Mar\\Armain\\Ctm' => __DIR__ . '/../..' . '/classes/mar/armain/Ctm.php',
+        'Controllers\\Mar\\Armain\\Cuc' => __DIR__ . '/../..' . '/classes/mar/armain/Cuc.php',
         'Controllers\\Mar\\Armain\\Menu' => __DIR__ . '/../..' . '/classes/mar/armain/Menu.php',
         'Controllers\\Mar\\Armain\\Roptm' => __DIR__ . '/../..' . '/classes/mar/armain/Roptm.php',
         'Controllers\\Mar\\Armain\\Sic' => __DIR__ . '/../..' . '/classes/mar/armain/Sic.php',

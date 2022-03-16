@@ -191,6 +191,16 @@ class Mar extends Base {
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
+	public static function validateCucCode($data) {
+		$manager = Codes\Mar\Cuc::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getCucCode($data) {
+		$manager = Codes\Mar\Cuc::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
 	public static function validateSpgpmCode($data) {
 		$manager = Codes\Mar\Spgpm::getInstance();
 		return self::validateCodeTableSimpleCode($manager, $data);

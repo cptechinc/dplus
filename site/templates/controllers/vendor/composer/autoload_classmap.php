@@ -53,6 +53,7 @@ return array(
     'Controllers\\Mar\\Armain\\Crcd' => $baseDir . '/classes/mar/armain/Crcd.php',
     'Controllers\\Mar\\Armain\\Crtm' => $baseDir . '/classes/mar/armain/Crtm.php',
     'Controllers\\Mar\\Armain\\Ctm' => $baseDir . '/classes/mar/armain/Ctm.php',
+    'Controllers\\Mar\\Armain\\Cuc' => $baseDir . '/classes/mar/armain/Cuc.php',
     'Controllers\\Mar\\Armain\\Menu' => $baseDir . '/classes/mar/armain/Menu.php',
     'Controllers\\Mar\\Armain\\Roptm' => $baseDir . '/classes/mar/armain/Roptm.php',
     'Controllers\\Mar\\Armain\\Sic' => $baseDir . '/classes/mar/armain/Sic.php',
