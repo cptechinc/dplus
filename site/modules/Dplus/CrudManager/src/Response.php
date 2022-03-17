@@ -8,12 +8,13 @@ use ProcessWire\WireData;
  *
  * @author Paul Gomez
  *
- * @property bool    $success  Did the function Succeed?
- * @property bool    $error    Was there an error?
- * @property bool    $message  Error Message / Success Message
- * @property string  $code     Code ID
- * @property string  $function Function Code
- * @property string  $key      Key String
+ * @property bool    $success          Did the function Succeed?
+ * @property bool    $error            Was there an error?
+ * @property bool    $message          Error Message / Success Message
+ * @property string  $key              Key String
+ * @property string  $function         Function Code
+ * @property string  $msgReplacements  Replacements for the Response Message
+ *
  */
 class Response extends WireData {
 
@@ -31,11 +32,11 @@ class Response extends WireData {
 		$this->success = false;
 		$this->error = false;
 		$this->message = '';
-		$this->code    = '';
 		$this->key     = '';
 		$this->function = '';
 		$this->fields  = [];
 		$this->msgReplacements = [];
+		$this->recordArray     = [];
 	}
 
 	public function setAction(int $action = 0) {
@@ -62,10 +63,6 @@ class Response extends WireData {
 		$this->message = $message;
 	}
 
-	public function setCode($code) {
-		$this->code = $code;
-	}
-
 	public function setFunction($function) {
 		$this->function = $function;
 	}
@@ -80,6 +77,10 @@ class Response extends WireData {
 
 	public function hasField($field) {
 		return array_key_exists($field, $this->fields);
+	}
+
+	public function setRecordArray(array $record) {
+		$this->recordArray = $record;
 	}
 
 	public function addMsgReplacement($replace, $with) {

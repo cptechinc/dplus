@@ -180,13 +180,20 @@ abstract class Manager extends WireData {
 ============================================================= */
 	/**
 	 * Return Response based on the outcome of the database save
-	 * @param  Record     $record          Code
+	 * @param  Record   $record          Record
 	 * @param  array    $invalidfields
 	 * @return Response
 	 */
 	protected function saveAndRespond(Record $record, $invalidfields = []) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
-		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		if ($record->isDeleted()) {
+			$saved = true;
+		}
+
+		if ($record->isDeleted() === false) {
+			$saved = empty($invalidfields) === false ? false : $record->save();
+		}
 
 		$response = new Response();
 		$response->setCode($record->id);
@@ -207,6 +214,9 @@ abstract class Manager extends WireData {
 		}
 
 		$response->setFields($invalidfields);
+		if (empty($invalidfields) === false) {
+			$response->setRecordArray($record->toArray());
+		}
 		$this->addResponseMsgReplacements($record, $response);
 		$response->buildMessage(static::RESPONSE_TEMPLATE);
 		if ($response->hasSuccess()) {
