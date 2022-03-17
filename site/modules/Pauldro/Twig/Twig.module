@@ -7,7 +7,7 @@ use Twig\TwigFilter, Twig\TwigFunction;
 include(__DIR__.'/vendor/autoload.php');
 
 use Twig\Html\TwigInput, Twig\Html\TwigInputGroup, Twig\Html\TwigInputSpan;
-use Twig\Html\TwigButton, Twig\Html\TwigLink, Twig\Html\TwigTextarea, Twig\Html\TwigSelectSimple;
+use Twig\Html\TwigButton, Twig\Html\TwigLink, Twig\Html\TwigTextarea, Twig\Html\TwigSelectSimple, Twig\Html\TwigSelect;
 use Twig\Html\TwigDatePicker;
 
 /**
@@ -280,6 +280,13 @@ class Twig extends WireData implements Module {
 
 		$function = new TwigFunction('twigselectsimple', function (array $array) {
 			$input = new TwigSelectSimple();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+
+		$function = new TwigFunction('twigselect', function (array $array) {
+			$input = new TwigSelect();
 			$input->setFromArray($array);
 			return $input;
 		});

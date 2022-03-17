@@ -1,0 +1,13 @@
+{% set tinput = twigselect(select) %}
+
+<select name="{{ tinput.name }}" id="{{ tinput.id() }}" class="{{ tinput.class() }}" {{ tinput.attributes()|raw }}>
+	{% if tinput.useblankoption %}
+		<option value="{{ tinput.blankoption.value }}">{{ tinput.blankoption.label }}</option>
+	{% endif %}
+
+	{% for option in tinput.options %}
+		<option value="{{ attribute(option, tinput.propValue) }}" {{ attribute(option, tinput.propValue) == tinput.value ? 'selected' : ''}}>
+			{{ tinput.showvalue ? tinput.propValue ~ ' - ' }} {{ tinput.capitalizelabels ? attribute(option, tinput.propLabel)|capitalize : attribute(option, tinput.propLabel) }}
+		</option>
+	{% endfor %}
+</select>
