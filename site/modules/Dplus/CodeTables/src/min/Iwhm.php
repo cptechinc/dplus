@@ -22,6 +22,7 @@ use Dplus\Codes\Response;
  * Class that handles the CRUD of the IWHM code table
  *
  * @property Iwhm\Qnotes $qnotes
+ * @property array  $attributes Field Attributes, some defaults are loaded from configs
  */
 class Iwhm extends Base {
 	const MODEL              = 'Warehouse';
