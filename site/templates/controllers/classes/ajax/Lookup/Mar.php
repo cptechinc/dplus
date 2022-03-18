@@ -7,7 +7,7 @@ use Dplus\Filters;
 
 class Mar extends Lookup {
 	/**
-	 * Search Label Formats
+	 * Search Salesperson Group Codes
 	 * @param  object $data
 	 *                     q        Search Term
 	 * @return void
@@ -16,6 +16,19 @@ class Mar extends Lookup {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		self::pw('page')->headline = "Salesperson Group Codes";
 		$filter = new Filters\Mar\SalespersonGroupCode();
+		return self::filterResults($filter, $data);
+	}
+
+	/**
+	 * Search Salesperson Codes
+	 * @param  object $data
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function salespersonGroupCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Salesperson Codes";
+		$filter = new Filters\Mar\SalesPerson();
 		return self::filterResults($filter, $data);
 	}
 }

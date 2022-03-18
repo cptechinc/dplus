@@ -60,6 +60,9 @@
 			// Salesperson Group Codes
 			['GET', 'spgpm/', AjaxLookup\Mar::class, 'salespersonGroupCodes'],
 			['GET', 'spgpm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'salespersonGroupCodes'],
+			// Salesperson Group Codes
+			['GET', 'spm/', AjaxLookup\Mar::class, 'salespersonCodes'],
+			['GET', 'spm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'salespersonCodes'],
 		],
 		'mgl' => [
 			// General Ledger Codes
