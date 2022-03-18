@@ -47,6 +47,7 @@ abstract class Lookup extends Controller {
 		$path = $input->urlSegment(count($input->urlSegments()));
 		$path = rtrim(str_replace($page->url, '', self::pw('input')->url()), '/');
 		$path = preg_replace('/page\d+/', '', $path);
+
 		return self::filterResultsTwig($path, $filter->query, $data->q);
 	}
 
@@ -54,6 +55,7 @@ abstract class Lookup extends Controller {
 		$input = self::pw('input');
 		$results = $query->paginate($input->pageNum, 10);
 		$twigpath = "api/lookup/codes/search.twig";
+		echo $path;
 
 		if (self::pw('config')->twigloader->exists("api/lookup/$path/search.twig")) {
 			$twigpath = "api/lookup/$path/search.twig";

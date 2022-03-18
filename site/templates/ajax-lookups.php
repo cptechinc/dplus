@@ -57,6 +57,9 @@
 		['GET', 'country-codes/', AjaxLookup::class, 'countryCodes'],
 		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'countryCodes'],
 		'mar' => [
+			// AR Tax Codes
+			['GET', 'mtm/', AjaxLookup\Mar::class, 'arTaxCodes'],
+			['GET', 'mtm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'arTaxCodes'],
 			// Salesperson Group Codes
 			['GET', 'spgpm/', AjaxLookup\Mar::class, 'salespersonGroupCodes'],
 			['GET', 'spgpm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'salespersonGroupCodes'],

@@ -25,10 +25,23 @@ class Mar extends Lookup {
 	 *                     q        Search Term
 	 * @return void
 	 */
-	public static function salespersonGroupCodes($data) {
+	public static function salespersonCodes($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		self::pw('page')->headline = "Salesperson Codes";
 		$filter = new Filters\Mar\SalesPerson();
+		return self::filterResults($filter, $data);
+	}
+
+	/**
+	 * Search AR Tax Codes
+	 * @param  object $data
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function arTaxCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Tax Codes";
+		$filter = new Filters\Mar\ArTaxCode();
 		return self::filterResults($filter, $data);
 	}
 }
