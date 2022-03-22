@@ -95,8 +95,8 @@ class Cmm extends Base {
 			$cmm->lockrecord($customer);
 		}
 		self::initHooks();
-		// self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/cmm/edit/.js.twig', ['cmm' => $cmm]);
-		//
+		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/cmm/edit/.js.twig', ['cmm' => $cmm]);
+		
 		$html = self::displayCustomer($data, $customer);
 		// self::getCmm()->deleteResponse();
 		return $html;
