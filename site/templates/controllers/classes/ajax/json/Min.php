@@ -11,6 +11,7 @@ use Dplus\Min\Inmain\Itm\Substitutes as ItmSub;
 use Dplus\Min\Inmain\Itm\Options as ItmOptions;
 // Dplus Codes
 use Dplus\Codes;
+use Dplus\Min as DplusMin;
 // Dplus Validators
 use Dplus\CodeValidators as  Validators;
 use Dplus\CodeValidators\Min as MinValidator;
@@ -112,13 +113,14 @@ class Min extends Controller {
 
 	public static function getMsdsCode($data) {
 		$fields = ['code|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
 		if ($validate->msdscode($data->code) === false) {
 			return false;
 		}
-		$msds = self::pw('modules')->get('CodeTablesMsdsm')->get_code($data->code);
+		$msdsm = Codes\Min\Msdsm::getInstance();
+		$msds = $mdsdsm->code($data->code);
 		return array(
 			'code'        => $data->code,
 			'description' => $msds->description
@@ -217,7 +219,7 @@ class Min extends Controller {
 	public static function validateItmpExists($data) {
 		$fields = ['loginID|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
-		$itmp = self::pw('modules')->get('Itmp');
+		$itmp = DplusMin\Itmp::instance();
 
 		$exists = $itmp->exists($data->loginID);
 
@@ -444,11 +446,11 @@ class Min extends Controller {
 	public static function getUom($data) {
 		$fields = ['code|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$umm = self::pw('modules')->get('CodeTablesUmm');
-		if ($umm->code_exists($data->code) === false) {
+		$umm = Codes\Min\Umm::getInstance();
+		if ($umm->exists($data->code) === false) {
 			return false;
 		}
-		$uom = $umm->get_code($data->code);
+		$uom = $umm->code($data->code);
 		return [
 			'code'        => $uom->code,
 			'description' => $uom->description,
