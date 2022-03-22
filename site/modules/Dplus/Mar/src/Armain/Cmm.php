@@ -13,8 +13,11 @@ use Dplus\Filters;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
+use Dplus\Codes;
+// Dplus Crud
 use Dplus\Crud\Manager as Base;
-use Dplus\Codes\Response;
+use Dplus\Crud\Response;
+
 
 /**
  * Class that handles the CRUD of the Customer Table
@@ -323,5 +326,68 @@ class Cmm extends Base {
 	public function getStates() {
 		$filter = new Filters\Misc\StateCode();
 		return $filter->query->find();
+	}
+
+	/**
+	 * Return Warehouse Description
+	 * @param  string $id  Warehouse ID
+	 * @return string
+	 */
+	public function descriptionWhse($id) {
+		return Codes\Min\Iwhm::getInstance()->name($id);
+	}
+
+	/**
+	 * Return Tax Code Description
+	 * @param  string $id  Tax Code ID
+	 * @return string
+	 */
+	public function descriptionTaxcode($id) {
+		return Codes\Mar\Mtm::getInstance()->description($id);
+	}
+
+	/**
+	 * Return Terms Code Description
+	 * @param  string $id  Terms Code ID
+	 * @return string
+	 */
+	public function descriptionTermscode($id) {
+		return Codes\Mar\Trm::getInstance()->description($id);
+	}
+
+	/**
+	 * Return Terms Code Description
+	 * @param  string $id  SalesPerson ID
+	 * @return string
+	 */
+	public function descriptionSalesperson($id) {
+		return Codes\Mar\Spm::getInstance()->name($id);
+	}
+
+	/**
+	 * Return Ship Via Code Description
+	 * @param  string $id  Ship Via ID
+	 * @return string
+	 */
+	public function descriptionShipvia($id) {
+		return Codes\Mar\Csv::getInstance()->description($id);
+	}
+
+	/**
+	 * Return Price Code Description
+	 * @param  string $id  Price Code ID
+	 * @return string
+	 */
+	public function descriptionPricecode($id) {
+		return Codes\Mar\Cpm::getInstance()->description($id);
+	}
+
+	/**
+	 * Return Commission Code Description
+	 * @param  string $id  Commission Code ID
+	 * @return string
+	 */
+	public function descriptionCommcode($id) {
+		return Codes\Mar\Ccm::getInstance()->description($id);
 	}
 }

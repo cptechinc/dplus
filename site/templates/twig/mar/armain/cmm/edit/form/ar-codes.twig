@@ -3,7 +3,7 @@
 			'label': 'Terms Code',
 			'name': 'termscode',
 			'value': customer.termscode,
-			'description': 'desc',
+			'description': cmm.descriptionTermscode(customer.termscode),
 			'searchTitleDescription': 'Terms Codes',
 			'ajaxLookupPath': 'mar/trm'
 		}
@@ -15,7 +15,7 @@
 			'label': 'Ship Via',
 			'name': 'shipviacode',
 			'value': customer.shipviacode,
-			'description': 'desc',
+			'description': cmm.descriptionShipvia(customer.shipviacode),
 			'searchTitleDescription': 'Ship Vias',
 			'ajaxLookupPath': 'mar/csv'
 		}
@@ -27,7 +27,7 @@
 			'label': 'Price Code',
 			'name': 'pricecode',
 			'value': customer.pricecode,
-			'description': 'desc',
+			'description': cmm.descriptionPricecode(customer.pricecode),
 			'searchTitleDescription': 'Price Codes',
 			'ajaxLookupPath': 'mar/cpm'
 		}
@@ -39,7 +39,7 @@
 			'label': 'Comm Code',
 			'name': 'commission',
 			'value': customer.commcode,
-			'description': 'desc',
+			'description': cmm.descriptionCommcode(customer.commcode),
 			'searchTitleDescription': 'Commission Codes',
 			'ajaxLookupPath': 'mar/ccm'
 		}

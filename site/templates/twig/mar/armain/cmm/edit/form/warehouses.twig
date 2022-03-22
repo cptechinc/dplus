@@ -3,7 +3,7 @@
 			'label': 'Warehouse',
 			'name': 'whseid',
 			'value': customer.whseid,
-			'whsename': 'sdf'
+			'whsename': cmm.descriptionWhse(customer.whseid)
 		}
 	%}
 </div>
@@ -12,7 +12,7 @@
 			'label': 'Remit Warehouse',
 			'name': 'remitwhseid',
 			'value': customer.remitwhseid,
-			'whsename': 'sdf'
+			'whsename': cmm.descriptionWhse(customer.remitwhseid)
 		}
 	%}
 </div>
