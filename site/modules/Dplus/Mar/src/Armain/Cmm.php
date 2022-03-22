@@ -10,6 +10,8 @@ use CustomerQuery, Customer;
 use Dplus\CodeValidators as Validators;
 // Dplus Filters
 use Dplus\Filters;
+// Dplus Configs
+use Dplus\Configs;
 // Dplus Codes
 use Dplus\Crud\Manager as Base;
 use Dplus\Codes\Response;
@@ -37,6 +39,7 @@ class Cmm extends Base {
 		'city'     => ['type' => 'text', 'maxlength' => 16],
 		'state'    => ['type' => 'text', 'maxlength' => 2],
 		'zip'      => ['type' => 'text', 'maxlength' => 10],
+		'taxexemptnbr' => ['type' => 'text', 'maxlength' => 20],
 		'salesperson1' => ['type' => 'text', 'default' => ''],
 		'salesperson2' => ['type' => 'text', 'default' => ''],
 		'salesperson3' => ['type' => 'text', 'default' => ''],
@@ -68,7 +71,7 @@ class Cmm extends Base {
 			]
 		],
 		'allowFinancecharge' => ['type' => 'text', 'default' => 'N'],
-		'additonaldiscount' => ['type' => 'number', 'max' => 99.99, 'precision' => 2, 'default' => 0.00],
+		'additionaldiscount' => ['type' => 'number', 'max' => 99.99, 'precision' => 2, 'default' => 0.00],
 	];
 
 	protected static $instance;
