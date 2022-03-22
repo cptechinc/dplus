@@ -31,6 +31,8 @@ class Spgpm extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
+	protected static $instance;
+
 
 /* =============================================================
 	CRUD Read, Validate Functions

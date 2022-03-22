@@ -29,6 +29,8 @@ class Sic extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 36],
 	];
 
+	protected static $instance;
+
 
 /* =============================================================
 	CRUD Read, Validate Functions

@@ -30,6 +30,8 @@ class Crtm extends Base {
 		'code'        => ['type' => 'text', 'maxlength' => ArRouteCode::MAX_LENGTH_CODE],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
+	
+	protected static $instance;
 
 
 /* =============================================================

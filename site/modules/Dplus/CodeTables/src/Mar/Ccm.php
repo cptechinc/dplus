@@ -30,6 +30,8 @@ class Ccm extends Base {
 		'code'        => ['type' => 'text', 'maxlength' => ArCommissionCode::MAX_LENGTH_CODE],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
+	
+	protected static $instance;
 
 
 /* =============================================================
