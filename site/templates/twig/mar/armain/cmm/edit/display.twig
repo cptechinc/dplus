@@ -5,11 +5,14 @@
 				<div class="col-sm-2">
 					<strong>Cust ID:</strong>
 				</div>
-				<div class="col-sm-4">
-					{{ customer.id  }}
+				<div class="col-sm-3">
+					{{ customer.id }}
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					{{ customer.name }}
+				</div>
+				<div class="col-sm-3 text-right">
+					Nbr of Ship-Tos: {{ customer.countShiptos() }}
 				</div>
 			</div>
 		</div>

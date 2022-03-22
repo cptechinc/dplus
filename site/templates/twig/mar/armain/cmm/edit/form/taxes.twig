@@ -35,20 +35,19 @@
 	</div>
 </div>
 
-
 <div class="form-row mb-3">
 	<div class="col-sm-3">
-		<label for="address1">Address</label>
+		<label for="taxexemptnbr">Exempt #</label>
 	</div>
 	<div class="col-sm-9">
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
-					'address1': 'address1',
-					'value': customer.address1,
+					'address1': 'taxexemptnbr',
+					'value': customer.taxexemptnbr,
 					'size': 'sm',
 					'attributes': {
 						'placeholder': '',
-						'maxlength': manager.fieldAttribute('address1', 'maxlength')
+						'maxlength': manager.fieldAttribute('taxexemptnbr', 'maxlength')
 					}
 				}
 			}
