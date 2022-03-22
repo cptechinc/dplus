@@ -41,7 +41,7 @@ class Mso extends Controller {
 			return false;
 		}
 
-		$freight = self::pw('modules')->get('CodeTablesMfcm')->get_code($data->code);
+		$freight = codes\Mso\Mfcm::getInstance()->code($data->code);
 		return array(
 			'code'        => $data->code,
 			'description' => $freight->description
