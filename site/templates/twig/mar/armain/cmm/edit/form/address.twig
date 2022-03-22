@@ -1,0 +1,144 @@
+<div class="row mb-3">
+	<div class="col-sm-3">
+		<label for="address1">Address</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'address1': 'address1',
+					'value': customer.address1,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'maxlength': manager.fieldAttribute('address1', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-3">
+	<div class="col-sm-3">
+		<label for="address2">Address2</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'address1': 'address2',
+					'value': customer.address2,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'maxlength': manager.fieldAttribute('address2', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-3">
+	<div class="col-sm-3">
+		<label for="address3">Address2</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'address1': 'address3',
+					'value': customer.address3,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'maxlength': manager.fieldAttribute('address3', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row mb-3">
+	<div class="col-sm-3">
+		<label for="city">City</label>,
+		<label for="state">State</label>
+		<label for="zip">Zip</label>
+	</div>
+	<div class="col-sm-9">
+		<div class="form-row">
+			<div class="col-sm-5">
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'address1': 'city',
+							'value': customer.city,
+							'size': 'sm',
+							'attributes': {
+								'placeholder': '',
+								'maxlength': manager.fieldAttribute('city', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+			<div class="col-sm-2">
+				<select name="state" class="form-control form-control-sm validate-ignore selectpicker" data-style="" data-styleBase="form-control" id="state">
+					<option value=""></option>
+					{% for state in cmm.getStates() %}
+						<option value="{{ state.id }}" title="{{ state.id }}" {{ state.idn == customer.state ? 'selected' : ''}}>
+							{{ state.id }} - {{ state.name }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-sm-5">
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'address1': 'zip',
+							'value': customer.zip,
+							'size': 'sm',
+							'attributes': {
+								'placeholder': '',
+								'maxlength': manager.fieldAttribute('zip', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row mb-3">
+	<div class="col-sm-3">
+		<label for="country">Country</label>
+	</div>
+	<div class="col-sm-4">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'country',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Country',
+							'data-jqv': 'true'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Countries',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('country-codes/'),
+							'data-input': '#country'
+						}
+					}
+				}
+			}
+		%}
+		<small class="text-muted country-name">Country Name</small>
+	</div>
+</div>

@@ -16,6 +16,12 @@ class Menu extends Base {
 			'title'      => 'Customer Commission Code',
 			'summary'    => 'View / Edit Customer Commission Code'
 		],
+		'cmm' => [
+			'name'       => 'cmm',
+			'permission' => 'cmm',
+			'title'      => 'Customer Maintenance',
+			'summary'    => 'View / Edit Customer'
+		],
 		'cpm' => [
 			'name'       => 'cpm',
 			'permission' => 'cpm',
@@ -117,6 +123,10 @@ class Menu extends Base {
 
 	public static function ccmUrl() {
 		return self::subfunctionUrl('ccm');
+	}
+
+	public static function cmmUrl() {
+		return self::subfunctionUrl('cmm');
 	}
 
 	public static function cpmUrl() {

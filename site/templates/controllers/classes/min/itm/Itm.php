@@ -215,9 +215,9 @@ class Itm extends Base {
 	Supplemental
 ============================================================= */
 	public static function getUserSubfunctions(User $user = null) {
-		$user = $user ? $user : self::pw('user');
+		$user    = $user ? $user : self::pw('user');
 		$allowed = [];
-		$itmp = self::getItmp();
+		$itmp    = self::getItmp();
 
 		foreach (self::SUBFUNCTIONS as $option => $function) {
 			if ($itmp->allowUser($user, $function['permission'])) {

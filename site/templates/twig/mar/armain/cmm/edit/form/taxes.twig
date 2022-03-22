@@ -1,0 +1,57 @@
+<div class="form-row mb-2 taxcode">
+	<div class="col-sm-3">
+		<label for="taxcode">Tax Code</label>
+	</div>
+	<div class="col-sm-3">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': taxcode,
+						'value': customer.taxcode,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Tax Code'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Tax Codes',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('mar/mtm/'),
+							'data-input': '#taxcode'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+	<div class="col-sm-5">
+		<p class="form-control-plaintext form-control-sm text-muted taxcode-desc">sdf</p>
+	</div>
+</div>
+
+
+<div class="form-row mb-3">
+	<div class="col-sm-3">
+		<label for="address1">Address</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'address1': 'address1',
+					'value': customer.address1,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'maxlength': manager.fieldAttribute('address1', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>

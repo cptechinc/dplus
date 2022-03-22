@@ -7,6 +7,8 @@ use ProcessWire\Page, ProcessWire\Itm as ItmModel;
 use Dplus\Filters;
 // Validators
 use Dplus\CodeValidators\Min as MinValidator;
+// Dplus Min
+use Dplus\Min\Itmp;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -33,13 +35,13 @@ abstract class Base extends Controller {
 
 	protected static function validateUserPermission() {
 		$user = self::pw('user');
-		$itmp = self::pw('modules')->get('Itmp');
+		$itmp = self::getItmp();
 
 		if ($user->has_function('itm') === false) {
 			return false;
 		}
 		if (static::PERMISSION_ITMP != '') {
-			return $itmp->isUserAllowed($user, static::PERMISSION_ITMP);
+			return $itmp->allowUser($user, static::PERMISSION_ITMP);
 		}
 		return true;
 	}
@@ -179,7 +181,7 @@ abstract class Base extends Controller {
 	 */
 	public static function getItmp() {
 		if (empty(self::$itmp)) {
-			self::$itmp = self::pw('modules')->get('Itmp');
+			self::$itmp = Itmp::instance();
 		}
 		return self::$itmp;
 	}

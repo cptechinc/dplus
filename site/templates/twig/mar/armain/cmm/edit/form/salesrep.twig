@@ -1,0 +1,36 @@
+<div class="form-row salesrep">
+	<div class="col-sm-1">
+		<label for="{{ name }}">{{ label }}</label>
+	</div>
+	<div class="col-sm-5">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': name,
+						'value': value,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  label
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Warehouses',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('mar/spm'),
+							'data-input': '#' ~ name
+						}
+					}
+				}
+			}
+		%}
+	</div>
+	<div class="col-sm-5">
+		<p class="form-control-plaintext form-control-sm text-muted salesrep-name">{{ salesrepname }}</p>
+	</div>
+</div>
