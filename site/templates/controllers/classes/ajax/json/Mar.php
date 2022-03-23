@@ -9,8 +9,6 @@ use Dplus\CodeValidators\Mar\Cxm   as CxmValidator;
 // Dplus Codes
 use Dplus\Codes;
 use Dplus\Codes\Base as CodeTable;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
 class Mar extends Base {
 
@@ -248,6 +246,16 @@ class Mar extends Base {
 
 	public static function getWormCode($data) {
 		$manager = Codes\Mar\Worm::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function validateCocomCode($data) {
+		$manager = Codes\Mar\Cocom::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getCocomCode($data) {
+		$manager = Codes\Mar\Cocom::getInstance();
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 }

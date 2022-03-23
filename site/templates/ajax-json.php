@@ -46,7 +46,7 @@
 				['GET', 'tarm/code/', Json\Min::class, 'validateTarmCode'],
 				['GET', 'umm/code/', Json\Min::class, 'validateUmmCode'],
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
-				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
+				['GET', 'country-code/', Json\Mar::class, 'validateCocomCode'],
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
 				['GET', 'itemid/', Json\Min::class, 'validateItemid'],
 				'warehouse' => [
@@ -83,7 +83,7 @@
 				],
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
-			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
+			['GET', 'country-code/', Json\Mar::class, 'getCocomCode'],
 			['GET', 'msds-code/', Json\Min::class, 'getMsdsCode'],
 			['GET', 'item/', Json\Min::class, 'getItm'],
 			'upcx' => [
@@ -142,6 +142,7 @@
 				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
+				['GET', 'cocom/code/', Json\Mar::class, 'validateCocomCode'],
 				['GET', 'cpm/code/', Json\Mar::class, 'validateCpmCode'],
 				['GET', 'crcd/code/', Json\Mar::class, 'validateCrcdCode'],
 				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
@@ -157,6 +158,7 @@
 			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
 			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
 			['GET', 'cpm/code/', Json\Mar::class, 'getCpmCode'],
+			['GET', 'cocom/code/', Json\Mar::class, 'getCocomCode'],
 			['GET', 'crcd/code/', Json\Mar::class, 'getCrcdCode'],
 			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],
 			['GET', 'ctm/code/', Json\Mar::class, 'getCtmCode'],

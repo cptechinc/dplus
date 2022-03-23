@@ -72,33 +72,6 @@ class Min extends Controller {
 		);
 	}
 
-	public static function validateCountryCode($data) {
-		$fields = ['code|text', 'countrycode|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		$code = $data->code ? $data->code : $data->tariffcode;
-
-		if ($validate->countrycode($code) === false) {
-			return "Country Code $code not found";
-		}
-		return true;
-	}
-
-	public static function getCountryCode($data) {
-		$fields = ['code|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-
-		if ($validate->countrycode($data->code) === false) {
-			return false;
-		}
-		$c = CountryCodeQuery::create()->findOneByCode($data->code);
-		return array(
-			'code'        => $data->code,
-			'description' => $c->description
-		);
-	}
-
 	public static function validateMsdsCode($data) {
 		$fields = ['code|text', 'msdscode|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
