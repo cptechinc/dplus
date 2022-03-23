@@ -330,6 +330,20 @@ class Cmm extends Base {
 	}
 
 /* =============================================================
+	Dplus Requests
+============================================================= */
+	/**
+	 * Return Request Data Neeeded for Dplus Update
+	 * @param  Record $record
+	 * @return array
+	 */
+	protected function generateRequestData(Record $record) {
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$table   = static::DPLUS_TABLE;
+		return ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$record->id"];
+	}
+
+/* =============================================================
 	Supplemental
 ============================================================= */
 	public function getStates() {

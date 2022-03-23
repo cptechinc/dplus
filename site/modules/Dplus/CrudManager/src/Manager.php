@@ -227,7 +227,7 @@ abstract class Manager extends WireData {
 
 	/**
 	 * Add Replacements, values for the Response Message
-	 * @param Record     $record      Code
+	 * @param Record   $record      Code
 	 * @param Response $response  Response
 	 */
 	protected function addResponseMsgReplacements(Record $record, Response $response) {
@@ -255,6 +255,38 @@ abstract class Manager extends WireData {
 	 */
 	public function deleteResponse() {
 		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
+	}
+
+/* =============================================================
+	Dplus Requests
+============================================================= */
+	/**
+	 * Return Request Data Neeeded for Dplus Update
+	 * @param  Record $record
+	 * @return array
+	 */
+	abstract protected function generateRequestData(Record $record);
+
+	/**
+	 * Send Request do Dplus
+	 * @param  array  $data  Request Data
+	 * @return void
+	 */
+	protected function sendDplusRequest(array $data) {
+		$config    = $this->wire('config');
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	}
+
+	/**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  Code $code  Code
+	 * @return void
+	 */
+	protected function updateDplus($code) {
+		$data = $this->generateRequestData($code);
+		$this->sendDplusRequest($data);
 	}
 
 /* =============================================================
