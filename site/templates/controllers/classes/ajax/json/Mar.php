@@ -206,6 +206,16 @@ class Mar extends Base {
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
+	public static function validateCsvCode($data) {
+		$manager = Codes\Mar\Csv::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getCsvCode($data) {
+		$manager = Codes\Mar\Csv::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
 	public static function validateCtmCode($data) {
 		$manager = Codes\Mar\Ctm::getInstance();
 		return self::validateCodeTableSimpleCode($manager, $data);
@@ -223,6 +233,16 @@ class Mar extends Base {
 
 	public static function getCucCode($data) {
 		$manager = Codes\Mar\Cuc::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function validateMtmCode($data) {
+		$manager = Codes\Mar\Mtm::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getMtmCode($data) {
+		$manager = Codes\Mar\Mtm::getInstance();
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
@@ -263,6 +283,16 @@ class Mar extends Base {
 
 	public static function getSucCode($data) {
 		$manager = Codes\Mar\Suc::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function validateTrmCode($data) {
+		$manager = Codes\Mar\Trm::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getTrmCode($data) {
+		$manager = Codes\Mar\Trm::getInstance();
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
