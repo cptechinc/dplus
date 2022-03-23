@@ -276,6 +276,7 @@ class Cmm extends Base {
 			'salesreps'   => $this->_inputUpdateSalespersons($input, $record),
 			'taxes'       => $this->_inputUpdateTaxes($input, $record),
 			'arcodes'     => $this->_inputUpdateArcodes($input, $record),
+			'ordering'    => $this->_inputUpdateOrdering($input, $record),
 		];
 
 		$invalid = array_merge(
@@ -283,7 +284,8 @@ class Cmm extends Base {
 			$invalidfields['warehouses'],
 			$invalidfields['salesreps'],
 			$invalidfields['taxes'],
-			$invalidfields['arcodes']
+			$invalidfields['arcodes'],
+			$invalidfields['ordering']
 		);
 		return $invalid;
 	}
@@ -441,6 +443,43 @@ class Cmm extends Base {
 			$invalidfields['commcode'] = 'Comm Code';
 		}
 
+		return $invalidfields;
+	}
+	/**
+	 * Update Customer's Ordering Fields
+	 * @param  WireInput $input   Input Data
+	 * @param  Customer  $customer
+	 * @return array
+	 */
+	protected function _inputUpdateOrdering(WireInput $input, Customer $customer) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = [];
+
+		if (array_key_exists($values->text('stmtcode'), $this->fieldAttribute('stmtcode', 'options'))) {
+			$customer->setStmtcode($values->text('stmtcode'));
+		}
+
+		if (array_key_exists($values->text('allowBackorder'), $this->fieldAttribute('allowBackorder', 'options'))) {
+			$customer->setAllowBackorder($values->text('allowBackorder'));
+		}
+
+		$fieldsOpts = [
+			'creditlimit' => [
+				'blankValue' => $this->fieldAttribute('creditlimit', 'default'),
+				'max' => $this->fieldAttribute('creditlimit', 'max'),
+				'precision' => $this->fieldAttribute('creditlimit', 'precision'),
+			],
+			'additionaldiscount' => [
+				'blankValue' => $this->fieldAttribute('additionaldiscount', 'default'),
+				'max' => $this->fieldAttribute('additionaldiscount', 'max'),
+				'precision' => $this->fieldAttribute('additionaldiscount', 'precision'),
+			],
+		];
+		$customer->setCreditlimit($values->float('creditlimit', $fieldsOpts['creditlimit']));
+		$customer->setAdditionaldiscount($values->float('additionaldiscount', $fieldsOpts['additionaldiscount']));
+		$customer->setAllowFinancecharge($values->yn('allowFinancecharge'));
+		$customer->setShipcomplete($values->yn('shipcomplete'));
 		return $invalidfields;
 	}
 
