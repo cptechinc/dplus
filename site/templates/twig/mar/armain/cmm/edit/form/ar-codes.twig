@@ -52,7 +52,7 @@
 			<label for="stmtcode">Stmnt Code</label>
 		</div>
 		<div class="col-sm-3">
-			<select name="stmtcode" class="form-control form-control-sm validate-ignore selectpicker" data-style="" data-styleBase="form-control" id="state">
+			<select name="stmtcode" class="form-control form-control-sm validate-ignore selectpicker" data-style="" data-styleBase="form-control" id="stmtcode">
 				{% for value, label in cmm.fieldAttribute('stmtcode', 'options') %}
 					<option value="{{ value }}" title="{{ label }}" {{ customer.stmtcode == value ? 'selected' : ''}}>
 						{{ value }} - {{ label }}
