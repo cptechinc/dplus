@@ -119,6 +119,24 @@ abstract class Manager extends WireData {
 	CRUD Creates
 ============================================================= */
 
+/* =============================================================
+	CRUD Updates
+============================================================= */
+	/**
+	 * Update Record from Response
+	 * @param  Record $record
+	 * @return void
+	 */
+	public function updateRecordFromResponse(Record $record) {
+		$response = $this->getResponse();
+
+		if (empty($response->record) === false) {
+			foreach ($response->record as $field => $value) {
+				$setField = 'set' . ucfirst($field);
+				$record->$setField($value);
+			}
+		}
+	}
 
 /* =============================================================
 	CRUD Processing
@@ -185,6 +203,7 @@ abstract class Manager extends WireData {
 	 * @return Response
 	 */
 	protected function saveAndRespond(Record $record, $invalidfields = []) {
+		$saved = false;
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 
 		if ($record->isDeleted()) {
@@ -214,7 +233,7 @@ abstract class Manager extends WireData {
 
 		$response->setFields($invalidfields);
 		if (empty($invalidfields) === false) {
-			$response->setRecordArray($record->toArray());
+			$response->setRecord($record->toArray());
 		}
 		$this->addResponseMsgReplacements($record, $response);
 		$response->buildMessage(static::RESPONSE_TEMPLATE);
