@@ -253,6 +253,7 @@ class Cmm extends Base {
 		$record        = $this->getOrCreate($id);
 		$invalidfields = $this->_inputUpdate($input, $record);
 		$response      = $this->saveAndRespond($record, $invalidfields);
+
 		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
@@ -271,7 +272,9 @@ class Cmm extends Base {
 		$invalidfields = [
 			'nameAddress' => $this->_inputUpdateNameAddress($input, $record)
 		];
-		return $invalidfields;
+
+		$invalid = array_merge($invalidfields['nameAddress']);
+		return $invalid;
 	}
 
 	/**
@@ -287,19 +290,26 @@ class Cmm extends Base {
 		$invalidfields = [];
 
 		$customer->setName($values->text('name', ['maxLength' => $this->fieldAttribute('name', 'maxlength')]));
-		$customer->setAddress1($values->text('name', ['maxLength' => $this->fieldAttribute('address1', 'maxlength')]));
-		$customer->setAddress2($values->text('name', ['maxLength' => $this->fieldAttribute('address2', 'maxlength')]));
-		$customer->setCity($values->text('name', ['maxLength' => $this->fieldAttribute('city', 'maxlength')]));
+		$customer->setAddress1($values->text('address1', ['maxLength' => $this->fieldAttribute('address1', 'maxlength')]));
+		$customer->setAddress2($values->text('address2', ['maxLength' => $this->fieldAttribute('address2', 'maxlength')]));
+		$customer->setAddress3($values->text('address2', ['maxLength' => $this->fieldAttribute('address3', 'maxlength')]));
+		$customer->setCity($values->text('city', ['maxLength' => $this->fieldAttribute('city', 'maxlength')]));
 		$customer->setZip($values->text('zip', ['maxLength' => $this->fieldAttribute('zip', 'maxlength')]));
+		$customer->setState('');
+		$customer->setCountry('');
+
 
 		$filter = new Filters\Misc\StateCode();
 
-		$customer->setState($values->text('state', ['maxLength' => $this->fieldAttribute('state', 'maxlength')]));
-
-		if ($filters->exists($values->text('state')) === false) {
-			$invalidfields['state'] = 'State';
+		if ($filter->exists($values->text('state'))) {
+			$customer->setState($values->text('state', ['maxLength' => $this->fieldAttribute('state', 'maxlength')]));
 		}
 
+		$cocom = Codes\Mar\Cocom::getinstance();
+
+		if ($cocom->exists($values->text('country'))) {
+			$customer->setCountry($values->text('country'));
+		}
 		return $invalidfields;
 	}
 
