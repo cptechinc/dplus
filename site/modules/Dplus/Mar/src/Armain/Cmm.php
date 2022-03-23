@@ -275,9 +275,16 @@ class Cmm extends Base {
 			'warehouses'  => $this->_inputUpdateWarehouses($input, $record),
 			'salesreps'   => $this->_inputUpdateSalespersons($input, $record),
 			'taxes'       => $this->_inputUpdateTaxes($input, $record),
+			'arcodes'     => $this->_inputUpdateArcodes($input, $record),
 		];
 
-		$invalid = array_merge($invalidfields['nameAddress'], $invalidfields['warehouses'], $invalidfields['salesreps'], $invalidfields['taxes']);
+		$invalid = array_merge(
+			$invalidfields['nameAddress'],
+			$invalidfields['warehouses'],
+			$invalidfields['salesreps'],
+			$invalidfields['taxes'],
+			$invalidfields['arcodes']
+		);
 		return $invalid;
 	}
 
@@ -396,6 +403,44 @@ class Cmm extends Base {
 		if ($mtm->exists($customer->taxcode) === false) {
 			$invalidfields['taxcode']  = 'Tax Code';
 		}
+		return $invalidfields;
+	}
+
+	/**
+	 * Update Customer's Tax Fields
+	 * @param  WireInput $input   Input Data
+	 * @param  Customer  $customer
+	 * @return array
+	 */
+	protected function _inputUpdateArcodes(WireInput $input, Customer $customer) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$invalidfields = [];
+
+		$mtm = Codes\Mar\Mtm::getInstance();
+
+		$customer->setTermscode($values->text('termscode'));
+		$customer->setShipviacode($values->text('shipviacode'));
+		$customer->setPricecode($values->text('pricecode'));
+		$customer->setCommcode($values->text('commcode'));
+
+		if (Codes\Mar\Trm::getInstance()->exists($customer->termscode) === false) {
+			$invalidfields['termscode'] = 'Terms Code';
+		}
+
+		if (Codes\Mar\Csv::getInstance()->exists($customer->shipviacode) === false) {
+			$invalidfields['shipviacode'] = 'Ship Via Code';
+		}
+
+		if (Codes\Mar\Cpm::getInstance()->exists($customer->pricecode) === false) {
+			$invalidfields['pricecode'] = 'Price Code';
+		}
+
+		if (Codes\Mar\Ccm::getInstance()->exists($customer->commcode) === false) {
+			$invalidfields['commcode'] = 'Comm Code';
+		}
+
 		return $invalidfields;
 	}
 
