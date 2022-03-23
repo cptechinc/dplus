@@ -274,9 +274,10 @@ class Cmm extends Base {
 			'nameAddress' => $this->_inputUpdateNameAddress($input, $record),
 			'warehouses'  => $this->_inputUpdateWarehouses($input, $record),
 			'salesreps'   => $this->_inputUpdateSalespersons($input, $record),
+			'taxes'       => $this->_inputUpdateTaxes($input, $record),
 		];
 
-		$invalid = array_merge($invalidfields['nameAddress'], $invalidfields['warehouses'], $invalidfields['salesreps']);
+		$invalid = array_merge($invalidfields['nameAddress'], $invalidfields['warehouses'], $invalidfields['salesreps'], $invalidfields['taxes']);
 		return $invalid;
 	}
 
@@ -365,13 +366,35 @@ class Cmm extends Base {
 			$invalidfields['salesperson1'] = 'Salesperson 1';
 		}
 
-
-		if ($customer->salesperson2 != '' && $spm->exists($customer->salesperson2)) {
+		if ($customer->salesperson2 != '' && $spm->exists($customer->salesperson2) === false) {
 			$invalidfields['salesperson2'] = 'Salesperson 2';
 		}
 
-		if ($customer->salesperson3 != '' && $spm->exists($customer->salesperson3)) {
+		if ($customer->salesperson3 != '' && $spm->exists($customer->salesperson3) === false) {
 			$invalidfields['salesperson3'] = 'Salesperson 3';
+		}
+		return $invalidfields;
+	}
+
+	/**
+	 * Update Customer's Tax Fields
+	 * @param  WireInput $input   Input Data
+	 * @param  Customer  $customer
+	 * @return array
+	 */
+	protected function _inputUpdateTaxes(WireInput $input, Customer $customer) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$invalidfields = [];
+
+		$mtm = Codes\Mar\Mtm::getInstance();
+
+		$customer->setTaxcode($values->text('taxcode'));
+		$customer->setTaxexemptnbr($values->text('taxexemptnbr', ['maxLength' => $this->fieldAttribute('taxexemptnbr', 'maxlength')]));
+
+		if ($mtm->exists($customer->taxcode) === false) {
+			$invalidfields['taxcode']  = 'Tax Code';
 		}
 		return $invalidfields;
 	}
