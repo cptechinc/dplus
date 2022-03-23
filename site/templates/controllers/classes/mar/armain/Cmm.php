@@ -52,6 +52,7 @@ class Cmm extends Base {
 
 		if ($data->action) {
 			$cmm->processInput(self::pw('input'));
+
 			if ($data->action != 'delete') {
 				$url = self::custEditUrl($data->id);
 			}
@@ -80,7 +81,7 @@ class Cmm extends Base {
 
 		$page->js .= self::pw('config')->twig->render('mar/armain/cmm/list/.js.twig');
 		$html = self::displayList($data, $customers);
-		self::getCmm()->deleteResponse();
+		// self::getCmm()->deleteResponse();
 		return $html;
 	}
 
@@ -89,11 +90,13 @@ class Cmm extends Base {
 
 		$cmm = self::getCmm();
 		$customer = $cmm->getOrCreate($data->id);
+		$cmm->updateRecordFromResponse($customer);
 
 		if ($customer->isNew() === false) {
 			self::pw('page')->headline = "CMM: Editing $data->id";
 			$cmm->lockrecord($customer);
 		}
+
 		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/cmm/edit/.js.twig', ['cmm' => $cmm]);
 
@@ -176,11 +179,11 @@ class Cmm extends Base {
 	private static function displayResponse($data) {
 		$cmm = self::getCmm();
 		$response = $cmm->getResponse();
-		
+
 		if (empty($response)) {
 			return '';
 		}
-		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
+		return self::pw('config')->twig->render('crud/response.twig', ['response' => $response]);
 	}
 
 	private static function displayResponseQnotes($data) {
