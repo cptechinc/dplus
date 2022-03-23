@@ -196,7 +196,6 @@ abstract class Manager extends WireData {
 		}
 
 		$response = new Response();
-		$response->setCode($record->id);
 		$response->setKey($this->getRecordlockerKey($record));
 
 		if ($saved) {
