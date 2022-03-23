@@ -14,6 +14,7 @@ use ProcessWire\WireData;
  * @property string  $key              Key String
  * @property string  $function         Function Code
  * @property string  $msgReplacements  Replacements for the Response Message
+ * @property string  $record           Record as Array
  *
  */
 class Response extends WireData {
@@ -36,7 +37,7 @@ class Response extends WireData {
 		$this->function = '';
 		$this->fields  = [];
 		$this->msgReplacements = [];
-		$this->recordArray     = [];
+		$this->record     = [];
 	}
 
 	public function setAction(int $action = 0) {
@@ -79,8 +80,8 @@ class Response extends WireData {
 		return array_key_exists($field, $this->fields);
 	}
 
-	public function setRecordArray(array $record) {
-		$this->recordArray = $record;
+	public function setRecord(array $record) {
+		$this->record = $record;
 	}
 
 	public function addMsgReplacement($replace, $with) {
@@ -91,7 +92,7 @@ class Response extends WireData {
 
 	protected function getPlaceholderReplaces() {
 		$crud = self::CRUD_DESCRIPTION[$this->action];
-		$replace = ['{code}' => $this->code, '{key}' => $this->key, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
+		$replace = ['{key}' => $this->key, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
 		$replace = array_merge($replace, $this->msgReplacements);
 		return $replace;
 	}
