@@ -14,6 +14,7 @@ use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the CSV code table
+ * TODO: FINISH
  */
 class Csv extends Base {
 	const MODEL              = 'Shipvia';
@@ -28,7 +29,7 @@ class Csv extends Base {
 		'code'        => ['type' => 'text', 'maxlength' => Shipvia::MAX_LENGTH_CODE],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
-	
+
 	protected static $instance;
 
 /* =============================================================
