@@ -111,7 +111,7 @@ class Menu extends Base {
 
 	public static function armainUrl() {
 		$url = new Purl(self::marUrl());
-		$url->path->add('main');
+		$url->path->add('armain');
 		return $url->getUrl();
 	}
 
