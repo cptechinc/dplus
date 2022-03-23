@@ -54,6 +54,7 @@ class Cocom extends Base {
 		return [
 			'code' => $code->code,
 			'iso3' => $code->iso3,
+			'name' => $code->description,
 			'description' => $code->description,
 			'exchangerate' => $code->exchange_rate
 		];
