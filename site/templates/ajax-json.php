@@ -140,7 +140,7 @@
 			'validate' => [
 				['GET', 'salespersonid/', Json\Mar::class, 'validateSalesPersonId'],
 				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
-				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
+				['GET', 'custid/', Json\Mar::class, 'validateCmmId'],
 				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
 				['GET', 'cmm/id/', Json\Mar::class, 'validateCmmId'],
 				['GET', 'cocom/code/', Json\Mar::class, 'validateCocomCode'],
@@ -155,7 +155,7 @@
 				['GET', 'suc/code/', Json\Mar::class, 'validateSucCode'],
 				['GET', 'worm/code/', Json\Mar::class, 'validateWormCode'],
 			],
-			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
+			['GET', 'customer/', Json\Mar::class, 'getCmmCustomer'],
 			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
 			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
 			['GET', 'cmm/customer/', Json\Mar::class, 'getCmmCustomer'],

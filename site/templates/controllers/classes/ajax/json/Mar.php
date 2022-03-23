@@ -152,6 +152,30 @@ class Mar extends Base {
 		return self::getCodeTableSimpleCode($manager, $data);
 	}
 
+	public static function validateCmmId($data) {
+		self::sanitizeParametersShort($data, ['custID|text', 'id|text']);
+		$data->id = $data->id ? $data->id : $data->custID;
+		$manager = MarCRUDs\Armain\Cmm::instance();
+		return self::validateCrudManagerSimpleId($manager, $data);
+	}
+
+	public static function getCmmCustomer($data) {
+		self::sanitizeParametersShort($data, ['custID|text', 'id|text']);
+		$data->id = $data->id ? $data->id : $data->custID;
+		$manager = MarCRUDs\Armain\Cmm::instance();
+		return self::getCrudManagerSimpleRecord($manager, $data);
+	}
+
+	public static function validateCocomCode($data) {
+		$manager = Codes\Mar\Cocom::getInstance();
+		return self::validateCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function getCocomCode($data) {
+		$manager = Codes\Mar\Cocom::getInstance();
+		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
 	public static function validateCpmCode($data) {
 		$manager = Codes\Mar\Cpm::getInstance();
 		return self::validateCodeTableSimpleCode($manager, $data);
@@ -250,29 +274,5 @@ class Mar extends Base {
 	public static function getWormCode($data) {
 		$manager = Codes\Mar\Worm::getInstance();
 		return self::getCodeTableSimpleCode($manager, $data);
-	}
-
-	public static function validateCocomCode($data) {
-		$manager = Codes\Mar\Cocom::getInstance();
-		return self::validateCodeTableSimpleCode($manager, $data);
-	}
-
-	public static function getCocomCode($data) {
-		$manager = Codes\Mar\Cocom::getInstance();
-		return self::getCodeTableSimpleCode($manager, $data);
-	}
-
-	public static function validateCmmId($data) {
-		self::sanitizeParametersShort($data, ['custID|text', 'id|text']);
-		$data->id = $data->id ? $data->id : $data->custID;
-		$manager = MarCRUDs\Armain\Cmm::instance();
-		return self::validateCrudManagerSimpleId($manager, $data);
-	}
-
-	public static function getCmmCustomer($data) {
-		self::sanitizeParametersShort($data, ['custID|text', 'id|text']);
-		$data->id = $data->id ? $data->id : $data->custID;
-		$manager = MarCRUDs\Armain\Cmm::instance();
-		return self::getCrudManagerSimpleRecord($manager, $data);
 	}
 }
