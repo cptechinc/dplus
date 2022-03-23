@@ -1,0 +1,21 @@
+class CmmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CmmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ cmm.fieldAttribute('id', 'maxlength') }}
+			},
+			name: {
+				maxlength: {{ cmm.fieldAttribute('name', 'maxlength') }}
+			},
+		};
+	}
+}

@@ -1,0 +1,112 @@
+class CmmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CmmRequests();
+		}
+		return this.instance;
+	}
+
+	validateId(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/validate/cmm/id/') }}');
+
+		ajax.setData({id: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCustomer(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/cmm/customer/') }}');
+
+		ajax.setData({id: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+/* =============================================================
+	Codes Functions
+============================================================= */
+	getCountryCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/cocom/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getWarehouse(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('min/iwhm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getSalesperson(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/spm/code/') }}');
+
+		ajax.setData({code: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getSalesperson(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/spm/code/') }}');
+
+		ajax.setData({code: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getTaxCode(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/mtm/code/') }}');
+
+		ajax.setData({code: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getTermsCode(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/trm/code/') }}');
+
+		ajax.setData({code: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getShipviaCode(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/csv/code/') }}');
+
+		ajax.setData({code: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getPriceCode(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/cpm/code/') }}');
+
+		ajax.setData({code: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCommCode(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/ccm/code/') }}');
+
+		ajax.setData({code: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

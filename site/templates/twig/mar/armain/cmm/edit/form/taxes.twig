@@ -8,11 +8,13 @@
 					'type': 'prepend',
 					'size': 'sm',
 					'input': {
-						'name': taxcode,
+						'name': 'taxcode',
 						'value': customer.taxcode,
 						'attributes': {
 							'placeholder': '',
-							'aria-label':  'Tax Code'
+							'aria-label':  'Tax Code',
+							'data-jqv': 'true',
+							'data-describedby': '.taxcode-desc'
 						}
 					},
 					'button': {
