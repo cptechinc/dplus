@@ -330,22 +330,16 @@ class Cmm extends Base {
 
 		$iwhm = Codes\Min\Iwhm::getInstance();
 
-		$customer->setWhseid('');
-		$customer->setRemitwhseid('');
+		$customer->setWhseid($values->text('whseid'));
+		$customer->setRemitwhseid($values->text('remitwhseid'));
 
-		$invalidfields['whseid'] = 'Warehouse';
-		$invalidfields['remitwhseid'] = 'Remit Warehouse';
-
-		if ($iwhm->exists($values->text('whseid'))) {
-			unset($invalidfields['whseid']);
-			$customer->setWhseid($values->text('whseid'));
+		if ($iwhm->exists($customer->whseid) === false) {
+			$invalidfields['whseid'] = 'Warehouse';
 		}
 
-		if ($iwhm->exists($values->text('remitwhseid'))) {
-			unset($invalidfields['remitwhseid']);
-			$customer->setRemitwhseid($values->text('remitwhseid'));
+		if ($iwhm->exists($customer->remitwhseid) === false) {
+			$invalidfields['remitwhseid'] = 'Remit Warehouse';
 		}
-
 		return $invalidfields;
 	}
 
@@ -363,37 +357,21 @@ class Cmm extends Base {
 
 		$spm = Codes\Mar\Spm::getInstance();
 
-		$customer->setSalesperson1('');
-		$customer->setSalesperson2('');
-		$customer->setSalesperson3('');
+		$customer->setSalesperson1($values->text('salesperson1'));
+		$customer->setSalesperson2($values->text('salesperson2'));
+		$customer->setSalesperson3($values->text('salesperson3'));
 
-
-		$invalidfields['salesperson1'] = 'Salesperson 1';
-		$invalidfields['salesperson2'] = 'Salesperson 2';
-		$invalidfields['salesperson3'] = 'Salesperson 3';
-
-		if ($spm->exists($values->text('salesperson1'))) {
-			unset($invalidfields['salesperson1']);
-			$customer->setSalesperson1($values->text('salesperson1'));
+		if ($spm->exists($customer->salesperson1) === false) {
+			$invalidfields['salesperson1'] = 'Salesperson 1';
 		}
 
 
-		if ($values->text('salesperson2') != '' && $spm->exists($values->text('salesperson2'))) {
-			unset($invalidfields['salesperson2']);
-			$customer->setSalesperson2($values->text('salesperson2'));
+		if ($customer->salesperson2 != '' && $spm->exists($customer->salesperson2)) {
+			$invalidfields['salesperson2'] = 'Salesperson 2';
 		}
 
-		if ($values->text('salesperson2') == '') {
-			unset($invalidfields['salesperson2']);
-		}
-
-		if ($values->text('salesperson3') != '' && $spm->exists($values->text('salesperson3'))) {
-			unset($invalidfields['salesperson3']);
-			$customer->setSalesperson3($values->text('salesperson3'));
-		}
-
-		if ($values->text('salesperson3') == '') {
-			unset($invalidfields['salesperson3']);
+		if ($customer->salesperson3 != '' && $spm->exists($customer->salesperson3)) {
+			$invalidfields['salesperson3'] = 'Salesperson 3';
 		}
 		return $invalidfields;
 	}
