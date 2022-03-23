@@ -40,6 +40,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Cuc::class, 'index'],
 			['POST', '', Armain\Cuc::class, 'handleCRUD'],
 		],
+		'roptm' => [
+			['GET',  '', Armain\Roptm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Roptm::class, 'index'],
+			['POST', '', Armain\Roptm::class, 'handleCRUD'],
+		],
 		'spgpm' => [
 			['GET',  '', Armain\Spgpm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Spgpm::class, 'index'],

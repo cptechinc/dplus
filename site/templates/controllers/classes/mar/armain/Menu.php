@@ -52,6 +52,12 @@ class Menu extends Base {
 			'title'      => 'Customer User Code',
 			'summary'    => 'View / Edit Customer User Code'
 		],
+		'roptm' => [
+			'name'       => 'roptm',
+			'permission' => 'roptm',
+			'title'      => 'Accounts Receivable Optional Codes',
+			'summary'    => 'View / Edit AR Optional Codes'
+		],
 		'spgpm' => [
 			'name'       => 'spgpm',
 			'permission' => 'spgpm',
@@ -147,6 +153,10 @@ class Menu extends Base {
 
 	public static function cucUrl() {
 		return self::subfunctionUrl('cuc');
+	}
+
+	public static function roptmUrl() {
+		return self::subfunctionUrl('roptm');
 	}
 
 	public static function spgpmUrl() {
