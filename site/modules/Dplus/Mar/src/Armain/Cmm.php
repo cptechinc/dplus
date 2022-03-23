@@ -273,9 +273,10 @@ class Cmm extends Base {
 		$invalidfields = [
 			'nameAddress' => $this->_inputUpdateNameAddress($input, $record),
 			'warehouses'  => $this->_inputUpdateWarehouses($input, $record),
+			'salesreps'   => $this->_inputUpdateSalespersons($input, $record),
 		];
 
-		$invalid = array_merge($invalidfields['nameAddress'], $invalidfields['warehouses']);
+		$invalid = array_merge($invalidfields['nameAddress'], $invalidfields['warehouses'], $invalidfields['salesreps']);
 		return $invalid;
 	}
 
@@ -345,6 +346,55 @@ class Cmm extends Base {
 			$customer->setRemitwhseid($values->text('remitwhseid'));
 		}
 
+		return $invalidfields;
+	}
+
+	/**
+	 * Update Customer's Salesperson(1,2,3) Fields
+	 * @param  WireInput $input   Input Data
+	 * @param  Customer  $customer
+	 * @return array
+	 */
+	protected function _inputUpdateSalespersons(WireInput $input, Customer $customer) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$invalidfields = [];
+
+		$spm = Codes\Mar\Spm::getInstance();
+
+		$customer->setSalesperson1('');
+		$customer->setSalesperson2('');
+		$customer->setSalesperson3('');
+
+
+		$invalidfields['salesperson1'] = 'Salesperson 1';
+		$invalidfields['salesperson2'] = 'Salesperson 2';
+		$invalidfields['salesperson3'] = 'Salesperson 3';
+
+		if ($spm->exists($values->text('salesperson1'))) {
+			unset($invalidfields['salesperson1']);
+			$customer->setSalesperson1($values->text('salesperson1'));
+		}
+
+
+		if ($values->text('salesperson2') != '' && $spm->exists($values->text('salesperson2'))) {
+			unset($invalidfields['salesperson2']);
+			$customer->setSalesperson2($values->text('salesperson2'));
+		}
+
+		if ($values->text('salesperson2') == '') {
+			unset($invalidfields['salesperson2']);
+		}
+
+		if ($values->text('salesperson3') != '' && $spm->exists($values->text('salesperson3'))) {
+			unset($invalidfields['salesperson3']);
+			$customer->setSalesperson3($values->text('salesperson3'));
+		}
+
+		if ($values->text('salesperson3') == '') {
+			unset($invalidfields['salesperson3']);
+		}
 		return $invalidfields;
 	}
 
