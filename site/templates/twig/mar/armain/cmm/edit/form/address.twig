@@ -5,7 +5,7 @@
 	<div class="col-sm-9">
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
-					'address1': 'address1',
+					'name': 'address1',
 					'value': customer.address1,
 					'size': 'sm',
 					'attributes': {
@@ -25,7 +25,7 @@
 	<div class="col-sm-9">
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
-					'address1': 'address2',
+					'name': 'address2',
 					'value': customer.address2,
 					'size': 'sm',
 					'attributes': {
@@ -45,7 +45,7 @@
 	<div class="col-sm-9">
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
-					'address1': 'address3',
+					'name': 'address3',
 					'value': customer.address3,
 					'size': 'sm',
 					'attributes': {
@@ -69,7 +69,7 @@
 			<div class="col-sm-5">
 				{% include 'util/bootstrap/form/input.twig' with {
 						'input': {
-							'address1': 'city',
+							'name': 'city',
 							'value': customer.city,
 							'size': 'sm',
 							'attributes': {
@@ -84,7 +84,7 @@
 				<select name="state" class="form-control form-control-sm validate-ignore selectpicker" data-style="" data-styleBase="form-control" id="state">
 					<option value=""></option>
 					{% for state in cmm.getStates() %}
-						<option value="{{ state.id }}" title="{{ state.id }}" {{ state.idn == customer.state ? 'selected' : ''}}>
+						<option value="{{ state.id }}" title="{{ state.id }}" {{ state.id == customer.state ? 'selected' : ''}}>
 							{{ state.id }} - {{ state.name }}
 						</option>
 					{% endfor %}
@@ -93,7 +93,7 @@
 			<div class="col-sm-5">
 				{% include 'util/bootstrap/form/input.twig' with {
 						'input': {
-							'address1': 'zip',
+							'name': 'zip',
 							'value': customer.zip,
 							'size': 'sm',
 							'attributes': {
@@ -119,6 +119,7 @@
 					'size': 'sm',
 					'input': {
 						'name': 'country',
+						'value': customer.country,
 						'attributes': {
 							'placeholder': '',
 							'aria-label':  'Country',
