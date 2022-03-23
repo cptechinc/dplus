@@ -177,6 +177,15 @@ class Cmm extends Base {
 	}
 
 	/**
+	 * Return Customer
+	 * @param  string $id Customer ID
+	 * @return Customer
+	 */
+	public function record($id) {
+		return $this->customer($id);
+	}
+
+	/**
 	 * Return Array ready for JSON
 	 * @param  Record  $record Code
 	 * @return array

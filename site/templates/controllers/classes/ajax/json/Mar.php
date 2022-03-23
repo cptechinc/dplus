@@ -9,6 +9,9 @@ use Dplus\CodeValidators\Mar\Cxm   as CxmValidator;
 // Dplus Codes
 use Dplus\Codes;
 use Dplus\Codes\Base as CodeTable;
+// Dplus CRUD Manager
+use Dplus\Crud;
+use Dplus\Mar as MarCRUDs;
 
 class Mar extends Base {
 
@@ -257,5 +260,19 @@ class Mar extends Base {
 	public static function getCocomCode($data) {
 		$manager = Codes\Mar\Cocom::getInstance();
 		return self::getCodeTableSimpleCode($manager, $data);
+	}
+
+	public static function validateCmmId($data) {
+		self::sanitizeParametersShort($data, ['custID|text', 'id|text']);
+		$data->id = $data->id ? $data->id : $data->custID;
+		$manager = MarCRUDs\Armain\Cmm::instance();
+		return self::validateCrudManagerSimpleId($manager, $data);
+	}
+
+	public static function getCmmCustomer($data) {
+		self::sanitizeParametersShort($data, ['custID|text', 'id|text']);
+		$data->id = $data->id ? $data->id : $data->custID;
+		$manager = MarCRUDs\Armain\Cmm::instance();
+		return self::getCrudManagerSimpleRecord($manager, $data);
 	}
 }
