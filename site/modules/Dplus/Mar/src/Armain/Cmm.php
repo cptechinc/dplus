@@ -6,6 +6,8 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Record;
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use CustomerQuery, Customer;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Filters
@@ -30,7 +32,7 @@ class Cmm extends Base {
 	const MODEL_TABLE        = 'ar_cust_mast';
 	const DESCRIPTION        = 'Customer';
 	const DESCRIPTION_RECORD = 'Customer';
-	const RESPONSE_TEMPLATE  = 'Customer {code} {not} {crud}';
+	const RESPONSE_TEMPLATE  = 'Customer {key} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'cmm';
 	const DPLUS_TABLE           = 'CMM';
 	const FIELD_ATTRIBUTES = [
@@ -253,7 +255,6 @@ class Cmm extends Base {
 		$record        = $this->getOrCreate($id);
 		$invalidfields = $this->_inputUpdate($input, $record);
 		$response      = $this->saveAndRespond($record, $invalidfields);
-
 		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
@@ -270,10 +271,11 @@ class Cmm extends Base {
 		$values = $input->$rm;
 
 		$invalidfields = [
-			'nameAddress' => $this->_inputUpdateNameAddress($input, $record)
+			'nameAddress' => $this->_inputUpdateNameAddress($input, $record),
+			'warehouses'  => $this->_inputUpdateWarehouses($input, $record),
 		];
 
-		$invalid = array_merge($invalidfields['nameAddress']);
+		$invalid = array_merge($invalidfields['nameAddress'], $invalidfields['warehouses']);
 		return $invalid;
 	}
 
@@ -310,6 +312,39 @@ class Cmm extends Base {
 		if ($cocom->exists($values->text('country'))) {
 			$customer->setCountry($values->text('country'));
 		}
+		return $invalidfields;
+	}
+
+	/**
+	 * Update Customer's Warehouses Fields
+	 * @param  WireInput $input   Input Data
+	 * @param  Customer  $customer
+	 * @return array
+	 */
+	protected function _inputUpdateWarehouses(WireInput $input, Customer $customer) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$invalidfields = [];
+
+		$iwhm = Codes\Min\Iwhm::getInstance();
+
+		$customer->setWhseid('');
+		$customer->setRemitwhseid('');
+
+		$invalidfields['whseid'] = 'Warehouse';
+		$invalidfields['remitwhseid'] = 'Remit Warehouse';
+
+		if ($iwhm->exists($values->text('whseid'))) {
+			unset($invalidfields['whseid']);
+			$customer->setWhseid($values->text('whseid'));
+		}
+
+		if ($iwhm->exists($values->text('remitwhseid'))) {
+			unset($invalidfields['remitwhseid']);
+			$customer->setRemitwhseid($values->text('remitwhseid'));
+		}
+
 		return $invalidfields;
 	}
 
@@ -351,6 +386,18 @@ class Cmm extends Base {
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$table   = static::DPLUS_TABLE;
 		return ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$record->id"];
+	}
+
+/* =============================================================
+	Record Locker Functions
+============================================================= */
+	/**
+	 * Return Key for Code
+	 * @param  Record   $record
+	 * @return string
+	 */
+	public function getRecordlockerKey(Record $record) {
+		return implode(FunctionLocker::glue(), [$record->id]);
 	}
 
 /* =============================================================
