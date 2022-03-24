@@ -12,6 +12,32 @@ $(function() {
 	{% include 'mar/armain/cmm/edit/js/events.js.twig' %}
 
 /* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formCode.form.serialize();
+
+	$("body").on("click", "a:not(#cmm-form .form_button, #ajax-modal a, .swal2-modal a, .bootstrap-select a)", function(e) {
+		if (formCode.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(save) {
+				if (save) {
+					formCode.form.find('button[type=submit]').click();
+				} else {
+					var uri = URI();
+					uri.setQuery('id', '');
+
+					$.get(uri.toString(), function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
 	Lookup Modal Functions
 ============================================================= */
 	ajaxModal.on('show.bs.modal', function (event) {
