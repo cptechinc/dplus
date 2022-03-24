@@ -1,9 +1,32 @@
 {# NOTE: does not include $(function() {}) wrapper #}
 
-	$("body").on("focusin", "#cmm-form input:not(input[name=custID])", function(e) {
+	$("body").on("focusin", "#cmm-form input:not(input[name=id])", function(e) {
 		if (formCode.inputs.custid.val() == '') {
 			formCode.inputs.custid.focus();
 		}
+	});
+
+	$("body").on("change", "input[name=id]", function(e) {
+		var input = $(this);
+		var id    = input.val();
+
+		if (id == '') {
+			return false;
+		}
+
+		server.validateId(id, function(exists) {
+			if (exists) {
+				alert.custExists(id, function(edit) {
+					if (edit) {
+						var uri = URI();
+						uri.setQuery('id', id);
+						window.location.href = uri.toString();
+					} else {
+						location.reload();
+					}
+				});
+			}
+		});
 	});
 
 	$("body").on("change", "input[name=country]", function(e) {

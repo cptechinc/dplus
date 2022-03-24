@@ -103,4 +103,38 @@ $(function() {
 		var modal  = button.closest('.modal');
 		modal.find('.modal-body').load(button.attr('href'));
 	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			id: {
+				required: true,
+				maxlength: formCode.config.fields.custid.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/cmm/id/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formCode.inputs.form.attr('data-id') == $('#id').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			name: {
+				maxlength: formCode.config.fields.name.maxlength,
+			},
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
 });
