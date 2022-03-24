@@ -92,6 +92,15 @@ class CmmRequests {
 		});
 	}
 
+	getTypeCode(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/ctm/code/') }}');
+
+		ajax.setData({code: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	getPriceCode(id, callback) {
 		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/cpm/code/') }}');
 

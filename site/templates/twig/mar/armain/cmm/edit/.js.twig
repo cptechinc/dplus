@@ -232,6 +232,76 @@ $(function() {
 					}
 				}
 			},
+			termscode: {
+				required: true,
+				maxlength: formCode.config.fields.termscode.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/trm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#termscode').val();
+						}
+					}
+				}
+			},
+			shipviacode: {
+				required: true,
+				maxlength: formCode.config.fields.termscode.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/csv/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#shipviacode').val();
+						}
+					}
+				}
+			},
+			typecode: {
+				required: true,
+				maxlength: formCode.config.fields.typecode.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/ctm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#typecode').val();
+						}
+					}
+				}
+			},
+			pricecode: {
+				required: true,
+				maxlength: formCode.config.fields.pricecode.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/cpm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#pricecode').val();
+						}
+					}
+				}
+			},
+			commcode: {
+				required: true,
+				maxlength: formCode.config.fields.commcode.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/ccm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#commcode').val();
+						}
+					}
+				}
+			},
 		},
 		submitHandler: function(form) {
 			// form.submit();

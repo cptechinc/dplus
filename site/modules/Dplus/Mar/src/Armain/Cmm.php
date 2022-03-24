@@ -52,11 +52,11 @@ class Cmm extends Base {
 		'whseid'       => ['type' => 'text', 'default' => '', 'maxlength' => 2],
 		'remitwhseid'  => ['type' => 'text', 'default' => '', 'maxlength' => 2],
 		'taxcode'      => ['type' => 'text', 'default' => '', 'maxlength' => Codes\Mar\Mtm::FIELD_ATTRIBUTES['code']['maxlength']],
-		'termscode'    => ['type' => 'text', 'default' => ''],
-		'shipviacode'  => ['type' => 'text', 'default' => ''],
-		'typecode'     => ['type' => 'text', 'default' => ''],
-		'pricecode'    => ['type' => 'text', 'default' => '', 'disabled' => true],
-		'commcode'     => ['type' => 'text', 'default' => '', 'disabled' => true],
+		'termscode'    => ['type' => 'text', 'default' => '', 'maxlength' => Codes\Mar\Trm::FIELD_ATTRIBUTES['code']['maxlength']],
+		'shipviacode'  => ['type' => 'text', 'default' => '', 'maxlength' => Codes\Mar\Csv::FIELD_ATTRIBUTES['code']['maxlength']],
+		'typecode'     => ['type' => 'text', 'default' => '', 'maxlength' => Codes\Mar\Ctm::FIELD_ATTRIBUTES['code']['maxlength']],
+		'pricecode'    => ['type' => 'text', 'default' => '', 'disabled' => true, 'maxlength' => Codes\Mar\Cpm::FIELD_ATTRIBUTES['code']['maxlength']],
+		'commcode'     => ['type' => 'text', 'default' => '', 'disabled' => true, 'maxlength' => Codes\Mar\Ccm::FIELD_ATTRIBUTES['code']['maxlength']],
 		'creditlimit'  => ['type' => 'number', 'max' => 99999999.99, 'precision' => 2, 'default' => 0.00],
 		'shipcomplete' => ['type' => 'text', 'default' => 'N'],
 		'stmtcode' => [
@@ -587,6 +587,15 @@ class Cmm extends Base {
 	 */
 	public function descriptionShipvia($id) {
 		return Codes\Mar\Csv::getInstance()->description($id);
+	}
+
+	/**
+	 * Return Type Code Description
+	 * @param  string $id  Type Code ID
+	 * @return string
+	 */
+	public function descriptionType($id) {
+		return Codes\Mar\Ctm::getInstance()->description($id);
 	}
 
 	/**
