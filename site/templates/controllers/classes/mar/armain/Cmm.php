@@ -81,7 +81,7 @@ class Cmm extends Base {
 
 		$page->js .= self::pw('config')->twig->render('mar/armain/cmm/list/.js.twig');
 		$html = self::displayList($data, $customers);
-		// self::getCmm()->deleteResponse();
+		self::getCmm()->deleteResponse();
 		return $html;
 	}
 
@@ -101,7 +101,7 @@ class Cmm extends Base {
 		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/cmm/edit/.js.twig', ['cmm' => $cmm]);
 
 		$html = self::displayCustomer($data, $customer);
-		// self::getCmm()->deleteResponse();
+		self::getCmm()->deleteResponse();
 		return $html;
 	}
 
@@ -155,8 +155,8 @@ class Cmm extends Base {
 		$html  = '';
 		$html .= $config->twig->render('mar/armain/cmm/bread-crumbs.twig');
 		$html .= '<div class="mb-3">'.self::displayResponse($data).'</div>';
-		// $html .= '<div class="mb-3">'.self::displayResponseQnotes($data).'</div>';
 		$html .= $config->twig->render('mar/armain/cmm/list/display.twig', ['cmm' => $cmm, 'customers' => $customers]);
+
 		if (self::pw('input')->get->offsetExists('print') === false) {
 			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $customers]);
 		}
@@ -170,7 +170,6 @@ class Cmm extends Base {
 		$html  = '';
 		$html .= $config->twig->render('mar/armain/cmm/bread-crumbs.twig');
 		$html .= '<div class="mb-3">'.self::displayResponse($data).'</div>';
-		// $html .= '<div class="mb-3">'.self::displayResponseQnotes($data).'</div>';
 		$html .= '<div class="mb-3">'.self::displayLocked($data).'</div>';
 		$html .= '<div class="mb-3">'.$config->twig->render('mar/armain/cmm/edit/display.twig', ['cmm' => $cmm, 'customer' => $customer]).'</div>';
 		return $html;
