@@ -51,7 +51,7 @@ class Cmm extends Base {
 		'salesperson3' => ['type' => 'text', 'default' => '', 'maxlength' => 6],
 		'whseid'       => ['type' => 'text', 'default' => '', 'maxlength' => 2],
 		'remitwhseid'  => ['type' => 'text', 'default' => '', 'maxlength' => 2],
-		'taxcode'      => ['type' => 'text', 'default' => ''],
+		'taxcode'      => ['type' => 'text', 'default' => '', 'maxlength' => Codes\Mar\Mtm::FIELD_ATTRIBUTES['code']['maxlength']],
 		'termscode'    => ['type' => 'text', 'default' => ''],
 		'shipviacode'  => ['type' => 'text', 'default' => ''],
 		'typecode'     => ['type' => 'text', 'default' => ''],

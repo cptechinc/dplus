@@ -218,6 +218,20 @@ $(function() {
 					}
 				}
 			},
+			taxcode: {
+				required: true,
+				maxlength: formCode.config.fields.taxcode.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/mtm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#taxcode').val();
+						}
+					}
+				}
+			},
 		},
 		submitHandler: function(form) {
 			// form.submit();
