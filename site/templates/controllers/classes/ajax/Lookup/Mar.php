@@ -96,4 +96,18 @@ class Mar extends Lookup {
 		$filter = new Filters\Mar\ArCommissionCode();
 		return self::filterResults($filter, $data);
 	}
+
+	/**
+	 * Search AR Type Codes
+	 * @param  object $data
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function typeCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Type Codes";
+		$filter = new Filters\Mar\ArCustTypeCode();
+		return self::filterResults($filter, $data);
+	}
+
 }

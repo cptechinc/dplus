@@ -63,6 +63,9 @@
 			// Price Codes
 			['GET', 'cpm/', AjaxLookup\Mar::class, 'priceCodes'],
 			['GET', 'cpm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'priceCodes'],
+			// Type Codes
+			['GET', 'ctm/', AjaxLookup\Mar::class, 'typeCodes'],
+			['GET', 'ctm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'typeCodes'],
 			// Shipvia Codes
 			['GET', 'csv/', AjaxLookup\Mar::class, 'shipviaCodes'],
 			['GET', 'csv/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'shipviaCodes'],
