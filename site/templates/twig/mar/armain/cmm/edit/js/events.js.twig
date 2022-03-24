@@ -121,14 +121,31 @@
 		var input = $(this);
 		var code  = input.val();
 
+		var description = input.closest('.ar-code').find('.description');
+		description.text('');
+
 		if (code == '') {
 			return false;
 		}
 
 		server.getShipviaCode(code, function(arcode) {
-			var description = input.closest('.ar-code').find('.description');
-			description.text('');
+			if (arcode) {
+				description.text(arcode.description)
+			}
+		});
+	});
 
+	$("body").on("change", "input[name=typecode]", function(e) {
+		var input = $(this);
+		var code  = input.val();
+		var description = input.closest('.ar-code').find('.description');
+		description.text('');
+
+		if (code == '') {
+			return false;
+		}
+
+		server.getTypeCode(code, function(arcode) {
 			if (arcode) {
 				description.text(arcode.description)
 			}
@@ -138,15 +155,14 @@
 	$("body").on("change", "input[name=pricecode]", function(e) {
 		var input = $(this);
 		var code  = input.val();
+		var description = input.closest('.ar-code').find('.description');
+		description.text('');
 
 		if (code == '') {
 			return false;
 		}
 
 		server.getPriceCode(code, function(arcode) {
-			var description = input.closest('.ar-code').find('.description');
-			description.text('');
-
 			if (arcode) {
 				description.text(arcode.description)
 			}
@@ -156,15 +172,14 @@
 	$("body").on("change", "input[name=commcode]", function(e) {
 		var input = $(this);
 		var code  = input.val();
+		var description = input.closest('.ar-code').find('.description');
+		description.text('');
 
 		if (code == '') {
 			return false;
 		}
 
 		server.getCommCode(code, function(arcode) {
-			var description = input.closest('.ar-code').find('.description');
-			description.text('');
-
 			if (arcode) {
 				description.text(arcode.description)
 			}
