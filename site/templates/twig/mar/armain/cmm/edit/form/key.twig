@@ -2,21 +2,25 @@
 	<div class="col-sm-3">
 		<label for="id">Cust ID</label>
 	</div>
-	<div class="col-sm-2">
-		{% include 'util/bootstrap/form/input.twig' with {
-				'input': {
-					'name': 'id',
-					'value': customer.id,
-					'size': 'sm',
-					'attributes': {
-						'placeholder': '',
-						'maxlength': manager.fieldAttribute('id', 'maxlength'),
-						'readonly': customer.isNew() == false,
-						'tabindex': customer.isNew() == false ? '-1' : '',
+	<div class="col-sm-9">
+		<div class="row input-parent">
+			<div class="col-sm-3">
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'id',
+							'value': customer.id,
+							'size': 'sm',
+							'attributes': {
+								'placeholder': '',
+								'maxlength': manager.fieldAttribute('id', 'maxlength'),
+								'readonly': customer.isNew() == false,
+								'tabindex': customer.isNew() == false ? '-1' : '',
+							}
+						}
 					}
-				}
-			}
-		%}
+				%}
+			</div>
+		</div>
 	</div>
 </div>
 <div class="row mb-3">

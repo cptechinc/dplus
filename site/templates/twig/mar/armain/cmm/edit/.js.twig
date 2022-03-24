@@ -111,6 +111,9 @@ $(function() {
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
+			if (element.hasParent('.input-parent')) {
+				element = element.closest('.input-parent');
+			}
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
