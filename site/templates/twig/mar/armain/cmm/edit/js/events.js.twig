@@ -68,14 +68,14 @@
 		var input = $(this);
 		var id    = input.val();
 
+		var description = input.closest('.salesrep').find('.salesrep-name');
+		description.text('');
+
 		if (id == '') {
 			return false;
 		}
 
 		server.getSalesperson(id, function(rep) {
-			var description = input.closest('.salesrep').find('.salesrep-name');
-			description.text('');
-
 			if (rep) {
 				description.text(rep.name)
 			}

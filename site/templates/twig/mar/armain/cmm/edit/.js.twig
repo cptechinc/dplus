@@ -176,9 +176,51 @@ $(function() {
 					}
 				}
 			},
+			salesperson1: {
+				required: true,
+				maxlength: formCode.config.fields.salesperson1.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/spm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#salesperson1').val();
+						}
+					}
+				}
+			},
+			salesperson2: {
+				required: false,
+				maxlength: formCode.config.fields.salesperson1.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/spm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#salesperson2').val();
+						}
+					}
+				}
+			},
+			salesperson3: {
+				required: false,
+				maxlength: formCode.config.fields.salesperson1.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/spm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#salesperson3').val();
+						}
+					}
+				}
+			},
 		},
 		submitHandler: function(form) {
-			form.submit();
+			// form.submit();
 		}
 	});
 
