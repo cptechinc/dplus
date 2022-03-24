@@ -112,35 +112,41 @@
 	<div class="col-sm-3">
 		<label for="country">Country</label>
 	</div>
-	<div class="col-sm-4">
-		{% include 'util/bootstrap/form/input-group.twig' with {
-				'inputgroup': {
-					'type': 'prepend',
-					'size': 'sm',
-					'input': {
-						'name': 'country',
-						'value': customer.country,
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Country',
-							'data-jqv': 'true',
-							'data-describedby': '.country-name'
-						}
-					},
-					'button': {
-						'colorclass': 'btn-secondary',
-						'text': 'fa fa-search'|icon,
-						'attributes': {
-							'title': 'Search Countries',
-							'data-toggle': 'modal',
-							'data-target': '#ajax-modal',
-							'data-lookupurl': page.searchLookupUrl('country-codes/'),
-							'data-input': '#country'
+	<div class="col-sm-9">
+		<div class="row input-parent">
+			<div class="col-sm-4">
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'country',
+								'value': customer.country,
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Country',
+									'data-jqv': 'true',
+									'data-describedby': '.country-name'
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search Countries',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.searchLookupUrl('country-codes/'),
+									'data-input': '#country'
+								}
+							}
 						}
 					}
-				}
-			}
-		%}
-		<small class="text-muted country-name">Country Name</small>
+				%}
+			</div>
+			<div class="col-sm-4">
+				<small class="text-muted country-name">Country Name</small>
+			</div>
+		</div>
 	</div>
 </div>

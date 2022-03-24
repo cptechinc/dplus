@@ -134,6 +134,20 @@ $(function() {
 			name: {
 				maxlength: formCode.config.fields.name.maxlength,
 			},
+			country: {
+				required: false,
+				maxlength: formCode.config.fields.country.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/cocom/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#country').val();
+						}
+					}
+				}
+			},
 		},
 		submitHandler: function(form) {
 			form.submit();

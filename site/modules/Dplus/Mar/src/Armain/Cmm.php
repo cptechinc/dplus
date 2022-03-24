@@ -44,6 +44,7 @@ class Cmm extends Base {
 		'city'     => ['type' => 'text', 'maxlength' => 16],
 		'state'    => ['type' => 'text', 'maxlength' => 2],
 		'zip'      => ['type' => 'text', 'maxlength' => 10],
+		'country'  => ['type' => 'text', 'maxlength' => 3],
 		'taxexemptnbr' => ['type' => 'text', 'maxlength' => 20],
 		'salesperson1' => ['type' => 'text', 'default' => ''],
 		'salesperson2' => ['type' => 'text', 'default' => ''],
