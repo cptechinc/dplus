@@ -148,6 +148,34 @@ $(function() {
 					}
 				}
 			},
+			whseid: {
+				required: true,
+				maxlength: formCode.config.fields.whseid.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('min/validate/iwhm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#whseid').val();
+						}
+					}
+				}
+			},
+			remitwhseid: {
+				required: true,
+				maxlength: formCode.config.fields.whseid.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('min/validate/iwhm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('#remitwhseid').val();
+						}
+					}
+				}
+			},
 		},
 		submitHandler: function(form) {
 			form.submit();
