@@ -24,6 +24,7 @@ class Src extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 /* =============================================================

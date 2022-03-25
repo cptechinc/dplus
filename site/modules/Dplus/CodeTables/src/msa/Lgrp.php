@@ -24,6 +24,7 @@ class Lgrp extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 40],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 /* =============================================================

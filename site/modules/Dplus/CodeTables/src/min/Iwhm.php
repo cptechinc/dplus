@@ -22,7 +22,7 @@ use Dplus\Codes\Response;
  * Class that handles the CRUD of the IWHM code table
  *
  * @property Iwhm\Qnotes $qnotes
- * @property array  $attributes Field Attributes, some defaults are loaded from configs
+ * @property array       $fieldAttributes  Field Attributes, some defaults are loaded from configs
  */
 class Iwhm extends Base {
 	const MODEL              = 'Warehouse';
@@ -48,6 +48,7 @@ class Iwhm extends Base {
 		'consignment'     => ['type' => 'text', 'default' => 'N'],
 	];
 
+	/** @var self */
 	protected static $instance;
 	private $fieldAttributes;
 
@@ -59,7 +60,10 @@ class Iwhm extends Base {
 /* =============================================================
 	Field Configs
 ============================================================= */
-
+	/**
+	 * Initalize Field Attribute values from configs
+	 * @return void
+	 */
 	public function initFieldAttributes() {
 		$configIn = Configs\In::config();
 		$custID   = Configs\Sys::custid();
@@ -91,18 +95,6 @@ class Iwhm extends Base {
 			return false;
 		}
 		return $this->fieldAttributes[$field][$attr];
-	}
-
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'id'   => $code->id,
-			'name' => $code->name
-		];
 	}
 
 /* =============================================================
@@ -140,6 +132,18 @@ class Iwhm extends Base {
 		$q = $this->queryId($id);
 		$q->select($model::aliasproperty('name'));
 		return $q->findOne();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return [
+			'id'   => $code->id,
+			'name' => $code->name
+		];
 	}
 
 /* =============================================================

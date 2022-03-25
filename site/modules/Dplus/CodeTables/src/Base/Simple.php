@@ -11,15 +11,12 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 use Dplus\Codes\Response;
 use Dplus\Codes\Base;
 
+/**
+ * Simple
+ * Abstract class for Code Tables with Keys of (id)
+ */
 abstract class Simple extends Base {
 	protected static $instance;
-
-	public static function getInstance() {
-		if (empty(static::$instance)) {
-			static::$instance = new static();
-		}
-		return static::$instance;
-	}
 
 /* =============================================================
 	Query Functions

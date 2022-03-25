@@ -4,9 +4,18 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Qnotes
 use Dplus\Qnotes as QnotesNs;
 
+/**
+ * Ctm\Qnotes
+ * Wrapper for the different Qnote types for CTM
+ */
 class Qnotes extends WireData {
+	/** @var self */
 	protected static $instance;
 
+	/**
+	 * Return Instance
+	 * @return self
+	 */
 	public static function instance() {
 		if (empty(static::$instance)) {
 			static::$instance = new static();
@@ -21,6 +30,10 @@ class Qnotes extends WireData {
 		$this->sctp = QnotesNs\CustType\Sctp::instance();
 	}
 
+	/**
+	 * Return Qnotes for each type
+	 * @return array
+	 */
 	public function getQnotes() {
 		return [$this->ictp, $this->kctp, $this->pctp, $this->sctp];
 	}

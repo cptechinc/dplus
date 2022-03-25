@@ -36,9 +36,25 @@ class Tarm extends Base {
 		'percent'          => ['type' => 'number', 'precision' => 2, 'max' => 999.99],
 	];
 
+	/** @var self */
+	protected static $instance;
+
 	public function __construct() {
 		parent::__construct();
 		$this->countriesM = Tarm\Countries::getInstance();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(TariffCode::aliasproperty('id'));
+		return $q->find()->toArray();
 	}
 
 	/**
@@ -56,19 +72,6 @@ class Tarm extends Base {
 			'percent'       => $sanitizer->float($code->percent, ['precision' => $this->fieldAttribute('percent', 'precision')]),
 			'countries'     => $this->countriesM->codesForTariffCode($code->code)
 		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(TariffCode::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================

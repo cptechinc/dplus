@@ -32,18 +32,8 @@ class Msdsm extends Base {
 		'effectivedate' => ['type' => 'text', 'dateformat' => 'Ymd', 'displayformat' => 'm/d/Y'],
 	];
 
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'code'          => $code->code,
-			'description'   => $code->description,
-			'effectivedate' => $code->effectivedate,
-		];
-	}
+	/** @var self */
+	protected static $instance;
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -56,6 +46,19 @@ class Msdsm extends Base {
 		$q = $this->query();
 		$q->select(MsdsCode::aliasproperty('id'));
 		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return [
+			'code'          => $code->code,
+			'description'   => $code->description,
+			'effectivedate' => $code->effectivedate,
+		];
 	}
 
 /* =============================================================
@@ -91,7 +94,6 @@ class Msdsm extends Base {
 		$code->setEffectivedate($date);
 		return $invalidfields;
 	}
-
 
 /* =============================================================
 	CRUD Creates

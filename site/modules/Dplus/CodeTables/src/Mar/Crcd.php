@@ -16,7 +16,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the wORM code table
+ * Class that handles the CRUD of the CRCD code table
  */
 class Crcd extends Base {
 	const MODEL              = 'ArCreditCardCode';
@@ -36,7 +36,21 @@ class Crcd extends Base {
 		'surchargepercentcc' => ['type' => 'number', 'precision' => 2, 'max' => '99.99', 'default' => 0.00],
 	];
 
+	/** @var self */
 	protected static $instance;
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(ArCreditCardCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
 
 	/**
 	 * Return Array ready for JSON
@@ -58,19 +72,6 @@ class Crcd extends Base {
 				'id' => $code->glchargeaccountnbr,
 			],
 		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(ArCreditCardCode::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================

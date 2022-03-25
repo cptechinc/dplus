@@ -16,7 +16,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the wORM code table
+ * Class that handles the CRUD of the CPM code table
  */
 class Cpm extends Base {
 	const MODEL              = 'ArPriceCode';
@@ -34,7 +34,21 @@ class Cpm extends Base {
 		'percent'     => ['type' => 'number', 'precision' => 3, 'max' => 99.999],
 	];
 
+	/** @var self */
 	protected static $instance;
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(ArPriceCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
 
 	/**
 	 * Return Array ready for JSON
@@ -49,19 +63,6 @@ class Cpm extends Base {
 			'surchargeYN' => $code->surcharge,
 			'percent'     => $code->percent
 		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(ArPriceCode::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================

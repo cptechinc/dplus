@@ -31,14 +31,14 @@ class Spgpm extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
+	/** @var self */
 	protected static $instance;
-
 
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the Work Center Confirm Code
+	 * Return all IDs
 	 * @return array
 	 */
 	public function ids() {

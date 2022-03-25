@@ -35,6 +35,22 @@ class Umm extends Base {
 		'pricebyweight' => ['type' => 'text', 'default' => 'N'],
 	];
 
+	/** @var self */
+	protected static $instance;
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(UnitofMeasureSale::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
 	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
@@ -48,19 +64,6 @@ class Umm extends Base {
 			'stockbycase' => $code->stockbycase,
 			'pricebyweight' => $code->pricebyweight,
 		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(UnitofMeasureSale::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================

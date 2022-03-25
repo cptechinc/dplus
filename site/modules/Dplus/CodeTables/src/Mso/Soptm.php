@@ -19,4 +19,7 @@ class Soptm extends SysopOptionalCode {
 	const RECORDLOCKER_FUNCTION = 'soptm';
 	const DPLUS_TABLE           = '';
 	const SYSTEM = 'SO';
+
+	/** @var self */
+	protected static $instance;
 }

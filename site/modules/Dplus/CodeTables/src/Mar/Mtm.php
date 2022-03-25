@@ -13,7 +13,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the CUC code table
+ * Class that handles the CRUD of the MTM code table
  */
 class Mtm extends Base {
 	const MODEL              = 'ArTaxCode';
@@ -28,13 +28,15 @@ class Mtm extends Base {
 		'code'        => ['type' => 'text', 'maxlength' => ArTaxCode::MAX_LENGTH_CODE],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
+
+	/** @var self */
 	protected static $instance;
 
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the Work Center Confirm Code
+	 * Return all IDs
 	 * @return array
 	 */
 	public function ids() {

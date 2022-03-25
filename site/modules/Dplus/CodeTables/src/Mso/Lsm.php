@@ -16,6 +16,8 @@ use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the LSM code table
+ *
+ * @property array  $fieldAttributes  Field Attributes, some defaults are loaded from configs
  */
 class Lsm extends Base {
 	const MODEL              = 'LostSalesCode';
@@ -31,22 +33,10 @@ class Lsm extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 	private $fieldAttributes;
-
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'code'                 => $code->code,
-			'description'          => $code->description,
-			'updateinventorywatch' => $code->updateinventorywatch,
-		];
-	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -59,6 +49,19 @@ class Lsm extends Base {
 		$q = $this->query();
 		$q->select(LostSalesCode::aliasproperty('id'));
 		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return [
+			'code'                 => $code->code,
+			'description'          => $code->description,
+			'updateinventorywatch' => $code->updateinventorywatch,
+		];
 	}
 
 /* =============================================================

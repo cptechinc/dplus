@@ -33,16 +33,8 @@ class Worm extends Base {
 		'writeoff'    => ['type' => 'text', 'default' => 'N'],
 	];
 
+	/** @var self */
 	protected static $instance;
-
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return ['code' => $code->code, 'description' => $code->description, 'writeoff' => $code->writeoff];
-	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -55,6 +47,15 @@ class Worm extends Base {
 		$q = $this->query();
 		$q->select(ArWriteOffCode::aliasproperty('id'));
 		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return ['code' => $code->code, 'description' => $code->description, 'writeoff' => $code->writeoff];
 	}
 
 /* =============================================================

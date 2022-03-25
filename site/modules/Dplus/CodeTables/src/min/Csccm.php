@@ -31,6 +31,7 @@ class Csccm extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 /* =============================================================

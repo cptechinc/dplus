@@ -27,22 +27,8 @@ class Ttm extends Base {
 		'text'        => ['type' => 'text', 'maxlength' => 35],
 	];
 
+	/** @var self */
 	protected static $instance;
-
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'code' => $code->code,
-			'text1' => $code->text1,
-			'text2' => $code->text2,
-			'text3' => $code->text3,
-			'text4' => $code->text4,
-		];
-	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -64,6 +50,21 @@ class Ttm extends Base {
 	public function codes() {
 		$q = $this->getQueryClass();
 		return $q->find();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return [
+			'code'  => $code->code,
+			'text1' => $code->text1,
+			'text2' => $code->text2,
+			'text3' => $code->text3,
+			'text4' => $code->text4,
+		];
 	}
 
 /* =============================================================

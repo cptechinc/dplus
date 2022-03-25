@@ -17,6 +17,7 @@ use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the IGM code table
+ * @property array $fieldAttributes Fields and their attributes
  */
 class Igm extends Base {
 	const MODEL              = 'InvGroupCode';
@@ -43,12 +44,18 @@ class Igm extends Base {
 		'maxqtylarge'      => ['type' => 'number', 'precision' => 0, 'default' => 0],
 	];
 
+	/** @var self */
+	protected static $instance;
+
 	private $fieldAttributes;
 
 /* =============================================================
 	Field Configs
 ============================================================= */
-
+	/**
+	 * Initalize Field Attribute values from configs
+	 * @return void
+	 */
 	public function initFieldAttributes() {
 		$configAr = Configs\Ar::config();
 		$configSo = Configs\So::config();

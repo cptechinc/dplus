@@ -27,25 +27,8 @@ class Rcm extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
+	/** @var self */
 	protected static $instance;
-
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		$dcm = Dcm::getInstance();
-		return [
-			'code'         => $code->code,
-			'description'  => $code->description,
-			'workcenterid' => $code->workcenterid,
-			'workcenter' => [
-				'code'        => $code->workcenterid,
-				'description' => $dcm->description($code->workcenterid)
-			]
-		];
-	}
 
 	/**
 	 * Return DCM
@@ -75,6 +58,24 @@ class Rcm extends Base {
 	public function codes() {
 		$q = $this->getQueryClass();
 		return $q->find();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		$dcm = Dcm::getInstance();
+		return [
+			'code'         => $code->code,
+			'description'  => $code->description,
+			'workcenterid' => $code->workcenterid,
+			'workcenter' => [
+				'code'        => $code->workcenterid,
+				'description' => $dcm->description($code->workcenterid)
+			]
+		];
 	}
 
 /* =============================================================

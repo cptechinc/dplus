@@ -16,6 +16,7 @@ use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the TTM code table
+ * @property array $fieldAttributes Array of Field Attribute data
  */
 class Bum extends Base {
 	const MODEL              = 'ApBuyer';
@@ -31,22 +32,10 @@ class Bum extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 	private $fieldAttributes;
-
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'code'        => $code->code,
-			'description' => $code->description,
-			'email'       => $code->email,
-		];
-	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -59,6 +48,19 @@ class Bum extends Base {
 		$q = $this->query();
 		$q->select(ApBuyer::aliasproperty('id'));
 		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return [
+			'code'        => $code->code,
+			'description' => $code->description,
+			'email'       => $code->email,
+		];
 	}
 
 /* =============================================================

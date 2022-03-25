@@ -13,7 +13,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the TTM code table
+ * Class that handles the CRUD of the DTM code table
  */
 class Dtm extends Base {
 	const MODEL              = 'GlDistCode';
@@ -29,6 +29,7 @@ class Dtm extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 	/**
@@ -37,6 +38,28 @@ class Dtm extends Base {
 	 */
 	public function getNbrOfGlAccts() {
 		return GlDistCode::NBROFACCTS;
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(GlDistCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @return ObjectCollection
+	 */
+	public function codes() {
+		$q = $this->getQueryClass();
+		return $q->find();
 	}
 
 	/**
@@ -71,28 +94,6 @@ class Dtm extends Base {
 			}
 		}
 		return $json;
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(GlDistCode::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
-	/**
-	 * Return the Code records from Database
-	 * @return ObjectCollection
-	 */
-	public function codes() {
-		$q = $this->getQueryClass();
-		return $q->find();
 	}
 
 /* =============================================================

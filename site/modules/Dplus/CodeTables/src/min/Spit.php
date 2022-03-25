@@ -31,6 +31,8 @@ class Spit extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
+	/** @var self */
+	protected static $instance;
 
 /* =============================================================
 	CRUD Read, Validate Functions

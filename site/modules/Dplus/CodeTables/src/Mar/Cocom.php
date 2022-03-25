@@ -13,7 +13,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the CSV code table
+ * Class that handles the CRUD of the COCOM code table
  * TODO: FINISH
  */
 class Cocom extends Base {
@@ -30,6 +30,7 @@ class Cocom extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 /* =============================================================

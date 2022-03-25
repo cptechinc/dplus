@@ -33,7 +33,21 @@ class Rgasc extends Base {
 		'acctnbr'      => ['type' => 'text', 'maxlength' => 10],
 	];
 
+	/** @var self */
 	protected static $instance;
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(SoRgaCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
 
 	/**
 	 * Return Array ready for JSON
@@ -47,19 +61,6 @@ class Rgasc extends Base {
 			'whseid'      => $code->whseid,
 			'acctnbr'     => $code->acctnbr,
 		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(SoRgaCode::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================

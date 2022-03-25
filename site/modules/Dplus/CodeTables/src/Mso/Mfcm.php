@@ -35,7 +35,21 @@ class Mfcm extends Base {
 		'class'        => ['type' => 'text', 'maxlength' => 4],
 	];
 
+	/** @var self */
 	protected static $instance;
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(MotorFreightCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
 
 	/**
 	 * Return Array ready for JSON
@@ -51,19 +65,6 @@ class Mfcm extends Base {
 			'description3' => $code->description3,
 			'description4' => $code->description4,
 		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(MotorFreightCode::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================

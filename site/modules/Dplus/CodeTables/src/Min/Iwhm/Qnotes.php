@@ -4,9 +4,18 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Qnotes
 use Dplus\Qnotes as QnotesNs;
 
+/**
+ * Iwhm\Qnotes
+ * Wrapper for the Qnotes types
+ */
 class Qnotes extends WireData {
+	/** @var self */
 	protected static $instance;
 
+	/**
+	 * Return Instance
+	 * @return self
+	 */
 	public static function instance() {
 		if (empty(static::$instance)) {
 			static::$instance = new static();
@@ -19,6 +28,10 @@ class Qnotes extends WireData {
 		$this->swhs = QnotesNs\Swhs::instance();
 	}
 
+	/**
+	 * Return the different Qnotes Types
+	 * @return array
+	 */
 	public function getQnotes() {
 		return [$this->iwhs, $this->swhs];
 	}

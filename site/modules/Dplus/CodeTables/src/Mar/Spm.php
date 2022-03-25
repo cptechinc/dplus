@@ -19,7 +19,7 @@ use Dplus\Codes\Response;
 use Dplus\Msa\Logm;
 
 /**
- * Class that handles the CRUD of the IWHM code table
+ * Class that handles the CRUD of the SPM code table
  */
 class Spm extends Base {
 	const MODEL              = 'SalesPerson';
@@ -39,25 +39,14 @@ class Spm extends Base {
 		'lastsaledate' => ['type' => 'text', 'format' => 'Ymd'],
 	];
 
+	/** @var self */
 	protected static $instance;
-
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'id'   => $code->id,
-			'name' => $code->name
-		];
-	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the Work Center Confirm Code
+	 * Return all IDs
 	 * @return array
 	 */
 	public function ids() {
@@ -88,6 +77,18 @@ class Spm extends Base {
 		$q = $this->queryId($id);
 		$q->select($model::aliasproperty('name'));
 		return $q->findOne();
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return [
+			'id'   => $code->id,
+			'name' => $code->name
+		];
 	}
 
 /* =============================================================

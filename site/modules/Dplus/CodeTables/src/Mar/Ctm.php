@@ -45,7 +45,7 @@ class Ctm extends Base {
 		'glfinance'   => ['type' => 'text', 'title' => 'Finance Charge'],
 		'gldiscounts' => ['type' => 'text', 'title' => 'Discounts Taken'],
 	];
-
+	/** @var self */
 	protected static $instance;
 	private $updateGlAccts = null;
 
@@ -67,6 +67,29 @@ class Ctm extends Base {
 		return $this->updateGlAccts;
 	}
 
+	/**
+	 * Return GL Account field Names
+	 * @return array
+	 */
+	public function glaccounts() {
+		return [
+			'glsales', 'glcredits', 'glcogs', 'glfreight', 'glmisc',
+			'glcash', 'glar', 'glfinance','gldiscounts',
+		];
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(ArCustTypeCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
 
 	/**
 	 * Return Array ready for JSON
@@ -94,30 +117,6 @@ class Ctm extends Base {
 				'discounts' => $code->gldiscounts,
 			]
 		];
-	}
-
-	/**
-	 * Return GL Account field Names
-	 * @return array
-	 */
-	public function glaccounts() {
-		return [
-			'glsales', 'glcredits', 'glcogs', 'glfreight', 'glmisc',
-			'glcash', 'glar', 'glfinance','gldiscounts',
-		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(ArCustTypeCode::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================
