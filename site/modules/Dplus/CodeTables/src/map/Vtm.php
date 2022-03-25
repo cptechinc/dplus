@@ -82,7 +82,7 @@ class Vtm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the Work Center Confirm Code
+	 * Return all IDs
 	 * @return array
 	 */
 	public function ids() {

@@ -36,7 +36,7 @@ class Cnfm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the Purchase Order Confirm Code
+	 * Return all IDs
 	 * @return array
 	 */
 	public function ids() {

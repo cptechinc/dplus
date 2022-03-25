@@ -37,7 +37,7 @@ class Sic extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the ArStandardIndustrialClass
+	 * Return all IDs
 	 * @return array
 	 */
 	public function ids() {

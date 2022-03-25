@@ -16,7 +16,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the wORM code table
+ * Class that handles the CRUD of the WORM code table
  */
 class Worm extends Base {
 	const MODEL              = 'ArWriteOffCode';
@@ -40,7 +40,7 @@ class Worm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the Work Center Confirm Code
+	 * Return all IDs
 	 * @return array
 	 */
 	public function ids() {

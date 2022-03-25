@@ -33,12 +33,12 @@ class Igcm extends Base {
 
 	/** @var self */
 	protected static $instance;
-	
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the Work Center Confirm Code
+	 * Return all IDs
 	 * @return array
 	 */
 	public function ids() {
