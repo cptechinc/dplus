@@ -101,16 +101,6 @@ class Iwhm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return all IDs
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(Warehouse::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
-	/**
 	 * Return Warehouse
 	 * @param  string $id Warehouse ID
 	 * @return Warehouse

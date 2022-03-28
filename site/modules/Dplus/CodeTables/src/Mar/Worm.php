@@ -40,22 +40,16 @@ class Worm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return all IDs
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(ArWriteOffCode::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
-	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
-		return ['code' => $code->code, 'description' => $code->description, 'writeoff' => $code->writeoff];
+		return [
+			'code'        => $code->code,
+			'description' => $code->description,
+			'writeoff'    => $code->writeoff
+		];
 	}
 
 /* =============================================================

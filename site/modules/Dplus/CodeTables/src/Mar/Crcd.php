@@ -43,16 +43,6 @@ class Crcd extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return all IDs
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(ArCreditCardCode::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
-	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
 	 * @return array

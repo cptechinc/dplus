@@ -48,16 +48,6 @@ class Tarm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return all IDs
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(TariffCode::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
-	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
 	 * @return array
@@ -66,11 +56,11 @@ class Tarm extends Base {
 		$sanitizer = $this->wire('sanitizer');
 
 		return [
-			'code'          => $code->code,
-			'description'   => $code->description,
-			'number'        => $code->number,
-			'percent'       => $sanitizer->float($code->percent, ['precision' => $this->fieldAttribute('percent', 'precision')]),
-			'countries'     => $this->countriesM->codesForTariffCode($code->code)
+			'code'         => $code->code,
+			'description'  => $code->description,
+			'number'       => $code->number,
+			'percent'      => $sanitizer->float($code->percent, ['precision' => $this->fieldAttribute('percent', 'precision')]),
+			'countries'    => $this->countriesM->codesForTariffCode($code->code)
 		];
 	}
 

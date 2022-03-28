@@ -42,16 +42,6 @@ class Umm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return all IDs
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(UnitofMeasureSale::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
-	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
 	 * @return array
@@ -61,7 +51,7 @@ class Umm extends Base {
 			'code'          => $code->code,
 			'description'   => $code->description,
 			'conversion'    => $code->conversion,
-			'stockbycase' => $code->stockbycase,
+			'stockbycase'   => $code->stockbycase,
 			'pricebyweight' => $code->pricebyweight,
 		];
 	}

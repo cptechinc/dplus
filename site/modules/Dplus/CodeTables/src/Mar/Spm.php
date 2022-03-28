@@ -46,16 +46,6 @@ class Spm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return all IDs
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(SalesPerson::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
-	/**
 	 * Return SalesPerson
 	 * @param  string $id SalesPerson ID
 	 * @return SalesPerson

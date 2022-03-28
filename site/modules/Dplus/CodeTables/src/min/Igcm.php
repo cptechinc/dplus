@@ -37,15 +37,6 @@ class Igcm extends Base {
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
-	/**
-	 * Return all IDs
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(InvCommissionCode::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
 
 /* =============================================================
 	CRUD Creates

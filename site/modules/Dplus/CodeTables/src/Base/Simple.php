@@ -82,6 +82,18 @@ abstract class Simple extends Base {
 		return $q->findOne();
 	}
 
+	/**
+	 * Return all IDs
+	 * @return array
+	 */
+	public function ids() {
+		$model = $this->modelClassName();
+		
+		$q = $this->query();
+		$q->select($model::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */

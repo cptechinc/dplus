@@ -44,25 +44,6 @@ class Dtm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return all IDs
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(GlDistCode::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
-	/**
-	 * Return the Code records from Database
-	 * @return ObjectCollection
-	 */
-	public function codes() {
-		$q = $this->getQueryClass();
-		return $q->find();
-	}
-
-	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
 	 * @return array
