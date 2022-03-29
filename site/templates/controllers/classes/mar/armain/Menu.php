@@ -82,6 +82,12 @@ class Menu extends Base {
 			'title'      => 'Ship-To User Code',
 			'summary'    => 'View / Edit Ship-To User Code'
 		],
+		'trm' => [
+			'name'       => 'trm',
+			'permission' => 'trm',
+			'title'      => 'Customer Terms Code',
+			'summary'    => 'View / Edit Customer Terms Code'
+		],
 		'worm' => [
 			'name'       => 'worm',
 			'permission' => 'worm',
@@ -173,6 +179,10 @@ class Menu extends Base {
 
 	public static function sucUrl() {
 		return self::subfunctionUrl('suc');
+	}
+
+	public static function trmUrl() {
+		return self::subfunctionUrl('trm');
 	}
 
 	public static function wormUrl() {
