@@ -72,11 +72,7 @@ class Crcd extends Base {
 	 * @return ArCreditCardCode
 	 */
 	public function new($id = '') {
-		$code = new ArCreditCardCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		$code = parent::new($id);
 		$code->setServicerate($this->fieldAttribute('servicerate', 'default'));
 		$code->setTransactioncost($this->fieldAttribute('transactioncost', 'default'));
 		$code->setSurchargepercentcc($this->fieldAttribute('surchargepercentcc', 'default'));

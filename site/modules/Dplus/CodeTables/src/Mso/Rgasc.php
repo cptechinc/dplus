@@ -57,18 +57,6 @@ class Rgasc extends Base {
 /* =============================================================
 	CRUD Creates
 ============================================================= */
-	/**
-	 * Return New Code
-	 * @return SoRgaCode
-	 */
-	public function new($id = '') {
-		$code = new SoRgaCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 
 /* =============================================================
 	CRUD Processing

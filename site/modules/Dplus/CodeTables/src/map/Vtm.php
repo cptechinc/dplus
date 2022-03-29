@@ -104,11 +104,7 @@ class Vtm extends Base {
 	 * @return ApTypeCode
 	 */
 	public function new($id = '') {
-		$code = new ApTypeCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		$code = parent::new($id);
 		$code->setFabricator($this->fieldAttribute('fabricator', 'default'));
 		$code->setProduction($this->fieldAttribute('production', 'default'));
 		$code->setCompetitor($this->fieldAttribute('competitor', 'default'));

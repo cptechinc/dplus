@@ -84,18 +84,6 @@ class Spm extends Base {
 /* =============================================================
 	CRUD Creates
 ============================================================= */
-	/**
-	 * Return New Code
-	 * @return SalesPerson
-	 */
-	public function new($id = '') {
-		$code = new SalesPerson();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('id', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 
 /* =============================================================
 	CRUD Processing

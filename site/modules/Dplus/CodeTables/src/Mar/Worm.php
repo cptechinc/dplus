@@ -60,11 +60,7 @@ class Worm extends Base {
 	 * @return ArWriteOffCode
 	 */
 	public function new($id = '') {
-		$code = new ArWriteOffCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		$code = parent::new($id);
 		$code->setWriteoff($this->fieldAttribute('writeoff', 'default'));
 		return $code;
 	}

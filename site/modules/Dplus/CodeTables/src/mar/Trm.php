@@ -39,16 +39,4 @@ class Trm extends Base {
 /* =============================================================
 	CRUD Creates
 ============================================================= */
-	/**
-	 * Return New Code
-	 * @return ArTermsCode
-	 */
-	public function new($id = '') {
-		$code = new ArTermsCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

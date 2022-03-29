@@ -41,16 +41,4 @@ class Spgpm extends Base {
 /* =============================================================
 	CRUD Creates
 ============================================================= */
-	/**
-	 * Return New Code
-	 * @return SalespersonGroupCode
-	 */
-	public function new($id = '') {
-		$code = new SalespersonGroupCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

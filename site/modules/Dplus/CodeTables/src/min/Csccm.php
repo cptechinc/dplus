@@ -41,16 +41,4 @@ class Csccm extends Base {
 /* =============================================================
 	CRUD Creates
 ============================================================= */
-	/**
-	 * Return New Code
-	 * @return CustomerStockingCell
-	 */
-	public function new($id = '') {
-		$code = new CustomerStockingCell();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

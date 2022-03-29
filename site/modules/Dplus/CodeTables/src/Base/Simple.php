@@ -88,7 +88,7 @@ abstract class Simple extends Base {
 	 */
 	public function ids() {
 		$model = $this->modelClassName();
-		
+
 		$q = $this->query();
 		$q->select($model::aliasproperty('id'));
 		return $q->find()->toArray();
@@ -103,7 +103,8 @@ abstract class Simple extends Base {
 	 * @return Code
 	 */
 	public function new($id = '') {
-		$code = new Code();
+		$class = $this->modelClassName();
+		$code = new $class();
 		$maxlength = $this->fieldAttribute('code', 'maxlength');
 
 		if ($maxlength) {

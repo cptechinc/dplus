@@ -63,11 +63,7 @@ class Cpm extends Base {
 	 * @return ArPriceCode
 	 */
 	public function new($id = '') {
-		$code = new ArPriceCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		$code = parent::new($id);
 		$code->setWriteoff($this->fieldAttribute('writeoff', 'default'));
 		return $code;
 	}
