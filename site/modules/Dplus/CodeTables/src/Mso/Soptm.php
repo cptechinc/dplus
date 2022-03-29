@@ -15,7 +15,7 @@ use Dplus\Codes\Msa\SysopOptionalCode;
  * Class that handles the CRUD of the Sysop code table
  */
 class Soptm extends SysopOptionalCode {
-	const RESPONSE_TEMPLATE  = '{sysop} Code {code} {not} {crud}';
+	const RESPONSE_TEMPLATE     = '{sysop} Code {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'soptm';
 	const DPLUS_TABLE           = '';
 	const SYSTEM = 'SO';
