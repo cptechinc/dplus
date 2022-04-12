@@ -65,6 +65,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Suc::class, 'index'],
 			['POST', '', Armain\Suc::class, 'handleCRUD'],
 		],
+		'trm' => [
+			['GET',  '', Armain\Trm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Trm::class, 'index'],
+			['POST', '', Armain\Trm::class, 'handleCRUD'],
+		],
 		'worm' => [
 			['GET',  '', Armain\Worm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Worm::class, 'index'],
