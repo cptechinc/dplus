@@ -23,7 +23,7 @@ use Dplus\Wm\Sop\Picking\Picking as PickingCRUD;
 use Dplus\Wm\Sop\Picking\Strategies\Inventory\Lookup\Lookup as InvLookup;
 use Dplus\Wm as Wm;
 // Mvc Controllers
-use Controllers\Wm\Base;
+use Controllers\Mwm\Base;
 
 class Picking extends Base {
 	const DPLUSPERMISSION = 'porpk';

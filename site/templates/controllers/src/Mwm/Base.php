@@ -1,4 +1,4 @@
-<?php namespace Controllers\Wm;
+<?php namespace Controllers\Mwm;
 
 use stdClass;
 // Purl Library

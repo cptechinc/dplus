@@ -17,7 +17,7 @@ use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Filters
 use Dplus\Filters;
 // Mvc Controllers
-use Controllers\Wm\Base;
+use Controllers\Mwm\Base;
 
 class LotReturn extends Base {
 	const DPLUSPERMISSION = 'wm';

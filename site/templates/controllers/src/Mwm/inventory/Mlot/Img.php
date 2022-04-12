@@ -10,7 +10,7 @@ use Dplus\Wm\Inventory\Search;
 // Dplus CRUD
 use Dplus\Wm\Inventory\Mlot\Img as ImgManager;
 // Mvc Controllers
-use Controllers\Wm\Base;
+use Controllers\Mwm\Base;
 
 class Img extends Base {
 	const DPLUSPERMISSION = 'wm';

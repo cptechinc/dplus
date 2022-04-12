@@ -23,7 +23,7 @@ use Dplus\CodeValidators\Mpo as MpoValidator;
 use Dplus\Wm\Receiving\Receiving as ReceivingCRUD;
 use Dplus\Wm as Wm;
 // Mvc Controllers
-use Controllers\Wm\Base;
+use Controllers\Mwm\Base;
 
 class Receiving extends Base {
 	const DPLUSPERMISSION = 'er';

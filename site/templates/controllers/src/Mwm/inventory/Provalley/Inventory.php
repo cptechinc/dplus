@@ -6,7 +6,7 @@ use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 // Mvc Controllers
-use Controllers\Wm\Base;
+use Controllers\Mwm\Base;
 
 class Inventory extends Base {
 	const DPLUSPERMISSION = 'wm';

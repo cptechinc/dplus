@@ -6,7 +6,7 @@ use ProcessWire\User;
 // Stock Status Report
 use Dplus\Wm\Reports\Inventory\StockStatus\Factory as Report;
 // Mvc Controllers
-use Controllers\Wm\Base;
+use Controllers\Mwm\Base;
 
 class StockStatus extends Base {
 	const DPLUSPERMISSION = 'wm';

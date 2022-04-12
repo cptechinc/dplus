@@ -19,7 +19,7 @@ use Dplus\Wm\Inventory\Mlot\Labels as Printer;
 // Dplus CRUD
 
 // Mvc Controllers
-use Controllers\Wm\Base;
+use Controllers\Mwm\Base;
 
 class Labels extends Base {
 	const DPLUSPERMISSION = 'wm';

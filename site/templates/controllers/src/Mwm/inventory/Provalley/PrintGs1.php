@@ -11,7 +11,7 @@ use Dplus\Configs;
 // Dplus Filters
 use Dplus\Filters;
 // Mvc Controllers
-use Controllers\Wm\Base;
+use Controllers\Mwm\Base;
 
 class PrintGs1 extends Base {
 	const DPLUSPERMISSION = 'wm';
