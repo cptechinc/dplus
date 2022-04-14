@@ -13,7 +13,7 @@ use PurchaseOrderDetailReceiving;
 // Dpluso Model
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData, ProcessWire\User;
 use Processwire\SearchInventory, Processwire\WarehouseManagement,ProcessWire\HtmlWriter;
 // Dplus Configs
 use Dplus\Configs as Dconfigs;
@@ -275,7 +275,7 @@ class Receiving extends Base {
 
 	static public function postReceivingAndCloseUrl($ponbr) {
 		$url = new Purl(self::postReceivingUrl($ponbr));
-		$url->query->set('close', 'true')
+		$url->query->set('close', 'true');
 		return $url->getUrl();
 	}
 
@@ -472,7 +472,7 @@ class Receiving extends Base {
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
-	static public function validateUserPermission(user $user = nul) {
+	static public function validateUserPermission(User $user = null) {
 		if (empty($user)) {
 			$user = self::pw('user');
 		}
