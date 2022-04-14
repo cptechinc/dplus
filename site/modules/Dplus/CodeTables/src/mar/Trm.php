@@ -27,6 +27,8 @@ class Trm extends Base {
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 4],
 		'description' => ['type' => 'text', 'maxlength' => 20],
+		'method'      => ['type' => 'text', 'options' => ['S' => 'Standard Terms', 'E' => 'End of Month Terms'], 'default' => 'S'],
+		'type'        => ['type' => 'text', 'options' => ['STD' => 'Standard', 'CC' => 'Credit Card', 'CA' => 'Cash', 'COD' => 'COD', 'CDC' => 'COD Cash'], 'default' => 'STD'],
 	];
 
 	/** @var self */

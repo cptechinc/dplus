@@ -59,8 +59,8 @@ class Trm extends Base {
 		}
 
 		self::initHooks();
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mar/trm/rep/form/.js.twig', ['trm' => $trm]);
-		$html = self::displaySalesperson($data, $code);
+		// self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mar/trm/code/form/.js.twig', ['trm' => $trm]);
+		$html = self::displayTermscode($data, $code);
 		self::getTrm()->deleteResponse();
 		return $html;
 	}
@@ -68,7 +68,7 @@ class Trm extends Base {
 	private static function list($data) {
 		self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
-		$page->headline = "Salesperson Maintenance";
+		$page->headline = "Customer Terms Code";
 		$trm  = self::getTrm();
 		$trm->recordlocker->deleteLock();
 
@@ -79,11 +79,11 @@ class Trm extends Base {
 			$filter->search(strtoupper($data->q));
 		}
 		$filter->sortby($page);
-		$reps = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
 		self::initHooks();
-		$page->js .= self::pw('config')->twig->render('code-tables/mar/trm/list/.js.twig');
-		$html = self::displayList($data, $reps);
+		// $page->js .= self::pw('config')->twig->render('code-tables/mar/trm/list/.js.twig');
+		$html = self::displayList($data, $codes);
 		self::getTrm()->deleteResponse();
 		return $html;
 	}
@@ -91,24 +91,24 @@ class Trm extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displaySalesperson($data, ArTermsCode $code) {
+	private static function displayTermscode($data, ArTermsCode $code) {
 		$trm  = self::getTrm();
 
 		$html = '';
 		$html .= self::pw('config')->twig->render('code-tables/mar/trm/bread-crumbs.twig');
 		$html .= '<div class="mb-3">'.self::displayResponse($data).'</div>';
 		$html .= '<div class="mb-3">'.self::displayLocked($data).'</div>';
-		$html .= self::pw('config')->twig->render('code-tables/mar/trm/rep/display.twig', ['rep' => $code, 'trm' => $trm]);
+		$html .= self::pw('config')->twig->render('code-tables/mar/trm/edit/display.twig', ['code' => $code, 'trm' => $trm]);
 		return $html;
 	}
 
-	private static function displayList($data, PropelModelPager $reps) {
+	private static function displayList($data, PropelModelPager $codes) {
 		$config = self::pw('config');
 
 		$html = '';
 		$html .= $config->twig->render('code-tables/mar/trm/bread-crumbs.twig');
 		$html .= '<div class="mb-3">'.self::displayResponse($data).'</div>';
-		$html .= $config->twig->render('code-tables/mar/trm/list/display.twig', ['trm' => self::getTrm(), 'reps' => $reps]);
+		$html .= $config->twig->render('code-tables/mar/trm/list/display.twig', ['trm' => self::getTrm(), 'codes' => $codes]);
 		return $html;
 	}
 
@@ -138,36 +138,36 @@ class Trm extends Base {
 		return Menu::trmUrl();
 	}
 
-	public static function repUrl($id) {
+	public static function codeUrl($id) {
 		$url = new Purl(self::url());
 		$url->query->set('id', $id);
 		return $url->getUrl();
 	}
 
-	public static function repDeleteUrl($id) {
-		$url = new Purl(self::repUrl($id));
+	public static function codeDeleteUrl($id) {
+		$url = new Purl(self::codeUrl($id));
 		$url->query->set('action', 'delete');
 		return $url->getUrl();
 	}
 
-	public static function repAddUrl() {
-		return self::repUrl('new');
+	public static function codeAddUrl() {
+		return self::codeUrl('new');
 	}
 
-	public static function repListUrl($focus = '') {
+	public static function codeListUrl($focus = '') {
 		if (empty($focus) || self::getTrm()->exists($focus) === false) {
-			return self::_repListUrl();
+			return self::_codeListUrl();
 		}
 		$filter = new Filter();
 		$filter->init();
 		$position = $filter->positionQuick($focus);
-		$url = new Purl(self::_repListUrl());
+		$url = new Purl(self::_codeListUrl());
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'trm', self::getPagenbrFromOffset($position, self::pw('session')->display));
 		$url->query->set('focus', $focus);
 		return $url->getUrl();
 	}
 
-	public static function _repListUrl() {
+	public static function _codeListUrl() {
 		return self::url();
 	}
 
@@ -177,12 +177,12 @@ class Trm extends Base {
 
 			if ($response) {
 				if ($response->hasSuccess()) {
-					return self::repListUrl($data->id);
+					return self::codeListUrl($data->id);
 				}
-				return self::repUrl($data->id);
+				return self::codeUrl($data->id);
 			}
 		}
-		return self::repListUrl();
+		return self::codeListUrl();
 	}
 
 /* =============================================================
@@ -199,24 +199,24 @@ class Trm extends Base {
 			$event->return = Menu::TITLE;
 		});
 
-		$m->addHook('Page(pw_template=armain)::repEditUrl', function($event) {
+		$m->addHook('Page(pw_template=armain)::codeEditUrl', function($event) {
 			$id = $event->arguments(0);
-			$event->return = self::repUrl($id);
+			$event->return = self::codeUrl($id);
 		});
 
-		$m->addHook('Page(pw_template=armain)::repDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=armain)::codeDeleteUrl', function($event) {
 			$id = $event->arguments(0);
-			$event->return = self::repDeleteUrl($id);
+			$event->return = self::codeDeleteUrl($id);
 		});
 
-		$m->addHook('Page(pw_template=armain)::repAddUrl', function($event) {
+		$m->addHook('Page(pw_template=armain)::codeAddUrl', function($event) {
 			$id = $event->arguments(0);
-			$event->return = self::repAddUrl();
+			$event->return = self::codeAddUrl();
 		});
 
-		$m->addHook('Page(pw_template=armain)::repListUrl', function($event) {
+		$m->addHook('Page(pw_template=armain)::codeListUrl', function($event) {
 			$id = $event->arguments(0);
-			$event->return = self::repListUrl($id);
+			$event->return = self::codeListUrl($id);
 		});
 
 		$m->addHook('Page(pw_template=armain)::trmUrl', function($event) {

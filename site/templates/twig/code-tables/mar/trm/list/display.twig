@@ -1,0 +1,5 @@
+{% include 'code-tables/mar/trm/list/form.twig' with {'q' : page.input.get.text('q')} %}
+
+{% include 'code-tables/mar/trm/list/list.twig' %}
+
+{% include 'util/paginator/propel.twig' with {'pager': codes} %}

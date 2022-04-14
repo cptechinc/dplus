@@ -63,6 +63,9 @@
 			// Price Codes
 			['GET', 'cpm/', AjaxLookup\Mar::class, 'priceCodes'],
 			['GET', 'cpm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'priceCodes'],
+			// Creedit Card Codes
+			['GET', 'crcd/', AjaxLookup\Mar::class, 'creditCardCodes'],
+			['GET', 'crcd/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'creditCardCodes'],
 			// Type Codes
 			['GET', 'ctm/', AjaxLookup\Mar::class, 'typeCodes'],
 			['GET', 'ctm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'typeCodes'],
