@@ -1,0 +1,23 @@
+class CrcdInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CrcdInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.glaccountnbr  = this.form.find('input[name=glaccountnbr]');
+		this.custid        = this.form.find('input[name=custid]');
+		this.glchargeaccountnbr = this.form.find('input[name=glchargeaccountnbr]');
+		this.servicerate        = this.form.find('input[name=servicerate]');
+		this.transactioncost    = this.form.find('input[name=transactioncost]');
+		this.surchargepercentcc = this.form.find('input[name=surchargepercentcc]');
+	}
+}

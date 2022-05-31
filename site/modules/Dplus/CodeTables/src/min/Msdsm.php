@@ -32,6 +32,12 @@ class Msdsm extends Base {
 		'effectivedate' => ['type' => 'text', 'dateformat' => 'Ymd', 'displayformat' => 'm/d/Y'],
 	];
 
+	/** @var self */
+	protected static $instance;
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
@@ -43,19 +49,6 @@ class Msdsm extends Base {
 			'description'   => $code->description,
 			'effectivedate' => $code->effectivedate,
 		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(MsdsCode::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================
@@ -92,7 +85,6 @@ class Msdsm extends Base {
 		return $invalidfields;
 	}
 
-
 /* =============================================================
 	CRUD Creates
 ============================================================= */
@@ -101,11 +93,7 @@ class Msdsm extends Base {
 	 * @return MsdsCode
 	 */
 	public function new($id = '') {
-		$code = new MsdsCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		$code = parent::new($id);
 		$code->setEffectivedate(date($this->fieldAttribute('effectivedate', 'dateformat')));
 		return $code;
 	}

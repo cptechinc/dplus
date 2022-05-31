@@ -22,6 +22,7 @@ use Dplus\Codes\Response;
  * Class that handles the CRUD of the IWHM code table
  *
  * @property Iwhm\Qnotes $qnotes
+ * @property array       $fieldAttributes  Field Attributes, some defaults are loaded from configs
  */
 class Iwhm extends Base {
 	const MODEL              = 'Warehouse';
@@ -47,6 +48,7 @@ class Iwhm extends Base {
 		'consignment'     => ['type' => 'text', 'default' => 'N'],
 	];
 
+	/** @var self */
 	protected static $instance;
 	private $fieldAttributes;
 
@@ -58,7 +60,10 @@ class Iwhm extends Base {
 /* =============================================================
 	Field Configs
 ============================================================= */
-
+	/**
+	 * Initalize Field Attribute values from configs
+	 * @return void
+	 */
 	public function initFieldAttributes() {
 		$configIn = Configs\In::config();
 		$custID   = Configs\Sys::custid();
@@ -92,31 +97,9 @@ class Iwhm extends Base {
 		return $this->fieldAttributes[$field][$attr];
 	}
 
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'id'   => $code->id,
-			'name' => $code->name
-		];
-	}
-
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(Warehouse::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
-
 	/**
 	 * Return Warehouse
 	 * @param  string $id Warehouse ID
@@ -149,11 +132,7 @@ class Iwhm extends Base {
 	 * @return Warehouse
 	 */
 	public function new($id = '') {
-		$code = new Warehouse();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		$code = parent::new($id);
 		$code->setPickdetail($this->fieldAttribute('pickdetail', 'default'));
 		$code->setConsignment($this->fieldAttribute('consignment', 'default'));
 		$code->setBinarrangement($this->fieldAttribute('binarrangement', 'default'));

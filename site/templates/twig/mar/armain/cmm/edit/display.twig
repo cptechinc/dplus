@@ -1,0 +1,30 @@
+<div class="card mb-5">
+	{% block header %}
+		<div class="card-header">
+			<div class="row">
+				<div class="col-sm-2">
+					<strong>Cust ID:</strong>
+				</div>
+				<div class="col-sm-3">
+					{{ customer.id }}
+				</div>
+				<div class="col-sm-4">
+					{{ customer.name }}
+				</div>
+				<div class="col-sm-3 text-right">
+					Nbr of Ship-Tos: {{ customer.countShiptos() }}
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+
+	{% block body %}
+		<div class="card-body">
+			{% include 'mar/armain/cmm/edit/form.twig' %}
+		</div>
+	{% endblock %}
+
+	{% block footer %}
+
+	{% endblock %}
+</div>

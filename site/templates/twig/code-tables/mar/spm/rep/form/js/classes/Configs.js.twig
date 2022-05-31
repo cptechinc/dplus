@@ -1,0 +1,21 @@
+class SpmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SpmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			id: {
+				maxlength: {{ spm.fieldAttribute('id', 'maxlength') }}
+			},
+			name: {
+				maxlength: {{ spm.fieldAttribute('name', 'maxlength') }}
+			},
+		};
+	}
+}

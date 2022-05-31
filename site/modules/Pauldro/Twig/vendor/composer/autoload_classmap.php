@@ -14,6 +14,7 @@ return array(
     'Twig\\Html\\TwigInputGroupSpan' => $baseDir . '/classes/InputGroupSpan.twig.php',
     'Twig\\Html\\TwigLink' => $baseDir . '/classes/Link.twig.php',
     'Twig\\Html\\TwigP' => $baseDir . '/classes/P.twig.php',
+    'Twig\\Html\\TwigSelect' => $baseDir . '/classes/Select.twig.php',
     'Twig\\Html\\TwigSelectSimple' => $baseDir . '/classes/SelectSimple.twig.php',
     'Twig\\Html\\TwigTextarea' => $baseDir . '/classes/Textarea.twig.php',
 );

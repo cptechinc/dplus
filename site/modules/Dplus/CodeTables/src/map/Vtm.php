@@ -16,6 +16,7 @@ use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the TTM code table
+ * @property array $fieldAttributes Array of Field Attribute data
  */
 class Vtm extends Base {
 	const MODEL              = 'ApTypeCode';
@@ -34,29 +35,18 @@ class Vtm extends Base {
 		'competitor'  => ['default' => 'N', 'disabled' => false],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 	private $fieldAttributes;
 
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'code'        => $code->code,
-			'description' => $code->description,
-			'fabricator'  => $code->fabricator,
-			'production'  => $code->production,
-			'competitor'  => $code->competitor
-		];
-	}
-
 /* =============================================================
 	Field Configs
 ============================================================= */
-
+	/**
+	 * Initialize Field Attributes by getting attribute data from configs
+	 * @return void
+	 */
 	public function initFieldAttributes() {
 		$configPo = Configs\Po::config();
 		$attributes = self::FIELD_ATTRIBUTES;
@@ -78,7 +68,7 @@ class Vtm extends Base {
 		if (empty($this->fieldAttributes)) {
 			$this->initFieldAttributes();
 		}
-		
+
 		if (array_key_exists($field, $this->fieldAttributes) === false) {
 			return false;
 		}
@@ -92,13 +82,18 @@ class Vtm extends Base {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return the IDs for the Work Center Confirm Code
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
 	 * @return array
 	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(ApTypeCode::aliasproperty('id'));
-		return $q->find()->toArray();
+	public function codeJson(Code $code) {
+		return [
+			'code'        => $code->code,
+			'description' => $code->description,
+			'fabricator'  => $code->fabricator,
+			'production'  => $code->production,
+			'competitor'  => $code->competitor
+		];
 	}
 
 /* =============================================================
@@ -109,11 +104,7 @@ class Vtm extends Base {
 	 * @return ApTypeCode
 	 */
 	public function new($id = '') {
-		$code = new ApTypeCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		$code = parent::new($id);
 		$code->setFabricator($this->fieldAttribute('fabricator', 'default'));
 		$code->setProduction($this->fieldAttribute('production', 'default'));
 		$code->setCompetitor($this->fieldAttribute('competitor', 'default'));

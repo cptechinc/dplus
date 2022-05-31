@@ -1,0 +1,32 @@
+<div class="row mb-3">
+	<div class="col-sm-3">
+		<label for="phone">Phone</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'phone',
+					'value': customer.phone,
+					'size': 'sm',
+					'addclasses': ['phone-input']
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-sm-3">
+		<label for="fax">Fax</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'fax',
+					'value': customer.fax,
+					'size': 'sm',
+					'addclasses': ['phone-input']
+				}
+			}
+		%}
+	</div>
+</div>

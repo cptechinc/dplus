@@ -1,0 +1,31 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+#}
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values = input.get %}
+
+{% block current_page %}
+	<li class="breadcrumb-item">
+		<a href="{{ page.menuUrl() }}">
+			<i class="fa fa-list" aria-hidden="true"></i> ARMAIN
+		</a>
+	</li>
+	{% if values.offsetExists('id') == false %}
+		<li class="breadcrumb-item active" aria-current="page">
+			<i class="fa fa-microchip" aria-hidden="true"></i> CMM
+		</li>
+	{% else %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.custListUrl(values.text('code')) }}">
+				<i class="fa fa-microchip" aria-hidden="true"></i> CMM
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ values.text('id') }}
+		</li>
+	{% endif %}
+{% endblock %}

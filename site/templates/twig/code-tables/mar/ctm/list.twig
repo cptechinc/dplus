@@ -1,34 +1,65 @@
-{# codes is an array / ObjectCollection of CustomerTypeCode #}
-<div class="list-group">
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+{% set response = manager.getResponse() %}
+
+{% set values = input.get %}
+{% set segments = input.urlSegments() %}
+{% set lastsegment = segments[segments|length] %}
+
+<div class="mb-3">
+	{% if page.is_print() %}
+		<button onclick="window.history.back();" class="btn btn-primary d-print-none">
+			<i class="fa fa-undo" aria-hidden="true"></i> Back
+		</button>
+		&nbsp;
+		<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
+			<i class="fa fa-print" aria-hidden="true"></i> Print
+		</button>
+	{% else %}
+		<a href="{{ page.menuUrl() }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ page.menuTitle() }}
+		</a>
+		&nbsp;
+		<a href="{{ page.get_printURL() }}" class="btn btn-primary">
+			<i class="fa fa-print" aria-hidden="true"></i> View Printable
+		</a>
+	{% endif %}
+</div>
+
+<div class="list-group codes-list mb-3">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-1">
+			<div class="col-sm-1">
 				Code
 			</div>
-			<div class="col-3">
+			<div class="col-sm-3">
 				Description
 			</div>
-			<div class="col-1">
+			<div class="col-sm-1">
 				Mail
 			</div>
-			<div class="col-1">
+			<div class="col-sm-1">
 				Notes :
 			</div>
-			<div class="col-1">
+			<div class="col-sm-1">
 				Statement
 			</div>
-			<div class="col-1">
+			<div class="col-sm-1">
 				Invoice
 			</div>
-			<div class="col-1">
+			<div class="col-sm-1">
 				Pick
 			</div>
-			<div class="col-1">
+			<div class="col-sm-1">
 				Pack
 			</div>
-			<div class="col-2">
+			<div class="col-sm-2 text-center">
 				{% if page.is_print() == false %}
-					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light btn-sm">
+					<a href="{{ page.codeAddUrl() }}" class="btn btn-light btn-sm">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 					</a>
 				{% endif %}
@@ -37,46 +68,44 @@
 	</div>
 	{% for code in codes %}
 		{# data-code attribute and class code is for the highlight on close #}
-		<div id="{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+		<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key == code.code and response.hasSuccess() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
-				<div class="col-1">
+				<div class="col-sm-1">
 					{{ code.code }}
 				</div>
-				<div class="col-3">
+				<div class="col-sm-3">
 					{{ code.description }}
 				</div>
-				<div class="col-1">
-					{{ code.mail_list }}
+				<div class="col-sm-1">
+					{{ code.maillist|yesorno|capitalize }}
 				</div>
-				<div class="col-1">
+				<div class="col-sm-1">
 
 				</div>
-				<div class="col-1">
-					{{ code.count_notetype('SCTP') ? 'Y' : 'N' }}
+				<div class="col-sm-1">
+					{{ manager.qnotes.sctp.notesExist(code.code)|yesorno|capitalize }}
 				</div>
-				<div class="col-1">
-					{{ code.count_notetype('ICTP') ? 'Y' : 'N' }}
+				<div class="col-sm-1">
+					{{ manager.qnotes.ictp.notesExist(code.code)|yesorno|capitalize }}
 				</div>
-				<div class="col-1">
-					{{ code.count_notetype('PCTP') ? 'Y' : 'N' }}
+				<div class="col-sm-1">
+					{{ manager.qnotes.pctp.notesExist(code.code)|yesorno|capitalize }}
 				</div>
-				<div class="col-1">
-					{{ code.count_notetype('KCTP') ? 'Y' : 'N' }}
+				<div class="col-sm-1">
+					{{ manager.qnotes.kctp.notesExist(code.code)|yesorno|capitalize }}
 				</div>
-				<div class="col-2 text-center">
-					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}
-						{% if page.is_print() == false %}
-							<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning btn-sm" title="Edit" aria-label="Edit">
-								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-							</a>
-							&nbsp;
-							<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger btn-sm delete_button" title="Delete" aria-label="Delete">
-								<i class="fa fa-trash" aria-hidden="true"></i> Delete
-							</a>
-						{% endif %}
+				<div class="col-sm-2 text-center">
+					{% if manager.recordlocker.isLocked(manager.getRecordlockerKey(code)) == false or manager.recordlocker.userHasLocked(manager.getRecordlockerKey(code)) %}
+						<a href="{{ page.codeEditUrl(code.code) }}" class="btn btn-warning btn-sm">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</a>
+						&nbsp;
+						<a href="{{ page.codeDeleteUrl(code.code) }}" class="btn btn-danger btn-sm delete_button">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
 					{% else %}
 						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ recordlocker.get_locked_user(page.name, code.code) }}
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ manager.recordlocker.getLockingUser(manager.getRecordlockerKey(code)) }}
 						</span>
 					{% endif %}
 				</div>

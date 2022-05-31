@@ -11,8 +11,13 @@
 
 {% block current_page %}
 	{% if values.offsetExists('sysop') == false %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url() }}">
+				<i class="fa fa-list" aria-hidden="true"></i> {{ page.name|upper }}
+			</a>
+		</li>
 		<li class="breadcrumb-item active" aria-current="page">
-			{{ page.name|upper }}
+			{{ input.urlSegmentLast()|upper }}
 		</li>
 	{% endif %}
 

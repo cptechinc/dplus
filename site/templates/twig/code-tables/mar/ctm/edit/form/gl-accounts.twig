@@ -1,0 +1,42 @@
+<legend>GL Accounts</legend>
+
+{% for fieldname in ctm.glaccounts() %}
+	<div class="row mb-3">
+		<div class="col-sm-4">
+			<label for="{{ fieldname }}">{{ ctm.fieldAttribute(fieldname, 'title') }}</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': fieldname,
+							'value': attribute(code, fieldname),
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'General Ledger Account',
+								'data-jqv': 'true'
+							},
+							'addclasses': ['glcode']
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search General Ledger Accounts',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('mgl/mhm/'),
+								'data-input': '#' ~ fieldname
+							}
+						}
+					}
+				}
+			%}
+			<small class="text-muted gl-acct-name" for="{{ fieldname }}">
+				{{ ctm.glAcctDescription(attribute(code, fieldname)) }}
+			</small>
+		</div>
+	</div>
+{% endfor %}

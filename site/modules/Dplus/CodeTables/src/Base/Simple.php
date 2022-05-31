@@ -11,15 +11,12 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 use Dplus\Codes\Response;
 use Dplus\Codes\Base;
 
+/**
+ * Simple
+ * Abstract class for Code Tables with Keys of (id)
+ */
 abstract class Simple extends Base {
 	protected static $instance;
-
-	public static function getInstance() {
-		if (empty(static::$instance)) {
-			static::$instance = new static();
-		}
-		return static::$instance;
-	}
 
 /* =============================================================
 	Query Functions
@@ -85,6 +82,18 @@ abstract class Simple extends Base {
 		return $q->findOne();
 	}
 
+	/**
+	 * Return all IDs
+	 * @return array
+	 */
+	public function ids() {
+		$model = $this->modelClassName();
+
+		$q = $this->query();
+		$q->select($model::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */
@@ -94,7 +103,8 @@ abstract class Simple extends Base {
 	 * @return Code
 	 */
 	public function new($id = '') {
-		$code = new Code();
+		$class = $this->modelClassName();
+		$code = new $class();
 		$maxlength = $this->fieldAttribute('code', 'maxlength');
 
 		if ($maxlength) {

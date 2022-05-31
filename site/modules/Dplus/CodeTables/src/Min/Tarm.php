@@ -36,11 +36,17 @@ class Tarm extends Base {
 		'percent'          => ['type' => 'number', 'precision' => 2, 'max' => 999.99],
 	];
 
+	/** @var self */
+	protected static $instance;
+
 	public function __construct() {
 		parent::__construct();
 		$this->countriesM = Tarm\Countries::getInstance();
 	}
 
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
@@ -50,44 +56,17 @@ class Tarm extends Base {
 		$sanitizer = $this->wire('sanitizer');
 
 		return [
-			'code'          => $code->code,
-			'description'   => $code->description,
-			'number'        => $code->number,
-			'percent'       => $sanitizer->float($code->percent, ['precision' => $this->fieldAttribute('percent', 'precision')]),
-			'countries'     => $this->countriesM->codesForTariffCode($code->code)
+			'code'         => $code->code,
+			'description'  => $code->description,
+			'number'       => $code->number,
+			'percent'      => $sanitizer->float($code->percent, ['precision' => $this->fieldAttribute('percent', 'precision')]),
+			'countries'    => $this->countriesM->codesForTariffCode($code->code)
 		];
-	}
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
-	/**
-	 * Return the IDs for the Work Center Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(TariffCode::aliasproperty('id'));
-		return $q->find()->toArray();
 	}
 
 /* =============================================================
 	CRUD Creates
 ============================================================= */
-	/**
-	 * Return new TariffCode
-	 * @param  string $id Code
-	 * @return TariffCode
-	 */
-	public function new($id = '') {
-		$code = new TariffCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 
 /* =============================================================
 	CRUD Processing

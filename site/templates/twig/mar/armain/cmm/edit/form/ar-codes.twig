@@ -1,0 +1,76 @@
+<div class="mb-2">
+	{% include 'mar/armain/cmm/edit/form/ar-code.twig' with {
+			'label': 'Terms Code',
+			'name': 'termscode',
+			'value': customer.termscode,
+			'description': cmm.descriptionTermscode(customer.termscode),
+			'searchTitleDescription': 'Terms Codes',
+			'ajaxLookupPath': 'mar/trm'
+		}
+	%}
+</div>
+
+<div class="mb-2">
+	{% include 'mar/armain/cmm/edit/form/ar-code.twig' with {
+			'label': 'Ship Via',
+			'name': 'shipviacode',
+			'value': customer.shipviacode,
+			'description': cmm.descriptionShipvia(customer.shipviacode),
+			'searchTitleDescription': 'Ship Vias',
+			'ajaxLookupPath': 'mar/csv'
+		}
+	%}
+</div>
+
+<div class="mb-2">
+	{% include 'mar/armain/cmm/edit/form/ar-code.twig' with {
+			'label': 'Type Code',
+			'name': 'typecode',
+			'value': customer.typecode,
+			'description': cmm.descriptionType(customer.typecode),
+			'searchTitleDescription': 'Type Code',
+			'ajaxLookupPath': 'mar/ctm'
+		}
+	%}
+</div>
+
+<div class="mb-2">
+	{% include 'mar/armain/cmm/edit/form/ar-code.twig' with {
+			'label': 'Price Code',
+			'name': 'pricecode',
+			'value': customer.pricecode,
+			'description': cmm.descriptionPricecode(customer.pricecode),
+			'searchTitleDescription': 'Price Codes',
+			'ajaxLookupPath': 'mar/cpm'
+		}
+	%}
+</div>
+
+<div class="mb-2">
+	{% include 'mar/armain/cmm/edit/form/ar-code.twig' with {
+			'label': 'Comm Code',
+			'name': 'commcode',
+			'value': customer.commcode,
+			'description': cmm.descriptionCommcode(customer.commcode),
+			'searchTitleDescription': 'Commission Codes',
+			'ajaxLookupPath': 'mar/ccm'
+		}
+	%}
+</div>
+
+<div class="mb-2">
+	<div class="row">
+		<div class="col-sm-3">
+			<label for="stmtcode">Stmnt Code</label>
+		</div>
+		<div class="col-sm-3">
+			<select name="stmtcode" class="form-control form-control-sm validate-ignore selectpicker" data-style="" data-styleBase="form-control" id="stmtcode">
+				{% for value, label in cmm.fieldAttribute('stmtcode', 'options') %}
+					<option value="{{ value }}" title="{{ label }}" {{ customer.stmtcode == value ? 'selected' : ''}}>
+						{{ value }} - {{ label }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+</div>

@@ -5,7 +5,7 @@ use Purl\Url;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 // Dplus Models
-use CustomerTermsCodeQuery, CustomerTermsCode;
+use ArTermsCodeQuery, ArTermsCode;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Codes
@@ -16,9 +16,9 @@ use Dplus\Codes\Response;
  * Class that handles the CRUD of the TRM code table
  */
 class Trm extends Base {
-	const MODEL              = 'CustomerTermsCode';
+	const MODEL              = 'ArTermsCode';
 	const MODEL_KEY          = 'code';
-	const MODEL_TABLE        = 'po_confirm_code';
+	const MODEL_TABLE        = 'ar_term_code';
 	const DESCRIPTION        = 'Customer Terms Code';
 	const DESCRIPTION_RECORD = 'Customer Terms Code';
 	const RESPONSE_TEMPLATE  = 'Customer Terms Code {code} {not} {crud}';
@@ -27,36 +27,18 @@ class Trm extends Base {
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 4],
 		'description' => ['type' => 'text', 'maxlength' => 20],
+		'method'      => ['type' => 'text', 'options' => ['S' => 'Standard Terms', 'E' => 'End of Month Terms'], 'default' => 'S'],
+		'type'        => ['type' => 'text', 'options' => ['STD' => 'Standard', 'CC' => 'Credit Card', 'CA' => 'Cash', 'COD' => 'COD', 'CDC' => 'COD Cash'], 'default' => 'STD'],
 	];
 
+	/** @var self */
 	protected static $instance;
 
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
-	/**
-	 * Return the IDs for the Purchase Order Confirm Code
-	 * @return array
-	 */
-	public function ids() {
-		$q = $this->query();
-		$q->select(CustomerTermsCode::aliasproperty('id'));
-		return $q->find()->toArray();
-	}
 
 /* =============================================================
 	CRUD Creates
 ============================================================= */
-	/**
-	 * Return New Code
-	 * @return CustomerTermsCode
-	 */
-	public function new($id = '') {
-		$code = new CustomerTermsCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

@@ -1,0 +1,28 @@
+class CpmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CpmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ manager.fieldAttribute('description', 'maxlength') }}
+			},
+			surcharge: {
+				default: "{{ manager.fieldAttribute('surcharge', 'default') }}"
+			},
+			percent: {
+				precision: {{ manager.fieldAttribute('percent', 'precision') }},
+				max: {{ manager.fieldAttribute('percent', 'max') }},
+			},
+		};
+	}
+}

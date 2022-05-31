@@ -1,0 +1,187 @@
+{# NOTE: does not include $(function() {}) wrapper #}
+
+	$("body").on("focusin", "#cmm-form input:not(input[name=id])", function(e) {
+		if (formCode.inputs.custid.val() == '') {
+			formCode.inputs.custid.focus();
+		}
+	});
+
+	$("body").on("change", "input[name=id]", function(e) {
+		var input = $(this);
+		var id    = input.val();
+
+		if (id == '') {
+			return false;
+		}
+
+		server.validateId(id, function(exists) {
+			if (exists) {
+				alert.custExists(id, function(edit) {
+					if (edit) {
+						var uri = URI();
+						uri.setQuery('id', id);
+						window.location.href = uri.toString();
+					} else {
+						location.reload();
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=country]", function(e) {
+		var input = $(this);
+		var code  = input.val();
+
+		if (code == '') {
+			return false;
+		}
+
+		server.getCountryCode(code, function(country) {
+			$(input.data('describedby')).text('');
+
+			if (country) {
+				$(input.data('describedby')).text(country.name)
+			}
+		});
+	});
+
+	$("body").on("change", "input.whseid", function(e) {
+		var input = $(this);
+		var id    = input.val();
+
+		if (id == '') {
+			return false;
+		}
+
+		server.getWarehouse(id, function(whse) {
+			var description = input.closest('.whse').find('.whse-name');
+			description.text('');
+
+			if (whse) {
+				description.text(whse.name)
+			}
+		});
+	});
+
+	$("body").on("change", "input.salesrepid", function(e) {
+		var input = $(this);
+		var id    = input.val();
+
+		var description = input.closest('.salesrep').find('.salesrep-name');
+		description.text('');
+
+		if (id == '') {
+			return false;
+		}
+
+		server.getSalesperson(id, function(rep) {
+			if (rep) {
+				description.text(rep.name)
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=taxcode]", function(e) {
+		var input = $(this);
+		var code  = input.val();
+
+		if (code == '') {
+			return false;
+		}
+
+		server.getTaxCode(code, function(taxcode) {
+			$(input.data('describedby')).text('');
+
+			if (taxcode) {
+				$(input.data('describedby')).text(taxcode.description)
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=termscode]", function(e) {
+		var input = $(this);
+		var code  = input.val();
+
+		if (code == '') {
+			return false;
+		}
+
+		server.getTermsCode(code, function(arcode) {
+			var description = input.closest('.ar-code').find('.description');
+			description.text('');
+
+			if (arcode) {
+				description.text(arcode.description)
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=shipviacode]", function(e) {
+		var input = $(this);
+		var code  = input.val();
+
+		var description = input.closest('.ar-code').find('.description');
+		description.text('');
+
+		if (code == '') {
+			return false;
+		}
+
+		server.getShipviaCode(code, function(arcode) {
+			if (arcode) {
+				description.text(arcode.description)
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=typecode]", function(e) {
+		var input = $(this);
+		var code  = input.val();
+		var description = input.closest('.ar-code').find('.description');
+		description.text('');
+
+		if (code == '') {
+			return false;
+		}
+
+		server.getTypeCode(code, function(arcode) {
+			if (arcode) {
+				description.text(arcode.description)
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=pricecode]", function(e) {
+		var input = $(this);
+		var code  = input.val();
+		var description = input.closest('.ar-code').find('.description');
+		description.text('');
+
+		if (code == '') {
+			return false;
+		}
+
+		server.getPriceCode(code, function(arcode) {
+			if (arcode) {
+				description.text(arcode.description)
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=commcode]", function(e) {
+		var input = $(this);
+		var code  = input.val();
+		var description = input.closest('.ar-code').find('.description');
+		description.text('');
+
+		if (code == '') {
+			return false;
+		}
+
+		server.getCommCode(code, function(arcode) {
+			if (arcode) {
+				description.text(arcode.description)
+			}
+		});
+	});

@@ -15,6 +15,7 @@ class ComposerStaticInit3c446a491c1fc53e73d17de9066cbfc2
         'Twig\\Html\\TwigInputGroupSpan' => __DIR__ . '/../..' . '/classes/InputGroupSpan.twig.php',
         'Twig\\Html\\TwigLink' => __DIR__ . '/../..' . '/classes/Link.twig.php',
         'Twig\\Html\\TwigP' => __DIR__ . '/../..' . '/classes/P.twig.php',
+        'Twig\\Html\\TwigSelect' => __DIR__ . '/../..' . '/classes/Select.twig.php',
         'Twig\\Html\\TwigSelectSimple' => __DIR__ . '/../..' . '/classes/SelectSimple.twig.php',
         'Twig\\Html\\TwigTextarea' => __DIR__ . '/../..' . '/classes/Textarea.twig.php',
     );

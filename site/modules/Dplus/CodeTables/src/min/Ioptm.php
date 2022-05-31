@@ -19,4 +19,7 @@ class Ioptm extends SysopOptionalCode {
 	const RECORDLOCKER_FUNCTION = 'ioptm';
 	const DPLUS_TABLE           = '';
 	const SYSTEM = 'IN';
+
+	/** @var self */
+	protected static $instance;
 }
