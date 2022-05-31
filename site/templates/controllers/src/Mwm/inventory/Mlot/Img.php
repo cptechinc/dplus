@@ -5,8 +5,9 @@ use Purl\Url as Purl;
 use Dplus\DocManagement\Finders\Lt\Img as Docm;
 use Dplus\DocManagement\Copier;
 use Dplus\DocManagement\Folders;
-// Dplus Inventory Search
+// Dplus Inventory
 use Dplus\Wm\Inventory\Search;
+use Dplus\Wm\Inventory\Lotm;
 // Dplus CRUD
 use Dplus\Wm\Inventory\Mlot\Img as ImgManager;
 // Mvc Controllers
