@@ -12,18 +12,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "ee475f4faebff2ab52d15998f4de4a9d29ecc59a"
+                "reference": "860e03cdd0bcd3f811b9b34b791576b1f14ef198"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/ee475f4faebff2ab52d15998f4de4a9d29ecc59a",
-                "reference": "ee475f4faebff2ab52d15998f4de4a9d29ecc59a",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/860e03cdd0bcd3f811b9b34b791576b1f14ef198",
+                "reference": "860e03cdd0bcd3f811b9b34b791576b1f14ef198",
                 "shasum": ""
             },
             "require": {
                 "propel/propel": "dev-master#3087361bd27f3598f3ecd70e9fd272a5c2575b88"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -39,11 +38,7 @@
                 "data",
                 "dplus-model"
             ],
-            "support": {
-                "issues": "https://github.com/cptechinc/dplus-model/issues",
-                "source": "https://github.com/cptechinc/dplus-model/tree/master"
-            },
-            "time": "2022-03-24T15:51:26+00:00"
+            "time": "2022-02-16T17:29:04+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -2555,6 +2550,5 @@
         "php": ">=7.0.0",
         "ext-gd": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "platform-dev": []
 }

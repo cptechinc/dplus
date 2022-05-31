@@ -1,7 +1,6 @@
 <?php namespace Dplus\Min;
 // ProcessWire
 use ProcessWire\WireData;
-use ProcessWire\User;
 // Dplus Model
 use UserPermissionsItmQuery, UserPermissionsItm;
 // Dplus Record Locker

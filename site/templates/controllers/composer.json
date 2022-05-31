@@ -1,7 +1,17 @@
 {
-	"autoload": {
-		"psr-4": {
-			"Controllers\\": "src/"
+	"name": "dplus/controllers",
+	"description": "Controllers",
+	"type": "library",
+	"keywords": [ "processwire", "module" ],
+	"homepage": "http://modules.processwire.com",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Paul Gomez",
+			"email": "pauldro952@hotmail.com"
 		}
+	],
+	"autoload": {
+		"classmap": ["classes/"]
 	}
 }

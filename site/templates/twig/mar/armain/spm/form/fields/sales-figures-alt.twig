@@ -1,0 +1,45 @@
+{% set fields = {
+		'mtd': ['salesmtd', 'earnedmtd', 'paidmtd'],
+		'ytd': ['salesytd', 'earnedytd', 'paidytd'],
+		'ltd': ['salesltd', 'earnedltd', 'paidltd'],
+	}
+%}
+
+<div class="list-group list-group-flush mb-3">
+	<div class="list-group-item px-1 py-2 bg-dark text-white">
+		<div class="row">
+			<div class="col-sm-3"></div>
+			<div class="col"><b>Sales</b></div>
+			<div class="col"><b>Earned</b></div>
+			<div class="col"><b>Paid</b></div>
+		</div>
+	</div>
+	{% for time, subfields in fields %}
+		<div class="list-group-item px-1">
+			<div class="row">
+				<div class="col-sm-3"><b>{{ time|upper }}</b></div>
+				{% for name in subfields %}
+					<div class="col">
+						{% include 'util/bootstrap/form/input.twig' with {
+								'input': {
+									'name': name, 'type': 'number',
+									'value': attribute(person, name)|number_format(spm.field_attribute(name, 'precision')),
+									'size': 'sm',
+									'attributes': {
+										'max': spm.field_attribute(name, 'max'),
+										'data-precision': spm.field_attribute(name, 'precision'),
+									},
+									'addclasses': [
+										'text-right',
+										'sales-figures',
+										'qty-input'
+									]
+								}
+							}
+						%}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+</div>

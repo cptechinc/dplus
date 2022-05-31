@@ -31,14 +31,33 @@ class Igcm extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
-	/** @var self */
-	protected static $instance;
 
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(InvCommissionCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
 
 /* =============================================================
 	CRUD Creates
 ============================================================= */
+	/**
+	 * Return New Code
+	 * @return InvCommissionCode
+	 */
+	public function new($id = '') {
+		$code = new InvCommissionCode();
+		if (empty($id) === false && strtolower($id) != 'new') {
+			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$code->setId($id);
+		}
+		return $code;
+	}
 }

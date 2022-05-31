@@ -1,0 +1,103 @@
+{# ctm is an instance of CustomerTypeCode #}
+
+<div class="row">
+	<div class="col-sm-6">
+		<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ code.code }}">
+			<input type="hidden" name="action" value="update-ctm">
+			<input type="hidden" name="table" value="{{ page.codetable }}">
+			<input type="hidden" name="code" value="{{ code.code }}">
+
+			<div class="form-group">
+				<label for="code">Code</label>
+				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
+			</div>
+
+			<div class="form-group">
+				<label for="mail_list">Mail List</label>
+				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'hideblankoption' : 'true', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+			<div class="form-group">
+				<label for="order_approval_email">Order Approval Email</label>
+				<input type="text" name="order_approval_email" class="form-control email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
+			</div>
+
+			{% block extra_fields %}
+
+			{% endblock %}
+
+			<button type="submit" class="btn btn-success form_button collapse" id="ctm-submit">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+		</form>
+	</div>
+	<div class="col-sm-6">
+		<h4>Notes</h4>
+		<table class="table table-sm">
+			<thead>
+				<tr>
+					<th>Type</th>
+					<th>Has Notes</th>
+					<th class="text-right">Action</th>
+				</tr>
+			</thead>
+			{% for notetype in module_custnotes.get_notetypes() %}
+				<tr>
+					<td>{{ module_custnotes.get_notetype_description(notetype)|capitalize }}</td>
+					<td>{{ code.count_notetype(notetype)|bool|yesorno|capitalize }}</td>
+					<td class="text-right">
+						<textarea class="collapse" id="notes-{{ notetype }}" cols="{{ module_custnotes.get_notetype_column_count(notetype) }}">{{ module_custnotes.get_notes_array(notetype, code.code)|join('\r') }}</textarea>
+
+						{% if recordlocker.function_locked_by_user(page.codetable, code.code) or code.code == '' %}
+							{% if code.count_notetype(notetype)|bool %}
+								<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_custnotes.get_notetype_description(notetype)|capitalize }}">
+									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+								</button>
+							{% else %}
+								<button type="button" class="btn btn-secondary note-button" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_custnotes.get_notetype_description(notetype)|capitalize }}">
+									<i class="fa fa-plus" aria-hidden="true"></i> Add
+								</button>
+							{% endif %}
+						{% else %}
+							{% if code.count_notetype(notetype)|bool %}
+								<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_custnotes.get_notetype_description(notetype)|capitalize }}">
+									<i class="fa fa-pencil" aria-hidden="true"></i> View
+								</button>
+							{% else %}
+								<button type="button" class="btn btn-secondary" disabled>
+									<i class="fa fa-pencil" aria-hidden="true"></i> View
+								</button>
+							{% endif %}
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center">
+	{#
+		Only show Edit Actions if the code is
+		1. Locked for editing by the User
+		2. Is a new code
+		NOTE: Only show delete if code already exists.
+	#}
+	{% if recordlocker.function_locked_by_user(page.codetable, code.code) or code.isNew() %}
+		<button type="button" class="btn btn-success form_button" onclick="$('#ctm-submit').click()">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		{% if code.isNew() == false %}
+			<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger form_button delete_button">
+				<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+			</a>
+		{% endif %}
+	{% endif %}
+	<a href="{{ page.get_codetable_listURL(page.codetable, code.code) }}" class="btn btn-warning pull-right">
+		<i class="fa fa-times" aria-hidden="true"></i> Close
+	</a>
+</div>

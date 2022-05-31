@@ -30,8 +30,25 @@ abstract class SysopOptionalCode extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
-	/** @var self */
 	protected static $instance;
+
+/* =============================================================
+	Json
+============================================================= */
+	/**
+	 * Return JSON
+	 * @param  Code $code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return [
+			'system'      => $code->system,
+			'sysopcode'   => $code->sysop,
+			'id'          => $code->id,
+			'code'        => $code->id,
+			'description' => $code->description,
+		];
+	}
 
 /* =============================================================
 	Query Functions
@@ -73,21 +90,6 @@ abstract class SysopOptionalCode extends Base {
 	public function code($sysop, $id) {
 		$q = $this->querySysopCode($sysop, $id);
 		return $q->findOne();
-	}
-
-	/**
-	 * Return JSON
-	 * @param  Code $code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return [
-			'system'      => $code->system,
-			'sysopcode'   => $code->sysop,
-			'id'          => $code->id,
-			'code'        => $code->id,
-			'description' => $code->description,
-		];
 	}
 
 /* =============================================================

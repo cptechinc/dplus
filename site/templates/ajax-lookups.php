@@ -56,35 +56,6 @@
 		// Country Codes
 		['GET', 'country-codes/', AjaxLookup::class, 'countryCodes'],
 		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'countryCodes'],
-		'mar' => [
-			// Price Codes
-			['GET', 'ccm/', AjaxLookup\Mar::class, 'commissionCodes'],
-			['GET', 'ccm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'commissionCodes'],
-			// Price Codes
-			['GET', 'cpm/', AjaxLookup\Mar::class, 'priceCodes'],
-			['GET', 'cpm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'priceCodes'],
-			// Creedit Card Codes
-			['GET', 'crcd/', AjaxLookup\Mar::class, 'creditCardCodes'],
-			['GET', 'crcd/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'creditCardCodes'],
-			// Type Codes
-			['GET', 'ctm/', AjaxLookup\Mar::class, 'typeCodes'],
-			['GET', 'ctm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'typeCodes'],
-			// Shipvia Codes
-			['GET', 'csv/', AjaxLookup\Mar::class, 'shipviaCodes'],
-			['GET', 'csv/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'shipviaCodes'],
-			// AR Tax Codes
-			['GET', 'mtm/', AjaxLookup\Mar::class, 'arTaxCodes'],
-			['GET', 'mtm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'arTaxCodes'],
-			// Salesperson Group Codes
-			['GET', 'spgpm/', AjaxLookup\Mar::class, 'salespersonGroupCodes'],
-			['GET', 'spgpm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'salespersonGroupCodes'],
-			// Salesperson Group Codes
-			['GET', 'spm/', AjaxLookup\Mar::class, 'salespersonCodes'],
-			['GET', 'spm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'salespersonCodes'],
-			// AR Terms Codes
-			['GET', 'trm/', AjaxLookup\Mar::class, 'termsCodes'],
-			['GET', 'trm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'termsCodes'],
-		],
 		'mgl' => [
 			// General Ledger Codes
 			['GET', 'mhm/', AjaxLookup::class, 'generalLedgerCodes'],
@@ -95,7 +66,6 @@
 				['GET', '', AjaxLookup\Min::class, 'productLines'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Min::class, 'productLines'],
 			]
-		],
 		'mpo' => [
 			['GET', 'ap-invoices/', AjaxLookup::class, 'purchaseOrders'],
 			['GET', 'ap-invoices/page{pagenbr:\d+}/', AjaxLookup::class, 'purchaseOrders'],

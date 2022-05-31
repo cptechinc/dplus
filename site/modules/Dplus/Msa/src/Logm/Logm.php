@@ -158,17 +158,6 @@ class Logm extends WireData {
 		return $this->user($id);
 	}
 
-	/**
-	 * Return User's Name
-	 * @param  string $id    User ID
-	 * @return bool
-	 */
-	public function name($id) {
-		$q = $this->queryId($id);
-		$q->select(DplusUser::aliasproperty('name'));
-		return $q->findOne();
-	}
-
 /* =============================================================
 	Input Functions
 ============================================================= */

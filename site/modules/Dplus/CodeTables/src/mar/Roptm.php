@@ -19,7 +19,4 @@ class Roptm extends SysopOptionalCode {
 	const RECORDLOCKER_FUNCTION = 'roptm';
 	const DPLUS_TABLE           = '';
 	const SYSTEM = 'AR';
-
-	/** @var self */
-	protected static $instance;
 }

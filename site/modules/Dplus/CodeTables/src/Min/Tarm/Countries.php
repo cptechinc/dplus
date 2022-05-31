@@ -26,12 +26,6 @@ class Countries extends Base {
 	const MODEL_KEY          = 'id, country';
 	const MODEL_TABLE        = 'inv_trco_code';
 
-	/** @var self */
-	protected static $instance;
-
-/* =============================================================
-	Query Functions
-============================================================= */
 	/**
 	 * Return Query filtered By Code
 	 * @param  string $id  Code

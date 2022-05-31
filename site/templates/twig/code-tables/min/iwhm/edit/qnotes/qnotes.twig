@@ -14,7 +14,7 @@
 			<td>{{ qnotesSub.notesExist(warehouse.whseid)|yesorno|capitalize }}</td>
 			<td class="text-right">
 				<textarea class="collapse" id="notes-{{ qnotesSub.type() }}" cols="{{ qnotesSub.fieldAttribute('note', 'cols') }}">{{ qnotesSub.getNotesArray(warehouse.id)|join('\r') }}</textarea>
-				{% if qnotesSub.notesExist(warehouse.whseid) %}
+				{% if module_notes.notes_exist(notetype, warehouse.whseid) %}
 					<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#notes-modal" data-type="{{ qnotesSub.type() }}" data-description="{{ qnotesSub.typeDescription()|capitalize }}">
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 					</button>

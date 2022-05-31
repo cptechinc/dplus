@@ -19,7 +19,4 @@ class Aoptm extends SysopOptionalCode {
 	const RECORDLOCKER_FUNCTION = 'aoptm';
 	const DPLUS_TABLE           = '';
 	const SYSTEM = 'AP';
-
-	/** @var self */
-	protected static $instance;
 }

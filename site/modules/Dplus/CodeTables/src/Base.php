@@ -10,9 +10,6 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
-/**
- * Base Class for Code Tables to implement
- */
 abstract class Base extends WireData {
 	const MODEL              = '';
 	const MODEL_KEY          = '';
@@ -29,21 +26,12 @@ abstract class Base extends WireData {
 	/** DPlus Permission Code */
 	const PERMISSION = '';
 
-	/** @var self */
 	protected static $instance;
 
-	/**
-	 * Return Instance of class
-	 * @return static
-	 */
 	public static function instance() {
 		return static::getInstance();
 	}
 
-	/**
-	 * Return Instance of class
-	 * @return static
-	 */
 	public static function getInstance() {
 		if (empty(static::$instance)) {
 			static::$instance = new static();
@@ -56,6 +44,15 @@ abstract class Base extends WireData {
 		$this->recordlocker = new FunctionLocker();
 		$this->recordlocker->setFunction(static::RECORDLOCKER_FUNCTION);
 		$this->recordlocker->setUser($this->wire('user'));
+	}
+
+	/**
+	 * Return Array ready for JSON
+	 * @param  Code  $code Code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		return ['code' => $code->code, 'description' => $code->description];
 	}
 
 /* =============================================================
@@ -129,15 +126,6 @@ abstract class Base extends WireData {
 	public function codes() {
 		$q = $this->query();
 		return $q->find();
-	}
-
-	/**
-	 * Return Array ready for JSON
-	 * @param  Code  $code Code
-	 * @return array
-	 */
-	public function codeJson(Code $code) {
-		return ['code' => $code->code, 'description' => $code->description];
 	}
 
 /* =============================================================

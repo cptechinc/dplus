@@ -35,12 +35,6 @@ class Umm extends Base {
 		'pricebyweight' => ['type' => 'text', 'default' => 'N'],
 	];
 
-	/** @var self */
-	protected static $instance;
-
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
 	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
@@ -51,9 +45,22 @@ class Umm extends Base {
 			'code'          => $code->code,
 			'description'   => $code->description,
 			'conversion'    => $code->conversion,
-			'stockbycase'   => $code->stockbycase,
+			'stockbycase' => $code->stockbycase,
 			'pricebyweight' => $code->pricebyweight,
 		];
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(UnitofMeasureSale::aliasproperty('id'));
+		return $q->find()->toArray();
 	}
 
 /* =============================================================
@@ -175,7 +182,11 @@ class Umm extends Base {
 	 * @return UnitofMeasureSale
 	 */
 	public function new($id = '') {
-		$code = parent::new($id);
+		$code = new UnitofMeasureSale();
+		if (empty($id) === false && strtolower($id) != 'new') {
+			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$code->setId($id);
+		}
 		$code->setConversion(1.00000);
 		$code->setPricebyweight($this->fieldAttribute('pricebyweight', 'default'));
 		$code->setStockbycase($this->fieldAttribute('stockbycase', 'default'));

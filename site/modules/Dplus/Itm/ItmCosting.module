@@ -8,8 +8,6 @@ use Dplus\CodeValidators\Min\Itm as ItmValidator;
 
 // Dplus Configs
 use Dplus\Configs;
-// Dplus Code Tables
-use Dplus\Codes;
 
 use ConfigIn, ConfigPo;
 use ItemMasterItemQuery, ItemMasterItem;
@@ -359,7 +357,7 @@ class ItmCosting extends WireData implements Module {
 	 * @return int
 	 */
 	public function getUomCodeLength() {
-		return Codes\Min\Umm::getInstance()->fieldAttribute('code', 'maxlength');
+		return $this->wire('modules')->get('CodeTablesUmm')->getCodeMaxlength();
 	}
 
 /* =============================================================

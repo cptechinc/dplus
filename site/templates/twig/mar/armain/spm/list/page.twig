@@ -1,0 +1,10 @@
+{% block breadcrumbs %}
+	{% include 'mar/armain/spm/bread-crumbs.twig' %}
+{% endblock %}
+
+{% if session.getFor('response', 'spm') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'spm')} %}
+{% endif %}
+
+{% include 'mar/armain/spm/search-form.twig' with {'q' : page.input.get.text('q')} %}
+{% include 'mar/armain/spm/list/list.twig' %}

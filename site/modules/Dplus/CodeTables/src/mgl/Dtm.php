@@ -13,7 +13,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the DTM code table
+ * Class that handles the CRUD of the TTM code table
  */
 class Dtm extends Base {
 	const MODEL              = 'GlDistCode';
@@ -29,7 +29,6 @@ class Dtm extends Base {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 	];
 
-	/** @var self */
 	protected static $instance;
 
 	/**
@@ -40,9 +39,6 @@ class Dtm extends Base {
 		return GlDistCode::NBROFACCTS;
 	}
 
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
 	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
@@ -78,8 +74,42 @@ class Dtm extends Base {
 	}
 
 /* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(GlDistCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @return ObjectCollection
+	 */
+	public function codes() {
+		$q = $this->getQueryClass();
+		return $q->find();
+	}
+
+/* =============================================================
 	CRUD Creates
 ============================================================= */
+	/**
+	 * Return New Code
+	 * @return GlDistCode
+	 */
+	public function new($id = '') {
+		$code = new GlDistCode();
+		if (empty($id) === false && strtolower($id) != 'new') {
+			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$code->setId($id);
+		}
+		return $code;
+	}
 
 /* =============================================================
 	CRUD Processing

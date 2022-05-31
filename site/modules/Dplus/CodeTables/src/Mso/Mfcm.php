@@ -35,12 +35,8 @@ class Mfcm extends Base {
 		'class'        => ['type' => 'text', 'maxlength' => 4],
 	];
 
-	/** @var self */
 	protected static $instance;
 
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
 	/**
 	 * Return Array ready for JSON
 	 * @param  Code  $code Code
@@ -58,8 +54,33 @@ class Mfcm extends Base {
 	}
 
 /* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return the IDs for the Work Center Confirm Code
+	 * @return array
+	 */
+	public function ids() {
+		$q = $this->query();
+		$q->select(MotorFreightCode::aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+/* =============================================================
 	CRUD Creates
 ============================================================= */
+	/**
+	 * Return New Code
+	 * @return MotorFreightCode
+	 */
+	public function new($id = '') {
+		$code = new MotorFreightCode();
+		if (empty($id) === false && strtolower($id) != 'new') {
+			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$code->setId($id);
+		}
+		return $code;
+	}
 
 /* =============================================================
 	CRUD Processing
