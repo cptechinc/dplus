@@ -2,8 +2,8 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	inventory              Dplus\Wm\Inventory\Search
-	docm                   Dplus\DocManagement\Finders\Lt\Img
+	lots                   Dplus\Wm\Inventory\Search
+	docm                   Propel\Runtime\Util\PropelModelPager
 #}
 <div class="mb-3">
 	<a href="{{ page.imgUrl() }}" class="btn btn-primary btn-lg">
@@ -14,3 +14,5 @@
 <h3 class="mb-3">Results for "{{ input.get.text('scan') }}"</h3>
 
 {% include 'warehouse/inventory/mlot/img/scan/results/list.twig' %}
+
+{% include 'util/paginator/propel.twig' with {'pager': lots} %}
