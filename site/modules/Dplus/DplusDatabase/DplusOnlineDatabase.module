@@ -8,24 +8,30 @@ use Propel\Runtime\ServiceContainer\ServiceContainerInterface;
  * Class for Creating Connection to the dpluso(x) databases for Dplus
  * NOTE these are the Session based database so the data is only live for the session and last refresh
  */
-class DplusOnlineDatabase extends DplusDatabase implements ConfigurableModule {
+class DplusOnlineDatabase extends DplusDatabase {
 	const CONNECTION_NAME_PROPEL = 'dplusodb';
 	const CONNECTION_NAME_PW     = 'dpluso';
-
+	
+/* =============================================================
+	DB Credentials
+============================================================= */
 	/**
 	 * Returns Config to connect to Database
 	 * @return Config
 	 */
 	public function dbconfig() {
 		$config = $this->wire('config');
-		$dbconfig = parent::dbconfig();
 
-		if (!empty($this->db_name)){
-			$this->db_name = $this->db_name;
-		} else {
-			$this->db_name = !empty($config->dplusdbname) ? $config->dplusdbname : "dpluso$config->COMPANYNBR";
+		if ($config->has('databases') === false) {
+			$this->error("Credentials Not Found");
+			return false;
 		}
-		return $dbconfig;
+
+		if ($config->databases->has('dpluso') === false) {
+			$this->error("Credentials Not Found");
+			return false;
+		}
+		return $config->databases->dpluso;
 	}
 
 /* =============================================================
