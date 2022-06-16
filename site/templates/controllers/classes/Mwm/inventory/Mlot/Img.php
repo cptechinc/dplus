@@ -1,14 +1,20 @@
 <?php namespace Controllers\Mwm\Inventory\Mlot;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Propel ORM Library
+use Propel\Runtime\Util\PropelModelPager as ModelPager;
+// Dplus Model
+use InvLotMaster;
 // Document Management
 use Dplus\DocManagement\Finders\Lt\Img as Docm;
 use Dplus\DocManagement\Copier;
 use Dplus\DocManagement\Folders;
-// Dplus Inventory Search
+// Dplus Filters
+use Dplus\Filters;
+// Dplus Inventory
 use Dplus\Wm\Inventory\Search;
-// Dplus CRUD
 use Dplus\Wm\Inventory\Mlot\Img as ImgManager;
+use Dplus\Wm\Inventory\Lotm;
 // Mvc Controllers
 use Controllers\Wm\Base;
 
@@ -57,29 +63,33 @@ class Img extends Base {
 	}
 
 	private static function scan($data) {
-		$search = Search::getInstance();
-		$search->requestSearch($data->scan);
+		$lotm = Lotm::getInstance();
+		$filter = new Filters\Min\LotMaster();
 
-		if ($search->lotserialExists($data->scan)) {
+		if ($lotm->exists($data->scan)) {
 			self::pw('session')->redirect(self::lotserialUrl($data->scan), $http301 = false);
 		}
+		$filter->search($data->scan);
+		$lots = $filter->query->paginate(self::pw('input')->pageNum, 15);
+		$filter->query->find();
 
 		self::initHooks();
 		self::pw('page')->headline = "Searching for $data->scan";
-		$html = self::displayScanResults($data);
+		$html = self::displayScanResults($data, $lots);
 		self::getImg()->deleteResponse();
 		return $html;
 	}
 
 	private static function lotserial($data) {
-		Search::getInstance()->requestSearch($data->lotserial);
+		$lotm = Lotm::getInstance();
+		$lot = $lotm->lot($data->lotserial);
 		self::copyImage($data);
 
 		self::initHooks();
 		self::pw('page')->headline = "Lotserial #$data->lotserial";
 		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/.js.twig');
 		self::pw('config')->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
-		$html = self::displayLotserial($data);
+		$html = self::displayLotserial($data, $lot);
 		self::getImg()->deleteResponse();
 		return $html;
 	}
@@ -113,24 +123,21 @@ class Img extends Base {
 		return $html;
 	}
 
-	private static function displayScanResults($data) {
-		$inventory = Search::getInstance();
+	private static function displayScanResults($data, ModelPager $lots) {
 		$docm = self::getDocm();
 
 		$html  = '';
 		$html .= self::displayResponse($data);
-		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/scan/results/display.twig', ['inventory' => $inventory, 'docm' => $docm]);
+		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/scan/results/display.twig', ['docm' => $docm, 'lots' => $lots]);
 		return $html;
 	}
 
-	private static function displayLotserial($data) {
-		$inventory = Search::getInstance();
-		$lotserial = $inventory->getLotserial($data->lotserial);
+	private static function displayLotserial($data, InvLotMaster $lot) {
 		$docm = self::getDocm();
 
 		$html  = '';
 		$html .= self::displayResponse($data);
-		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/display.twig', ['lotserial' => $lotserial, 'docm' => $docm]);
+		$html .= self::pw('config')->twig->render('warehouse/inventory/mlot/img/lotserial/display.twig', ['docm' => $docm, 'lot' => $lot]);
 		return $html;
 	}
 

@@ -136,8 +136,6 @@ class Uploader extends WireData {
 			return false;
 		}
 		$this->filelocation = $this->uploadDirectory . $files[0];
-		echo $this->filelocation;
-		exit;
 		return true;
 	}
 
