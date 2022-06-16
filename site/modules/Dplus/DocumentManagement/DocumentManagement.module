@@ -126,6 +126,8 @@ class DocumentManagement extends WireData implements Module {
 	}
 
 	public function init() {
-
+		
 	}
+
+
 }
