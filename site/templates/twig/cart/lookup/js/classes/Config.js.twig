@@ -11,6 +11,18 @@ class LookupConfig {
 	constructor() {
 		this.custid = '{{ cart.getCustid() }}';
 		this.shiptoid = '{{ cart.getShiptoid() }}';
+		
+		this.fields = {
+			qty: {
+				precision: {{  cart.decimalPlacesQty() }}
+			},
+			price: {
+				precision: {{  cart.decimalPlacesPrice() }}
+			},
+			totalprice: {
+				precision: 2
+			}
+		}
 	}
 
 }

@@ -32,6 +32,8 @@ class LookupForm {
 				form.updateItmItemDescription(function() {
 					form.updatePricing(function() {
 						$('#loading-modal').modal('hide');
+						var price = parseFloat(inputs.price.val());
+						inputs.price.val(price.toFixed(form.config.fields.price.precision));
 
 						if (inputs.qty.val() == '') {
 							inputs.qty.focus();
