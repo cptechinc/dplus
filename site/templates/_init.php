@@ -26,11 +26,6 @@ $input->purl = new Purl\Url($input->url($withQueryString = true));
 
 // CHECK DATABASE CONNECTIONS
 if ($page->id != $config->errorpage_dplusdb) {
-	if (empty(wire('dplusdata')) || empty(wire('dpluso'))) {
-		$modules->get('DplusDatabase')->logError('At least One database is not connected');
-		$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
-	}
-
 	$db_modules = array(
 		'dplusdata' => array(
 			'module'   => 'DplusDatabase',
@@ -44,11 +39,12 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 	foreach ($db_modules as $key => $connection) {
 		$module = $modules->get($connection['module']);
-		$module->connectPropel();
+		
 
 		try {
-			$propel_name  = $module->dbConnectionName();
-			$$propel_name = $module->getDebugConnection();
+			$module->connect();
+			$module->connectPropel();
+			$module->getDebugConnection();
 		} catch (Exception $e) {
 			$module->logError($e->getMessage());
 			$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
@@ -69,6 +65,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 } else {
 	if (!$input->get->retry) {
 		$configimporter = $modules->get('Configs');
+		
 		if ($configimporter->importJsonExists()) {
 			$configimporter->import();
 			$page->fullURL->query->set('retry', 'true');

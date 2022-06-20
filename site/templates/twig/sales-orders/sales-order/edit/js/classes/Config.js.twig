@@ -1,9 +1,9 @@
-class LookupConfig {
+class SoConfigs {
 	static instance = null;
 
 	static getInstance() {
 		if (this.instance === null) {
-			this.instance = new LookupConfig();
+			this.instance = new SoConfigs();
 		}
 		return this.instance;
 	}
@@ -11,14 +11,14 @@ class LookupConfig {
 	constructor() {
 		this.custid = '{{ order.custid }}';
 		this.shiptoid = '{{ order.shiptoid }}';
+		this.customer = {
+			id:'{{ order.custid }}'
+		},
+		this.addToPrice = {{ order.customer.hasFreightRateCode() ?  order.customer.soFreightRate.addon : 0.00 }};
 		this.fields = {
 			price: {
 				precision: {{ eso.decimal_places_price() }}
 			},
-			qty: {
-				precision: {{ eso.decimal_places_qty() }}
-			},
 		}
 	}
-
 }

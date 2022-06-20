@@ -32,6 +32,9 @@ class LookupForm {
 				form.updateItmItemDescription(function() {
 					form.updatePricing(function() {
 						$('#loading-modal').modal('hide');
+						var price = parseFloat(inputs.price.val());
+						price += parseFloat(config.addToPrice);
+						inputs.price.val(price.toFixed(form.config.fields.price.precision));
 
 						if (inputs.qty.val() == '') {
 							inputs.qty.focus();
@@ -85,14 +88,15 @@ class LookupForm {
 		}
 
 		var qty   = parseFloat(inputs.qty.val());
-		var price = pricing.price;
+		var price = parseFloat(pricing.price);
 
 		pricing.pricebreaks.forEach(pricebreak => {
 			if (qty >= parseFloat(pricebreak.qty)) {
 				price = pricebreak.price;
 			}
 		});
-		inputs.price.val(price);
+		price += parseFloat(config.addToPrice);
+		inputs.price.val(price.toFixed(form.config.fields.price.precision));
 		callback();
 	}
 

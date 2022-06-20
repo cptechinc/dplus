@@ -58,7 +58,7 @@
 
 					$qty = $itemID == 'ALL' ? 0 : $pickingsession->get_userpickedtotal();
 					$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
-					$page->body = $config->twig->render('warehouse/inventory/print-pick-item-label/label-form.twig', ['page' => $page, 'labelsession' => $labelsession, 'm_print' => $m_print, = 'ordn' => $ordn, 'qty' => $qty]);
+					$page->body .= $config->twig->render('warehouse/inventory/print-pick-item-label/label-form.twig', ['page' => $page, 'labelsession' => $labelsession, 'm_print' => $m_print, 'ordn' => $ordn, 'qty' => $qty]);
 					$page->body .= $config->twig->render('warehouse/inventory/print-item-label/labels-modal.twig', ['formats' => $m_print->get_labelformats()]);
 					$page->body .= $config->twig->render('warehouse/inventory/print-item-label/printers-modal.twig', ['printers' => $m_print->get_printers()]);
 				} else {

@@ -197,6 +197,10 @@ class DplusDatabase extends WireData implements Module {
 ============================================================= */
 	public function init() {
 		$this->connectDatabase();
+		$config = $this->dbconfig();
+		if ($config) {
+			$this->db_name = $config->dbName;
+		}
 	}
 
 	public static function getModuleInfo() {

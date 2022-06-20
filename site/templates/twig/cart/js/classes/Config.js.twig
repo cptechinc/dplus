@@ -1,3 +1,5 @@
+{% set customer = cart.getCustomer() %}
+
 class CartConfig {
 	static instance = null;
 
@@ -9,6 +11,7 @@ class CartConfig {
 	}
 
 	constructor() {
+		this.addToPrice = {{ customer.hasFreightRateCode() ?  customer.soFreightRate.addon : 0.00 }},
 		this.fields = {
 			qty: {
 				precision: {{  cart.decimalPlacesQty() }}

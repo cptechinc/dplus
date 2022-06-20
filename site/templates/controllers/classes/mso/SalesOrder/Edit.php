@@ -1,26 +1,26 @@
 <?php namespace Controllers\Mso\SalesOrder;
-
+// Base PHP
 use stdClass;
 // Propel Query
 use Propel\Runtime\ActiveQuery\Criteria;
 // Dpluso Model
-use PricingQuery, Pricing;
-use OrdrhedQuery, Ordrhed as SalesOrderEditable;
+use PricingQuery;
+use Ordrhed as SalesOrderEditable;
 // Dplus Model
 use SalesOrderQuery, SalesOrder;
-use SalesOrderDetailQuery, SalesOrderDetail;
-use CustomerQuery, Customer;
-use ItemMasterItemQuery, ItemMasterItem;
-use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
+use SalesOrderDetail;
+use CustomerQuery;
+use ItemMasterItem;
+use ConfigSalesOrder as ConfigSo;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\SalesOrderEdit as EsoCRUD;
+use ProcessWire\SalesOrderEdit as EsoCRUD;
+// Dplus Mso
+use Dplus\Mso\So\Repo;
 // Dplus Validators
-use Dplus\CodeValidators\Mso as MsoValidator;
 use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Filters
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
 use Controllers\Mso\SalesOrder\Base;
 
 class Edit extends Base {
@@ -116,14 +116,12 @@ class Edit extends Base {
 		$eso->set_ordn($data->ordn);
 
 		// Validate Line Exists
-		$q = SalesOrderDetailQuery::create()->filterByOrdernumber($data->ordn)->filterByLinenbr($data->linenbr);
-
-		if ($data->linenbr !== 0 && $q->count() === 0) {
+		if ($data->linenbr !== 0 && Repo\Details::instance()->exists($data->ordn, $data->linenbr) === false) {
 			$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Invalid Line #", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Line # $data->linenbr does not exist on SO # $data->ordn"]);
 			return $html;
 		}
 
-		$orderitem = $q->findOneOrCreate();
+		$orderitem = Repo\Details::instance()->detailLine($data->ordn, $data->linenbr, $createIfNotFound = true);
 		self::_setupOrderItem($eso, $orderitem, $data);
 		$files = self::setupItemJsonFiles($eso, $orderitem);
 		$html  = $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['eso' => $eso, 'orderitem' => $orderitem, 'data' => $files]);
@@ -138,29 +136,29 @@ class Edit extends Base {
 		$config = self::pw('config');
 		$page->headline = "Editing Sales Order #$data->ordn";
 		$order = $eso->get_editable_header($data->ordn);
+		$orderReadonly = $eso->get_order_static($data->ordn);
 		$html = '';
-		$html .= self::soEditHeader($eso, $order);
+		$html .= self::soEditHeader($eso, $order, $orderReadonly);
 		$html .= self::soEditItems($eso, $order);
-		$html .= self::itemLookupForm($eso, $order);
+		$html .= self::itemLookupForm($eso, $orderReadonly);
 		$html .= self::qnotes($order->ordernumber);
 		$html .= self::setupCstkLastSold($order);
-		$html .= self::js($eso, $order->ordernumber);
+		$html .= self::js($eso, $orderReadonly);
 		$html .= $config->twig->render('sales-orders/sales-order/edit/edit-item/modal.twig', ['ordn' => $order->ordernumber]);
 		return $html;
 	}
 
-	private static function soEditHeader(EsoCRUD $eso, SalesOrderEditable $order) {
+	private static function soEditHeader(EsoCRUD $eso, SalesOrderEditable $order, SalesOrder $orderReadonly) {
 		$html = '';
 		$page  = self::pw('page');
 		$config = self::pw('config');
-		$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 		$page->listpage = self::pw('pages')->get('pw_template=sales-orders');
 		$page->formurl  = self::pw('pages')->get('template=dplus-menu, name=mso')->child('template=redir')->url;
 		$html .= $config->twig->render('sales-orders/sales-order/edit/links-header.twig', ['order' => $order]);
-		$html .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['customer' => $customer, 'order' => $eso->get_order_static($order->ordernumber)]);
+		$html .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['order' => $orderReadonly]);
 
 		if (self::pw('user')->is_editingorder($order->ordernumber)) {
-			$html .= $config->twig->render('sales-orders/sales-order/edit/edit-form.twig', ['eso' => $eso, 'order' => $order, 'states' => $eso->get_states(), 'shipvias' => $eso->get_shipvias(), 'warehouses' => $eso->get_warehouses(), 'termscodes' => $eso->get_termscodes(), 'shiptos' => $customer->get_shiptos()]);
+			$html .= $config->twig->render('sales-orders/sales-order/edit/edit-form.twig', ['eso' => $eso, 'order' => $order, 'states' => $eso->get_states(), 'shipvias' => $eso->get_shipvias(), 'warehouses' => $eso->get_warehouses(), 'termscodes' => $eso->get_termscodes(), 'shiptos' => $orderReadonly->customer->get_shiptos()]);
 		}
 		return $html;
 	}
@@ -175,11 +173,11 @@ class Edit extends Base {
 			$html .= $config->twig->render('sales-orders/sales-order/edit/items.twig', ['order' => $order, 'eso' => $eso]);
 		}
 		$html .= $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['ordn' => $order->ordernumber]);
-		self::pw('page')->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $order->ordernumber]);
+		self::pw('page')->js .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $order->ordernumber]);
 		return $html;
 	}
 
-	private static function itemLookupForm(EsoCRUD $eso, SalesOrderEditable $order) {
+	private static function itemLookupForm(EsoCRUD $eso, SalesOrder $order) {
 		$html = '';
 
 		if (self::pw('user')->is_editingorder($order->ordernumber) === false) {
@@ -211,21 +209,20 @@ class Edit extends Base {
 
 	private static function qnotes($ordn) {
 		$config = self::pw('config');
-		$page   = self::pw('page');
 		$qnotes = self::pw('modules')->get('QnotesSalesOrder');
 		$html   = '<div class="mb-4"></div>';
 		$html   .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['qnotes_so' => $qnotes, 'ordn' => $ordn]);
 		return $html;
 	}
 
-	private static function js(EsoCRUD $eso, $ordn) {
+	private static function js(EsoCRUD $eso, SalesOrder $order) {
 		$config = self::pw('config');
 		$page   = self::pw('page');
 		$html   = '';
 
-		if (self::pw('user')->is_editingorder($ordn)) {
+		if (self::pw('user')->is_editingorder($order->ordernumber)) {
 			$html .= $config->twig->render('util/js-variables.twig', ['variables' => array('shiptos' => $eso->get_shiptos_json_array())]);
-			$page->js   .= $config->twig->render('sales-orders/sales-order/edit/js/js.twig', ['eso' => $eso]);
+			$page->js .= $config->twig->render('sales-orders/sales-order/edit/js/js.twig', ['eso' => $eso, 'order' => $order]);
 			$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		}
 		return $html;
