@@ -174,6 +174,7 @@ class Mso extends Controller {
 			'pricebreaks' => $pricebreaks
 		];
 		return $response;
+	}
 
 	public static function validateLsmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
