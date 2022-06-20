@@ -13,7 +13,7 @@ use PurchaseOrderDetailReceiving;
 // Dpluso Model
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData, ProcessWire\User;
 use Processwire\SearchInventory, Processwire\WarehouseManagement,ProcessWire\HtmlWriter;
 // Dplus Configs
 use Dplus\Configs as Dconfigs;
@@ -79,7 +79,7 @@ class Receiving extends Base {
 			case 'verify-submit':
 				$q = WhseitemphysicalcountQuery::create();
 				$q->filterBySessionid(self::getSessionid());
-				$q->filterByScan($scan);
+				$q->filterByScan($data->scan);
 				$q->findOne();
 				$item = $q->findOne();
 				$url = self::receivingUrl($data->ponbr);
@@ -175,7 +175,7 @@ class Receiving extends Base {
 		}
 
 		if ($data->recno) {
-			$q->filterByRecno($recno, Criteria::ALT_NOT_EQUAL);
+			$q->filterByRecno($data->recno, Criteria::ALT_NOT_EQUAL);
 			$q->delete();
 
 			self::redirect(self::receivingScanUrl($data->ponbr, $data->scan), $http301 = false);
@@ -275,12 +275,12 @@ class Receiving extends Base {
 
 	static public function postReceivingAndCloseUrl($ponbr) {
 		$url = new Purl(self::postReceivingUrl($ponbr));
-		$url->query->set('close', 'true')
+		$url->query->set('close', 'true');
 		return $url->getUrl();
 	}
 
 	static public function printReceivingLineUrl(PurchaseOrderDetailReceiving $item) {
-		$url = new Purl(self::receivingUrl($ponbr));
+		$url = new Purl(self::receivingUrl($item->ponbr));
 		$url->path = self::pw('pages')->get('pw_template=whse-print-received-item-label')->url;
 		$url->query->set('ponbr', $item->ponbr);
 		$url->query->set('linenbr', $item->linenbr);
@@ -401,8 +401,8 @@ class Receiving extends Base {
 			}
 
 			if ($receiving->strategies->enforceItemids->allowItemsNotListed() == false) {
-				$html .= self::scannFormSingleItemError($data, $physicalitem);
-				$html  .= self::poItemScanReceiveForm($data, $physicalitem);
+				$html .= self::scannedFormSingleItemError($data, $physicalitem);
+				$html .= self::poItemScanReceiveForm($data, $physicalitem);
 			}
 		}
 		return $html;
@@ -472,7 +472,7 @@ class Receiving extends Base {
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
-	static public function validateUserPermission(user $user = nul) {
+	static public function validateUserPermission(User $user = null) {
 		if (empty($user)) {
 			$user = self::pw('user');
 		}
