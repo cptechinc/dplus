@@ -1,0 +1,24 @@
+class SoConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SoConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.custid = '{{ order.custid }}';
+		this.shiptoid = '{{ order.shiptoid }}';
+		this.customer = {
+			id:'{{ order.custid }}'
+		},
+		this.addToPrice = {{ order.customer.hasFreightRateCode() ?  order.customer.soFreightRate.addon : 0.00 }};
+		this.fields = {
+			price: {
+				precision: {{ eso.decimal_places_price() }}
+			},
+		}
+	}
+}

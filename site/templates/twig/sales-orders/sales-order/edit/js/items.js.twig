@@ -9,6 +9,7 @@ $(function() {
 		var price = parseFloat(input.val());
 		var row   = input.closest('.order-item');
 		input.val(price.toFixed({{ eso.decimal_places_price() }}));
+		price += parseFloat(configSo.addToPrice);
 		update_totalprice(row);
 
 		request_validate_pricemargin(input.data('itemid'), price, function(valid) {
