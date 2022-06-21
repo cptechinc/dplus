@@ -7,6 +7,7 @@ use ApInvoiceQuery, ApInvoice as ApInvoiceModel;
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Docm
 use Dplus\Docm\Finder\TagRef1;
+use Dplus\Docm\Finder as Finders;
 
 /**
  * Finder\Subsystem\Mpo\ApInvoice
@@ -37,7 +38,7 @@ class ApInvoice extends TagRef1 {
 	 * @return Documents[]|ObjectCollection
 	 */
 	public function find($invnbr) {
-		$q = $this->query();
+		$q = $this->queryBase();
 		$this->filterApInvoice($q, $invnbr);
 		return $q->find();
 	}
@@ -50,7 +51,7 @@ class ApInvoice extends TagRef1 {
 	 * @return int 
 	 */
 	public function count($invnbr) {
-		$q = $this->query();
+		$q = $this->queryBase();
 		$this->filterApInvoice($q, $invnbr);
 		return $q->count();
 	}
@@ -65,21 +66,18 @@ class ApInvoice extends TagRef1 {
 	 * @return DocumentQuery
 	 */
 	public function filterInvoice(DocumentQuery $q, $invnbr) {
-		$this->initColumns();
 		$invnbr = PoModel::get_paddedponumber($invnbr);
 		$validate = new MpoValidator();
-		$conditions = array();
+		$conditions = [];
 
 		if ($validate->invoice($invnbr) === false) {
 			$this->addConditionPo($q, $invnbr);
+			return $q;
 		}
-
-		if ($validate->invoice($invnbr)) {
-			$conditions[] = $this->addConditionInvoiceRef1($q, $invnbr);
-			$conditions[] = $this->addConditionInvoiceRef2($q, $invnbr);
-			$conditions[] = $this->addConditionInvoicePonbr($q, $invnbr);
-			$q->where($conditions, 'or');
-		}
+		$conditions[] = $this->addConditionInvoiceRef1($q, $invnbr);
+		$conditions[] = $this->addConditionInvoiceRef2($q, $invnbr);
+		$conditions[] = $this->addConditionInvoicePonbr($q, $invnbr);
+		$q->where($conditions, 'or');
 		return $q;
 	}
 
