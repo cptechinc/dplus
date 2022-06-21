@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Subsystem\Mpo;
+<?php namespace Dplus\Docm\Finder\Subsystem\Po;
 // Dplus Model
 use PurchaseOrder as PoModel;
 use DocumentQuery;
@@ -7,7 +7,6 @@ use ApInvoiceQuery, ApInvoice as ApInvoiceModel;
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Docm
 use Dplus\Docm\Finder\TagRef1;
-use Dplus\Docm\Finder as Finders;
 
 /**
  * Finder\Subsystem\Mpo\ApInvoice

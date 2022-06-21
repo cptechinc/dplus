@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Subsystem\Mpo;
+<?php namespace Dplus\Docm\Finder\Subsystem\Po;
 // Dplus Model
 use DocumentQuery;
 use PurchaseOrder as PoModel;
