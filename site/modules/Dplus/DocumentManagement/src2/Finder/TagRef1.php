@@ -1,7 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Tags;
-// Dplus Docm
-use Dplus\Docm\Finder\Tag;
-
+<?php namespace Dplus\Docm\Finder;
 
 /**
  * Finder\Tags\TagRef1
@@ -35,5 +32,5 @@ abstract class TagRef1 extends Tag {
 		$q = $this->query();
 		$q->filterByReference1($ref1);
 		return $q->count();
-	}	
+	}
 }

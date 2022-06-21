@@ -1,7 +1,9 @@
 <?php namespace Dplus\Docm\Finder\Tags;
 
+use Dplus\Docm\Finder\TagRef1;
+
 /**
- * Finder\Qt
+ * Finder\Tags\Qt
  * Decorator for DocumentQuery to find Documents in Database related to QT Documents
  * 
  * @method  Tag  find($qnbr)   Return Documents related to quote number

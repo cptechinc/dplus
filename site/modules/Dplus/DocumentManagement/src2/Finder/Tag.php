@@ -1,17 +1,16 @@
 <?php namespace Dplus\Docm\Finder;
 // Dplus Models
 use DocumentQuery as Query;
-// ProcessWire
-use ProcessWire\WireData;
 // Dplus Docm
 use Dplus\Docm\Documents;
+use Dplus\Docm\Finder;
 
 
 /**
  * Finder\Tag
  * Decorator for DocumentQuery to find Documents in Database related to a tag
  */
-abstract class Tag extends WireData {
+abstract class Tag extends Finder {
 	const TAG = [];
 
 	/**
@@ -41,7 +40,7 @@ abstract class Tag extends WireData {
 	 * Return the number of Documents
 	 * filtered by the tag1, reference1 fields for a Quote
 	 * @param  string $qnbr Quote Number
-	 * @return int          Number of Sales Order Documents found
+	 * @return int
 	 */
 	public function count($qnbr) {
 		$q = $this->query();
