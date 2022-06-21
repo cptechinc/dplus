@@ -21,6 +21,14 @@ abstract class Tag extends Finder {
 		return Documents::instance()->queryTag(static::TAG);
 	}
 
+	/**
+	 * Return Query
+	 * @return Query
+	 */
+	public function queryBase() {
+		return Documents::instance()->query();
+	}
+
 /* =============================================================
 	Read Functions
 ============================================================= */
