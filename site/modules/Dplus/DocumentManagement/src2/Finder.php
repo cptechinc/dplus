@@ -1,8 +1,11 @@
 <?php namespace Dplus\Docm;
 // Dplus Models
 use Document;
+use DocumentQuery as Query;
 // ProcessWire
 use ProcessWire\WireData;
+// Dplus Docm
+use Dplus\Docm\Documents;
 
 /**
  * Docm\Finder
@@ -10,6 +13,14 @@ use ProcessWire\WireData;
  */
 abstract class Finder extends WireData {
 	private static $columns;
+
+	/**
+	 * Return Query Filtered By Folder(s)
+	 * @return Query
+	 */
+	public function query() {
+		return Documents::instance()->query();
+	}
 
 /* =============================================================
 	Supplemental Functions
