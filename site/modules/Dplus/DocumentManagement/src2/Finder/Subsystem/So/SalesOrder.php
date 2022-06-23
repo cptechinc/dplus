@@ -73,7 +73,7 @@ class SalesOrder extends TagRef1 {
 		$vendorPOs =  $this-> getSoDetailVendorPonbrs($ordn);
 
 		if (empty($vendorPOs) === false) {
-			$conditions[] = Finders\Subsystem\Mpo\PurchaseOrder::instance()->addConditionPonbr($q, $vendorPOs);
+			$conditions[] = Finders\Subsystem\Po\PurchaseOrder::instance()->addConditionPonbr($q, $vendorPOs);
 		}
 		$q->where($conditions, 'or');
 		return $q;
