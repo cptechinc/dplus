@@ -1,6 +1,7 @@
 <?php namespace Dplus\Docm\Finder\Subsystem\Ar;
 // Dplus Model
 use SalesOrder as SoModel;
+use DocumentQuery;
 // Dplus Docm
 use Dplus\Docm\Finder\TagRef1;
 
@@ -21,9 +22,9 @@ class ArInvoice extends TagRef1 {
 		return static::$instance;
 	}
 
-	/* =============================================================
-		Read Functions
-	============================================================= */
+/* =============================================================
+	Read Functions
+============================================================= */
 	/**
 	 * Return Documents related to Invoice #
 	 * @param  string $invnbr  Invoice #
@@ -42,7 +43,21 @@ class ArInvoice extends TagRef1 {
 		return parent::count(SoModel::get_paddedordernumber($invnbr));
 	}
 
-	/* =============================================================
-		Query Decorator Functions
-	============================================================= */
+/* =============================================================
+	Query Decorator Functions
+============================================================= */
+	/**
+	 * Add Invoice Condition to Document Query
+	 * @param  DocumentQuery $q
+	 * @param  string        $invnbr     Invoice Number
+	 * @param  strin         $name       Conditon Name
+	 * @return string
+	 */
+	protected function addConditionInvnbr(DocumentQuery $q, $invnbr, $name = 'cond_invoices') {
+		$columns = self::getColumns();
+		$q->condition('tag_invoices', "Document.{$columns->tag} = ?", self::TAG[0]);
+		$q->condition('reference1_invoices', "Document.{$columns->reference1} = ?", $invnbr);
+		$q->combine(array('tag_invoices', 'reference1_invoices'), 'and', $name);
+		return $name;
+	}
 }
