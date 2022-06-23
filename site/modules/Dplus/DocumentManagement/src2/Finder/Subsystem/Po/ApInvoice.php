@@ -10,7 +10,7 @@ use Dplus\Docm\Finder\TagRef1;
 
 /**
  * Finder\Subsystem\Mpo\ApInvoice
- * Decorator for DocumentQuery to find Documents in Database related to AP Invoce Documents
+ * Decorator for DocumentQuery to find Documents in Database related to AP Invoice
  * 
  * @method  Tag  find($ponbr)   Return Documents related to AP invoice number
  * @method  Tag  count($ponbr)  Return the number Documents related to  AP invoice number
