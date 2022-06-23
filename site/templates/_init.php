@@ -40,7 +40,6 @@ if ($page->id != $config->errorpage_dplusdb) {
 	foreach ($db_modules as $key => $connection) {
 		$module = $modules->get($connection['module']);
 		
-
 		try {
 			$module->connect();
 			$module->connectPropel();
