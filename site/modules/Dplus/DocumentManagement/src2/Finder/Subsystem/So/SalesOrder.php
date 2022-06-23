@@ -11,8 +11,8 @@ use Dplus\Docm\Finder\TagRef1;
 use Dplus\Docm\Finder as Finders;
 
 /**
- * Finder\Subsystem\Mpo\SalesOrder
- * Decorator for DocumentQuery to find Documents in Database related to PO Documents
+ * Finder\Subsystem\Mso\SalesOrder
+ * Decorator for DocumentQuery to find Documents in Database related to Sales Order
  */
 class SalesOrder extends TagRef1 {
 	const TAG = ['SO', 'AR'];
