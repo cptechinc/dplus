@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Folders;
+<?php namespace Dplus\Docm\Finders\Min\Folders;
 // Dplus Model
 use Document;
 // Dplus Document Manangement
@@ -6,35 +6,35 @@ use Dplus\Docm\Finder\FolderRef1;
 
 
 /**
- * Finder\Folders\Itmimg
- * Decorator for DocumentQuery to find Documents in Database related to ITMIMG Documents
+ * Finders\Min\Folders\Itmimg
+ * Decorator for DocumentQuery to find Documents in Database related to LOTIMG Documents
  */
 class Itmimg extends FolderRef1 {
-	const TAG    = 'IT';
-	const FOLDER = 'ITMIMG';
+	const TAG    = 'LT';
+	const FOLDER = 'LOTIMG';
 
 /* =============================================================
 	Read Functions
 ============================================================= */
 	/**
 	 * Return Documents
-	 * @param  string $itemID Item ID
+	 * @param  string $lotserial Lot / Serial #
 	 * @return ObjectCollection|Document[]
 	 */
-	public function find($itemID) {
+	public function find($lotserial) {
 		$q = $this->query();
-		$q->filterByReference1($itemID);
+		$q->filterByReference1($lotserial);
 		return $q->find();
 	}
 
 	/**
 	 * Return the number of Documents
-	 * @param  string $itemID Item ID
+	 * @param  string $lotserial Lot / Serial #
 	 * @return int
 	 */
-	public function count($itemID) {
+	public function count($lotserial) {
 		$q = $this->query();
-		$q->filterByReference1($itemID);
+		$q->filterByReference1($lotserial);
 		return $q->count();
 	}
 
@@ -43,23 +43,22 @@ class Itmimg extends FolderRef1 {
 ============================================================= */
 	/**
 	 * Return if Image Exists for Lot / Serial #
-	 * @param  string $itemID Lot / Serial #
+	 * @param  string $lotserial Lot / Serial #
 	 * @return bool
 	 */
-	public function hasImage($itemID) {
-		return boolval($this->count($itemID));
+	public function hasImage($lotserial) {
+		return boolval($this->count($lotserial));
 	}
 
 	/**
 	 * Return Filename
-	 * filtered by the tag1, reference1 fields for a Lot
-	 * @param  string $itemID Item ID
+	 * @param  string $lotserial Lot / Serial #
 	 * @return string
 	 */
-	public function getImageFilename($itemID) {
+	public function getImageFilename($lotserial) {
 		$q = $this->query();
 		$q->select(Document::aliasproperty('filename'));
-		$q->filterByReference1($itemID);
+		$q->filterByReference1($lotserial);
 		$q->orderBy(Document::aliasproperty('date'), 'DESC');
 		$q->orderBy(Document::aliasproperty('time'), 'DESC');
 		return $q->findOne();
@@ -67,13 +66,12 @@ class Itmimg extends FolderRef1 {
 
 	/**
 	 * Return Document
-	 * filtered by the tag1, reference1 fields for a Lot
-	 * @param  string $itemID Item ID
+	 * @param  string $lotserial Lot / Serial #
 	 * @return Document
 	 */
-	public function getImage($itemID) {
+	public function getImage($lotserial) {
 		$q = $this->query();
-		$q->filterByReference1($itemID);
+		$q->filterByReference1($lotserial);
 		$q->orderBy(Document::aliasproperty('date'), 'DESC');
 		$q->orderBy(Document::aliasproperty('time'), 'DESC');
 		return $q->findOne();

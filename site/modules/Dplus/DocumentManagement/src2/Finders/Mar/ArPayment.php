@@ -1,17 +1,15 @@
-<?php namespace Dplus\Docm\Finder\Subsystem\Ar;
+<?php namespace Dplus\Docm\Finders\Mar;
 // Dplus Model
 use DocumentQuery;
 use SalesOrder as SoModel;
-use SalesOrderDetailQuery, SalesOrderDetail;
-use SalesHistoryDetailQuery, SalesHistoryDetail;
 // Dplus Mso
 use Dplus\Mso\So;
 // Dplus Docm
-use Dplus\Docm\Finder as Finder;
+use Dplus\Docm\Finders;
 
 /**
- * Finder\Subsystem\Ar\ArPayment
- * Decorator for DocumentQuery to find Documents in Database related to Sales Order
+ * ArPayment
+ * Decorator for DocumentQuery to find Documents in Database related to AR Invoice #, Check #
  */
 class ArPayment extends Finder {
 	const TAGS = [
@@ -67,7 +65,7 @@ class ArPayment extends Finder {
 	 * @return DocumentQuery
 	 */
 	public function filterPayment(DocumentQuery $q, $invnbr, $checknbr) {
-		$finderSo = Finder\Subsystem\So\SalesOrder::instance();
+		$finderSo = Finders\Mso\SalesOrder::instance();
 
 		if (empty($checknbr)) {	
 			$finderSo->filterSales($q, $invnbr);
@@ -86,7 +84,7 @@ class ArPayment extends Finder {
 
 		// Add Vendor PO Conditions
 		if (empty($vendorPOs) === false) {
-			$conditions[] = Finder\Subsystem\Po\PurchaseOrder::instance()->addConditionPonbr($q, $vendorPOs);
+			$conditions[] = Finders\Mpo\PurchaseOrder::instance()->addConditionPonbr($q, $vendorPOs);
 		}
 		
 		// Add AR Check Filter
@@ -106,7 +104,7 @@ class ArPayment extends Finder {
 	 * @return string
 	 */
 	private function addConditionArInvnbr(DocumentQuery $q, $invnbr, $name = 'cond_invoices') {
-		$finderArInvoices = Finder\Subsystem\Ar\ArInvoice::instance();
+		$finderArInvoices = ArInvoice::instance();
 		return $finderArInvoices->addConditionInvnbr($q, $invnbr, $name);
 	}
 

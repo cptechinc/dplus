@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Subsystem\Ar;
+<?php namespace Dplus\Docm\Finders\Mar;
 // Dplus Model
 use SalesOrder as SoModel;
 use DocumentQuery;
@@ -6,7 +6,7 @@ use DocumentQuery;
 use Dplus\Docm\Finder\TagRef1;
 
 /**
- * Finder\Subsystem\Ar\ArInvoice
+ * ArInvoice
  * Decorator for DocumentQuery to find Documents in Database related to AR Invoice #
  */
 class ArInvoice extends TagRef1 {

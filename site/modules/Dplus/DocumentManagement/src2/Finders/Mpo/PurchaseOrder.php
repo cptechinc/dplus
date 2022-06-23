@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Subsystem\Po;
+<?php namespace Dplus\Docm\Finders\Mpo;
 // Dplus Model
 use DocumentQuery;
 use PurchaseOrder as PoModel;
@@ -6,8 +6,8 @@ use PurchaseOrder as PoModel;
 use Dplus\Docm\Finder\TagRef1;
 
 /**
- * Finder\Subsystem\Mpo\PurchaseOrder
- * Decorator for DocumentQuery to find Documents in Database related to Purchase Order
+ * PurchaseOrder
+ * Decorator for DocumentQuery to find Documents in Database related to Purchase Order #
  */
 class PurchaseOrder extends TagRef1 {
 	const TAG = ['PO'];
@@ -26,7 +26,7 @@ class PurchaseOrder extends TagRef1 {
 	Read Functions
 ============================================================= */
 	/**
-	 * Return Documents related to purchase order number
+	 * Return Documents related to Purchase Order #
 	 * @param  string $ponbr  Purchase Order #
 	 * @return ObjectCollection|Document[]
 	 */
@@ -35,7 +35,7 @@ class PurchaseOrder extends TagRef1 {
 	}
 
 	/**
-	 * Return the number of Documents related to purchase order number
+	 * Return the number of Documents related to Purchase Order #
 	 * @param  string $ponbr  Purchase Order #
 	 * @return int
 	 */

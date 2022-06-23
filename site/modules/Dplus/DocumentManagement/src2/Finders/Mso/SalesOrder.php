@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Subsystem\So;
+<?php namespace Dplus\Docm\Finders\Mso;
 // Dplus Model
 use DocumentQuery;
 use SalesOrder as SoModel;
@@ -7,14 +7,14 @@ use SalesHistoryDetailQuery, SalesHistoryDetail;
 // Dplus Mso
 use Dplus\Mso\So;
 // Dplus Docm
-use Dplus\Docm\Finder\TagRef1;
-use Dplus\Docm\Finder as Finders;
+use Dplus\Docm\Finder;
+use Dplus\Docm\Finders;
 
 /**
- * Finder\Subsystem\Mso\SalesOrder
- * Decorator for DocumentQuery to find Documents in Database related to Sales Order
+ * SalesOrder
+ * Decorator for DocumentQuery to find Documents in Database related to Sales Order #
  */
-class SalesOrder extends TagRef1 {
+class SalesOrder extends Finder {
 	const TAG = ['SO', 'AR'];
 
 	protected static $instance;
@@ -31,23 +31,23 @@ class SalesOrder extends TagRef1 {
 	Read Functions
 ============================================================= */
 	/**
-	 * Return Documents related to Sales Order number
+	 * Return Documents related to Sales Order #
 	 * @param  string $ordn  Sales Order #
 	 * @return ObjectCollection|Document[]
 	 */
 	public function find($ordn) {
-		$q = $this->queryBase();
+		$q = $this->query();
 		$this->filterSales($q, SoModel::get_paddedordernumber($ordn));
 		return $q->find();
 	}
 
 	/**
-	 * Return the number of Documents related to Sales Order number
+	 * Return the number of Documents related to Sales Order #
 	 * @param  string $ordn  Sales Order #
 	 * @return int
 	 */
 	public function count($ordn) {
-		$q = $this->queryBase();
+		$q = $this->query();
 		$this->filterSales($q, SoModel::get_paddedordernumber($ordn));
 		return $q->count();
 	}
@@ -72,7 +72,7 @@ class SalesOrder extends TagRef1 {
 		$vendorPOs =  $this->getSoDetailVendorPonbrs($ordn);
 
 		if (empty($vendorPOs) === false) {
-			$conditions[] = Finders\Subsystem\Po\PurchaseOrder::instance()->addConditionPonbr($q, $vendorPOs);
+			$conditions[] = Finders\Po\PurchaseOrder::instance()->addConditionPonbr($q, $vendorPOs);
 		}
 		$q->where($conditions, 'or');
 		return $q;

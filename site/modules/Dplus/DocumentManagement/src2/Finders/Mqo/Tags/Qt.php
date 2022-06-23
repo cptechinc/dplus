@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Tags;
+<?php namespace Dplus\Docm\Finders\Mqo;
 
 use Dplus\Docm\Finder\TagRef1;
 

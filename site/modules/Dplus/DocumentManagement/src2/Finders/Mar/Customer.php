@@ -1,11 +1,11 @@
-<?php namespace Dplus\Docm\Finder\Subsystem\Ar;
+<?php namespace Dplus\Docm\Finders\Mar;
 // Dplus Model
 use DocumentQuery;
 // Dplus Docm
 use Dplus\Docm\Finder\TagRef1;
 
 /**
- * Finder\Subsystem\Ar\Customer
+ * Customer
  * Decorator for DocumentQuery to find Documents in Database related to AR Customer ID
  */
 class Customer extends TagRef1 {

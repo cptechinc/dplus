@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder\Subsystem\Po;
+<?php namespace Dplus\Docm\Finders\Mpo;
 // Dplus Model
 use PurchaseOrder as PoModel;
 use DocumentQuery;
@@ -10,10 +10,10 @@ use Dplus\Docm\Finder\TagRef1;
 
 /**
  * Finder\Subsystem\Mpo\ApInvoice
- * Decorator for DocumentQuery to find Documents in Database related to AP Invoice
+ * Decorator for DocumentQuery to find Documents in Database related to AP Invoice #
  * 
- * @method  Tag  find($ponbr)   Return Documents related to AP invoice number
- * @method  Tag  count($ponbr)  Return the number Documents related to  AP invoice number
+ * @method  Tag  find($ponbr)   Return Documents related to AP Invoice #
+ * @method  Tag  count($ponbr)  Return the number Documents related to  AP Invoice #
  */
 class ApInvoice extends TagRef1 {
 	const TAG = ['AP'];
@@ -32,8 +32,8 @@ class ApInvoice extends TagRef1 {
 	Read Functions
 ============================================================= */
 	/**
-	 * Return Documents replated to AP Invoice Number
-	 * @param  string $invnbr AP Invoice Number
+	 * Return Documents replated to AP Invoice #
+	 * @param  string $invnbr AP Invoice #
 	 * @return Documents[]|ObjectCollection
 	 */
 	public function find($invnbr) {
@@ -43,10 +43,10 @@ class ApInvoice extends TagRef1 {
 	}
 
 	/**
-	 * Return the number of Documents related to AP Invoice Number
+	 * Return the number of Documents related to AP Invoice #
 	 * @uses self::filterInvoice()
 	 *
-	 * @param  string $invnbr AP Invoice Number
+	 * @param  string $invnbr AP Invoice #
 	 * @return int 
 	 */
 	public function count($invnbr) {
@@ -61,7 +61,7 @@ class ApInvoice extends TagRef1 {
 	/**
 	 * Add Filter Conditions to the DocumentQuery
 	 * @param  DocumentQuery  $q       Document Query
-	 * @param  string         $invnbr  AP Invoice Number
+	 * @param  string         $invnbr  AP Invoice #
 	 * @return DocumentQuery
 	 */
 	public function filterInvoice(DocumentQuery $q, $invnbr) {
@@ -83,7 +83,7 @@ class ApInvoice extends TagRef1 {
 	/**
 	 * Add Query Condition for APInvoice for Ref1
 	 * @param  DocumentQuery  $q       Document Query
-	 * @param  string         $invnbr  AP Invoice Number
+	 * @param  string         $invnbr  AP Invoice #
 	 * @param  string         $name    Condition Name
 	 * @return string
 	 */
@@ -97,7 +97,7 @@ class ApInvoice extends TagRef1 {
 	/**
 	 * Add Query Condition for APInvoice for Ref2
 	 * @param  DocumentQuery  $q       Document Query
-	 * @param  string         $invnbr  AP Invoice Number
+	 * @param  string         $invnbr  AP Invoice #
 	 * @param  string         $name    Condition Name
 	 * @return string
 	 */
@@ -111,7 +111,7 @@ class ApInvoice extends TagRef1 {
 	/**
 	 * Add Query Condition for APInvoice's PO Nbr
 	 * @param  DocumentQuery  $q       Document Query
-	 * @param  string         $invnbr  AP Invoice Number
+	 * @param  string         $invnbr  AP Invoice #
 	 * @return string
 	 */
 	private function addConditionInvoicePonbr(DocumentQuery $q, $invnbr) {
