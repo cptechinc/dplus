@@ -3,7 +3,7 @@
 use DocumentQuery;
 use PurchaseOrder as PoModel;
 // Dplus Docm
-use Dplus\Docm\Finder\TagRef1;
+use Dplus\Docm\Finders\Finder\TagRef1;
 
 /**
  * PurchaseOrder

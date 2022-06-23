@@ -1,21 +1,18 @@
-<?php namespace Dplus\Docm\Finder;
-// Dplus Docm
-use Dplus\Docm\Finder\Folder;
-
+<?php namespace Dplus\Docm\Finders\Finder;
 
 /**
  * Finder\Tags\TagRef1
- * Decorator (simple) for DocumentQuery to find Documents in Database related to a folder, reference1
+ * Decorator (simple) for DocumentQuery to find Documents in Database related to a tag, reference1
  */
-abstract class FolderRef1 extends Folder {
-	const FOLDER = [];
+abstract class TagRef1 extends Tag {
+	const TAG = [];
 
 /* =============================================================
 	Read Functions
 ============================================================= */
 	/**
 	 * Return Documents
-	 * filtered by the folder, reference1 fields for a Quote
+	 * filtered by the tag1, reference1 fields for a Quote
 	 * @param  string $ref1  Reference 1 Value
 	 * @return Document[]|ObjectCollection
 	 */
@@ -27,7 +24,7 @@ abstract class FolderRef1 extends Folder {
 
 	/**
 	 * Return the number of Documents
-	 * filtered by the folder, reference1 fields for a Quote
+	 * filtered by the tag1, reference1 fields for a Quote
 	 * @param  string $ref1  Reference 1 Value
 	 * @return int
 	 */
@@ -35,5 +32,5 @@ abstract class FolderRef1 extends Folder {
 		$q = $this->query();
 		$q->filterByReference1($ref1);
 		return $q->count();
-	}	
+	}
 }

@@ -1,4 +1,4 @@
-<?php namespace Dplus\Docm\Finder;
+<?php namespace Dplus\Docm\Finders\Finder;
 // Dplus Models
 use DocumentQuery as Query;
 // Dplus Docm

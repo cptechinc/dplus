@@ -6,7 +6,7 @@ use ApInvoiceQuery, ApInvoice as ApInvoiceModel;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Docm
-use Dplus\Docm\Finder\TagRef1;
+use Dplus\Docm\Finders\Finder\TagRef1;
 
 /**
  * Finder\Subsystem\Mpo\ApInvoice

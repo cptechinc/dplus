@@ -2,7 +2,7 @@
 // Dplus Model
 use Document;
 // Dplus Document Manangement
-use Dplus\Docm\Finder\FolderRef1;
+use Dplus\Docm\Finders\Finder\FolderRef1;
 
 
 /**

@@ -1,6 +1,6 @@
 <?php namespace Dplus\Docm\Finders\Mar\Tags;
-
-use Dplus\Docm\Finder\TagRef1;
+// Dplus Docm Finders
+use Dplus\Docm\Finders\Finder\TagRef1;
 
 /**
  * Ar

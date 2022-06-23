@@ -3,7 +3,7 @@
 use SalesOrder as SoModel;
 use DocumentQuery;
 // Dplus Docm
-use Dplus\Docm\Finder\TagRef1;
+use Dplus\Docm\Finders\Finder\TagRef1;
 
 /**
  * ArInvoice

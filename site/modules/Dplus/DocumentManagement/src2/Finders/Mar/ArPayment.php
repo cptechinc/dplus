@@ -6,6 +6,7 @@ use SalesOrder as SoModel;
 use Dplus\Mso\So;
 // Dplus Docm
 use Dplus\Docm\Finders;
+use Dplus\Docm\Finder;
 
 /**
  * ArPayment

@@ -1,6 +1,6 @@
 <?php namespace Dplus\Docm\Finders\Mqo;
 
-use Dplus\Docm\Finder\TagRef1;
+use Dplus\Docm\Finders\Finder\TagRef1;
 
 /**
  * Finder\Tags\Qt
