@@ -7,7 +7,7 @@ use Dplus\Docm\Finder\TagRef1;
 
 /**
  * Finder\Subsystem\Mpo\PurchaseOrder
- * Decorator for DocumentQuery to find Documents in Database related to PO Documents
+ * Decorator for DocumentQuery to find Documents in Database related to Purchase Order
  */
 class PurchaseOrder extends TagRef1 {
 	const TAG = ['PO'];
