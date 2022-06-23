@@ -63,14 +63,13 @@ class SalesOrder extends TagRef1 {
 	 * @return DocumentQuery
 	 */
 	public function filterSales(DocumentQuery $q, $ordn) {
-		$this->initColumns();
 		$ordn = SoModel::get_paddedordernumber($ordn);
 
 		$conditions = [
 			$this->addCondtionSonbrRef1($q, $ordn),
 			$this->addCondtionArInvnbrRef1($q, $ordn)
 		];
-		$vendorPOs =  $this-> getSoDetailVendorPonbrs($ordn);
+		$vendorPOs =  $this->getSoDetailVendorPonbrs($ordn);
 
 		if (empty($vendorPOs) === false) {
 			$conditions[] = Finders\Subsystem\Po\PurchaseOrder::instance()->addConditionPonbr($q, $vendorPOs);
@@ -117,7 +116,7 @@ class SalesOrder extends TagRef1 {
 	 * @param  string $ordn Sales Order #
 	 * @return array
 	 */
-	private function getSoDetailVendorPonbrs($ordn) {
+	public function getSoDetailVendorPonbrs($ordn) {
 		$q = SalesOrderDetailQuery::create();
 		$q->select(SalesOrderDetail::aliasproperty('vendorpo'));
 
