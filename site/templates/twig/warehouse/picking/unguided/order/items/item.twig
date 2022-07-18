@@ -12,7 +12,7 @@
 		</div>
 		<div class="col-sm-1">
 			{% if lotAllocator.hasAllocated(item.ordernbr, item.linenbr) %}
-				<button class="btn btn-primary btn-sm" title="View Allocated Lotserials" data-toggle="collapse" data-target="#allocated-{{ item.linenbr|attrJS }}">
+				<button class="btn btn-primary" title="View Allocated Lotserials" data-toggle="collapse" data-target="#allocated-{{ item.linenbr|attrJS }}">
 					<i class="fa fa-list" aria-hidden="true"></i> <span class="sr-only">Allocated</span>
 				</button>
 			{% endif %}
