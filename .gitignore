@@ -15,6 +15,7 @@ site/modules/Dplus/Configs/configs
 site/modules/Dplus/DocumentManagement/config/config.json
 site/modules/Dplus/Connections/vendor
 site/modules/Dplus/ItmImages/vendor
+site/modules/Pauldro/vendor
 
 # Twig Cache
 site/templates/twig/cache/
