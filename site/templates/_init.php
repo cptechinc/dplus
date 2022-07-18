@@ -10,8 +10,6 @@
  *
  */
 
-include_once("./_func.php"); // include our shared functions
-
 $config->maxUrlSegments = 10;
 $config->maxPageNum = 10000;
 
@@ -24,62 +22,27 @@ if (!empty($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/') {
 
 $input->purl = new Purl\Url($input->url($withQueryString = true));
 
-// CHECK DATABASE CONNECTIONS
-if ($page->id != $config->errorpage_dplusdb) {
-	$db_modules = array(
-		'dplusdata' => array(
-			'module'   => 'DplusDatabase',
-			'default'  => true
-		),
-		'dpluso' => array(
-			'module'          => 'DplusOnlineDatabase',
-			'default'  => false
-		)
-	);
+$connected = Dplus\Databases\Connectors\Dplus::instance()->connect();
+Dplus\Databases\Connectors\Dpluso::instance()->connect();
 
-	foreach ($db_modules as $key => $connection) {
-		$module = $modules->get($connection['module']);
-		
-		try {
-			$module->connect();
-			$module->connectPropel();
-			$module->getDebugConnection();
-		} catch (Exception $e) {
-			$module->logError($e->getMessage());
-			$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
-		}
-	}
-
-	$templates_nosignin = array('login', 'redir', 'quote-print');
-
-	if ($input->get->pdf || $input->get->print || $input->lastSegment() == 'print') {
-
-	} elseif (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
-		$session->returnurl = $page->fullURL->getUrl();
-		$session->redirect($pages->get('template=login')->url, $http301 = false);
-	}
-	$user->setup($input->get->sessionID ? $input->get->text('sessionID') : session_id());
-
-	$modules->get('RecordLocker')->remove_locks_olderthan('all', 3);
-} else {
-	if (!$input->get->retry) {
-		$configimporter = $modules->get('Configs');
-		
-		if ($configimporter->importJsonExists()) {
-			$configimporter->import();
-			$page->fullURL->query->set('retry', 'true');
-			$session->redirect($page->fullURL->getUrl());
-		}
-	} else {
-		try {
-			$con    = $modules->get('DplusDatabase')->propelWriteConnection();
-			$dpluso = $modules->get('DplusOnlineDatabase')->propelWriteConnection();
-		} catch (Exception $e) {
-			$page->show_title = true;
-		}
-		$session->redirect($pages->get('/')->url);
+if ($connected === false) {
+	if ($input->urlSegmentLast() != 'db-error') {
+		$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
 	}
 }
+
+
+$templates_nosignin = array('login', 'redir', 'quote-print');
+
+if ($input->get->pdf || $input->get->print || $input->lastSegment() == 'print') {
+
+} elseif (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
+	$session->returnurl = $page->fullURL->getUrl();
+	$session->redirect($pages->get('template=login')->url, $http301 = false);
+}
+$user->setup($input->get->sessionID ? $input->get->text('sessionID') : session_id());
+
+$modules->get('RecordLocker')->remove_locks_olderthan('all', 3);
 
 $rm = strtolower($input->requestMethod());
 $values = $input->$rm;

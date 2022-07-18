@@ -80,16 +80,16 @@ class DplusDatabase extends WireData implements Module {
 	 * @return void
 	 */
 	public function connectDatabase() {
-		$session = $this->wire('session');
+		// $session = $this->wire('session');
 
 		$pdo = $this->getWireDatabasePDO();
 		if ($pdo === false) {
-			$session->remove($this::CONNECTION_NAME_PW);
+			// $session->remove($this::CONNECTION_NAME_PW);
 			return false;
 		}
 
-		$this->wire($this::CONNECTION_NAME_PW, $pdo, true);
-		$session->set($this::CONNECTION_NAME_PW, true);
+		// $this->wire($this::CONNECTION_NAME_PW, $pdo, true);
+		// $session->set($this::CONNECTION_NAME_PW, true);
 		return true;
 	}
 

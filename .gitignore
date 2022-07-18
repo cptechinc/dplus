@@ -12,6 +12,7 @@ site/config.php
 /vendor
 test.php
 site/modules/Dplus/Configs/configs
+site/modules/Dplus/DplusDatabases/vendor
 site/modules/Dplus/DocumentManagement/config/config.json
 site/modules/Dplus/Connections/vendor
 site/modules/Dplus/ItmImages/vendor
