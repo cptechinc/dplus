@@ -7,58 +7,68 @@
 			<th class="text-right">Weight Shipped</th>
 			<th class="text-right">Price</th>
 			<th class="text-right">Total Price</th>
+			<th class="text-center">Lots</th>
 			<th>Notes</th>
 		</tr>
 	</thead>
-	<tbody>
-		{% for detail in order.getSalesHistoryDetails() %}
-			<tr>
-				<td>
-					<a href="{{ page.iiUrl(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
-						{{ detail.itemid }}
-					</a>
-					<br>
-					<small>{{ detail.desc1 }}</small>
-					<br>
-					<small>Avg Weight: {{ detail.item.weight }}</small>
-				</td>
-				<td class="text-right">{{ detail.qty_cases|number_format() }}</td>
-				<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
-				<td class="text-right">{{ detail.qty_shipped|number_format(config.decimal_places_qty) }}</td>
-				<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
-				<td class="text-right">$ {{ detail.total_price|number_format(config.decimal_places_price) }}</td>
-				<td class="text-right">
-					<a href="{{ page.orderNotesUrl(order.ordernumber, detail.linenbr) }}" class="h4 {{ detail.has_notes() ? 'text-success' : 'text-muted'}}">
-						<i class="fa fa-sticky-note" aria-hidden="true"></i>
-					</a>
-				</td>
-			</tr>
-			{% if detail.countSalesHistoryLotserials() %}
-				<tr class="collapse lotserial {{ detail.linenumber|attrJS }}-lotserial bg-gray">
-					<th></th>
-					<th>Lot/Serial #</th>
-					<th>Lot/Serial Ref</th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
+	{% for detail in order.getSalesHistoryDetails() %}
+		<tr>
+			<td>
+				<a href="{{ page.iiUrl(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
+					{{ detail.itemid }}
+				</a>
+				<br>
+				<small>{{ detail.desc1 }}</small>
+				<br>
+				<small>Avg Weight: {{ detail.item.weight }}</small>
+			</td>
+			<td class="text-right">{{ detail.qty_cases|number_format() }}</td>
+			<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
+			<td class="text-right">{{ detail.qty_shipped|number_format(config.decimal_places_qty) }}</td>
+			<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
+			<td class="text-right">$ {{ detail.total_price|number_format(config.decimal_places_price) }}</td>
+			<td class="text-center">
+				{% if detail.countSalesHistoryLotserials() %}
+					<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#{{ detail.linenbr|attrJS }}-lotserials" aria-expanded="false" aria-controls="{{ detail.linenbr|attrJS }}-lotserials">
+						<i class="fa fa-list" aria-hidden="true"></i>
+					</button>
+				{% endif %}
+			</td>
+			<td class="text-right">
+				<a href="{{ page.orderNotesUrl(order.ordernumber, detail.linenbr) }}" class="h4 {{ detail.has_notes() ? 'text-success' : 'text-muted'}}">
+					<i class="fa fa-sticky-note" aria-hidden="true"></i>
+				</a>
+			</td>
+		</tr>
+		{% if detail.countSalesHistoryLotserials() %}
+			<tbody class="collapse" id="{{ detail.linenbr|attrJS }}-lotserials">
+				<tr class="bg-gray">
+					<th>Line # {{ detail.linenbr }} Picked Lots</th>
+					<th>Lot / Serial #</th>
+					<th>Lot Refernce #</th>
+					<th class="text-right">Qty</th>
+					<th>Image</th>
+					<th colspan="2"></th>
 				</tr>
-				{% for lotserial in detail.getSalesHistoryLotserials() %}
-					<tr class="collapse lotserial {{ detail.linenumber|attrJS }}-lotserial">
+				{% for lotserial in detail.getSaleshistoryLotserials() %}
+					<tr>
 						<td></td>
+						<td>{{ lotserial.lotserial }}</td>
+						<td>{{ lotseriial.lotreference }}</td>
+						<td class="text-right">{{ lotserial.qty|number_format(config.decimal_places_qty) }}</td>
 						<td>
-							<small>{{ lotserial.lotserial }}</small>
+							{% if docm.hasImage(lotserial.lotserial) %}
+								{% set image = docm.getImage(lotserial.lotserial) %}
+								<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ lot.lotserial }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
+									<i class="fa fa-picture-o" aria-hidden="true"></i>
+									<span class="sr-only">View Image</span>
+								</button>
+							{% endif %}
 						</td>
-						<td>
-							<small>{{ lotserial.lotreference }}</small>
-						</td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
+						<td colspan="2"></td>
 					</tr>
 				{% endfor %}
-			{% endif %}
-		{% endfor %}
-	</tbody>
+			</tbody>
+		{% endif %}
+	{% endfor %}
 </table>

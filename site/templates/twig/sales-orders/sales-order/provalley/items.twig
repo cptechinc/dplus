@@ -49,6 +49,11 @@
 						<i class="fa fa-list" aria-hidden="true"></i>
 					</button>
 				{% endif %}
+				{% if detail.countSalesOrderLotserials() %}
+					<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#{{ detail.linenbr|attrJS }}-lotserials" aria-expanded="false" aria-controls="{{ detail.linenbr|attrJS }}-lotserials">
+						<i class="fa fa-list" aria-hidden="true"></i>
+					</button>
+				{% endif %}
 			</td>
 		</tr>
 
@@ -68,6 +73,35 @@
 					<td>
 						{% if docm.hasImage(lot.lotserial) %}
 							{% set image = docm.getImage(lot.lotserial) %}
+							<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ lot.lotserial }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
+								<i class="fa fa-picture-o" aria-hidden="true"></i>
+								<span class="sr-only">View Image</span>
+							</button>
+						{% endif %}
+					</td>
+					<td colspan="2"></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+
+		<tbody class="collapse" id="{{ detail.linenbr|attrJS }}-lotserials">
+			<tr class="bg-gray">
+				<th>Line # {{ detail.linenbr }} Picked Lots</th>
+				<th>Lot / Serial #</th>
+				<th>Lot Reference #</th>
+				<th class="text-right">Qty</th>
+				<th>Image</th>
+				<th colspan="2"></th>
+			</tr>
+			{% for lotserial in detail.getSalesOrderLotserials() %}
+				<tr>
+					<td></td>
+					<td>{{ lotserial.lotserial }}</td>
+					<td>{{ lotseriial.lotreference }}</td>
+					<td class="text-right">{{ lotserial.qty|number_format(config.decimal_places_qty) }}</td>
+					<td>
+						{% if docm.hasImage(lotserial.lotserial) %}
+							{% set image = docm.getImage(lotserial.lotserial) %}
 							<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ lot.lotserial }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
 								<i class="fa fa-picture-o" aria-hidden="true"></i>
 								<span class="sr-only">View Image</span>
