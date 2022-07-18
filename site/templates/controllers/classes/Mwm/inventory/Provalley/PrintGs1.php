@@ -8,6 +8,8 @@ use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 use Processwire\SearchInventory, Processwire\WarehouseManagement,ProcessWire\HtmlWriter;
 // Dplus Configs
 use Dplus\Configs;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 // Dplus Filters
 use Dplus\Filters;
 // Mvc Controllers
@@ -240,7 +242,7 @@ class PrintGs1 extends Base {
 
 	static private function sendRequest(array $data, $sessionID = '') {
 		$sessionID = $sessionID ? $sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
+		$db = DbDpluso::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $sessionID);

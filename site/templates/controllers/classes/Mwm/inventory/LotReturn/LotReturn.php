@@ -14,6 +14,8 @@ use Processwire\SearchInventory, Processwire\WarehouseManagement,ProcessWire\Htm
 use Dplus\Configs;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 // Dplus Filters
 use Dplus\Filters;
 // Mvc Controllers
@@ -214,7 +216,7 @@ class LotReturn extends Base {
 
 	static private function sendRequest(array $data, $sessionID = '') {
 		$sessionID = $sessionID ? $sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
+		$db = DbDpluso::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $sessionID);

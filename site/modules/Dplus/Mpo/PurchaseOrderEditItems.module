@@ -2,7 +2,8 @@
 
 use Propel\Runtime\ActiveQuery\Criteria;
 use Purl\Url;
-
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 use Dplus\CodeValidators\Mpo\PoDetail as PoDetailValidator;
 
 use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
@@ -192,7 +193,7 @@ class PurchaseOrderEditItems extends WireData implements Module {
 	 */
 	public function request_add_item($ponbr, $itemID, int $qty = 1) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array("DBNAME=$dplusdb", 'ADDPURCHASEORDERLINE', "PONBR=$ponbr", "ITEMID=$itemID", "QTY=$qty");
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
@@ -207,7 +208,7 @@ class PurchaseOrderEditItems extends WireData implements Module {
 	 */
 	public function request_update_item($ponbr, int $linenbr = 0) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array("DBNAME=$dplusdb", 'SAVEPURCHASEORDERLINE', "PONBR=$ponbr", "LINE=$linenbr");
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());

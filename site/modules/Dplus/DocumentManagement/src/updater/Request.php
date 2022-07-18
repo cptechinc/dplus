@@ -1,6 +1,8 @@
 <?php namespace Dplus\DocManagement\Updater;
 // ProcessWire
 use ProcessWire\WireData;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 
 /**
  * Request
@@ -43,7 +45,7 @@ class Request extends WireData {
 	 * @return array
 	 */
 	private function requestData() {
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		return [
 			"DBNAME=$dplusdb",
 			"DOCFILEFLDS=$this->folder",

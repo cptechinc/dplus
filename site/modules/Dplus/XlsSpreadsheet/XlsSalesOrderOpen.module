@@ -6,6 +6,9 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
 /**
  * XlsSalesOrderOpen
  *
@@ -22,7 +25,7 @@ class XlsSalesOrderOpen extends XlsSpreadsheet implements Module {
 	 */
 	public function request_json() {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array("DBNAME=$dplusdb", 'SOOPENORDER');
 
 		$requestor = $this->wire('modules')->get('DplusRequest');

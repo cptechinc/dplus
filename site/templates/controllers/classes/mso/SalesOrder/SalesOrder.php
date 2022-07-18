@@ -12,6 +12,8 @@ use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module;
 // Alias Document Finders
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 use Dplus\DocManagement\Finders as DocFinders;
 // Dplus Code Validators
 use Dplus\CodeValidators\Mso as MsoValidator;
@@ -208,7 +210,7 @@ class SalesOrder extends Base {
 
 	protected static function sendRequest(array $data, $sessionID = '') {
 		$sessionID = $sessionID ? $sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
+		$db = DbDpluso::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $sessionID);
