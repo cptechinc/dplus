@@ -2,7 +2,12 @@
 
 use Purl\Url;
 
+
+
 use PricingQuery, Pricing;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
 
 class ItemPricing extends WireData implements Module {
 	/**
@@ -54,7 +59,7 @@ class ItemPricing extends WireData implements Module {
 	public function request_search($q, $custID = '') {
 		$config = $this->wire('config');
 		$custID = $custID ? $custID : $config->default_webcustomer;
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array("DBNAME=$dplusdb", "ITNOSRCH=$q", "CUSTID=$custID");
 		$this->_request_dplus($data);
 	}
@@ -68,7 +73,7 @@ class ItemPricing extends WireData implements Module {
 	public function request_multiple(array $itemIDs, $custID = '') {
 		$config = $this->wire('config');
 		$custID = $custID ? $custID : $config->default_webcustomer;
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array("DBNAME=$dplusdb", "ITMPRIMULT", "CUSTID=$custID");
 		foreach ($itemIDs as $itemID) {
 				$data[] = "ITEMID=$itemID";

@@ -4,6 +4,8 @@
 use ProcessWire\WireData;
 
 use WhsesessionQuery, Whsesession;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 
 class Base extends WireData {
 	public function __construct() {
@@ -27,7 +29,7 @@ class Base extends WireData {
 	}
 
 	protected function sendDplusRequest(array $data, $debug = false) {
-		$db = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$db = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);

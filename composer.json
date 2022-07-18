@@ -41,7 +41,8 @@
 	},
 	"autoload": {
 		"files": [
-			"wire/core/ProcessWire.php"
+			"wire/core/ProcessWire.php",
+			"site/modules/Pauldro/vendor/autoload.php" 
 		]
 	}
 }

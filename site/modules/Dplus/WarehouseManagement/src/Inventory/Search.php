@@ -4,6 +4,9 @@ use InvsearchQuery, Invsearch;
 
 use ProcessWire\WireData;
 
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
 /**
  * Search
  * Class for filtering Inventory using InvsearchQuery
@@ -351,7 +354,7 @@ class Search extends WireData {
 	 * @return void
 	 */
 	public function requestSearch($q) {
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$q = strtoupper($q);
 		$data = array("DBNAME=$dplusdb", 'INVSEARCH', "QUERY=$q");
 		$requestor = $this->wire('modules')->get('DplusRequest');

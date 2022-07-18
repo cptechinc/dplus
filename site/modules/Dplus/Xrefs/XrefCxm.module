@@ -11,6 +11,8 @@ use ItemXrefCustomerQuery, ItemXrefCustomer;
 use ConfigSysQuery, ConfigSys;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
 use CustomerQuery, Customer;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Code Validators
@@ -606,7 +608,7 @@ class XrefCxm extends WireData implements Module {
 	 */
 	public function update_dplus_cobol(ItemXrefCustomer $item) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array("DBNAME=$dplusdb", 'UPDATECXM', "CUSTID=$item->custid", "CUSTITEM=$item->custitemid", "OURITEM=$item->itemid");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');

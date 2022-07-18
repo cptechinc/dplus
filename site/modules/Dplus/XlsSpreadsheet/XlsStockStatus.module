@@ -22,7 +22,7 @@ class XlsStockStatus extends XlsSpreadsheet implements Module {
 	 */
 	public function request_json() {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;
 		$data = array("DBNAME=$dplusdb", 'STOCKSTATUS');
 
 		$requestor = $this->wire('modules')->get('DplusRequest');

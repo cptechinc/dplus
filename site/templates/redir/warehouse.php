@@ -1,8 +1,10 @@
 <?php
+	// Dplus Databases
+	use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 	// Figure out page request method, then grab needed inputs
 	$requestmethod = $input->requestMethod('POST') ? 'post' : 'get';
 	$action = $input->$requestmethod->text('action');
-	$dplusdb = $modules->get('DplusOnlineDatabase')->db_name;
+	$dplusdb = DbDpluso::instance()->dbconfig->dbName;
 
 	// Set up filename and sessionID in case this was made through cURL
 	$filename  = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();

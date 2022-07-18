@@ -15,6 +15,9 @@ use ItemMasterItemQuery, ItemMasterItem;
 use InvLotMasterQuery, InvLotMaster;
 use InvWhseLotQuery, InvWhseLot;
 
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
 /**
  * PickingInventoryManager
  *
@@ -114,7 +117,7 @@ class PickingInventoryManager extends WireData implements Module {
 	 * @return bool
 	 */
 	public function send_searchscan_request($ordn, $q) {
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array("DBNAME=$dplusdb", 'PICKSEARCH', "QUERY=$q", "ORDERNBR=$ordn");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');

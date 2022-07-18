@@ -1,6 +1,9 @@
 <?php namespace ProcessWire;
 
 use QnoteQuery, Qnote;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
 
 class QnotesCrud extends WireData implements Module {
 	const CHECKBOX_TRUE  = 'Y';
@@ -56,7 +59,7 @@ class QnotesCrud extends WireData implements Module {
 
 	public function send_dplusrequest(Qnote $note) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$http = new WireHttp();
 
 		$data = array(

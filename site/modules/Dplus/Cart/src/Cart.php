@@ -1,4 +1,6 @@
 <?php namespace Dplus\Cart;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 // Dplus Models
 use CustomerQuery, Customer;
 use CustomerShiptoQuery, CustomerShipto;
@@ -349,7 +351,7 @@ class Cart extends WireData {
 ============================================================= */
 	private function requestDplus(array $data, $addcustID = true) {
 		$config  = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 
 		if ($addcustID) {

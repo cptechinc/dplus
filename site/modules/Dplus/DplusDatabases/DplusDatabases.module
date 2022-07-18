@@ -1,0 +1,28 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/vendor/autoload.php');
+
+use Dplus\Databases;
+
+/**
+ * DplusDatabases
+ */
+class DplusDatabases extends WireData implements Module {
+	public function init() {
+		Databases\Connectors\Dplus::instance()->connect();
+		Databases\Connectors\Dpluso::instance()->connect();
+	}
+
+	public static function getModuleInfo() {
+		$infoArray = array(
+			'title' => __('Dplus Database Connections'),
+			'version' => 115,
+			'summary' => __("Creates Connections to Dplus Databases"),
+			'autoload' => true,
+			'singular' => true,
+			'author' => 'pauldro',
+			'icon' => 'database'
+		);
+		return $infoArray;
+	}
+}

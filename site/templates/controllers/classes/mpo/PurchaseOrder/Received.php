@@ -5,9 +5,13 @@ use PurchaseOrder;
 use ProcessWire\Page, ProcessWire\PurchaseOrderEdit as EpoModel;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 use Controllers\Mpo\PurchaseOrder\Base;
+
 
 class Received extends Base {
 	const DPLUSPERMISSION = 'mpo';
@@ -127,7 +131,7 @@ class Received extends Base {
 
 	private static function sendRequest(array $data, $sessionID = '') {
 		$sessionID = $sessionID ? $sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
+		$db = DbDpluso::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $sessionID);

@@ -169,12 +169,12 @@ class Picking extends Base {
 				// case 'verify-whseitempicks':
 				// 	$this->verifyWhseitempicks($input);
 				// 	break;
-				// case 'finish-order':
-				// 	$this->requestFinishOrder($values->text('ordn'));
-				// 	break;
-				// case 'unlock-order':
-				// 	$this->requestUnlockOrder($values->text('ordn'));
-				// 	break;
+				case 'finish-order':
+					$this->requestFinishOrder($values->text('ordn'));
+					break;
+				case 'unlock-order':
+					$this->requestUnlockOrder($values->text('ordn'));
+					break;
 			}
 		}
 	}
@@ -201,6 +201,7 @@ class Picking extends Base {
 		}
 		$pickingitem = $this->createWhseitempickInput($orderitem, $input);
 		$pickingitem->save();
+		$this->requestLineUpdate($orderitem->linenbr);
 		return true;
 	}
 
@@ -430,10 +431,9 @@ class Picking extends Base {
 		$item->setBin($values->binID('binID'));
 		$item->setLotserialref($values->text('lotserialref'));
 		$item->setLotserial($values->text('lotserial'));
-
 		$qty = $this->inventory->isItemSerialized($orderitem->itemnbr) ? 1 : $values->float('qty');
 		$item->setQty($qty);
-		echo var_dump($item);
+
 		return $item;
 	}
 
@@ -457,6 +457,16 @@ class Picking extends Base {
 	 */
 	public function requestExitOrder($ordn) {
 		$data = ['STOPORDER', "ORDERNBR=$ordn"];
+		$this->sendDplusRequest($data);
+	}
+
+	/**
+	 * Send Request to Start & Load Order
+	 * @param  string $ordn   Order Number
+	 * @return bool
+	 */
+	public function requestFinishOrder($ordn) {
+		$data = ['FINISHORDER', "ORDERNBR=$ordn"];
 		$this->sendDplusRequest($data);
 	}
 

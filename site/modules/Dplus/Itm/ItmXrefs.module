@@ -4,6 +4,8 @@ use Purl\Url;
 // Dplus Model
 use ItemMasterItem;
 use ItemXrefCustomer;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Filters
 use Dplus\Filters\Mso\Cxm   as CxmFilter;
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
@@ -219,7 +221,7 @@ class ItmXrefs extends WireData implements Module {
 ============================================================= */
 	private function requestDplus(array $data) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());

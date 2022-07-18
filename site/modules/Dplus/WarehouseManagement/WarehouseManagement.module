@@ -1,6 +1,10 @@
 <?php namespace ProcessWire;
 
+
 include_once(__DIR__.'/vendor/autoload.php');
+
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 
 class WarehouseManagement extends WireData implements Module {
 
@@ -20,7 +24,7 @@ class WarehouseManagement extends WireData implements Module {
 	}
 
 	public function sendDplusRequest(array $data, $debug = false) {
-		$db = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$db = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);

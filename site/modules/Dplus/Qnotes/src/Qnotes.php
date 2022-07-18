@@ -5,6 +5,8 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // ProcessWire
 use ProcessWire\WireData;
 use ProcessWire\WireInput;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 
 abstract class Qnotes extends WireData {
 	const MODEL                = '';
@@ -240,7 +242,7 @@ abstract class Qnotes extends WireData {
 	 * @return array
 	 */
 	public function writeRqstData(ActiveRecordInterface $note) {
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		return ["DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$note->type", "KEY2=$note->key2", "FORM=$note->form"];
 	}
 

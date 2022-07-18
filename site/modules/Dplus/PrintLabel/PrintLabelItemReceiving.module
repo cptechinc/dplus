@@ -7,6 +7,11 @@ use PurchaseOrderDetailLotReceivingQuery, PurchaseOrderDetailLotReceiving;
 use LabelPrintSessionQuery, LabelPrintSession;
 use WhsesessionQuery, Whsesession;
 
+
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
+
 include(__DIR__.'/PrintLabelResponse.php');
 
 class PrintLabelItemReceiving extends PrintLabelItem implements Module {
@@ -86,7 +91,7 @@ class PrintLabelItemReceiving extends PrintLabelItem implements Module {
 	 */
 	public function request_label_init(PurchaseOrderDetailLotReceiving $item) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 
 		$data = array("DBNAME=$dplusdb", "RECEIVELABELINIT", "PONBR=$item->ponbr", "ITEMID=$item->itemid", "WHSE=$whsesession->whseid", "BIN=".strtoupper($item->bin));
@@ -104,7 +109,7 @@ class PrintLabelItemReceiving extends PrintLabelItem implements Module {
 	 */
 	public function request_label_print(LabelPrintSession $labelsession, $ponbr, int $linenbr) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 
 		$data = array("DBNAME=$dplusdb", "RECEIVELABELPRINT", "PONBR=$ponbr", "LINENBR=$linenbr");
 		if ($labelsession->lotserial != 'all') {

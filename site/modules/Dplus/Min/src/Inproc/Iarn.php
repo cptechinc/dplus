@@ -4,6 +4,8 @@ use InvAdjustmentReasonQuery, InvAdjustmentReason;
 use WarehouseQuery, Warehouse;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Validators
@@ -289,7 +291,7 @@ class Iarn extends WireData {
 	 */
 	public function updateDplusServer(InvAdjustmentReason $reason) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=IARN", "CODE=$reason->code"];
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
