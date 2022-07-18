@@ -1,21 +1,13 @@
 <?php namespace Controllers\Wm\Sop\Picking;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// Propel Classes
-use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
-use WarehouseQuery, Warehouse;
-use SalesOrderQuery, SalesOrder;
+use SalesOrderQuery;
 // Dpluso Model
-use WhseitemphysicalcountQuery, Whseitemphysicalcount;
-use Whsesession;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
-use Processwire\SearchInventory, Processwire\WarehouseManagement,ProcessWire\HtmlWriter;
-// Dplus Configs
-use Dplus\Configs as Dconfigs;
+use ProcessWire\Page, ProcessWire\Module;
+use Processwire\WarehouseManagement;
+use  Dplus\Mso\So\SalesOrder as SalesOrders;
 // Dplus Validators
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Dplus CRUD
@@ -59,8 +51,8 @@ class Picking extends Base {
 
 	public static function handleCRUD($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn', 'scan|text']);
-
 		$validate = self::getValidatorMso();
+
 		if (empty($data->ordn) === false && $validate->order($data->ordn) === false) {
 			self::redirect(self::pickingUrl($data->ordn), $http301 = false);
 		}
@@ -68,16 +60,18 @@ class Picking extends Base {
 		$m = self::getPicking($data->ordn);
 		$m->processInput(self::pw('input'));
 
+
 		// REDIRECT
 		switch ($data->action) {
 			case 'scan-pick-item':
 				self::redirect(self::pickScanUrl($data->ordn, $data->scan), $http301 = false);
 				break;
 			case 'exit-order':
+			case 'finish-order':
 				self::redirect(self::pickingUrl(), $http301 = false);
 				break;
 			case 'add-lotserials':
-				if ($session->getFor('picking', 'verify-picked-items')) {
+				if (self::pw('session')->getFor('picking', 'verify-picked-items')) {
 					self::redirect(self::pickScanUrl($data->ordn, $data->scan), $http301 = false);
 				}
 				self::redirect(self::pickingUrl($data->ordn), $http301 = false);
@@ -89,7 +83,7 @@ class Picking extends Base {
 	}
 
 	private static function picking($data) {
-		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
+		self::sanitizeParametersShort($data, ['action|text', 'ordn|text']);
 		$validate = self::getValidatorMso();
 		$wSession = self::getWhsesession();
 
@@ -110,9 +104,8 @@ class Picking extends Base {
 	}
 
 	protected static function pickOrder($data) {
-		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn', 'data|text']);
+		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
 		$config   = self::pw('config');
-		$session  = self::pw('session');
 		$wSession = self::getWhsesession();
 		$picking  = self::getPicking($data->ordn);
 
@@ -165,6 +158,12 @@ class Picking extends Base {
 	public static function pickingExitUrl($ordn) {
 		$url = new Purl(self::pickingUrl($ordn));
 		$url->query->set('action', 'exit-order');
+		return $url->getUrl();
+	}
+
+	public static function pickingFinishUrl($ordn) {
+		$url = new Purl(self::pickingUrl($ordn));
+		$url->query->set('action', 'finish-order');
 		return $url->getUrl();
 	}
 
@@ -228,8 +227,9 @@ class Picking extends Base {
 	}
 
 	private static function displayOrderHeader($data) {
+		$salesOrders = SalesOrders::instance();
 		$wSession = self::getWhsesession();
-		$order = SalesOrderQuery::create()->findOneByOrdernumber($data->ordn);
+		$order = $salesOrders->order($data->ordn);
 		return self::pw('config')->twig->render('warehouse/picking/order/header-info.twig', ['order' => $order, 'whsesession' => $wSession]);
 	}
 
@@ -246,7 +246,6 @@ class Picking extends Base {
 		if ($config->twigloader->exists("warehouse/picking/unguided/$config->company/order/items.twig")) {
 			return $config->twig->render("warehouse/picking/unguided/$config->company/order/items.twig", ['lineitems' => $items, 'm_picking' => $picking]);
 		}
-
 		return $config->twig->render('warehouse/picking/unguided/order/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 	}
 
@@ -286,7 +285,7 @@ class Picking extends Base {
 		}
 		$session->removeFor('picking', 'verify-picked-items');
 		$writer  = self::getHtmlWriter();
-		$html .= $writer->div('class=mb-3');
+		$html = $writer->div('class=mb-3');
 		$html .= $config->twig->render('warehouse/picking/unguided/scan/form.twig');
 		return $html;
 	}
@@ -354,7 +353,7 @@ class Picking extends Base {
 
 		if (empty(self::$picking)) {
 			self::$picking = new PickingCRUD();
-			self::$picking->setSessionid(self::getSessionid());
+			self::$picking->setSessionid(session_id());
 		}
 		if ($ordn) {
 			self::$picking->setOrdn($ordn);
@@ -386,6 +385,12 @@ class Picking extends Base {
 			$p   = $event->object;
 			$url = $p->fullURL;
 			$event->return = self::pickingExitUrl($url->query->get('ordn'));
+		});
+
+		$m->addHook('Page::finishOrderUrl', function($event) {
+			$p   = $event->object;
+			$url = $p->fullURL;
+			$event->return = self::pickingFinishUrl($url->query->get('ordn'));
 		});
 	}
 }
