@@ -3,7 +3,8 @@
 include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
-
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 use Dplus\CodeValidators\Min\Itm as ItmValidator;
 
 use InvHazmatItemQuery, InvHazmatItem;
@@ -356,7 +357,7 @@ class ItmHazmat extends WireData implements Module {
 ============================================================= */
 	private function request_dplus(array $data) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());

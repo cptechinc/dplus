@@ -11,6 +11,8 @@ use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Codes
 use Dplus\Codes\Base;
 use Dplus\Codes\Response;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 
 /**
  * Class that handles the CRUD of the Sysop code table
@@ -342,7 +344,7 @@ class Sysop extends Base {
 	 */
 	protected function updateDplus($code) {
 		$config  = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$table = static::DPLUS_TABLE;
 		$data = ["DBNAME=$dplusdb", 'UPDATESYSOP', "SYS=$code->system", "CODE=$code->id"];
 		$requestor = $this->wire('modules')->get('DplusRequest');

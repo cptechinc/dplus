@@ -4,6 +4,8 @@ use ItemAddonItemQuery, ItemAddonItem;
 use WarehouseQuery, Warehouse;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Validators
@@ -358,7 +360,7 @@ class Addm extends WireData {
 	 */
 	public function updateDplusServer(ItemAddonItem $xref) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = ["DBNAME=$dplusdb", 'UPDATEADDM', "ITEMID=$xref->itemid", "ADDONITEM=$xref->addonitemid"];
 
 		$requestor = $this->wire('modules')->get('DplusRequest');

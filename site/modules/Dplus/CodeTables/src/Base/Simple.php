@@ -10,6 +10,8 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Codes
 use Dplus\Codes\Response;
 use Dplus\Codes\Base;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 
 abstract class Simple extends Base {
 	protected static $instance;
@@ -160,7 +162,7 @@ abstract class Simple extends Base {
 	 * @return array
 	 */
 	protected function generateRequestData($code) {
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$table   = static::DPLUS_TABLE;
 		return ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code->id"];
 	}

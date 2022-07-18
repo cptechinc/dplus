@@ -11,6 +11,8 @@ use InvKitQuery, InvKit;
 use InvKitComponentQuery, InvKitComponent;
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigSalesOrder, ConfigKt;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Code Validators
@@ -260,7 +262,7 @@ class Kim extends WireData implements Module {
 	 */
 	private function request_dplus(array $data) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
