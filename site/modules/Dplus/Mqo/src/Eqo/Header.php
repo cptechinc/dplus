@@ -5,6 +5,9 @@ use QuoteQuery, Quote;
 use QuothedQuery, Quothed;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
 
 /**
  * Header
@@ -110,7 +113,7 @@ class Header extends WireData  {
 ============================================================= */
 	private function requestDplus(array $data) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);

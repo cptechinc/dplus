@@ -6,6 +6,8 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use SysopOptionalCodeQuery, SysopOptionalCode as Model;
 // ProcessWire
 use ProcessWire\WireInput;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Codes
@@ -214,7 +216,7 @@ abstract class SysopOptionalCode extends Base {
 	 */
 	protected function updateDplus($code) {
 		$config  = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$table = static::DPLUS_TABLE;
 		$data = ["DBNAME=$dplusdb", 'UPDATEOPTCODE', "SYS=$code->system", "CODE=$code->sysop", "ID=$code->id"];
 		$requestor = $this->wire('modules')->get('DplusRequest');

@@ -10,12 +10,16 @@
  *
  */
 
-include_once("./_func.php"); // include our shared functions
+$connected = Dplus\Databases\Connectors\Dplus::instance()->connect();
+Dplus\Databases\Connectors\Dpluso::instance()->connect();
 
-$config->maxUrlSegments = 10;
-$config->maxPageNum = 10000;
+if ($connected === false) {
+	if ($input->urlSegmentLast() != 'db-error') {
+		$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
+	}
+}
 
-// BUILD AND INSTATIATE CLASSES
+// BUILD URLs
 $page->fullURL = new Purl\Url($page->httpUrl);
 $page->fullURL->path = '';
 if (!empty($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/') {
@@ -24,68 +28,55 @@ if (!empty($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/') {
 
 $input->purl = new Purl\Url($input->url($withQueryString = true));
 
-// CHECK DATABASE CONNECTIONS
-if ($page->id != $config->errorpage_dplusdb) {
-	$db_modules = array(
-		'dplusdata' => array(
-			'module'   => 'DplusDatabase',
-			'default'  => true
-		),
-		'dpluso' => array(
-			'module'          => 'DplusOnlineDatabase',
-			'default'  => false
-		)
-	);
 
-	foreach ($db_modules as $key => $connection) {
-		$module = $modules->get($connection['module']);
-		
+// Check if Needs Redirect based on Template, Query Values
+$noSigninRequiredTemplates = ['login', 'redir', 'quote-print'];
 
-		try {
-			$module->connect();
-			$module->connectPropel();
-			$module->getDebugConnection();
-		} catch (Exception $e) {
-			$module->logError($e->getMessage());
-			$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
-		}
-	}
+if ($input->get->pdf || $input->get->print || $input->lastSegment() == 'print') {
 
-	$templates_nosignin = array('login', 'redir', 'quote-print');
-
-	if ($input->get->pdf || $input->get->print || $input->lastSegment() == 'print') {
-
-	} elseif (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
-		$session->returnurl = $page->fullURL->getUrl();
-		$session->redirect($pages->get('template=login')->url, $http301 = false);
-	}
-	$user->setup($input->get->sessionID ? $input->get->text('sessionID') : session_id());
-
-	$modules->get('RecordLocker')->remove_locks_olderthan('all', 3);
-} else {
-	if (!$input->get->retry) {
-		$configimporter = $modules->get('Configs');
-		
-		if ($configimporter->importJsonExists()) {
-			$configimporter->import();
-			$page->fullURL->query->set('retry', 'true');
-			$session->redirect($page->fullURL->getUrl());
-		}
-	} else {
-		try {
-			$con    = $modules->get('DplusDatabase')->propelWriteConnection();
-			$dpluso = $modules->get('DplusOnlineDatabase')->propelWriteConnection();
-		} catch (Exception $e) {
-			$page->show_title = true;
-		}
-		$session->redirect($pages->get('/')->url);
-	}
+} elseif (!in_array($page->template, $noSigninRequiredTemplates) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
+	$session->returnurl = $page->fullURL->getUrl();
+	$session->redirect($pages->get('template=login')->url, $http301 = false);
 }
+
+$modules->get('RecordLocker')->remove_locks_olderthan('all', 3);
+
+$user->setup($input->get->sessionID ? $input->get->text('sessionID') : session_id());
+
+$config->maxUrlSegments = 10;
+$config->maxPageNum = 10000;
+
 
 $rm = strtolower($input->requestMethod());
 $values = $input->$rm;
 
-if (!$values->action || $page->template == 'dplus-screen-formatter') {
+// SET CONFIG PROPERTIES
+if ($input->get->modal) {
+	$config->modal = true;
+}
+
+if ($input->get->json) {
+	$config->json = true;
+}
+
+if ($input->get->print || $input->lastSegment() == 'print') {
+	$page->print = true;
+}
+
+if ($input->get->pdf) {
+	$page->pdf = true;
+}
+
+$page->focus = $values->text('focus');
+
+$appconfig = $pages->get('/config/app/');
+$siteconfig = $pages->get('/config/');
+$config->customer = $pages->get('/config/customer/');
+
+$session->sessionid = session_id();
+
+// Initialze CSS / JS / Twig
+if ($values->offsetExists('action') === false|| $page->template == 'dplus-screen-formatter') {
 	$hasher = $modules->get('FileHasher');;
 
 	// ADD JS AND CSS
@@ -111,34 +102,7 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/sweetalert2.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/classes.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/main.js'));
-}
 
-// SET CONFIG PROPERTIES
-if ($input->get->modal) {
-	$config->modal = true;
-}
-
-if ($input->get->json) {
-	$config->json = true;
-}
-
-if ($input->get->print || $input->lastSegment() == 'print') {
-	$page->print = true;
-}
-
-if ($input->get->pdf) {
-	$page->pdf = true;
-}
-
-$page->focus = $input->get->text('focus');
-
-$appconfig = $pages->get('/config/app/');
-$siteconfig = $pages->get('/config/');
-$config->customer = $pages->get('/config/customer/');
-
-$session->sessionid = session_id();
-
-if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$mtwig = $modules->get('Twig');
 	$config->twigloader = $mtwig->getLoader();
 	$config->twig = $mtwig->getTwig();

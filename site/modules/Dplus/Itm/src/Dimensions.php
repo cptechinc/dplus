@@ -3,7 +3,8 @@
 use ItmDimensionQuery, ItmDimension;
 
 use ProcessWire\WireData, ProcessWire\WireInput;
-
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 use Dplus\Min\Inmain\Itm\Response;
 
 class Dimensions extends WireData {
@@ -242,7 +243,7 @@ class Dimensions extends WireData {
 	 */
 	private function requestDplus(array $data) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);

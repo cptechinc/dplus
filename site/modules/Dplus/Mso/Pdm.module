@@ -2,6 +2,9 @@
 
 include(__DIR__.'/PdmResponse.php');
 
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
+
 use ItemPricingDiscountQuery, ItemPricingDiscount;
 
 /**
@@ -122,7 +125,7 @@ class Pdm extends WireData implements Module {
 	 */
 	public function request_pdm_update(ItemPricingDiscount $pricing) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = [
 			"DBNAME=$dplusdb", 'UPDATEPDM',
 			"TYPE=$pricing->type", "TBLTYPE=$pricing->table", "STRTDATE=$pricing->startdate",

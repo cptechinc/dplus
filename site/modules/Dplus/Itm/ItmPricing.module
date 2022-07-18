@@ -8,6 +8,8 @@ use ItemMasterItemQuery, ItemMasterItem;
 use ItemPricingQuery, ItemPricing;
 use InvAssortmentCodeQuery, InvAssortmentCode;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Code Validators
 use Dplus\CodeValidators\Min\Itm as ItmValidator;
 // Dplus Configs
@@ -199,7 +201,7 @@ class ItmPricing extends WireData implements Module {
 		$itm->lockrecord($itemID);
 
 		if ($itm->recordlocker->userHasLocked($itemID) === false) {
-			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
+			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $itm->recordlocker->get_locked_user('itm', $itemID);
 			$response = ItmResponse::response_error($itemID, $message);
 			$this->wire('session')->setFor('response', 'itm', $response);
 			return false;
@@ -342,7 +344,7 @@ class ItmPricing extends WireData implements Module {
 	 */
 	public function request_pricing_update($itemID) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array("DBNAME=$dplusdb", 'UPDATEITMPRICE', "ITEMID=$itemID");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');

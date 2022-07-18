@@ -10,6 +10,9 @@ use WarehouseQuery, Warehouse;
 
 use EditPoDetailQuery, EditPoDetail;
 
+// Dplus Databases
+use Dplus\Databases\Connectors\Dpluso as DbDpluso;
+
 class PoAmendItems extends WireData {
 	public function __construct() {
 		$this->sessionID = session_id();
@@ -210,7 +213,7 @@ class PoAmendItems extends WireData {
 
 	protected function request_dplus(array $data) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$dplusdb = DbDpluso::instance()->dbconfig->dbName;;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);

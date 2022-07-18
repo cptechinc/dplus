@@ -1,7 +1,8 @@
 <?php namespace ProcessWire;
 
 use Purl\Url;
-
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 use Dplus\CodeValidators\Min     as MinValidator;
 use Dplus\CodeValidators\Mki\Kim as KimValidator;
 
@@ -325,7 +326,7 @@ class KimComponent extends WireData implements Module {
 	 */
 	private function request_dplus(array $data) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());

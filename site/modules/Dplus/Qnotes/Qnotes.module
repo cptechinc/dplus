@@ -2,6 +2,9 @@
 
 include_once(__DIR__ . '/vendor/autoload.php');
 
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
+
 class Qnotes extends WireData implements Module {
 	/**
 	 * Returns Lines Broken down by line limits
@@ -29,7 +32,7 @@ class Qnotes extends WireData implements Module {
 	 * @return array
 	 */
 	public function write_dplus_data($notetype, $key2, $form) {
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		return array("DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$notetype", "KEY2=$key2", "FORM=$form");
 	}
 
@@ -42,7 +45,7 @@ class Qnotes extends WireData implements Module {
 	 */
 	public function update_dplus_cobol($notetype, $key2, $form) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = $this->write_dplus_data($notetype, $key2, $form);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());

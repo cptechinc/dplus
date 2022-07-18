@@ -3,6 +3,8 @@
 use BomComponentQuery, BomComponent;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus RecordLocker
 use Dplus\RecordLocker\Locker;
 // Dplus Bmm CRUD
@@ -342,7 +344,7 @@ class Components extends WireData {
 	 */
 	private function requestDplus(array $data) {
 		$config  = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);

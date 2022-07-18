@@ -10,6 +10,8 @@ use WarehouseQuery, Warehouse;
 use WarehouseBinQuery, WarehouseBin;
 use ConfigInQuery, ConfigIn;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Code Validators
@@ -387,7 +389,7 @@ class ItmWarehouse extends WireData implements Module {
 	 */
 	public function request_whse_update($itemID, $whseID) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array("DBNAME=$dplusdb", 'UPDATEITMWHSE', "ITEMID=$itemID", "WHSE=$whseID");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
@@ -397,7 +399,7 @@ class ItmWarehouse extends WireData implements Module {
 
 	public function request_whse_delete($itemID, $whseID) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$data = array("DBNAME=$dplusdb", 'DELETEITMWHSE', "ITEMID=$itemID", "WHSE=$whseID");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');

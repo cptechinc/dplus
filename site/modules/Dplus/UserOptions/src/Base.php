@@ -9,6 +9,8 @@ use Propel\Runtime\Collection\ObjectCollection;
 use ProcessWire\WireData;
 use ProcessWire\WireInput;
 use ProcessWire\User;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
@@ -400,7 +402,7 @@ abstract class Base extends WireData {
 	 */
 	protected function updateDplus(UserRecord $user) {
 		$config  = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
 		$table = static::DPLUS_TABLE;
 		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$user->userid"];
 		$requestor = $this->wire('modules')->get('DplusRequest');
