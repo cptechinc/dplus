@@ -42,7 +42,7 @@
 				}
 				$page->body = $config->twig->render('warehouse/inventory/physical-count/physical-count-form.twig', ['page' => $page, 'item' => $physicalitem]);
 				$page->body .= $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
-				$config->scripts->append(hash_templatefile('scripts/warehouse/physical-count.js'));
+				$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/physical-count.js'));
 			}
 		} elseif ($query_phys->count() > 1) {
 			if ($input->get->recno) {
@@ -91,7 +91,7 @@
 	$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
 	$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig)]);
 
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-	$config->scripts->append(hash_templatefile('scripts/warehouse/physical-count.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/physical-count.js'));
 
 	include __DIR__ . "/basic-page.php";

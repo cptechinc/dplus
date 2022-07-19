@@ -44,7 +44,7 @@
 	$page->body = $router->route();
 
 	if ($router->hasError() === false) {
-		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
 		$session->removeFor('response', 'poadmin');
 		$page->show_breadcrumbs = false;
 	}

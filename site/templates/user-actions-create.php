@@ -47,6 +47,6 @@
 		}
 	}
 
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-	$config->scripts->append(hash_templatefile('scripts/user-actions.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/user-actions.js'));
 	include __DIR__ . "/basic-page.php";

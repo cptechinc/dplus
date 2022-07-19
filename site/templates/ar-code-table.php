@@ -50,7 +50,7 @@
 		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "AR Code Table '$page->codetable' does not exist"]);
 	}
 
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
 	$page->js .= $config->twig->render("code-tables/js.twig", ['page' => $page]);
 
 	if ($session->response_codetable) {

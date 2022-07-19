@@ -38,7 +38,7 @@
 					$session->remove('response_crud');
 				}
 				$page->body .= $config->twig->render("user-actions/$action->actiontype.twig", ['page' => $page, 'module_useractions' => $module_useractions, 'crud_useractions' => $module_useractions_crud, $action->actiontype => $action]);
-				$config->scripts->append(hash_templatefile('scripts/user-actions.js'));
+				$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/user-actions.js'));
 			} else {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Attention!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Action ID $id Not found"]);
 				$page->body .= $html->div('class=form-group', '');

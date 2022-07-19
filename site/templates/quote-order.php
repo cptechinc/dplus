@@ -27,7 +27,7 @@
 			$page->body .= $config->twig->render('quotes/quote/edit/quote-header.twig', ['page' => $page, 'customer' => $customer, 'quote' => $quote_readonly]);
 			$page->body .= $html->div('class=mb-3');
 			$page->body .= $config->twig->render('quotes/quote/order/quote-items.twig', ['page' => $page, 'quote' => $quote_edit]);
-			$config->scripts->append(hash_templatefile('scripts/quotes/order-quote.js'));
+			$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/quotes/order-quote.js'));
 		} else {
 			$page->headline = $page->title = "Quote #$qnbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Quote Number is correct"]);

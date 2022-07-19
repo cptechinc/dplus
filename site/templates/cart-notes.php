@@ -11,7 +11,7 @@
 		$page->title = "Cart Notes for $customer->name";
 		$page->body = $config->twig->render('cart/notes/qnotes-page.twig', ['page' => $page, 'items' => $cart->get_items(), 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/notes/add-note-modal.twig', ['page' => $page]);
-		$config->scripts->append(hash_templatefile('scripts/cart/cart-notes.js'));
+		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/cart/cart-notes.js'));
 	}
 
 	include __DIR__ . "/basic-page.php";

@@ -23,7 +23,7 @@
 		}
 	}
 
-	$config->scripts->append(hash_templatefile('scripts/warehouse/find-item.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/find-item.js'));
 
 	if ($page->print) {
 		$page->show_title = true;

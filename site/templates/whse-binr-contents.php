@@ -12,8 +12,8 @@
 	$page->body    .= $config->twig->render('warehouse/binr/contents/bin-contents-modal.twig', ['page' => $page]);
 
 	// Add JS
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-	$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
-	$config->scripts->append(hash_templatefile('scripts/warehouse/binr-contents.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/shared.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/binr-contents.js'));
 
 	include __DIR__ . "/basic-page.php";

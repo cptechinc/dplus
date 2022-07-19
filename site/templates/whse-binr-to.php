@@ -11,9 +11,9 @@
 		$page->body =  $config->twig->render('warehouse/binr/direction/bin-form.twig', ['page' => $page, 'inputname' => 'tobin']);
 		$page->body .= $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse, 'config' => $config->binr]);
 
-		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-		$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
-		$config->scripts->append(hash_templatefile('scripts/warehouse/binr-to.js'));
+		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
+		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/shared.js'));
+		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/binr-to.js'));
 
 		include __DIR__ . "/basic-page.php";
 	}

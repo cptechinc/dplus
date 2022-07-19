@@ -33,7 +33,7 @@
 
 	$page->body .= $config->twig->render('mci/cio/page.twig', ['page' => $page, 'cio' => $cio, 'user' => $iiuser]);
 	$page->js   .= $config->twig->render('mci/cio/js.twig', ['page' => $page, 'cio' => $cio]);
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
 
 	$session->remove('response_cio');
 	include __DIR__ . "/basic-page.php";

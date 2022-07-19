@@ -56,9 +56,9 @@
 			$page->body .= $config->twig->render("bookings/customer/bookings-page.twig", ['page' => $page, 'bookings' => $bookings, 'interval' => $filter_bookings->bookings_user->interval, 'shiptos' => $shiptos, 'dpluso' => $dpluso]);
 			$page->js .= $config->twig->render("bookings/user/js/bookings.js.twig", ['page' => $page, 'bookingsdata' => $filter_bookings->convert_bookings_for_js($bookings), 'interval' => $filter_bookings->bookings_user->interval]);
 
-			$config->styles->append(hash_templatefile('styles/lib/morris.css'));
-			$config->scripts->append(hash_templatefile('scripts/lib/raphael.js'));
-			$config->scripts->append(hash_templatefile('scripts/lib/morris.js'));
+			$config->styles->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('styles/lib/morris.css'));
+			$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/raphael.js'));
+			$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/morris.js'));
 		} else {
 			$page->title = "Error! You don't have access to customer $custID";
 			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Template can not be found"]);

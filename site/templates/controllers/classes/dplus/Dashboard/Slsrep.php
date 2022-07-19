@@ -54,9 +54,9 @@ class Slsrep extends Common {
 		$html = '';
 		$html .= $config->twig->render("dashboard/components/top-selling-customers.twig", ['customers' => $customers]);
 		self::pw('page')->js .= $config->twig->render("dashboard/components/js/top-selling.js.twig", ['piedata' => $piedata, 'module_dashboard' => $dashboardM]);
-		$config->styles->append(hash_templatefile('styles/lib/morris.css'));
-		$config->scripts->append(hash_templatefile('scripts/lib/raphael.js'));
-		$config->scripts->append(hash_templatefile('scripts/lib/morris.js'));
+		$config->styles->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('styles/lib/morris.css'));
+		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/raphael.js'));
+		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/morris.js'));
 		return $html;
 	}
 }

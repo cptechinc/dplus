@@ -26,9 +26,9 @@
 	}
 
 	// Add JS
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-	$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
-	$config->scripts->append(hash_templatefile('scripts/warehouse/bin-inquiry.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/shared.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/bin-inquiry.js'));
 
 	if ($page->print) {
 		$page->show_title = true;

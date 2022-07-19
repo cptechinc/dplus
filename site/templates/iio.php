@@ -34,7 +34,7 @@
 
 	$page->body .= $config->twig->render('mii/iio/page.twig', ['page' => $page, 'iio' => $iio, 'user' => $iiuser]);
 	$page->js   .= $config->twig->render('mii/iio/js.twig', ['page' => $page, 'iio' => $iio]);
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
 
 	$session->remove('response_iio');
 	include __DIR__ . "/basic-page.php";

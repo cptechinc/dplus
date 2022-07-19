@@ -27,7 +27,7 @@
 	$page->body .= $config->twig->render("bookings/user/bookings-page.twig", ['page' => $page, 'bookings' => $bookings, 'interval' => $filter_bookings->bookings_user->interval, 'customers' => $customers]);
 	$page->js .= $config->twig->render("bookings/user/js/bookings.js.twig", ['page' => $page, 'bookingsdata' => $filter_bookings->convert_bookings_for_js($bookings), 'interval' => $filter_bookings->bookings_user->interval]);
 
-	$config->styles->append(hash_templatefile('styles/lib/morris.css'));
-	$config->scripts->append(hash_templatefile('scripts/lib/raphael.js'));
-	$config->scripts->append(hash_templatefile('scripts/lib/morris.js'));
+	$config->styles->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('styles/lib/morris.css'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/raphael.js'));
+	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/morris.js'));
 	include __DIR__ . "/basic-page.php";
