@@ -190,7 +190,6 @@ abstract class Qnotes extends WireData {
 	 */
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
 		return $this->_inputUpdate($input);
 	}
 
@@ -201,7 +200,6 @@ abstract class Qnotes extends WireData {
 	 */
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
 		return $this->_inputDelete($input);
 	}
 
