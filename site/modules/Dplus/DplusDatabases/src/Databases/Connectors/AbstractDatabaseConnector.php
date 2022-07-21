@@ -54,6 +54,7 @@ abstract class AbstractDatabaseConnector extends WireData {
 		if ($this->connectPropel() === false) {
 			return false;
 		}
+		$this->wire('db-' . static::NAME_PW , $this, true);
 		return true;
 	}
 
@@ -81,7 +82,12 @@ abstract class AbstractDatabaseConnector extends WireData {
 		$this->propel->name = static::NAME_PROPEL;
 		$this->propel->setIsDefault(static::PROPEL_DEFAULT);
 		$this->propel->setDbconfig($this->dbconfig);
-		return $this->propel->connect();
+		$success = $this->propel->connect();
+
+		if ($success) {
+			$this->wire('db-' . static::NAME_PW . '-propel', $this->propel, true);
+		}
+		return $success;
 	}
 
 /* =============================================================
