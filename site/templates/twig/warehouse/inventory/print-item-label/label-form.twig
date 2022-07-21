@@ -16,7 +16,7 @@
 			<input type="hidden" name="action" value="print-thermal-label">
 			<input type="hidden" name="labelID" value="{{ labelsession.labelid }}">
 			<input type="hidden" name="bin" value="{{ labelsession.bin }}">
-			<input type="hidden" name="lotserial" value="{{ labelsession.lotserial }}">
+			<input type="hidden" name="lotserial" value="{{ input.get.offsetExists('lotnbr') ? input.get.text('lotnbr') : labelsession.lotserial }}">
 			<input type="hidden" name="whseID" value="{{ labelsession.whse }}">
 			<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
