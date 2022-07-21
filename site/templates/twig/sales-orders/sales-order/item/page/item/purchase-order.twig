@@ -1,0 +1,31 @@
+{% set configPo = page.wire('config').config('Po') %}
+
+<table class="table table-sm">
+	<thead class="bg-light">
+		<tr>
+			<th>Item</th>
+			<th>Vendor Item</th>
+			<th>Whse</th>
+			<th>Special Order</th>
+			<th class="text-right">Qty</th>
+			<th class="text-right">Price</th>
+			<th class="text-right">Total</th>
+		</tr>
+	</thead>
+	{% for poitem in item.getPurchaseOrder().getPurchaseOrderDetails() %}
+		<tr class="{{ poitem.vendoritemid == item.nsvendoritemid ? 'highlight' : '' }}" id="{{ poitem.vendoritemid == item.nsvendoritemid ? 'purchaselOrderLine' : '' }}">
+			<td>
+				<div>
+					{{ poitem.itemid }}
+				</div>
+				<small class="text-muted">{{ poitem.description }}</small>
+			</td>
+			<td>{{ poitem.vendoritemid }}</td>
+			<td>{{ poitem.whse }}</td>
+			<td>{{ poitem.specialorder|capitalize }}</td>
+			<td class="text-right">{{ poitem.qty_ordered|number_format(configSo.decimal_places_qty)  }}</td>
+			<td class="text-right">$ {{ poitem.cost|number_format(configPo.decimal_places_cost) }}</td>
+			<td class="text-right">$ {{ poitem.cost_total|number_format(configPo.decimal_places_cost) }}</td>
+		</tr>
+	{% endfor %}
+</table>

@@ -17,7 +17,7 @@
 					<div class="col check-invoice">{{ note.invoice }}</div>
 					<div class="col check-acknowledgement">{{ note.acknowledgement }}</div>
 					<div class="col">
-						<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-{{ note.line }}-{{ note.form }}" aria-controls="collapseExample">
+						<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-{{ note.line }}-{{ note.form }}" aria-controls="notes-{{ noteline.line }}-{{ noteline.form }}">
 							<i class="fa fa-eye" aria-hidden="true"></i> Show
 						</button>
 						&nbsp; &nbsp;
@@ -26,7 +26,7 @@
 						</button>
 					</div>
 				</div>
-				<textarea class="collapse form-control-plaintext w-auto qnotes" id="notes-{{ note.line }}-{{ note.form }}" cols="{{ qnotes_so.get_column_count() }}" readonly>{{ qnotes_so.get_notes_form_array(ordn, note.line, note.form)|join('\r') }}</textarea>
+				<textarea class="collapse form-control-plaintext w-auto qnotes" id="notes-{{ note.line }}-{{ note.form }}" cols="{{ qnotes_so.get_column_count() }}" readonly>{{ qnotes_so.get_notes_form_array(ordn, noteline.line, noteline.form)|join('\r') }}</textarea>
 			</div>
 		{% endfor %}
 	{% else %}

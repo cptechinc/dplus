@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
 {
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Controllers\\Ajax\\Json\\ItemLookup' => __DIR__ . '/../..' . '/classes/ajax/json/ItemLookup.php',
         'Controllers\\Ajax\\Json\\Map' => __DIR__ . '/../..' . '/classes/ajax/json/Map.php',
         'Controllers\\Ajax\\Json\\Mar' => __DIR__ . '/../..' . '/classes/ajax/json/Mar.php',
@@ -191,6 +192,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mso\\SalesOrder\\Documents' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Documents.php',
         'Controllers\\Mso\\SalesOrder\\Edit' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Edit.php',
         'Controllers\\Mso\\SalesOrder\\Invoice' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Invoice.php',
+        'Controllers\\Mso\\SalesOrder\\Item' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Item.php',
         'Controllers\\Mso\\SalesOrder\\Lists\\Customer' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Lists/Customer.php',
         'Controllers\\Mso\\SalesOrder\\Lists\\Invoices\\Customer' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Lists/Invoices/Customer.php',
         'Controllers\\Mso\\SalesOrder\\Lists\\Invoices\\Invoice' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Lists/Invoices/Invoice.php',

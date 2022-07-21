@@ -1,0 +1,28 @@
+<table class="table table-sm">
+	<thead class="bg-light">
+		<tr>
+			<th>Lot / Serial #</th>
+			<th>Lot Reference #</th>
+			<th class="text-right">Qty</th>
+			<th class="text-center">Image</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for lot in item.getSoAllocatedLotserials() %}
+			<tr>
+				<td>{{ lot.lotserial }}</td>
+				<td>{{ lot.lotref }}</td>
+				<td class="text-right">{{ lot.shipqty|number_format(configssO.decimal_places_qty) }}</td>
+				<td class="text-center">
+					{% if docm.hasImage(lot.lotserial) %}
+						{% set image = docm.getImage(lot.lotserial) %}
+						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#image-modal" data-type="{{ docm.getFolders().description(image.folder) }}" data-id="{{ lot.lotserial }}" data-folder="{{ image.folder }}" data-file="{{ image.filename }}">
+							<i class="fa fa-picture-o" aria-hidden="true"></i>
+							<span class="sr-only">View Image</span>
+						</button>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

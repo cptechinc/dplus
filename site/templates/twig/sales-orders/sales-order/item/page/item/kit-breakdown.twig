@@ -1,0 +1,26 @@
+{% set configKt = page.wire('config').config('kt') %}
+
+<table class="table table-sm">
+	<thead class="bg-light">
+		<tr>
+			<th>Component</th>
+			<th>Description</th>
+			<th class="text-right">Qty</th>
+			{% if configKt.isUsageTag() %}
+				<th>Tag</th>
+			{% endif %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for component in item.item.getInvKitComponents() %}
+			<tr>
+				<td>{{ component.itemid }}</td>
+				<td>{{ component.item.description }}</td>
+				<td class="text-right">{{ lot.usage|number_format(4) }}</td>
+				{% if configKt.isUsageTag() %}
+					<td>{{ component.usagetag }}</td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

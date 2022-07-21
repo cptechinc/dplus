@@ -53,6 +53,20 @@
 						<i class="fa fa-list" aria-hidden="true"></i>
 					</button>
 				{% endif %}
+				{% include 'util/bootstrap/html/button.twig' with {
+					'button': {
+						'colorclass': 'btn-secondary',
+						'size': 'sm',
+						'text': 'fa fa-newspaper-o'|icon,
+						'attributes': {
+							'title': 'Line #'  ~ detail.linenbr ~ ' details',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.orderItemUrl(detail.ordernumber, detail.linenbr)
+						}
+					}
+				}
+			%}
 			</td>
 		</tr>
 

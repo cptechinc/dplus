@@ -4,6 +4,7 @@
 	use Controllers\Mso\SalesOrder\Documents;
 	use Controllers\Mso\SalesOrder\Notes;
 	use Controllers\Mso\SalesOrder\PrintSo;
+	use Controllers\Mso\SalesOrder\Item;
 
 	SalesOrderController::initHooks();
 
@@ -14,12 +15,13 @@
 	}
 
 	$routes = [
-		['GET',  '', SalesOrderController::class, 'index'],
-		['GET',  'documents/', Documents::class, 'index'],
-		['GET',  'print/', PrintSo::class, 'index'],
+		['GET', '', SalesOrderController::class, 'index'],
+		['GET', 'item/', Item::class, 'index'],
+		['GET', 'documents/', Documents::class, 'index'],
+		['GET', 'print/', PrintSo::class, 'index'],
 		'notes' => [
-			['GET',   '', Notes::class, 'index'],
-			['POST',  '', Notes::class, 'handleCRUD'],
+			['GET',  '', Notes::class, 'index'],
+			['POST', '', Notes::class, 'handleCRUD'],
 		],
 	];
 	$router = new Mvc\Routers\Router();

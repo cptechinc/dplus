@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Controllers\\Ajax\\Json\\ItemLookup' => $baseDir . '/classes/ajax/json/ItemLookup.php',
     'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',
     'Controllers\\Ajax\\Json\\Mar' => $baseDir . '/classes/ajax/json/Mar.php',
@@ -190,6 +191,7 @@ return array(
     'Controllers\\Mso\\SalesOrder\\Documents' => $baseDir . '/classes/mso/SalesOrder/Documents.php',
     'Controllers\\Mso\\SalesOrder\\Edit' => $baseDir . '/classes/mso/SalesOrder/Edit.php',
     'Controllers\\Mso\\SalesOrder\\Invoice' => $baseDir . '/classes/mso/SalesOrder/Invoice.php',
+    'Controllers\\Mso\\SalesOrder\\Item' => $baseDir . '/classes/mso/SalesOrder/Item.php',
     'Controllers\\Mso\\SalesOrder\\Lists\\Customer' => $baseDir . '/classes/mso/SalesOrder/Lists/Customer.php',
     'Controllers\\Mso\\SalesOrder\\Lists\\Invoices\\Customer' => $baseDir . '/classes/mso/SalesOrder/Lists/Invoices/Customer.php',
     'Controllers\\Mso\\SalesOrder\\Lists\\Invoices\\Invoice' => $baseDir . '/classes/mso/SalesOrder/Lists/Invoices/Invoice.php',

@@ -1,0 +1,36 @@
+{% set configPo = page.wire('config').config('Po') %}
+
+<div class="row">
+	<div class="col-sm-3">
+		<table class="table table-sm">
+			<tr>
+				<th>
+					<a href="#purchaselOrder" class="link">
+						<i class="fa fa-link" aria-hidden="true"></i> PO #
+					</a>
+				</th>
+				<td>{{ item.ponbr }}</td>
+			</tr>
+			<tr>
+				<th>PO Reference</th>
+				<td>{{ item.poref }}</td>
+			</tr>
+			<tr>
+				<th>Vendor ID</th>
+				<td>{{ item.nsvendorid }}</td>
+			</tr>
+			<tr>
+				<th>
+					<a href="#purchaselOrderLine" class="link">
+						<i class="fa fa-link" aria-hidden="true"></i> Item
+					</a>
+				</th>
+				<td>{{ item.nsvendoritemid }}</td>
+			</tr>
+			<tr>
+				<th>Group</th>
+				<td>{{ item.itemgroupid }}</td>
+			</tr>
+		</table>
+	</div>
+</div>

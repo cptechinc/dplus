@@ -1,0 +1,45 @@
+{% set configSo = page.wire('config').config('so') %}
+
+<div class="card">
+	{% if config.ajax == false %}
+		<div class="card-header bg-primary text-white">
+			<div class="d-flex justify-content-between">
+				<div>Line # {{ item.linenbr }}</div>
+				<div>{{ item.itemid }}</div>
+			</div>
+		</div>
+	{% endif %}
+	<div class="card-body">
+		{% include 'sales-orders/sales-order/item/page/item/item.twig' %}
+	</div>
+	<div id="allocatedLots">
+		<div class="card-header bg-primary text-white">
+			<h4>Allocated Lots</h4>
+		</div>
+		{% include 'sales-orders/sales-order/item/page/item/allocated-lots.twig' %}
+	</div>
+	<div id="qnotes">
+		<div class="card-header bg-primary text-white">
+			<h4>Order Notes</h4>
+		</div>
+		{% include 'sales-orders/sales-order/item/page/item/qnotes.twig' %}
+	</div>
+	<div id="kit">
+		<div class="card-header bg-primary text-white">
+			<h4>Kit</h4>
+		</div>
+		{% include 'sales-orders/sales-order/item/page/item/kit-breakdown.twig' %}
+	</div>
+	<div id="specialOrder">
+		<div class="card-header bg-primary text-white">
+			<h4>Special Order</h4>
+		</div>
+		{% include 'sales-orders/sales-order/item/page/item/special-order.twig' %}
+	</div>
+	<div id="purchaseOrder">
+		<div class="card-header bg-primary text-white">
+			<h4>Purchase Order</h4>
+		</div>
+		{% include 'sales-orders/sales-order/item/page/item/purchase-order.twig' %}
+	</div>
+</div>

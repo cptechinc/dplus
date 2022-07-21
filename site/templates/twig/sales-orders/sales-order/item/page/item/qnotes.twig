@@ -1,0 +1,28 @@
+<div class="list-group">
+	<div class="list-group-item bg-light font-weight-bold py-2">
+		<div class="row">
+			<div class="col-sm-2">Pick Ticket</div>
+			<div class="col-sm-2">Pack Ticket</div>
+			<div class="col-sm-2">Invoice</div>
+			<div class="col-sm-2">Acknowledgment</div>
+		</div>
+	</div>
+	{% for noteline in qnotes.getNotesSummarized(item.ordernumber, item.linenbr) %}
+		<div class="list-group-item py-2 first-txn-row">
+			<div class="row">
+				<div class="col-sm-2">{{ noteline.pickticket }}</div>
+				<div class="col-sm-2">{{ noteline.packticket }}</div>
+				<div class="col-sm-2">{{ noteline.invoice }}</div>
+				<div class="col-sm-2">{{ noteline.acknowledgement }}</div>
+				<div class="col-sm-2">
+					<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-{{ noteline.line }}-{{ noteline.form }}" aria-controls="notes-{{ noteline.line }}-{{ noteline.form }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+				</div>
+			</div>
+			<div class="collapse" id="notes-{{ noteline.line }}-{{ noteline.form }}">
+				<textarea class="form-control-plaintext w-auto qnotes" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" readonly>{{ qnotes.getNotesFormArray(noteline.ordernumber, noteline.line, noteline.form)|join('\r') }}</textarea>
+			</div>
+		</div>
+	{% endfor %}
+</div>

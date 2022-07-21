@@ -58,6 +58,8 @@ class SalesOrder extends Base {
 		self::pw('page')->headline = "Sales Order #$data->ordn";
 		self::pw('modules')->get('SalesOrderEdit')->init();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/orders/sales-order.js'));
+
 		if ($validate->invoice($data->ordn)) {
 			return Invoice::invoice($data);
 		}
@@ -153,6 +155,11 @@ class SalesOrder extends Base {
 		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderUrl', function($event) {
 			$event->return = self::orderUrl($event->arguments(0));
 		});
+
+		$m->addHook('Page(pw_template=sales-order-view)::orderItemUrl', function($event) {
+			$event->return = Item::itemUrl($event->arguments(0), $event->arguments(1));
+		});
+
 
 		$m->addHook('Page(pw_template=sales-order-view)::orderListUrl', function($event) {
 			$event->return = self::orderListUrl($event->arguments(0));

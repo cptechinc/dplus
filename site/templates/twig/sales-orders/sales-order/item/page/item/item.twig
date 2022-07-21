@@ -1,0 +1,96 @@
+<div class="row">
+	<div class="col-sm-3">
+		<b class="h5">{{ item.itemid }}</b></br>
+		<div>
+			<b>{{ item.description1 }}</b>
+		</div>
+		<div>
+			<b>{{ item.description2 }}</b>
+		</div>
+		<div>
+			{% if item.specialorder != 'N' %}
+				<span class="badge badge-primary">{{ item.specialorder()|title }}</span>
+			{% endif %}
+		</div>	
+	</div>
+	<div class="col-sm-3">
+		<table class="table table-sm">
+			<tr>
+				<th>Qty Ordered</th>
+				<td class="text-right">{{ item.qty_ordered|number_format(configSo.decimal_places_qty) }}</td>
+			</tr>
+			<tr>
+				<th>Price</th>
+				<td class="text-right">$ {{ item.price|number_format(configSo.decimal_places_price) }}</td>
+			</tr>
+			<tr>
+				<th>Total</th>
+				<td class="text-right">$ {{ item.total_price|number_format(configSo.decimal_places_price) }}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-sm-3">
+		<table class="table table-sm">
+			<tr>
+				<th>Qty Shipped</th>
+				<td class="text-right">{{ item.qty_shipped|number_format(configSo.decimal_places_qty) }}</td>
+			</tr>
+			<tr>
+				<th>Request Date</th>
+				<td class="text-right">{{ item.rqstdate|convertdate }}</td>
+			</tr>
+			<tr>
+				<th>Warehouse</th>
+				<td class="text-right">{{ item.whseid }}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-sm-3">
+		<table class="table table-sm">
+			<tr>
+				<th>
+					<a href="#specialOrder" class="link">
+						<i class="fa fa-link" aria-hidden="true"></i> Special Order
+					</a>
+				</th>
+				<td>{{ item.specialorder()|capitalize }}</td>
+			</tr>
+			<tr>
+				<th>Non-stock</th>
+				<td>{{ (item.itemid == 'N')|yesorno|capitalize}}</td>
+			</tr>
+			<tr>
+				<th>
+					<a href="#kit" class="link">
+						<i class="fa fa-link" aria-hidden="true"></i> Kit
+					</a>
+				</th>
+				<td>{{ item.kit|bool|yesorno|capitalize }}</td>
+			</tr>
+			<tr>
+				<th>
+					<a href="#orderNotes" class="link">
+						<i class="fa fa-link" aria-hidden="true"></i> Notes
+					</a>
+				</th>
+				<td>{{ item.count_notes()|bool|yesorno|capitalize }}</td>
+			</tr>
+			<tr>
+				<th>
+					<a href="#allocatedLots" class="link">
+						<i class="fa fa-link" aria-hidden="true"></i> Allocated Lots
+					</a>
+				</th>
+				<td>{{ item.countSoAllocatedLotserials()|bool|yesorno|capitalize }}</td>
+			</tr>
+			<tr>
+				<th>
+					<a href="#purchaselOrder" class="link">
+						<i class="fa fa-link" aria-hidden="true"></i> PO #
+					</a>
+				</th>
+				<td class="text-right">{{ item.ponbr > 0 ? item.ponbr : '' }}</td>
+			</tr>
+		</table>
+	</div>
+</div>
