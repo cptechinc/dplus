@@ -47,7 +47,7 @@ class WireDatabasePDOConnector extends WireData {
 			return false;
 		}
 		if (empty($this->wire("db-$this->wirename"))) {
-			$this->wire("db-$this->wirename", $this->pdo, true);
+			$this->wire("db-$this->wirename-pdo", $this->pdo, true);
 		}
 		return true;
 	}
