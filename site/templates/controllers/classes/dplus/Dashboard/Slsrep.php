@@ -1,6 +1,7 @@
 <?php namespace Controllers\Dplus\Dashboard;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
+use Pauldro\ProcessWire\FileHasher;
 // Dplus Filters
 use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
 use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
@@ -54,9 +55,9 @@ class Slsrep extends Common {
 		$html = '';
 		$html .= $config->twig->render("dashboard/components/top-selling-customers.twig", ['customers' => $customers]);
 		self::pw('page')->js .= $config->twig->render("dashboard/components/js/top-selling.js.twig", ['piedata' => $piedata, 'module_dashboard' => $dashboardM]);
-		$config->styles->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('styles/lib/morris.css'));
-		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/raphael.js'));
-		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/morris.js'));
+		$config->styles->append(FileHasher::instance()->getHashUrl('styles/lib/morris.css'));
+		$config->scripts->append(FileHasher::instance()->getHashUrl('scripts/lib/raphael.js'));
+		$config->scripts->append(FileHasher::instance()->getHashUrl('scripts/lib/morris.js'));
 		return $html;
 	}
 }
