@@ -1,6 +1,4 @@
 <?php namespace Dplus\Docm\Finders\Finder;
-// Dplus Docm
-use Dplus\Docm\Finder\Folder;
 
 
 /**
