@@ -1,10 +1,7 @@
 <?php namespace Dplus\Qnotes;
-// Dolus Models
-use WarehouseNoteQuery, WarehouseNote;
 // Dplus Configs
 use Dplus\Configs;
-// ProcessWire
-use ProcessWire\WireInput;
+
 
 class Swhs extends Iwhs {
 	const TYPE                 = 'SWHS';
