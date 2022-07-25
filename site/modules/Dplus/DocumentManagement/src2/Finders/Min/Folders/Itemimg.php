@@ -4,7 +4,6 @@ use Document;
 // Dplus Document Manangement
 use Dplus\Docm\Finders\Finder\FolderRef1;
 
-
 /**
  * Finders\Min\Folders\Itmimg
  * Decorator for DocumentQuery to find Documents in Database related to ITMIMG Documents
