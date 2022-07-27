@@ -1,10 +1,11 @@
 <?php
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Wm\Inventory\BinInquiry as Controller;
-	// Controller::initHooks();
+	Controller::initHooks();
 
 	$routes = [
-		['GET',  '', Controller::class, 'index'],
+		['GET', '', Controller::class, 'index'],
+		['GET', 'print', Controller::class, 'index'],
 	];
 
 	$router = new Mvc\Routers\Router();
@@ -13,6 +14,9 @@
 	$page->body = $router->route();
 	$page->show_breadcrumbs = false;
 
-	$config->scripts->append($modules->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
-
-	include __DIR__ . "/basic-page.php";
+	if ($input->urlSegmentLast() == 'print') {
+		$page->show_title = true;
+		include __DIR__ . "/blank-page.php";
+	} else {
+		include __DIR__ . "/basic-page.php";
+	}
