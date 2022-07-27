@@ -59,6 +59,8 @@ if ($input->get->json) {
 	$config->json = true;
 }
 
+$page->print = false;
+
 if ($input->get->print || $input->lastSegment() == 'print') {
 	$page->print = true;
 }
