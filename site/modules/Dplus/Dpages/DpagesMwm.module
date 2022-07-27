@@ -152,16 +152,6 @@ class DpagesMwm extends Dpages implements Module {
 			'dplus_function' => 'pmvbn',
 			'pw_template'    => 'whse-binr-contents'
 		),
-		'whse-binr-inquiry' => array(
-			'template'       => 'dplus-function-link',
-			'name'           => 'bin-inquiry',
-			'title'          => 'Bin Inquiry',
-			'summary'        => 'Show Items in a bin',
-			'parent'         => '/warehouse/binr/',
-			'dplus_function' => '',
-			'dplus_permission' => '',
-			'pw_template'    => 'whse-bin-inquiry'
-		),
 		'menu-inventory' => array(
 			'template'       => 'warehouse-menu',
 			'name'           => 'inventory',
@@ -196,15 +186,6 @@ class DpagesMwm extends Dpages implements Module {
 			'parent'         => '/warehouse/inventory/',
 			'dplus_function' => 'pfini',
 			'pw_template'    => 'whse-find-item'
-		),
-		'whse-bin-inquiry' => array(
-			'template'       => 'warehouse-function',
-			'name'           => 'bin-inquiry',
-			'title'          => 'Bin Inquiry',
-			'summary'        => 'Show Items in a bin',
-			'parent'         => '/warehouse/inventory/',
-			'dplus_function' => 'pbini',
-			'pw_template'    => 'whse-bin-inquiry'
 		),
 		'whse-print-item-label' => array(
 			'template'       => 'warehouse-function',

@@ -29,7 +29,7 @@ class Base extends WireData {
 	}
 
 	protected function sendDplusRequest(array $data, $debug = false) {
-		$db = DbDpluso::instance()->dbconfig->dbName;;
+		$db = DbDpluso::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);

@@ -7,8 +7,11 @@ namespace Composer\Autoload;
 class ComposerStaticInitbe01d8a824371fa061fc4d032387886e
 {
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Dplus\\Wm\\Base' => __DIR__ . '/../..' . '/src/Base.php',
         'Dplus\\Wm\\Binr' => __DIR__ . '/../..' . '/src/Binr/Binr.php',
+        'Dplus\\Wm\\Inventory\\BinInquiry' => __DIR__ . '/../..' . '/src/Inventory/BinInquiry.php',
+        'Dplus\\Wm\\Inventory\\FindItem' => __DIR__ . '/../..' . '/src/Inventory/FindItem.php',
         'Dplus\\Wm\\Inventory\\Lotm' => __DIR__ . '/../..' . '/src/Inventory/Lotm/Lotm.php',
         'Dplus\\Wm\\Inventory\\Mlot\\Img' => __DIR__ . '/../..' . '/src/Inventory/Mlot/Img.php',
         'Dplus\\Wm\\Inventory\\Mlot\\Labels' => __DIR__ . '/../..' . '/src/Inventory/Mlot/Labels.php',

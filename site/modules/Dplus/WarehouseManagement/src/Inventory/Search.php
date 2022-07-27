@@ -19,9 +19,12 @@ class Search extends WireData {
 	}
 
 	public static function getInstance() {
+		return self::instance();
+	}
+
+	public static function instance() {
 		if (empty(self::$instance)) {
-			$instance = new self();
-			self::$instance = $instance;
+			self::$instance = new self();
 		}
 		return self::$instance;
 	}
@@ -182,7 +185,6 @@ class Search extends WireData {
 /* =============================================================
 	GET Functions
 ============================================================= */
-
 	/**
 	 * Return Inventory Items that are distinct itemids
 	 * @param  string $binID *** Optional ***l, Bin ID to narrow down
@@ -195,6 +197,21 @@ class Search extends WireData {
 		}
 		$q->groupBy('Itemid');
 		return $q->find();
+	}
+
+	/**
+	 * Return  ItemIDs
+	 * @param  string $binID
+	 * @return array
+	 */
+	public function getDistinctItemids($binID = '') {
+		$q = $this->query();
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		$q->withColumn('DISTINCT(Itemid)', 'itemid');
+		$q->select('itemid');
+		return $q->find()->toArray();
 	}
 
 	/**
@@ -283,6 +300,13 @@ class Search extends WireData {
 		}
 		$q->groupBy('Lotserial');
 		return $q->find();
+	}
+
+	public function getDistinctLotserialsArray() {
+		$q = $this->query();
+		$q->select(Invsearch::get_aliasproperty('lotserial'));
+		$q->distinct();
+		return $q->find()->toArray();
 	}
 
 /* =============================================================

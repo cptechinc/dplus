@@ -1,0 +1,50 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	inventory              Dplus\Wm\Inventory\BinInquiry
+	items                  InvWhseLot[]
+	warehouse              Warehouse
+#}
+
+{% if page.is_print() == false %}
+	<div class="form-group">
+		<a href="{{ page.printableUrl(input.get.text('binID')) }}" class="btn btn-primary">
+			<i class="fa fa-print" aria-hidden="true"></i> Print
+		</a>
+		&nbsp;
+		<a href="{{ input.url() }}" class="btn btn-primary">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Search
+		</a>
+		&nbsp;
+		<button class="btn btn-secondary show-hide-all">Show / Hide All</button>
+	</div>
+{% endif %}
+
+{% if (not warehouse.validate_bin(input.get.text('binID'))) %}
+	<div class="mb-3">
+		{% include 'util/alert.twig' with {
+				'type': 'warning',
+				'iconclass': 'fa fa-warning fa-2x',
+				'title': 'Invalid Bin', 
+				'message': 'Add the bin in BINM'
+			} 
+		%}
+	</div>
+{% endif %}
+
+{% if items.count() %}
+	{% if config.twigloader.exists('warehouse/inventory/bin-inquiry/results/list-' ~ config.company ~'.twig') %}
+		{% include 'warehouse/inventory/bin-inquiry/results/list-' ~ config.company ~'.twig' %}
+	{% else %}
+		{% include 'warehouse/inventory/bin-inquiry/results/list.twig' %}
+	{% endif %}
+{% else %}
+	{% include 'util/alert.twig' with {
+			'type': 'warning',
+			'iconclass': 'fa fa-warning fa-2x',
+			'title': 'Empty Bin', 
+			'message': 'No items found in bin ' ~ input.get.text('binID')
+		} 
+	%}
+{% endif %}

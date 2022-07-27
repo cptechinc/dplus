@@ -1,0 +1,69 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	inventory              Dplus\Wm\Inventory\BinInquiry
+	items                  InvWhseLot[]
+	warehouse              Warehouse
+#}
+{% set configSo = page.wire('modules').get('Dconfigs').config('so') %}
+
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead class="bg-dark text-light">
+			<tr>
+				<th></th>
+				<th>Item</th>
+				<th>Description</th>
+				<th class="text-right">Bins</th>
+				<th class="text-right">Boxes</th>
+				<th class="text-right">Weight</th>
+			</tr>
+		</thead>
+		{% for founditem in items %}
+			<tr class="first-txn-row">
+				<td class="text-center">
+					{% if (not page.is_print() or (founditem.item.isLotted() or founditem.item.isSerialized())) %}
+						<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ founditem.itemid|attrJS }}-lotserials" aria-expanded="false" aria-controls="{{ founditem.itemid }}-lotserials">
+							+
+						</button>
+					{% endif %}
+				</td>
+				<td class="h5">{{ founditem.itemid }}</td>
+				<td>
+					<small>{{ founditem.item.description }}</small>
+					&nbsp;
+					<small>{{ founditem.item.description2 }}</small>
+				</td>
+				<td class="text-right">{{ inventory.countDistinctBins(founditem.itemid)}}</td>
+				<td class="text-right">{{ inventory.countDistinctLotserials(founditem.itemid)}}</td>
+				<td class="text-right">
+					{{ inventory.totalItemQty(founditem.itemid)|number_format(configSo.decimal_places_qty) }}
+				</td>
+				<tbody class="collapse-lotserials collapse {{ page.print ? 'show' : '' }}" id="{{ founditem.itemid|attrJS }}-lotserials">
+					<tr class="bg-light">
+						<th></th>
+						<th>Bin ID</th>
+						<th>Lot #</th>
+						<th>Lot Reference</th>
+						<th>Production Date</th>
+						<th class="text-right">Weight</th>
+					</tr>
+					{% for lotserial in inventory.lotserialsOrderedByBinid(founditem.itemid) %}
+						<tr>
+							<td></td>
+							<td>{{ lotserial.binid }}</td>
+							<td>{{ lotserial.lotserial }}</td>
+							<td>{{ lotserial.lotref }}</td>
+							<td>{{ lotserial.expiredate ? lotserial.expiredate|convertdate : 'N/A' }}</td>
+							<td class="text-right">
+								{{ lotserial.qty|number_format(configSo.decimal_places_qty) }}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
+

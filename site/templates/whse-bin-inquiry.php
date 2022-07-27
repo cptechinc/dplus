@@ -1,40 +1,21 @@
 <?php
-	$page->print = ($page->template == 'print');
-	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
-	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$config->inventory = $modules->get('WarehouseInventoryConfig');
-	$searchinventory = $modules->get('SearchInventory');
+	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	use Controllers\Wm\Inventory\BinInquiry as Controller;
+	Controller::initHooks();
 
-	if ($input->get->binID) {
-		$binID = $input->get->text('binID');
-		$page->binID = $binID;
-		$page->title = "Bin Inquiry for $binID";
+	$routes = [
+		['GET', '', Controller::class, 'index'],
+		['GET', 'print', Controller::class, 'index'],
+	];
 
-		if (!$config->ajax) {
-			$page->body = $config->twig->render('warehouse/inventory/bin-inquiry/results-links-header.twig', ['page' => $page]);
-		}
+	$router = new Mvc\Routers\Router();
+	$router->setRoutes($routes);
+	$router->setRoutePrefix($page->url);
+	$page->body = $router->route();
 
-		if (file_exists($config->paths->templates."twig/warehouse/inventory/bin-inquiry/$config->company/results-list.twig")) {
-			$page->body .= $config->twig->render("warehouse/inventory/bin-inquiry/$config->company/results-list.twig", ['page' => $page, 'config' => $config->inventory, 'warehouse' => $warehouse, 'inventory' => $searchinventory]);
-		} else {
-			$page->body .= $config->twig->render('warehouse/inventory/bin-inquiry/results-list.twig', ['page' => $page, 'config' => $config->inventory, 'warehouse' => $warehouse, 'inventory' => $searchinventory]);
-		}
-	} else {
-		$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
-		$page->body =  $config->twig->render('warehouse/inventory/bin-form.twig', ['page' => $page]);
-		$page->body .= $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
-	}
-
-	// Add JS
-	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
-	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/shared.js'));
-	$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/warehouse/bin-inquiry.js'));
-
-	if ($page->print) {
+	if ($input->urlSegmentLast() == 'print') {
 		$page->show_title = true;
 		include __DIR__ . "/blank-page.php";
-	} elseif($config->ajax) {
-		echo "<div class=''>$page->body</div>";
 	} else {
 		include __DIR__ . "/basic-page.php";
 	}
