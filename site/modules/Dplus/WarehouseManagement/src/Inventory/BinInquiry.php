@@ -114,6 +114,18 @@ class BinInquiry extends Base {
 		return $q->find();
 	}
 
+	/**
+	 * Return the number Item Lotserials found in Bin
+	 * @param  string $binID   Bin ID
+	 * @param  string $itemID  Item ID
+	 * @return int
+	 */
+	public function countLotserials($binID, $itemID) {
+		$q = $this->queryBinid($binID);
+		$q->filterByItemid($itemID);
+		return $q->count();
+	}
+
 /* =============================================================
 	Dplus Request functions
 ============================================================= */
