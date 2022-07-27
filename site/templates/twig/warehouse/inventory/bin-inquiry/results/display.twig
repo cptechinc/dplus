@@ -7,6 +7,16 @@
 	warehouse              Warehouse
 #}
 
+{% if page.is_print() == false %}
+	<div class="form-group">
+		<a href="{{ page.printableUrl(input.get.text('binID')) }}" class="btn btn-primary">
+			<i class="fa fa-print" aria-hidden="true"></i> Print
+		</a>
+		&nbsp;
+		<button class="btn btn-secondary show-hide-all">Show / Hide All</button>
+	</div>
+{% endif %}
+
 {% if (not warehouse.validate_bin(input.get.text('binID'))) %}
 	<div class="mb-3">
 		{% include 'util/alert.twig' with {

@@ -9,7 +9,6 @@ use ProcessWire\User;
 use ProcessWire\WireData;
 // Dplus Warehouse Management
 use Dplus\Wm\Inventory\BinInquiry as BinInventory;
-use Dplus\Wm\Inventory\Search as InventorySearch;
 // Mvc Controllers
 use Controllers\Wm\Base;
 
@@ -49,5 +48,34 @@ class BinInquiry extends Base {
 
 		$items = $inventory->distinctItems($data->binID);
 		return self::pw('config')->twig->render('warehouse/inventory/bin-inquiry/results/display.twig', ['warehouse' => $warehouse, 'items' => $items, 'inventory' => $inventory]);
+	}
+
+/* =============================================================
+	URL functions
+============================================================= */
+	public static function url($binID = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=whse-bin-inquiry')->url);
+		if (empty($binID)) {
+			return $url->getUrl();
+		}
+		$url->query->set('binID', $binID);
+		return $url->getUrl();
+	}
+
+	public static function printableUrl($binID) {
+		$url = new Purl(self::url($binID));
+		$url->path->add('print');
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Init
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('WarehouseManagement');
+
+		$m->addHook('Page(pw_template=whse-bin-inquiry)::printableUrl', function($event) {
+			$event->return = self::printableUrl($event->arguments(0));
+		});
 	}
 }
