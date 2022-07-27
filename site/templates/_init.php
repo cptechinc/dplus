@@ -123,5 +123,5 @@ if ($values->offsetExists('action') === false|| $page->template == 'dplus-screen
 
 	$page->js .= $config->twig->render('util/js/variables.js.twig', ['variables' => ['agent' => $config->js('agent')]]);
 }
-
+include_once('./_func.php');
 include ('./_init.js.php');
