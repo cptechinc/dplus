@@ -19,9 +19,12 @@ class Search extends WireData {
 	}
 
 	public static function getInstance() {
+		return self::instance();
+	}
+
+	public static function instance() {
 		if (empty(self::$instance)) {
-			$instance = new self();
-			self::$instance = $instance;
+			self::$instance = new self();
 		}
 		return self::$instance;
 	}
@@ -182,7 +185,6 @@ class Search extends WireData {
 /* =============================================================
 	GET Functions
 ============================================================= */
-
 	/**
 	 * Return Inventory Items that are distinct itemids
 	 * @param  string $binID *** Optional ***l, Bin ID to narrow down
