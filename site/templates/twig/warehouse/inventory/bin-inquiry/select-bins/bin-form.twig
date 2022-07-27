@@ -1,0 +1,24 @@
+<div class="form-group">
+	<a href="{{ page.parent.url }}" class="btn btn-primary">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to {{ page.parent.title }}
+	</a>
+</div>
+
+<form action="{{ input.url() }}" method="GET" class="select-bin-form allow-enterkey-submit">
+	<div class="form-group">
+		<label for="binID">Bin ID</label>
+		<div class="input-group">
+			<span class="input-group-prepend">
+				<button type="button" class="btn btn-secondary show-possible-bins" data-toggle="modal" data-target="#bins-modal" data-input="input[name=binID]" title="Show Warehouse Bins" aria-label="Show Warehouse Bins">
+					<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
+				</button>
+			</span>
+			<input type="text" class="form-control" id="binID" name="binID">
+			<span class="input-group-append">
+				<button type="submit" class="btn btn-success">
+					<span class="fa fa-search" aria-hidden="true"></span> Submit
+				</button>
+			</span>
+		</div>
+	</div>
+</form>

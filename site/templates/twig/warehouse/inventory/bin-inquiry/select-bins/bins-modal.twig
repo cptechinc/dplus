@@ -1,0 +1,48 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	warehouse              Warehouse
+	config                 ConfigsBinr / ConfigsWarehouseInventory
+	currentbins            Bininfo
+#}
+<div class="modal fade" id="bins-modal" tabindex="-1" role="dialog" aria-labelledby="bins-modal-label" aria-hidden="true" data-input="" style="z-index: 1060;">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="bins-modal-label">{{ warehouse.id }} Bins</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				{% if (warehouse.are_binslisted()) %}
+					<div class="list-group">
+						{% for bin in warehouse.get_bins() %}
+							<a href="#" class="list-group-item select-bin" data-binid="{{ bin.from }}">
+								<div class="row">
+									<div class="col-6">
+										<h6 class="list-group-item-heading">{{ bin.from }}</h6>
+									</div>
+								</div>
+								{{ bin.bindesc }}
+							</a>
+						{% endfor %}
+					</div>
+				{% else	%}
+					<table class="table table-condensed table-striped table-bordered">
+						<tr>
+							<th>Range From</th>
+							<th>Range Through</th>
+						</tr>
+						{% for bin in warehousebins %}
+							<tr>
+								<td>{{ bin.from }}</td>
+								<td>{{ bin.through }}</td>
+							</tr>
+						{% endfor %}
+					</table>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>

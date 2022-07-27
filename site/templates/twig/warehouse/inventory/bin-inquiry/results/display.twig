@@ -1,0 +1,32 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	inventory              Dplus\Wm\Inventory\BinInquiry
+	items                  InvWhseLot[]
+	warehouse              Warehouse
+#}
+
+{% if (not warehouse.validate_bin(input.get.text('binID'))) %}
+	<div class="mb-3">
+		{% include 'util/alert.twig' with {
+				'type': 'warning',
+				'iconclass': 'fa fa-warning fa-2x',
+				'title': 'Invalid Bin', 
+				'message': 'Add the bin in BINM'
+			} 
+		%}
+	</div>
+{% endif %}
+
+{% if items.count() %}
+	{% include 'warehouse/inventory/bin-inquiry/results/list.twig' %}
+{% else %}
+	{% include 'util/alert.twig' with {
+			'type': 'warning',
+			'iconclass': 'fa fa-warning fa-2x',
+			'title': 'Empty Bin', 
+			'message': 'No items found in bin ' ~ input.get.text('binID')
+		} 
+	%}
+{% endif %}
