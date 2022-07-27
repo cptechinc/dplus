@@ -200,6 +200,21 @@ class Search extends WireData {
 	}
 
 	/**
+	 * Return  ItemIDs
+	 * @param  string $binID
+	 * @return array
+	 */
+	public function getDistinctItemids($binID = '') {
+		$q = $this->query();
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		$q->withColumn('DISTINCT(Itemid)', 'itemid');
+		$q->select('itemid');
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return one Invsearch filter bty item ID
 	 * @param  string $itemID Item ID
 	 * @param  string $binID  ** Optional ***, Bin ID to narrow down
@@ -285,6 +300,13 @@ class Search extends WireData {
 		}
 		$q->groupBy('Lotserial');
 		return $q->find();
+	}
+
+	public function getDistinctLotserialsArray() {
+		$q = $this->query();
+		$q->select(Invsearch::get_aliasproperty('lotserial'));
+		$q->distinct();
+		return $q->find()->toArray();
 	}
 
 /* =============================================================
