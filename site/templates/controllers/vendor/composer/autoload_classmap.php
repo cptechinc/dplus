@@ -240,6 +240,7 @@ return array(
     'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
     'Controllers\\Wm\\Inventory\\BinInquiry' => $baseDir . '/classes/Mwm/inventory/BinInquiry.php',
+    'Controllers\\Wm\\Inventory\\FindItem' => $baseDir . '/classes/Mwm/inventory/FindItem.php',
     'Controllers\\Wm\\Inventory\\LotReturn' => $baseDir . '/classes/Mwm/inventory/LotReturn/LotReturn.php',
     'Controllers\\Wm\\Inventory\\Provalley\\Inventory' => $baseDir . '/classes/Mwm/inventory/Provalley/Inventory.php',
     'Controllers\\Wm\\Inventory\\Provalley\\PrintGs1' => $baseDir . '/classes/Mwm/inventory/Provalley/PrintGs1.php',

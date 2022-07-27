@@ -4,10 +4,10 @@ $(function() {
 		var button = $(this);
 
 		if (button.attr('showing') == 'true') {
-			$('.collapse-lotserial').removeClass('show');
+			$('.collapse-lotserials').removeClass('show');
 			button.attr('showing', 'false');
 		} else {
-			$('.collapse-lotserial').addClass('show');
+			$('.collapse-lotserials').addClass('show');
 			button.attr('showing', 'true');
 		}
 	});
