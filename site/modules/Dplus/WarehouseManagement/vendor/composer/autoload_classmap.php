@@ -10,6 +10,7 @@ return array(
     'Dplus\\Wm\\Base' => $baseDir . '/src/Base.php',
     'Dplus\\Wm\\Binr' => $baseDir . '/src/Binr/Binr.php',
     'Dplus\\Wm\\Inventory\\BinInquiry' => $baseDir . '/src/Inventory/BinInquiry.php',
+    'Dplus\\Wm\\Inventory\\FindItem' => $baseDir . '/src/Inventory/FindItem.php',
     'Dplus\\Wm\\Inventory\\Lotm' => $baseDir . '/src/Inventory/Lotm/Lotm.php',
     'Dplus\\Wm\\Inventory\\Mlot\\Img' => $baseDir . '/src/Inventory/Mlot/Img.php',
     'Dplus\\Wm\\Inventory\\Mlot\\Labels' => $baseDir . '/src/Inventory/Mlot/Labels.php',
