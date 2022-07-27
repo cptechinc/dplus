@@ -30,22 +30,6 @@
 				$session->loc = $url->getUrl();
 			}
 			break;
-		case 'bin-inquiry':
-			// Requests Contents of bin
-			// Response: fills Invsearch table with records
-			$binID = strtoupper($input->$rm->text('binID'));
-			$data = array("DBNAME=$dplusdb", 'BININQUIRY', "BINID=$binID");
-
-			if ($input->$rm->page) {
-				$page = $input->$rm->text('page');
-			} else {
-				$page = $pages->get('/warehouse/inventory/bin-inquiry/')->url;
-			}
-
-			$url = new Purl\Url($page);
-			$url->query->set('binID', $binID);
-			$session->loc = $url->getUrl();
-			break;
 		case 'print-label-search':
 			$scan = $input->$rm->text('scan');
 			$data = array("DBNAME=$dplusdb", 'PRINTLABELSEARCH', "QUERY=$scan");
