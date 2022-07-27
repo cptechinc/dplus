@@ -15,6 +15,7 @@
 				<th></th>
 				<th>Item</th>
 				<th>Description</th>
+				<th class="text-right">Lots / Serials</th>
 				<th class="text-right">Qty</th>
 			</tr>
 		</thead>
@@ -33,6 +34,7 @@
 					&nbsp;
 					<small>{{ binitem.item.description2 }}</small>
 				</td>
+				<td class="text-right">{{ inventory.countLotserials(binitem.bin, binitem.itemid)}}</td>
 				<td class="text-right">
 					{{ inventory.totalBinItemQty(binitem.bin, binitem.itemid)|number_format(configSo.decimal_places_qty) }}
 				</td>
@@ -42,6 +44,7 @@
 					<th></th>
 					<th>Lot / Serial #</th>
 					<th>Lot Reference</th>
+					<th></th>
 					<th class="text-right">Qty</th>
 				</tr>
 				{% for lotserial in inventory.lotserials(binitem.binid, binitem.itemid) %}
@@ -49,6 +52,7 @@
 						<td></td>
 						<td>{{ lotserial.lotserial }}</td>
 						<td>{{ lotserial.lotref }}</td>
+						<td></td>
 						<td class="text-right">
 							{{ lotserial.qty|number_format(configSo.decimal_places_qty) }}
 						</td>
