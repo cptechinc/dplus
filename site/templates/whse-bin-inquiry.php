@@ -12,7 +12,6 @@
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();
-	$page->show_breadcrumbs = false;
 
 	if ($input->urlSegmentLast() == 'print') {
 		$page->show_title = true;
