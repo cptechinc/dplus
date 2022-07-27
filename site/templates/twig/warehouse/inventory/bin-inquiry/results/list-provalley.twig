@@ -41,7 +41,7 @@
 					{{ inventory.totalBinItemQty(binitem.bin, binitem.itemid)|number_format(configSo.decimal_places_qty) }}
 				</td>
 			</tr>
-			<tbody class="collapse-lotserials collapse {{ page.print ? 'show' : '' }}"" id="{{ binitem.itemid|attrJS }}-lotserials">
+			<tbody class="collapse-lotserials collapse {{ page.print ? 'show' : '' }}" id="{{ binitem.itemid|attrJS }}-lotserials">
 				<tr class="bg-light">
 					<th></th>
 					<th>Lot #</th>
