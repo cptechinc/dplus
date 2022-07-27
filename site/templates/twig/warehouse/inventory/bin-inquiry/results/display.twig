@@ -20,7 +20,11 @@
 {% endif %}
 
 {% if items.count() %}
-	{% include 'warehouse/inventory/bin-inquiry/results/list.twig' %}
+	{% if config.twigloader.exists('warehouse/inventory/bin-inquiry/results/list-' ~ config.company ~'.twig') %}
+		{% include 'warehouse/inventory/bin-inquiry/results/list-' ~ config.company ~'.twig' %}
+	{% else %}
+		{% include 'warehouse/inventory/bin-inquiry/results/list.twig' %}
+	{% endif %}
 {% else %}
 	{% include 'util/alert.twig' with {
 			'type': 'warning',
