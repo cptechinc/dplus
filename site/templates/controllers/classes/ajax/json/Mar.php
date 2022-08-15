@@ -204,10 +204,41 @@ class Mar extends Controller {
 		}
 		$code = $src->code($data->code);
 		$response = [
-			'code'         => $code->code,
+			'code'		   => $code->code,
 			'description'  => $code->description,
 		];
 		return $response;
+	}
+
+	public static function validateSpgpmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Spgpm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Salesperson Group Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Salesperson Group Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getSpgpmCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Spgpm::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		return $src->codeJson($src->code($data->code));
 	}
 
 }

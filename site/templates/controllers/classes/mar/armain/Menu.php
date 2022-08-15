@@ -28,6 +28,12 @@ class Menu extends Base {
 			'title'      => 'Receivables Optional Code',
 			'summary'    => 'View / Edit AR Optional Codes'
 		],
+		'spgpm' => [
+			'name'       => 'spgpm',
+			'permission' => 'spgpm',
+			'title'      => 'Salesperson Group Code',
+			'summary'    => 'View / Edit AR Salesperson Group Codes'
+		],
 	];
 
 /* =============================================================
@@ -62,10 +68,6 @@ class Menu extends Base {
 		return $url->getUrl();
 	}
 
-	public static function roptmUrl() {
-		return self::subfunctionUrl('roptm');
-	}
-
 	public static function ccmUrl() {
 		return self::subfunctionUrl('ccm');
 	}
@@ -73,6 +75,15 @@ class Menu extends Base {
 	public static function crtmUrl() {
 		return self::subfunctionUrl('crtm');
 	}
+
+	public static function spgpmUrl() {
+		return self::subfunctionUrl('spgpm');
+	}
+
+	public static function roptmUrl() {
+		return self::subfunctionUrl('roptm');
+	}
+
 
 /* =============================================================
 	Displays
