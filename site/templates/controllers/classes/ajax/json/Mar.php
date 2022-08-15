@@ -173,4 +173,41 @@ class Mar extends Controller {
 		];
 		return $response;
 	}
+
+	public static function validateCrtmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Crtm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Route Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Route Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCrtmCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Crtm::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		$code = $src->code($data->code);
+		$response = [
+			'code'         => $code->code,
+			'description'  => $code->description,
+		];
+		return $response;
+	}
+
 }

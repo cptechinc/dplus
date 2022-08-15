@@ -1,7 +1,7 @@
-{% include 'code-tables/mar/ccm/js/classes.js.twig' %}
+{% include 'code-tables/mar/crtm/js/classes.js.twig' %}
 
 $(function() {
-	var server   = CcmRequests.getInstance();
+	var server   = CrtmRequests.getInstance();
 	var alert    = CodeAlerts.getInstance();
 	var formCode = CodeForm.getInstance();
 
@@ -78,7 +78,7 @@ $(function() {
 				required: true,
 				maxlength: formCode.config.fields.code.maxlength,
 				remote: {
-					url: '{{ page.jsonApiUrl('mar/validate/ccm/code/') }}',
+					url: '{{ page.jsonApiUrl('mar/validate/crtm/code/') }}',
 					type: "get",
 					data: {
 						jqv: 'true',
@@ -94,7 +94,7 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			var formCode = CodeForm.getInstance();
-			var server   = CcmRequests.getInstance();
+			var server   = CrtmRequests.getInstance();
 			var code = formCode.inputs.code.val();
 
 			if (formCode.inputs.form.attr('data-code') == code) {

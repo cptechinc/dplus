@@ -12,6 +12,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Ccm::class, 'index'],
 			['POST',  '', Armain\Ccm::class, 'handleCRUD'],
 		],
+		'crtm' => [
+			['GET',  '', Armain\Crtm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Crtm::class, 'index'],
+			['POST',  '', Armain\Crtm::class, 'handleCRUD'],
+		],
 		'roptm' => [
 			['GET',  '', Armain\Roptm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Roptm::class, 'index'],
