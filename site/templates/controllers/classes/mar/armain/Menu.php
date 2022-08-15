@@ -34,6 +34,12 @@ class Menu extends Base {
 			'title'      => 'Salesperson Group Code',
 			'summary'    => 'View / Edit AR Salesperson Group Codes'
 		],
+		'worm' => [
+			'name'       => 'worm',
+			'permission' => 'worm',
+			'title'      => 'Write-Off Reason Code',
+			'summary'    => 'View / Edit Write-Off ReasonCodes'
+		],
 	];
 
 /* =============================================================
@@ -82,6 +88,10 @@ class Menu extends Base {
 
 	public static function roptmUrl() {
 		return self::subfunctionUrl('roptm');
+	}
+	
+	public static function wormUrl() {
+		return self::subfunctionUrl('worm');
 	}
 
 

@@ -27,6 +27,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Spgpm::class, 'index'],
 			['POST',  '', Armain\Spgpm::class, 'handleCRUD'],
 		],
+		'worm' => [
+			['GET',  '', Armain\Worm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Worm::class, 'index'],
+			['POST',  '', Armain\Worm::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

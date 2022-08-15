@@ -241,4 +241,35 @@ class Mar extends Controller {
 		return $src->codeJson($src->code($data->code));
 	}
 
+	public static function validateWormCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Worm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Write-Off Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Write-Off Group Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getWormCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Worm::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		return $src->codeJson($src->code($data->code));
+	}
+
 }
