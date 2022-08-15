@@ -214,10 +214,10 @@ class Msa extends Controller {
 
 		switch ($data->system) {
 			case 'AP':
-				$crud = Codes\Min\Aoptm::getInstance();
+				$crud = Codes\Map\Aoptm::getInstance();
 				break;
 			case 'AR':
-				$crud = Codes\Min\Roptm::getInstance();
+				$crud = Codes\Mar\Roptm::getInstance();
 				break;
 			case 'IN':
 				$crud = Codes\Min\Ioptm::getInstance();
@@ -225,7 +225,7 @@ class Msa extends Controller {
 			case 'PO':
 				break;
 			case 'SO':
-				$crud = Codes\Min\Soptm::getInstance();
+				$crud = Codes\Mso\Soptm::getInstance();
 				break;
 		}
 		$exists = $crud->exists($data->sysop, $data->code);

@@ -44,7 +44,7 @@ class Roptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getRoptm()->recordlocker->deleteLock();
-
+		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getRoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getRoptm()->deleteResponse();
@@ -65,6 +65,7 @@ class Roptm extends Controller {
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
+		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getRoptm()->deleteResponse();
@@ -154,6 +155,12 @@ class Roptm extends Controller {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		$url = new Purl(Menu::url());
+		$url->path->add('roptm');
+		return $url->getUrl();
+	}
+
 	public static function sysopUrl($id) {
 		$url = new Purl(self::url());
 		$url->query->set('sysop', $id);
@@ -180,10 +187,6 @@ class Roptm extends Controller {
 		return $url->getUrl();
 	}
 
-	public static function url() {
-		return self::pw('pages')->get('pw_template=roptm')->url;
-	}
-
 	public static function urlFocus($focus = '') {
 		$sysopM = self::getSysop();
 
@@ -205,19 +208,19 @@ class Roptm extends Controller {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMar');
 
-		$m->addHook('Page(pw_template=roptm)::sysopUrl', function($event) {
+		$m->addHook('Page(pw_template=armain)::sysopUrl', function($event) {
 			$event->return = self::sysopUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=roptm)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=armain)::codeDeleteUrl', function($event) {
 			$event->return = self::codeDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=roptm)::roptmUrl', function($event) {
+		$m->addHook('Page(pw_template=armain)::roptmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
-		
-		$m->addHook('Page(pw_template=roptm)::optmUrl', function($event) {
+
+		$m->addHook('Page(pw_template=armain)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
 	}

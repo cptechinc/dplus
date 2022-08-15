@@ -2,10 +2,10 @@
 // Dplus Models
 use CustomerQuery, CustomerShiptoQuery;
 // ProcessWire Mlasses, Modules
-use ProcessWire\Module, ProcessWire\ProcessWire;
+use ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Mar       as MarValidator;
-use Dplus\CodeValidators\Mar\Cxm   as CxmValidator;
+use Dplus\Codes;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -136,5 +136,41 @@ class Mar extends Controller {
 				'zip'      => $shipto->zip,
 			]
 		];
+	}
+
+	public static function validateCcmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Ccm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Commission Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Commission Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCcmCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Ccm::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		$code = $src->code($data->code);
+		$response = [
+			'code'         => $code->code,
+			'description'  => $code->description,
+		];
+		return $response;
 	}
 }
