@@ -45,7 +45,7 @@ class MainMenu extends Controller {
 		$permitted = implode("|", self::pw('user')->get_functions());
 		$menu = self::pw('pages')->get('/');
 		self::pw('page')->headline = "Menu";
-		$results = $menu->children("template=dplus-menu|warehouse-menu, dplus_function=$permitted");
+		$results = $menu->children("template=dplus-menu|warehouse-menu, dplus_function=$permitted,sort=dplus_function");
 
 		if ($data->q) {
 			self::pw('page')->headline = "Searching for functions that match '$data->q'";
