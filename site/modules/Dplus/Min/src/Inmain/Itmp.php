@@ -1,6 +1,8 @@
 <?php namespace Dplus\Min;
 // ProcessWire
 use ProcessWire\WireData;
+use ProcessWire\WireInput;
+use ProcessWire\User;
 // Dplus Model
 use UserPermissionsItmQuery, UserPermissionsItm;
 // Dplus Record Locker
@@ -196,6 +198,10 @@ class Itmp extends WireData {
 		return $exists ? $itmperm->is_true($option) : true;
 	}
 
+	public function isUserAllowed(User $user, $option = '') {
+		return $this->allowUser($user, $option);
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -232,7 +238,7 @@ class Itmp extends WireData {
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record->loginid)) {
 				$message = self::DESCRIPTION_RECORD . " ($record->loginid)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record->loginid);
-				$this->setResponse(Response::Error($message));
+				$this->setResponse(Response::responseError($message));
 				return false;
 			}
 		}
