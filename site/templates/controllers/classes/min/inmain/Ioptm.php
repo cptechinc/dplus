@@ -12,8 +12,9 @@ use Dplus\Filters;
 use Dplus\Codes;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
+use Controllers\Min\Base;
 
-class Ioptm extends Controller {
+class Ioptm extends Base {
 	const SYSTEM = 'IN';
 	const DPLUSPERMISSION = 'ioptm';
 
