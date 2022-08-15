@@ -13,6 +13,7 @@ use Controllers\Mar\AbstractController as Base;
 class Ccm extends Base {
 	const DPLUSPERMISSION = 'ccm';
 	const SHOWONPAGE = 10;
+	const TITLE = 'Customer Commission Code';
 
 	private static $ccm;
 
@@ -23,7 +24,7 @@ class Ccm extends Base {
 		$fields = ['code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
-		self::pw('page')->headline = 'Customer Commission Code';
+		self::pw('page')->headline = self::TITLE;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -48,7 +49,7 @@ class Ccm extends Base {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
-		$page->headline = "Customer Commission Code";
+		$page->headline = self::TITLE;
 
 		$filter = new Filters\Mar\ArCommissionCode();
 
