@@ -166,13 +166,41 @@ class Mar extends Controller {
 		if ($src->exists($data->code) === false) {
 			return false;
 		}
-		$code = $src->code($data->code);
-		$response = [
-			'code'         => $code->code,
-			'description'  => $code->description,
-		];
-		return $response;
+		return $src->codeJson($src->code($data->code));
 	}
+
+	public static function validateCpmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Ccm::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Customer Price Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Customer Price Code$data->code not found";
+		}
+		return true;
+	}
+
+
+	public static function getCpmCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Cpm::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		return $src->codeJson($src->code($data->code));
+	}
+	
 
 	public static function validateCrtmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
@@ -202,12 +230,7 @@ class Mar extends Controller {
 		if ($src->exists($data->code) === false) {
 			return false;
 		}
-		$code = $src->code($data->code);
-		$response = [
-			'code'		   => $code->code,
-			'description'  => $code->description,
-		];
-		return $response;
+		return $src->codeJson($src->code($data->code));
 	}
 
 	public static function validateSpgpmCode($data) {

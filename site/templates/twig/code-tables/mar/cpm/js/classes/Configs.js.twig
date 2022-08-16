@@ -1,0 +1,24 @@
+class CodeConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ manager.fieldAttribute('description', 'maxlength') }}
+			},
+			percent: {
+				precision: {{ manager.fieldAttribute('percent', 'precision') }}
+			},
+		};
+	}
+}

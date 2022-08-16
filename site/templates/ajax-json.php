@@ -139,6 +139,7 @@
 		'mar' => [
 			'validate' => [
 				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
+				['GET', 'cpm/code/', Json\Mar::class, 'validateCpmCode'],
 				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
 				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
 				['GET', 'worm/code/', Json\Mar::class, 'validateWormCode'],
@@ -147,6 +148,7 @@
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 			],
 			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
+			['GET', 'cpm/code/', Json\Mar::class, 'getCpmCode'],
 			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],
 			['GET', 'spgpm/code/', Json\Mar::class, 'getSpgpmCode'],
 			['GET', 'worm/code/', Json\Mar::class, 'getWormCode'],
