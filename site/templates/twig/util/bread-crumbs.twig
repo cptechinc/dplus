@@ -1,5 +1,5 @@
-<nav aria-label="breadcrumb rounded-0" class="d-print-none">
-	<ol class="breadcrumb">
+<nav class="breadcrumb p-0 d-print-none d-flex justify-content-between rounded-0">
+	<ol class="breadcrumb rounded-0 mb-0">
 		{% block parents %}
 			{% for parent in page.parents() %}
 				<li class="breadcrumb-item">
@@ -27,6 +27,12 @@
 				<i class="fa {{ page.template == 'dplus-menu' ? 'fa-list' : page.template == 'home' ? 'fa-home' : 'fa-microchip'}}" aria-hidden="true"></i>
 				{{ page.has('dplus_function') and page.dplus_function|length ? page.dplus_function|upper : page.title }}
 			</li>
-		{% endblock %}
+		{% endblock %}	
+	</ol>
+
+	<ol class="breadcrumb rounded-0 mb-0 bg-dark text-white">
+		<li class="breadcrumb-item pull-right">
+			{{ page.get('pagetitle|headline|title') }}
+		</li>
 	</ol>
 </nav>
