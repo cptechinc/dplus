@@ -218,7 +218,6 @@ class Mxrfe extends Base {
 	 */
 	public static function xrefUrl($mnfrID, $mnfritemID, $itemID) {
 		$url = new Purl(Menu::mxrfeUrl());
-		$url->path->add('mxrfe');
 		$url->query->set('mnfrID', $mnfrID);
 		$url->query->set('mnfritemID', $mnfritemID);
 		$url->query->set('itemID', $itemID);
