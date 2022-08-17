@@ -140,6 +140,7 @@
 			'validate' => [
 				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
 				['GET', 'cpm/code/', Json\Mar::class, 'validateCpmCode'],
+				['GET', 'cocom/code/', Json\Mar::class, 'validateCocomCode'],
 				['GET', 'crcd/code/', Json\Mar::class, 'validateCrcdCode'],
 				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
 				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
@@ -149,6 +150,7 @@
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 			],
 			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
+			['GET', 'cocom/code/', Json\Mar::class, 'getCocomCode'],
 			['GET', 'cpm/code/', Json\Mar::class, 'getCpmCode'],
 			['GET', 'crcd/code/', Json\Mar::class, 'getCrcdCode'],
 			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],

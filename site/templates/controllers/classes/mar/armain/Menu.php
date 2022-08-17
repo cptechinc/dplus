@@ -16,6 +16,12 @@ class Menu extends Base {
 			'title'      => 'Customer Commission Code',
 			'summary'    => 'View / Edit Customer Commission Codes'
 		],
+		'cocom' => [
+			'name'       => 'cocom',
+			'permission' => 'cocom',
+			'title'      => 'Country Code',
+			'summary'    => 'View / Edit Country Codes'
+		],
 		'cpm' => [
 			'name'       => 'cpm',
 			'permission' => 'cpm',
@@ -88,6 +94,10 @@ class Menu extends Base {
 
 	public static function ccmUrl() {
 		return self::subfunctionUrl('ccm');
+	}
+
+	public static function cocomUrl() {
+		return self::subfunctionUrl('cocom');
 	}
 
 	public static function cpmUrl() {

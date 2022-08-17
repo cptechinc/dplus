@@ -185,16 +185,46 @@ class Mar extends Controller {
 		}
 
 		if ($exists === false) {
-			return "Customer Price Code$data->code not found";
+			return "Customer Price Code $data->code not found";
 		}
 		return true;
 	}
-
 
 	public static function getCpmCode($data) {
 		self::sanitizeParametersShort($data, ['code|text']);
 
 		$src = Codes\Mar\Cpm::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		return $src->codeJson($src->code($data->code));
+	}
+
+	public static function validateCocomCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Cocom::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Country / Currency Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Country / Currency Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCocomCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Cocom::getInstance();
 		if ($src->exists($data->code) === false) {
 			return false;
 		}

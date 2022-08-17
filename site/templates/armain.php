@@ -12,6 +12,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Ccm::class, 'index'],
 			['POST',  '', Armain\Ccm::class, 'handleCRUD'],
 		],
+		'cocom' => [
+			['GET',  '', Armain\Cocom::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Cocom::class, 'index'],
+			['POST',  '', Armain\Cocom::class, 'handleCRUD'],
+		],
 		'cpm' => [
 			['GET',  '', Armain\Cpm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Cpm::class, 'index'],
