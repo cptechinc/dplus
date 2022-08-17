@@ -56,6 +56,7 @@ class Aoptm extends Controller {
 	private static function listSysops($data) {
 		self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
+		$page->headline = "AP Optional Codes";
 		self::getSysop()->recordlocker->deleteLock();
 
 		$filter = self::getFilterSysop();

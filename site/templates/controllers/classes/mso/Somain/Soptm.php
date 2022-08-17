@@ -23,7 +23,7 @@ class Soptm extends Base {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
-		$page->headline = 'Sales Order Optional Code';
+		$page->headline = 'SO Optional Codes';
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);

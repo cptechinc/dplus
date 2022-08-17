@@ -54,6 +54,7 @@ class Roptm extends Controller {
 	private static function listSysops($data) {
 		self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
+		$page->headline = "AR Optional Codes";
 		self::getSysop()->recordlocker->deleteLock();
 
 		$filter = self::getFilterSysop();
