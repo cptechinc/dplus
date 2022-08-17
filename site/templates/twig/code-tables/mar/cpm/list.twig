@@ -1,25 +1,26 @@
 {% extends 'code-tables/list.twig' %}
 
 {% block list_header_row %}
-<div class="row align-items-center">
-	<div class="col-sm-3">
-		Code
-	</div>
-	<div class="col-sm-3">
-		Description
-	</div>
-	<div class="col-sm-1">
-		Surcharge
-	</div>
-	<div class="col-sm-2 text-right">
-		Percent
-	</div>
-	<div class="col-sm-3 text-center">
-		{% if page.is_print() == false %}
-			<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="">
-				<i class="fa fa-plus" aria-hidden="true"></i> Add Code
-			</button>
-		{% endif %}
+	<div class="row align-items-center">
+		<div class="col-sm-3">
+			Code
+		</div>
+		<div class="col-sm-3">
+			Description
+		</div>
+		<div class="col-sm-1">
+			Surcharge
+		</div>
+		<div class="col-sm-2 text-right">
+			Percent
+		</div>
+		<div class="col-sm-3 text-center">
+			{% if page.is_print() == false %}
+				<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+				</button>
+			{% endif %}
+		</div>
 	</div>
 {% endblock %}
 

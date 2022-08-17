@@ -49,6 +49,7 @@ return array(
     'Controllers\\Mar\\AbstractController' => $baseDir . '/classes/mar/AbstractController.php',
     'Controllers\\Mar\\Armain\\Ccm' => $baseDir . '/classes/mar/armain/Ccm.php',
     'Controllers\\Mar\\Armain\\Cpm' => $baseDir . '/classes/mar/armain/Cpm.php',
+    'Controllers\\Mar\\Armain\\Crcd' => $baseDir . '/classes/mar/armain/Crcd.php',
     'Controllers\\Mar\\Armain\\Crtm' => $baseDir . '/classes/mar/armain/Crtm.php',
     'Controllers\\Mar\\Armain\\Menu' => $baseDir . '/classes/mar/armain/Menu.php',
     'Controllers\\Mar\\Armain\\Roptm' => $baseDir . '/classes/mar/armain/Roptm.php',

@@ -1,84 +1,113 @@
-{# trm is an instance of CustomerTermsCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ code.code }}">
-	<input type="hidden" name="action" value="update-crcd">
-	<input type="hidden" name="table" value="crcd">
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
 
 	<div class="row">
-		<div class="col-6">
+		<div class="col-sm-3">
 			<div class="form-group">
-				<label for="code">First Digit of Credit Card</label>
-				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
-			</div>
-			<div class="form-group">
-				<label for="description">Name of Credit Card</label>
-				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
-			</div>
-			<div class="form-group">
-				<label for="gl_account">General Ledger Account</label>
-				<select class="form-control" name="gl_account" id="gl_account">
-					<option value=""></option>
-					{% for account in gl_accounts %}
-						<option value="{{ account.code }}" {{ account.code == code.gl_account ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
-					{% endfor %}
-				</select>
-			</div>
-			<div class="form-group">
-				<label for="custID">Customer ID</label>
-				<div class="input-group">
-					<span class="input-group-prepend">
-						<button type="button" class="btn btn-secondary form_button" data-toggle="modal" data-target="#ajax-modal">
-							<i class="fa fa-search" aria-hidden="true"></i> <span class="sr-only">Search Customers</span>
-						</button>
-					</span>
-					<input type="text" name="custID" class="form-control" maxlength="6" value="{{ code.custid }}" id="custID" placeholder="Search for Customer" required>
-				</div>
-				<input type="text" name="credit_cust_name" class="form-control-plaintext" value="{{ code.customer_name.name }}" id="credit_cust_name" disabled>
+				<label for="code">Code</label>
+				<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 			</div>
 		</div>
-		<div class="col-6">
+		<div class="col-sm-8">
 			<div class="form-group">
-				<label for="charge_gl_account">Service Charge General Ledger Account</label>
-				<select class="form-control" name="charge_gl_account" id="charge_gl_account">
-					<option value=""></option>
-					{% for account in gl_accounts %}
-						<option value="{{ account.code }}" {{ account.code == code.charge_gl_account ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
-					{% endfor %}
-				</select>
+				<label for="description">Description</label>
+				<input type="text" name="description" class="form-control" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 			</div>
-			<div class="form-group">
-				<label for="charge_rate">Service Rate</label>
-				<input type="text" name="charge_rate" class="form-control" maxlength="5" value="{{ code.charge_rate ? code.charge_rate : '0.00' }}" id="charge_rate" >
-			</div>
-			<div class="form-group">
-				<label for="trans_cost">Transaction Cost</label>
-				<input type="text" name="trans_cost" class="form-control" maxlength="5" value="{{ code.trans_cost ? code.trans_cost : '0.00' }}" id="trans_cost" >
-			</div>
-			<div class="form-group">
-				<label for="cc_surcharge_percent">Credit Card Surcharge Percent</label>
-				<input type="text" name="cc_surcharge_percent" class="form-control" maxlength="5" value="{{ code.cc_surcharge_percent ? code.cc_surcharge_percent : '0.00' }}" id="cc_surcharge_percent" >
-			</div>
+		</div>
+	</div>
+	
+	<div class="row mb-3">
+		<div class="col-sm-6">
+			{% include 'code-tables/mar/crcd/form/gl-account.twig' with {'name' : 'gl_account'} %}
+		</div>
+		<div class="col-sm-6">
+			{% include 'code-tables/mar/crcd/form/custid.twig' %}
+		</div>
+	</div>
+
+	<legend>Service Charge Information</legend>
+	<div class="row mb-3">
+		<div class="col-sm-6">
+			{% include 'code-tables/mar/crcd/form/gl-account.twig' with {'name' : 'gl_account_charge'} %}
+		</div>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-sm-4">
+			<label for="servicerate">Service Rate</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'servicerate',
+						'size': 'sm',
+						'type': 'number',
+						'addclasses': ['text-right'],
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Service Rate',
+							'max': manager.fieldAttribute('servicerate', 'max')
+						}
+					},
+				}
+			%}
+		</div>
+		<div class="col-sm-4">
+			<label for="transactioncost">Transaction Cost</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'transactioncost',
+						'size': 'sm',
+						'type': 'number',
+						'addclasses': ['text-right'],
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Transaction Cost',
+							'max': manager.fieldAttribute('transactioncost', 'max')
+						}
+					},
+				}
+			%}
+		</div>
+		<div class="col-sm-4">
+			<label for="cc_surcharge_percent">Surcharge %</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'cc_surcharge_percent',
+						'size': 'sm',
+						'type': 'number',
+						'addclasses': ['text-right'],
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Surcharge Percent',
+							'max': manager.fieldAttribute('cc_surcharge_percent', 'max')
+						}
+					},
+				}
+			%}
 		</div>
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">
-		{#
-			Only show Edit Actions if the code is
-			1. Locked for editing by the User
-			2. Is a new code
-			NOTE: Only show delete if code already exists.
-		#}
-		{% if recordlocker.function_locked_by_user(page.codetable, code.code) or code.isNew() %}
-			<button type="submit" class="btn btn-success form_button">
-				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-			</button>
-			{% if code.isNew() == false %}
-				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger form_button delete_button">
-					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-				</a>
-			{% endif %}
-		{% endif %}
-		<a href="{{ page.get_codetable_listURL(page.codetable, code.code) }}" class="btn btn-warning pull-right">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
-		</a>
+		</button>
 	</div>
 </form>

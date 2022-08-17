@@ -201,7 +201,37 @@ class Mar extends Controller {
 		return $src->codeJson($src->code($data->code));
 	}
 	
+	public static function validateCrcdCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
 
+		$manager = Codes\Mar\Crcd::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Credit Card Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Credit Card Code $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCrcdCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Crcd::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		return $src->codeJson($src->code($data->code));
+	}
+	
 	public static function validateCrtmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -294,5 +324,4 @@ class Mar extends Controller {
 		}
 		return $src->codeJson($src->code($data->code));
 	}
-
 }

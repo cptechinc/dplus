@@ -140,6 +140,7 @@
 			'validate' => [
 				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
 				['GET', 'cpm/code/', Json\Mar::class, 'validateCpmCode'],
+				['GET', 'crcd/code/', Json\Mar::class, 'validateCrcdCode'],
 				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
 				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
 				['GET', 'worm/code/', Json\Mar::class, 'validateWormCode'],
@@ -149,6 +150,7 @@
 			],
 			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
 			['GET', 'cpm/code/', Json\Mar::class, 'getCpmCode'],
+			['GET', 'crcd/code/', Json\Mar::class, 'getCrcdCode'],
 			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],
 			['GET', 'spgpm/code/', Json\Mar::class, 'getSpgpmCode'],
 			['GET', 'worm/code/', Json\Mar::class, 'getWormCode'],
@@ -168,10 +170,12 @@
 		'mgl' => [
 			'validate' => [
 				['GET', 'gl-code/', Json\Mgl::class, 'validateGlCode'],
+				['GET', 'mhm/code/', Json\Mgl::class, 'validateGlCode'],
 				['GET', 'ttm/code/', Json\Mgl::class, 'validateStmtCode'],
 				['GET', 'dtm/code/', Json\Mgl::class, 'validateDistCode'],
 			],
 			['GET', 'gl-code/', Json\Mgl::class, 'getGlCode'],
+			['GET', 'mhm/code/', Json\Mgl::class, 'getGlCode'],
 			['GET', 'ttm/code/', Json\Mgl::class, 'getStmtCode'],
 			['GET', 'dtm/code/', Json\Mgl::class, 'getDistCode'],
 		],

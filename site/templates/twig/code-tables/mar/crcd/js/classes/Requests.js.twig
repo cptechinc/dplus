@@ -1,0 +1,50 @@
+class CrcdRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CrcdRequests();
+		}
+		return this.instance;
+	}
+
+	validateCode(code, callback) {
+		var ajax = new AjaxRequest(this.validateCodeUrl());
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/crcd/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCustomer(custid, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/customer/') }}');
+
+		ajax.setData({custID: custid});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getGlCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mgl/mhm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateCodeUrl() {
+		return '{{ page.jsonApiUrl('mar/validate/crcd/code/') }}';
+	}
+}

@@ -23,7 +23,7 @@ class Mgl extends Controller {
 
 		if ($validate->glCode($data->code) === false) {
 			if (empty($data->jqv) === false) {
-				return "General Ledger $data->code not found";
+				return "GL Code $data->code not found";
 			}
 			return false;
 		}
