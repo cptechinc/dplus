@@ -13,7 +13,7 @@ use Dplus\Codes\Base\Simple as Base;
 use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the TTM code table
+ * Class that handles the CRUD of the CMM code table
  */
 class Cmm extends Base {
 	const MODEL              = 'Customer';
