@@ -52,4 +52,10 @@
 		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
 		$page->show_breadcrumbs = false;
 	}
-	include __DIR__ . "/basic-page.php";
+
+	if ($input->get->offsetExists('print')) {
+		include __DIR__ . "/blank-page.php";
+	} else {
+		include __DIR__ . "/basic-page.php";
+	}
+	
