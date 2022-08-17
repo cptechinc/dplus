@@ -238,6 +238,7 @@ return array(
     'Controllers\\Routers\\Base' => $baseDir . '/classes/routers/Base.php',
     'Controllers\\Routers\\Factory' => $baseDir . '/classes/routers/Factory.php',
     'Controllers\\Routers\\Map' => $baseDir . '/classes/routers/Map.php',
+    'Controllers\\Routers\\Mar' => $baseDir . '/classes/routers/Mar.php',
     'Controllers\\Routers\\Mgl' => $baseDir . '/classes/routers/Mgl.php',
     'Controllers\\Routers\\Min' => $baseDir . '/classes/routers/Min.php',
     'Controllers\\Routers\\Mpm' => $baseDir . '/classes/routers/Mpm.php',

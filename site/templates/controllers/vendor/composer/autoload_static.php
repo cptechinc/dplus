@@ -239,6 +239,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Routers\\Base' => __DIR__ . '/../..' . '/classes/routers/Base.php',
         'Controllers\\Routers\\Factory' => __DIR__ . '/../..' . '/classes/routers/Factory.php',
         'Controllers\\Routers\\Map' => __DIR__ . '/../..' . '/classes/routers/Map.php',
+        'Controllers\\Routers\\Mar' => __DIR__ . '/../..' . '/classes/routers/Mar.php',
         'Controllers\\Routers\\Mgl' => __DIR__ . '/../..' . '/classes/routers/Mgl.php',
         'Controllers\\Routers\\Min' => __DIR__ . '/../..' . '/classes/routers/Min.php',
         'Controllers\\Routers\\Mpm' => __DIR__ . '/../..' . '/classes/routers/Mpm.php',
