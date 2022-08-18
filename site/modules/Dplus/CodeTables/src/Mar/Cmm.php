@@ -24,7 +24,7 @@ class Cmm extends Base {
 	const RECORDLOCKER_FUNCTION = 'cmm';
 	const DPLUS_TABLE           = 'CMM';
 	const FIELD_ATTRIBUTES = [
-		'id'          => ['type' => 'text', 'maxlength' => 6],
+		'id'   => ['type' => 'text', 'maxlength' => 6],
 		'name' => ['type' => 'text', 'maxlength' => 20],
 	];
 
@@ -36,7 +36,6 @@ class Cmm extends Base {
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
-		$mhm = Mhm::getInstance();
 		$json = [
 			'id'    => $code->id,
 			'name'  => $code->name,
