@@ -11,25 +11,66 @@
 {% set lastsegment = segments[segments|length] %}
 
 {% block header %}
-	<div class="mb-3">
-		{% if page.is_print() %}
-			<button onclick="window.history.back();" class="btn btn-primary d-print-none">
-				<i class="fa fa-undo" aria-hidden="true"></i> Back
-			</button>
-			&nbsp;
-			<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
-				<i class="fa fa-print" aria-hidden="true"></i> Print
-			</button>
-		{% else %}
-			<a href="{{ page.menuUrl() }}" class="btn btn-primary">
-				<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ page.menuTitle() }}
-			</a>
-			&nbsp;
-			<a href="{{ page.get_printURL() }}" class="btn btn-primary">
-				<i class="fa fa-print" aria-hidden="true"></i> View Printable
-			</a>
-		{% endif %}
+	<div class="d-flex justify-content-between">
+		<div class="mb-3">
+			{% if page.is_print() %}
+				<button onclick="window.history.back();" class="btn btn-primary d-print-none">
+					<i class="fa fa-undo" aria-hidden="true"></i> Back
+				</button>
+				&nbsp;
+				<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
+					<i class="fa fa-print" aria-hidden="true"></i> Print
+				</button>
+			{% else %}
+				<a href="{{ page.menuUrl() }}" class="btn btn-primary">
+					<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ page.menuTitle() }}
+				</a>
+				&nbsp;
+				<a href="{{ page.get_printURL() }}" class="btn btn-primary">
+					<i class="fa fa-print" aria-hidden="true"></i> View Printable
+				</a>
+			{% endif %}
+		</div>
+
+		{% block search %}
+			<div class="d-flex justify-content-between">
+				<div>
+					<a href="{{ input.url() }}" class="btn btn-warning">
+						<i class="fa fa-times" aria-hidden="true"></i> Clear Search
+					</a>
+				</div>
+
+				<div>&nbsp; &nbsp; &nbsp;</div>
+
+				<form action="{{ input.url() }}" method="GET" class="allow-enterkey-submit column-filter">
+					<div class="input-group">
+						<div class="input-group-btn search-panel">
+							<div class="dropdown">
+								<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+									Search By <span class="searchby">{{ values.offsetExists('col') ? values.text('col')|capitalize : 'All' }}</span> <span class="caret"></span>
+								</button>
+								<div class="dropdown-menu column-options">
+									<a class="dropdown-item" href="#" value="">All</a>
+									<a class="dropdown-item" href="#" value="code">Code</a>
+									<a class="dropdown-item" href="#" value="description">Description</a>
+								</div>
+							</div>
+						</div>
+		
+						<input class="form-control form-group inline" type="text" name="q" value="{{ values.text('q') }}">
+						<input type="hidden" name="col" value="all">
+						
+						<span class="input-group-btn">
+							<button class="btn btn-light" type="submit">
+								<i class="fa fa-search"></i> <span class="sr-only">Search</span>
+							</button>
+						</span>
+					</div>
+				</form>
+			</div>
+		{% endblock %}
 	</div>
+	
 {% endblock %}
 
 <div class="list-group codes-list mb-3">

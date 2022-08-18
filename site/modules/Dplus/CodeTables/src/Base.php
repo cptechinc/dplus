@@ -20,9 +20,11 @@ abstract class Base extends WireData {
 	const RECORDLOCKER_FUNCTION = '';
 	const DPLUS_TABLE           = '';
 	const FIELD_ATTRIBUTES = [
-		'code'        => ['type' => 'text', 'maxlength' => 4],
-		'description' => ['type' => 'text', 'maxlength' => 20],
+		'code'        => ['type' => 'text', 'maxlength' => 4, 'label' => 'Code'],
+		'description' => ['type' => 'text', 'maxlength' => 20, 'label' => 'Description'],
 	];
+	const FILTERABLE_FIELDS = ['code', 'description'];
+
 	/** DPlus Permission Code */
 	const PERMISSION = '';
 
@@ -75,6 +77,32 @@ abstract class Base extends WireData {
 			return false;
 		}
 		return static::FIELD_ATTRIBUTES[$field][$attr];
+	}
+
+	/**
+	 * Return List of filterable fields
+	 * @return array
+	 */
+	public function filterableFields() {
+		return static::FILTERABLE_FIELDS;
+	}
+
+	/**
+	 * Return Label for field
+	 * @param  string $field
+	 * @return string
+	 */
+	public function fieldLabel($field) {
+		$label = $this->fieldAttribute($field, 'label');
+
+		if ($label !== false) {
+			return $label;
+		}
+
+		if (in_array($field, ['code', 'description'])) {
+			return self::FIELD_ATTRIBUTES[$field]['label'];
+		}
+		return $field;
 	}
 
 /* =============================================================

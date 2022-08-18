@@ -79,6 +79,38 @@ $(function() {
 		}
 	});
 
+	$("body").on('click', 'form.column-filter .column-options a', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var column = button.attr('value');
+		var form   = button.closest('form');
+		form.find('.searchby').text(button.text());
+		form.find('input[name=col]').val(column);
+	});
+
+	$("body").on('submit', 'form.column-filter', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var uri = URI();
+		var queryData = uri.query(true);
+
+		if (queryData.hasOwnProperty('q')) {
+			delete queryData.q;
+		}
+		if (queryData.hasOwnProperty('col')) {
+			delete queryData.col;
+		}
+		queryData.col = form.find('input[name=col]').val();
+		queryData.q   = form.find('input[name=q]').val();
+
+		if (queryData.col == '' || queryData.col== 'all') {
+			delete queryData.col;
+		}
+
+		uri.query(queryData);
+		window.location.href = uri.toString();
+	});
+
 	$('form[submit-empty="false"]').submit(function () {
 		var empty_fields = $(this).find(':input:not(button)').filter(function () {
 			return $(this).val() === '';
