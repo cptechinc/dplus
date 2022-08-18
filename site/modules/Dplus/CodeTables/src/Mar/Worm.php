@@ -1,11 +1,8 @@
 <?php namespace Dplus\Codes\Mar;
 // Propel Classes
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
-// ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
-use ArWriteOffCodeQuery, ArWriteOffCode;
+use ArWriteOffCode;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Configs
@@ -13,7 +10,6 @@ use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
 use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the WORM code table
@@ -33,44 +29,10 @@ class Worm extends Base {
 		'writeoff'         => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
 	];
 
-	private $fieldAttributes;
-
 	public function codeJson(Code $code) {
 		$json = parent::codeJson($code);
 		$json['writeoff'] = $code->writeoff;
 		return $json;
-	}
-
-/* =============================================================
-	Field Configs
-============================================================= */
-	public function initFieldAttributes() {
-		$attributes = self::FIELD_ATTRIBUTES;
-		$this->fieldAttributes = $attributes;
-	}
-
-	/**
-	 * Return Field Attribute value
-	 * @param  string $field Field Name
-	 * @param  string $attr  Attribute Name
-	 * @return mixed|bool
-	 */
-	public function fieldAttribute($field = '', $attr = '') {
-		if (empty($field) || empty($attr)) {
-			return false;
-		}
-
-		if (empty($this->fieldAttributes)) {
-			$this->initFieldAttributes();
-		}
-
-		if (array_key_exists($field, $this->fieldAttributes) === false) {
-			return false;
-		}
-		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
-			return false;
-		}
-		return $this->fieldAttributes[$field][$attr];
 	}
 
 /* =============================================================

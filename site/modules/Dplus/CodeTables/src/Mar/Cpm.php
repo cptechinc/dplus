@@ -32,45 +32,11 @@ class Cpm extends Base {
 		'percent'          => ['type' => 'number', 'precision' => 3, 'max' => 99.999, 'default' => '0.000'],
 	];
 
-	private $fieldAttributes;
-
 	public function codeJson(Code $code) {
 		$json = parent::codeJson($code);
 		$json['surcharge'] = $code->surcharge;
 		$json['percent']   = $code->percent;
 		return $json;
-	}
-
-/* =============================================================
-	Field Configs
-============================================================= */
-	public function initFieldAttributes() {
-		$attributes = self::FIELD_ATTRIBUTES;
-		$this->fieldAttributes = $attributes;
-	}
-
-	/**
-	 * Return Field Attribute value
-	 * @param  string $field Field Name
-	 * @param  string $attr  Attribute Name
-	 * @return mixed|bool
-	 */
-	public function fieldAttribute($field = '', $attr = '') {
-		if (empty($field) || empty($attr)) {
-			return false;
-		}
-
-		if (empty($this->fieldAttributes)) {
-			$this->initFieldAttributes();
-		}
-
-		if (array_key_exists($field, $this->fieldAttributes) === false) {
-			return false;
-		}
-		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
-			return false;
-		}
-		return $this->fieldAttributes[$field][$attr];
 	}
 
 /* =============================================================

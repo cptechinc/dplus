@@ -3,14 +3,13 @@
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ProcessWire\WireInput;
 // Dplus Models
-use GlDistCodeQuery, GlDistCode;
+use  GlDistCode;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Codes
 use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the TTM code table

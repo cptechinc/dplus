@@ -1,16 +1,8 @@
 <?php namespace Dplus\Codes\Mar;
-// Purl URI Library
-use Purl\Url;
-// Propel Classes
-use Propel\Runtime\Collection\ObjectCollection;
-use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 // Dplus Models
-use ArCommissionCodeQuery, ArCommissionCode;
-// ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ArCommissionCode;
 // Dplus Codes
 use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the CCM code table

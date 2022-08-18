@@ -36,46 +36,12 @@ class Cocom extends Base {
 		'country_date'     => ['type' => 'text', 'dateformat' => 'Ymd', 'displayformat' => 'm/d/Y'],
 	];
 
-	private $fieldAttributes;
-
 	public function codeJson(Code $code) {
 		$json = parent::codeJson($code);
 		foreach (array_keys(self::FIELD_ATTRIBUTES) as $field) {
 			$json[$field] = $code->$field;
 		}
 		return $json;
-	}
-
-/* =============================================================
-	Field Configs
-============================================================= */
-	public function initFieldAttributes() {
-		$attributes = self::FIELD_ATTRIBUTES;
-		$this->fieldAttributes = $attributes;
-	}
-
-	/**
-	 * Return Field Attribute value
-	 * @param  string $field Field Name
-	 * @param  string $attr  Attribute Name
-	 * @return mixed|bool
-	 */
-	public function fieldAttribute($field = '', $attr = '') {
-		if (empty($field) || empty($attr)) {
-			return false;
-		}
-
-		if (empty($this->fieldAttributes)) {
-			$this->initFieldAttributes();
-		}
-
-		if (array_key_exists($field, $this->fieldAttributes) === false) {
-			return false;
-		}
-		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
-			return false;
-		}
-		return $this->fieldAttributes[$field][$attr];
 	}
 
 /* =============================================================
