@@ -45,7 +45,7 @@ class Spgpm extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['q|text'];
+		$fields = ['q|text', 'col|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
 		$page->headline = "Salesperson Group Code";
@@ -53,8 +53,7 @@ class Spgpm extends Base {
 		$filter = new Filters\Mar\SalespersonGroupCode();
 
 		if (empty($data->q) === false) {
-			$filter->search($data->q);
-			$page->headline = "SPGPM: Searching for '$data->q'";
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 
 		$filter->sortby($page);

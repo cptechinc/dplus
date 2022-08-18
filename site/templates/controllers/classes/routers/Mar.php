@@ -7,6 +7,7 @@ class Mar extends Base {
 	const ROUTES = [
 		'armain' => ['', Ar\Armain\Menu::class, 'armainUrl'],
 		'ccm'    => ['', Ar\Armain\Menu::class, 'ccmUrl'],
+		'cocom'  => ['', Ar\Armain\Menu::class, 'cocomUrl'],
 		'cpm'    => ['', Ar\Armain\Menu::class, 'cpmUrl'],
 		'crcd'   => ['', Ar\Armain\Menu::class, 'crcdUrl'],
 		'crtm'   => ['', Ar\Armain\Menu::class, 'crtmUrl'],

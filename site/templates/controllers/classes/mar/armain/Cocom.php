@@ -45,7 +45,7 @@ class Cocom extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['q|text'];
+		$fields = ['q|text', 'col|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
 		$page->headline = "Country / Currency Code";
@@ -53,8 +53,7 @@ class Cocom extends Base {
 		$filter = new Filters\Mar\CountryCode();
 
 		if (empty($data->q) === false) {
-			$filter->search($data->q);
-			$page->headline = "COCOM: Searching for '$data->q'";
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 
 		$filter->sortby($page);

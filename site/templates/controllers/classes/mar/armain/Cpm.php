@@ -45,7 +45,7 @@ class Cpm extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['q|text'];
+		$fields = ['q|text', 'col|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
 		$page->headline = "Customer Price Code";
@@ -53,8 +53,7 @@ class Cpm extends Base {
 		$filter = new Filters\Mar\ArPriceCode();
 
 		if (empty($data->q) === false) {
-			$filter->search($data->q);
-			$page->headline = "CPM: Searching for '$data->q'";
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 
 		$filter->sortby($page);

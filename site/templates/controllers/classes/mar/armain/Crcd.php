@@ -45,7 +45,7 @@ class Crcd extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['q|text'];
+		$fields = ['q|text', 'col|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
 		$page->headline = "Credit Card Code";
@@ -53,8 +53,7 @@ class Crcd extends Base {
 		$filter = new Filters\Mar\ArCreditCardCode();
 
 		if (empty($data->q) === false) {
-			$filter->search($data->q);
-			$page->headline = "CRCD: Searching for '$data->q'";
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 
 		$filter->sortby($page);
