@@ -15,7 +15,7 @@ class GlTextCode extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = [
 			Model::aliasproperty('code'),
 			Model::aliasproperty('text1'),

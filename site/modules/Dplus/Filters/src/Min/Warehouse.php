@@ -17,7 +17,7 @@ class Warehouse extends CodeFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = array(
 			Model::aliasproperty('id'),
 			Model::aliasproperty('name'),

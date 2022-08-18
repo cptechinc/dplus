@@ -17,7 +17,7 @@ class Mxrfe extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = [
 			Model::aliasproperty('itemid'),
 			Model::aliasproperty('mnfrid'),

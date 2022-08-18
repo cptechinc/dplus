@@ -15,7 +15,7 @@ class MotorFreightCode extends CodeFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = [
 			Model::aliasproperty('id'),
 			Model::aliasproperty('class'),

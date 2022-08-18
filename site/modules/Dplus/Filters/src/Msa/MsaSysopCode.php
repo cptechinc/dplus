@@ -26,7 +26,7 @@ class MsaSysopCode extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$model = $this->modelName();
 		$columns = [
 			$model::aliasproperty('code'),
