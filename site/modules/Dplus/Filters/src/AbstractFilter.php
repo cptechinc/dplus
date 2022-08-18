@@ -24,6 +24,12 @@ use ProcessWire\WireInputData;
 abstract class AbstractFilter extends WireData {
 	const MODEL = '';
 	const SORT_OPTIONS = ['ASC', 'DESC'];
+	const WILDCARD_CHAR = '%';
+	const WILDCARD_OPTIONS = [
+		'wildcardSpaces' => true,
+		'prepend'        => false,
+		'append'         => true
+	];
 
 	public $query;
 
@@ -31,7 +37,7 @@ abstract class AbstractFilter extends WireData {
 	Abstract Functions
 ============================================================= */
 	/** Filter Columns using a Wildcard Search **/
-	abstract public function _search($q);
+	abstract public function _search($q, $cols = []);
 
 /* =============================================================
 	Extensible Functions
@@ -122,11 +128,12 @@ abstract class AbstractFilter extends WireData {
 
 	/**
 	 * Do a Wildcard search against columns
-	 * @param  string $q Search Query
+	 * @param  string $q    Search Query
+	 * @param  array  $cols Cols to search against *** uses default if blank ***
 	 * @return self
 	 */
-	public function search($q) {
-		$this->_search($q);
+	public function search($q, $cols = []) {
+		$this->_search($q, $cols);
 		return $this;
 	}
 
@@ -215,6 +222,38 @@ abstract class AbstractFilter extends WireData {
 				$this->orderBy($data[0], $data[1]);
 			}
 		}
+	}
+
+	/**
+	 * Add wildcard character to string
+	 * @param  string  $str
+	 * @param  bool    $wildcardSpaces
+	 * @return string
+	 */
+	protected function wildcardify($str = '', $wildcardOptions = []) {
+		$str = trim($str);
+
+		if (empty($str)) {
+			return $str;
+		}
+		$options = static::WILDCARD_OPTIONS;
+		$options = array_merge($options, $wildcardOptions);
+
+		if ($options['wildcardSpaces'] === true) {
+			$str = str_replace(' ', static::WILDCARD_CHAR, $str);
+		}
+		
+		$wildcardString = '';
+
+		if ($options['prepend'] === true) {
+			$wildcardString = static::WILDCARD_CHAR;
+		}
+		$wildcardString .= $str;
+
+		if ($options['append'] === true) {
+			$wildcardString .= static::WILDCARD_CHAR;
+		}
+		return $wildcardString;
 	}
 
 /* =============================================================
