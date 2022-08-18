@@ -8,6 +8,7 @@ use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 //  ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+use ProcessWire\WireInputData;
 
 /**
  * Base Filter Class
@@ -22,6 +23,7 @@ use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
  */
 abstract class AbstractFilter extends WireData {
 	const MODEL = '';
+	const SORT_OPTIONS = ['ASC', 'DESC'];
 
 	public $query;
 
@@ -141,6 +143,36 @@ abstract class AbstractFilter extends WireData {
 			$tablecolumn = $model::aliasproperty($orderbycolumn);
 			$this->query->sortBy($tablecolumn, $sort);
 		}
+	}
+
+	/**
+	 * Add Sorting using WireInputData
+	 * @param  WireInputData $data
+	 * @return bool
+	 */
+	public function sort(WireInputData $data) {
+		if ($data->offsetExists('orderby') === false) {
+			return false;
+		}
+		$sortArray = $data->array('orderby', ['delimiter' => '-']);
+
+		$sortData = new WireData();
+		$sortData->direction = 'ASC';
+		$sortData->column = $sortArray[0];
+
+		$model = static::MODEL;
+
+		if ($model::aliasproperty_exists($sortData->column) === false) {
+			return false;
+		}
+
+		if (count($sortArray) > 1) {
+			if (in_array(strtoupper($sortArray[1]), static::SORT_OPTIONS)) {
+				$sortData->direction = strtoupper($sortArray[1]);
+			}
+		}
+		$this->orderBy($sortData->column, $sortData->column);
+		return true;
 	}
 
 	/**
