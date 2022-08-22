@@ -26,10 +26,11 @@ $(function() {
 		var code   = button.data('code');
 
 		if (code) {
-			formCode.inputs.description.focus();
+			formCode.inputs.custom_code.focus();
 		} else {
 			formCode.inputs.code.focus();
 		}
+		formCode.form.attr('data-serialized', formCode.form.serialize());
 	});
 
 	$("body").on("change", "input[name=code]", function(e) {
@@ -72,7 +73,43 @@ $(function() {
 		}
 		var rate = parseFloat(input.val());
 		input.val(rate.toFixed(formCode.config.fields.exchange_rate.precision));
-		// formCode.inputs.country_date.text(moment().format('MM/DD/YYYY'));
+	});
+
+	$("#edit-code-modal").on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var form = formCode.inputs.form;
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				alert.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.submit();
+						return true;
+					}
+				});
+			}
+		}
+	});
+
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		var form = formCode.inputs.form;
+
+		form.validate().resetForm();
+		form.find('.is-invalid').removeClass("is-invalid");
+		form.find('.is-valid').removeClass("is-valid");
+		form.find('.invalid-feedback').remove();
+		form.find('.valid-feedback').remove();
+
+		if (form.attr('data-code')) {
+			$('.code-table-alert').remove();
+			$('.bg-success').removeClass('bg-success text-white');
+			$('.highlight').removeClass('highlight');
+			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
+			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
+		}
 	});
 
 /* =============================================================
@@ -136,26 +173,6 @@ $(function() {
 					});
 				});
 			}
-		}
-	});
-
-/* =============================================================
-	Form Functions
-============================================================= */
-	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
-		var form = formCode.inputs.form;
-		form.validate().resetForm();
-		form.find('.is-invalid').removeClass("is-invalid");
-		form.find('.is-valid').removeClass("is-valid");
-		form.find('.invalid-feedback').remove();
-		form.find('.valid-feedback').remove();
-
-		if (form.attr('data-code')) {
-			$('.code-table-alert').remove();
-			$('.bg-success').removeClass('bg-success text-white');
-			$('.highlight').removeClass('highlight');
-			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
-			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
 		}
 	});
 })
