@@ -97,10 +97,11 @@ class Crcd extends Base {
 		$values = $input->$rm;
 
 		$invalidfields  = parent::_inputUpdate($input, $code);
-		$invalidfieldsGL = $this->_inputUpdateCustid($values, $code);
+		$invalidfieldsGL = $this->_inputUpdateGlAccounts($values, $code);
+		$invalidfieldsCU = $this->_inputUpdateCustid($values, $code);
 		$invalidfieldsCH = $this->_inputUpdateCharges($values, $code);
 
-		$invalidfields = array_merge($invalidfields, $invalidfieldsGL, $invalidfieldsCH);
+		$invalidfields = array_merge($invalidfields, $invalidfieldsGL, $invalidfieldsCU, $invalidfieldsCH);
 		return $invalidfields;
 	}
 
