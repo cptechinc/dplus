@@ -60,7 +60,8 @@ class Cocom extends Base {
 		$input = self::pw('input');
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
-
+		
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/mar/cocom/.js.twig', ['cocom' => self::getCocom()]);
 		$html = self::displayList($data, $codes);
 		self::getCocom()->deleteResponse();
