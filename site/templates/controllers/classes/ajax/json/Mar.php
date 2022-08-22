@@ -293,6 +293,37 @@ class Mar extends Controller {
 		return $src->codeJson($src->code($data->code));
 	}
 
+	public static function validateCucCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Cuc::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Customer User Code $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Customer User Code  $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getCucCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Cuc::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		return $src->codeJson($src->code($data->code));
+	}
+
 	public static function validateSpgpmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
