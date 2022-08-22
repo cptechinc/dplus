@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-light">
+<nav class="navbar navbar-expand-lg bg-white border-bottom">
 	<div class="container-fluid">
 		<a href="#" class="toggle-menu pr-1 pl-2" data-target="#dplus-nav">
 			<i class="fa fa-bars fa-1-2x" aria-hidden="true"></i>

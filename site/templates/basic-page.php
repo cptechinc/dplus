@@ -9,7 +9,7 @@
 			</div>
 		</div>
 	<?php endif; ?>
-	<div class="container mt-3">
+	<div class="container">
 		<?php if ($page->show_breadcrumbs) : ?>
 			<?= $config->twig->render('util/bread-crumbs.twig', ['page' => $page]); ?>
 		<?php endif; ?>
