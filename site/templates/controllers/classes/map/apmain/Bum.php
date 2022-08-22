@@ -3,8 +3,6 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
-// Dplus Models
-use ProspectSource;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
