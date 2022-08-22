@@ -1,4 +1,7 @@
 $(function() {
+	var uri = URI();
+	var queryData = uri.query(true);
+
 	$('#edit-code-modal').on('hidden.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
@@ -10,8 +13,8 @@ $(function() {
 		$('.code[data-code="'+code+'"]').addClass('highlight');
 	});
 
-	{% if input.get.offsetExists('focus') and input.get.text('focus') != 'new' %}
-		$('.code[data-code="{{ input.get.text('focus') }}"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('.code[data-code="{{ input.get.text('focus') }}"]').offset().top,},700,'linear');
-	{% endif %}
+	if (queryData.hasOwnProperty('focus') && queryData.focus != 'new') {
+		$('.code[data-code="' + queryData.focus + '"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.code[data-code="' + queryData.focus + '"]').offset().top,},700,'linear');
+	}
 });
