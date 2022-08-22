@@ -52,6 +52,12 @@ class Menu extends Base {
 			'title'      => 'Receivables Optional Code',
 			'summary'    => 'View / Edit AR Optional Codes'
 		],
+		'sic' => [
+			'name'       => 'sic',
+			'permission' => 'sic',
+			'title'      => 'Standard Industrial Class',
+			'summary'    => 'View / Edit AR Standard Industrial Class'
+		],
 		'spgpm' => [
 			'name'       => 'spgpm',
 			'permission' => 'spgpm',
@@ -120,6 +126,10 @@ class Menu extends Base {
 
 	public static function cucUrl() {
 		return self::subfunctionUrl('cuc');
+	}
+
+	public static function sicUrl() {
+		return self::subfunctionUrl('sic');
 	}
 
 	public static function spgpmUrl() {

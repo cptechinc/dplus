@@ -324,6 +324,36 @@ class Mar extends Controller {
 		return $src->codeJson($src->code($data->code));
 	}
 
+	public static function validateSicCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$manager = Codes\Mar\Sic::getInstance();
+		$exists = $manager->exists($data->code);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "Standard Industrial Class $data->code already exists";
+		}
+
+		if ($exists === false) {
+			return "Standard Industrial Class $data->code not found";
+		}
+		return true;
+	}
+
+	public static function getSicCode($data) {
+		self::sanitizeParametersShort($data, ['code|text']);
+
+		$src = Codes\Mar\Sic::getInstance();
+		if ($src->exists($data->code) === false) {
+			return false;
+		}
+		return $src->codeJson($src->code($data->code));
+	}
 	public static function validateSpgpmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
