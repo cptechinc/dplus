@@ -74,6 +74,19 @@
 		</div>
 	</div>
 
+	<div class="form-group">
+		<label for="code">Description</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'description',
+					'attributes': {
+						'maxlength': manager.fieldAttribute('description', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+
 	<div class="col-sm-4 px-0">
 		<div class="form-group">
 			<label for="exchange_rate">Exchange Rate %</label>
@@ -88,7 +101,7 @@
 					}
 				}
 			%}
-			<small class="text-muted customer-name">Last Updated: <span class="country_date"></span></small>
+			<small class="text-muted customer-name">Last Updated: <span class="country_date fw-bold text-dark"></span></small>
 		</div>
 	</div>
 
