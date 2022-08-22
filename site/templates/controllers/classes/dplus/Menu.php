@@ -30,8 +30,10 @@ class Menu extends Controller {
 ============================================================= */
 	private static function listDisplay($data, $items) {
 		$config = self::pw('config');
+		$form = $config->twig->render('dplus-menu/menu-search-form.twig', ['page' => self::pw('pages')->get('template=menu')]);
+
 		$html = '';
-		$html .= $config->twig->render('dplus-menu/menu-search-form.twig', ['page' => self::pw('pages')->get('template=menu'), 'items' => $items]);
+		$html .= '<div class="col-sm-4 px-0">'. $form .'</div>';
 		$html .= $config->twig->render('dplus-menu/menu-list.twig', ['items' => $items]);
 		return $html;
 	}
