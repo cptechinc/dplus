@@ -86,6 +86,10 @@ table.table-md td, table.table-md th {
 	background-color: rgba(0, 0, 0, 0.075)
 }
 
+.fw-bold {
+	font-weight: bold;
+}
+
 /*==============================================================
 	FUELUX Styles
 ==============================================================*/
