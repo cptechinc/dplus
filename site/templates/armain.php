@@ -55,7 +55,6 @@
 
 	if ($router->hasError() === false) {
 		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
-		$page->show_breadcrumbs = false;
 	}
 
 	if ($input->get->offsetExists('print')) {
