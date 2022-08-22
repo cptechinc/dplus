@@ -54,8 +54,7 @@ class Bum extends Base {
 		$page->headline = "AP Buyer Code";
 
 		if (empty($data->q) === false) {
-			$filter->search($data->q);
-			$page->headline = "BUM: Searching for '$data->q'";
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 
 		$filter->sortby($page);
