@@ -7,9 +7,9 @@ use ProcessWire\ProcessWire;
 use Dplus\CodeValidators\Mar       as MarValidator;
 use Dplus\Codes;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
+use Controllers\Ajax\Json\AbstractJsonController;
 
-class Mar extends Controller {
+class Mar extends AbstractJsonController {
 	public static function test() {
 		return 'test';
 	}
@@ -354,6 +354,7 @@ class Mar extends Controller {
 		}
 		return $src->codeJson($src->code($data->code));
 	}
+
 	public static function validateSpgpmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -383,6 +384,16 @@ class Mar extends Controller {
 			return false;
 		}
 		return $src->codeJson($src->code($data->code));
+	}
+
+	public static function validateSucCode($data) {
+		$table = Codes\Mar\Suc::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getSucCode($data) {
+		$table = Codes\Mar\Suc::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateWormCode($data) {

@@ -64,6 +64,12 @@ class Menu extends Base {
 			'title'      => 'Salesperson Group Code',
 			'summary'    => 'View / Edit AR Salesperson Group Codes'
 		],
+		'suc' => [
+			'name'       => 'suc',
+			'permission' => 'suc',
+			'title'      => 'Ship-to User Code',
+			'summary'    => 'View / Edit AR Ship-to User Codes'
+		],
 		'worm' => [
 			'name'       => 'worm',
 			'permission' => 'worm',
@@ -134,6 +140,10 @@ class Menu extends Base {
 
 	public static function spgpmUrl() {
 		return self::subfunctionUrl('spgpm');
+	}
+
+	public static function sucUrl() {
+		return self::subfunctionUrl('suc');
 	}
 
 	public static function roptmUrl() {
