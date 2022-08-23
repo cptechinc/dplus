@@ -1,0 +1,58 @@
+class CodeForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CodeInputs.getInstance();
+		this.config = CodeConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.percent.val(json.percent);
+			this.inputs.gl_account.val(json.gl_account);
+			this.inputs.limit.val(json.limit);
+			this.inputs.tax_type.val(json.tax_type);
+			this.inputs.note1.val(json.note1);
+			this.inputs.note2.val(json.note2);
+			this.inputs.note3.val(json.note3);
+			this.inputs.note4.val(json.note4);
+			this.triggerInputChanges();
+
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.percent.val('');
+		this.inputs.gl_account.val('');
+		this.inputs.limit.val('');
+		this.inputs.tax_type.val('');
+		this.inputs.note1.val('');
+		this.inputs.note2.val('');
+		this.inputs.note3.val('');
+		this.inputs.note4.val('');
+	}
+
+	triggerInputChanges() {
+		this.inputs.percent.change();
+		this.inputs.gl_account.change();
+		this.inputs.limit.change();
+	}
+}

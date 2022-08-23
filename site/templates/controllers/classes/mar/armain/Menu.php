@@ -46,6 +46,12 @@ class Menu extends Base {
 			'title'      => 'Customer User Code',
 			'summary'    => 'View / Edit Customer User Codes'
 		],
+		'mtm' => [
+			'name'       => 'mtm',
+			'permission' => Mtm::DPLUSPERMISSION,
+			'title'      => Mtm::TITLE,
+			'summary'    => Mtm::SUMMARY
+		],
 		'roptm' => [
 			'name'       => 'roptm',
 			'permission' => 'roptm',
@@ -132,6 +138,10 @@ class Menu extends Base {
 
 	public static function cucUrl() {
 		return self::subfunctionUrl('cuc');
+	}
+
+	public static function mtmUrl() {
+		return self::subfunctionUrl('mtm');
 	}
 
 	public static function sicUrl() {

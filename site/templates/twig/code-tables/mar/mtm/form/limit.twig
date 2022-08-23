@@ -1,0 +1,15 @@
+<label for="limit">Taxable Limit</label>
+{% include 'util/bootstrap/form/input.twig' with {
+		'input': {
+			'size': 'sm',
+			'name': 'limit',
+			'addclasses': [
+				'text-right',
+			],
+			'attributes': {
+				'max': manager.fieldAttribute('limit', 'max')
+			}
+		},
+	}
+%}
+<small class="text-muted description"></small>

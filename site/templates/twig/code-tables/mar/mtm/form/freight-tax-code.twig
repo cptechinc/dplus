@@ -1,0 +1,29 @@
+<label for="freight_tax_code">Freight Tax Code</label>
+{% include 'util/bootstrap/form/input-group.twig' with {
+		'inputgroup': {
+			'type': 'prepend',
+			'size': 'sm',
+			'input': {
+				'name': 'freight_tax_code',
+				'addclasses': ['freight-tax-code'],
+				'attributes': {
+					'placeholder': '',
+					'aria-label':  'Freight Tax Code',
+					'data-jqv': 'true'
+				}
+			},
+			'button': {
+				'colorclass': 'btn-secondary',
+				'text': 'fa fa-search'|icon,
+				'attributes': {
+					'title': 'Search freight Tax Code',
+					'data-toggle': 'modal',
+					'data-target': '#ajax-modal',
+					'data-lookupurl': page.searchLookupUrl('mar/mtm/'),
+					'data-input': '#freight_tax_code'
+				}
+			}
+		}
+	}
+%}
+<small class="text-muted description"></small>

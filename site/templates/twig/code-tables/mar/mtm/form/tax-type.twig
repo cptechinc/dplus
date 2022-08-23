@@ -1,0 +1,13 @@
+<label for="tax_type">Tax Type</label>
+{% include 'util/bootstrap/form/select-simple.twig' with {
+		'select': {
+			'size': 'sm',
+			'name': 'tax_type',
+			'value' : code.tax_type,
+			'haskeys': true,
+			'showvalue': true,
+			'useblankoption': true,
+			'options': manager.fieldAttribute('tax_type', 'options'),
+		}
+	}
+%}
