@@ -324,6 +324,16 @@ class Mar extends AbstractJsonController {
 		return $src->codeJson($src->code($data->code));
 	}
 
+	public static function validateMtmCode($data) {
+		$table = Codes\Mar\Mtm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getMtmCode($data) {
+		$table = Codes\Mar\Mtm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
 	public static function validateSicCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
