@@ -139,189 +139,63 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function validateCcmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Ccm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Commission Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Commission Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Ccm::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getCcmCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Ccm::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Ccm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateCpmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Ccm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Customer Price Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Customer Price Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Cpm::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getCpmCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Cpm::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Cpm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateCocomCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Cocom::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Country / Currency Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Country / Currency Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Cocom::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getCocomCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Cocom::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Cocom::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 	
 	public static function validateCrcdCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Crcd::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Credit Card Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Credit Card Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Crcd::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getCrcdCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Crcd::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Crcd::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 	
 	public static function validateCrtmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Crtm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Route Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Route Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Crtm::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getCrtmCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Crtm::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Crtm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateCucCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Cuc::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Customer User Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Customer User Code  $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Suc::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getCucCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Cuc::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Cuc::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateMtmCode($data) {
@@ -335,65 +209,23 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function validateSicCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Sic::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Standard Industrial Class $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Standard Industrial Class $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Sic::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getSicCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Sic::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Sic::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateSpgpmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Spgpm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Salesperson Group Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Salesperson Group Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Spgpm::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getSpgpmCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Spgpm::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Spgpm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateSucCode($data) {
@@ -407,33 +239,12 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function validateWormCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mar\Worm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Write-Off Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Write-Off Group Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mar\Worm::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getWormCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-
-		$src = Codes\Mar\Worm::getInstance();
-		if ($src->exists($data->code) === false) {
-			return false;
-		}
-		return $src->codeJson($src->code($data->code));
+		$table = Codes\Mar\Worm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 }
