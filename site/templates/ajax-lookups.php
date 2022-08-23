@@ -56,6 +56,10 @@
 		// Country Codes
 		['GET', 'country-codes/', AjaxLookup::class, 'countryCodes'],
 		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'countryCodes'],
+		'mar' => [
+			['GET', 'mtm/', AjaxLookup\Mar::class, 'taxCodes'],
+			['GET', 'mtm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'taxCodes'],
+		],
 		'mgl' => [
 			// General Ledger Codes
 			['GET', 'mhm/', AjaxLookup::class, 'generalLedgerCodes'],
