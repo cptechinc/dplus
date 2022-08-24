@@ -238,6 +238,16 @@ class Mar extends AbstractJsonController {
 		return self::getCodeTableCode($data, $table);
 	}
 
+	public static function validateTmCode($data) {
+		$table = Codes\Mar\Tm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getTmCode($data) {
+		$table = Codes\Mar\Tm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
 	public static function validateWormCode($data) {
 		$table = Codes\Mar\Worm::getInstance();
 		return self::validateCodeTableCode($data, $table);

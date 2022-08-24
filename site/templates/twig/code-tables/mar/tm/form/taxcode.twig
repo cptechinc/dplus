@@ -1,0 +1,40 @@
+<div class="form-group">
+	<div class="form-row">
+		<div class="col-sm-2">
+			<label for="{{ name }}">Code {{ index }}</label>
+		</div>
+		<div class="col-sm-4">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': name,
+							'addclasses': ['taxcode'],
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Tax Code',
+								'data-jqv': 'true',
+								'unique': 'taxcode',
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Tax Codes',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('mar/mtm/'),
+								'data-input': '#' ~ name
+							}
+						}
+					}
+				}
+			%}
+		</div>
+		<div class="col-sm-4">
+			<small class="text-muted description"></small>
+		</div>
+	</div>
+</div>

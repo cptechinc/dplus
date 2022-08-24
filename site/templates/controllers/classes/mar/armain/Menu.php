@@ -76,6 +76,12 @@ class Menu extends Base {
 			'title'      => 'Ship-to User Code',
 			'summary'    => 'View / Edit AR Ship-to User Codes'
 		],
+		'tm' => [
+			'name'       => 'tm',
+			'permission' => Tm::DPLUSPERMISSION,
+			'title'      => Tm::TITLE,
+			'summary'    => Tm::SUMMARY
+		],
 		'worm' => [
 			'name'       => 'worm',
 			'permission' => 'worm',
@@ -144,6 +150,10 @@ class Menu extends Base {
 		return self::subfunctionUrl('mtm');
 	}
 
+	public static function roptmUrl() {
+		return self::subfunctionUrl('roptm');
+	}
+
 	public static function sicUrl() {
 		return self::subfunctionUrl('sic');
 	}
@@ -156,8 +166,8 @@ class Menu extends Base {
 		return self::subfunctionUrl('suc');
 	}
 
-	public static function roptmUrl() {
-		return self::subfunctionUrl('roptm');
+	public static function tmUrl() {
+		return self::subfunctionUrl('tm');
 	}
 	
 	public static function wormUrl() {

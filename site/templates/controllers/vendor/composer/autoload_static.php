@@ -62,6 +62,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mar\\Armain\\Sic' => __DIR__ . '/../..' . '/classes/mar/armain/Sic.php',
         'Controllers\\Mar\\Armain\\Spgpm' => __DIR__ . '/../..' . '/classes/mar/armain/Spgpm.php',
         'Controllers\\Mar\\Armain\\Suc' => __DIR__ . '/../..' . '/classes/mar/armain/Suc.php',
+        'Controllers\\Mar\\Armain\\Tm' => __DIR__ . '/../..' . '/classes/mar/armain/Tm.php',
         'Controllers\\Mar\\Armain\\Worm' => __DIR__ . '/../..' . '/classes/mar/armain/Worm.php',
         'Controllers\\Mar\\Spm' => __DIR__ . '/../..' . '/classes/mar/Spm.php',
         'Controllers\\Mci\\Ci\\Base' => __DIR__ . '/../..' . '/classes/mci/Ci/Base.php',
