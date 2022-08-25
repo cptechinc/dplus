@@ -71,6 +71,14 @@
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Min::class, 'productLines'],
 			],
 		],
+		'misc' => [
+			'state-codes' => [
+				['GET', '', AjaxLookup\Misc::class, 'stateCodes'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Misc::class, 'stateCodes'],
+			],
+			['GET', 'country-codes/', AjaxLookup\Misc::class, 'countryCodes'],
+		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup\Misc::class, 'countryCodes'],
+		],
 		'mpo' => [
 			['GET', 'ap-invoices/', AjaxLookup::class, 'purchaseOrders'],
 			['GET', 'ap-invoices/page{pagenbr:\d+}/', AjaxLookup::class, 'purchaseOrders'],
