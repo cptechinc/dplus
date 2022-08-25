@@ -52,6 +52,12 @@ class Menu extends Base {
 			'title'      => Mtm::TITLE,
 			'summary'    => Mtm::SUMMARY
 		],
+		'pty3' => [
+			'name'       => 'pty3',
+			'permission' => Pty3::DPLUSPERMISSION,
+			'title'      => Pty3::TITLE,
+			'summary'    => Pty3::SUMMARY
+		],
 		'roptm' => [
 			'name'       => 'roptm',
 			'permission' => 'roptm',
@@ -148,6 +154,10 @@ class Menu extends Base {
 
 	public static function mtmUrl() {
 		return self::subfunctionUrl('mtm');
+	}
+
+	public static function pty3Url() {
+		return self::subfunctionUrl('pty3');
 	}
 
 	public static function roptmUrl() {
