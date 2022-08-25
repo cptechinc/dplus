@@ -42,6 +42,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Mtm::class, 'index'],
 			['POST',  '', Armain\Mtm::class, 'handleCRUD'],
 		],
+		'pty3' => [
+			['GET',  '', Armain\Pty3::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Pty3::class, 'index'],
+			['POST',  '', Armain\Pty3::class, 'handleCRUD'],
+		],
 		'roptm' => [
 			['GET',  '', Armain\Roptm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Roptm::class, 'index'],

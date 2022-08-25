@@ -57,6 +57,7 @@ return array(
     'Controllers\\Mar\\Armain\\Cuc' => $baseDir . '/classes/mar/armain/Cuc.php',
     'Controllers\\Mar\\Armain\\Menu' => $baseDir . '/classes/mar/armain/Menu.php',
     'Controllers\\Mar\\Armain\\Mtm' => $baseDir . '/classes/mar/armain/Mtm.php',
+    'Controllers\\Mar\\Armain\\Pty3' => $baseDir . '/classes/mar/armain/Pty3.php',
     'Controllers\\Mar\\Armain\\Roptm' => $baseDir . '/classes/mar/armain/Roptm.php',
     'Controllers\\Mar\\Armain\\Sic' => $baseDir . '/classes/mar/armain/Sic.php',
     'Controllers\\Mar\\Armain\\Spgpm' => $baseDir . '/classes/mar/armain/Spgpm.php',
