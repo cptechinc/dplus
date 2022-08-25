@@ -5,7 +5,7 @@
 		</a>
 	</div>
 	<div class="col-6 col-sm-3">
-		{% include 'dplus-menu/menu-search-form.twig' %}
+		{% include 'dplus-menu/menu-search-form.twig' with {'page': pages.get('/') } %}
 	</div>
 </div>
 
