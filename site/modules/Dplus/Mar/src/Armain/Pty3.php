@@ -3,12 +3,13 @@
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Record;
 // ProcessWire
 use ProcessWire\WireInput;
+use ProcessWire\WireInputData;
 // Dplus Models
 use ArCust3partyFreightQuery, ArCust3partyFreight;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
-// Dplus Validators
-use Dplus\CodeValidators as Validators;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus Configs
@@ -18,7 +19,6 @@ use Dplus\Codes;
 // Dplus Crud
 use Dplus\Crud\AbstractManager;
 use Dplus\Crud\Response;
-
 
 /**
  * Class that handles the CRUD of the ArCust3partyFreight Table
@@ -33,7 +33,23 @@ class Pty3 extends AbstractManager {
 	const RECORDLOCKER_FUNCTION = 'pty3';
 	const DPLUS_TABLE           = 'PTY3';
 	const FIELD_ATTRIBUTES = [
-		
+		'custid'         => ['type' => 'text'],
+		'accountnbr'     => ['type' => 'text', 'maxlength' => ArCust3partyFreight::MAX_LENGTH_ACCOUNTNBR],
+		'name'           => ['type' => 'text', 'maxlength' => 30],
+		'address1'       => ['type' => 'text', 'maxlength' => 30],
+		'address2'       => ['type' => 'text', 'maxlength' => 30],
+		'address3'       => ['type' => 'text', 'maxlength' => 30],
+		'city'           => ['type' => 'text', 'maxlength' => 16],
+		'state'          => ['type' => 'text', 'maxlength' => 2],
+		'zip'            => ['type' => 'text', 'maxlength' => 10],
+		'country'        => ['type' => 'text', 'maxlength' => 4],
+		'international'  => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
+		'phone'          => ['type' => 'text', 'maxlength' => 10, 'formatmaskinput' => 'XXX-XXX-XXX'],
+		'extension'      => ['type' => 'text', 'maxlength' => 7],
+		'fax'            => ['type' => 'text', 'maxlength' => 10, 'formatmaskinput' => 'XXX-XXX-XXX'],
+		'phoneintl'      => ['type' => 'text', 'maxlength' => 22, 'formatmaskinput' => 'XXX-XXXX-XXXXXXXXXXXXXXX'],
+		'extensionintl'  => ['type' => 'text', 'maxlength' => 7],
+		'faxintl'        => ['type' => 'text', 'maxlength' => 22, 'formatmaskinput' => 'XXX-XXXX-XXXXXXXXXXXXXXX'],
 	];
 
 	protected static $instance;
@@ -57,7 +73,7 @@ class Pty3 extends AbstractManager {
 	 * @return ArCust3partyFreightQuery
 	 */
 	public function queryCustAccount($custID, $acctnbr) {
-		return $this->query()->filterByCustId($custID)->filterByAccountnbr($acctnbr);
+		return $this->query()->filterByCustid($custID)->filterByAccountnbr($acctnbr);
 	}
 
 /* =============================================================
@@ -100,10 +116,10 @@ class Pty3 extends AbstractManager {
 	 * @return array
 	 */
 	public function recordJson(Record $record) {
-		$json = [
-			'custid'      => $record->custid,
-			'accountnbr'  => $record->accountnbr,
-		];
+		$json = [];
+		foreach (array_keys(self::FIELD_ATTRIBUTES) as $field) {
+			$json[$field] = $record->$field;
+		}
 		return $json;
 	}
 
@@ -138,8 +154,8 @@ class Pty3 extends AbstractManager {
 		}
 
 		if (empty($acctnbr) === false && strtolower($acctnbr) != 'new') {
-			$acctnbr = $this->wire('sanitizer')->text($acctnbr, ['maxLength' => $this->fieldAttribute('id', 'maxlength')]);
-			$account->setId($acctnbr);
+			$acctnbr = $this->wire('sanitizer')->text($acctnbr, ['maxLength' => $this->fieldAttribute('accountnbr', 'maxlength')]);
+			$account->setAccountnbr($acctnbr);
 		}
 
 		// Set Default Values
@@ -163,10 +179,9 @@ class Pty3 extends AbstractManager {
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$id     = $values->text('id', ['maxLength' => $this->fieldAttribute('id', 'maxlength')]);
 		$invalidfields = [];
-		$custID = $values->text('custID');
-		$acctnbr = $values->text('accountnbr');
+		$custID = $values->text('custid');
+		$acctnbr = $values->text('accountnbr', ['maxLength' => $this->fieldAttribute('accountnbr', 'maxlength')]);
 
 		$record        = $this->getOrCreate($custID, $acctnbr);
 		$invalidfields = $this->_inputUpdate($input, $record);
@@ -186,24 +201,67 @@ class Pty3 extends AbstractManager {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		// $invalidfields = [
-		// 	'nameAddress' => $this->_inputUpdateNameAddress($input, $record),
-		// 	'warehouses'  => $this->_inputUpdateWarehouses($input, $record),
-		// 	'salesreps'   => $this->_inputUpdateSalespersons($input, $record),
-		// 	'taxes'       => $this->_inputUpdateTaxes($input, $record),
-		// 	'arcodes'     => $this->_inputUpdateArcodes($input, $record),
-		// 	'ordering'    => $this->_inputUpdateOrdering($input, $record),
-		// ];
+		$invalidfields = [
+			'nameAddress' => $this->_inputUpdateNameAddress($values, $record),
+			'phones'      => $this->_inputUpdatePhones($values, $record),
+		];
 
-		// $invalid = array_merge(
-		// 	$invalidfields['nameAddress'],
-		// 	$invalidfields['warehouses'],
-		// 	$invalidfields['salesreps'],
-		// 	$invalidfields['taxes'],
-		// 	$invalidfields['arcodes'],
-		// 	$invalidfields['ordering']
-		// );
-		// return $invalid;
+		$invalid = array_merge(
+			$invalidfields['nameAddress'], $invalidfields['phones']
+		);
+		return $invalid;
+	}
+
+	/**
+	 * Update Name, Address Fields
+	 * @param WireInputData        $values
+	 * @param ArCust3partyFreight  $account
+	 * @return array
+	 */
+	private function _inputUpdateNameAddress(WireInputData $values, Record $account) {
+		$account->setName($values->text('name', ['maxLength' => $this->fieldAttribute('name', 'maxlength')]));
+		$account->setAddress1($values->text('address1', ['maxLength' => $this->fieldAttribute('address1', 'maxlength')]));
+		$account->setAddress2($values->text('address2', ['maxLength' => $this->fieldAttribute('address2', 'maxlength')]));
+		$account->setAddress3($values->text('address3', ['maxLength' => $this->fieldAttribute('address3', 'maxlength')]));
+		$account->setCity($values->text('city', ['maxLength' => $this->fieldAttribute('city', 'maxlength')]));
+		$account->setZip($values->text('zip', ['maxLength' => $this->fieldAttribute('zip', 'maxlength')]));
+
+		$state = $values->text('state');
+		$account->setState('');
+		if (Codes\Misc\StateCodes::instance()->exists($state)) {
+			$account->setState($state);
+		}
+
+		$country = $values->text('country');
+		
+		$account->setCountry('');
+		if (Codes\Mar\Cocom::instance()->exists($country)) {
+			$account->setCountry($country);
+		}
+		return [];
+	}
+
+	/**
+	 * Update Name, Address Fields
+	 * @param WireInputData        $values
+	 * @param ArCust3partyFreight  $account
+	 * @return array
+	 */
+	private function _inputUpdatePhones(WireInputData $values, Record $account) {
+		$sanitizer = $this->sanitizer;
+		$account->setInternational($values->yn('international'));
+		$account->setPhone('');
+		$account->setFax('');
+		$account->setPhoneintl('');
+		$account->setFaxintl('');
+
+		if ($account->international === ArCust3partyFreight::INTERNATIONAL_TRUE) {
+			$account->setPhoneintl($sanitizer->text(implode('', $values->array('phoneintl', ['delimiter' => '-'])), ['maxLength' => $this->fieldAttribute('phoneintl', 'maxlength')]));
+			$account->setFaxintl($sanitizer->text(implode('', $values->array('faxintl', ['delimiter' => '-'])), ['maxLength' => $this->fieldAttribute('faxintl', 'maxlength')]));
+		}
+		$account->setPhone($sanitizer->text(implode('', $values->array('phone', ['delimiter' => '-'])), ['maxLength' => $this->fieldAttribute('phone', 'maxlength')]));
+		$account->setFax($sanitizer->text(implode('', $values->array('fax', ['delimiter' => '-'])), ['maxLength' => $this->fieldAttribute('fax', 'maxlength')]));
+		return [];
 	}
 
 
@@ -218,7 +276,7 @@ class Pty3 extends AbstractManager {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$custID = $values->text('custID');
+		$custID = $values->text('custid');
 		$acctnbr = $values->text('accountnbr');
 
 		if ($this->exists($custID, $acctnbr) === false) {
@@ -243,9 +301,8 @@ class Pty3 extends AbstractManager {
 	 * @return array
 	 */
 	protected function generateRequestData(Record $record) {
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
-		$table   = static::DPLUS_TABLE;
-		return ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$record->id"];
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
+		return ["DBNAME=$dplusdb", 'UPDATE3PARTY', "CUSTID=$record->custid", "ACCTNBR=$record->accountnbr"];
 	}
 
 /* =============================================================
@@ -257,7 +314,7 @@ class Pty3 extends AbstractManager {
 	 * @return string
 	 */
 	public function getRecordlockerKey(Record $record) {
-		return implode(FunctionLocker::glue(), [$record->id]);
+		return implode(FunctionLocker::glue(), [$record->custid, $record->accountnbr]);
 	}
 
 /* =============================================================

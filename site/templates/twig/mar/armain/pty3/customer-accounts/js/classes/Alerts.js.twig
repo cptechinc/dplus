@@ -1,0 +1,27 @@
+class AccountAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new AccountAlerts();
+		}
+		return this.instance;
+	}
+
+	accountExists(code, callback) {
+		swal2.fire({
+			title: 'Account Exists',
+			text: 'Edit Account ' + code + '?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+		}).then(function (result) {
+			if (result.value) {
+				callback(true);
+				return true;
+			}
+			callback(false);
+			return false;
+		});
+	}
+}

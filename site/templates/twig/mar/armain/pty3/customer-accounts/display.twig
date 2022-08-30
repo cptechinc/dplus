@@ -10,8 +10,8 @@
 					<i class="fa fa-print" aria-hidden="true"></i> Print
 				</button>
 			{% else %}
-				<a href="{{ page.menuUrl() }}" class="btn btn-primary">
-					<i class="fa fa-undo" aria-hidden="true"></i> Back <span class="d-none d-sm-inline">to {{ page.menuTitle() }}</span>
+				<a href="{{ page.pty3Url(input.get.text('custID')) }}" class="btn btn-primary">
+					<i class="fa fa-undo" aria-hidden="true"></i> Back <span class="d-none d-sm-inline">to PTY3</span>
 				</a>
 				&nbsp;
 				<a href="{{ page.get_printURL() }}" class="btn btn-primary">
@@ -63,45 +63,5 @@
 	</div>
 {% endblock %}
 
-<div class="table-responsive">
-	<table class="table table-sm">
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>Name</th>
-				<th>City</th>
-				<th>State</th>
-				<th>Zip</th>
-				<th>
-					{% include 'util/bootstrap/html/button.twig' with {
-						'button': {
-							'colorclass': 'btn-secondary',
-							'text': 'fa fa-search'|icon ~ ' Customers',
-							'attributes': {
-								'title': 'Search Customers',
-								'data-toggle': 'modal',
-								'data-target': '#ajax-modal',
-								'data-lookupurl': page.searchLookupUrl('customers/')
-							}
-						}
-					}
-				%}
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for customer in customers %}
-				<tr class="customer" data-custid="{{ customer.id }}">
-					<td>
-						<a href="{{ page.pty3CustUrl(customer.id) }}" class="link">{{ customer.id }}</a>
-					</td>
-					<td>{{ customer.name }}</td>
-					<td>{{ customer.city }}</td>
-					<td>{{ customer.state }}</td>
-					<td>{{ customer.zip }}</td>
-					<td></td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
+{% include 'mar/armain/pty3/customer-accounts/list.twig' %}
+{% include 'mar/armain/pty3/customer-accounts/edit-modal.twig' %}

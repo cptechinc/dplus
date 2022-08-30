@@ -1,0 +1,41 @@
+class Pty3Requests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new Pty3Requests();
+		}
+		return this.instance;
+	}
+
+	validateAccount(custid, accountnbr, callback) {
+		var ajax = new AjaxRequest(this.validateAccountUrl());
+
+		ajax.setData({custid: custid, accountnbr: accountnbr});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getAccount(custid, accountnbr, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/pty3/account/') }}');
+
+		ajax.setData({custid: custid, accountnbr: accountnbr});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCocomCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/cocom/code/') }}');
+
+		ajax.setData({code:code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateAccountUrl() {
+		return '{{ page.jsonApiUrl('mar/validate/pty3/account/') }}';
+	}
+}

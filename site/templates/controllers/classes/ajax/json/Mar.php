@@ -6,6 +6,7 @@ use ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Mar       as MarValidator;
 use Dplus\Codes;
+use Dplus\Mar\Armain;
 // Mvc Controllers
 use Controllers\Ajax\Json\AbstractJsonController;
 
@@ -206,6 +207,39 @@ class Mar extends AbstractJsonController {
 	public static function getMtmCode($data) {
 		$table = Codes\Mar\Mtm::getInstance();
 		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validatePty3Account($data) {
+		$fields = ['custid|text', 'accountnbr|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$table = Armain\Pty3::instance();
+		$desc = $table::DESCRIPTION_RECORD;
+		$exists = $table->exists($data->custid, $data->accountnbr);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "$desc $data->accountnbr already exists";
+		}
+
+		if ($exists === false) {
+			return "$desc $data->accountnbr not found";
+		}
+		return true;
+	}
+
+	public static function getPty3Account($data) {
+		$fields = ['custid|text', 'accountnbr|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$table = Armain\Pty3::instance();
+
+		if ($table->exists($data->custid, $data->accountnbr) === false) {
+			return false;
+		}
+		return $table->recordJson($table->customerAccount($data->custid, $data->accountnbr));
 	}
 
 	public static function validateSicCode($data) {

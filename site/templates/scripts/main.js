@@ -197,8 +197,13 @@ $(function() {
 	});
 
 	$('.phone-input').keyup(function() {
-		$(this).val(format_phone($(this).val()));
+		$(this).val(format_phone_us($(this).val()));
 		$(this).attr('minlength', '12');
+	});
+
+	$('.phone-input-intl').keyup(function() {
+		$(this).val(format_phone_intl($(this).val()));
+		$(this).attr('minlength', '24');
 	});
 
 	$('button.delete_button').click(function(e) {
@@ -438,7 +443,7 @@ function validate_email(email) {
 	return emailregex.test(email);
 }
 
-function format_phone(input) {
+function format_phone_us(input) {
 	// Strip all characters from the input except digits
 	input = input.replace(/\D/g,'');
 
@@ -455,6 +460,29 @@ function format_phone(input) {
 		input = input.substring(0,3)+'-'+input.substring(3,6);
 	} else {
 		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
+	}
+	console.log(input);
+	return input;
+}
+
+function format_phone_intl(input) {
+	// Strip all characters from the input except digits
+	input = input.replace(/\D/g,'');
+
+	// Trim the remaining input to ten characters, to preserve phone number format
+	input = input.substring(0,22);
+
+	// Based upon the length of the string, we add formatting as necessary
+	var size = input.length;
+
+	if (size == 0){
+		input = input;
+	} else if(size < 4){
+		input = input;
+	} else if(size < 7){
+		input = input.substring(0,3)+'-'+input.substring(3,6);
+	} else {
+		input = input.substring(0,3)+'-'+input.substring(3,7)+'-'+input.substring(7,22);
 	}
 	return input;
 }

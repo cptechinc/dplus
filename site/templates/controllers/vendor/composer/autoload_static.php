@@ -29,6 +29,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Lookup\\Lookup' => __DIR__ . '/../..' . '/classes/ajax/Lookup/Lookup.php',
         'Controllers\\Ajax\\Lookup\\Mar' => __DIR__ . '/../..' . '/classes/ajax/Lookup/Mar.php',
         'Controllers\\Ajax\\Lookup\\Min' => __DIR__ . '/../..' . '/classes/ajax/Lookup/Min.php',
+        'Controllers\\Ajax\\Lookup\\Misc' => __DIR__ . '/../..' . '/classes/ajax/Lookup/Misc.php',
         'Controllers\\Ajax\\Lookup\\Mth' => __DIR__ . '/../..' . '/classes/ajax/Lookup/Mth.php',
         'Controllers\\Arproc\\Base' => __DIR__ . '/../..' . '/classes/mar/arproc/Base.php',
         'Controllers\\Arproc\\Ecr' => __DIR__ . '/../..' . '/classes/mar/arproc/Ecr.php',

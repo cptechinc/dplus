@@ -28,6 +28,7 @@ return array(
     'Controllers\\Ajax\\Lookup\\Lookup' => $baseDir . '/classes/ajax/Lookup/Lookup.php',
     'Controllers\\Ajax\\Lookup\\Mar' => $baseDir . '/classes/ajax/Lookup/Mar.php',
     'Controllers\\Ajax\\Lookup\\Min' => $baseDir . '/classes/ajax/Lookup/Min.php',
+    'Controllers\\Ajax\\Lookup\\Misc' => $baseDir . '/classes/ajax/Lookup/Misc.php',
     'Controllers\\Ajax\\Lookup\\Mth' => $baseDir . '/classes/ajax/Lookup/Mth.php',
     'Controllers\\Arproc\\Base' => $baseDir . '/classes/mar/arproc/Base.php',
     'Controllers\\Arproc\\Ecr' => $baseDir . '/classes/mar/arproc/Ecr.php',

@@ -8,8 +8,10 @@
 			['GET', 'time/', Json\Misc::class, 'time'],
 			['GET', 'date/', Json\Misc::class, 'date'],
 			['GET', 'date-time/', Json\Misc::class, 'dateTime'],
+			['GET', 'state-codes/code/', Json\Misc::class, 'getStateCode'],
 			'validate' => [
 				['GET', 'printer/', Json\Misc::class, 'validatePrinter'],
+				['GET', 'state-codes/code/', Json\Misc::class, 'validateStateCode'],
 			]
 		],
 		'inv' => [
@@ -145,6 +147,7 @@
 				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
 				['GET', 'cuc/code/', Json\Mar::class, 'validateCucCode'],
 				['GET', 'mtm/code/', Json\Mar::class, 'validateMtmCode'],
+				['GET', 'pty3/account/', Json\Mar::class, 'validatePty3Account'],
 				['GET', 'sic/code/', Json\Mar::class, 'validateSicCode'],
 				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
 				['GET', 'suc/code/', Json\Mar::class, 'validateSucCode'],
@@ -161,6 +164,7 @@
 			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],
 			['GET', 'cuc/code/', Json\Mar::class, 'getCucCode'],
 			['GET', 'mtm/code/', Json\Mar::class, 'getMtmCode'],
+			['GET', 'pty3/account/', Json\Mar::class, 'getPty3Account'],
 			['GET', 'sic/code/', Json\Mar::class, 'getSicCode'],
 			['GET', 'spgpm/code/', Json\Mar::class, 'getSpgpmCode'],
 			['GET', 'suc/code/', Json\Mar::class, 'getSucCode'],

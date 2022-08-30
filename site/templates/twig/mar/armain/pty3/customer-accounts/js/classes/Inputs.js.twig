@@ -1,0 +1,33 @@
+class AccountInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new AccountInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id    = 'account-form',
+		this.form  = $('#' + this.id),
+		this.custid         = this.form.find('input[name=custid]');
+		this.accountnbr     = this.form.find('input[name=accountnbr]');
+		this.name           = this.form.find('input[name=name]');
+		this.address1       = this.form.find('input[name=address1]');
+		this.address2       = this.form.find('input[name=address2]');
+		this.address3       = this.form.find('input[name=address3]');
+		this.country        = this.form.find('input[name=country]');
+		this.city           = this.form.find('input[name=city]');
+		this.state          = this.form.find('input[name=state]');
+		this.zip            = this.form.find('input[name=zip]');
+		this.international  = this.form.find('select[name=international]');
+		this.phone          = this.form.find('input[name=phone]');
+		this.extension      = this.form.find('input[name=extension]');
+		this.fax            = this.form.find('input[name=fax]');
+
+		this.phoneintl      = this.form.find('input[name=phoneintl]');
+		this.extensionintl  = this.form.find('input[name=extensionintl]');
+		this.faxintl        = this.form.find('input[name=faxintl]');
+	}
+}

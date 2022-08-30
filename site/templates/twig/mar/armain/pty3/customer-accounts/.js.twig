@@ -1,0 +1,262 @@
+{% include 'mar/armain/pty3/customer-accounts/js/classes.js.twig' %}
+
+$(function() {
+	var ajaxModal = $('#ajax-modal');
+	var server   = Pty3Requests.getInstance();
+	var alert    = AccountAlerts.getInstance();
+	var formAccount = AccountForm.getInstance();
+
+	var uri = URI();
+	var queryData = uri.query(true);
+
+	if (queryData.hasOwnProperty('focus') && queryData.focus != 'new') {
+		$('.account[data-accountnbr="' + queryData.focus + '"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.account[data-accountnbr="' + queryData.focus + '"]').offset().top,},700,'linear');
+	}
+
+/* =============================================================
+	Event Functions
+	hide, unsaved changes events is handled by scripts/account-tables/modal-events.js
+============================================================= */
+	$('#edit-account-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var accountnbr = button.data('accountnbr');
+		modal.find('.modal-title').text('Add Account');
+
+		if (accountnbr) {
+			modal.find('.modal-title').text('Edit Account ' + accountnbr);
+		}
+		formAccount.updateInputsFromJson(button.data('json'));
+	});
+
+	$('#edit-account-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var account   = button.data('account');
+
+		if (account) {
+			formAccount.inputs.name.focus();
+		} else {
+			formAccount.inputs.accountnbr.focus();
+		}
+		formAccount.form.attr('data-serialized', formAccount.form.serialize());
+	});
+
+	$('#edit-account-modal').on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var accountnbr = modal.find('input[name=accountnbr]').val().toString();
+
+		$('#code-table-alert').hide();
+		$('.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.account[data-accountnbr="'+accountnbr+'"]').addClass('highlight');
+	});
+
+	$("body").on("change", "input[name=accountnbr]", function(e) {
+		var input = $(this);
+		var accountnbr = input.val();
+		var custid = formAccount.inputs.custid.val();
+
+		server.validateAccount(custid, accountnbr, function(exists) {
+			if (exists === true) {
+				alert.accountExists(account, function(editAccount) {
+					if (editAccount) {
+						var modal = input.closest('.modal');
+
+						if (editAccount) {
+							server.getAccount(custid, accountnbr, function(response) {
+								if (response) {
+									modal.find('.modal-title').text('Edit Account ' + account);
+									formAccount.updateInputsFromJson(response);
+								}
+							});
+						} else {
+							modal.modal('hide');
+						}
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("focusin", "#account-form input:not(input[name=accountnbr])", function(e) {
+		if (formAccount.inputs.accountnbr.val() == '') {
+			formAccount.inputs.accountnbr.focus();
+		}
+	});
+
+	$("body").on("change", "input[name=country]", function(e) {
+		var input = $(this);
+		var code = input.val();
+
+		server.getCocomCode(code, function(country) {
+			if (country) {
+				input.closest('.form-group').find('.description').text(country.description);
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=state]", function(e) {
+		var input = $(this);
+		var code = input.val();
+
+		server.getStateCode(code, function(state) {
+			if (state) {
+				input.closest('.form-group').find('.description').text(state.name);
+			}
+		});
+	});
+
+	$("body").on("change", "select[name=international]", function(e) {
+		var input = $(this);
+		$('.phones-group').removeClass('show');
+
+		if (input.val() === 'Y') { // Yes it is international
+			$('.phones-intl').addClass('show');
+		}
+
+		if (input.val() === 'N') {
+			$('.phones-us').addClass('show');
+			
+		}
+	});
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	ajaxModal.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(button.data('lookupurl'), function() {});
+	});
+
+	$("body").on('click', '.code-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('code'));
+		if (input.data('jqv')) {
+			input.change();
+		}
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(button.attr('href'));
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = formAccount.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			accountnbr: {
+				required: true,
+				maxlength: formAccount.config.fields.accountnbr.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/pty3/account/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						custid: function() {
+							return formAccount.inputs.custid.val();
+						},
+						new: function() {
+							return formAccount.inputs.form.attr('data-accountnbr') == $('#accountnbr').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			name: {
+				maxlength: formAccount.config.fields.name.maxlength,
+			},
+			country: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/cocom/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formAccount.inputs.country.val();
+						},
+					}
+				}
+			},
+			state: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonApiUrl('misc/validate/state-codes/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formAccount.inputs.state.val();
+						},
+					}
+				}
+			},
+		},
+		submitHandler: function(form) {
+			var formAccount = AccountForm.getInstance();
+			var server   = Pty3Requests.getInstance();
+			var accountnbr = formAccount.inputs.accountnbr.val();
+			var custid      = formAccount.inputs.custid.val();
+
+			if (formAccount.inputs.form.attr('data-accountnbr') == accountnbr) {
+				form.submit();
+			} else {
+				server.validateAccount(custid, accountnbr, function(exists) {
+					var alert = AccountAlerts.getInstance();
+					if (exists === false) {
+						form.submit();
+						return true;
+					}
+
+					alert.accountExists(accountnbr, function(editAccount) {
+						var modal = formAccount.form.closest('.modal');
+
+						if (editAccount) {
+							server.getAccount(custid, accountnbr, function(response) {
+								if (response) {
+									modal.find('.modal-title').text('Edit Account ' + account);
+									formAccount.updateInputsFromJson(response);
+								} else {
+									modal.modal('hide');
+								}
+							});
+						} else {
+							modal.modal('hide');
+						}
+					});
+				});
+			}
+		}
+	});
+})
