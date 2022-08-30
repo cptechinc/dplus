@@ -3,7 +3,7 @@
 use ProcessWire\WireData;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base as AbstractCodeTable;
+use Dplus\Codes\AbstractCodeTable;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
