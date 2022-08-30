@@ -10,7 +10,7 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
-abstract class Base extends WireData {
+abstract class Base extends AbstractCodeTable {
 	const MODEL              = '';
 	const MODEL_KEY          = '';
 	const MODEL_TABLE        = '';
