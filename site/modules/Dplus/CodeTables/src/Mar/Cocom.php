@@ -36,6 +36,8 @@ class Cocom extends Base {
 		'country_date'     => ['type' => 'text', 'dateformat' => 'Ymd', 'displayformat' => 'm/d/Y'],
 	];
 
+	protected static $instance;
+
 	public function codeJson(Code $code) {
 		$json = parent::codeJson($code);
 		foreach (array_keys(self::FIELD_ATTRIBUTES) as $field) {
