@@ -49,7 +49,7 @@ class Bum extends Base {
 		$page   = self::pw('page');
 		$filter = new Filters\Map\ApBuyer();
 
-		$page->headline = "AP Buyer Code";
+		$page->headline = "Vendor Buyer Code";
 
 		if (empty($data->q) === false) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
