@@ -25,13 +25,13 @@
 					<div class="d-flex justify-content-between flex-wrap">
 						{% if input.get.text('q') != '' %}
 							<div class="order-2 order-sm-1 flex-grow-1 mt-1">
-								<a href="{{ input.url() }}" class="btn btn-warning">
+								<a href="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" class="btn btn-warning">
 									<i class="fa fa-times" aria-hidden="true"></i> Clear Search
 								</a>
 							</div>
 						{% endif %}
 
-						<form action="{{ input.url() }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 order-1 order-sm-2">
+						<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 order-1 order-sm-2">
 							<div class="input-group">
 								<div class="input-group-btn search-panel">
 									<div class="dropdown">
