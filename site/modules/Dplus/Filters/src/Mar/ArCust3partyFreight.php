@@ -19,17 +19,28 @@ class ArCust3partyFreight extends AbstractFilter {
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
 	public function _search($q, $cols = []) {
-		$columns = [
-			Model::aliasproperty('custid'),
-			Model::aliasproperty('accountnbr'),
-			Model::aliasproperty('name'),
-			Model::aliasproperty('address1'),
-			Model::aliasproperty('address2'),
-			Model::aliasproperty('city'),
-			Model::aliasproperty('state'),
-			Model::aliasproperty('zip'),
-		];
-		$this->query->searchFilter($columns, strtoupper($q));
+		$columns = [];
+		if (empty($cols)) {
+			$columns = [
+				Model::aliasproperty('custid'),
+				Model::aliasproperty('accountnbr'),
+				Model::aliasproperty('name'),
+				Model::aliasproperty('address1'),
+				Model::aliasproperty('address2'),
+				Model::aliasproperty('city'),
+				Model::aliasproperty('state'),
+				Model::aliasproperty('zip'),
+			];
+	
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
+		foreach ($cols as $col) {
+			if (Model::aliasproperty_exists($col)) {
+				$columns[] = Model::aliasproperty($col);
+			}
+			$this->query->searchFilter($columns, strtoupper($q));
+		}
 	}
 
 /* =============================================================
