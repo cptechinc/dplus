@@ -5,7 +5,8 @@ $('#edit-code-modal').on('show.bs.modal', function (event) {
 	modal.find('.modal-title').text('Add Code');
 
 	if (code) {
-		modal.find('.modal-title').text('Edit Code ' + code);
+		// modal.find('.modal-title').text('Edit Code ' + code);
+		modal.find('.modal-title').text('Edit Code');
 	}
 	formCode.updateInputsFromJson(button.data('json'));
 });
