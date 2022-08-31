@@ -7,7 +7,7 @@ $(function() {
 
 /* =============================================================
 	Event Functions
-	:hide, unsaved changes events is handled by scripts/code-tables/modal-events.js
+	hide, unsaved changes events is handled by scripts/code-tables/modal-events.js
 ============================================================= */
 	{% include 'code-tables/js/events/show-shown.js.twig' %}
 	{% include 'code-tables/js/events/input-code-change.js.twig' %}
@@ -84,7 +84,7 @@ $(function() {
 							if (editCode) {
 								server.getCode(code, function(response) {
 									if (response) {
-										modal.find('.modal-title').text('Edit Code ' + code);
+										modal.find('.modal-title').text('Edit Code');
 										formCode.updateInputsFromJson(response);
 									}
 								});

@@ -154,7 +154,7 @@ $(function() {
 						if (editCode) {
 							server.getCode(code, function(response) {
 								if (response) {
-									modal.find('.modal-title').text('Edit Code ' + code);
+									modal.find('.modal-title').text('Edit Code');
 									formCode.updateInputsFromJson(response);
 								} else {
 									modal.modal('hide');
