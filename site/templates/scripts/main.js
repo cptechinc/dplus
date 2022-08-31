@@ -210,6 +210,11 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var action = $('.modal-form').attr("action");
+		var modal = link.closest('.modal');
+
+		if (modal.length) {
+			modal.removeAttr('tabindex');
+		}
 
 		swal2.fire({
 			title: "Confirm Deletion",
@@ -220,6 +225,9 @@ $(function() {
 			cancelButtonText: 'No',
 			focusCancel: true,
 		}).then((confirm) => {
+			if (modal.length) {
+				modal.attr('tabindex', '-1');
+			}
 			if (confirm.value) {
 				button.closest('form').submit();
 			}
@@ -400,6 +408,11 @@ function init_datepicker() {
 $('a.delete_button').click(function(e){
 	e.preventDefault();
 	var link = $(this);
+	var modal = link.closest('.modal');
+
+	if (modal.length) {
+		modal.removeAttr('tabindex');
+	}
 
 	swal2.fire({
 		title: "Confirm Deletion",
@@ -409,8 +422,13 @@ $('a.delete_button').click(function(e){
 		confirmButtonClass: 'btn btn-success',
 		cancelButtonClass: 'btn btn-danger',
 		buttonsStyling: false,
-		confirmButtonText: 'Yes'
+		confirmButtonText: 'Yes',
+		focusCancel: true,
 	}).then((result) => {
+		if (modal.length) {
+			modal.attr('tabindex', '-1');
+		}
+		
 		if (result.value) {
 			window.location.href = link.attr('href');
 		}
@@ -564,4 +582,5 @@ const swal2 = Swal.mixin({
 	confirmButtonText: 'Yes',
 	focusConfirm: false,
 	focusCancel: true,
+	allowEnterKey: true
 })
