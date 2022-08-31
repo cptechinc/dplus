@@ -1,0 +1,5 @@
+$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
+	if (formCode.inputs.code.val() == '') {
+		formCode.inputs.code.focus();
+	}
+});
