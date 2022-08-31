@@ -103,7 +103,7 @@ class DpagesMwm extends Dpages implements Module {
 		'warehouse-menu' => array(
 			'template'       => 'warehouse-menu',
 			'name'           => 'warehouse',
-			'title'          => 'Warehouse',
+			'title'          => 'Warehouse Management',
 			'summary'        => 'Warehouse Management Menu',
 			'parent'         => '/',
 			'dplus_function' => 'wm'
