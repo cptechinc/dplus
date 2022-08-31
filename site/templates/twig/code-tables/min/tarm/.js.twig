@@ -10,43 +10,13 @@ $(function() {
 	TODO:hide, unsaved changes events is handled by scripts/code-tables/modal-events.js
 ============================================================= */
 	{% include 'code-tables/js/events/show-shown.js.twig' %}
-
-	$("body").on("change", "input[name=code]", function(e) {
-		var input = $(this);
-		var code = input.val();
-
-		server.validateCode(code, function(exists) {
-			if (exists === true) {
-				alert.codeExists(code, function(editCode) {
-					if (editCode) {
-						var modal = input.closest('.modal');
-
-						if (editCode) {
-							server.getCode(code, function(response) {
-								if (response) {
-									modal.find('.modal-title').text('Edit Code ' + code);
-									formCode.updateInputsFromJson(response);
-								}
-							});
-						} else {
-							modal.modal('hide');
-						}
-					}
-				});
-			}
-		});
-
-	});
+	{% include 'code-tables/js/events/input-code-change.js.twig' %}
+	{% include 'code-tables/js/events/input-code-force-focus.js.twig' %}
+	
 	$("body").on("change", "input[name=percent]", function(e) {
 		var input = $(this);
 		var percent = floatParse(input.val());
 		input.val(percent.toFixed(formCode.config.fields.percent.precision));
-	});
-
-	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
-		if (formCode.inputs.code.val() == '') {
-			formCode.inputs.code.focus();
-		}
 	});
 
 /* =============================================================
