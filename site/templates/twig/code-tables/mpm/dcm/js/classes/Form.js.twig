@@ -16,6 +16,8 @@ class DcmForm {
 	}
 
 	updateInputsFromJson(json = null) {
+		this.updateDeleteLink(json);
+
 		if (json) {
 			this.inputs.form.attr('data-code', json.code);
 			this.inputs.code.val(json.code);
@@ -29,5 +31,27 @@ class DcmForm {
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');
 		this.inputs.description.val('');
+	}
+
+	updateDeleteLink(json = null) {
+		var button = this.form.find('a.delete_button');
+		if (button.length == 0) {
+			return false;
+		}
+		var uri = URI(button.attr('href'));
+		var data = uri.query(true);
+
+		if (json) {
+			data.code = json.code;
+			uri.query(data);
+			button.attr('href', uri.toString());
+			button.addClass('show');
+			return true;
+		}
+		data.code = '';
+		uri.query(data);
+		button.attr('href', uri.toString());
+		button.removeClass('show');
+		return true;
 	}
 }
