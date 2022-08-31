@@ -60,6 +60,7 @@ class Rcm extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/mpm/rcm/.js.twig', ['rcm' => self::getRcm()]);
 		$html = self::displayList($data, $codes);
 		self::getRcm()->deleteResponse();

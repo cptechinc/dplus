@@ -71,6 +71,7 @@ class Csccm extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/min/csccm/.js.twig', ['csccm' => self::getCsccm()]);
 		$html = self::displayList($data, $codes);
 		self::getCsccm()->deleteResponse();

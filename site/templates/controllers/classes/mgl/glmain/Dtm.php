@@ -42,7 +42,6 @@ class Dtm extends Base {
 			$dtm->processInput(self::pw('input'));
 			$url  = self::dtmUrl($data->code);
 		}
-
 		self::pw('session')->redirect($url, $http301 = false);
 	}
 
@@ -64,6 +63,7 @@ class Dtm extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/mgl/dtm/.js.twig', ['dtm' => self::getDtm()]);
 		$html = self::displayList($data, $codes);
 		self::getDtm()->deleteResponse();

@@ -60,6 +60,7 @@ class Lgrp extends Base {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/msa/lgrp/.js.twig', ['lgrp' => self::getLgrp()]);
 		$html = self::displayList($data, $codes);
 		self::getLgrp()->deleteResponse();
