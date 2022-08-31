@@ -178,7 +178,7 @@ $(function() {
 		form.find('select[name=sys_defined]').val(button.data('sys_defined'));
 
 		if (code.length) {
-			modal.find('.modal-title').text('Editing Code ' + code);
+			modal.find('.modal-title').text('Editing Code');
 			modal.find('input[name=code]').prop("readonly", true);
 			modal.find('input[name=description]').focus();
 		} else {
