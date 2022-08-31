@@ -75,6 +75,7 @@ class Pty3 extends Base {
 		$filter->sort($input->get);
 		$customers = $filter->query->paginate($input->pageNum, self::SHOWONPAGE);
 
+
 		self::initHooks();
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/mar/armain/pty3/customer-list.js'));
 		$html = self::displayCustomersList($data, $customers);
@@ -91,6 +92,9 @@ class Pty3 extends Base {
 		$filter = new Filters\Mar\ArCust3partyFreight();
 		$filter->custid($data->custID);
 		$filter->sort($input->get);
+		if (empty($data->q) === false) {
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
+		}
 		$accounts = $filter->query->paginate($input->pageNum, self::SHOWONPAGE);
 
 		self::initHooks();
