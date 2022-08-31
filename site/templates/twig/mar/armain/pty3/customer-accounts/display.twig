@@ -1,3 +1,5 @@
+{% set values = input.get %}
+
 {% block header %}
 	<div class="row">
 		<div class="col-sm-6 mb-3">
@@ -25,13 +27,13 @@
 					<div class="d-flex justify-content-between flex-wrap">
 						{% if input.get.text('q') != '' %}
 							<div class="order-2 order-sm-1 flex-grow-1 mt-1">
-								<a href="{{ input.url() }}" class="btn btn-warning">
+								<a href="{{ page.pty3CustUrl(input.get.text('custID')) }}" class="btn btn-warning">
 									<i class="fa fa-times" aria-hidden="true"></i> Clear Search
 								</a>
 							</div>
 						{% endif %}
 
-						<form action="{{ input.url() }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 order-1 order-sm-2">
+						<form action="{{ page.pty3CustUrl(input.get.text('custID')) }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 order-1 order-sm-2">
 							<div class="input-group">
 								<div class="input-group-btn search-panel">
 									<div class="dropdown">
@@ -40,8 +42,10 @@
 										</button>
 										<div class="dropdown-menu column-options">
 											<a class="dropdown-item" href="#" value="">All</a>
-											<a class="dropdown-item" href="#" value="custid">Custid</a>
+											<a class="dropdown-item" href="#" value="accountnbr">Account #</a>
 											<a class="dropdown-item" href="#" value="name">Name</a>
+											<a class="dropdown-item" href="#" value="city">City</a>
+											<a class="dropdown-item" href="#" value="zip">Zip</a>
 										</div>
 									</div>
 								</div>
