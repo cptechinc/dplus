@@ -1,17 +1,17 @@
-class IarnInputs {
+class CodeInputs {
 	static instance = null;
 
 	static getInstance() {
 		if (this.instance === null) {
-			this.instance = new IarnInputs();
+			this.instance = new CodeInputs();
 		}
 		return this.instance;
 	}
 
 	constructor() {
-		this.id            = 'iarn-form',
+		this.id            = 'code-form',
 		this.form          = $('#' + this.id),
-		this.code          = this.form.find('input[name=id]');
+		this.code          = this.form.find('input[name=code]');
 		this.description   = this.form.find('input[name=description]');
 	}
 }

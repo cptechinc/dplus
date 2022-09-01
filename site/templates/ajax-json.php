@@ -16,6 +16,7 @@
 		],
 		'inv' => [
 			['GET', 'csccm/code/', Json\Min::class, 'getCsccmCode'],
+			['GET', 'iarn/code/', Json\Min::class, 'getIarnCode'],
 			['GET', 'iasm/code/', Json\Min::class, 'getIasmCode'],
 			['GET', 'igcm/code/', Json\Min::class, 'getIgcmCode'],
 			['GET', 'igm/code/', Json\Min::class, 'getIgmCode'],
@@ -33,6 +34,7 @@
 			['GET', 'umm/code/', Json\Min::class, 'getUmmCode'],
 			'validate' => [
 				['GET', 'csccm/code/', Json\Min::class, 'validateCsccmCode'],
+				['GET', 'iarn/code/', Json\Min::class, 'validateIarnCode'],
 				['GET', 'iasm/code/', Json\Min::class, 'validateIasmCode'],
 				['GET', 'igcm/code/', Json\Min::class, 'validateIgcmCode'],
 				['GET', 'igm/code/', Json\Min::class, 'validateIgmCode'],
@@ -68,9 +70,6 @@
 				],
 				'i2i' => [
 					['GET', 'xref/', Json\Min::class, 'validateI2iExists'],
-				],
-				'iarn' => [
-					['GET', 'code/', Json\Min::class, 'validateIarnExists'],
 				],
 				'itm' => [
 					['GET', 'warehouse/', Json\Min::class, 'validateItmWhse'],

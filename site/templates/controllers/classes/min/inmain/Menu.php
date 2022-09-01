@@ -2,7 +2,7 @@
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+use ProcessWire\Page;
 // Mvc Controllers
 use Controllers\Min\Base;
 
@@ -27,6 +27,12 @@ class Menu extends Base {
 			'permission' => 'i2i',
 			'title'      => 'Item To Item',
 			'summary'    => 'View / Edit Item To Item X-Ref'
+		],
+		'iarn' => [
+			'name'       => 'iarn',
+			'permission' => Iarn::DPLUSPERMISSION,
+			'title'      => Iarn::TITLE,
+			'summary'    => Iarn::SUMMARY
 		],
 		'iasm' => [
 			'name'       => 'iasm',
@@ -164,6 +170,10 @@ class Menu extends Base {
 
 	public static function i2iUrl() {
 		return self::subfunctionUrl('i2i');
+	}
+
+	public static function iarnUrl() {
+		return self::subfunctionUrl('iarn');
 	}
 
 	public static function iasmUrl() {
