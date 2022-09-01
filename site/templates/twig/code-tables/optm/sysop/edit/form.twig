@@ -23,9 +23,11 @@
 		<button type="submit" class="btn btn-success" name="action" value="update">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
-		<button type="submit" class="btn btn-danger delete_button" name="action" value="delete">
-			<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-		</button>
+		<div>
+			<a href="{{ page.codeDeleteUrl(input.get.text('sysop'), '') }}" class="btn btn-danger delete_button collapse">
+				<i class="fa fa-trash" aria-hidden="true"></i> Delete
+			</a>
+		</div>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</button>

@@ -19,12 +19,28 @@ class SysopOptionalCode extends AbstractFilter {
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
 	public function _search($q, $cols = []) {
-		$model = $this->modelName();
-		$columns = [
-			$model::aliasproperty('code'),
-			$model::aliasproperty('description'),
-		];
+		$cols = array_filter($cols);
+		$columns = [];
+
+		if (empty($cols)) {
+			$columns = [
+				Model::aliasproperty('code'),
+				Model::aliasproperty('description'),
+			];
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
+
+		foreach ($cols as $col) {
+			if (Model::aliasproperty_exists($col)) {
+				$columns[] = Model::aliasproperty($col);
+			}
+		}
+		if (empty($columns)) {
+			return true;
+		}
 		$this->query->searchFilter($columns, strtoupper($q));
+		return true;
 	}
 
 /* =============================================================

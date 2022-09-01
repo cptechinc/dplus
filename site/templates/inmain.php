@@ -105,6 +105,6 @@
 
 	if ($router->hasError() === false) {
 		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
-		$page->show_breadcrumbs = false;
+		// $page->show_breadcrumbs = false;
 	}
 	include __DIR__ . "/basic-page.php";

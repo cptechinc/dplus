@@ -36,11 +36,15 @@ class Roptm extends Controller {
 	}
 
 	private static function sysop($data) {
+		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
 		$page->headline = "ROPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
+		if (empty($data->q) === false) {
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
+		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getRoptm()->recordlocker->deleteLock();
@@ -52,16 +56,15 @@ class Roptm extends Controller {
 	}
 
 	private static function listSysops($data) {
-		self::sanitizeParametersShort($data, ['q|text']);
+		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page = self::pw('page');
 		$page->headline = "AR Optional Codes";
 		self::getSysop()->recordlocker->deleteLock();
 
 		$filter = self::getFilterSysop();
 
-		if ($data->q) {
-			$page->headline = "ROPTM: Searching Sysop '$data->q'";
-			$filter->search(strtoupper($data->q));
+		if (empty($data->q) === false) {
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
