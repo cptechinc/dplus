@@ -9,10 +9,10 @@
 <div class="bg-light p-2 mb-3">
 	<div class="row">
 		<div class="col-sm-2">
-			<strong> {{ page.pw_template == 'itm-xrefs-cxm' ? 'Item ID' : 'Customer ID' }}</strong>
+			<strong> {{ page.pw_template == 'itm' ? 'Item ID' : 'Customer ID' }}</strong>
 		</div>
 		<div class="col-sm-8">
-			{% if page.pw_template == 'itm-xrefs-cxm' %}
+			{% if page.pw_template == 'itm' %}
 				{{ item.itemid }} - {{ item.item.description }}
 			{% else %}
 				{{ item.custID }} - {{ item.customer.name }}

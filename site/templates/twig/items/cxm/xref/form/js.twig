@@ -204,7 +204,7 @@ $(function() {
 				}
 			},
 			itemID: {
-				{% if page.pw_template == 'cxm' %}
+				{% if page.pw_template == 'somain' %}
 					required: true,
 					remote: {
 						url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
