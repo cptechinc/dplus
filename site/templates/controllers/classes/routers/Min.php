@@ -14,6 +14,7 @@ class Min extends Base {
 		'igpm'   => ['', Inmain\Menu::class, 'igpmUrl'],
 		'iplm'   => ['', Inmain\Menu::class, 'iplmUrl'],
 		'itmp'   => ['', Inmain\Menu::class, 'itmpUrl'],
+		'iwhm'   => ['', Inmain\Menu::class, 'iwhmUrl'],
 		'msdsm'  => ['', Inmain\Menu::class, 'msdsmUrl'],
 		'spit'   => ['', Inmain\Menu::class, 'spitUrl'],
 		'stcm'   => ['', Inmain\Menu::class, 'stcmUrl'],
