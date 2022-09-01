@@ -8,6 +8,9 @@
 				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
 			</th>
 			<th scope="col">
+				<a href="{{ page.get_sortURL('address') }}" class="link">Address</a>
+			</th>
+			<th scope="col">
 				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
 			</th>
 			<th scope="col">
@@ -28,6 +31,7 @@
 						</a>
 					</td>
 					<td>{{ vendor.name }}</td>
+					<td>{{ vendor.address }}</td>
 					<td>{{ vendor.city }}</td>
 					<td>{{ vendor.state }}</td>
 					<td>{{ vendor.zip }}</td>
@@ -35,7 +39,7 @@
 			{% endfor %}
 		{% else %}
 			<tr>
-				<td colspan="5" class="bg-secondary text-white text-center">
+				<td colspan="6" class="bg-secondary text-white text-center">
 					No Results found
 				</td>
 			</tr>
