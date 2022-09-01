@@ -15,13 +15,13 @@
 
 {% block list_header_row %}
 	<div class="row align-items-center">
-		<div class="col-sm-3">
+		<div class="col-sm-2">
 			Code
 		</div>
 		<div class="col-sm-3">
 			Description
 		</div>
-		<div class="col-sm-2">
+		<div class="col-sm-4">
 			Email
 		</div>
 		<div class="col-sm-3 text-center">
@@ -37,13 +37,13 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-3">
+			<div class="col-sm-2">
 				{{ code.code }}
 			</div>
 			<div class="col-sm-3">
 				{{ code.description }}
 			</div>
-			<div class="col-sm-2">
+			<div class="col-sm-4">
 				<a href="mailto:{{ code.email }}" class="link">{{ code.email }}</a>
 			</div>
 			<div class="col-sm-3 text-center">
