@@ -240,6 +240,7 @@ class Menu extends Base {
 				$functions[$key] = $function;
 			}
 		}
+		self::pw('page')->show_breadcrumbs = true;
 		self::initHooks();
 		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
