@@ -208,6 +208,7 @@ class XrefVxm extends WireData implements Module {
 	public function vendorids() {
 		$q = $this->query();
 		$q->select(ItemXrefVendor::get_aliasproperty('vendorid'));
+		$q->distinct();
 		return $q->find()->toArray();
 	}
 
