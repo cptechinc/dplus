@@ -36,21 +36,25 @@ class Ioptm extends Base {
 		if (empty($data->sysop) === false) {
 			return self::sysop($data);
 		}
-		self::pw('page')->show_breadcrumbs = false;
 		return self::listSysops($data);
 	}
 
 	private static function sysop($data) {
+		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
 		$page->headline = "IOPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
+		if (empty($data->q) === false) {
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
+		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getIoptm()->recordlocker->deleteLock();
 
 		self::initHooks();
+		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getIoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getIoptm()->deleteResponse();
@@ -58,20 +62,19 @@ class Ioptm extends Base {
 	}
 
 	private static function listSysops($data) {
-		self::sanitizeParametersShort($data, ['q|text']);
+		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page = self::pw('page');
 		self::getSysop()->recordlocker->deleteLock();
 
 		$filter = self::getFilterSysop();
-
-		if ($data->q) {
-			$page->headline = "IOPTM: Searching Sysop '$data->q'";
-			$filter->search(strtoupper($data->q));
+		if (empty($data->q) === false) {
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
 		self::initHooks();
+		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
 		self::getIoptm()->deleteResponse();
