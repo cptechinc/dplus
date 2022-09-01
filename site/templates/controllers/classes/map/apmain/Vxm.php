@@ -87,6 +87,7 @@ class Vxm extends Controller {
 
 		$page->js .= self::pw('config')->twig->render('items/vxm/xref/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
 		$html = self::displayXref($data, $xref);
+		$vxm->deleteResponse();
 		return $html;
 	}
 
@@ -107,6 +108,7 @@ class Vxm extends Controller {
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$page->js .= self::pw('config')->twig->render('items/vxm/search/vendor/js.twig');
 		$html = self::displayListVendors($data, $vendors);
+		$vxm->deleteResponse();
 		return $html;
 	}
 
@@ -129,6 +131,7 @@ class Vxm extends Controller {
 		$page->show_breadcrumbs = false;
 		$page->js .= self::pw('config')->twig->render('items/vxm/list/xref/js.twig');
 		$html = self::displayVendorXrefs($data, $xrefs);
+		$vxm->deleteResponse();
 		return $html;
 	}
 

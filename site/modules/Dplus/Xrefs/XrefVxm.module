@@ -720,6 +720,31 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
+	 * Set Response
+	 * @param XrefResponse $response
+	 */
+	public function setResponse(XrefResponse $response) {
+		$this->wire('session')->setFor('response', 'vxm', $response);
+	}
+
+	/**
+	 * Return Response
+	 * @return XrefResponse
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'vxm');
+	}
+
+	/**
+	 * Delete Session Response
+	 * @return void
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', 'vxm');
+	}
+
+
+	/**
 	 * Return if ITM costing can be updated
 	 * @param  string $vendorID     Vendor ID
 	 * @param  string $vendoritemID Vendor Item ID
