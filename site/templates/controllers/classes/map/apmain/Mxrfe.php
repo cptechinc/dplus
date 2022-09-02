@@ -171,9 +171,14 @@ class Mxrfe extends Base {
 
 		$html .= $config->twig->render('items/mxrfe/bread-crumbs.twig');
 
-		if ($session->getFor('response','mxrfe')) {
-			$html .= $config->twig->render('items/cxm/response.twig', ['response' => $session->getFor('response','mxrfe')]);
+		$response = $session->getFor('response','mxrfe');
+		if (empty($response)) {
+			return $html;
 		}
+		if ($response->has_success()) {
+			return $html;
+		}
+		$html .= $config->twig->render('items/cxm/response.twig', ['response' => $response]);
 		return $html;
 	}
 

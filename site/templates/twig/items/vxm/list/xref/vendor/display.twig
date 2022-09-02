@@ -1,11 +1,12 @@
 {% include 'items/vxm/bread-crumbs.twig' %}
 
-{% if session.getFor('response', 'vxm') %}
-	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'vxm')} %}
+{% set response = session.getFor('response', 'vxm') %}
+
+{% if response and response.has_error() %}
+	{% include 'items/itm/response-alert.twig' with {'response': response} %}
 {% endif %}
 
 <div class="card">
-
 	<div class="card-body">
 		{% include 'items/vxm/search/xref/vendor/form.twig' %}
 	</div>

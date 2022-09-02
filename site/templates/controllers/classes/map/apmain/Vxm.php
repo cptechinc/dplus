@@ -160,8 +160,9 @@ class Vxm extends Controller {
 		$config = self::pw('config');
 		$qnotes = self::pw('modules')->get('QnotesItemVxm');
 		$html = "<hr>";
-		if (self::pw('session')->response_qnote) {
-			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => self::pw('session')->response_qnote]);
+		$responseQnote = self::pw('session')->response_qnote;
+		if (empty($responseQnote) === false && $responseQnote->has_success() === false) {
+			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $responseQnote]);
 		}
 		$page->searchURL = self::pw('pages')->get('pw_template=msa-noce-ajax')->url;
 		$html .= $config->twig->render('items/vxm/notes/notes.twig', ['qnotes' => $qnotes, 'item' => $xref]);
