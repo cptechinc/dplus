@@ -1,7 +1,20 @@
-{% include 'dplus-menu/menu-search-form.twig' %}
+{% include 'dplus-menu/bread-crumbs-main-menu.twig' %}
+
+<div class="row">
+	<div class="col-sm-9 mb-3"></div>
+	<div class="col-sm-3 mb-3">
+		{% include 'dplus-menu/menu-search-form.twig' with {'page': pages.get('/') } %}
+	</div>
+</div>
 
 {% if items.count > 0 %}
 	{% include 'dplus-menu/menu-list.twig' %}
 {% else %}
-	{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-warning fa-2x', 'title': 'No Functions or Menus match your search', 'message': 'Please try again'} %}
+	<div class="mb-3">
+		{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-warning fa-2x', 'title': 'No Functions or Menus match "' ~ input.get.text('q') ~ '"', 'message': 'Please try again'} %}
+	</div>
+
+	<a href="{{ pages.get('/').url }}" class="btn btn-primary">
+		<i class="fa fa-home" aria-hidden="true"></i> Home
+	</a>
 {% endif %}

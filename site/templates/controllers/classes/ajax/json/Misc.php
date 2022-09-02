@@ -3,10 +3,10 @@
 use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
+use Dplus\Codes;
 
-class Misc extends Controller {
+
+class Misc extends AbstractJsonController {
 	public static function time($data) {
 		$fields = ['format|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -54,4 +54,16 @@ class Misc extends Controller {
 		}
 		return $validator->printer($data->id);
 	}
+
+
+	public static function validateStateCode($data) {
+		$table = Codes\Misc\StateCodes::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getStateCode($data) {
+		$table = Codes\Misc\StateCodes::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
 }

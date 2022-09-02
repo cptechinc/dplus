@@ -18,7 +18,7 @@ class I2i extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = [
 			Model::aliasproperty('parentitemid'),
 			Model::aliasproperty('childitemid'),

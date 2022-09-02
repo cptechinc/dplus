@@ -1,0 +1,119 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
+
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="form-group">
+				<label for="code">Iso3</label>
+					{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'code',
+							'attributes': {
+								'maxlength': manager.fieldAttribute('code', 'maxlength'),
+								'oninput': 'this.value = this.value.toUpperCase()'
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<div class="form-group">
+				<label for="iso2">Iso2</label>
+					{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'iso2',
+							'attributes': {
+								'maxlength': manager.fieldAttribute('iso2', 'maxlength'),
+								'oninput': 'this.value = this.value.toUpperCase()'
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<div class="form-group">
+				<label for="numeric">Numeric</label>
+					{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'numeric',
+							'type': 'number',
+							'attributes': {
+								'max': manager.fieldAttribute('numeric', 'max')
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<div class="form-group">
+				<label for="custom_code">Custom</label>
+					{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'custom_code',
+							'attributes': {
+								'maxlength': manager.fieldAttribute('custom_code', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="code">Description</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'description',
+					'attributes': {
+						'maxlength': manager.fieldAttribute('description', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+
+	<div class="col-sm-4 px-0">
+		<div class="form-group">
+			<label for="exchange_rate">Exchange Rate %</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'exchange_rate',
+						'addclasses': ['text-right'],
+						'attributes': {
+							'max': manager.fieldAttribute('exchange_rate', 'max'),
+							'min': manager.fieldAttribute('exchange_rate', 'min'),
+						}
+					}
+				}
+			%}
+			<small class="text-muted customer-name">Last Updated: <span class="country_date fw-bold text-dark"></span></small>
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<div>
+			
+		</div>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

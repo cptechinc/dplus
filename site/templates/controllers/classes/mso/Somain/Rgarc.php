@@ -64,6 +64,7 @@ class Rgarc extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/mso/rgarc/.js.twig', ['rgarc' => self::getRgarc()]);
 		$html = self::displayList($data, $codes);
 		self::getRgarc()->deleteResponse();

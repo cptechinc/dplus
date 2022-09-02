@@ -15,7 +15,7 @@ class ThermalLabelFormat extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = [
 			Model::get_aliasproperty('id'),
 			Model::get_aliasproperty('description'),

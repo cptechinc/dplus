@@ -1,30 +1,31 @@
-{# iarn is an instance of InventoryAdjustmentReason #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
-	<input type="hidden" name="table" value="iarn">
-	<input type="hidden" name="serialized" value="" disabled>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
 
-	<div class="form-group">
-		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" maxlength="{{ max_length_code }}" value="" id="code">
-	</div>
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
 
-	<div class="form-group">
-		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="30" value="" id="description">
-	</div>
-
-	<div class="form-group">
-		<label for="sys_defined">System Defined ?</label>
-		<select name="sys_defined" class="form-control" id="sys_defined" disabled>
-			<option value="N" {{ code.sys_defined == 'N' ? 'selected' : '' }}>No</option>
-			<option value="Y" {{ code.sys_defined == 'Y' ? 'selected' : '' }}>Yes</option>
-		</select>
+	<div class="mb-4">
+		{% include 'code-tables/min/iarn/form/key.twig' %}
+		<div class="form-group">
+			<label for="sysdefined">System Defined</label>
+			<p class="form-control-plaintext form-control-sm sysdefined">No</p>
+		</div>
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">
 		<button type="submit" class="btn btn-success form_button">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
+		<div>
+			<a href="{{ page.codeDeleteUrl('') }}" class="btn btn-danger delete_button collapse">
+				<i class="fa fa-trash" aria-hidden="true"></i> Delete
+			</a>
+		</div>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</button>

@@ -1,0 +1,23 @@
+<label for="percent">Percent</label>
+{% include 'util/bootstrap/form/input-group.twig' with {
+		'inputgroup': {
+			'type': 'append',
+			'size': 'sm',
+				'input': {
+				'name': 'percent',
+				'type': 'number',
+				'value': '',
+				'addclasses': [
+					'text-right',
+				],
+				'attributes': {
+					'max': manager.fieldAttribute('percent', 'max')
+				}
+			},
+			'span': {
+				'colorclass': 'bg-light',
+				'text': '%'
+			}
+		}
+	}
+%}

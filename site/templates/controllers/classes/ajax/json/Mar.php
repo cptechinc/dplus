@@ -2,14 +2,15 @@
 // Dplus Models
 use CustomerQuery, CustomerShiptoQuery;
 // ProcessWire Mlasses, Modules
-use ProcessWire\Module, ProcessWire\ProcessWire;
+use ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Mar       as MarValidator;
-use Dplus\CodeValidators\Mar\Cxm   as CxmValidator;
+use Dplus\Codes;
+use Dplus\Mar\Armain;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
+use Controllers\Ajax\Json\AbstractJsonController;
 
-class Mar extends Controller {
+class Mar extends AbstractJsonController {
 	public static function test() {
 		return 'test';
 	}
@@ -136,5 +137,158 @@ class Mar extends Controller {
 				'zip'      => $shipto->zip,
 			]
 		];
+	}
+
+	public static function validateCcmCode($data) {
+		$table = Codes\Mar\Ccm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getCcmCode($data) {
+		$table = Codes\Mar\Ccm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateCpmCode($data) {
+		$table = Codes\Mar\Cpm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getCpmCode($data) {
+		$table = Codes\Mar\Cpm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateCocomCode($data) {
+		$table = Codes\Mar\Cocom::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getCocomCode($data) {
+		$table = Codes\Mar\Cocom::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+	
+	public static function validateCrcdCode($data) {
+		$table = Codes\Mar\Crcd::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getCrcdCode($data) {
+		$table = Codes\Mar\Crcd::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+	
+	public static function validateCrtmCode($data) {
+		$table = Codes\Mar\Crtm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getCrtmCode($data) {
+		$table = Codes\Mar\Crtm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateCucCode($data) {
+		$table = Codes\Mar\Suc::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getCucCode($data) {
+		$table = Codes\Mar\Cuc::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateMtmCode($data) {
+		$table = Codes\Mar\Mtm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getMtmCode($data) {
+		$table = Codes\Mar\Mtm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validatePty3Account($data) {
+		$fields = ['custid|text', 'accountnbr|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$table = Armain\Pty3::instance();
+		$desc = $table::DESCRIPTION_RECORD;
+		$exists = $table->exists($data->custid, $data->accountnbr);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "$desc $data->accountnbr already exists";
+		}
+
+		if ($exists === false) {
+			return "$desc $data->accountnbr not found";
+		}
+		return true;
+	}
+
+	public static function getPty3Account($data) {
+		$fields = ['custid|text', 'accountnbr|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$table = Armain\Pty3::instance();
+
+		if ($table->exists($data->custid, $data->accountnbr) === false) {
+			return false;
+		}
+		return $table->recordJson($table->customerAccount($data->custid, $data->accountnbr));
+	}
+
+	public static function validateSicCode($data) {
+		$table = Codes\Mar\Sic::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getSicCode($data) {
+		$table = Codes\Mar\Sic::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateSpgpmCode($data) {
+		$table = Codes\Mar\Spgpm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getSpgpmCode($data) {
+		$table = Codes\Mar\Spgpm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateSucCode($data) {
+		$table = Codes\Mar\Suc::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getSucCode($data) {
+		$table = Codes\Mar\Suc::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateTmCode($data) {
+		$table = Codes\Mar\Tm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getTmCode($data) {
+		$table = Codes\Mar\Tm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateWormCode($data) {
+		$table = Codes\Mar\Worm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getWormCode($data) {
+		$table = Codes\Mar\Worm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 }

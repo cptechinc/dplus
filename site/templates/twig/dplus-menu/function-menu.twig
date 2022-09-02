@@ -3,44 +3,50 @@
 {% set lastsegment = segments[segments|length] %}
 
 
+<div class="d-flex justify-content-between mb-3">
+	<div>
+		{% if page.parent().template == 'dplus-menu' or page.parent().template == 'warehouse-menu' %}
+			<a href="{{ page.parent().url }}" class="btn btn-primary">
+				<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+				Back <span class="d-none d-sm-inline">to {{ page.parent().title }}</span>
+			</a>
+		{% endif %}
 
-{% include 'dplus-menu/menu-search-form.twig' with {'page': pages.get('/')} %}
+		{% if segments|length %}
+			{% set title = page.dplus_function ? page.dplus_function|upper : page.title %}
+			{% set title = page.wire('hooks').isHooked('Page::menuTitle()') ? page.menuTitle() : title %}
 
-<div class="mb-3">
-	{% if page.parent().template == 'dplus-menu' or page.parent().template == 'warehouse-menu' %}
-		<a href="{{ page.parent().url }}" class="btn btn-primary">
-			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
-			Back to {{ page.parent().title }}
-		</a>
-	{% endif %}
-
-	{% if segments|length %}
-		{% set title = page.dplus_function ? page.dplus_function|upper : page.title %}
-		{% set title = page.wire('hooks').isHooked('Page::menuTitle()') ? page.menuTitle() : title %}
-
-		<a href="{{ page.url }}" class="btn btn-primary">
-			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
-			Back to {{ title }}
-		</a>
-	{% endif %}
+			<a href="{{ page.url }}" class="btn btn-primary">
+				<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+				Back <span class="d-none d-sm-inline">to {{ title }}</span>
+			</a>
+		{% endif %}
+	</div>
+	<div>
+		{% include 'dplus-menu/menu-search-form.twig' with {'page': pages.get('/')} %}
+	</div>
 </div>
 
 <div class="list-group dplus-menu">
 	{% for key, function  in functions %}
 		<a href="{{ page.subfunctionUrl(key) }}" class="list-group-item list-group-item-action">
 			<div class="row align-items-center">
-				<div class="col-4">
+				<div class="col-1">
 					<i class="fa fa-microchip" aria-hidden="true"></i>
-					&nbsp; &nbsp;
-					<strong>
-						{{ function.title }} {% if function.permission %} ({{ function.permission }}) {% endif %}
-					</strong>
-					<br>
 				</div>
-				<div class="col-8">
-					<small>
-						{{ function.summary }}
-					</small>
+				<div class="col-11">
+					<div class="row">
+						<div class="col-sm-6">
+							<strong>
+								{{ function.title }} {% if function.permission %} ({{ function.permission }}) {% endif %}
+							</strong>
+						</div>
+						<div class="col-sm-6">
+							<small>
+								{{ function.summary }}
+							</small>
+						</div>
+					</div>
 				</div>
 			</div>
 		</a>

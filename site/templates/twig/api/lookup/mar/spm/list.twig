@@ -1,0 +1,20 @@
+<table class="table table-striped" id="code-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>ID</th>
+			<th>Name</th>
+			<th>Login ID</th>
+		</tr>
+	</thead>
+	{% for rep in results %}
+		<tr>
+			<td>
+				<a href="#" class="link code-link" data-code="{{ rep.id }}">
+					{{ rep.id }}
+				</a>
+			</td>
+			<td>{{ rep.name }}</td>
+			<td>{{ rep.userid }}</td>
+		</tr>
+	{% endfor %}
+</table>

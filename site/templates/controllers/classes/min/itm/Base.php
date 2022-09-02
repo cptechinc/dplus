@@ -9,6 +9,7 @@ use Dplus\Filters;
 use Dplus\CodeValidators\Min as MinValidator;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
+use Dplus\Min\Itmp;
 
 
 abstract class Base extends Controller {
@@ -33,7 +34,7 @@ abstract class Base extends Controller {
 
 	protected static function validateUserPermission() {
 		$user = self::pw('user');
-		$itmp = self::pw('modules')->get('Itmp');
+		$itmp = self::getItmp();
 
 		if ($user->has_function('itm') === false) {
 			return false;
@@ -178,10 +179,7 @@ abstract class Base extends Controller {
 	 * @return Itmp
 	 */
 	public static function getItmp() {
-		if (empty(self::$itmp)) {
-			self::$itmp = self::pw('modules')->get('Itmp');
-		}
-		return self::$itmp;
+		return Itmp::instance();
 	}
 
 	/**

@@ -2,68 +2,17 @@
 
 $(function() {
 	var server   = SrcRequests.getInstance();
-	var alert    = SrcAlerts.getInstance();
-	var formCode = SrcForm.getInstance();
+	var alert    = CodeAlerts.getInstance();
+	var formCode = CodeForm.getInstance();
 
 /* =============================================================
 	Event Functions
+	hide, unsaved changes events is handled by scripts/code-tables/modal-events.js
 ============================================================= */
-	$('#edit-code-modal').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal  = $(this);
-		var code   = button.data('code');
-		modal.find('.modal-title').text('Add Code');
-
-		if (code) {
-			modal.find('.modal-title').text('Edit Code ' + code);
-		}
-		formCode.updateInputsFromJson(button.data('json'));
-	});
-
-	$('#edit-code-modal').on('shown.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal  = $(this);
-		var code   = button.data('code');
-
-		if (code) {
-			formCode.inputs.description.focus();
-		} else {
-			formCode.inputs.code.focus();
-		}
-	});
-
-	$("body").on("change", "input[name=code]", function(e) {
-		var input = $(this);
-		var code = input.val();
-
-		server.validateCode(code, function(exists) {
-			if (exists === true) {
-				alert.codeExists(code, function(editCode) {
-					if (editCode) {
-						var modal = input.closest('.modal');
-
-						if (editCode) {
-							server.getCode(code, function(response) {
-								if (response) {
-									modal.find('.modal-title').text('Edit Code ' + code);
-									formCode.updateInputsFromJson(response);
-								}
-							});
-						} else {
-							modal.modal('hide');
-						}
-					}
-				});
-			}
-		});
-	});
-
-	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
-		if (formCode.inputs.code.val() == '') {
-			formCode.inputs.code.focus();
-		}
-	});
-
+	{% include 'code-tables/js/events/show-shown.js.twig' %}
+	{% include 'code-tables/js/events/input-code-change.js.twig' %}
+	{% include 'code-tables/js/events/input-code-force-focus.js.twig' %}
+	
 /* =============================================================
 	Validation Functions
 ============================================================= */
@@ -113,7 +62,7 @@ $(function() {
 						if (editCode) {
 							server.getCode(code, function(response) {
 								if (response) {
-									modal.find('.modal-title').text('Edit Code ' + code);
+									modal.find('.modal-title').text('Edit Code');
 									formCode.updateInputsFromJson(response);
 								} else {
 									modal.modal('hide');

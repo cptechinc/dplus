@@ -28,14 +28,6 @@ class DpagesMar extends Dpages implements Module {
 			'name'   => 'ar-code-table-trm',
 			'fields' => array()
 		),
-		'ar-code-table-crcd' => array(
-			'name'   => 'ar-code-table-crcd',
-			'fields' => array()
-		),
-		'ar-code-table-crcd-validate' => array(
-			'name'   => 'ar-code-table-crcd-validate',
-			'fields' => array()
-		),
 		'spm' => array(
 			'name'   => 'spm',
 			'fields' => array()
@@ -59,51 +51,6 @@ class DpagesMar extends Dpages implements Module {
 			'summary'        => 'Accounts Receivable Maintenance',
 			'parent'         => '/mar/',
 			'dplus_function' => 'armain'
-		),
-		'ar-ccm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ar-code-table',
-			'name'           => 'ccm',
-			'title'          => 'Customer Commission Code',
-			'summary'        => 'View / Edit Customer Commission Code',
-			'parent'         => '/mar/armain/',
-			'dplus_function' => 'ccm'
-		),
-		'ar-crtm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ar-code-table',
-			'name'           => 'crtm',
-			'title'          => 'Customer Route Code',
-			'summary'        => 'View / Edit Customer Route Code',
-			'parent'         => '/mar/armain/',
-			'dplus_function' => 'crtm'
-		),
-		'ar-spgpm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ar-code-table',
-			'name'           => 'spgpm',
-			'title'          => 'Salesperson Group Code',
-			'summary'        => 'View / Edit Salesperson Group Code',
-			'parent'         => '/mar/armain/',
-			'dplus_function' => 'spgpm'
-		),
-		'ar-worm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ar-code-table',
-			'name'           => 'worm',
-			'title'          => 'Customer Write-Off Code',
-			'summary'        => 'View / Edit Customer Write-Off Code',
-			'parent'         => '/mar/armain/',
-			'dplus_function' => 'worm'
-		),
-		'ar-cpm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ar-code-table',
-			'name'           => 'cpm',
-			'title'          => 'Customer Price Code',
-			'summary'        => 'View / Edit Customer Price Code',
-			'parent'         => '/mar/armain/',
-			'dplus_function' => 'cpm'
 		),
 		'ar-ctm' => array(
 			'template'       => 'dplus-function',
@@ -132,15 +79,6 @@ class DpagesMar extends Dpages implements Module {
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'sic'
 		),
-		'ar-cuc' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ar-code-table',
-			'name'           => 'cuc',
-			'title'          => 'Customer User Code',
-			'summary'        => 'View / Edit Customer User Code',
-			'parent'         => '/mar/armain/',
-			'dplus_function' => 'cuc'
-		),
 		'ar-cmm' => array(
 			'template'       => 'dplus-function',
 			'pw_template'    => 'ar-code-table',
@@ -158,24 +96,6 @@ class DpagesMar extends Dpages implements Module {
 			'summary'        => 'View / Edit Customer Terms Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'trm'
-		),
-		'ar-crcd' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'ar-code-table',
-			'name'           => 'crcd',
-			'title'          => 'Customer Credit Card Code',
-			'summary'        => 'View / Edit Customer Credit Card',
-			'parent'         => '/mar/armain/',
-			'dplus_function' => 'crcd'
-		),
-		'ar-crcd-validate' => array(
-			'template'       => 'dplus-json',
-			'pw_template'    => 'ar-code-table-crcd-validate',
-			'name'           => 'validate',
-			'title'          => 'Validate CRCD',
-			'summary'        => 'JSON validation for CRCD',
-			'parent'         => '/mar/armain/crcd/',
-			'dplus_function' => ''
 		),
 		'spm' => array(
 			'template'       => 'dplus-function',

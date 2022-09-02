@@ -23,7 +23,7 @@ class Soptm extends Base {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
-		$page->headline = 'Sales Order Optional Code';
+		$page->headline = 'SO Optional Codes';
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -36,11 +36,15 @@ class Soptm extends Base {
 	}
 
 	private static function sysop($data) {
+		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
 		$page->headline = "SOPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
+		if (empty($data->q) === false) {
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
+		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getSoptm()->recordlocker->deleteLock();
@@ -52,15 +56,14 @@ class Soptm extends Base {
 	}
 
 	private static function listSysops($data) {
-		self::sanitizeParametersShort($data, ['q|text']);
+		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page = self::pw('page');
 		self::getSysop()->recordlocker->deleteLock();
 
 		$filter = self::getFilterSysop();
 
-		if ($data->q) {
-			$page->headline = "SOPTM: Searching Sysop '$data->q'";
-			$filter->search(strtoupper($data->q));
+		if (empty($data->q) === false) {
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);

@@ -26,13 +26,29 @@ class MsaSysopCode extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
-		$model = $this->modelName();
-		$columns = [
-			$model::aliasproperty('code'),
-			$model::aliasproperty('description'),
-		];
+	public function _search($q, $cols = []) {
+		$cols = array_filter($cols);
+		$columns = [];
+
+		if (empty($cols)) {
+			$columns = [
+				Model::aliasproperty('code'),
+				Model::aliasproperty('description'),
+			];
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
+
+		foreach ($cols as $col) {
+			if (Model::aliasproperty_exists($col)) {
+				$columns[] = Model::aliasproperty($col);
+			}
+		}
+		if (empty($columns)) {
+			return true;
+		}
 		$this->query->searchFilter($columns, strtoupper($q));
+		return true;
 	}
 
 /* =============================================================

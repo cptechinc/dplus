@@ -15,7 +15,7 @@ class Vendor extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = [
 			Model::aliasproperty('vendorid'),
 			Model::aliasproperty('name'),
@@ -71,10 +71,36 @@ class Vendor extends AbstractFilter {
 	 * @return int
 	 */
 	public function positionById($vendorID) {
-		if ($this->exists($vendorID) === false) {
-			return 0;
+		return $this->positionQuick($vendorID);
+	}
+
+	/**
+	 * Return Position of Cust ID in result set
+	 * @param  string $vendorID  Vendor ID
+	 * @return int
+	 */
+	public function positionQuick($vendorID) {
+		$q = $this->getQueryClass()->executeQuery('SET @rownum = 0');
+		$table = $this->getPositionSubSql();
+
+		$sql = "SELECT x.position FROM ($table) x WHERE apvevendid = :vendid";
+		$stmt = $this->getPreparedStatementWrapper($sql);
+		$stmt->bindValue(':vendid', $vendorID, \PDO::PARAM_STR);
+		$stmt->execute();
+		return $stmt->fetchColumn();
+	}
+
+	/**
+	 * Return Sub Query for getting result set with vendid and position
+	 * @return string
+	 */
+	private function getPositionSubSql() {
+		$table = $this->query->getTableMap()::TABLE_NAME;
+		$sql = "SELECT apvevendid, @rownum := @rownum + 1 AS position FROM $table";
+		$whereClause = $this->getWhereClauseString();
+		if (empty($whereClause) === false) {
+			$sql .= ' WHERE ' . $whereClause;
 		}
-		$v = $this->getVendor($vendorID);
-		return $this->position($v);
+		return $sql;
 	}
 }

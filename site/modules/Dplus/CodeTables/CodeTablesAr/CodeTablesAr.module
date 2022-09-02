@@ -12,26 +12,6 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 class CodeTablesAr extends WireData implements Module {
 
 	const CODE_TABLES = array(
-		'ccm' => array(
-			'code'        		 => 'ccm',
-			'module'   			 => 'CodeTablesCcm'
-		),
-		'crtm' => array(
-			'code'        		 => 'crtm',
-			'module'   			 => 'CodeTablesCrtm'
-		),
-		'spgpm' => array(
-			'code'        		 => 'spgpm',
-			'module'   			 => 'CodeTablesSpgpm'
-		),
-		'worm' => array(
-			'code'        		 => 'worm',
-			'module'   			 => 'CodeTablesWorm'
-		),
-		'cpm' => array(
-			'code'        		 => 'cpm',
-			'module'   			 => 'CodeTablesCpm'
-		),
 		'ctm' => array(
 			'code'        		 => 'ctm',
 			'module'   			 => 'CodeTablesCtm'
@@ -86,13 +66,9 @@ class CodeTablesAr extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'CodeTablesCcm',
-				'CodeTablesCpm',
 				'CodeTablesCrtm',
 				'CodeTablesCtm',
 				'CodeTablesCtmNotes',
-				'CodeTablesSpgpm',
-				'CodeTablesWorm',
 			)
 		);
 	}

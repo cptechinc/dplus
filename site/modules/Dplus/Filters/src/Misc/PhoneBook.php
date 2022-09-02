@@ -15,7 +15,7 @@ class PhoneBook extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = [
 			Model::get_aliasproperty('key1'),
 			Model::get_aliasproperty('key2'),

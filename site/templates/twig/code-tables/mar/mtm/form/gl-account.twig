@@ -1,0 +1,29 @@
+<label for="gl_account">GL Account</label>
+{% include 'util/bootstrap/form/input-group.twig' with {
+		'inputgroup': {
+			'type': 'prepend',
+			'size': 'sm',
+			'input': {
+				'name': 'gl_account',
+				'addclasses': ['gl-account'],
+				'attributes': {
+					'placeholder': '',
+					'aria-label':  'General Ledger Account',
+					'data-jqv': 'true'
+				}
+			},
+			'button': {
+				'colorclass': 'btn-secondary',
+				'text': 'fa fa-search'|icon,
+				'attributes': {
+					'title': 'Search General Ledger Accounts',
+					'data-toggle': 'modal',
+					'data-target': '#ajax-modal',
+					'data-lookupurl': page.searchLookupUrl('mgl/mhm/'),
+					'data-input': '#gl_account'
+				}
+			}
+		}
+	}
+%}
+<small class="text-muted gl-acct-name"></small>

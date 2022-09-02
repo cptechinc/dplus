@@ -8,12 +8,15 @@
 			['GET', 'time/', Json\Misc::class, 'time'],
 			['GET', 'date/', Json\Misc::class, 'date'],
 			['GET', 'date-time/', Json\Misc::class, 'dateTime'],
+			['GET', 'state-codes/code/', Json\Misc::class, 'getStateCode'],
 			'validate' => [
 				['GET', 'printer/', Json\Misc::class, 'validatePrinter'],
+				['GET', 'state-codes/code/', Json\Misc::class, 'validateStateCode'],
 			]
 		],
 		'inv' => [
 			['GET', 'csccm/code/', Json\Min::class, 'getCsccmCode'],
+			['GET', 'iarn/code/', Json\Min::class, 'getIarnCode'],
 			['GET', 'iasm/code/', Json\Min::class, 'getIasmCode'],
 			['GET', 'igcm/code/', Json\Min::class, 'getIgcmCode'],
 			['GET', 'igm/code/', Json\Min::class, 'getIgmCode'],
@@ -31,6 +34,7 @@
 			['GET', 'umm/code/', Json\Min::class, 'getUmmCode'],
 			'validate' => [
 				['GET', 'csccm/code/', Json\Min::class, 'validateCsccmCode'],
+				['GET', 'iarn/code/', Json\Min::class, 'validateIarnCode'],
 				['GET', 'iasm/code/', Json\Min::class, 'validateIasmCode'],
 				['GET', 'igcm/code/', Json\Min::class, 'validateIgcmCode'],
 				['GET', 'igm/code/', Json\Min::class, 'validateIgmCode'],
@@ -66,9 +70,6 @@
 				],
 				'i2i' => [
 					['GET', 'xref/', Json\Min::class, 'validateI2iExists'],
-				],
-				'iarn' => [
-					['GET', 'code/', Json\Min::class, 'validateIarnExists'],
 				],
 				'itm' => [
 					['GET', 'warehouse/', Json\Min::class, 'validateItmWhse'],
@@ -138,10 +139,36 @@
 		],
 		'mar' => [
 			'validate' => [
+				['GET', 'ccm/code/', Json\Mar::class, 'validateCcmCode'],
+				['GET', 'cpm/code/', Json\Mar::class, 'validateCpmCode'],
+				['GET', 'cocom/code/', Json\Mar::class, 'validateCocomCode'],
+				['GET', 'crcd/code/', Json\Mar::class, 'validateCrcdCode'],
+				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
+				['GET', 'cuc/code/', Json\Mar::class, 'validateCucCode'],
+				['GET', 'mtm/code/', Json\Mar::class, 'validateMtmCode'],
+				['GET', 'pty3/account/', Json\Mar::class, 'validatePty3Account'],
+				['GET', 'sic/code/', Json\Mar::class, 'validateSicCode'],
+				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
+				['GET', 'suc/code/', Json\Mar::class, 'validateSucCode'],
+				['GET', 'tm/code/', Json\Mar::class, 'validateTmCode'],
+				['GET', 'worm/code/', Json\Mar::class, 'validateWormCode'],
 				['GET', 'salespersonid/', Json\Mar::class, 'validateSalesPersonId'],
 				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 			],
+			['GET', 'ccm/code/', Json\Mar::class, 'getCcmCode'],
+			['GET', 'cocom/code/', Json\Mar::class, 'getCocomCode'],
+			['GET', 'cpm/code/', Json\Mar::class, 'getCpmCode'],
+			['GET', 'crcd/code/', Json\Mar::class, 'getCrcdCode'],
+			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],
+			['GET', 'cuc/code/', Json\Mar::class, 'getCucCode'],
+			['GET', 'mtm/code/', Json\Mar::class, 'getMtmCode'],
+			['GET', 'pty3/account/', Json\Mar::class, 'getPty3Account'],
+			['GET', 'sic/code/', Json\Mar::class, 'getSicCode'],
+			['GET', 'spgpm/code/', Json\Mar::class, 'getSpgpmCode'],
+			['GET', 'suc/code/', Json\Mar::class, 'getSucCode'],
+			['GET', 'tm/code/', Json\Mar::class, 'getTmCode'],
+			['GET', 'worm/code/', Json\Mar::class, 'getWormCode'],
 			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
 			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
 		],
@@ -158,10 +185,12 @@
 		'mgl' => [
 			'validate' => [
 				['GET', 'gl-code/', Json\Mgl::class, 'validateGlCode'],
+				['GET', 'mhm/code/', Json\Mgl::class, 'validateGlCode'],
 				['GET', 'ttm/code/', Json\Mgl::class, 'validateStmtCode'],
 				['GET', 'dtm/code/', Json\Mgl::class, 'validateDistCode'],
 			],
 			['GET', 'gl-code/', Json\Mgl::class, 'getGlCode'],
+			['GET', 'mhm/code/', Json\Mgl::class, 'getGlCode'],
 			['GET', 'ttm/code/', Json\Mgl::class, 'getStmtCode'],
 			['GET', 'dtm/code/', Json\Mgl::class, 'getDistCode'],
 		],

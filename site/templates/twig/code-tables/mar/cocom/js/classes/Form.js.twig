@@ -1,0 +1,81 @@
+class CodeForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CodeInputs.getInstance();
+		this.config = CodeConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		this.updateDeleteLink(json);
+
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+			this.inputs.iso2.val(json.iso2);
+			this.inputs.iso2.attr('readonly', 'true');
+			this.inputs.numeric.val(json.numeric);
+			this.inputs.numeric.attr('readonly', 'true');
+			this.inputs.custom_code.val(json.custom_code);
+			this.inputs.exchange_rate.val(json.exchange_rate);
+
+			if (parseInt(json.country_date) != 0) {
+				this.inputs.country_date.text(moment(json.country_date).format('MM/DD/YYYY'));
+			}
+			this.triggerInputChanges();
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+		this.inputs.iso2.val('');
+		this.inputs.iso2.removeAttr('readonly');
+		this.inputs.numeric.val('');
+		this.inputs.numeric.removeAttr('readonly');
+		this.inputs.exchange_rate.val(this.config.fields.exchange_rate.min);
+		this.inputs.country_date.text('');
+	}
+
+	triggerInputChanges() {
+		this.inputs.numeric.change();
+		this.inputs.custom_code.change();
+		this.inputs.exchange_rate.change();
+	}
+
+	updateDeleteLink(json = null) {
+		var button = this.form.find('a.delete_button');
+		if (button.length == 0) {
+			return false;
+		}
+		var uri = URI(button.attr('href'));
+		var data = uri.query(true);
+
+		if (json) {
+			data.code = json.code;
+			uri.query(data);
+			button.attr('href', uri.toString());
+			button.addClass('show');
+			return true;
+		}
+		data.code = '';
+		uri.query(data);
+		button.attr('href', uri.toString());
+		button.removeClass('show');
+		return true;
+	}
+}

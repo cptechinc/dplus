@@ -1,0 +1,41 @@
+
+<div class="phones-group phones-us collapse">
+	<div class="row">
+		<div class="col-sm-6 form-group">
+			<label for="phone">Phone Number</label>
+			<input type="text" name="phone" class="form-control form-control-sm phone-input" id="phone">
+		</div>
+		<div class="col-sm-6 form-group">
+			<label for="extension">Extension</label>
+			<input type="text" name="extension" class="form-control form-control-sm" id="extension" maxlength="{{ manager.fieldAttribute('extension', 'maxlength') }}">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6 form-group">
+			<label for="fax">Fax Number</label>
+			<input type="text" name="fax" class="form-control form-control-sm phone-input" id="fax">
+		</div>
+	</div>
+</div>
+
+
+<div class="phones-group phones-intl collapse">
+	<div class="row">
+		<div class="col-sm-6 form-group">
+			<label for="phoneintl">Phone Number</label>
+			<input type="text" name="phoneintl" class="form-control form-control-sm phone-input-intl" id="phoneintl">
+		</div>
+		<div class="col-sm-6 form-group">
+			<label for="extensionintl">Extension</label>
+			<input type="text" name="extensionintl" class="form-control form-control-sm" id="extensionintl" maxlength="{{ manager.fieldAttribute('extensionintl', 'maxlength') }}">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6 form-group">
+			<label for="faxintl">Fax Number</label>
+			<input type="text" name="faxintl" class="form-control form-control-sm phone-input-intl" id="faxintl">
+		</div>
+	</div>
+</div>

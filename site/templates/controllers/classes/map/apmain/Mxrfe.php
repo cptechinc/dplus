@@ -73,6 +73,7 @@ class Mxrfe extends Base {
 		}
 		$page->js   .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 		$html = self::displayXref($data, $xref);
+		$mxrfe->deleteResponse();
 		return $html;
 	}
 
@@ -93,6 +94,7 @@ class Mxrfe extends Base {
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$page->js .= self::pw('config')->twig->render('items/mxrfe/search/vendor/js.twig');
 		$html = self::displayListMnfrs($data, $vendors);
+		$mxrfe->deleteResponse();
 		return $html;
 	}
 
@@ -112,6 +114,7 @@ class Mxrfe extends Base {
 		}
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$html  = self::displayMnfrXrefs($data, $xrefs);
+		$mxrfe->deleteResponse();
 		return $html;
 	}
 
@@ -218,7 +221,6 @@ class Mxrfe extends Base {
 	 */
 	public static function xrefUrl($mnfrID, $mnfritemID, $itemID) {
 		$url = new Purl(Menu::mxrfeUrl());
-		$url->path->add('mxrfe');
 		$url->query->set('mnfrID', $mnfrID);
 		$url->query->set('mnfritemID', $mnfritemID);
 		$url->query->set('itemID', $itemID);
@@ -279,7 +281,7 @@ class Mxrfe extends Base {
 		$filter->vendorid($mnfrID);
 		$position = $filter->position($xref);
 		$pagenbr = self::getPagenbrFromOffset($position);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=apmain')->name, $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'mxrfe', $pagenbr);
 		return $url->getUrl();
 	}
 
@@ -312,7 +314,7 @@ class Mxrfe extends Base {
 
 		$url = new Purl(self::_mnfrListUrl());
 		$url->query->set('focus', $mnfrID);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=apmain')->name, $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'mxrfe', $pagenbr);
 		return $url->getUrl();
 	}
 
@@ -335,7 +337,7 @@ class Mxrfe extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if (empty($values->text('mnfrID')) && $values->text('action') != 'update-notes') {
+		if (empty($values->text('mnfrID')) && $values->text('action') != 'update-notes' && $values->text('action') != 'delete-notes') {
 			return Menu::mxrfeUrl();
 		}
 
@@ -344,7 +346,7 @@ class Mxrfe extends Base {
 		$itemID     = $values->text('itemID');
 		$mxrfe = self::mxrfeMaster();
 
-		if (in_array($values->text('action'), ['delete-xref', 'update-notes']) === false) {
+		if (in_array($values->text('action'), ['delete-xref', 'update-notes', 'delete-notes']) === false) {
 			if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
 				return self::pw('pages')->get('pw_template=apmain')->url;
 			}

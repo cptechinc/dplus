@@ -3,8 +3,6 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
-// Dplus Models
-use ProspectSource;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -46,7 +44,7 @@ class Vtm extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['q|text'];
+		$fields = ['q|text', 'col|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
 		$filter = new Filters\Map\ApTypeCode();
@@ -54,8 +52,7 @@ class Vtm extends Base {
 		$page->headline = "Vendor Type Code";
 
 		if (empty($data->q) === false) {
-			$filter->search($data->q);
-			$page->headline = "VTM: Searching for '$data->q'";
+			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 
 		$filter->sortby($page);
@@ -63,6 +60,7 @@ class Vtm extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/map/vtm/.js.twig', ['vtm' => self::getVtm()]);
 		$html = self::displayList($data, $codes);
 		self::getVtm()->deleteResponse();

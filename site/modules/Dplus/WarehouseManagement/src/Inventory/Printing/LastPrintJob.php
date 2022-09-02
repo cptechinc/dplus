@@ -37,7 +37,7 @@ class LastPrintJob extends WireData {
 	 * @return UserLastPrintJobQuery
 	 */
 	public function queryUserid($userID = '') {
-		$userID = $userID ? $userID : static::pw('user')->userid;
+		$userID = $userID ? $userID : $this->user->userid;
 
 		$q = $this->query();
 		$q->filterByUserid($userID);

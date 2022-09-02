@@ -1,0 +1,69 @@
+class CodeForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CodeInputs.getInstance();
+		this.config = CodeConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		this.updateDeleteLink(json);
+
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+
+			for (var i = 1; i < 11; i++) {
+				this.inputs.taxcode(i).val(json['taxcode' + i]);
+				this.inputs.taxcode(i).change();
+			}
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.description.val('');
+
+		for (var i = 1; i < 11; i++) {
+			this.inputs.taxcode(i).val('');
+			this.inputs.taxcode(i).change();
+		}
+	}
+
+	updateDeleteLink(json = null) {
+		var button = this.form.find('a.delete_button');
+		if (button.length == 0) {
+			return false;
+		}
+		var uri = URI(button.attr('href'));
+		var data = uri.query(true);
+
+		if (json) {
+			data.code = json.code;
+			uri.query(data);
+			button.attr('href', uri.toString());
+			button.addClass('show');
+			return true;
+		}
+		data.code = '';
+		uri.query(data);
+		button.attr('href', uri.toString());
+		button.removeClass('show');
+		return true;
+	}
+	
+}

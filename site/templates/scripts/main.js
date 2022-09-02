@@ -79,6 +79,38 @@ $(function() {
 		}
 	});
 
+	$("body").on('click', 'form.column-filter .column-options a', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var column = button.attr('value');
+		var form   = button.closest('form');
+		form.find('.searchby').text(button.text());
+		form.find('input[name=col]').val(column);
+	});
+
+	$("body").on('submit', 'form.column-filter', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var uri = URI();
+		var queryData = uri.query(true);
+
+		if (queryData.hasOwnProperty('q')) {
+			delete queryData.q;
+		}
+		if (queryData.hasOwnProperty('col')) {
+			delete queryData.col;
+		}
+		queryData.col = form.find('input[name=col]').val();
+		queryData.q   = form.find('input[name=q]').val();
+
+		if (queryData.col == '' || queryData.col== 'all') {
+			delete queryData.col;
+		}
+
+		uri.query(queryData);
+		window.location.href = uri.toString();
+	});
+
 	$('form[submit-empty="false"]').submit(function () {
 		var empty_fields = $(this).find(':input:not(button)').filter(function () {
 			return $(this).val() === '';
@@ -165,14 +197,26 @@ $(function() {
 	});
 
 	$('.phone-input').keyup(function() {
-		$(this).val(format_phone($(this).val()));
+		$(this).val(format_phone_us($(this).val()));
 		$(this).attr('minlength', '12');
+	});
+
+	$('.phone-input-intl').keyup(function() {
+		$(this).val(format_phone_intl($(this).val()));
+		$(this).attr('minlength', '24');
 	});
 
 	$('button.delete_button').click(function(e) {
 		e.preventDefault();
 		var button = $(this);
-		var action = $('.modal-form').attr("action");
+		var modal = button.closest('.modal');
+		console.log(button);
+		console.log(modal);
+
+		if (modal.length) {
+			console.log('wassup');
+			modal.removeAttr('tabindex');
+		}
 
 		swal2.fire({
 			title: "Confirm Deletion",
@@ -183,6 +227,9 @@ $(function() {
 			cancelButtonText: 'No',
 			focusCancel: true,
 		}).then((confirm) => {
+			if (modal.length) {
+				modal.attr('tabindex', '-1');
+			}
 			if (confirm.value) {
 				button.closest('form').submit();
 			}
@@ -363,6 +410,11 @@ function init_datepicker() {
 $('a.delete_button').click(function(e){
 	e.preventDefault();
 	var link = $(this);
+	var modal = link.closest('.modal');
+
+	if (modal.length) {
+		modal.removeAttr('tabindex');
+	}
 
 	swal2.fire({
 		title: "Confirm Deletion",
@@ -372,8 +424,13 @@ $('a.delete_button').click(function(e){
 		confirmButtonClass: 'btn btn-success',
 		cancelButtonClass: 'btn btn-danger',
 		buttonsStyling: false,
-		confirmButtonText: 'Yes'
+		confirmButtonText: 'Yes',
+		focusCancel: true,
 	}).then((result) => {
+		if (modal.length) {
+			modal.attr('tabindex', '-1');
+		}
+		
 		if (result.value) {
 			window.location.href = link.attr('href');
 		}
@@ -381,6 +438,12 @@ $('a.delete_button').click(function(e){
 });
 
 function swal_delete_notes(callback) {
+	var modal = $('.modal.show');
+
+	if (modal.length) {
+		modal.removeAttr('tabindex');
+	}
+
 	swal2.fire({
 		title: 'Confirm Deletion',
 		text: 'Are you sure you want to delete?',
@@ -390,6 +453,9 @@ function swal_delete_notes(callback) {
 		cancelButtonText: 'No',
 		focusCancel: true,
 	}).then((result) => {
+		if (modal.length) {
+			modal.attr('tabindex', '-1');
+		}
 		if (result.value) {
 			callback(true);
 		} else {
@@ -406,7 +472,7 @@ function validate_email(email) {
 	return emailregex.test(email);
 }
 
-function format_phone(input) {
+function format_phone_us(input) {
 	// Strip all characters from the input except digits
 	input = input.replace(/\D/g,'');
 
@@ -423,6 +489,29 @@ function format_phone(input) {
 		input = input.substring(0,3)+'-'+input.substring(3,6);
 	} else {
 		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
+	}
+	console.log(input);
+	return input;
+}
+
+function format_phone_intl(input) {
+	// Strip all characters from the input except digits
+	input = input.replace(/\D/g,'');
+
+	// Trim the remaining input to ten characters, to preserve phone number format
+	input = input.substring(0,22);
+
+	// Based upon the length of the string, we add formatting as necessary
+	var size = input.length;
+
+	if (size == 0){
+		input = input;
+	} else if(size < 4){
+		input = input;
+	} else if(size < 7){
+		input = input.substring(0,3)+'-'+input.substring(3,6);
+	} else {
+		input = input.substring(0,3)+'-'+input.substring(3,7)+'-'+input.substring(7,22);
 	}
 	return input;
 }
@@ -504,4 +593,5 @@ const swal2 = Swal.mixin({
 	confirmButtonText: 'Yes',
 	focusConfirm: false,
 	focusCancel: true,
+	allowEnterKey: true
 })

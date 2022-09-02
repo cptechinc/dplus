@@ -16,7 +16,7 @@ class DplusInput extends WireData implements Module {
 	 * @param WireInput $input                 [description]
 	 * @param array     $options      Array of options:
 	 * 	                - `includeQueryString` (bool): Whether to include query string. (default=true)
-	 * 	                - `ipagenbr`           (int) : Page Number. (default=1)
+	 * 	                - `pagenbr`           (int) : Page Number. (default=1)
 	 * @return string
 	 */
 	public function paginateUrl(WireInput $input, $options = []) {

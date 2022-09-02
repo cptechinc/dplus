@@ -1,0 +1,82 @@
+#!/usr/bin/php
+<?php
+
+if (php_sapi_name() !== 'cli') {
+	exit;
+}
+
+$directories = [
+	'site' => __DIR__ . '/../../../',
+	'src'  => __DIR__ . '/src/',
+];
+$directories['controllers'] = $directories['site'] . 'templates/controllers/classes/';
+$directories['twig'] = $directories['site'] . 'templates/twig/code-tables/';
+
+$options = [
+	'origin' => ['sys' => '', 'menu' => '', 'codetable' => '', 'value' => ''],
+	'new'    => ['sys' => '', 'menu' => '', 'codetable' => '', 'value' => '']
+];
+
+$parsedOptions = [];
+
+foreach ($argv as $arg) {
+    if (strpos($arg, '=') !== false) {
+        $pieces = explode('=', $arg);
+        $parsedOptions[$pieces[0]] = $pieces[1];
+    }
+}
+
+$cmdOptions = $options;
+
+foreach (['origin', 'new'] as $section) {
+	if (strpos($parsedOptions[$section], '-') !== false) {
+		$pieces = explode('-', $parsedOptions[$section]);
+		$cmdOptions[$section]['value'] = $parsedOptions[$section];
+		$cmdOptions[$section]['sys'] = $pieces[0];
+		$cmdOptions[$section]['menu'] = $pieces[1];
+		$cmdOptions[$section]['codetable'] = $pieces[2];
+	}
+}
+
+
+$cmdOptions = array_merge($options, $cmdOptions);
+
+
+// Copy Code Table CRUD
+$originalFile = $directories['src'] . ucfirst($cmdOptions['origin']['sys']) . '/' . ucfirst($cmdOptions['origin']['codetable']) . '.php';
+
+if (file_exists($originalFile) === false) {
+	echo "Error: CRUD '$originalFile' not found";
+	exit;
+}
+$copyFile = $directories['src'] . ucfirst($cmdOptions['new']['sys']) . '/' . ucfirst($cmdOptions['new']['codetable']) . '.php';
+copy($originalFile, $copyFile);
+
+// Copy Code Table Controller
+$originalFile = $directories['controllers'] . $cmdOptions['origin']['sys'] . '/' . $cmdOptions['origin']['menu'] . '/'  . ucfirst($cmdOptions['origin']['codetable']) . '.php';
+
+if (file_exists($originalFile) === false) {
+	echo "Error: Controller '$originalFile' not found";
+	exit;
+}
+
+$copyFile = $directories['controllers'] . $cmdOptions['new']['sys'] . '/' . $cmdOptions['new']['menu'] . '/'  . ucfirst($cmdOptions['new']['codetable']) . '.php';
+copy($originalFile, $copyFile);
+
+
+// Copy Twig Directories
+$originalTwigDir = $directories['twig'] . $cmdOptions['origin']['sys'] . '/' . $cmdOptions['origin']['codetable'];
+$newTwigDir = $directories['twig'] . $cmdOptions['new']['sys'] . '/' . $cmdOptions['new']['codetable'];
+
+if (file_exists($originalTwigDir) === false) {
+	echo "Error: Twig Directory '$originalTwigDir' not found";
+}
+
+if (file_exists($newTwigDir)) {
+	echo "Renaming '$newTwigDir'";
+	rename($newTwigDir, $newTwigDir . '.old');
+}
+
+shell_exec("cp -r $originalTwigDir $newTwigDir");
+
+

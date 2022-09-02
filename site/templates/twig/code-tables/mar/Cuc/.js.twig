@@ -1,0 +1,101 @@
+{% include 'code-tables/mar/cuc/js/classes.js.twig' %}
+
+$(function() {
+	var server   = CucRequests.getInstance();
+	var alert    = CodeAlerts.getInstance();
+	var formCode = CodeForm.getInstance();
+
+/* =============================================================
+	Event Functions
+	hide, unsaved changes events is handled by scripts/code-tables/modal-events.js
+============================================================= */
+	{% include 'code-tables/js/events/show-shown.js.twig' %}
+	{% include 'code-tables/js/events/input-code-change.js.twig' %}
+	{% include 'code-tables/js/events/input-code-force-focus.js.twig' %}
+
+	$("body").on("change", "select[name=surcharge]", function(e) {
+		var input = $(this);
+		
+		if (input.val() == 'Y') {
+			formCode.inputs.percent.removeAttr('readonly');
+			return true;
+		}
+		formCode.inputs.percent.val(0);
+		formCode.inputs.percent.change();
+		formCode.inputs.percent.attr('readonly', 'readonly');
+	});
+
+	$("body").on("change", "input[name=percent]", function(e) {
+		var input = $(this);
+		if (input.val() == '') {
+			input.val(0)
+		}
+		var percent = parseFloat(input.val());
+		input.val(percent.toFixed(formCode.config.fields.percent.precision));
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: formCode.config.fields.code.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/cuc/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			description: {
+				maxlength: formCode.config.fields.description.maxlength,
+			}
+		},
+		submitHandler: function(form) {
+			var formCode = CodeForm.getInstance();
+			var server   = CucRequests.getInstance();
+			var code = formCode.inputs.code.val();
+
+			if (formCode.inputs.form.attr('data-code') == code) {
+				form.submit();
+			} else {
+				server.validateCode(code, function(exists) {
+					var alert = CodeAlerts.getInstance();
+					if (exists === false) {
+						form.submit();
+						return true;
+					}
+
+					alert.codeExists(code, function(editCode) {
+						var modal = formCode.form.closest('.modal');
+
+						if (editCode) {
+							server.getCode(code, function(response) {
+								if (response) {
+									modal.find('.modal-title').text('Edit Code');
+									formCode.updateInputsFromJson(response);
+								} else {
+									modal.modal('hide');
+								}
+							});
+						} else {
+							modal.modal('hide');
+						}
+					});
+				});
+			}
+		}
+	});
+
+})

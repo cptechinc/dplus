@@ -1,34 +1,47 @@
-{# worm is an instance of CustomerWriteOffCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
-	<input type="hidden" name="table" value="worm">
-	<input type="hidden" name="serialized" value="" disabled>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
 
 	<div class="form-group">
 		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" maxlength="{{ max_length_code }}" value="" id="code">
+		<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
+		<input type="text" name="description" class="form-control" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 	</div>
 
 	<div class="form-group">
-		<label for="yesno">Write Off?</label>
-		<select name="yesno" class="form-control" id="yesno">
-			<option value="Y">Yes</option>
-			<option value="N">No</option>
-		</select>
+		<label for="writeoff">Write-Off</label>
+		{% include 'util/form/select.twig' with {
+				'name':          'writeoff',
+				'id':            'writeoff',
+				'selected_value': manager.fieldAttribute('writeoff', 'default'),
+				'options':       manager.fieldAttribute('writeoff', 'options'),
+				'show_value': true,
+			}
+		%}
 	</div>
 
-	<div class="modal-footer">
-		<div class="d-flex justify-content-between align-items-center">
-			<button type="submit" class="btn btn-success form_button">
-				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-			</button>
-			<button type="button" class="btn btn-warning" data-dismiss="modal">
-				<i class="fa fa-times" aria-hidden="true"></i> Close
-			</button>
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<div>
+			<a href="{{ page.codeDeleteUrl('') }}" class="btn btn-danger delete_button collapse">
+				<i class="fa fa-trash" aria-hidden="true"></i> Delete
+			</a>
 		</div>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
 	</div>
 </form>

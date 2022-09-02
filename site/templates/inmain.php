@@ -22,6 +22,11 @@
 			['GET',  'page{pagenbr:\d+}', Inmain\I2i::class, 'index'],
 			['POST',  '', Inmain\I2i::class, 'handleCRUD'],
 		],
+		'iarn' => [
+			['GET',  '', Inmain\Iarn::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Inmain\Iarn::class, 'index'],
+			['POST',  '', Inmain\Iarn::class, 'handleCRUD'],
+		],
 		'iasm' => [
 			['GET',  '', Inmain\Iasm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Inmain\Iasm::class, 'index'],
@@ -105,6 +110,6 @@
 
 	if ($router->hasError() === false) {
 		$config->scripts->append(Pauldro\ProcessWire\FileHasher::instance()->getHashUrl('scripts/lib/jquery-validate.js'));
-		$page->show_breadcrumbs = false;
+		// $page->show_breadcrumbs = false;
 	}
 	include __DIR__ . "/basic-page.php";

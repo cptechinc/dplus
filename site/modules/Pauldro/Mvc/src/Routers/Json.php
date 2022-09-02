@@ -1,5 +1,7 @@
 <?php namespace Mvc\Routers;
 
+use ProcessWire\WireData;
+
 /**
  * Router for JSON
  */
@@ -37,8 +39,8 @@ class Json extends Router {
 		}
 		$vars = (object) $routeInfo[2];
 		$vars = array_merge((array) $this->params(), (array) $vars);
-		// convert array to object:
-		$vars = json_decode(json_encode($vars));
-		return $class::$methodName($vars);
+		$data = new WireData();
+		$data->setArray($vars);
+		return $class::$methodName($data);
 	}
 }

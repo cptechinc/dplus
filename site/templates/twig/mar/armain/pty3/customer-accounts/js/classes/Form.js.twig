@@ -1,0 +1,70 @@
+class AccountForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new AccountForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'account-form';
+		this.form = $('#' + this.id);
+		this.inputs = AccountInputs.getInstance();
+		this.config = AccountConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		if (json) {
+			console.log(json);
+			this.inputs.form.attr('data-accountnbr', json.accountnbr);
+			this.inputs.accountnbr.val(json.accountnbr);
+			this.inputs.accountnbr.attr('readonly', 'true');
+			this.inputs.name.val(json.name);
+			this.inputs.address1.val(json.address1);
+			this.inputs.address2.val(json.address2);
+			this.inputs.address3.val(json.address3);
+			this.inputs.country.val(json.country);
+			this.inputs.city.val(json.city);
+			this.inputs.state.val(json.state);
+			this.inputs.zip.val(json.zip);
+			this.inputs.international.val(json.international);
+			this.inputs.phone.val(json.phone);
+			this.inputs.phone.keyup();
+			this.inputs.extension.val(json.extension);
+			this.inputs.fax.val(json.fax);
+			this.inputs.fax.keyup();
+			this.inputs.phoneintl.val(json.phoneintl);
+			this.inputs.extensionintl.val(json.extensionintl);
+			this.inputs.faxintl.val(json.faxintl);
+			this.inputs.faxintl.keyup();
+			this.inputs.phoneintl.keyup();
+			this.inputs.international.change();
+
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.accountnbr.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-accountnbr', '');
+		this.inputs.accountnbr.val('');
+		this.inputs.accountnbr.removeAttr('readonly');
+		this.inputs.name.val('');
+		this.inputs.address1.val('');
+		this.inputs.address2.val('');
+		this.inputs.address3.val('');
+		this.inputs.country.val('');
+		this.inputs.city.val('');
+		this.inputs.state.val('');
+		this.inputs.zip.val('');
+		this.inputs.international.val(this.config.fields.international.default);
+		this.inputs.phone.val('');
+		this.inputs.extension.val('');
+		this.inputs.fax.val('');
+		this.inputs.phoneintl.val('');
+		this.inputs.extensionintl.val('');
+		this.inputs.faxintl.val('');
+		this.inputs.international.change();
+	}
+
+}

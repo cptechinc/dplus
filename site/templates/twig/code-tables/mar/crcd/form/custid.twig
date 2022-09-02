@@ -1,0 +1,29 @@
+<div class="form-group">
+	<label for="custid">Cust ID</label>
+	{% include 'util/bootstrap/form/input-group.twig' with {
+			'inputgroup': {
+				'type': 'prepend',
+				'size': 'sm',
+				'input': {
+					'name': 'custid',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'Customer ID'
+					}
+				},
+				'button': {
+					'colorclass': 'btn-secondary',
+					'text': 'fa fa-search'|icon,
+					'attributes': {
+						'title': 'Search Customers',
+						'data-toggle': 'modal',
+						'data-target': '#ajax-modal',
+						'data-lookupurl': page.searchLookupUrl('customers'),
+						'data-input': '#custid'
+					}
+				}
+			}
+		}
+	%}
+	<small class="text-muted customer-name"></small>
+</div>

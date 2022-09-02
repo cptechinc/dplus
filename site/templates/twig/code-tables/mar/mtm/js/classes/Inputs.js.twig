@@ -1,0 +1,26 @@
+class CodeInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.percent       = this.form.find('input[name=percent]');
+		this.limit         = this.form.find('input[name=limit]');
+		this.gl_account        = this.form.find('input[name=gl_account]');
+		this.freight_tax_code  = this.form.find('input[name=freight_tax_code]');
+		this.tax_type          = this.form.find('select[name=tax_type]');
+		this.note1             = this.form.find('input[name=note1]');
+		this.note2             = this.form.find('input[name=note2]');
+		this.note3             = this.form.find('input[name=note3]');
+		this.note4             = this.form.find('input[name=note4]');
+	}
+}

@@ -30,9 +30,6 @@ class Cnfm extends Base {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
-		if ($data->code) {
-			return self::code($data);
-		}
 		return self::list($data);
 	}
 
@@ -47,13 +44,13 @@ class Cnfm extends Base {
 
 		if (empty($data->q) === false) {
 			$filter->search($data->q);
-			self::pw('page')->headline = "DCM: Searching for '$data->q'";
+			self::pw('page')->headline = "CNFM: Searching for '$data->q'";
 		}
 
 		$filter->sortby(self::pw('page'));
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mpo/cnfm/js.twig', ['cnfm' => $cnfm]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mpo/cnfm/.js.twig', ['cnfm' => $cnfm]);
 		self::initHooks();
 		$html = self::displayList($data, $codes);
 		$cnfm->deleteResponse();
@@ -118,7 +115,7 @@ class Cnfm extends Base {
 		$html .= '<div class="mb-3">' . self::displayResponse($data) . '</div>';
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $cnfm , 'codes' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
-		$html .= $config->twig->render('code-tables/mpo/cnfm/edit-modal.twig', ['cnfm' => $cnfm]);
+		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $cnfm]);
 		$html .= '<div class="mb-3"></div>';
 		return $html;
 	}

@@ -1,24 +1,16 @@
 <?php namespace Dplus\Codes\Mar;
-// Purl URI Library
-use Purl\Url;
-// Propel Classes
-use Propel\Runtime\Collection\ObjectCollection;
-use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 // Dplus Models
-use CustomerTermsCodeQuery, CustomerTermsCode;
-// ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ArTermsCode;
 // Dplus Codes
 use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the TRM code table
  */
 class Trm extends Base {
-	const MODEL              = 'CustomerTermsCode';
+	const MODEL              = 'ArTermsCode';
 	const MODEL_KEY          = 'code';
-	const MODEL_TABLE        = 'po_confirm_code';
+	const MODEL_TABLE        = 'ar_term_code';
 	const DESCRIPTION        = 'Customer Terms Code';
 	const DESCRIPTION_RECORD = 'Customer Terms Code';
 	const RESPONSE_TEMPLATE  = 'Customer Terms Code {code} {not} {crud}';
@@ -40,7 +32,7 @@ class Trm extends Base {
 	 */
 	public function ids() {
 		$q = $this->query();
-		$q->select(CustomerTermsCode::aliasproperty('id'));
+		$q->select(ArTermsCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
 
@@ -49,10 +41,10 @@ class Trm extends Base {
 ============================================================= */
 	/**
 	 * Return New Code
-	 * @return CustomerTermsCode
+	 * @return ArTermsCode
 	 */
 	public function new($id = '') {
-		$code = new CustomerTermsCode();
+		$code = new ArTermsCode();
 		if (empty($id) === false && strtolower($id) != 'new') {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);

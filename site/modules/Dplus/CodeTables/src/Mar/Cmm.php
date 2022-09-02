@@ -3,17 +3,16 @@
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ProcessWire\WireInput;
 // Dplus Models
-use CustomerQuery, Customer;
+use Customer;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Codes
 use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
 
 /**
- * Class that handles the CRUD of the TTM code table
+ * Class that handles the CRUD of the CMM code table
  */
 class Cmm extends Base {
 	const MODEL              = 'Customer';
@@ -25,7 +24,7 @@ class Cmm extends Base {
 	const RECORDLOCKER_FUNCTION = 'cmm';
 	const DPLUS_TABLE           = 'CMM';
 	const FIELD_ATTRIBUTES = [
-		'id'          => ['type' => 'text', 'maxlength' => 6],
+		'id'   => ['type' => 'text', 'maxlength' => 6],
 		'name' => ['type' => 'text', 'maxlength' => 20],
 	];
 
@@ -37,7 +36,6 @@ class Cmm extends Base {
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
-		$mhm = Mhm::getInstance();
 		$json = [
 			'id'    => $code->id,
 			'name'  => $code->name,

@@ -1,4 +1,4 @@
-<form action="{{ page.url }}" method="get" class="allow-enterkey-submit">
+<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit">
 	<input type="hidden" name="mnfrID" value="{{ mnfrID }}">
 	<div class="input-group">
 		<input class="form-control form-group inline" type="text" name="q" value="" id="q" placeholder="Search By Mnfr Item ID, Item ID" autofocus>

@@ -1,8 +1,8 @@
 <div>
 	{% include 'util/form/search-form.twig' with {
-			'formid': 'vendor-search-form', 'url': page.url,
+			'formid': 'vendor-search-form', 'url': input.paginateUrl(1, {'includeQueryString': false}),
 			'label': '',
-			'name': 'q', 'id': 'vendorq', 'q': '', 'value': input.get.text('q'), 'placeholder': 'Search Manufacturers by ID, Name, City, State, Zip'
+			'name': 'q', 'id': 'vendorq', 'q': '', 'value': input.get.text('q'), 'placeholder': 'Search Manufacturers by ID, Name, Address, City, State, Zip'
 		}
 	%}
 </div>

@@ -1,0 +1,22 @@
+{% set values = input.get %}
+{% set segments = input.urlSegments() %}
+{% set lastsegment = segments[segments|length] %}
+
+
+{% if page.is_print() %}
+	<button onclick="window.history.back();" class="btn btn-primary d-print-none">
+		<i class="fa fa-undo" aria-hidden="true"></i> Back
+	</button>
+	&nbsp;
+	<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
+		<i class="fa fa-print" aria-hidden="true"></i> Print
+	</button>
+{% else %}
+	<a href="{{ page.mnfrListUrl(values.text('mnfrID')) }}" class="btn btn-primary">
+		<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ input.urlSegmentLast()|upper }}
+	</a>
+	&nbsp;
+	<a href="{{ page.get_printURL() }}" class="btn btn-primary">
+		<i class="fa fa-print" aria-hidden="true"></i> View Printable
+	</a>
+{% endif %}

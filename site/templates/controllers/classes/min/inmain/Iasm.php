@@ -70,6 +70,7 @@ class Iasm extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/min/iasm/.js.twig', ['iasm' => self::getIasm()]);
 		$html = self::displayList($data, $codes);
 		self::getIasm()->deleteResponse();

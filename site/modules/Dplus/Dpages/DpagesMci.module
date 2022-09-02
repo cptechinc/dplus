@@ -45,8 +45,8 @@ class DpagesMci extends Dpages implements Module {
 		'customer-menu' => array(
 			'template'       => 'dplus-menu',
 			'name'           => 'mci',
-			'title'          => 'Customers',
-			'summary'        => 'Customer Menu',
+			'title'          => 'Customer Information',
+			'summary'        => 'Customer Information Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mci'
 		),

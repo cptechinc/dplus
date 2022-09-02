@@ -1,35 +1,64 @@
-{# cpm is an instance of CustomerPriceCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
-	<input type="hidden" name="table" value="cpm">
-	<input type="hidden" name="serialized" value="" disabled>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
 
 	<div class="form-group">
 		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" maxlength="{{ max_length_code }}" value="" id="code">
+		<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
+		<input type="text" name="description" class="form-control" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 	</div>
 
 	<div class="form-group">
 		<label for="surcharge">Can Add Surcharge?</label>
-		<select name="surcharge" class="form-control" id="surcharge">
-			<option value="Y">Yes</option>
-			<option value="N">No</option>
-		</select>
+		{% include 'util/form/select.twig' with {
+				'name':          'surcharge',
+				'id':            'surcharge',
+				'selected_value': manager.fieldAttribute('surcharge', 'default'),
+				'options':       manager.fieldAttribute('surcharge', 'options'),
+				'show_value': true,
+			}
+		%}
 	</div>
 
 	<div class="form-group">
-		<label for="percentage">Surcharge Percentage</label>
-		<input type="text" name="percentage" class="form-control" value="" id="percentage">
+		<label for="percent">Surcharge Percent</label>
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'percent',
+					'type': 'number',
+					'value': '',
+					'addclasses': [
+						'text-right',
+					],
+					'attributes': {
+						'max': manager.fieldAttribute('percent', 'max'),
+						'readonly': true
+					}
+				}
+			}
+		%}
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">
 		<button type="submit" class="btn btn-success form_button">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
+		<div>
+			<a href="{{ page.codeDeleteUrl('') }}" class="btn btn-danger delete_button collapse">
+				<i class="fa fa-trash" aria-hidden="true"></i> Delete
+			</a>
+		</div>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</button>

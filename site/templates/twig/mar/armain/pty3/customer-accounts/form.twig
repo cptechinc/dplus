@@ -1,0 +1,130 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Mar\Armain\Pty3
+#}
+
+{# data-accountnbr is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="account-form" data-accountnbr="">
+	<input type="hidden" name="action" value="update">
+	<input type="hidden" name="custid" value="{{ input.get.text('custID') }}">
+
+	<div class="form-group">
+		<label for="accountnbr">Account Number</label>
+		<input type="text" name="accountnbr" class="form-control" maxlength="{{ manager.fieldAttribute('accountnbr', 'maxlength') }}" id="accountnbr">
+	</div>
+
+	<div class="form-group">
+		<label for="name">3rd Party Name</label>
+		<input type="text" name="name" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('name', 'maxlength') }}" id="name">
+	</div>
+
+	{% for i in 1..3 %}
+		<div class="form-group">
+			<label for="address{{ i }}}">Address {{ i }}</label>
+			<input type="text" name="address{{ i }}}" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('address' ~ i, 'maxlength') }}" id="address{{ i }}}">
+		</div>
+	{% endfor %}
+
+	<div class="form-row">
+		<div class="col-sm-5 form-group">
+			<label for="city">City</label>
+			<input type="text" name="city" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('city', 'maxlength') }}" id="city">
+		</div>
+		<div class="col-sm-3 form-group">
+			<label for="state">State</label>
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': 'state',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'State',
+								'data-jqv': 'true'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search States',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('misc/state-codes/'),
+								'data-input': '#state'
+							}
+						}
+					}
+				}
+			%}
+			<small class="text-muted description"></small>
+		</div>
+		<div class="col-sm-4 form-group">
+			<label for="zip">Zip</label>
+			<input type="text" name="zip" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('zip', 'maxlength') }}" id="zip">
+		</div>
+	</div>
+
+	<div class="form-row">
+		<div class="col-sm-6 form-group">
+			<label for="country">Country</label>
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': 'country',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Country',
+								'data-jqv': 'true'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Countries',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('misc/country-codes/'),
+								'data-input': '#country'
+							}
+						}
+					}
+				}
+			%}
+			<small class="text-muted description"></small>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-3 form-group">
+			<label for="international">International</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'international',
+						'value' : 'N',
+						'haskeys': true,
+						'showvalues': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	{% include 'mar/armain/pty3/customer-accounts/form/phones.twig' %}
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

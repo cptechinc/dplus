@@ -41,8 +41,8 @@ class DpagesMvi extends Dpages implements Module {
 		'vendor-menu' => array(
 			'template'       => 'dplus-menu',
 			'name'           => 'mvi',
-			'title'          => 'Vendors',
-			'summary'        => 'Vendor Menu',
+			'title'          => 'Vendor Information',
+			'summary'        => 'Vendor Information Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mvi'
 		),

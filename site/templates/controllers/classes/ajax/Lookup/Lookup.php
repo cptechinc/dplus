@@ -54,7 +54,7 @@ abstract class Lookup extends Controller {
 		$input = self::pw('input');
 		$results = $query->paginate($input->pageNum, 10);
 		$twigpath = "api/lookup/codes/search.twig";
-
+		
 		if (self::pw('config')->twigloader->exists("api/lookup/$path/search.twig")) {
 			$twigpath = "api/lookup/$path/search.twig";
 		}

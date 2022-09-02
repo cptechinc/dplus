@@ -86,7 +86,7 @@ class Ii extends Base {
 			$data->q = strtoupper($data->q);
 
 			if ($filter->exists($data->q)) {
-				self::pw('session')->redirect(self::itemUrl($data->itemID), $http301 = false);
+				self::pw('session')->redirect(self::itemUrl($data->q), $http301 = false);
 			}
 			$filter->search($data->q);
 			$page->headline = "II: Searching for '$data->q'";

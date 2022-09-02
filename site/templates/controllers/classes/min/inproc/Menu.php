@@ -1,22 +1,14 @@
 <?php namespace Controllers\Min\Inproc;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+use ProcessWire\Page;
 // Mvc Controllers
 use Controllers\Min\Inproc\Base;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'inproc';
 	const SUBFUNCTIONS = [
-		'iarn' => [
-			'name'       => 'iarn',
-			'permission' => 'iarn',
-			'title'      => 'Inventory Adjustment Reason',
-			'summary'    => 'View / Edit Inventory Adjustment Reason'
-		]
 	];
 
 /* =============================================================

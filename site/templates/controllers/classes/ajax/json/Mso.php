@@ -8,7 +8,7 @@ use SalesHistoryDetailQuery, SalesHistoryDetail;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
-use Dplus\CodeValidators\Mso     as MsoValidator;
+use Dplus\CodeValidators\Mso	 as MsoValidator;
 use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
 // Dplus Codes
 use Dplus\Codes;
@@ -43,7 +43,7 @@ class Mso extends Controller {
 
 		$freight = self::pw('modules')->get('CodeTablesMfcm')->get_code($data->code);
 		return array(
-			'code'        => $data->code,
+			'code'		  => $data->code,
 			'description' => $freight->description
 		);
 	}
@@ -109,14 +109,14 @@ class Mso extends Controller {
 	 */
 	private static function getSalesDetailResponse(ActiveRecordInterface $item) {
 		$response = [
-			'ordn'    => $item->ordernumber,
+			'ordn'	  => $item->ordernumber,
 			'linenbr' => $item->linenbr,
 			'nonstock' => [
 				'vendorid' => $item->nsvendorid,
 				'vendoritemid' => $item->nsvendoritemid,
 				'itemgroupid'  => $item->nsitemgroupid,
-				'ponbr'        => $item->ponbr,
-				'poref'        => $item->poref,
+				'ponbr' 	   => $item->ponbr,
+				'poref' 	   => $item->poref,
 			]
 		];
 		return $response;
@@ -143,38 +143,40 @@ class Mso extends Controller {
 	}
 
 	public static function getPricing($data) {
-        $fields = ['itemID|text', 'custID|text'];
-        self::sanitizeParametersShort($data, $fields);
-        $pricingM = self::pw('modules')->get('ItemPricing');
-        $pricingM->request_search($data->itemID, $data->custID);
+		$fields = ['itemID|text', 'custID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$pricingM = self::pw('modules')->get('ItemPricing');
+		$pricingM->request_search($data->itemID, $data->custID);
 
-        if ($pricingM->has_pricing($data->itemID) === false) {
-            return false;
-        }
-        $pricing = $pricingM->get_pricing($data->itemID);
-        $pricebreaks = [
-            ['qty' => $pricing->priceqty1, 'price' => $pricing->priceprice1]
-        ];
+		$response = [
+			'itemid' => $data->itemID,
+			'price'  => 0.00,
+			'pricebreaks' => []
+		];
 
-        for ($i = 2; $i <= 6; $i++) {
-            $colQty   = 'priceqty' . $i;
-            $colPrice = 'priceprice' . $i;
+		if ($pricingM->has_pricing($data->itemID) === false) {
+			return $response;
+		}
+		$pricing = $pricingM->get_pricing($data->itemID);
 
-            if ($pricing->$colQty > 0) {
-                $pricebreaks[] = [
-                    'qty'   => $pricing->$colQty,
-                    'price' => $pricing->$colPrice
-                ];
-            }
-        }
+		$pricebreaks = [
+			['qty' => $pricing->priceqty1, 'price' => $pricing->priceprice1]
+		];
 
-        $response = [
-            'itemid' => $data->itemID,
-            'price'  => $pricing->price,
-            'pricebreaks' => $pricebreaks
-        ];
-        return $response;
-    }
+		for ($i = 2; $i <= 6; $i++) {
+			$colQty   = 'priceqty' . $i;
+			$colPrice = 'priceprice' . $i;
+
+			if ($pricing->$colQty > 0) {
+				$pricebreaks[] = [
+					'qty'	=> $pricing->$colQty,
+					'price' => $pricing->$colPrice
+				];
+			}
+		}
+		$response['pricebreaks'] = $pricebreaks;
+		return $response;
+	}
 
 	public static function validateLsmCode($data) {
 		$fields = ['code|text', 'jqv|bool', 'new|bool'];

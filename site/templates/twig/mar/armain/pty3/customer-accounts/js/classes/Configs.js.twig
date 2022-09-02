@@ -1,0 +1,24 @@
+class AccountConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new AccountConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			accountnbr: {
+				maxlength: {{ manager.fieldAttribute('accountnbr', 'maxlength') }}
+			},
+			name: {
+				maxlength: {{ manager.fieldAttribute('name', 'maxlength') }}
+			},
+			international: {
+				default: '{{ manager.fieldAttribute('international', 'default') }}'
+			},
+		};
+	}
+}

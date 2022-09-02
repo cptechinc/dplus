@@ -36,8 +36,8 @@ class DpagesMso extends Dpages implements Module {
 		'mso' => array(
 			'template'       => 'dplus-menu',
 			'name'           => 'mso',
-			'title'          => 'Sales Orders',
-			'summary'        => 'Sales Order Menu',
+			'title'          => 'Sales',
+			'summary'        => 'Sales Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mso'
 		),

@@ -1,0 +1,28 @@
+// Display Alert if Code already exists
+// NOTE: this if for single key codes
+
+$("body").on("change", "input[name=code]", function(e) {
+	var input = $(this);
+	var code = input.val();
+
+	server.validateCode(code, function(exists) {
+		if (exists === true) {
+			alert.codeExists(code, function(editCode) {
+				if (editCode) {
+					var modal = input.closest('.modal');
+
+					if (editCode) {
+						server.getCode(code, function(response) {
+							if (response) {
+								modal.find('.modal-title').text('Edit Code');
+								formCode.updateInputsFromJson(response);
+							}
+						});
+					} else {
+						modal.modal('hide');
+					}
+				}
+			});
+		}
+	});
+});

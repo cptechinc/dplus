@@ -16,7 +16,7 @@ class LotMaster extends AbstractFilter {
 /* =============================================================
 	Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
+	public function _search($q, $cols = []) {
 		$columns = [
 			InvLotMaster::aliasproperty('lotserial'),
 			InvLotMaster::aliasproperty('itemid'),

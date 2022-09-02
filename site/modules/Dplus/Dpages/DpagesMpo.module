@@ -28,8 +28,8 @@ class DpagesMpo extends Dpages implements Module {
 		'po-menu' => array(
 			'template'       => 'dplus-menu',
 			'name'           => 'mpo',
-			'title'          => 'Purchase Orders',
-			'summary'        => 'Purchase Orders Menu',
+			'title'          => 'Purchasing',
+			'summary'        => 'Purchasing Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mpo'
 		),

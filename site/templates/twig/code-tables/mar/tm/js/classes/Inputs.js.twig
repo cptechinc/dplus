@@ -1,0 +1,31 @@
+class CodeInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.description   = this.form.find('input[name=description]');
+		this.taxcode1      = this.form.find('input[name=taxcode1]');
+		this.taxcode2      = this.form.find('input[name=taxcode2]');
+		this.taxcode3      = this.form.find('input[name=taxcode3]');
+		this.taxcode4      = this.form.find('input[name=taxcode4]');
+		this.taxcode5      = this.form.find('input[name=taxcode5]');
+		this.taxcode6      = this.form.find('input[name=taxcode6]');
+		this.taxcode7      = this.form.find('input[name=taxcode7]');
+		this.taxcode8      = this.form.find('input[name=taxcode8]');
+		this.taxcode9      = this.form.find('input[name=taxcode9]');
+		this.taxcode10     = this.form.find('input[name=taxcode10]');
+	}
+
+	taxcode(index) {
+		return this.form.find('input[name=taxcode'+ index +']');
+	}
+}

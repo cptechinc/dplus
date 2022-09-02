@@ -17,12 +17,27 @@ class ApBuyer extends CodeFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q) {
-		$columns = [
-			Model::get_aliasproperty('id'),
-			Model::get_aliasproperty('description'),
-			Model::get_aliasproperty('email'),
-		];
-		$this->query->searchFilter($columns, strtoupper($q));
+	public function _search($q, $cols = []) {
+		$model = $this->modelName();
+		$columns = [];
+		$cols = array_filter($cols);
+
+		if (empty($cols)) {
+			$columns = [
+				$model::aliasproperty('id'),
+				$model::aliasproperty('description'),
+				$model::aliasproperty('email')
+			];
+	
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
+		foreach ($cols as $col) {
+			if ($model::aliasproperty_exists($col)) {
+				$columns[] = $model::aliasproperty($col);
+			}
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
 	}
 }

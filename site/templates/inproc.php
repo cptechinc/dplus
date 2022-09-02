@@ -7,11 +7,6 @@
 
 	$routes = [
 		['GET',  '', Inproc\Menu::class, 'index'],
-		'iarn' => [
-			['GET',  '', Inproc\Iarn::class, 'index'],
-			['GET',  'page{pagenbr:\d+}', Inproc\Iarn::class, 'index'],
-			['POST',  '', Inproc\Iarn::class, 'handleCRUD'],
-		],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

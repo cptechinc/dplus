@@ -1,0 +1,38 @@
+class CodeConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
+			},
+			description: {
+				maxlength: {{ manager.fieldAttribute('description', 'maxlength') }}
+			},
+			iso2: {
+				maxlength: {{ manager.fieldAttribute('iso2', 'maxlength') }}
+			},
+			numeric: {
+				max: {{ manager.fieldAttribute('numeric', 'max') }}
+			},
+			custom_code: {
+				maxlength: {{ manager.fieldAttribute('custom_code', 'maxlength') }}
+			},
+			exchange_rate: {
+				max: {{ manager.fieldAttribute('exchange_rate', 'max') }},
+				min: {{ manager.fieldAttribute('exchange_rate', 'min') }},
+				precision: {{ manager.fieldAttribute('exchange_rate', 'precision') }}
+			},
+			country_date:{
+				displayformat: '{{ manager.fieldAttribute('country_date', 'displayformat') }}'
+			}
+		};
+	}
+}

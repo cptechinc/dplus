@@ -64,6 +64,7 @@ class Mfcm extends Base {
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 		self::initHooks();
 
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= self::pw('config')->twig->render('code-tables/mso/mfcm/.js.twig', ['mfcm' => self::getMfcm()]);
 		$html = self::displayList($data, $codes);
 		self::getMfcm()->deleteResponse();

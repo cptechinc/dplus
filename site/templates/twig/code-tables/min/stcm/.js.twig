@@ -7,62 +7,11 @@ $(function() {
 
 /* =============================================================
 	Event Functions
+	hide, unsaved changes events is handled by scripts/code-tables/modal-events.js
 ============================================================= */
-	$('#edit-code-modal').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal  = $(this);
-		var code   = button.data('code');
-		modal.find('.modal-title').text('Add Code');
-
-		if (code) {
-			modal.find('.modal-title').text('Edit Code ' + code);
-		}
-		formCode.updateInputsFromJson(button.data('json'));
-	});
-
-	$('#edit-code-modal').on('shown.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal  = $(this);
-		var code   = button.data('code');
-
-		if (code) {
-			formCode.inputs.description.focus();
-		} else {
-			formCode.inputs.code.focus();
-		}
-	});
-
-	$("body").on("change", "input[name=code]", function(e) {
-		var input = $(this);
-		var code = input.val();
-
-		server.validateCode(code, function(exists) {
-			if (exists === true) {
-				alert.codeExists(code, function(editCode) {
-					var modal = formCode.form.closest('.modal');
-
-					if (editCode) {
-						server.getCode(code, function(response) {
-							if (response) {
-								modal.find('.modal-title').text('Edit Code ' + code);
-								formCode.updateInputsFromJson(response);
-							} else {
-								modal.modal('hide');
-							}
-						});
-					} else {
-						modal.modal('hide');
-					}
-				});
-			}
-		});
-	});
-
-	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
-		if (formCode.inputs.code.val() == '') {
-			formCode.inputs.code.focus();
-		}
-	});
+	{% include 'code-tables/js/events/show-shown.js.twig' %}
+	{% include 'code-tables/js/events/input-code-change.js.twig' %}
+	{% include 'code-tables/js/events/input-code-force-focus.js.twig' %}
 
 /* =============================================================
 	Validation Functions
@@ -113,7 +62,7 @@ $(function() {
 						if (editCode) {
 							server.getCode(code, function(response) {
 								if (response) {
-									modal.find('.modal-title').text('Edit Code ' + code);
+									modal.find('.modal-title').text('Edit Code');
 									formCode.updateInputsFromJson(response);
 								} else {
 									modal.modal('hide');
@@ -125,26 +74,6 @@ $(function() {
 					});
 				});
 			}
-		}
-	});
-
-/* =============================================================
-	Form Functions
-============================================================= */
-	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
-		var form = formCode.inputs.form;
-		form.validate().resetForm();
-		form.find('.is-invalid').removeClass("is-invalid");
-		form.find('.is-valid').removeClass("is-valid");
-		form.find('.invalid-feedback').remove();
-		form.find('.valid-feedback').remove();
-
-		if (form.attr('data-code')) {
-			$('.code-table-alert').remove();
-			$('.bg-success').removeClass('bg-success text-white');
-			$('.highlight').removeClass('highlight');
-			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
-			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
 		}
 	});
 })
