@@ -337,7 +337,7 @@ class Mxrfe extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if (empty($values->text('mnfrID')) && $values->text('action') != 'update-notes') {
+		if (empty($values->text('mnfrID')) && $values->text('action') != 'update-notes' && $values->text('action') != 'delete-notes') {
 			return Menu::mxrfeUrl();
 		}
 
@@ -346,7 +346,7 @@ class Mxrfe extends Base {
 		$itemID     = $values->text('itemID');
 		$mxrfe = self::mxrfeMaster();
 
-		if (in_array($values->text('action'), ['delete-xref', 'update-notes']) === false) {
+		if (in_array($values->text('action'), ['delete-xref', 'update-notes', 'delete-notes']) === false) {
 			if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
 				return self::pw('pages')->get('pw_template=apmain')->url;
 			}
