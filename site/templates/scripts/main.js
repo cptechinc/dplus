@@ -209,10 +209,12 @@ $(function() {
 	$('button.delete_button').click(function(e) {
 		e.preventDefault();
 		var button = $(this);
-		var action = $('.modal-form').attr("action");
-		var modal = link.closest('.modal');
+		var modal = button.closest('.modal');
+		console.log(button);
+		console.log(modal);
 
 		if (modal.length) {
+			console.log('wassup');
 			modal.removeAttr('tabindex');
 		}
 
@@ -436,6 +438,12 @@ $('a.delete_button').click(function(e){
 });
 
 function swal_delete_notes(callback) {
+	var modal = $('.modal.show');
+
+	if (modal.length) {
+		modal.removeAttr('tabindex');
+	}
+
 	swal2.fire({
 		title: 'Confirm Deletion',
 		text: 'Are you sure you want to delete?',
@@ -445,6 +453,9 @@ function swal_delete_notes(callback) {
 		cancelButtonText: 'No',
 		focusCancel: true,
 	}).then((result) => {
+		if (modal.length) {
+			modal.attr('tabindex', '-1');
+		}
 		if (result.value) {
 			callback(true);
 		} else {
