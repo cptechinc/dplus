@@ -14,9 +14,11 @@ use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Filters
+use Dplus\Filters;
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 // Dplus Code Validators
 use Dplus\CodeValidators\Map\Vxm as VxmValidator;
+use Dplus\Codes;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -295,29 +297,32 @@ class XrefMxrfe extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$validate = new VxmValidator();
-		$invalid = array();
+		$invalid = [];
 
-		$fields = array(
-			'itemid' => array(
-				'description' => 'Item ID',
-				'input'       => 'itemID',
-				'function'    => 'itemid'
-			),
-			'vendorid' => array(
-				'description' => 'Vendor ID',
-				'input'       => 'mnfrID',
-				'function'    => 'vendorid'
-			),
-			'unitofm' => array(
-				'description' => 'Unit of Measure',
-				'input'       => 'unitofm',
-				'function'    => 'unitofm_purchase'
-			),
-		);
-		$validator = $this->wire('modules')->get('InputValidator');
-		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
-		$invalid = $validator->validate();
-		$validator->set_valid_properties();
+		$umm = Codes\Min\Umm::instance();
+
+		if ($umm->exists($values->text('unitofm')) == false) {
+			$invalid['unitofm'] = 'Unit of Measure';
+		} else {
+			$record->setUnitofm($values->text('unitofm'));
+		}
+
+		/** @var Itm */
+		$itm = $this->modules->get('Itm');
+
+		if ($itm->exists($values->text('itemID')) === false) {
+			$invalid['itemID'] = 'Item ID';
+		} else {
+			$record->setItemid($values->text('itemID'));
+		}
+
+		$filter = new Filters\Map\Vendor();
+		
+		if ($filter->exists($values->text('vendorID')) === false) {
+			$invalid['vendorID'] = 'Vendor ID';
+		} else {
+			$record->setVendorid($values->text('vendorID'));
+		}
 		return $invalid;
 	}
 
