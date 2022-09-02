@@ -14,6 +14,7 @@ use Dplus\Min\Inproc;
 use Dplus\Configs;
 // Dplus Code Validators
 use Dplus\CodeValidators\Map as MapValidator;
+use Dplus\Codes;
 
 /**
  * Min
@@ -99,8 +100,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function stockcode($code) {
-		$stcm = $this->modules->get('CodeTablesStcm');
-		return $stcm->code_exists($code);
+		return Codes\Min\Stcm::instance()->exists($code);
 	}
 
 	/**
@@ -109,8 +109,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function itemgroup($code) {
-		$igm = $this->modules->get('CodeTablesIgm');
-		return $igm->code_exists($code);
+		return Codes\Min\Igm::instance()->exists($code);
 	}
 
 	/**
@@ -119,8 +118,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function pricecode($code) {
-		$igpm = $this->modules->get('CodeTablesIgpm');
-		return $igpm->code_exists($code);
+		return Codes\Min\Igpm::instance()->exists($code);
 	}
 
 	/**
@@ -129,8 +127,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function commissiongroup($code) {
-		$igpm = $this->modules->get('CodeTablesIgcm');
-		return $igpm->code_exists($code);
+		return Codes\Min\Igcm::instance()->exists($code);
 	}
 
 	/**
@@ -139,8 +136,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function specialitem($code) {
-		$spit = $this->modules->get('CodeTablesSpit');
-		return $spit->code_exists($code);
+		return Codes\Min\Spit::instance()->exists($code);
 	}
 
 	/**
@@ -149,8 +145,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function assortmentcode($code) {
-		$iasm = $this->modules->get('CodeTablesIasm');
-		return $iasm->code_exists($code);
+		return Codes\Min\Iasm::instance()->exists($code);
 	}
 
 	/**
@@ -159,8 +154,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function unitofm_sale($code) {
-		$umm = $this->modules->get('CodeTablesUmm');
-		return $umm->code_exists($code);
+		return Codes\Min\Umm::instance()->exists($code);
 	}
 
 	/**
@@ -169,8 +163,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function unitofm_purchase($code) {
-		$umm = $this->modules->get('CodeTablesUmm');
-		return $umm->code_exists($code);
+		return Codes\Min\Umm::instance()->exists($code);
 	}
 
 	/**
@@ -189,8 +182,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function countrycode($code) {
-		$validate = new MapValidator();
-		return $validate->countrycode($code);
+		return Codes\Mar\Cocom::instance()->exists($code);
 	}
 
 	/**
@@ -199,8 +191,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function msdscode($code) {
-		$msdsm = $this->modules->get('CodeTablesMsdsm');
-		return $msdsm->code_exists($code);
+		return Codes\Min\Msdsm::instance()->exists($code);
 	}
 
 	/**
@@ -209,7 +200,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function whseid($id) {
-		return $this->modules->get('CodeTablesIwhm')->code_exists($id);
+		return Codes\Min\Iwhm::instance()->exists($id);
 	}
 
 	/**
@@ -222,7 +213,7 @@ class Min extends WireData {
 			return false;
 		}
 
-		$whse = $this->modules->get('CodeTablesIwhm')->whse($whseID);
+		$whse = Codes\Min\Iwhm::instance()->whse($whseID);
 
 		if ($whse->validate_bin($binID) === false) {
 			if ($whse->are_binsranged() && $binID == '') {
@@ -254,8 +245,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function iarn($id) {
-		$iarn = Inproc\Iarn\Iarn::getInstance();
-		return $iarn->exists($id);
+		return Codes\Min\Iarn::instance()->exists($id);
 	}
 
 	/**
