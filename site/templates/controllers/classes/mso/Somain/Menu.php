@@ -28,9 +28,9 @@ class Menu extends Base {
 		],
 		'rgarc' => [
 			'name'       => 'rgarc',
-			'permission' => 'rgarc',
-			'title'      => 'RGA/Return Reason Code',
-			'summary'    => 'View / Edit RGA/Return Reason Code'
+			'permission' => Rgarc::DPLUSPERMISSION,
+			'title'      => Rgarc::TITLE,
+			'summary'    => Rgarc::SUMMARY
 		],
 		'rgasc' => [
 			'name'       => 'rgasc',
