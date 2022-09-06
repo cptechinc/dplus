@@ -71,9 +71,10 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 		$filter->sortby($page);
 		$input = self::pw('input');
-		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
+		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : static::SHOWONPAGE);
 
 		self::initHooks();
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-table.js'));
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= static::renderJs($data);
 		$html = self::displayList($data, $codes);
@@ -151,7 +152,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 			return Menu::url();
 		}
 		$position = $filter->positionQuick($focus);
-		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
+		$pagenbr = self::getPagenbrFromOffset($position, static::SHOWONPAGE);
 
 		$url = new Purl(static::_url());
 		$url->query->set('focus', $focus);
