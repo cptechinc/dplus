@@ -2,12 +2,12 @@
 // Dplus Models
 use SalespersonGroupCode;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the SPGPM code table
  */
-class Spgpm extends Base {
+class Spgpm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'SalespersonGroupCode';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_cust_spgp';
