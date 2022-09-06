@@ -11,12 +11,12 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the WORM code table
  */
-class Worm extends Base {
+class Worm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArWriteOffCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ar_cust_woff';
