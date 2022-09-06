@@ -6,7 +6,7 @@ use Dplus\Codes;
 
 
 class Suc extends AbstractCodeTableController {
-	const DPLUSPERMISSION = 'ccm';
+	const DPLUSPERMISSION = 'suc';
 	const TITLE      = 'Ship-to User Code';
 	const SUMMARY    = 'View / Edit Ship-to User Codes';
 	const SHOWONPAGE = 10;
