@@ -156,7 +156,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 		$url = new Purl(static::_url());
 		$url->query->set('focus', $focus);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'ccm', $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, strtolower(static::getClassName()), $pagenbr);
 		return $url->getUrl();
 	}
 
