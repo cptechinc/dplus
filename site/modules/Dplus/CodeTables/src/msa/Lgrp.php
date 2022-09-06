@@ -4,13 +4,13 @@ use Propel\Runtime\Collection\ObjectCollection;
 // Dplus Models
 use SysLoginGroupQuery, SysLoginGroup;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the LGRP code table
  */
-class Lgrp extends Base {
+class Lgrp extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'SysLoginGroup';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'sys_login_group';

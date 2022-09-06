@@ -9,12 +9,12 @@ use Customer;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the CMM code table
  */
-class Cmm extends Base {
+class Cmm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'Customer';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ar_cust_mast';

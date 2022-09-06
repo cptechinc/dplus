@@ -11,13 +11,13 @@ use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the MSDSM code table
  */
-class Msdsm extends Base {
+class Msdsm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'MsdsCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_msds_code';

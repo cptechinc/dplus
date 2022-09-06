@@ -4,13 +4,13 @@ use Propel\Runtime\Collection\ObjectCollection;
 // Dplus Models
 use ProspectSourceQuery, ProspectSource;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the SRC code table
  */
-class Src extends Base {
+class Src extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ProspectSource';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'prosp_sorc_code';

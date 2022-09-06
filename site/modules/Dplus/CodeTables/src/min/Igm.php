@@ -12,13 +12,12 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the IGM code table
  */
-class Igm extends Base {
+class Igm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'InvGroupCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_grup_code';

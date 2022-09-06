@@ -12,13 +12,13 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the RGASC code table
  */
-class Rgasc extends Base {
+class Rgasc extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'SoRgaCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'so_rgas_code';

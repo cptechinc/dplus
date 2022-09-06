@@ -7,13 +7,13 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use PrResourceQuery, PrResource;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the RCM code table
  */
-class Rcm extends Base {
+class Rcm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'PrResource';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'pr_resource_code';

@@ -12,8 +12,8 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
+
 
 /**
  * Class that handles the CRUD of the CTM code table
@@ -21,7 +21,7 @@ use Dplus\Codes\Response;
  * @property Ctm\Qnotes $qnotes
  * @property bool       $updateGlAccts  Should GL Accounts be updated
  */
-class Ctm extends Base {
+class Ctm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArCustTypeCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ar_cust_type';

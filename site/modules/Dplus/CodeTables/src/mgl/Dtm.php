@@ -9,12 +9,12 @@ use  GlDistCode;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the TTM code table
  */
-class Dtm extends Base {
+class Dtm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'GlDistCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'gl_dist_code';

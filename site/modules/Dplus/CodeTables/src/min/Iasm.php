@@ -11,13 +11,13 @@ use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the IASM code table
  */
-class Iasm extends Base {
+class Iasm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'InvAssortmentCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_asst_code';

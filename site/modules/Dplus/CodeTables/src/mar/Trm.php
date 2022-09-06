@@ -2,12 +2,12 @@
 // Dplus Models
 use ArTermsCode;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the TRM code table
  */
-class Trm extends Base {
+class Trm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArTermsCode';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_term_code';

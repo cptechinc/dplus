@@ -12,13 +12,13 @@ use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the UMM code table
  */
-class Umm extends Base {
+class Umm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'UnitofMeasureSale';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_uom_sale';

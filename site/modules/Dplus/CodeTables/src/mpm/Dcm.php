@@ -4,13 +4,13 @@ use Propel\Runtime\Collection\ObjectCollection;
 // Dplus Models
 use PrWorkCenterQuery, PrWorkCenter;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the DCM code table
  */
-class Dcm extends Base {
+class Dcm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'PrWorkCenter';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'po_confirm_code';

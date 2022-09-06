@@ -9,14 +9,14 @@ use ShipviaQuery, Shipvia;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the CSV code table
  * TODO: FINISH
  */
-class Csv extends Base {
+class Csv extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'Shipvia';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ar_cust_svia';

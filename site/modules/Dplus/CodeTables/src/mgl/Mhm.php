@@ -9,13 +9,12 @@ use GlCodeQuery, GlCode;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the MHM (GL MASTER) code table
  */
-class Mhm extends Base {
+class Mhm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'GlCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'gl_master';
