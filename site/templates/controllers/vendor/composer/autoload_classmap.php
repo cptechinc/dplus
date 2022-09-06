@@ -114,6 +114,8 @@ return array(
     'Controllers\\Mii\\Loti\\Base' => $baseDir . '/classes/mii/Loti/Base.php',
     'Controllers\\Mii\\Loti\\Loti' => $baseDir . '/classes/mii/Loti/Loti.php',
     'Controllers\\Min\\Base' => $baseDir . '/classes/min/Base.php',
+    'Controllers\\Min\\Inmain\\AbstractCodeTableController' => $baseDir . '/classes/min/inmain/AbstractCodeTableController.php',
+    'Controllers\\Min\\Inmain\\AbstractController' => $baseDir . '/classes/min/inmain/AbstractController.php',
     'Controllers\\Min\\Inmain\\Addm' => $baseDir . '/classes/min/inmain/Addm.php',
     'Controllers\\Min\\Inmain\\Csccm' => $baseDir . '/classes/min/inmain/Csccm.php',
     'Controllers\\Min\\Inmain\\I2i' => $baseDir . '/classes/min/inmain/I2i.php',

@@ -146,6 +146,12 @@ class Menu extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		$url = new Purl(parent::menuUrl());
+		$url->path->add('inmain');
+		return $url->getUrl();
+	}
+	
 	public static function menuUrl() {
 		$url = new Purl(parent::menuUrl());
 		$url->path->add('inmain');
