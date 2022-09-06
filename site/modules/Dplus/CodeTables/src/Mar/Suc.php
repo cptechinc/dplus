@@ -7,12 +7,12 @@ use ArShiptoUserCode;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the SUC code table
  */
-class Suc extends Base {
+class Suc extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArShiptoUserCode';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_cust_susr';
