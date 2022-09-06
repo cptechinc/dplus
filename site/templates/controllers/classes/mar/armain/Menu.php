@@ -72,9 +72,9 @@ class Menu extends Base {
 		],
 		'spgpm' => [
 			'name'       => 'spgpm',
-			'permission' => 'spgpm',
-			'title'      => 'Salesperson Group Code',
-			'summary'    => 'View / Edit AR Salesperson Group Codes'
+			'permission' => Spgpm::DPLUSPERMISSION,
+			'title'      => Spgpm::TITLE,
+			'summary'    => Spgpm::SUMMARY
 		],
 		'suc' => [
 			'name'       => 'suc',
