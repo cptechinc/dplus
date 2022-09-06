@@ -11,13 +11,13 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use ProcessWire\WireInputData;
 
 /**
  * Class that handles the CRUD of the COCOM code table
  */
-class Cocom extends Base {
+class Cocom extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'CountryCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'country_codes';
