@@ -36,9 +36,9 @@ class Menu extends Base {
 		],
 		'crtm' => [
 			'name'       => 'crtm',
-			'permission' => 'crtm',
-			'title'      => 'Customer Route Code',
-			'summary'    => 'View / Edit Customer Route Codes'
+			'permission' => Crtm::DPLUSPERMISSION,
+			'title'      => Crtm::TITLE,
+			'summary'    => Crtm::SUMMARY
 		],
 		'cuc' => [
 			'name'       => 'cuc',
