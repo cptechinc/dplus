@@ -22,9 +22,9 @@ class Menu extends Base {
 		],
 		'mfcm' => [
 			'name'       => 'mfcm',
-			'permission' => 'mfcm',
-			'title'      => 'Motor Freight Code',
-			'summary'    => 'View / Edit Motor Freight Code'
+			'permission' => Mfcm::DPLUSPERMISSION,
+			'title'      => Mfcm::TITLE,
+			'summary'    => Mfcm::SUMMARY
 		],
 		'rgarc' => [
 			'name'       => 'rgarc',
