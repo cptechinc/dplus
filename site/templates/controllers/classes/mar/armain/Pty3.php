@@ -75,7 +75,6 @@ class Pty3 extends Base {
 		$filter->sort($input->get);
 		$customers = $filter->query->paginate($input->pageNum, self::SHOWONPAGE);
 
-
 		self::initHooks();
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/mar/armain/pty3/customer-list.js'));
 		$html = self::displayCustomersList($data, $customers);
