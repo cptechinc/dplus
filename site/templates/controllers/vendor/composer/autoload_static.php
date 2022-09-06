@@ -219,6 +219,8 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mso\\SalesOrder\\Notes' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Notes.php',
         'Controllers\\Mso\\SalesOrder\\PrintSo' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/PrintSo.php',
         'Controllers\\Mso\\SalesOrder\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/SalesOrder.php',
+        'Controllers\\Mso\\Somain\\AbstractCodeTableController' => __DIR__ . '/../..' . '/classes/mso/Somain/AbstractCodeTableController.php',
+        'Controllers\\Mso\\Somain\\AbstractController' => __DIR__ . '/../..' . '/classes/mso/Somain/AbstractController.php',
         'Controllers\\Mso\\Somain\\Base' => __DIR__ . '/../..' . '/classes/mso/Somain/Base.php',
         'Controllers\\Mso\\Somain\\Cxm' => __DIR__ . '/../..' . '/classes/mso/Somain/Cxm.php',
         'Controllers\\Mso\\Somain\\Lsm' => __DIR__ . '/../..' . '/classes/mso/Somain/Lsm.php',

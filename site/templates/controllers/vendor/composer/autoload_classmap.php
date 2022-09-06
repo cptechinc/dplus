@@ -218,6 +218,8 @@ return array(
     'Controllers\\Mso\\SalesOrder\\Notes' => $baseDir . '/classes/mso/SalesOrder/Notes.php',
     'Controllers\\Mso\\SalesOrder\\PrintSo' => $baseDir . '/classes/mso/SalesOrder/PrintSo.php',
     'Controllers\\Mso\\SalesOrder\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder/SalesOrder.php',
+    'Controllers\\Mso\\Somain\\AbstractCodeTableController' => $baseDir . '/classes/mso/Somain/AbstractCodeTableController.php',
+    'Controllers\\Mso\\Somain\\AbstractController' => $baseDir . '/classes/mso/Somain/AbstractController.php',
     'Controllers\\Mso\\Somain\\Base' => $baseDir . '/classes/mso/Somain/Base.php',
     'Controllers\\Mso\\Somain\\Cxm' => $baseDir . '/classes/mso/Somain/Cxm.php',
     'Controllers\\Mso\\Somain\\Lsm' => $baseDir . '/classes/mso/Somain/Lsm.php',
