@@ -30,9 +30,9 @@ class Menu extends Base {
 		],
 		'crcd' => [
 			'name'       => 'crcd',
-			'permission' => 'crcd',
-			'title'      => 'Credit Card Code',
-			'summary'    => 'View / Edit Credit Card Codes'
+			'permission' => Crcd::DPLUSPERMISSION,
+			'title'      => Crcd::TITLE,
+			'summary'    => Crcd::SUMMARY
 		],
 		'crtm' => [
 			'name'       => 'crtm',
