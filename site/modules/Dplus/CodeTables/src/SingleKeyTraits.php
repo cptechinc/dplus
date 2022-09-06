@@ -2,17 +2,12 @@
 // Propel Classes
 use Propel\Runtime\ActiveQuery\CodeCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
-  // use Propel\Runtime\Collection\ObjectCollection;
-
 
 /**
- * AbstractCodeTableSimple 
- * Class for Reading Codes that have single column keys from database
+ * Traits for Code Tables that have Single Keys
  */
-abstract class AbstractCodeTableSimple extends AbstractCodeTable {
-	protected static $instance;
-
-/* =============================================================
+trait SingleKeyTraits {
+	/* =============================================================
 	Query Functions
 ============================================================= */
 	/**

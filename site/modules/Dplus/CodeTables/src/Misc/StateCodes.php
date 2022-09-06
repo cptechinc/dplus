@@ -2,7 +2,7 @@
 // Propel Classes
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
-use ProcessWire\WireInput;
+// use ProcessWire\WireInput;
 // Dplus Models
 use StateCode;
 // Dplus Validators
@@ -11,13 +11,16 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\AbstractCodeTableSimple;
+use Dplus\Codes\AbstractCodeTable;
+use Dplus\Codes\SingleKeyTraits;
 
 /**
  * Class that handles validation of StateCodes
  * NOTE: table is readonly
  */
-class StateCodes extends AbstractCodeTableSimple {
+class StateCodes extends AbstractCodeTable {
+	use SingleKeyTraits;
+
 	const MODEL              = 'StateCode';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'state_codes';

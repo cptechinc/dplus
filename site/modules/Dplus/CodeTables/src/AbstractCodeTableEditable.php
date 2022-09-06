@@ -5,6 +5,8 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
   // use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
 use ProcessWire\WireInput;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
@@ -179,6 +181,42 @@ abstract class AbstractCodeTableEditable extends AbstractCodeTable {
 	 */
 	public function deleteResponse() {
 		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
+	}
+
+/* =============================================================
+	Dplus Requests
+============================================================= */
+	/**
+	 * Return Request Data Neeeded for Dplus Update
+	 * @param  Code $code  Code
+	 * @return array
+	 */
+	protected function generateRequestData($code) {
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
+		$table   = static::DPLUS_TABLE;
+		return ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code->id"];
+	}
+
+	/**
+	 * Send Request do Dplus
+	 * @param  array  $data  Request Data
+	 * @return void
+	 */
+	protected function sendDplusRequest(array $data) {
+		$config    = $this->wire('config');
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	}
+
+	/**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  Code $code  Code
+	 * @return void
+	 */
+	protected function updateDplus($code) {
+		$data = $this->generateRequestData($code);
+		$this->sendDplusRequest($data);
 	}
 
 /* =============================================================
