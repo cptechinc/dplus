@@ -12,7 +12,7 @@ class Cuc extends AbstractCodeTableController {
 	const SHOWONPAGE = 10;
 
 	public static function _url() {
-		return Menu::ccmUrl();
+		return Menu::cucUrl();
 	}
 
 	public static function getCodeFilter() {
