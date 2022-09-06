@@ -34,9 +34,9 @@ class Menu extends Base {
 		],
 		'rgasc' => [
 			'name'       => 'rgasc',
-			'permission' => 'rgasc',
-			'title'      => 'RGA/Return Ship Via Code',
-			'summary'    => 'View / Edit RGA/Return Ship Via Code'
+			'permission' => Rgasc::DPLUSPERMISSION,
+			'title'      => Rgasc::TITLE,
+			'summary'    => Rgasc::SUMMARY
 		],
 		'soptm' => [
 			'name'       => 'soptm',
