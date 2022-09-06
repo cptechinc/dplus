@@ -66,9 +66,9 @@ class Menu extends Base {
 		],
 		'sic' => [
 			'name'       => 'sic',
-			'permission' => 'sic',
-			'title'      => 'Standard Industrial Class',
-			'summary'    => 'View / Edit AR Standard Industrial Class'
+			'permission' => Sic::DPLUSPERMISSION,
+			'title'      => Sic::TITLE,
+			'summary'    => Sic::SUMMARY
 		],
 		'spgpm' => [
 			'name'       => 'spgpm',
