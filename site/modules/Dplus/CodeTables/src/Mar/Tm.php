@@ -3,6 +3,7 @@
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
 use ProcessWire\WireInput;
+use ProcessWire\WireInputData;
 // Dplus Models
 use ArCustTaxCode;
 // Dplus Validators
@@ -11,13 +12,13 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
-use ProcessWire\WireInputData;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
+
 
 /**
  * Class that handles the CRUD of the TM code table
  */
-class Tm extends Base {
+class Tm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArCustTaxCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ar_cust_ctax';
@@ -32,9 +33,14 @@ class Tm extends Base {
 	];
 	const NUMBER_TAXCODES = ArCustTaxCode::NUMBER_TAXCODES;
 
+	/**
+	 * Return JSON array
+	 * @param  ArCustTaxCode $code
+	 * @return array
+	 */
 	public function codeJson(Code $code) {
 		$json = parent::codeJson($code);
-		for ($i = 1; $i < ArCustTaxCode::NUMBER_TAXCODES + 1; $i++) {
+		for ($i = 1; $i < self::NUMBER_TAXCODES + 1; $i++) {
 			$json["taxcode$i"] = $code->taxcode($i);
 		}
 		return $json;
