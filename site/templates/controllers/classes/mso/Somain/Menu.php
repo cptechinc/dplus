@@ -2,7 +2,7 @@
 // Purl URI Library
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+use ProcessWire\Page;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'somain';
@@ -16,9 +16,9 @@ class Menu extends Base {
 		],
 		'lsm' => [
 			'name'       => 'lsm',
-			'permission' => 'lsm',
-			'title'      => 'Lost Sales Reason Code',
-			'summary'    => 'View / Edit Lost Sales Reason Code'
+			'permission' => Lsm::DPLUSPERMISSION,
+			'title'      => Lsm::TITLE,
+			'summary'    => Lsm::SUMMARY
 		],
 		'mfcm' => [
 			'name'       => 'mfcm',
