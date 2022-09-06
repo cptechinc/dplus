@@ -24,15 +24,15 @@ class Menu extends Base {
 		],
 		'cpm' => [
 			'name'       => 'cpm',
-			'permission' => 'cpm',
-			'title'      => 'Customer Price Code',
-			'summary'    => 'View / Edit Customer Price Codes'
+			'permission' => Cpm::DPLUSPERMISSION,
+			'title'      => Cpm::TITLE,
+			'summary'    => Cpm::SUMMARY
 		],
 		'crcd' => [
 			'name'       => 'crcd',
 			'permission' => 'crcd',
 			'title'      => 'Credit Card Code',
-			'summary'    => 'View / Edit Credit Card  Codes'
+			'summary'    => 'View / Edit Credit Card Codes'
 		],
 		'crtm' => [
 			'name'       => 'crtm',
