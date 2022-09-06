@@ -90,9 +90,9 @@ class Menu extends Base {
 		],
 		'worm' => [
 			'name'       => 'worm',
-			'permission' => 'worm',
-			'title'      => 'Write-Off Reason Code',
-			'summary'    => 'View / Edit Write-Off ReasonCodes'
+			'permission' => Worm::DPLUSPERMISSION,
+			'title'      => Worm::TITLE,
+			'summary'    => Worm::SUMMARY
 		],
 	];
 
