@@ -42,9 +42,9 @@ class Menu extends Base {
 		],
 		'cuc' => [
 			'name'       => 'cuc',
-			'permission' => 'cuc',
-			'title'      => 'Customer User Code',
-			'summary'    => 'View / Edit Customer User Codes'
+			'permission' => Cuc::DPLUSPERMISSION,
+			'title'      => Cuc::TITLE,
+			'summary'    => Cuc::SUMMARY
 		],
 		'mtm' => [
 			'name'       => 'mtm',
