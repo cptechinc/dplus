@@ -78,9 +78,9 @@ class Menu extends Base {
 		],
 		'suc' => [
 			'name'       => 'suc',
-			'permission' => 'suc',
-			'title'      => 'Ship-to User Code',
-			'summary'    => 'View / Edit AR Ship-to User Codes'
+			'permission' => Suc::DPLUSPERMISSION,
+			'title'      => Suc::TITLE,
+			'summary'    => Suc::SUMMARY
 		],
 		'tm' => [
 			'name'       => 'tm',
