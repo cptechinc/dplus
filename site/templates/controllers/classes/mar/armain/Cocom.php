@@ -26,6 +26,7 @@ class Cocom extends AbstractCodeTableController {
 	public static function getCodeTable() {
 		return Codes\Mar\Cocom::instance();
 	}
+	
 /* =============================================================
 	Render HTML / JS
 ============================================================= */
