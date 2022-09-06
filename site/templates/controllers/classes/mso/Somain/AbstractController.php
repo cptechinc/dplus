@@ -1,4 +1,6 @@
 <?php namespace Controllers\Mso\Somain;
+// ProcessWire
+use ProcessWire\User;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
