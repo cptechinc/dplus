@@ -12,15 +12,15 @@ class Menu extends Base {
 	const SUBFUNCTIONS = [
 		'ccm' => [
 			'name'       => 'ccm',
-			'permission' => 'ccm',
-			'title'      => 'Customer Commission Code',
-			'summary'    => 'View / Edit Customer Commission Codes'
+			'permission' => Ccm::DPLUSPERMISSION,
+			'title'      => Ccm::TITLE,
+			'summary'    => Ccm::SUMMARY
 		],
 		'cocom' => [
 			'name'       => 'cocom',
-			'permission' => 'cocom',
-			'title'      => 'Country Code',
-			'summary'    => 'View / Edit Country Codes'
+			'permission' => Cocom::DPLUSPERMISSION,
+			'title'      => Cocom::TITLE,
+			'summary'    => Cocom::SUMMARY
 		],
 		'cpm' => [
 			'name'       => 'cpm',
