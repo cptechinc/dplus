@@ -50,6 +50,7 @@ return array(
     'Controllers\\Map\\Apmain\\Vtm' => $baseDir . '/classes/map/apmain/Vtm.php',
     'Controllers\\Map\\Apmain\\Vxm' => $baseDir . '/classes/map/apmain/Vxm.php',
     'Controllers\\Mar\\AbstractController' => $baseDir . '/classes/mar/AbstractController.php',
+    'Controllers\\Mar\\Armain\\AbstractCodeTableController' => $baseDir . '/classes/mar/armain/AbstractCodeTableController.php',
     'Controllers\\Mar\\Armain\\Ccm' => $baseDir . '/classes/mar/armain/Ccm.php',
     'Controllers\\Mar\\Armain\\Cocom' => $baseDir . '/classes/mar/armain/Cocom.php',
     'Controllers\\Mar\\Armain\\Cpm' => $baseDir . '/classes/mar/armain/Cpm.php',
