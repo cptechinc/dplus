@@ -11,13 +11,13 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use ProcessWire\WireInputData;
 
 /**
  * Class that handles the CRUD of the CRCD code table
  */
-class Crcd extends Base {
+class Crcd extends AbstractCodeTableEditableSingleKey {
 	const MODEL 			 = 'ArCreditCardCode';
 	const MODEL_KEY 		 = 'id';
 	const MODEL_TABLE		 = 'ar_cust_crcd';
