@@ -11,12 +11,12 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the CPM code table
  */
-class Cpm extends Base {
+class Cpm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArPriceCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ar_cust_price';
