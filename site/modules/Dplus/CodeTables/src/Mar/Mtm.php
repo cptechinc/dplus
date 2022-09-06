@@ -3,6 +3,7 @@
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
 use ProcessWire\WireInput;
+use ProcessWire\WireInputData;
 // Dplus Models
 use ArTaxCode;
 // Dplus Validators
@@ -11,13 +12,13 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
-use ProcessWire\WireInputData;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
+
 
 /**
  * Class that handles the CRUD of the MTM code table
  */
-class Mtm extends Base {
+class Mtm extends AbstractCodeTableEditableSingleKey {
 	const MODEL 			 = 'ArTaxCode';
 	const MODEL_KEY 		 = 'id';
 	const MODEL_TABLE		 = 'ar_cust_mtax';
