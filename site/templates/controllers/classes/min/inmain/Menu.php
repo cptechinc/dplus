@@ -102,9 +102,9 @@ class Menu extends Base {
 		],
 		'spit' => [
 			'name'       => 'spit',
-			'permission' => 'spit',
-			'title'      => 'Special Item Code',
-			'summary'    => 'View / Edit Special Item Code'
+			'permission' => Spit::DPLUSPERMISSION,
+			'title'      => Spit::TITLE,
+			'summary'    => Spit::SUMMARY
 		],
 		'stcm' => [
 			'name'       => 'stcm',
