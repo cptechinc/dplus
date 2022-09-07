@@ -103,7 +103,6 @@ class Roptm extends AbstractController {
 					break;
 			}
 		}
-
 		self::pw('session')->redirect($url, $http301 = false);
 	}
 
