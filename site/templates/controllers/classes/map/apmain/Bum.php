@@ -14,8 +14,8 @@ use Dplus\Codes;
  */
 class Bum extends AbstractCodeTableController {
 	const DPLUSPERMISSION = 'bum';
-	const TITLE      = 'Vendor Buyer Code"';
-	const SUMMARY    = 'View / Edit Vendor Buyer Code"s';
+	const TITLE      = 'Vendor Buyer Code';
+	const SUMMARY    = 'View / Edit Vendor Buyer Codes';
 	const SHOWONPAGE = 10;
 
 	public static function _url() {
