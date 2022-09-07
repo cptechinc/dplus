@@ -108,9 +108,9 @@ class Menu extends Base {
 		],
 		'stcm' => [
 			'name'       => 'stcm',
-			'permission' => 'stcm',
-			'title'      => 'Stock Code',
-			'summary'    => 'View / Edit Stock Code'
+			'permission' => Stcm::DPLUSPERMISSION,
+			'title'      => Stcm::TITLE,
+			'summary'    => Stcm::SUMMARY
 		],
 		'tarm' => [
 			'name'       => 'tarm',
