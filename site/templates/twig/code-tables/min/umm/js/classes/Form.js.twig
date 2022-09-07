@@ -27,6 +27,7 @@ class UmmForm {
 			this.inputs.pricebyweight.val(json.pricebyweight);
 			this.inputs.stockbycase.val(json.stockbycase);
 
+			this.inputs.conversion.change();
 			var validator = this.inputs.form.validate();
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
@@ -38,6 +39,7 @@ class UmmForm {
 		this.inputs.conversion.val(1);
 		this.inputs.pricebyweight.val(this.config.fields.pricebyweight.default);
 		this.inputs.stockbycase.val(this.config.fields.stockbycase.default);
+		this.inputs.conversion.change();
 	}
 
 	updateDeleteLink(json = null) {
