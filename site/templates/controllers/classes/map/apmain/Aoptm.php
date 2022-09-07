@@ -88,6 +88,10 @@ class Aoptm extends AbstractController {
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
 
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
+
 		if ($data->action) {
 			self::getAoptm()->processInput(self::pw('input'));
 

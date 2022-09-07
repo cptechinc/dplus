@@ -13,6 +13,7 @@ use Dplus\Filters;
 use Dplus\Codes;
 
 class Soptm extends AbstractController {
+	const DPLUSPERMISSION = 'soptm';
 	const SYSTEM = 'SO';
 
 /* =============================================================
@@ -27,6 +28,9 @@ class Soptm extends AbstractController {
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
 		}
 		self::initHooks();
 		if (empty($data->sysop) === false) {
@@ -81,6 +85,10 @@ class Soptm extends AbstractController {
 		$fields = ['action|text', 'sysop|text', 'code|text'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 
 		if ($data->action) {
 			self::getSoptm()->processInput(self::pw('input'));
