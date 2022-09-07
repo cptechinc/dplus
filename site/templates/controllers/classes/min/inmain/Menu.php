@@ -114,9 +114,9 @@ class Menu extends Base {
 		],
 		'tarm' => [
 			'name'       => 'tarm',
-			'permission' => 'tarm',
-			'title'      => 'Tariff Code',
-			'summary'    => 'View / Edit Tariff Code'
+			'permission' => Tarm::DPLUSPERMISSION,
+			'title'      => Tarm::TITLE,
+			'summary'    => Tarm::SUMMARY
 		],
 		'umm' => [
 			'name'       => 'umm',
