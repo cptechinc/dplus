@@ -12,6 +12,7 @@ use Dplus\Filters\Map\Mxrfe  as MxrfeFilter;
 use Dplus\Filters\Map\Vendor as VendorFilter;
 
 class Mxrfe extends AbstractController {
+	const DPLUSPERMISSION = 'mxrfe';
 	private static $mxrfe;
 
 /* =============================================================
@@ -26,6 +27,10 @@ class Mxrfe extends AbstractController {
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
 		}
 
 		self::initHooks();
