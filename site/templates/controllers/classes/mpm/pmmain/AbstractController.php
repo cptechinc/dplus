@@ -16,13 +16,13 @@ abstract class AbstractController extends Controller {
 		$perm = static::DPLUSPERMISSION;
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $perm"]);
 	}
-	
+
 /* =============================================================
 	Render HTML
 ============================================================= */
 	protected static function renderUserNotPermittedAlert() {
 		if (static::validateUserPermission()) {
-			return true;
+			return '';
 		}
 		$perm = static::DPLUSPERMISSION;
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $perm"]);
