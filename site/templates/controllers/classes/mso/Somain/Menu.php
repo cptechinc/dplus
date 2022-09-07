@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
 
-class Menu extends Base {
+class Menu extends AbstractController {
 	const DPLUSPERMISSION = 'somain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -52,7 +52,7 @@ class Menu extends Base {
 	public static function index($data) {
 		self::sanitizeParametersShort($data, []);
 		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+			return self::renderUserNotPermittedAlert();
 		}
 		self::initHooks();
 		return self::menu($data);

@@ -12,7 +12,7 @@ use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
 
-class Soptm extends Base {
+class Soptm extends AbstractController {
 	const SYSTEM = 'SO';
 
 /* =============================================================
