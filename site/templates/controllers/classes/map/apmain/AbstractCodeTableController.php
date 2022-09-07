@@ -166,10 +166,10 @@ abstract class AbstractCodeTableController extends AbstractController {
 		$class = strtolower(static::getClassName());
 		$config = self::pw('config');
 
-		if ($config->twigloader->exists("code-tables/mar/$class/.js.twig") === false) {
+		if ($config->twigloader->exists("code-tables/map/$class/.js.twig") === false) {
 			return '';
 		}
-		return $config->twig->render("code-tables/mar/$class/.js.twig", [$class => static::getCodeTable()]);
+		return $config->twig->render("code-tables/map/$class/.js.twig", [$class => static::getCodeTable()]);
 	}
 
 /* =============================================================
