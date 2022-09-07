@@ -90,9 +90,9 @@ class Menu extends Base {
 		],
 		'iwhm' => [
 			'name'       => 'iwhm',
-			'permission' => 'iwhm',
-			'title'      => 'Warehouse',
-			'summary'    => 'View / Edit Warehouse'
+			'permission' => Iwhm::DPLUSPERMISSION,
+			'title'      => Iwhm::TITLE,
+			'summary'    => Iwhm::SUMMARY
 		],
 		'msdsm' => [
 			'name'       => 'msdsm',
