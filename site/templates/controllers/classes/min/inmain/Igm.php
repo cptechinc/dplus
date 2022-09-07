@@ -13,7 +13,7 @@ use Dplus\Codes;
 /**
  * Igm
  * 
- * Controller for handling CRUD Requests for the Igm Codetable
+ * Controller for handling HTTP Requests for the Igm Codetable
  */
 class Igm extends AbstractCodeTableController {
 	const DPLUSPERMISSION = 'igm';
