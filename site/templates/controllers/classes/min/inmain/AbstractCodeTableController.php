@@ -4,6 +4,7 @@ use ReflectionClass;
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
 use ProcessWire\WireData;
 // Dplus Filters
@@ -18,7 +19,10 @@ abstract class AbstractCodeTableController extends AbstractController {
 	const DPLUSPERMISSION = 'inmain';
 	const TITLE 		  = '';
 	const SUMMARY		  = '';
-	const SHOWONPAGE = 10;
+	const SHOWONPAGE      = 10;
+	const USE_EDIT_MODAL  = true;
+	const USE_EDIT_PAGE   = false;
+
 
 /* =============================================================
 	Indexes
@@ -34,9 +38,12 @@ abstract class AbstractCodeTableController extends AbstractController {
 		}
 
 		if (empty($data->action) === false) {
-			return self::handleCRUD($data);
+			return static::handleCRUD($data);
 		}
-		return self::list($data);
+		if (static::USE_EDIT_PAGE && empty($data->code) === false) {
+			return static::code($data);
+		}
+		return static::list($data);
 	}
 
 	public static function handleCRUD(WireData $data) {
@@ -56,7 +63,11 @@ abstract class AbstractCodeTableController extends AbstractController {
 		self::pw('session')->redirect($url, $http301 = false);
 	}
 
-	private static function list(WireData $data) {
+	protected static function code(WireData $data) {
+		return '';
+	}
+
+	protected static function list(WireData $data) {
 		$fields = ['q|text', 'col|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page	= self::pw('page');
@@ -74,7 +85,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 		$input = self::pw('input');
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : static::SHOWONPAGE);
 
-		self::initHooks();
+		static::initHooks();
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-table.js'));
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		$page->js .= static::renderJs($data);
@@ -95,8 +106,15 @@ abstract class AbstractCodeTableController extends AbstractController {
 		if (self::pw('input')->get->offsetExists('print') === false) {
 			$html .= self::pw('config')->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		}
-		$html .= static::renderModal($data);
+
+		if (static::USE_EDIT_MODAL) {
+			$html .= static::renderModal($data);
+		}
 		return $html;
+	}
+
+	protected static function displayCode(WireData $data, Code $code) {
+		return '';
 	}
 
 /* =============================================================
@@ -107,12 +125,16 @@ abstract class AbstractCodeTableController extends AbstractController {
 		return self::pw('config')->twig->render('code-tables/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
+	protected static function renderCode(WireData $data, Code $code) {
+		return '';
+	}
+
 	protected static function renderModal(WireData $data) {
 		$codeTable = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/edit-modal.twig', ['manager' => $codeTable]);
 	}
 
-	public static function renderResponse(WireData $data) {
+	protected static function renderResponse(WireData $data) {
 		$codeTable = static::getCodeTable();
 		$response = $codeTable->getResponse();
 
@@ -125,13 +147,29 @@ abstract class AbstractCodeTableController extends AbstractController {
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
-	public static function renderBreadcrumbs(WireData $data) {
+	protected static function renderLockedAlert($data) {
+		$codeTable = static::getCodeTable();
+
+		if ($codeTable->recordlocker->isLocked($data->code) === false || $codeTable->recordlocker->userHasLocked($data->code)) {
+			return '';
+		}
+
+		$msg = "Code $data->code is being locked by " . $codeTable->recordlocker->getLockingUser($data->code);
+		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Code $data->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+	}
+
+	protected static function renderBreadcrumbs(WireData $data) {
 		return self::pw('config')->twig->render('code-tables/bread-crumbs.twig');
 	}
 
 	protected static function renderJs(WireData $data) {
 		$class = strtolower(static::getClassName());
-		return self::pw('config')->twig->render("code-tables/min/$class/.js.twig", ['manager' => static::getCodeTable()]);
+		$config = self::pw('config');
+
+		if ($config->twigloader->exists("code-tables/min/$class/.js.twig") === false) {
+			return '';
+		}
+		return $config->twig->render("code-tables/min/$class/.js.twig", ['manager' => static::getCodeTable()]);
 	}
 
 /* =============================================================
@@ -168,6 +206,12 @@ abstract class AbstractCodeTableController extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function codeEditUrl($code) {
+		$url = new Purl(self::url());
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Hooks
 ============================================================= */
@@ -185,6 +229,20 @@ abstract class AbstractCodeTableController extends AbstractController {
 		$m->addHook('Page(pw_template=inmain)::codeDeleteUrl', function($event) {
 			$event->return = static::codeDeleteUrl($event->arguments(0));
 		});
+
+		if (static::USE_EDIT_PAGE) {
+			$m->addHook('Page(pw_template=inmain)::codeListUrl', function($event) {
+				$event->return = self::url($event->arguments(0));
+			});
+	
+			$m->addHook('Page(pw_template=inmain)::codeAddUrl', function($event) {
+				$event->return = self::codeEditUrl('new');
+			});
+	
+			$m->addHook('Page(pw_template=inmain)::codeEditUrl', function($event) {
+				$event->return = self::codeEditUrl($event->arguments(0));
+			});
+		}
 	}
 
 /* =============================================================
