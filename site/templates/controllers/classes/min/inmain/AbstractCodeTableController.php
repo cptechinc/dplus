@@ -12,7 +12,7 @@ use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
 // Controllers
-use Controllers\Mso\Somain\AbstractController;
+use Controllers\Min\Inmain\AbstractController;
 
 
 abstract class AbstractCodeTableController extends AbstractController {
