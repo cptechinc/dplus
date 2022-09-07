@@ -120,9 +120,9 @@ class Menu extends Base {
 		],
 		'umm' => [
 			'name'       => 'umm',
-			'permission' => 'umm',
-			'title'      => 'Unit of Measure Code',
-			'summary'    => 'View / Edit Unit of Measure Code'
+			'permission' => Umm::DPLUSPERMISSION,
+			'title'      => Umm::TITLE,
+			'summary'    => Umm::SUMMARY
 		],
 		'upcx' => [
 			'name'       => 'upcx',
