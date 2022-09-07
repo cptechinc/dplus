@@ -1,10 +1,6 @@
 <?php namespace Controllers\Mpm\Pmmain;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 // Controllers
 use Controllers\Mpm\Menu as MenuMpm;
 
@@ -20,9 +16,9 @@ class Menu extends Base {
 		],
 		'dcm' => [
 			'name'       => 'dcm',
-			'permission' => 'dcm',
-			'title'      => 'Work Center Maintenance',
-			'summary'    => 'View / Edit Work Centers'
+			'permission' => Dcm::DPLUSPERMISSION,
+			'title'      => Dcm::TITLE,
+			'summary'    => Dcm::SUMMARY
 		],
 		'rcm' => [
 			'name'       => 'rcm',
