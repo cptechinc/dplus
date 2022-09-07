@@ -6,6 +6,7 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use ArCustTypeCodeQuery, ArCustTypeCode;
+use ConfigAr;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Configs
@@ -62,6 +63,7 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 		if (is_bool($this->updateGlAccts) === true) {
 			return $this->updateGlAccts;
 		}
+		/** @var ConfigAr */
 		$configAR = Configs\Ar::config();
 		$this->updateGlAccts = $configAR->glReportType() == 'customer';
 		return $this->updateGlAccts;
