@@ -131,7 +131,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 	protected static function renderJs(WireData $data) {
 		$class = strtolower(static::getClassName());
-		return self::pw('config')->twig->render("code-tables/min/$class/.js.twig", [$class => static::getCodeTable()]);
+		return self::pw('config')->twig->render("code-tables/min/$class/.js.twig", ['manager' => static::getCodeTable()]);
 	}
 
 /* =============================================================
