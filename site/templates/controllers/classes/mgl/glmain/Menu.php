@@ -1,10 +1,7 @@
 <?php namespace Controllers\Mgl\Glmain;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+// Controllers
 use Controllers\Mgl\Menu as MenuMgl;
 
 class Menu extends Base {
@@ -19,9 +16,9 @@ class Menu extends Base {
 		],
 		'dtm' => [
 			'name'       => 'dtm',
-			'permission' => 'dtm',
-			'title'      => 'Distribution Code',
-			'summary'    => 'View / Edit Distribution Text Code'
+			'permission' => Dtm::DPLUSPERMISSION,
+			'title'      => Dtm::TITLE,
+			'summary'    => Dtm::SUMMARY
 		]
 	];
 
