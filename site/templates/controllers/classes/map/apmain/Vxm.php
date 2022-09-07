@@ -12,6 +12,7 @@ use Dplus\Filters\Map\Vendor as VendorFilter;
 use Dplus\Filters\Map\Vxm    as VxmFilter;
 
 class Vxm extends AbstractController{
+	const DPLUSPERMISSION = 'vxm';
 	private static $vxm;
 
 /* =============================================================
@@ -26,6 +27,10 @@ class Vxm extends AbstractController{
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
 		}
 
 		self::initHooks();
