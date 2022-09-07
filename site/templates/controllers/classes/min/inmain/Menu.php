@@ -18,9 +18,9 @@ class Menu extends Base {
 		],
 		'csccm' => [
 			'name'       => 'csccm',
-			'permission' => 'csccm',
-			'title'      => 'Customer Stocking Cell',
-			'summary'    => 'View / Edit Customer Stocking Cell'
+			'permission' => Csccm::DPLUSPERMISSION,
+			'title'      => Csccm::TITLE,
+			'summary'    => Csccm::SUMMARY
 		],
 		'i2i' => [
 			'name'       => 'i2i',
