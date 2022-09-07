@@ -589,7 +589,7 @@ class Min extends AbstractJsonController {
 
 	public static function getSpitCode($data) {
 		$table = Codes\Min\Spit::getInstance();
-		return self::validateCodeTableCode($data, $table);
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateStcmCode($data) {
