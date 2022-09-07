@@ -49,6 +49,10 @@ class Mxrfe extends AbstractController {
 		self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect(self::url(), $http301 = false);
+		}
+
 		if ($data->action) {
 			$mxrfe = self::mxrfeMaster();
 			$mxrfe->process_input($input);
@@ -220,6 +224,14 @@ class Mxrfe extends AbstractController {
 /* =============================================================
 	URL Functions
 ============================================================= */
+	/**
+	 * Return URL to MXRFE
+	 * @return string
+	 */
+	public static function url() {
+		return Menu::mxrfeUrl();
+	}
+
 	/**
 	 * Return URL to MXRFE X-Ref
 	 * @param  string $mnfrID      Manufacturer ID

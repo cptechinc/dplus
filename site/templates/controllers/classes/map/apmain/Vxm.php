@@ -50,6 +50,10 @@ class Vxm extends AbstractController{
 		$input  = self::pw('input');
 		$vxm    = self::vxmMaster();
 
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect(self::url(), $http301 = false);
+		}
+
 		if ($data->action) {
 			$vxm->process_input($input);
 		}
@@ -218,6 +222,14 @@ class Vxm extends AbstractController{
 /* =============================================================
 	URL Functions
 ============================================================= */
+	/**
+	 * Return URL for Vxm
+	 * @return string
+	 */
+	public static function url() {
+		return Menu::vxmUrl();
+	}
+
 	/**
 	 * Return URL for Vxm Vendor
 	 * @param  string $vendorID  Vendor ID
