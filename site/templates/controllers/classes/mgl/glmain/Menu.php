@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Controllers
 use Controllers\Mgl\Menu as MenuMgl;
 
-class Menu extends Base {
+class Menu extends AbstractController {
 	const DPLUSPERMISSION = 'glmain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -28,7 +28,7 @@ class Menu extends Base {
 	public static function index($data) {
 		self::sanitizeParametersShort($data, []);
 		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+			return self::renderUserNotPermittedAlert();
 		}
 		self::initHooks();
 		self::pw('page')->headline = "General Ledger Maintenance";
