@@ -31,6 +31,9 @@ class Pty3 extends AbstractController {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
 		if (empty($data->custID) === false) {
 			$customers= CustomerManager::instance();
 			if ($customers->exists($data->custID) === false) {
@@ -46,6 +49,10 @@ class Pty3 extends AbstractController {
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::pty3Url($data->custID);
 		$recordsManager = self::getRecordManager();
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 
 		if ($data->action) {
 			$recordsManager->processInput(self::pw('input'));
