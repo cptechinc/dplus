@@ -72,7 +72,7 @@ class Iwhm extends AbstractCodeTableController {
 		$warehouse = $iwhm->getOrCreate($data->code);
 
 		if ($warehouse->isNew() === false) {
-			self::pw('page')->headline = "IGM: Editing $data->code";
+			self::pw('page')->headline = "IWHM: Editing $data->code";
 			$iwhm->lockrecord($warehouse);
 		}
 		self::initHooks();
