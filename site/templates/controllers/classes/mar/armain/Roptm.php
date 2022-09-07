@@ -12,6 +12,7 @@ use Dplus\Filters;
 use Dplus\Codes;
 
 class Roptm extends AbstractController {
+	const DPLUSPERMISSION = 'roptm';
 	const SYSTEM = 'AR';
 
 /* =============================================================
