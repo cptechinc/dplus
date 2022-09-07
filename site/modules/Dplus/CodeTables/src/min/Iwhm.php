@@ -46,6 +46,7 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 		'pickdetail'      => ['type' => 'text', 'default' => 'N', 'options' => ['A' => 'Available', 'S' => 'Selected', 'N' => 'No']],
 		'consignment'     => ['type' => 'text', 'default' => 'N'],
 	];
+	const FILTERABLE_FIELDS = ['code', 'name'];
 
 	protected static $instance;
 	private $fieldAttributes;
