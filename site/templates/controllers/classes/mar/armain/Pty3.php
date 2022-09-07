@@ -9,10 +9,9 @@ use Dplus\Filters;
 use Dplus\Mar\Armain\Pty3 as RecordManager;
 use Dplus\Mar\Armain\Cmm as CustomerManager;
 // Mvc Controllers
-use Controllers\Mar\AbstractController as Base;
 use ProcessWire\WireData;
 
-class Pty3 extends Base {
+class Pty3 extends AbstractController {
 	const DPLUSPERMISSION = 'pty3';
 	const TITLE = 'Customer 3rd Party Freight';
 	const SUMMARY    = 'View / Edit Customer 3rd Party Freight Accounts';
