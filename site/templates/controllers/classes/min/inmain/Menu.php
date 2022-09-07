@@ -60,9 +60,9 @@ class Menu extends Base {
 		],
 		'iplm' => [
 			'name'       => 'iplm',
-			'permission' => 'iplm',
-			'title'      => 'Inventory Product Line Code',
-			'summary'    => 'View / Edit Inventory Product Line Code'
+			'permission' => Iplm::DPLUSPERMISSION,
+			'title'      => Iplm::TITLE,
+			'summary'    => Iplm::SUMMARY
 		],
 		'ioptm' => [
 			'name'       => 'ioptm',
