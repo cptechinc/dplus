@@ -1,14 +1,8 @@
 <?php namespace Controllers\Mpo\Poadmn;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
-// Mvc Controllers
-use Controllers\Min\Inproc\Base;
 
-class Menu extends Base {
+class Menu extends AbstractController  {
 	const DPLUSPERMISSION = 'poadmn';
 	const TITLE = 'Administration';
 	const SUBFUNCTIONS = [
@@ -26,7 +20,7 @@ class Menu extends Base {
 	public static function index($data) {
 		self::sanitizeParametersShort($data, []);
 		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+			return self::renderUserNotPermittedAlert();
 		}
 		return self::menu($data);
 	}
