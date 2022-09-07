@@ -45,6 +45,10 @@ class Menu extends Base {
 		return MenuMgl::glmainUrl();
 	}
 
+	public static function url() {
+		return MenuMgl::glmainUrl();
+	}
+
 	public static function subfunctionUrl($key) {
 		$url = new Purl(self::menuUrl());
 		if (array_key_exists($key, self::SUBFUNCTIONS)) {

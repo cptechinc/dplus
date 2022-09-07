@@ -88,6 +88,8 @@ return array(
     'Controllers\\Mci\\Ci\\StandingOrders' => $baseDir . '/classes/mci/Ci/StandingOrders.php',
     'Controllers\\Mci\\Ci\\Subfunction' => $baseDir . '/classes/mci/Ci/Subfunction.php',
     'Controllers\\Mgl\\Base' => $baseDir . '/classes/mgl/Base.php',
+    'Controllers\\Mgl\\Glmain\\AbstractCodeTableController' => $baseDir . '/classes/mgl/glmain/AbstractCodeTableController.php',
+    'Controllers\\Mgl\\Glmain\\AbstractController' => $baseDir . '/classes/mgl/glmain/AbstractController.php',
     'Controllers\\Mgl\\Glmain\\Base' => $baseDir . '/classes/mgl/glmain/Base.php',
     'Controllers\\Mgl\\Glmain\\Dtm' => $baseDir . '/classes/mgl/glmain/Dtm.php',
     'Controllers\\Mgl\\Glmain\\Menu' => $baseDir . '/classes/mgl/glmain/Menu.php',

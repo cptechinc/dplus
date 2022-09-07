@@ -89,6 +89,8 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mci\\Ci\\StandingOrders' => __DIR__ . '/../..' . '/classes/mci/Ci/StandingOrders.php',
         'Controllers\\Mci\\Ci\\Subfunction' => __DIR__ . '/../..' . '/classes/mci/Ci/Subfunction.php',
         'Controllers\\Mgl\\Base' => __DIR__ . '/../..' . '/classes/mgl/Base.php',
+        'Controllers\\Mgl\\Glmain\\AbstractCodeTableController' => __DIR__ . '/../..' . '/classes/mgl/glmain/AbstractCodeTableController.php',
+        'Controllers\\Mgl\\Glmain\\AbstractController' => __DIR__ . '/../..' . '/classes/mgl/glmain/AbstractController.php',
         'Controllers\\Mgl\\Glmain\\Base' => __DIR__ . '/../..' . '/classes/mgl/glmain/Base.php',
         'Controllers\\Mgl\\Glmain\\Dtm' => __DIR__ . '/../..' . '/classes/mgl/glmain/Dtm.php',
         'Controllers\\Mgl\\Glmain\\Menu' => __DIR__ . '/../..' . '/classes/mgl/glmain/Menu.php',
