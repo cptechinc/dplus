@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Controllers
 use Controllers\Mpm\Menu as MenuMpm;
 
-class Menu extends Base {
+class Menu extends AbstractController {
 	const TITLE = 'Maintenance';
 
 	const SUBFUNCTIONS = [
@@ -34,7 +34,7 @@ class Menu extends Base {
 	public static function index($data) {
 		self::sanitizeParametersShort($data, []);
 		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+			return self::renderUserNotPermittedAlert();
 		}
 		self::pw('page')->headline = "Production Maintenance";
 		return self::menu($data);
