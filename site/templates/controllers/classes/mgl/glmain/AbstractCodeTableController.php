@@ -188,7 +188,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 		$filter = static::getCodeFilter();
 
 		if ($filter->exists($focus) === false) {
-			return Menu::url();
+			return static::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, static::SHOWONPAGE);

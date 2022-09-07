@@ -232,7 +232,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 		if (static::USE_EDIT_PAGE) {
 			$m->addHook('Page(pw_template=apmain)::codeListUrl', function($event) {
-				$event->return = self::url($event->arguments(0));
+				$event->return = static::url($event->arguments(0));
 			});
 	
 			$m->addHook('Page(pw_template=apmain)::codeAddUrl', function($event) {
