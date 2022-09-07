@@ -48,9 +48,19 @@ class Igm extends AbstractCodeTableController {
 			self::pw('page')->headline = "IGM: Editing $data->code";
 			$igm->lockrecord($invGroup);
 		}
+
 		self::initHooks();
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/igm/edit/.js.twig', ['igm' => $igm]);
-		return self::displayCode($data, $invGroup);
+		$html = self::displayCode($data, $invGroup);
+		self::getCodeTable()->deleteResponse();
+		self::getCodeTable()->qnotes->iwhs->deleteResponse();
+		return $html;
+	}
+
+	protected static function list(WireData $data) {
+		$igm = self::getCodeTable();
+		$igm->recordlocker->deleteLock();
+		return parent::list($data);
 	}
 
 /* =============================================================
