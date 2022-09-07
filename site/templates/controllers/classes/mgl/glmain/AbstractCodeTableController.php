@@ -166,10 +166,10 @@ abstract class AbstractCodeTableController extends AbstractController {
 		$class = strtolower(static::getClassName());
 		$config = self::pw('config');
 
-		if ($config->twigloader->exists("code-tables/map/$class/.js.twig") === false) {
+		if ($config->twigloader->exists("code-tables/mgl/$class/.js.twig") === false) {
 			return '';
 		}
-		return $config->twig->render("code-tables/map/$class/.js.twig", [$class => static::getCodeTable()]);
+		return $config->twig->render("code-tables/mgl/$class/.js.twig", [$class => static::getCodeTable()]);
 	}
 
 /* =============================================================
@@ -218,28 +218,28 @@ abstract class AbstractCodeTableController extends AbstractController {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
 
-		$m->addHook('Page(pw_template=glmain)::menuUrl', function($event) {
+		$m->addHook('Page(pw_template=mgl)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
 		});
 
-		$m->addHook('Page(pw_template=glmain)::menuTitle', function($event) {
+		$m->addHook('Page(pw_template=mgl)::menuTitle', function($event) {
 			$event->return = Menu::TITLE;
 		});
 
-		$m->addHook('Page(pw_template=glmain)::codeDeleteUrl', function($event) {
+		$m->addHook('Page(pw_template=mgl)::codeDeleteUrl', function($event) {
 			$event->return = static::codeDeleteUrl($event->arguments(0));
 		});
 
 		if (static::USE_EDIT_PAGE) {
-			$m->addHook('Page(pw_template=glmain)::codeListUrl', function($event) {
+			$m->addHook('Page(pw_template=mgl)::codeListUrl', function($event) {
 				$event->return = self::url($event->arguments(0));
 			});
 	
-			$m->addHook('Page(pw_template=glmain)::codeAddUrl', function($event) {
+			$m->addHook('Page(pw_template=mgl)::codeAddUrl', function($event) {
 				$event->return = self::codeEditUrl('new');
 			});
 	
-			$m->addHook('Page(pw_template=glmain)::codeEditUrl', function($event) {
+			$m->addHook('Page(pw_template=mgl)::codeEditUrl', function($event) {
 				$event->return = self::codeEditUrl($event->arguments(0));
 			});
 		}
