@@ -599,7 +599,7 @@ class Min extends AbstractJsonController {
 
 	public static function getStcmCode($data) {
 		$table = Codes\Min\Stcm::getInstance();
-		return self::validateCodeTableCode($data, $table);
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateTarmCode($data) {
