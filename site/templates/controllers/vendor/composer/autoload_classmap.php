@@ -178,6 +178,8 @@ return array(
     'Controllers\\Mpo\\ApInvoice\\Documents' => $baseDir . '/classes/mpo/ApInvoice/Documents.php',
     'Controllers\\Mpo\\ApInvoice\\Lists\\ApInvoice' => $baseDir . '/classes/mpo/ApInvoice/Lists/ApInvoice.php',
     'Controllers\\Mpo\\ApInvoice\\Lists\\Vendor' => $baseDir . '/classes/mpo/ApInvoice/Lists/Vendor.php',
+    'Controllers\\Mpo\\Poadmn\\AbstractCodeTableController' => $baseDir . '/classes/mpo/poadmn/AbstractCodeTableController.php',
+    'Controllers\\Mpo\\Poadmn\\AbstractController' => $baseDir . '/classes/mpo/poadmn/AbstractController.php',
     'Controllers\\Mpo\\Poadmn\\Base' => $baseDir . '/classes/mpo/poadmn/Base.php',
     'Controllers\\Mpo\\Poadmn\\Cnfm' => $baseDir . '/classes/mpo/poadmn/Cnfm.php',
     'Controllers\\Mpo\\Poadmn\\Menu' => $baseDir . '/classes/mpo/poadmn/Menu.php',

@@ -39,6 +39,10 @@ class Menu extends Base {
 		return self::pw('pages')->get('pw_template=poadmn')->url;
 	}
 
+	public static function url() {
+		return self::pw('pages')->get('pw_template=poadmn')->url;
+	}
+
 	public static function subfunctionUrl($key) {
 		$url = new Purl(self::menuUrl());
 		if (array_key_exists($key, self::SUBFUNCTIONS)) {
@@ -48,7 +52,7 @@ class Menu extends Base {
 	}
 
 	public static function cnfmUrl() {
-		$url = new Purl(self::menuUrl());
+		$url = new Purl(self::url());
 		$url->path->add('cnfm');
 		return $url->getUrl();
 	}
