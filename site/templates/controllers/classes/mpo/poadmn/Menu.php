@@ -14,9 +14,9 @@ class Menu extends Base {
 	const SUBFUNCTIONS = [
 		'cnfm' => [
 			'name'       => 'cnfm',
-			'permission' => 'cnfm',
-			'title'      => 'Confirmation Code',
-			'summary'    => 'View / Edit Confirmation Codes'
+			'permission' => Cnfm::DPLUSPERMISSION,
+			'title'      => Cnfm::TITLE,
+			'summary'    => Cnfm::SUMMARY
 		]
 	];
 
