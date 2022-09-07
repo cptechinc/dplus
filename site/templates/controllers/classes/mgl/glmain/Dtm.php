@@ -14,8 +14,8 @@ use Dplus\Codes;
  */
 class Dtm extends AbstractCodeTableController {
 	const DPLUSPERMISSION = 'dtm';
-	const TITLE      = 'Distribution Code"';
-	const SUMMARY    = 'View / Edit Distribution Code"s';
+	const TITLE      = 'Distribution Code';
+	const SUMMARY    = 'View / Edit Distribution Codes';
 	const SHOWONPAGE = 10;
 
 	public static function _url() {
