@@ -14,8 +14,8 @@ use Dplus\Codes;
  */
 class Vtm extends AbstractCodeTableController {
 	const DPLUSPERMISSION = 'vtm';
-	const TITLE      = 'Vendor Type Code"';
-	const SUMMARY    = 'View / Edit Vendor Type Code"s';
+	const TITLE      = 'Vendor Type Code';
+	const SUMMARY    = 'View / Edit Vendor Type Codes';
 	const SHOWONPAGE = 10;
 
 	public static function _url() {
