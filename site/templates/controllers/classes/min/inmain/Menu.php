@@ -48,9 +48,9 @@ class Menu extends Base {
 		],
 		'igm' => [
 			'name'       => 'igm',
-			'permission' => 'igm',
-			'title'      => 'Inventory Group Code',
-			'summary'    => 'View / Edit Inventory Group Code'
+			'permission' => Igm::DPLUSPERMISSION,
+			'title'      => Igm::TITLE,
+			'summary'    => Igm::SUMMARY
 		],
 		'igpm' => [
 			'name'       => 'igpm',
