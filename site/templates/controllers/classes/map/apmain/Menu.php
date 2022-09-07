@@ -1,10 +1,6 @@
 <?php namespace Controllers\Map\Apmain;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 
 class Menu extends Base {
 	const DPLUSPERMISSION = 'apmain';
@@ -18,9 +14,9 @@ class Menu extends Base {
 		],
 		'bum' => [
 			'name'       => 'bum',
-			'permission' => 'bum',
-			'title'      => 'Vendor Buyer Code',
-			'summary'    => 'View / Edit Vendor Buyer Code'
+			'permission' => Bum::DPLUSPERMISSION,
+			'title'      => Bum::TITLE,
+			'summary'    => Bum::SUMMARY
 		],
 		'mxrfe' => [
 			'name'       => 'mxrfe',
@@ -30,9 +26,9 @@ class Menu extends Base {
 		],
 		'vtm' => [
 			'name'       => 'vtm',
-			'permission' => 'vtm',
-			'title'      => 'Vendor Type Code',
-			'summary'    => 'View / Edit Vendor Type Code'
+			'permission' => Vtm::DPLUSPERMISSION,
+			'title'      => Vtm::TITLE,
+			'summary'    => Vtm::SUMMARY
 		],
 		'vxm' => [
 			'name'       => 'vxm',
