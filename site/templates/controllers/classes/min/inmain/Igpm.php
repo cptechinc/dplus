@@ -6,7 +6,7 @@ use Dplus\Codes;
 /**
  * Igpm
  * 
- * Controller for handling {"post code": "46703", "country": "United States", "country abbreviation": "US", "places": [{"place name": "Angola", "longitude": "-85.0198", "state": "Indiana", "state abbreviation": "IN", "latitude": "41.6563"}]} Requests for the Igpm Codetable
+ * Controller for handling HTTP Requests for the Igpm Codetable
  */
 class Igpm extends AbstractCodeTableController {
 	const DPLUSPERMISSION = 'igpm';
