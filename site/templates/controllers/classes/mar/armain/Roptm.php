@@ -10,10 +10,8 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Roptm extends Controller {
+class Roptm extends AbstractController {
 	const SYSTEM = 'AR';
 
 /* =============================================================

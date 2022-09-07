@@ -4,9 +4,8 @@ use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
 // Mvc Controllers
-use Controllers\Mar\AbstractController as Base;
 
-class Menu extends Base {
+class Menu extends AbstractController  {
 	const DPLUSPERMISSION = 'armain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -102,7 +101,7 @@ class Menu extends Base {
 	public static function index($data) {
 		self::sanitizeParametersShort($data, []);
 		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+			return self::renderUserNotPermittedAlert();
 		}
 		return self::menu($data);
 	}
