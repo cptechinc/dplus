@@ -14,6 +14,7 @@ use Dplus\Filters\Mso\Cxm as CxmFilter;
 use Dplus\Filters\Mar\Customer as CustomerFilter;
 
 class Cxm extends AbstractController {
+	const DPLUSPERMISSION = 'cxm';
 	private static $cxm;
 
 	public static function index($data) {
@@ -23,6 +24,9 @@ class Cxm extends AbstractController {
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
 		}
 		self::initHooks();
 		if (empty($data->custID) === false) {
@@ -37,6 +41,10 @@ class Cxm extends AbstractController {
 	public static function handleCRUD($data) {
 		$fields = ['action|text', 'custID|text', 'custitemID|text'];
 		self::sanitizeParametersShort($data, $fields);
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 
 		if ($data->action) {
 			$cxm = self::getCxm();
