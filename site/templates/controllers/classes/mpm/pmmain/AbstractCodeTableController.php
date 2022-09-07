@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mpm\pmmain;
+<?php namespace Controllers\Mpm\Pmmain;
 use ReflectionClass;
 // Purl URI manipulation Library
 use Purl\Url as Purl;
@@ -12,7 +12,7 @@ use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
 // Controllers
-use Controllers\Mpm\pmmain\AbstractController;
+use Controllers\Mpm\Pmmain\AbstractController;
 
 
 abstract class AbstractCodeTableController extends AbstractController {
