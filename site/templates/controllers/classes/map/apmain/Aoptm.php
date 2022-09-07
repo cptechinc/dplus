@@ -10,10 +10,9 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Aoptm extends Controller {
+class Aoptm extends AbstractController {
+	const DPLUSPERMISSION = 'aoptm';
 	const SYSTEM = 'AP';
 
 /* =============================================================
@@ -27,6 +26,10 @@ class Aoptm extends Controller {
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
 		}
 
 		self::initHooks();
