@@ -22,9 +22,9 @@ class Menu extends Base {
 		],
 		'rcm' => [
 			'name'       => 'rcm',
-			'permission' => 'rcm',
-			'title'      => 'Resource/Operator Maintenance',
-			'summary'    => 'View / Edit Work Resources/Operators'
+			'permission' => Rcm::DPLUSPERMISSION,
+			'title'      => Rcm::TITLE,
+			'summary'    => Rcm::SUMMARY
 		],
 	];
 
