@@ -3,33 +3,33 @@
 {% block list_header_row %}
 	<div class="row align-items-center">
 		<div class="col-sm-2">
-				Code
-			</div>
-			<div class="col-sm-3">
-				Description
-			</div>
-			<div class="col-sm-1">
-				Sale
-			</div>
-			<div class="col-sm-1">
-				Credit
-			</div>
-			<div class="col-sm-1">
-				Cogs
-			</div>
-			<div class="col-sm-1">
-				Inventory
-			</div>
-			<div class="col-sm-1">
-				Drop
-			</div>
-			<div class="col-sm-2 text-center">
-				{% if page.is_print() == false %}
-					<a href="{{ page.codeAddUrl() }}" class="btn btn-light btn-sm">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
-					</a>
-				{% endif %}
-			</div>
+			Code
+		</div>
+		<div class="col-sm-3">
+			Description
+		</div>
+		<div class="col-sm-1">
+			Sale
+		</div>
+		<div class="col-sm-1">
+			Credit
+		</div>
+		<div class="col-sm-1">
+			Cogs
+		</div>
+		<div class="col-sm-1">
+			Inventory
+		</div>
+		<div class="col-sm-1">
+			Drop
+		</div>
+		<div class="col-sm-2 text-center">
+			{% if page.is_print() == false %}
+				<a href="{{ page.codeAddUrl() }}" class="btn btn-light btn-sm">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+				</a>
+			{% endif %}
+		</div>
 	</div>
 {% endblock %}
 
