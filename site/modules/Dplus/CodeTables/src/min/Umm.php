@@ -30,7 +30,7 @@ class Umm extends AbstractCodeTableEditableSingleKey {
 	const FIELD_ATTRIBUTES = [
 		'code'          => ['type' => 'text', 'maxlength' => UnitofMeasureSale::MAX_LENGTH_CODE],
 		'description'   => ['type' => 'text', 'maxlength' => 20],
-		'conversion'    => ['type' => 'number', 'precision' => 5, 'max' => 9999999.00000],
+		'conversion'    => ['type' => 'number', 'precision' => 5, 'max' => 9999999.99999, 'default' => 1.00000],
 		'stockbycase' => ['type' => 'text', 'default' => 'N'],
 		'pricebyweight' => ['type' => 'text', 'default' => 'N'],
 	];
