@@ -96,9 +96,9 @@ class Menu extends Base {
 		],
 		'msdsm' => [
 			'name'       => 'msdsm',
-			'permission' => 'msdsm',
-			'title'      => 'Material Safety Data Sheet Code',
-			'summary'    => 'View / Edit Material Safety Data Sheet Code'
+			'permission' => Msdsm::DPLUSPERMISSION,
+			'title'      => Msdsm::TITLE,
+			'summary'    => Msdsm::SUMMARY
 		],
 		'spit' => [
 			'name'       => 'spit',
