@@ -54,9 +54,9 @@ class Menu extends Base {
 		],
 		'igpm' => [
 			'name'       => 'igpm',
-			'permission' => 'igpm',
-			'title'      => 'Inventory Price Code',
-			'summary'    => 'View / Edit Inventory Price Code'
+			'permission' => Igpm::DPLUSPERMISSION,
+			'title'      => Igpm::TITLE,
+			'summary'    => Igpm::SUMMARY
 		],
 		'iplm' => [
 			'name'       => 'iplm',
