@@ -10,9 +10,9 @@ class Menu extends Base {
 	const SUBFUNCTIONS = [
 		'ttm' => [
 			'name'       => 'ttm',
-			'permission' => 'ttm',
-			'title'      => 'Statement Text Code',
-			'summary'    => 'View / Edit Statement Text Code'
+			'permission' => Ttm::DPLUSPERMISSION,
+			'title'      => Ttm::TITLE,
+			'summary'    => Ttm::SUMMARY
 		],
 		'dtm' => [
 			'name'       => 'dtm',
