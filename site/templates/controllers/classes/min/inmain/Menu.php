@@ -42,9 +42,9 @@ class Menu extends Base {
 		],
 		'igcm' => [
 			'name'       => 'igcm',
-			'permission' => 'igcm',
-			'title'      => 'Inventory Commission Code',
-			'summary'    => 'View / Edit Inventory Commission Code'
+			'permission' => Igcm::DPLUSPERMISSION,
+			'title'      => Igcm::TITLE,
+			'summary'    => Igcm::SUMMARY
 		],
 		'igm' => [
 			'name'       => 'igm',
