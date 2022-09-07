@@ -10,10 +10,8 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD, ProcessWire\WireInput;
 // Dplus Filters
 use Dplus\Filters\Map\Mxrfe  as MxrfeFilter;
 use Dplus\Filters\Map\Vendor as VendorFilter;
-// Mvc Controllers
-use Controllers\Map\Apmain\Base;
 
-class Mxrfe extends Base {
+class Mxrfe extends AbstractController {
 	private static $mxrfe;
 
 /* =============================================================

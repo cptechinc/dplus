@@ -10,10 +10,8 @@ use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 // Dplus Filters
 use Dplus\Filters\Map\Vendor as VendorFilter;
 use Dplus\Filters\Map\Vxm    as VxmFilter;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Vxm extends Controller {
+class Vxm extends AbstractController{
 	private static $vxm;
 
 /* =============================================================
