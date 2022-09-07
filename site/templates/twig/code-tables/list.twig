@@ -53,7 +53,7 @@
 										<div class="dropdown-menu column-options">
 											<a class="dropdown-item" href="#" value="">All</a>
 											{% for field in manager.filterableFields() %}
-												<a class="dropdown-item" href="#" value="{{ field }}">{{ manager.fieldLabel(field) }}</a>
+												<a class="dropdown-item" href="#" value="{{ field }}">{{ manager.fieldLabel(field)|capitalize }}</a>
 											{% endfor %}
 										</div>
 									</div>
