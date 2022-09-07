@@ -16,6 +16,7 @@ use Dplus\Filters;
 use Dplus\Filters\Min\I2i as I2iFilter;
 // Dplus CRUD
 use Dplus\Min\Inmain\I2i\I2i as CRUDManager;
+
 class I2i extends AbstractController {
 	const DPLUSPERMISSION = 'i2i';
 	private static $i2i;
