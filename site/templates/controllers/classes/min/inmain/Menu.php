@@ -36,9 +36,9 @@ class Menu extends Base {
 		],
 		'iasm' => [
 			'name'       => 'iasm',
-			'permission' => 'iasm',
-			'title'      => 'Inventory Assortment Code',
-			'summary'    => 'View / Edit Inventory Assortment Code'
+			'permission' => Iasm::DPLUSPERMISSION,
+			'title'      => Iasm::TITLE,
+			'summary'    => Iasm::SUMMARY
 		],
 		'igcm' => [
 			'name'       => 'igcm',
