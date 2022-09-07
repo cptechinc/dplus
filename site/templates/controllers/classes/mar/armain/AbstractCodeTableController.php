@@ -34,7 +34,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 		self::pw('page')->headline = static::TITLE;
 
 		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+			return self::renderUserNotPermittedAlert();
 		}
 
 		if (empty($data->action) === false) {

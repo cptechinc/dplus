@@ -6,12 +6,13 @@ use Mvc\Controllers\Controller;
 
 abstract class AbstractController extends Controller {
 	const DPLUSPERMISSION = 'apmain';
+
 /* =============================================================
-	Displays
+	Render HTML
 ============================================================= */
-	protected static function displayUserNotPermitted() {
-		if (self::validateUserPermission()) {
-			return true;
+	protected static function renderUserNotPermittedAlert() {
+		if (static::validateUserPermission()) {
+			return '';
 		}
 		$perm = static::DPLUSPERMISSION;
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $perm"]);
