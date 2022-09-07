@@ -43,6 +43,8 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Dplus\\MainMenu' => __DIR__ . '/../..' . '/classes/dplus/MainMenu.php',
         'Controllers\\Dplus\\Menu' => __DIR__ . '/../..' . '/classes/dplus/Menu.php',
         'Controllers\\Dplus\\Process' => __DIR__ . '/../..' . '/classes/dplus/Process.php',
+        'Controllers\\Map\\Apmain\\AbstractCodeTableController' => __DIR__ . '/../..' . '/classes/map/apmain/AbstractCodeTableController.php',
+        'Controllers\\Map\\Apmain\\AbstractController' => __DIR__ . '/../..' . '/classes/map/apmain/AbstractController.php',
         'Controllers\\Map\\Apmain\\Aoptm' => __DIR__ . '/../..' . '/classes/map/apmain/Aoptm.php',
         'Controllers\\Map\\Apmain\\Base' => __DIR__ . '/../..' . '/classes/map/apmain/Base.php',
         'Controllers\\Map\\Apmain\\Bum' => __DIR__ . '/../..' . '/classes/map/apmain/Bum.php',

@@ -76,6 +76,10 @@ class Menu extends Base {
 		return $url->getUrl();
 	}
 
+	public static function url() {
+		return self::apmainUrl();
+	}
+
 	public static function menuUrl() {
 		return self::apmainUrl();
 	}

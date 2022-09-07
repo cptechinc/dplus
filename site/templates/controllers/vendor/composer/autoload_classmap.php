@@ -42,6 +42,8 @@ return array(
     'Controllers\\Dplus\\MainMenu' => $baseDir . '/classes/dplus/MainMenu.php',
     'Controllers\\Dplus\\Menu' => $baseDir . '/classes/dplus/Menu.php',
     'Controllers\\Dplus\\Process' => $baseDir . '/classes/dplus/Process.php',
+    'Controllers\\Map\\Apmain\\AbstractCodeTableController' => $baseDir . '/classes/map/apmain/AbstractCodeTableController.php',
+    'Controllers\\Map\\Apmain\\AbstractController' => $baseDir . '/classes/map/apmain/AbstractController.php',
     'Controllers\\Map\\Apmain\\Aoptm' => $baseDir . '/classes/map/apmain/Aoptm.php',
     'Controllers\\Map\\Apmain\\Base' => $baseDir . '/classes/map/apmain/Base.php',
     'Controllers\\Map\\Apmain\\Bum' => $baseDir . '/classes/map/apmain/Bum.php',
