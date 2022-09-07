@@ -27,6 +27,10 @@ class Roptm extends AbstractController {
 			return self::handleCRUD($data);
 		}
 
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->sysop) === false) {
 			return self::sysop($data);
 		}
@@ -81,6 +85,10 @@ class Roptm extends AbstractController {
 		$fields = ['action|text', 'sysop|text', 'code|text'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 
 		if ($data->action) {
 			self::getRoptm()->processInput(self::pw('input'));
