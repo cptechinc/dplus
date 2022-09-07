@@ -1,36 +1,18 @@
 <?php namespace Controllers\Min\Inproc;
-
-use stdClass;
-// Purl Library
-use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+// ProcessWire
+use ProcessWire\User;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
-abstract class Base extends Controller {
+abstract class AbstractController extends Controller {
 	const DPLUSPERMISSION = 'inproc';
-
+	
 /* =============================================================
-	Indexes
+	Render HTML
 ============================================================= */
-
-
-/* =============================================================
-	URLs
-============================================================= */
-	public static function iarnUrl() {
-		$url = new Purl(self::pw('pages')->get('pw_template=inproc')->url);
-		$url->path->add('iarn');
-		return $url->getUrl();
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	protected static function displayUserNotPermitted() {
-		if (self::validateUserPermission()) {
-			return true;
+	protected static function renderUserNotPermittedAlert() {
+		if (static::validateUserPermission()) {
+			return '';
 		}
 		$perm = static::DPLUSPERMISSION;
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $perm"]);

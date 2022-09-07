@@ -3,16 +3,12 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
-// Dplus Models
-use ProspectSource;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Min\Itmp as Manager;
-// Mvc Controllers
-use Controllers\Min\Base;
 
-class Itmp extends Base {
+class Itmp extends AbstractController {
 	const TITLE = 'Item Maintenance Permissions';
 	const DPLUSPERMISSION = 'itmp';
 	const SHOWONPAGE = 10;
@@ -24,7 +20,7 @@ class Itmp extends Base {
 ============================================================= */
 	public static function index($data) {
 		if (self::validateUserPermission() === false) {
-			return self::displayAlertUserPermission($data);
+			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
 		$fields = ['code|text', 'action|text'];

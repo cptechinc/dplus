@@ -16,17 +16,13 @@ use Dplus\Filters;
 use Dplus\Filters\Min\I2i as I2iFilter;
 // Dplus CRUD
 use Dplus\Min\Inmain\I2i\I2i as CRUDManager;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Min\Base;
-
-class I2i extends Base {
+class I2i extends AbstractController {
 	const DPLUSPERMISSION = 'i2i';
 	private static $i2i;
 
 	public static function index($data) {
 		if (self::validateUserPermission() === false) {
-			return self::displayAlertUserPermission($data);
+			return self::renderUserNotPermittedAlert();
 		}
 
 		// Sanitize Params, parse route from params

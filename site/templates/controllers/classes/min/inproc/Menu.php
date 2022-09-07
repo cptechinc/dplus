@@ -1,12 +1,8 @@
 <?php namespace Controllers\Min\Inproc;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page;
-// Mvc Controllers
-use Controllers\Min\Inproc\Base;
 
-class Menu extends Base {
+class Menu extends AbstractController {
 	const DPLUSPERMISSION = 'inproc';
 	const SUBFUNCTIONS = [
 	];
@@ -17,7 +13,7 @@ class Menu extends Base {
 	public static function index($data) {
 		self::sanitizeParametersShort($data, []);
 		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+			return self::renderUserNotPermittedAlert();
 		}
 		return self::menu($data);
 	}

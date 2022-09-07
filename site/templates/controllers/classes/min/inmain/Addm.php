@@ -4,9 +4,9 @@ use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
-use ItemAddonItemQuery, ItemAddonItem;
+use ItemAddonItem;
 // ProcessWire Classes, Modules
-use ProcessWire\WireData, ProcessWire\Page;
+use ProcessWire\Page;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as Locker;
 // Dplus Configs
@@ -15,17 +15,14 @@ use Dplus\Configs;
 use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Min\Inmain\Addm\Addm as Manager;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Min\Base;
 
-class Addm extends Base {
+class Addm extends AbstractController {
 	const DPLUSPERMISSION = 'addm';
 	private static $addm;
 
 	public static function index($data) {
 		if (self::validateUserPermission() === false) {
-			return self::displayAlertUserPermission($data);
+			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
 		$fields = ['itemID|text', 'addonID|text', 'action|text'];

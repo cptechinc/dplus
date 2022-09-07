@@ -10,11 +10,8 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Min\Base;
 
-class Ioptm extends Base {
+class Ioptm extends AbstractController {
 	const SYSTEM = 'IN';
 	const DPLUSPERMISSION = 'ioptm';
 
@@ -23,7 +20,7 @@ class Ioptm extends Base {
 ============================================================= */
 	public static function index($data) {
 		if (self::validateUserPermission() === false) {
-			return self::displayAlertUserPermission($data);
+			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
 		$fields = ['sysop|text', 'code|text', 'action|text'];
