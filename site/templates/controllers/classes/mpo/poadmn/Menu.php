@@ -25,6 +25,15 @@ class Menu extends AbstractController  {
 		return self::menu($data);
 	}
 
+	private static function menu($data) {
+		$functions = [];
+		foreach (self::SUBFUNCTIONS as $key => $function) {
+			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
+				$functions[$key] = $function;
+			}
+		}
+		return self::renderMenu($data, $functions);
+	}
 
 /* =============================================================
 	URLs
@@ -52,16 +61,13 @@ class Menu extends AbstractController  {
 	}
 
 /* =============================================================
-	Displays
+	Render HTML
 ============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
+	private static function renderMenu($data, array $functions) {
+		$html = '';
+		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
+		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
+		return $html;
 	}
 
 /* =============================================================
