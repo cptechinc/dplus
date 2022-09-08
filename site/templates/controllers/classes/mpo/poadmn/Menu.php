@@ -29,16 +29,16 @@ class Menu extends AbstractController  {
 /* =============================================================
 	URLs
 ============================================================= */
-	public static function menuUrl() {
-		return self::pw('pages')->get('pw_template=poadmn')->url;
-	}
-
 	public static function url() {
 		return self::pw('pages')->get('pw_template=poadmn')->url;
 	}
 
+	public static function menuUrl() {
+		return self::url();
+	}
+	
 	public static function subfunctionUrl($key) {
-		$url = new Purl(self::menuUrl());
+		$url = new Purl(self::url());
 		if (array_key_exists($key, self::SUBFUNCTIONS)) {
 			$url->path->add($key);
 		}
