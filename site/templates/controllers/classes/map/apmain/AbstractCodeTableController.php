@@ -86,7 +86,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 		$filter->sortby($page);
 		$input = self::pw('input');
 		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : static::SHOWONPAGE);
-
+		echo self::pw('db-dplus')->getLastExecutedQuery();
 		static::initHooks();
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-table.js'));
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));

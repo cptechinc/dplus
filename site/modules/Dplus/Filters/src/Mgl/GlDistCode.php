@@ -1,27 +1,14 @@
 <?php namespace Dplus\Filters\Mgl;
 // Dplus Model
 use GlDistCodeQuery, GlDistCode as Model;
-// ProcessWire Classes
-use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
 * Wrapper Class for GlDistCodeQuery
 */
-class GlDistCode extends AbstractFilter {
+class GlDistCode extends CodeFilter {
 	const MODEL = 'GlDistCode';
-
-/* =============================================================
-	1. Abstract Contract / Extensible Functions
-============================================================= */
-	public function _search($q, $cols = []) {
-		$columns = [
-			Model::aliasproperty('code'),
-			Model::aliasproperty('description'),
-		];
-		$this->query->searchFilter($columns, strtoupper($q));
-	}
 
 /* =============================================================
 	2. Base Filter Functions

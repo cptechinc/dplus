@@ -39,8 +39,12 @@ class ArCust3partyFreight extends AbstractFilter {
 			if (Model::aliasproperty_exists($col)) {
 				$columns[] = Model::aliasproperty($col);
 			}
-			$this->query->searchFilter($columns, strtoupper($q));
 		}
+		if (empty($columns)) {
+			return false;
+		}
+		$this->query->searchFilter($columns, strtoupper($q));
+		return true;
 	}
 
 /* =============================================================

@@ -1,29 +1,45 @@
 <?php namespace Dplus\Filters\Mgl;
 // Dplus Model
 use GlTextCodeQuery, GlTextCode as Model;
-// ProcessWire Classes
-use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
 * Wrapper Class for GlTextCodeQuery
 */
-class GlTextCode extends AbstractFilter {
+class GlTextCode extends CodeFilter {
 	const MODEL = 'GlTextCode';
 
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
 	public function _search($q, $cols = []) {
-		$columns = [
-			Model::aliasproperty('code'),
-			Model::aliasproperty('text1'),
-			Model::aliasproperty('text2'),
-			Model::aliasproperty('text3'),
-			Model::aliasproperty('text4'),
-		];
+		$model = $this->modelName();
+		$columns = [];
+		$cols = array_filter($cols);
+
+		if (empty($cols)) {
+			$columns = [
+				Model::aliasproperty('code'),
+				Model::aliasproperty('text1'),
+				Model::aliasproperty('text2'),
+				Model::aliasproperty('text3'),
+				Model::aliasproperty('text4'),
+			];
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
+
+		foreach ($cols as $col) {
+			if ($model::aliasproperty_exists($col)) {
+				$columns[] = $model::aliasproperty($col);
+			}
+		}
+		if (empty($columns)) {
+			return false;
+		}
 		$this->query->searchFilter($columns, strtoupper($q));
+		return true;
 	}
 
 /* =============================================================
@@ -37,32 +53,5 @@ class GlTextCode extends AbstractFilter {
 /* =============================================================
 	4. Misc Query Functions
 ============================================================= */
-	/**
-	 * Return if Code Exists
-	 * @param  string $code
-	 * @return bool
-	 */
-	public function exists($code) {
-		return boolval($this->getQueryClass()->filterById($code)->count());
-	}
 
-	/**
-	 * Return Position of Item in results
-	 * @param  Model|string $item GlTextCode|Code
-	 * @return int
-	 */
-	public function positionQuick($textcode) {
-		$code = $textcode;
-		if (is_object($textcode)) {
-			$code = $textcode->id;
-		}
-		$q = $this->getQueryClass();
-		$q->execute_query('SET @rownum = 0');
-		$table = $q->getTableMap()::TABLE_NAME;
-		$col   = Model::aliasproperty('code');
-		$sql = "SELECT x.position FROM (SELECT $col, @rownum := @rownum + 1 AS position FROM $table) x WHERE $col = :code";
-		$params = [':code' => $code];
-		$stmt = $q->executeQuery($sql, $params);
-		return $stmt->fetchColumn();
-	}
 }

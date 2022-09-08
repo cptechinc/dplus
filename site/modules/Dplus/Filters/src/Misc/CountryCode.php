@@ -2,25 +2,43 @@
 // Dplus Model
 use CountryCodeQuery, CountryCode as Model;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
  * Wrapper Class for CountryCodeQuery
  */
-class CountryCode extends AbstractFilter {
+class CountryCode extends CodeFilter {
 	const MODEL = 'CountryCode';
 
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
 	public function _search($q, $cols = []) {
-		$columns = [
-			Model::aliasproperty('iso3'),
-			Model::aliasproperty('iso2'),
-			Model::aliasproperty('numeric'),
-			Model::aliasproperty('description'),
-		];
+		$model = $this->modelName();
+		$columns = [];
+		$cols = array_filter($cols);
+
+		if (empty($cols)) {
+			$columns = [
+				Model::aliasproperty('iso3'),
+				Model::aliasproperty('iso2'),
+				Model::aliasproperty('numeric'),
+				Model::aliasproperty('description'),
+			];
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
+
+		foreach ($cols as $col) {
+			if ($model::aliasproperty_exists($col)) {
+				$columns[] = $model::aliasproperty($col);
+			}
+		}
+		if (empty($columns)) {
+			return false;
+		}
 		$this->query->searchFilter($columns, strtoupper($q));
+		return true;
 	}
 
 /* =============================================================

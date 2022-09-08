@@ -4,22 +4,16 @@ use InvGroupCodeQuery, InvGroupCode as Model;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\codeFilter;
 
 /**
  * Wrapper Class for adding Filters to the InvGroupCodeQuery class
  */
-class ItemGroup extends AbstractFilter {
+class ItemGroup extends CodeFilter {
 	const MODEL = 'InvGroupCode';
 
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q, $cols = []) {
-		$columns = [
-			Model::aliasproperty('code'),
-			Model::aliasproperty('description'),
-		];
-		$this->query->search_filter($columns, strtoupper($q));
-	}
+	
 }

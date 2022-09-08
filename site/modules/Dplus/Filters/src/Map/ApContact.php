@@ -20,6 +20,6 @@ class ApContact extends AbstractFilter {
 			Model::get_aliasproperty('contactid'),
 			Model::get_aliasproperty('title'),
 		];
-		$this->query->search_filter($columns, strtoupper($q));
+		$this->query->searchFilter($columns, strtoupper($q));
 	}
 }

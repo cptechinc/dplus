@@ -36,9 +36,12 @@ abstract class CodeFilter extends AbstractFilter {
 			if ($model::aliasproperty_exists($col)) {
 				$columns[] = $model::aliasproperty($col);
 			}
-			$this->query->searchFilter($columns, strtoupper($q));
-			return true;
 		}
+		if (empty($columns)) {
+			return false;
+		}
+		$this->query->searchFilter($columns, strtoupper($q));
+		return true;
 	}
 
 /* =============================================================
