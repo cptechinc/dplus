@@ -31,11 +31,8 @@ class Bum extends AbstractCodeTableEditableSingleKey {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 		'email'       => ['type' => 'text', 'label' => 'Email']
 	];
-	const FILTERABLE_FIELDS = ['code', 'description', 'email'];
 
 	protected static $instance;
-
-	private $fieldAttributes;
 
 	/**
 	 * Return Array ready for JSON
