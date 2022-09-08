@@ -16,7 +16,7 @@
 	{% include 'code-tables/optm/sysop/toolbar.twig' %}
 </div>
 
-{% if response %}
+{% if response and response.hasSuccess() == false %}
 	<div class="mb-3">
 		{% include 'code-tables/response.twig' %}
 	</div>
