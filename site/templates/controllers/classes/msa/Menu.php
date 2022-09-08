@@ -19,17 +19,17 @@ class Menu extends AbstractMenuController {
 			'title'      => Lgrp::TITLE,
 			'summary'    => Lgrp::SUMMARY
 		],
-		'noce' => [
-			'name'       => 'noce',
-			'permission' => 'noce',
-			'title'      => 'Pre-Defined Notes Entry',
-			'summary'    => 'View / Edit Pre-Defined Notes'
-		],
 		'logm' => [
 			'name'       => 'logm',
 			'permission' => 'logm',
 			'title'      => 'Login ID Entry',
 			'summary'    => 'View / Edit User Logins'
+		],
+		'noce' => [
+			'name'       => 'noce',
+			'permission' => 'noce',
+			'title'      => 'Pre-Defined Notes Entry',
+			'summary'    => 'View / Edit Pre-Defined Notes'
 		],
 		'sysop' => [
 			'name'       => 'sysop',
