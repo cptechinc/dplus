@@ -1,14 +1,15 @@
 <?php namespace Controllers\Msa;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
-// Mvc Controllers
-use Controllers\Msa\Base;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends Base {
+/**
+ * Msa\Menu
+ * 
+ * Class for rendering the Msa Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'msa';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -39,71 +40,30 @@ class Menu extends Base {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
-		}
-		self::initHooks();
-		return self::menu($data);
-	}
-
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function msaUrl() {
+	public static function _url() {
 		return self::pw('pages')->get('pw_template=msa')->url;
 	}
 
-	public static function menuUrl() {
-		return self::msaUrl();
-	}
-
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::msaUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
+	public static function msaUrl() {
+		return self::_url();
 	}
 
 	public static function lgrpUrl() {
 		return self::subfunctionUrl('lgrp');
 	}
 
-	public static function noceUrl() {
-		return self::subfunctionUrl('noce');
-	}
-
 	public static function logmUrl() {
 		return self::subfunctionUrl('logm');
 	}
 
+	public static function noceUrl() {
+		return self::subfunctionUrl('noce');
+	}
+
 	public static function sysopUrl() {
 		return self::subfunctionUrl('sysop');
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::displayMenu($data, $functions);
-	}
-
-	private static function displayMenu($data, array $functions) {
-		$html = '';
-		// $html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
-		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
-		return $html;
 	}
 
 /* =============================================================

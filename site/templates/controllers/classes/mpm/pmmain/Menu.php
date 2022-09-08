@@ -3,10 +3,17 @@
 use Purl\Url as Purl;
 // Controllers
 use Controllers\Mpm\Menu as MenuMpm;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends AbstractController {
+/**
+ * Pmmain\Menu
+ * 
+ * Class for rendering the Pmmain Menu
+ */
+class Menu extends AbstractMenuController {
+	const DPLUSPERMISSION = 'pmmain';
 	const TITLE = 'Maintenance';
-
 	const SUBFUNCTIONS = [
 		'bmm' => [
 			'name'       => 'bmm',
@@ -29,33 +36,10 @@ class Menu extends AbstractController {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::renderUserNotPermittedAlert();
-		}
-		self::pw('page')->headline = "Production Maintenance";
-		return self::menu($data);
-	}
-
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function menuUrl() {
-		$url = new Purl(self::pw('pages')->get('pw_template=mpm')->url);
-		$url->path->add('pmmain');
-		return $url->getUrl();
-	}
-
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::menuUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
+	public static function _url() {
+		return MenuMpm::pmmainUrl();
 	}
 
 	public static function bmmUrl() {
@@ -68,24 +52,6 @@ class Menu extends AbstractController {
 
 	public static function rcmUrl() {
 		return self::subfunctionUrl('rcm');
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		self::initHooks();
-		self::pw('page')->headline = self::TITLE;
-		$html = '';
-		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
-		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
-		return $html;
 	}
 
 /* =============================================================

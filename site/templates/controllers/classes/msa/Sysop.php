@@ -22,7 +22,7 @@ class Sysop extends Base {
 	public static function index($data) {
 		$fields = ['system|text', 'code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		self::pw('page')->show_breadcrumbs = false;
+		// self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);

@@ -1,8 +1,15 @@
 <?php namespace Controllers\Mpo\Poadmn;
 // Purl Library
 use Purl\Url as Purl;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends AbstractController  {
+/**
+ * Poadmn\Menu
+ * 
+ * Class for Rendering the Poadmn Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'poadmn';
 	const TITLE = 'Administration';
 	const SUBFUNCTIONS = [
@@ -15,59 +22,16 @@ class Menu extends AbstractController  {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::renderUserNotPermittedAlert();
-		}
-		return self::menu($data);
-	}
-
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::renderMenu($data, $functions);
-	}
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function url() {
+	public static function _url() {
 		return self::pw('pages')->get('pw_template=poadmn')->url;
-	}
-
-	public static function menuUrl() {
-		return self::url();
-	}
-	
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::url());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
 	}
 
 	public static function cnfmUrl() {
 		$url = new Purl(self::url());
 		$url->path->add('cnfm');
 		return $url->getUrl();
-	}
-
-/* =============================================================
-	Render HTML
-============================================================= */
-	private static function renderMenu($data, array $functions) {
-		$html = '';
-		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
-		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
-		return $html;
 	}
 
 /* =============================================================

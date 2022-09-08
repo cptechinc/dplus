@@ -3,8 +3,15 @@
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends AbstractController {
+/**
+ * Inmain\Menu
+ * 
+ * Class for rendering the Inmain Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'inmain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -131,37 +138,10 @@ class Menu extends AbstractController {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::renderUserNotPermittedAlert();
-		}
-		return self::menu($data);
-	}
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function url() {
-		$url = new Purl(parent::menuUrl());
-		$url->path->add('inmain');
-		return $url->getUrl();
-	}
-	
-	public static function menuUrl() {
-		$url = new Purl(parent::menuUrl());
-		$url->path->add('inmain');
-		return $url->getUrl();
-	}
-
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::menuUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
+	public static function _url() {
+		return self::pw('pages')->get('pw_template=inmain')->url;
 	}
 
 	public static function addmUrl() {
@@ -242,21 +222,6 @@ class Menu extends AbstractController {
 
 	public static function upcxUrl() {
 		return self::subfunctionUrl('upcx');
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		self::pw('page')->show_breadcrumbs = true;
-		self::initHooks();
-		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================

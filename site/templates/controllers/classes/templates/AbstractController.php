@@ -1,12 +1,35 @@
-<?php namespace Controllers\Min\Inproc;
+<?php namespace Controllers\Templates;
 // ProcessWire
 use ProcessWire\User;
+use ProcessWire\WireData;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
+
+/**
+ * Abstract Controller
+ * 
+ * Base Controller class for HTTP requests
+ */
 abstract class AbstractController extends Controller {
-	const DPLUSPERMISSION = 'inproc';
+	const DPLUSPERMISSION = '';
+	const TITLE   = '';
+	const SUMMARY = '';
+
+/* =============================================================
+	Indexes
+============================================================= */
+	public static function index(WireData $data) {}
 	
+	public static function handleCRUD(WireData $data) {
+		self::pw('session')->redirect(static::url(), $http301 = false);
+	}
+
+/* =============================================================
+	URLs
+============================================================= */
+	abstract public static function url();
+
 /* =============================================================
 	Render HTML
 ============================================================= */

@@ -1,8 +1,15 @@
 <?php namespace Controllers\Mar\Armain;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends AbstractController  {
+/**
+ * Armain\Menu
+ * 
+ * Class for rendering the Armain Menu
+ */
+class Menu extends AbstractMenuController  {
 	const DPLUSPERMISSION = 'armain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -93,37 +100,12 @@ class Menu extends AbstractController  {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::renderUserNotPermittedAlert();
-		}
-		return self::menu($data);
-	}
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function url() {
-		$url = new Purl(parent::menuUrl());
-		$url->path->add('armain');
-		return $url->getUrl();
+	public static function _url() {
+		return self::pw('pages')->get('pw_template=armain')->url;
 	}
 	
-	public static function menuUrl() {
-		return self::url();
-	}
-
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::menuUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
-	}
-
 	public static function ccmUrl() {
 		return self::subfunctionUrl('ccm');
 	}
@@ -178,21 +160,6 @@ class Menu extends AbstractController  {
 	
 	public static function wormUrl() {
 		return self::subfunctionUrl('worm');
-	}
-
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		self::initHooks();
-		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================

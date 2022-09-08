@@ -266,6 +266,8 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Routers\\Mpr' => __DIR__ . '/../..' . '/classes/routers/Mpr.php',
         'Controllers\\Routers\\Msa' => __DIR__ . '/../..' . '/classes/routers/Msa.php',
         'Controllers\\Routers\\Mso' => __DIR__ . '/../..' . '/classes/routers/Mso.php',
+        'Controllers\\Templates\\AbstractController' => __DIR__ . '/../..' . '/classes/templates/AbstractController.php',
+        'Controllers\\Templates\\AbstractMenuController' => __DIR__ . '/../..' . '/classes/templates/AbstractMenuController.php',
         'Controllers\\Wm\\Base' => __DIR__ . '/../..' . '/classes/Mwm/Base.php',
         'Controllers\\Wm\\Binr' => __DIR__ . '/../..' . '/classes/Mwm/binr/Binr.php',
         'Controllers\\Wm\\Inventory\\BinInquiry' => __DIR__ . '/../..' . '/classes/Mwm/inventory/BinInquiry.php',

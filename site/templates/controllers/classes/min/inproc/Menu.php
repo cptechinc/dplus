@@ -1,46 +1,24 @@
 <?php namespace Controllers\Min\Inproc;
 // Purl Library
 use Purl\Url as Purl;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends AbstractController {
+/**
+ * Inproc\Menu
+ * 
+ * Class for rendering the Inproc Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'inproc';
 	const SUBFUNCTIONS = [
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::renderUserNotPermittedAlert();
-		}
-		return self::menu($data);
-	}
-
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::pw('pages')->get('pw_template=inproc')->url);
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
+	public static function _url() {
+		return self::pw('pages')->get('pw_template=inproc')->url;
 	}
 
 /* =============================================================

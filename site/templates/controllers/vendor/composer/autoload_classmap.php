@@ -265,6 +265,8 @@ return array(
     'Controllers\\Routers\\Mpr' => $baseDir . '/classes/routers/Mpr.php',
     'Controllers\\Routers\\Msa' => $baseDir . '/classes/routers/Msa.php',
     'Controllers\\Routers\\Mso' => $baseDir . '/classes/routers/Mso.php',
+    'Controllers\\Templates\\AbstractController' => $baseDir . '/classes/templates/AbstractController.php',
+    'Controllers\\Templates\\AbstractMenuController' => $baseDir . '/classes/templates/AbstractMenuController.php',
     'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
     'Controllers\\Wm\\Inventory\\BinInquiry' => $baseDir . '/classes/Mwm/inventory/BinInquiry.php',

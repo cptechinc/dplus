@@ -1,8 +1,15 @@
 <?php namespace Controllers\Map\Apmain;
 // Purl Library
 use Purl\Url as Purl;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends AbstractController {
+/**
+ * Apmain\Menu
+ * 
+ * Class for rendering the Apmain Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'apmain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -39,49 +46,20 @@ class Menu extends AbstractController {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::renderUserNotPermittedAlert();
-		}
-		self::initHooks();
-		return self::menu($data);
-	}
-
-
-/* =============================================================
 	URLs
 ============================================================= */
 	public static function mapUrl() {
 		return self::pw('pages')->get('dplus_function=map')->url;
 	}
 
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::apmainUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
-	}
-
-	public static function apmainUrl() {
+	public static function _url() {
 		$url = new Purl(self::mapUrl());
 		$url->path->add('apmain');
 		return $url->getUrl();
 	}
 
-	public static function url() {
-		return self::apmainUrl();
-	}
-
-	public static function menuUrl() {
-		return self::apmainUrl();
-	}
-
-	public static function vtmUrl() {
-		return self::subfunctionUrl('vtm');
+	public static function aoptmUrl() {
+		return self::subfunctionUrl('aoptm');
 	}
 
 	public static function bumUrl() {
@@ -92,32 +70,12 @@ class Menu extends AbstractController {
 		return self::subfunctionUrl('mxrfe');
 	}
 
-	public static function aoptmUrl() {
-		return self::subfunctionUrl('aoptm');
+	public static function vtmUrl() {
+		return self::subfunctionUrl('vtm');
 	}
 
 	public static function vxmUrl() {
 		return self::subfunctionUrl('vxm');
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::displayMenu($data, $functions);
-	}
-
-	private static function displayMenu($data, array $functions) {
-		$html = '';
-		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
-		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
-		return $html;
 	}
 
 /* =============================================================
@@ -131,7 +89,7 @@ class Menu extends AbstractController {
 		});
 
 		$m->addHook('Page(pw_template=apmain)::apmainUrl', function($event) {
-			$event->return = self::apmainUrl($event->arguments(0));
+			$event->return = self::url();
 		});
 	}
 }
