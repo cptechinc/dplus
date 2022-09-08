@@ -11,13 +11,13 @@ use Controllers\Templates\AbstractMenuController;
  */
 class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'msa';
-	const TITLE = 'Maintenance';
+	const TITLE = 'System Administration';
 	const SUBFUNCTIONS = [
 		'lgrp' => [
 			'name'       => 'lgrp',
-			'permission' => 'lgrp',
-			'title'      => 'Login Group Entry',
-			'summary'    => 'View / Edit Login Groups'
+			'permission' => Lgrp::DPLUSPERMISSION,
+			'title'      => Lgrp::TITLE,
+			'summary'    => Lgrp::SUMMARY
 		],
 		'noce' => [
 			'name'       => 'noce',
