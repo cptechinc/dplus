@@ -131,6 +131,9 @@ class Roptm extends AbstractController {
 		if (empty($response)) {
 			return '';
 		}
+		if ($response->hasSuccess()) {
+			return '';
+		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
