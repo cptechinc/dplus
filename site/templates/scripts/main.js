@@ -94,6 +94,10 @@ $(function() {
 		var uri = URI();
 		var queryData = uri.query(true);
 
+		if (queryData.hasOwnProperty('focus')) {
+			delete queryData.focus;
+		}
+
 		if (queryData.hasOwnProperty('q')) {
 			delete queryData.q;
 		}
