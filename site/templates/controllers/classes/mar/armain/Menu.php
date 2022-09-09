@@ -43,6 +43,12 @@ class Menu extends AbstractMenuController  {
 			'title'      => Crtm::TITLE,
 			'summary'    => Crtm::SUMMARY
 		],
+		'ctm' => [
+			'name'       => 'ctm',
+			'permission' => Ctm::DPLUSPERMISSION,
+			'title'      => Ctm::TITLE,
+			'summary'    => Ctm::SUMMARY
+		],
 		'cuc' => [
 			'name'       => 'cuc',
 			'permission' => Cuc::DPLUSPERMISSION,
@@ -124,6 +130,10 @@ class Menu extends AbstractMenuController  {
 
 	public static function crtmUrl() {
 		return self::subfunctionUrl('crtm');
+	}
+
+	public static function ctmUrl() {
+		return self::subfunctionUrl('ctm');
 	}
 
 	public static function cucUrl() {

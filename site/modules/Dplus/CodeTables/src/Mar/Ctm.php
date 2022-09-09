@@ -1,14 +1,12 @@
 <?php namespace Dplus\Codes\Mar;
 // Propel Classes
-use Propel\Runtime\Collection\ObjectCollection;
+// use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ProcessWire\WireInput;
 // Dplus Models
-use ArCustTypeCodeQuery, ArCustTypeCode;
+use ArCustTypeCode;
 use ConfigAr;
-// Dplus Validators
-use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
@@ -33,7 +31,7 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 	const DPLUS_TABLE           = 'CTM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => ArCustTypeCode::MAX_LENGTH_CODE],
-		'description' => ['type' => 'text', 'maxlength' => 2],
+		'description' => ['type' => 'text', 'maxlength' => 20],
 		'maillist'    => ['type' => 'text', 'default' => 'N'],
 		'email'       => ['type' => 'text', 'maxlength' => 50],
 		'glsales'     => ['type' => 'text', 'title' => 'Sales'],
@@ -168,7 +166,7 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 
 		foreach ($this->glaccounts() as $field) {
 			if ($mhm->exists($values->text($field)) === false) {
-				$invalidfields[$fields] = $this->fieldAttribute($field, 'title');
+				$invalidfields[$field] = $this->fieldAttribute($field, 'title');
 			} else {
 				$setAcct = 'set' . ucfirst($field);
 				$code->$setAcct($values->text($field));

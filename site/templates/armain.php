@@ -32,6 +32,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Crtm::class, 'index'],
 			['POST',  '', Armain\Crtm::class, 'handleCRUD'],
 		],
+		'ctm' => [
+			['GET',  '', Armain\Ctm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Ctm::class, 'index'],
+			['POST',  '', Armain\Ctm::class, 'handleCRUD'],
+		],
 		'cuc' => [
 			['GET',  '', Armain\Cuc::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Cuc::class, 'index'],
