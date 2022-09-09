@@ -20,15 +20,24 @@ class DplusInput extends WireData implements Module {
 	 * @return string
 	 */
 	public function paginateUrl(WireInput $input, $options = []) {
-		$defaults = array(
+		$defaults = [
 			'includeQueryString' => true,
-			'pagenbr'            => 1
-		);
+			'pagenbr'            => 1,
+			'removeFromQueryString' => [],
+		];
 		$options = array_merge($defaults, $options);
 		$url = new Purl($input->url());
 
 		if ($options['includeQueryString'] === true) {
 			$url->query = $input->queryString();
+
+			if (empty($options['removeFromQueryString']) === false) {
+				foreach ($options['removeFromQueryString'] as $key) {
+					if ($url->query->has($key)) {
+						$url->query->remove($key);
+					}
+				}
+			}
 		}
 
 		$this->wire('modules')->get('Dpurl')->paginateSimple($url, $options['pagenbr']);
