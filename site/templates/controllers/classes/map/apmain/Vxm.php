@@ -256,13 +256,12 @@ class Vxm extends AbstractController{
 		$xref = $vxm->xref_by_recordlocker_key($focus);
 
 		if ($xref) {
-			$page = self::pw('pages')->get('template=vxm');
 			$url->query->set('focus', $focus);
 			$filter = new VxmFilter();
 			$filter->vendorid($vendorID);
 			$position = $filter->position($xref);
 			$pagenbr = self::getPagenbrFromOffset($position);
-			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+			$url = self::pw('modules')->get('Dpurl')->paginate($url, 'vxm', $pagenbr);
 		}
 		return $url->getUrl();
 	}
