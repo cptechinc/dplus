@@ -94,6 +94,9 @@ $(function() {
 		var uri = URI();
 		var queryData = uri.query(true);
 
+		var uriAction = URI(form.attr('action'));
+		uri.path(uriAction.path());
+
 		if (queryData.hasOwnProperty('focus')) {
 			delete queryData.focus;
 		}
