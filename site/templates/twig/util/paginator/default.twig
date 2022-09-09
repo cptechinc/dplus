@@ -3,7 +3,7 @@
 	<div>
 		<ul class="pagination">
 			<li class="page-item {{ (page.pagenbr == 1) ? 'disabled' : '' }}">
-				<a href="{{ page.paginatefull(page.pagenbr - 1) }}" class="page-link paginator-link" aria-label="Previous">
+				<a href="{{ input.paginateUrl(page.pagenbr - 1, {'removeFromQueryString': ['focus']}) }}" class="page-link paginator-link" aria-label="Previous">
 					<span aria-hidden="true">&laquo;</span>
 				</a>
 			</li>
@@ -16,7 +16,7 @@
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 						{% for i in 1..(page.get_pagecount(resultscount)) %}
 							{% if i > 0 %}
-								<a class="dropdown-item paginator-link {{ (page.pagenbr == i) ? 'active' : '' }}" href="{{ page.paginatefull(i) }}">
+								<a class="dropdown-item paginator-link {{ (page.pagenbr == i) ? 'active' : '' }}" href="{{ input.paginateUrl(i, {'removeFromQueryString': ['focus']}) }}">
 									{{ i }}
 								</a>
 							{% endif %}
@@ -26,7 +26,7 @@
 			</li>
 
 			<li class="page-item {{ (page.pagenbr == page.get_pagecount(resultscount)) ? 'disabled' : '' }}">
-				<a href="{{ page.paginatefull(page.pagenbr + 1)  }}" aria-label="Next" class="page-link paginator-link">
+				<a href="{{ input.paginateUrl(page.pagenbr + 1, {'removeFromQueryString': ['focus']})  }}" aria-label="Next" class="page-link paginator-link">
 					<span aria-hidden="true">&raquo;</span>
 				</a>
 			</li>
