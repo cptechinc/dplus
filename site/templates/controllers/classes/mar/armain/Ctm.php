@@ -47,7 +47,7 @@ class Ctm extends AbstractCodeTableController {
 				case 'update-notes':
 				case 'delete-notes':
 					$ctm->qnotes->processInput(self::pw('input'));
-					$url = self::codeEditUrl($data->whseID);
+					$url = self::codeEditUrl($data->code);
 					break;
 				default:
 					$ctm->processInput(self::pw('input'));
@@ -63,6 +63,7 @@ class Ctm extends AbstractCodeTableController {
 	protected static function code(WireData $data) {
 		$ctm = self::getCodeTable();
 		$code = $ctm->getOrCreate($data->code);
+		self::pw('page')->show_breadcrumbs = false;
 
 		if ($code->isNew() === false) {
 			self::pw('page')->headline = "CTM: Editing $data->code";
@@ -73,7 +74,7 @@ class Ctm extends AbstractCodeTableController {
 
 		if ($code->isNew() === false) {
 			self::pw('page')->js .= self::pw('config')->twig->render('msa/noce/ajax/js.twig');
-			// self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/iwhm/edit/qnotes/js.twig', ['iwhm' => $ctm]);
+			self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mar/ctm/edit/qnotes/.js.twig', ['manager' => $ctm]);
 		}
 		$html = self::displayCode($data, $code);
 		self::getCodeTable()->deleteResponse();
@@ -81,6 +82,7 @@ class Ctm extends AbstractCodeTableController {
 	}
 
 	protected static function list(WireData $data) {
+		self::pw('page')->show_breadcrumbs = false;
 		$ctm = self::getCodeTable();
 		$ctm->recordlocker->deleteLock();
 		$html =  parent::list($data);
@@ -109,6 +111,10 @@ class Ctm extends AbstractCodeTableController {
 
 	protected static function renderModal(WireData $data) {
 		return '';
+	}
+
+	protected static function renderBreadcrumbs(WireData $data) {
+		return self::pw('config')->twig->render('code-tables/mar/ctm/bread-crumbs.twig');
 	}
 
 	protected static function renderCode(WireData $data, Code $code) {

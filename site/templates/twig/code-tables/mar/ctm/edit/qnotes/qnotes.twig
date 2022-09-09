@@ -1,0 +1,28 @@
+<ul class="nav nav-tabs" id="qnotes-tabs" role="tablist">
+	{% for qnotes in ctm.qnotes.getQnotes() %}
+		<li class="nav-item" role="presentation">
+			<a class="nav-link {{ loop.first ? 'active' : '' }}" id="{{ constant('TYPE', qnotes) }}-tab" data-toggle="tab" href="#{{ constant('TYPE', qnotes) }}" role="tab" aria-controls="{{ constant('TYPE', qnotes) }}" aria-selected="true">
+				{{ notesType.getNotetypeDescription()|capitalize}} ({{ constant('TYPE', qnotes) }})
+			</a>
+		</li>
+	{% endfor %}
+</ul>
+<div class="tab-content" id="qnotes-notes">
+	{% for qnotes in ctm.qnotes.getQnotes() %}
+		<div class="tab-pane fade show {{ loop.first ? 'active' : '' }}" id="{{ constant('TYPE', qnotes) }}" role="tabpanel" aria-labelledby="{{ constant('TYPE', qnotes) }}-tab">
+			<div class="mb-3">
+				<textarea rows="8" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" class="form-control-plaintext w-auto qnotes validate-ignore">{{ qnotes.getNotesArray(code.code)|join('\r') }}</textarea>
+			</div>
+
+			{% if qnotes.notesExist(code.code) %}
+				<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#notes-modal" data-type="{{ qnotes.type() }}" data-description="{{ qnotes.typeDescription()|capitalize }}">
+					<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+				</button>
+			{% else %}
+				<button type="button" class="btn btn-secondary btn-sm notes_button" data-toggle="modal" data-target="#notes-modal" data-type="{{ qnotes.type() }}" data-description="{{ qnotes.typeDescription()|capitalize }}">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			{% endif %}
+		</div>
+	{% endfor %}
+</div>

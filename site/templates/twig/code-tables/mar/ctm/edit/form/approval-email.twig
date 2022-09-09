@@ -1,0 +1,16 @@
+<div class="row mb-3">
+	<div class="col-sm-4">
+		<label for="email">Order Approval Email</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'email',
+					'type': 'email',
+					'value': code.email,
+					'size': 'sm',
+				}
+			}
+		%}
+	</div>
+</div>
