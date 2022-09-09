@@ -66,7 +66,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 		$filter = static::getCodeFilter();
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$cols = self::pw('sanitizer')->array($data->col, ['delimiter' => ',']);
 			$cols = empty(array_filter($cols)) ? ['code', 'description'] : $cols;
 			$filter->search($data->q, $cols);

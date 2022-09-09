@@ -77,7 +77,7 @@ abstract class AbstractRecordSingleKeyController extends AbstractController {
 
 		$filter = static::getRecordFilter();
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 

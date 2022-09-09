@@ -47,7 +47,7 @@ class Aoptm extends AbstractController {
 		$page->headline = "AOPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
@@ -68,7 +68,7 @@ class Aoptm extends AbstractController {
 
 		$filter = self::getFilterSysop();
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);

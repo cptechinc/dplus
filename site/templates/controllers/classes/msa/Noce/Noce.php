@@ -52,7 +52,7 @@ class Noce extends Base {
 
 		$page->headline = "Pre-defined Notes";
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "NOCE: Searching for '$data->q'";
 		}

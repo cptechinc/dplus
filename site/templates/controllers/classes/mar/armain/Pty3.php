@@ -70,7 +70,7 @@ class Pty3 extends AbstractController {
 		$filter = new Filters\Mar\Customer();
 		$filter->custid(self::getRecordManager()->custids());
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$customers= CustomerManager::instance();
 			if ($customers->exists($data->q)) {
 				self::pw('session')->redirect(self::pty3CustUrl($data->q), $http301 = false);
@@ -97,7 +97,7 @@ class Pty3 extends AbstractController {
 		$filter = new Filters\Mar\ArCust3partyFreight();
 		$filter->custid($data->custID);
 		$filter->sort($input->get);
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$accounts = $filter->query->paginate($input->pageNum, self::SHOWONPAGE);

@@ -55,7 +55,7 @@ class Sysop extends Base {
 
 		$page->headline = "System Optional Codes";
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "SYSOP: Searching for '$data->q'";
 		}

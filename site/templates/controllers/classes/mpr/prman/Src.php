@@ -53,7 +53,7 @@ class Src extends AbstractController {
 
 		$page->headline = "Source Code";
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "SRC: Searching for '$data->q'";
 		}

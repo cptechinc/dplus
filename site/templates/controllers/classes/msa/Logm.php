@@ -57,7 +57,7 @@ class Logm extends Base {
 
 		$page->headline = "Login ID Entry";
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "LOGM: Searching for '$data->q'";
 		}

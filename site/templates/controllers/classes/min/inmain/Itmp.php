@@ -60,7 +60,7 @@ class Itmp extends AbstractController {
 		$filter = new Filters\Min\UserPermissionsItm();
 
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "ITMP: Searching for '$data->q'";
 		}

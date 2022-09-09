@@ -104,7 +104,7 @@ class Bmm extends AbstractController {
 			self::pw('session')->redirect(self::bomUrl($data->q), $http301 = false);
 		}
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "BMM: Searching for '$data->q'";
 		}

@@ -75,7 +75,7 @@ class Labels extends Base {
 			$filter->query->filterByItemid($data->itemID);
 		}
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$lotm = Lotm::getInstance();
 
 			if ($lotm->exists($data->q)) {
