@@ -22,7 +22,7 @@ class Sysop extends Base {
 	public static function index($data) {
 		$fields = ['system|text', 'code|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		// self::pw('page')->show_breadcrumbs = false;
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -99,7 +99,7 @@ class Sysop extends Base {
 		$sysop  = self::getSysop();
 
 		$html  = '';
-		// $html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/msa/sysop/list/filter.twig', ['sysop' => $sysop]);
 		$html .= $config->twig->render('code-tables/msa/sysop/list.twig', ['sysop' => $sysop, 'codes' => $codes]);
@@ -112,6 +112,7 @@ class Sysop extends Base {
 		$sysop  = self::getSysop();
 
 		$html  = '';
+		$html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= self::displayLock($data, $code);
 		$html .= $config->twig->render('code-tables/msa/sysop/form.twig', ['sysop' => $sysop, 'code' => $code]);
