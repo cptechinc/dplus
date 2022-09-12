@@ -8,8 +8,14 @@
 	response               XrefResponse|null
 #}
 <div class="card mb-3">
-	<div class="card-body">
+	<div class="mb-3">
 		{% include 'items/cxm/search/xref/customer/form.twig' with {'q': page.wire('input').get.text('q'), 'custID': customer.custid} %}
+
+		{% if input.get.text('q') %}
+			<a href="{{ input.url() }}" class="btn btn-warning mt-2">
+				<i class="fa fa-times"></i> Clear Search
+			</a>
+		{% endif %}
 	</div>
 
 	{% include 'items/cxm/list/customer.twig' %}
