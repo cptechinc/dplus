@@ -8,7 +8,7 @@
 		{% if label %}
 			<label for="{{ id }}">{{ label }}</label>
 		{% endif %}
-		<div class="input-group {{ small ? 'input-group+sm' : ''}}">
+		<div class="input-group {{ small ? 'input-group-sm' : ''}}">
 			{% include 'util/form/input.twig' %}
 			<div class="input-group-append">
 				<button type="submit" class="btn btn-light"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
