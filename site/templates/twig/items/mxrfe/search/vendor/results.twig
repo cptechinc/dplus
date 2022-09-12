@@ -1,11 +1,23 @@
-<div>
-	{% include 'util/form/search-form.twig' with {
-			'formid': 'vendor-search-form', 'url': input.paginateUrl(1, {'includeQueryString': false}),
-			'label': '',
-			'name': 'q', 'id': 'vendorq', 'q': '', 'value': input.get.text('q'), 'placeholder': 'Search Manufacturers by ID, Name, Address, City, State, Zip'
-		}
-	%}
+<div class="mb-3">
+	<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit">
+		<div class="input-group">
+			<input class="form-control inline" type="text" name="q" value="{{ input.get.text('q') }}" placeholder="Search Vendors by ID, Name, Address, City, State, Zip" autofocus>
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-light">
+					<i class="fa fa-search"></i> <span class="sr-only">Search</span>
+				</button>
+			</span>
+		</div>
+	</form>
+	{% if input.get.text('q') %}
+		<a href="{{ input.url() }}" class="btn btn-warning mt-2">
+			<i class="fa fa-times"></i> Clear Search
+		</a>
+	{% endif %}
 </div>
+
+
+
 <div class="row">
 	<div class="col-sm-8">
 		<h4>{{ vendors.getNbResults() }} Manufacturers</h4>
