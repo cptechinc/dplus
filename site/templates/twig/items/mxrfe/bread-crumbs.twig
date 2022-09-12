@@ -17,7 +17,7 @@
 		</li>
 		{% if (values.offsetExists('mnfritemID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.mnfrUrl(values.text('mnfrID')) }}">{{ values.text('mnfrID') }}</a>
+				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.text('mnfrID') }}</a>
 			</li>
 			{% if values.text('mnfritemID') == 'new' %}
 				<li class="breadcrumb-item active" aria-current="page">New</li>

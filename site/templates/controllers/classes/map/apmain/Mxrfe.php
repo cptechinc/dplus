@@ -76,7 +76,7 @@ class Mxrfe extends AbstractController {
 			$page->headline = "MXRFE: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
-			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
+			$page->headline = "MXRFE: $xref->itemid";
 		}
 		$page->js   .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 		$html = self::displayXref($data, $xref);
@@ -94,7 +94,7 @@ class Mxrfe extends AbstractController {
 		$filter->init();
 		$filter->vendorid($mxrfe->vendorids());
 		if ($data->q) {
-			$page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
+			// $page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);
@@ -114,9 +114,9 @@ class Mxrfe extends AbstractController {
 		$filter = new MxrfeFilter();
 		$filter->vendorid($data->mnfrID);
 		$filter->sortby($page);
-		$page->headline = "MXRFE: Mnfr $data->mnfrID";
+		$page->headline = "MXRFE: $data->mnfrID";
 		if ($data->q) {
-			$page->headline = "MXRFE: Searching $data->mnfrID X-Refs for '$data->q'";
+			// $page->headline = "MXRFE: Searching $data->mnfrID X-Refs for '$data->q'";
 			$filter->search($data->q);
 		}
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
@@ -136,7 +136,7 @@ class Mxrfe extends AbstractController {
 		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
 
 		$html = '';
-		$html .= self::mxrfeHeaders();
+		$html .= self::mxrfeHeaders($xref);
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/mxrfe/xref/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
 
@@ -171,12 +171,12 @@ class Mxrfe extends AbstractController {
 		return $html;
 	}
 
-	private static function mxrfeHeaders() {
+	private static function mxrfeHeaders(ItemXrefManufacturer $xref = null) {
 		$html = '';
 		$session = self::pw('session');
 		$config  = self::pw('config');
 
-		$html .= $config->twig->render('items/mxrfe/bread-crumbs.twig');
+		$html .= $config->twig->render('items/mxrfe/bread-crumbs.twig', ['xref' => $xref]);
 
 		$response = $session->getFor('response','mxrfe');
 		if (empty($response)) {
@@ -415,7 +415,9 @@ class Mxrfe extends AbstractController {
 
 		$m->addHook('Page(pw_template=apmain)::xrefExitUrl', function($event) {
 			$m = self::pw('modules')->get('XrefMxrfe');
+			$p = $event->object;
 			$xref = $event->arguments(0);
+			$event->return = $xref ? self::mnfrFocusUrl($xref->vendorid, $m->get_recordlocker_key($xref)) : self::mnfrUrl($p->wire('input')->get->text('mnfrID'));
 			$event->return = self::mnfrUrl($xref->vendorid, $m->get_recordlocker_key($xref));
 		});
 
