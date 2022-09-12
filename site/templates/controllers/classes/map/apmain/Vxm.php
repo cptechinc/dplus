@@ -89,7 +89,7 @@ class Vxm extends AbstractController{
 			$page->headline = "VXM: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
-			$page->headline = "VXM: " . $vxm->get_recordlocker_key($xref);
+			$page->headline = "VXM: " . $xref->itemid;
 		}
 
 		$page->js .= self::pw('config')->twig->render('items/vxm/xref/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
@@ -108,7 +108,7 @@ class Vxm extends AbstractController{
 		$filter->vendorid($vxm->vendorids());
 
 		if ($data->q) {
-			$page->headline = "VXM: Searching Vendors for '$data->q'";
+			$page->headline = "VXM";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);
@@ -128,9 +128,9 @@ class Vxm extends AbstractController{
 		$filter = new VxmFilter();
 		$filter->vendorid($data->vendorID);
 		$filter->sortby($page);
-		$page->headline = "VXM: Vendor $data->vendorID";
+		$page->headline = "VXM: $data->vendorID";
 		if ($data->q) {
-			$page->headline = "VXM: Searching $data->vendorID X-Refs for '$data->q'";
+			// $page->headline = "VXM: Searching $data->vendorID X-Refs for '$data->q'";
 			$filter->search($data->q);
 		}
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
