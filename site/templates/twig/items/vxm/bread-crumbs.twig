@@ -17,7 +17,7 @@
 		</li>
 		{% if (values.offsetExists('vendoritemID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.vendorUrl(values.text('vendorID')) }}">{{ values.text('vendorID') }}</a>
+				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.text('vendorID') }}</a>
 			</li>
 			{% if values.text('vendoritemID') == 'new' %}
 				<li class="breadcrumb-item active" aria-current="page">New X-Ref</li>

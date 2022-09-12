@@ -152,7 +152,7 @@ class Vxm extends AbstractController{
 		$vendor = $vxm->get_vendor($data->vendorID);
 
 		$html = '';
-		$html .= $config->twig->render('items/vxm/bread-crumbs.twig');
+		$html .= $config->twig->render('items/vxm/bread-crumbs.twig', ['xref' => $xref]);
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/vxm/xref/form/display.twig', ['vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
 
@@ -355,7 +355,7 @@ class Vxm extends AbstractController{
 			$p = $event->object;
 			$xref = $event->arguments(0); // Xref
 			$vxm  = self::vxmMaster();
-			$event->return = self::vendorFocusUrl($xref->vendorid, $vxm->get_recordlocker_key($xref));
+			$event->return = $xref ? self::vendorFocusUrl($xref->vendorid, $vxm->get_recordlocker_key($xref)) : self::vendorUrl($p->wire('input')->get->text('vendorID'));
 		});
 
 		$m->addHook('Page(pw_template=apmain)::xrefUrl', function($event) {
