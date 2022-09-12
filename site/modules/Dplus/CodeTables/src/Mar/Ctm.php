@@ -112,6 +112,24 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 /* =============================================================
 	CRUD Creates
 ============================================================= */
+	/**
+	 * Return New Code
+	 * @param  string $id
+	 * @return Code
+	 */
+	public function new($id = '') {
+		$code = parent::new($id);
+		/** @var ConfigAr */
+		$configAR = Configs\Ar::config();
+
+		$code->glfreight = $configAR->defaultGlCodeFreight;
+		$code->glmisc    = $configAR->defaultGlCodeMisc;
+		$code->glar      = $configAR->defaultGlCodeAr;
+		$code->glcash    = $configAR->defaultGlCodeCash;
+		$code->glfinance   = $configAR->defaultGlCodeFinance;
+		$code->gldiscounts = $configAR->defaultGlCodeDiscounts;
+		return $code;
+	}
 
 /* =============================================================
 	CRUD Processing
@@ -142,7 +160,9 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 		$values = $input->$rm;
 
 		$code->setMaillist($values->yn('maillist'));
-		$code->setEmail($values->email('email'));
+		if ($this->updateGlAccts() === false) {
+			$code->setEmail($values->email('email'));
+		}
 		$invalidfields = $this->_inputUpdateGlAccts($input, $code);
 		return $invalidfields;
 	}
