@@ -48,13 +48,14 @@ abstract class AbstractCodeTableEditableSingleKey extends AbstractCodeTableEdita
 	 * @return Code
 	 */
 	public function new($id = '') {
-		$code = new Code();
+		$class = $this->modelClassName();
+		$code = new $class();
 		$maxlength = $this->fieldAttribute('code', 'maxlength');
 
 		if ($maxlength) {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $maxlength]);
 		}
-		if (empty($id) === false) {
+		if (empty($id) === false && $id != 'new') {
 			$code->setId($id);
 		}
 		$code->setDummy('P');
