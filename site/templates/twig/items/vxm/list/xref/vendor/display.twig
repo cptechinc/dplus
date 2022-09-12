@@ -7,8 +7,13 @@
 {% endif %}
 
 <div class="card">
-	<div class="card-body">
+	<div class="mb-3">
 		{% include 'items/vxm/search/xref/vendor/form.twig' %}
+		{% if input.get.text('q') %}
+			<a href="{{ page.vendorUrl(input.get.text('vendorID')) }}" class="btn btn-warning mt-2">
+				<i class="fa fa-times"></i> Clear Search
+			</a>
+		{% endif %}
 	</div>
 
 	{% include 'items/vxm/list/xref/vendor/list.twig' %}

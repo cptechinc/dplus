@@ -1,5 +1,10 @@
-<div>
+<div class="mb-3">
 	{% include 'items/vxm/search/vendor/form.twig' %}
+	{% if input.get.text('q') %}
+		<a href="{{ input.url() }}" class="btn btn-warning mt-2">
+			<i class="fa fa-times"></i> Clear Search
+		</a>
+	{% endif %}
 </div>
 <div>
 	<div class="row">
