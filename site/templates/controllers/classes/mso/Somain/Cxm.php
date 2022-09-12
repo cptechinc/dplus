@@ -81,7 +81,7 @@ class Cxm extends AbstractController {
 			$page->headline = "CXM: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
-			$page->headline = "CXM: $xref->custitemid";
+			$page->headline = "CXM: $xref->itemid";
 		}
 
 		$page->js .= $config->twig->render('items/cxm/xref/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
