@@ -21,6 +21,7 @@ class Cxm extends AbstractController {
 		$fields = ['custID|text', 'custitemID|text', 'q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
+		self::pw('page')->headline = 'Customer Item X-Ref';
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -80,12 +81,13 @@ class Cxm extends AbstractController {
 			$page->headline = "CXM: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
-			$page->headline = "CXM: $xref->custid $xref->custitemid";
+			$page->headline = "CXM: $xref->custitemid";
 		}
 
 		$page->js .= $config->twig->render('items/cxm/xref/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
 
 		$html = self::xrefDisplay($data, $xref);
+		self::pw('session')->removeFor('response','cxm');
 		return $html;
 	}
 
@@ -94,7 +96,7 @@ class Cxm extends AbstractController {
 		$cxm    = self::getCxm();
 
 		$html = '';
-		$html .= self::cxmHeaders();
+		$html .= self::cxmHeaders($xref);
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/cxm/xref/form/display.twig', ['item' => $xref, 'cxm' => $cxm, 'qnotes' => self::pw('modules')->get('QnotesItemCxm')]);
 		if ($xref->isNew() === false && $cxm->recordlocker->userHasLocked($cxm->get_recordlocker_key($xref))) {
@@ -115,14 +117,16 @@ class Cxm extends AbstractController {
 		return $html;
 	}
 
-	private static function cxmHeaders() {
+	private static function cxmHeaders(ItemXrefCustomer $xref = null) {
 		$html = '';
 		$session = self::pw('session');
 		$config  = self::pw('config');
+		$response = $session->getFor('response','cxm');
 
-		$html .= $config->twig->render('items/cxm/bread-crumbs.twig');
-		if ($session->getFor('response','cxm')) {
-			$html .= $config->twig->render('items/cxm/response.twig', ['response' => $session->getFor('response','cxm')]);
+		$html .= $config->twig->render('items/cxm/bread-crumbs.twig', ['xref' => $xref]);
+
+		if ($response and $response->has_error()) {
+			$html .= $config->twig->render('items/cxm/response.twig', ['response' => $response]);
 		}
 		if ($session->response_qnote) {
 			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
@@ -169,7 +173,7 @@ class Cxm extends AbstractController {
 		$filter->custid($cxm->custids());
 
 		if ($data->q) {
-			$page->headline = "CXM: Searching Customers for '$data->q'";
+			// $page->headline = "CXM: Searching Customers for '$data->q'";
 			$filter->search($data->q);
 		}
 
@@ -180,8 +184,9 @@ class Cxm extends AbstractController {
 		$filter->sortby($page);
 		$customers = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
-		$page->js   .= self::pw('config')->twig->render('items/cxm/search/customer/js.twig');
+		$page->js  .= self::pw('config')->twig->render('items/cxm/search/customer/js.twig');
 		$html = self::listCustomersDisplay($data, $customers);
+		self::pw('session')->removeFor('response','cxm');
 		return $html;
 	}
 
@@ -220,6 +225,7 @@ class Cxm extends AbstractController {
 		$page->js .= self::pw('config')->twig->render('items/cxm/list/js.twig');
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$html = self::customerXrefsDisplay($data, $xrefs);
+		self::pw('session')->removeFor('response','cxm');
 		return $html;
 	}
 
@@ -399,9 +405,10 @@ class Cxm extends AbstractController {
 		});
 
 		$m->addHook('Page(pw_template=somain)::xrefExitUrl', function($event) {
+			$p = $event->object;
 			$xref = $event->arguments(0); // Xref
 			$cxm  = self::getCxm();
-			$event->return = self::xrefListUrl($xref->custid, $cxm->get_recordlocker_key($xref));
+			$event->return = $xref ? self::xrefListUrl($xref->custid, $cxm->get_recordlocker_key($xref)) : self::custUrl($p->wire('input')->get->text('custID'));
 		});
 
 		$m->addHook('Page(pw_template=somain)::xrefUrl', function($event) {
