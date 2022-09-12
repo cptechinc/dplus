@@ -1,7 +1,6 @@
 {% set values = page.wire('input').get %}
 
 <div class="mb-3">
-
 	{% if values.offsetExists('custitemID') %}
 		<a href="{{ page.custUrl(values.text('custID')) }}" class="btn btn-primary"> View Customer {{ page.custID }}</a>
 	{% endif %}
