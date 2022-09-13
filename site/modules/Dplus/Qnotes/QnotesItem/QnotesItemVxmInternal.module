@@ -189,6 +189,17 @@ class QnotesItemVxmInternal extends WireData implements Module {
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
+
+		if (empty(array_filter($note_lines))) {
+			$record = ItemXrefVendorNoteInternal::new();
+			$record->setVendorid($vendorID);
+			$record->setItemid($itemID);
+			$record->setUserid($userID);
+			$record->generateKey2(); // PK
+			$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $vendorID, [1]);
+			return true;
+		}
+
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
 			$record = ItemXrefVendorNoteInternal::new();

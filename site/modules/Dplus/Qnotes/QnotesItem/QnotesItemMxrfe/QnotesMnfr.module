@@ -173,6 +173,15 @@ class QnotesMnfr extends WireData implements Module {
 
 		$this->delete_notes($mnfrID, $mnfritemID);
 
+		if (empty(array_filter($note_lines))) {
+			$record = NoteMnfr::new();
+			$record->setMnfrid($mnfrID);
+			$record->setMnfritemid($mnfritemID);
+			$record->generateKey2(); // PK
+			$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, [1]);
+			return true;
+		}
+
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
 			$record = NoteMnfr::new();

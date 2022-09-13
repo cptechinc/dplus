@@ -171,6 +171,15 @@ class QnotesMmsc extends WireData implements Module {
 
 		$this->delete_notes($mnfrID, $mnfritemID);
 
+		if (empty(array_filter($note_lines))) {
+			$record = NoteMmsc::new();
+			$record->setMnfrid($mnfrID);
+			$record->setMnfritemid($mnfritemID);
+			$record->generateKey2(); // PK
+			$this->wire('session')->response_qnote = $this->process_responses($record, $mnfritemID, [1]);
+			return true;
+		}
+
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
 			$record = NoteMmsc::new();
@@ -185,7 +194,7 @@ class QnotesMmsc extends WireData implements Module {
 			$record->setDummy('P');
 			$lines_saved[$sequence] = $record->save();
 		}
-		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
+		$this->wire('session')->response_qnote = $this->process_responses($record, $mnfritemID, $lines_saved);
 	}
 
 	/**
@@ -194,11 +203,11 @@ class QnotesMmsc extends WireData implements Module {
 	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
 	 * @return CodeTableResponse
 	 */
-	protected function process_responses(NoteMmsc $note, $itemID, array $lines_saved) {
-		$message = self::DESCRIPTION_RESPONSE . " $itemID-{$note->key2} Note Lines";
+	protected function process_responses(NoteMmsc $note, $mnfritemID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " $mnfritemID-{$note->key2} Note Lines";
 
 		$response = new QnotesResponse();
-		$response->set_key("$itemID-{$note->key2}");
+		$response->set_key("$mnfritemID-{$note->key2}");
 		$response->set_type(self::TYPE);
 
 		if (in_array(false, $lines_saved)) {
