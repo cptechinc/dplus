@@ -1849,11 +1849,11 @@ fieldset:disabled a.btn {
     box-shadow: 0 0 0 .2rem rgba(255, 48, 79, 0.5)
 }
 
-.btn-outline-secondary.disabled,
+/* .btn-outline-secondary.disabled,
 .btn-outline-secondary:disabled {
     color: #FF304F;
     background-color: transparent
-}
+} */
 
 .btn-outline-secondary:not(:disabled):not(.disabled):active,
 .btn-outline-secondary:not(:disabled):not(.disabled).active,
