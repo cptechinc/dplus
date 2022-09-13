@@ -15,6 +15,9 @@ use Dplus\Filters\Mar\Customer as CustomerFilter;
 
 class Cxm extends AbstractController {
 	const DPLUSPERMISSION = 'cxm';
+	const TITLE = 'Customer Item X-Ref';
+	const SUMMARY = 'View / Edit Customer Item X-Refs';
+	
 	private static $cxm;
 
 	public static function index($data) {
