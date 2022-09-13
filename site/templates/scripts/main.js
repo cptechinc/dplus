@@ -449,6 +449,7 @@ function swal_delete_notes(callback) {
 
 	if (modal.length) {
 		modal.removeAttr('tabindex');
+		
 	}
 
 	swal2.fire({
@@ -463,9 +464,14 @@ function swal_delete_notes(callback) {
 		if (modal.length) {
 			modal.attr('tabindex', '-1');
 		}
+		
 		if (result.value) {
 			callback(true);
 		} else {
+			var form = modal.find('form');
+			if (form.length) {
+				form.attr('data-serialized', '');
+			}
 			callback(false);
 		}
 	});
