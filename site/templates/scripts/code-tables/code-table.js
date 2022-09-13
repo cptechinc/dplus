@@ -18,7 +18,7 @@ $(function() {
 
 		if (focusElement.length) {
 			focusElement.addClass('highlight');
-			$('html, body').animate({scrollTop: focusElement.offset().top,},700,'linear');
+			// $('html, body').animate({scrollTop: focusElement.offset().top,},700,'linear');
 		}
 	}
 });

@@ -2,6 +2,6 @@ $(function() {
 	{% set focus = page.wire('input').get.text('focus') %}
 	{% if focus and focus != 'new' %}
 		$('tr[data-cxm="{{ focus }}"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('[data-cxm="{{ focus }}"]').offset().top,},700,'linear');
+		// $('html, body').animate({scrollTop: $('[data-cxm="{{ focus }}"]').offset().top,},700,'linear');
 	{% endif %}
 });

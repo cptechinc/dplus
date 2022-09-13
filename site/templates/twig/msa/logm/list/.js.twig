@@ -4,6 +4,6 @@ $(function() {
 	if (uri.hasQuery('focus')) {
 		var query = uri.query(true);
 		$('[data-userid="'+query.focus+'"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('[data-userid="'+query.focus+'"]').offset().top,},700,'linear');
+		// $('html, body').animate({scrollTop: $('[data-userid="'+query.focus+'"]').offset().top,},700,'linear');
 	}
 });

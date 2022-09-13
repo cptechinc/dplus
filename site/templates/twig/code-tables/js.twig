@@ -15,6 +15,6 @@ $(function() {
 
 	if (queryData.hasOwnProperty('focus') && queryData.focus != 'new') {
 		$('.code[data-code="' + queryData.focus + '"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('.code[data-code="' + queryData.focus + '"]').offset().top,},700,'linear');
+		{# $('html, body').animate({scrollTop: $('.code[data-code="' + queryData.focus + '"]').offset().top,},700,'linear'); #}
 	}
 });

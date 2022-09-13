@@ -13,7 +13,7 @@ $(function() {
 
 	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
 		$('div[data-userid="'+query.focus+'"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('div[data-userid="'+query.focus+'"]').offset().top,},700,'linear');
+		// $('html, body').animate({scrollTop: $('div[data-userid="'+query.focus+'"]').offset().top,},700,'linear');
 	}
 
 
@@ -29,7 +29,7 @@ $(function() {
 		$('.bg-success').removeClass('bg-success text-white');
 		$('.highlight').removeClass('highlight');
 		$('.user-row[data-userid="'+loginID+'"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('.user-row[data-userid="'+loginID+'"]').offset().top,},700,'linear');
+		// $('html, body').animate({scrollTop: $('.user-row[data-userid="'+loginID+'"]').offset().top,},700,'linear');
 	});
 
 });

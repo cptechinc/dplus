@@ -204,24 +204,4 @@ $(function() {
 			glPctTotal: true
 		});
 	});
-
-/* =============================================================
-	Form Functions
-============================================================= */
-	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
-		var form = formCode.inputs.form;
-		form.validate().resetForm();
-		form.find('.is-invalid').removeClass("is-invalid");
-		form.find('.is-valid').removeClass("is-valid");
-		form.find('.invalid-feedback').remove();
-		form.find('.valid-feedback').remove();
-
-		if (form.attr('data-code')) {
-			$('.code-table-alert').remove();
-			$('.bg-success').removeClass('bg-success text-white');
-			$('.highlight').removeClass('highlight');
-			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
-			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
-		}
-	});
 })
