@@ -53,7 +53,7 @@ class Soptm extends AbstractController {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getSoptm()->recordlocker->deleteLock();
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getSoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getSoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getSoptm()->deleteResponse();
 		return $html;

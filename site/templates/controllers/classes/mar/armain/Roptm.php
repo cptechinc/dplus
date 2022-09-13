@@ -52,7 +52,7 @@ class Roptm extends AbstractController {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getRoptm()->recordlocker->deleteLock();
 		self::initHooks();
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getRoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getRoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getRoptm()->deleteResponse();
 		return $html;

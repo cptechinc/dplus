@@ -19,8 +19,10 @@ $(function() {
 
 	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
 		$('.code[data-id="'+query.focus+'"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('.code[data-id="'+query.focus+'"]').offset().top,},700,'linear');
+		// $('html, body').animate({scrollTop: $('.code[data-id="'+query.focus+'"]').offset().top,},700,'linear');
 	}
+
+	{% include 'code-tables/js/events/input-code-force-focus.js.twig' %}
 
 /* =============================================================
 	Edit Modal Functions
@@ -61,7 +63,7 @@ $(function() {
 		$('.code-table-alert').remove();
 		$('.codes-list .highlight').removeClass('highlight')
 		$('.codes-list .bg-success').removeClass('bg-success').removeClass('text-white');
-
+		
 		modal.find('.modal-title').text('Add Code');
 		if (code) {
 			modal.find('.modal-title').text('Edit Code');
@@ -87,6 +89,8 @@ $(function() {
 		var row   = $('.codes-list').find('[data-id="'+code+'"]');
 		row.addClass('highlight');
 		formCode.form.validate().resetForm();
+		modal.find('form').find('.is-valid').removeClass('is-valid');
+		modal.find('form').find('.is-invalid').removeClass('is-invalid');
 	});
 
 /* =============================================================

@@ -54,7 +54,7 @@ class Aoptm extends AbstractController {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getAoptm()->recordlocker->deleteLock();
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getAoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getAoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getAoptm()->deleteResponse();
 		return $html;
