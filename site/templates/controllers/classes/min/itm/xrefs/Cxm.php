@@ -10,7 +10,7 @@ use ProcessWire\Page, ProcessWire\XrefCxm as CxmCRUD;
 // Dplus Filters
 use Dplus\Filters\Mso\Cxm as CxmFilter;
 // Mvc Controllers
-use Controllers\Mso\Cxm as CxmController;
+use Controllers\Mso\Somain\Cxm as CxmController;
 
 class Cxm extends Base {
 	const PERMISSION_ITMP = 'xrefs';
