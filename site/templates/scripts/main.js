@@ -217,11 +217,8 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var modal = button.closest('.modal');
-		console.log(button);
-		console.log(modal);
 
 		if (modal.length) {
-			console.log('wassup');
 			modal.removeAttr('tabindex');
 		}
 
