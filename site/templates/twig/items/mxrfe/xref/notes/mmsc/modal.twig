@@ -11,7 +11,9 @@
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="notes-mmsc-modal-label"><span class="action-desc">Adding</span> Mnfr {{ xref.mnfrid }} item {{ xref.mnfritemid }} Notes</h5>
+				<h5 class="modal-title" id="notes-mmsc-modal-label">
+					{{ xref.mnfrid }} Misc Notes for {{ xref.itemid }} 
+				</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -33,7 +35,7 @@
 							{% include 'util/qnotes-textarea.twig' with {
 									'name': 'note',
 									'id': 'mmsc-note',
-									'cols': qnotes.mmsc.get_column_count()
+									'cols': qnotes.mmsc.get_column_count(),
 								}
 							%}
 						</div>
@@ -43,9 +45,11 @@
 						<button type="submit" name="action" value="update-notes" class="btn btn-success">
 							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 						</button>
-						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
-							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-						</button>
+						<div>
+							<button type="submit" name="action" value="delete-notes" class="btn btn-danger collapse show">
+								<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+							</button>
+						</div>
 						<button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
 							<i class="fa fa-times" aria-hidden="true"></i> Close
 						</button>

@@ -2,30 +2,64 @@ $(function () {
 	var form_intv  = $('#intv-form');
 	var modal_intv = $('#notes-intv-modal');
 
-	modal_intv.on('shown.bs.modal', function (e) {
+	modal_intv.on('show.bs.modal', function (e) {
 		var modal = $(this);
 		var button = $(e.relatedTarget);
 		var note_row = button.closest('.qnote-row');
+		var form   = modal.find('form');
 
 		if ($('.response-alert').length) {
 			$('.response-alert').remove();
 		}
 
 		if (note_row.length) {
-			modal.find('.action-desc').text('Editing');
+			// {# modal.find('.action-desc').text('Editing'); #}
 			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');
+			modal.find('input[name=notedate]').attr('readonly', '');
+			modal.find('input[name=notedate]').closest('.datepicker').find('.dropdown-toggle').attr('disabled', '');
 			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', '');
 			modal.find('input[name=rawnotetime]').val(button.data('rawnotetime'));
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
+			modal.find('button[value=delete-notes]').addClass('show');
 		} else {
-			modal.find('.action-desc').text('Adding');
+			// modal.find('.action-desc').text('Adding');
 			modal.find('input[name=rawnotetime]').val('');
 			modal.find('textarea[name=note]').val('');
+			modal.find('input[name=notedate]').closest('.datepicker').find('.dropdown-toggle').removeAttr('disabled');
+			modal.find('button[value=delete-notes]').removeClass('show');
 
 			$.getJSON('{{ page.jsonApiUrl('misc/date-time/') }}', function(datetime) {
 				modal.find('input[name=notetime]').val(datetime.time).removeAttr('readonly');
 				modal.find('input[name=notedate]').val(datetime.date).removeAttr('readonly');
 			});
+		}
+		form.attr('data-serialized', form.serialize());
+	});
+
+	modal_intv.on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var alarm = Alerts.getInstance();
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				if (modal.length) {
+					modal.removeAttr('tabindex');
+				}
+
+				alarm.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.submit();
+						return true;
+					}
+					modal.attr('tabindex', '-1');
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
 		}
 	});
 
@@ -43,9 +77,13 @@ $(function () {
 			internal_note_date: { required: true, },
 			internal_notetime:  { required: true, },
 		},
-		messages: {},
 		submitHandler: function(form) {
 			var values = $(form).formValues();
+			if (values.action) {
+
+			} else {
+				values.action = 'update-notes';
+			}
 			$('<input type="hidden" name="action" value="'+values.action+'">').appendTo($(form));
 
 			if (values.action == 'delete-notes') {

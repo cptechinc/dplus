@@ -11,7 +11,9 @@
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="notes-mnfr-modal-label"><span class="action-desc">Adding</span> Mnfr {{ xref.mnfrid }} item {{ xref.mnfritemid }} Notes</h5>
+				<h5 class="modal-title" id="notes-mnfr-modal-label">
+					{{ xref.mnfrid }} Manufacturer Notes for {{ xref.itemid }} 
+				</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -44,9 +46,11 @@
 							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 						</button>
 						{# TODO: add confirmation for deletion 'delete_button' #}
-						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
-							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-						</button>
+						<div>
+							<button type="submit" name="action" value="delete-notes" class="btn btn-danger collapse show">
+								<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+							</button>
+						</div>
 						<button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
 							<i class="fa fa-times" aria-hidden="true"></i> Close
 						</button>

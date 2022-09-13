@@ -14,6 +14,7 @@ $(function () {
 
 	modal_mnfr.on('show.bs.modal', function (e) {
 		var modal = $(this);
+		var form   = modal.find('form');
 		var button = $(e.relatedTarget);
 
 		var notefield = $(button.data('notesinput'));
@@ -22,19 +23,49 @@ $(function () {
 		modal.find('textarea[name=note]').val(note);
 
 		if (note.length) {
-			modal.find('.action-desc').text('Editing');
+			// modal.find('.action-desc').text('Editing');
+			modal.find('button[value=delete-notes]').addClass('show');
 		} else {
-			modal.find('.action-desc').text('Adding');
+			// modal.find('.action-desc').text('Adding');
+			modal.find('button[value=delete-notes]').removeClass('show');
 		}
 		
 		if ($('.response-alert').length) {
 			$('.response-alert').remove();
 		}
+		form.attr('data-serialized', form.serialize());
 	});
 
 	$('#notes-mnfr-modal').on('shown.bs.modal', function (e) {
 		var modal = $(this);
 		modal.find('textarea').focus();
+	});
+
+	modal_mnfr.on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var alarm = Alerts.getInstance();
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				if (modal.length) {
+					modal.removeAttr('tabindex');
+				}
+
+				alarm.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.submit();
+						return true;
+					}
+					modal.attr('tabindex', '-1');
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
+		}
 	});
 
 /* =============================================================
@@ -51,6 +82,11 @@ $(function () {
 		messages: {},
 		submitHandler: function(form) {
 			var values = $(form).formValues();
+			if (values.action) {
+
+			} else {
+				values.action = 'update-notes';
+			}
 			$('<input type="hidden" name="action" value="'+values.action+'">').appendTo($(form));
 
 			if (values.action == 'delete-notes') {
