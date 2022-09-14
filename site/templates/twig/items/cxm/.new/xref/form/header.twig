@@ -1,0 +1,33 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	qnotes                 module QnotesItemXrefCustomer
+	item                   ItemXrefCustomer
+	xref.item              ItemMasterItem
+#}
+
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label>Notes</label>
+	</div>
+	<div class="col-sm-8">
+		{{ qnotes.notes_exist_item(xref.itemid, xref.custid)|yesorno|capitalize }}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="revision">Revision</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'name': 'revision', 'value': xref.revision,
+				'attributes': {
+					'maxlength': cxm.field_attribute('revision', 'maxlength'),
+				}
+			}
+		%}
+	</div>
+</div>

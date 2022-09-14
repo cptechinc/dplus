@@ -1,0 +1,182 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	item                   ItemXrefCustomer
+#}
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="uom_customer">Customer UoM</label>
+	</div>
+	<div class="col-sm-6">
+		<select name="uom_customer" class="form-control form-control-sm mb-1 {{ cxm.field_has_error('uom_customer') ? 'is-invalid' : ''}}" id="uom_customer">
+			<option value=""></option>
+			{% for uom in cxm.get_unitsofm_sales() %}
+				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == xref.uom_customer ? 'selected' : ''}}>
+					{{ uom.code }} - {{ uom.description }}
+				</option>
+			{% endfor %}
+		</select>
+		<small class="form-text text-muted item-uom">Item UoM: {{ xref.item.uom_sale }}</small>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="conversion">Conversion</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/form/input.twig' with {
+				'name': 'conversion', 'value': xref.conversion|number_format(cxm.field_attribute('conversion', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('conversion', 'max'),
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="qty_percase">Qty Per Case</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/form/input.twig' with {
+				'name': 'qty_percase', 'value': xref.qty_percase|number_format(cxm.field_attribute('qty_percase', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('qty_percase', 'max'),
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="qty_purchase">Purchase Qty</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/form/input.twig' with {
+				'name': 'qty_purchase', 'value': xref.qty_purchase|number_format(cxm.field_attribute('qty_purchase', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('qty_purchase', 'max'),
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="price_retail">Retail Price</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/form/input.twig' with {
+				'name': 'price_retail', 'value': xref.price_retail|number_format(cxm.field_attribute('price_retail', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('price_retail', 'max'),
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="price_customer">Cust Price</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/form/input.twig' with {
+				'name': 'price_customer', 'value': xref.price_customer|number_format(cxm.field_attribute('price_customer', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('price_customer', 'max'),
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label>Contract</label>
+	</div>
+	<div class="col-sm-6">
+		<p class="form-control-plaintext form-control-sm text-right w-75">
+			{{ (xref.has_customerpricing() ? xref.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}
+			<input type="hidden" name="price_contract" value="{{ (xref.has_customerpricing() ? xref.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}">
+		</p>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="uom_pricing">Pricing UoM</label>
+	</div>
+	<div class="col-sm-6">
+		<select name="uom_pricing" class="form-control form-control-sm mb-1 {{ cxm.field_has_error('uom_pricing') ? 'is-invalid' : ''}}" id="uom_pricing">
+			<option value=""></option>
+			{% for uom in cxm.get_unitsofm_sales() %}
+				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == xref.uom_pricing ? 'selected' : ''}}>
+					{{ uom.code }} - {{ uom.description }}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-3">
+		<label for="price_uom">Per UoM</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/form/input.twig' with {
+				'type': 'number',
+				'name': 'price_uom',
+				'value': xref.get_pricing_peruom() ? xref.get_pricing_peruom()|number_format(cxm.field_attribute('price_uom', 'precision')),
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'readonly': xref.uom_pricing ? false : true,
+					'tabindex': xref.uom_pricing ? '' : '-1',
+					'max': cxm.field_attribute('price_uom', 'max')
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="rounding">Rounding</label>
+	</div>
+	<div class="col-sm-6">
+		<select name="rounding" class="form-control form-control-sm mb-1" id="rounding">
+			{% for value, label in cxm.get_rounding_options() %}
+				<option value="{{ value }}" {{ value == xref.rounding ? 'selected' : ''}}>
+					{{ label|capitalize }}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>

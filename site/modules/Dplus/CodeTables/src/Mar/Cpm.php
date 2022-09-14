@@ -61,12 +61,11 @@ class Cpm extends AbstractCodeTableEditableSingleKey {
 	 * @return ArPriceCode
 	 */
 	public function new($id = '') {
-		$this->initFieldAttributes();
 		$code = new ArPriceCode();
 
 		if (empty($id) === false && strtolower($id) != 'new') {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
+			$code->setCode($id);
 		}
 		$code->setSurcharge($this->fieldAttribute('surcharge', 'default'));
 		$code->setPercent($this->fieldAttribute('percent', 'default'));
@@ -86,7 +85,7 @@ class Cpm extends AbstractCodeTableEditableSingleKey {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$invalidfields   = parent::_inputUpdate($input, $code);
+		$invalidfields   = parent::_inputUpdate($input, $code);		
 		$code->setSurcharge($values->yn('surcharge'));
 		$code->setPercent($values->float('percent', ['precision' => $this->fieldAttribute('percent', 'precision'), 'max' => $this->fieldAttribute('percent', 'max')]));
 		return $invalidfields;

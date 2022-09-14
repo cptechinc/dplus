@@ -1,0 +1,103 @@
+{% include 'items/cxm/.new/xref/qnotes/js/classes.twig' %}
+
+$(function() {
+	var formdefaults = {{ qnotes.get_form_defaults()|json_encode()|raw }};
+	var qnotesModal = $('#notes-order-modal');
+	var alert = QnotesAlerts.getInstance();
+	var qnotesForm = QnotesForm.getInstance();
+
+/* =============================================================
+	Order Notes Functions
+============================================================= */
+	qnotesModal.on('show.bs.modal', function (e) {
+		var modal = $(this);
+		var button = $(e.relatedTarget);
+		populate_notes_form(button, modal);
+	});
+
+	qnotesModal.on('shown.bs.modal', function (e) {
+		var modal = $(this);
+		modal.find('textarea[name=note]').focus();
+	});
+
+	$("#order-notes-form").validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		ignore: ".validate-ignore",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			note: {
+				required: true,
+			},
+		},
+		messages: {
+			note: "Please Enter a Note",
+		},
+		submitHandler: function(form) {
+			var action = $(this.submitButton).attr("value");
+			var jform = $(form);
+			var modal = jform.closest('.modal');
+
+			if (modal.length) {
+				modal.removeAttr('tabindex');
+			}
+
+			if (action == 'delete-notes') {
+				
+				alert.delete(function(confirmDelete) {
+					if (confirmDelete) {
+						$('<input type="hidden" name="action" value="delete-notes">').appendTo(jform);
+						form.submit();
+					}
+					if (modal.length) {
+						modal.attr('tabindex', '-1');
+					}
+				});
+			} else {
+				if (qnotesForm.hasDocumentSelected()) {
+					console.log(qnotesForm.getNoteFormscode());
+					if (qnotesForm.noteFormsExists() && jform.find('input[name=form]').val() != qnotesForm.getNoteFormscode())  {
+						alert.codeExists(qnotesForm.getNoteFormscode(), function(confirmEdit) {
+							if (confirmEdit) {
+								var button = $('.qnote-order-row[data-form='+qnotesForm.getNoteFormscode()+']').find('button.edit');
+								var modal = $('#notes-order-modal');
+								populate_notes_form(button, modal);
+							}
+						});
+					} else {
+						// form.submit();
+					}
+				} else {
+					var notesform = $(form);
+					var ele_feedback = notesform.find('.feedback');
+					ele_feedback.addClass('is-invalid');
+					ele_feedback.html($('<label>Please check a document to add a note to</label>').addClass('invalid-feedback').show());
+				}
+				if (modal.length) {
+					modal.attr('tabindex', '-1');
+				}
+			}
+		}
+	});
+
+	function populate_notes_form(button, modal) {
+		var note_row = button.closest('.qnote-order-row');
+
+		if (note_row.length) {
+			modal.find('input.order-form').each(function(index) {
+				var input = $(this);
+				input.prop('checked', button.data(input.attr('name')) == 'Y');
+			});
+			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
+		} else {
+			modal.find('input.order-form').each(function(index) {
+				var input = $(this);
+				input.prop('checked', formdefaults[input.attr('name')] == 'Y');
+			});
+			modal.find('textarea[name=note]').val('');
+		}
+		modal.find('input[name=form]').val(button.data('form'));
+	}
+});

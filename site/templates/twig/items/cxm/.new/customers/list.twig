@@ -1,0 +1,75 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	customers              Customer[]|ObjectCollection
+#}
+<table id="customer-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('custid') }}" class="link">
+					ID
+					{% if page.orderby_column == 'custid' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">
+					Name
+					{% if page.orderby_column == 'name' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('city') }}" class="link">
+					City
+					{% if page.orderby_column == 'city' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('state') }}" class="link">
+					State
+					{% if page.orderby_column == 'state' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('zip') }}" class="link">
+					Zip
+					{% if page.orderby_column == 'zip' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if customers.count() %}
+			{% for customer in customers %}
+				<tr data-custid="{{ customer.id }}">
+					<td scope="row">
+						<a href="{{ page.custUrl(customer.id) }}" class="link">
+							<strong>{{ customer.id }}</strong>
+						</a>
+					</td>
+					<td>{{ customer.name }}</td>
+					<td>{{ customer.city }}</td>
+					<td>{{ customer.state }}</td>
+					<td>{{ customer.zip }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="5" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>

@@ -1,0 +1,22 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	items                  ItemXrefCxm[]|ObjectCollection
+	response               XrefResponse|null
+#}
+<div class="mb-3">
+	{% include 'items/cxm/.new/customer/xrefs/form.twig' %}
+
+	{% if input.get.text('q') %}
+		<a href="{{ page.custUrl(input.get.text('custID')) }}" class="btn btn-warning mt-2">
+			<i class="fa fa-times"></i> Clear Search
+		</a>
+	{% endif %}
+</div>
+
+{% include 'items/cxm/.new/customer/xrefs/list.twig' %}
+{% include 'util/paginator/propel.twig' with {'pager': xrefs} %}
+

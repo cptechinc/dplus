@@ -1,0 +1,22 @@
+class QnotesConfig {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new QnotesConfig();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.defaults = {{ qnotes.get_form_defaults()|json_encode()|raw }};
+		this.fields = {
+			// code: {
+			// 	maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
+			// },
+			// description: {
+			// 	maxlength: {{ manager.fieldAttribute('description', 'maxlength') }}
+			// },
+		};
+	}
+}

@@ -1,0 +1,139 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	qnotes                 module QnotesItemXrefCustomer
+	item                   ItemXrefCustomer
+	xref.item              ItemMasterItem
+#}
+{% if page.pw_template == 'somain' %}
+	<input type="hidden" name="custID" value="{{ xref.custid }}">
+{% endif %}
+
+{% if page.pw_template == 'itm' %}
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="custID">Customer ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'input': {
+							'name': 'custID',
+							'id': 'custID',
+							'value': xref.custid,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Customer ID',
+								'readonly': xref.isNew() ? false : true
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Customers',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('customers'),
+								'data-input': '#custID'
+							}
+						}
+					}
+				}
+			%}
+			<small class="form-text text-muted customer-name">{{ xref.customer.name }}</small>
+		</div>
+	</div>
+{% endif %}
+
+
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="custitemID">Customer Item ID</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'name': 'custitemID', 'value': xref.custitemID,
+				'attributes': {
+					'data-custitemid': xref.custitemID,
+					'maxlength': cxm.maxlength_custitemid(),
+					'readonly': xref.custitemid ? true : false,
+					'tabindex': xref.custitemid ? '-1' : '',
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-3">
+		<label for="description">Description</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'name': 'description', 'value': xref.description,
+				'attributes': {
+					'maxlength': cxm.maxlength_description()
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'name': 'description2', 'value': xref.description2,
+				'attributes': {
+					'maxlength': cxm.maxlength_description2()
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="itemID">Our Item ID</label>
+	</div>
+	<div class="col-sm-8 item-col">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': page.pw_template == 'itm'
+					},
+					'input': {
+						'name': 'itemID',
+						'id': 'itemID',
+						'value': xref.itemid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'itemid':     xref.itemid,
+							'qtypercase': xref.qty_percase,
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#itemID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ xref.xref.description }}</small>
+		<small class="form-text text-muted description2">{{ xref.xref.description2 }}</small>
+	</div>
+</div>
