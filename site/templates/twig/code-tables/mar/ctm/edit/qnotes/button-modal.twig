@@ -1,9 +1,3 @@
-{% if qnotes.notesExist(code.code) %}
-	<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#notes-modal" data-type="{{ constant('TYPE', qnotes) }}" data-description="{{ notesType.getNotetypeDescription()|capitalize }}">
-		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-	</button>
-{% else %}
-	<button type="button" class="btn btn-secondary btn-sm notes_button" data-toggle="modal" data-target="#notes-modal" data-type="{{ constant('TYPE', qnotes) }}" data-description="{{ notesType.getNotetypeDescription()|capitalize }}">
-		<i class="fa fa-plus" aria-hidden="true"></i> Add
-	</button>
-{% endif %}
+<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#notes-modal" data-type="{{ constant('TYPE', qnotes) }}" data-description="{{ qnotes.getNotetypeDescription()|capitalize }}">
+	<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+</button>

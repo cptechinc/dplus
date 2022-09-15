@@ -11,7 +11,21 @@
 	{% for qnotes in ctm.qnotes.getQnotes() %}
 		<div class="tab-pane fade show {{ loop.first ? 'active' : '' }}" id="{{ constant('TYPE', qnotes) }}" role="tabpanel" aria-labelledby="{{ constant('TYPE', qnotes) }}-tab">
 			<div class="mb-3">
-				<textarea rows="8" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" class="form-control-plaintext w-auto qnotes validate-ignore">{{ qnotes.getNotesArray(code.code)|join('\r') }}</textarea>
+				{% set note_lines = qnotes.getNotesArray(code.code) %}
+				{% include 'util/bootstrap/form/textarea.twig' with {
+					'textarea': {
+						'id': 'manf-notes',
+						'value': note_lines|join('\r'),
+						'inputclass': 'form-control-plaintext',
+						'addclasses': ['qnotes', 'readonly', 'collapse'],
+						'attributes': {
+							'cols': qnotes.fieldAttribute('note', 'cols'),
+							'rows': note_lines|length,
+							'readonly': true,
+							'disabled': true,
+						}
+					}
+				} %}
 			</div>
 
 			{% if qnotes.notesExist(code.code) %}

@@ -9,14 +9,46 @@
 </ul>
 <div class="tab-content" id="qnotes-notes">
 	{% for qnotes in manager.qnotes.getQnotes() %}
+		{% set note_lines = qnotes.getNotesArray(code.code) %}
+
 		<div class="tab-pane fade show {{ loop.first ? 'active' : '' }}" id="{{ constant('TYPE', qnotes) }}" role="tabpanel" aria-labelledby="{{ constant('TYPE', qnotes) }}-tab">
-			{% include 'code-tables/mar/ctm/edit/qnotes/button-modal.twig' %}
+			<div class="list-group">
+				<div class="list-group-item list-group-item-action bg-dark text-white">
+					<div class="row">
+						<div class="col-sm-10">{{ qnotes.getNotetypeDescription()|capitalize }} Notes</div>
+					</div>
+				</div>
 
-			<div class="mb-3">
-				<textarea rows="8" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" class="form-control-plaintext w-auto qnotes validate-ignore" data-type="{{ qnotes.type() }}" readonly>{{ qnotes.getNotesArray(code.code)|join('\r') }}</textarea>
+				<div class="list-group-item">
+					<div class="row">
+						<div class="col-sm-9">
+							{{ note_lines[0] }}
+							{% include 'util/bootstrap/form/textarea.twig' with {
+								'textarea': {
+									'id': qnotes.type() ~ '-notes',
+									'value': note_lines|join('\r'),
+									'inputclass': 'form-control-plaintext',
+									'addclasses': ['qnotes', 'readonly', 'collapse'],
+									'attributes': {
+										'cols': qnotes.fieldAttribute('note', 'cols'),
+										'rows': note_lines|length,
+										'readonly': true,
+										'disabled': true,
+										'data-type': qnotes.type()
+									}
+								}
+							} %}
+						</div>
+						<div class="col-sm-3">	
+							<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#{{ qnotes.type() }}-notes" aria-expanded="false" aria-controls="{{ qnotes.type() }}-notes">
+								<i class="fa fa-eye" aria-hidden="true"></i> Show
+							</button>
+							&nbsp; &nbsp;
+							{% include 'code-tables/mar/ctm/edit/qnotes/button-modal.twig' %}
+						</div>
+					</div>
+				</div>
 			</div>
-
-			{% include 'code-tables/mar/ctm/edit/qnotes/button-modal.twig' %}
 		</div>
 	{% endfor %}
 </div>
