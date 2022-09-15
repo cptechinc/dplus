@@ -8,7 +8,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.url }}" method="get" id="new-xref-form">
+				<form action="{{ input.url() }}" method="get" id="new-xref-form">
 					<div class="form-group">
 						<label for="newmnfrID">Manufacturer ID</label>
 						{% include 'util/bootstrap/form/input-group.twig' with {
