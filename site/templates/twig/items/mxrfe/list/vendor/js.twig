@@ -1,8 +1,8 @@
 $(function() {
 	{% if input.get.offsetExists('focus') and input.get.text('focus') != 'new' %}
-		$('tr[data-mxrfe="{{ input.get.text('focus') }}"]').addClass('highlight');
+		// $('tr[data-mxrfe="{{ input.get.text('focus') }}"]').addClass('highlight');
 		// $('html, body').animate({scrollTop: $('#{{ page.focus }}').offset().top,},700,'linear');
-		$('html, body').animate({scrollTop: $('[data-mxrfe="{{ page.focus }}"]').offset().top,},700,'linear');
+		// $('html, body').animate({scrollTop: $('[data-mxrfe="{{ page.focus }}"]').offset().top,},700,'linear');
 	{% endif %}
 
 /* =============================================================
