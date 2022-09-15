@@ -163,6 +163,10 @@ class VxmForm {
 	updateEachListPriceUsingOrdercodeCosting() {
 		var config = VxmConfigs.getInstance();
 		var changeItmCost = config.ordercodesForChangingItmCost.contains(this.inputs.ordercode.val());
+		this.inputs.eachlistprice.val(floatParse(this.getListPriceEach()).toFixed(config.fields.listprice.precision));
+		console.log('changeItmCost ' + changeItmCost);
+		console.log('allowListPriceUpdate ' + config.allowListPriceUpdate);
+
 		if (changeItmCost && config.allowListPriceUpdate) {
 			this.inputs.eachlistprice.val(floatParse(this.getListPriceEach()).toFixed(config.fields.listprice.precision));
 		}
