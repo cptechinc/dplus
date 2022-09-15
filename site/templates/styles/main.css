@@ -296,10 +296,25 @@ input.form-control[type=number] {
 	-moz-appearance: textfield;
 }
 
-textarea.qnotes {
+textarea.qnotes, div.qnotes {
 	font-family: monospace;
 	word-break: keep-all;
 	overflow-y: scroll;
+	resize: none;
+}
+
+textarea.no-resize {
+	resize: none;
+}
+
+textarea.qnotes.readonly {
+	overflow-y: auto;
+}
+
+
+div.qnotes {
+	font-family: monospace;
+	word-break: keep-all;
 }
 
 .input-group > .input-group-append.w25 {
