@@ -33,7 +33,21 @@
 					</button>
 				</div>
 			</div>
-			<textarea class="collapse form-control-plaintext" id="notes-order-{{ note.form }}" cols="{{ qnotes.get_column_count() }}" readonly>{{ qnotes.get_notes_form_array(xref.itemid, xref.custid, note.form)|join('\r') }}</textarea>
+			{% set note_lines = qnotes.get_notes_form_array(xref.itemid, xref.custid, note.form) %}
+			{% include 'util/bootstrap/form/textarea.twig' with {
+					'textarea': {
+						'id': 'notes-order-' ~ note.form,
+						'value': note_lines|join('\r'),
+						'inputclass': 'form-control-plaintext',
+						'addclasses': ['qnotes', 'readonly', 'collapse'],
+						'attributes': {
+							'cols': qnotes.get_column_count(),
+							'rows': note_lines|length,
+							'readonly': true,
+							'disabled': true,
+						}
+					}
+				} %}
 		</div>
 	{% endfor %}
 </div>
