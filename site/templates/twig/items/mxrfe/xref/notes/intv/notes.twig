@@ -1,11 +1,11 @@
 {#
-	var                    Description / Instance of
+	var 				   Description / Instance of
 	-------------------------------------------------
-	page                   ProcessWire\Page
-	mxrfe                  module XrefMxrfe
-	xref                   ItemXrefManufacturer
-	qnotes                 module QnotesItemMxrfe
-	qnotes.intv            module QnotesItemVxmInternal
+	page				   ProcessWire\Page
+	mxrfe				   module XrefMxrfe
+	xref				   ItemXrefManufacturer
+	qnotes				   module QnotesItemMxrfe
+	qnotes.intv 		   module QnotesItemVxmInternal
 #}
 
 <div class="list-group">
@@ -41,7 +41,23 @@
 					{% endif %}
 				</div>
 			</div>
-			<textarea class="form-control-plaintext w-auto qnotes collapse" id="notes-intv-{{ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi") }}" rows="8" cols="{{ qnotes.intv.get_column_count() }}" readonly>{{ qnotes.intv.get_notes_date_array(note.itemid, note.vendorid, note.userid, note.notedate, note.notetime)|join('\r') }}</textarea>
+			{% set note_lines = qnotes.intv.get_notes_date_array(note.itemid, note.vendorid, note.userid, note.notedate, note.notetime) %}
+
+			{% include 'util/bootstrap/form/textarea.twig' with {
+				'textarea': {
+					'id': 'notes-intv-' ~ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi"),
+					'value': note_lines|join('\r'),
+					'inputclass': 'form-control-plaintext',
+					'addclasses': ['qnotes', 'readonly', 'collapse'],
+					'attributes': {
+						'cols': qnotes.intv.get_column_count(),
+						'rows': note_lines|length,
+						'readonly': true,
+						'disabled': true,
+					}
+				}
+			} %}
+			
 		</div>
 	{% endfor %}
 </div>

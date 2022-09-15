@@ -21,7 +21,20 @@
 		<div class="row">
 			<div class="col-sm-9">
 				{{ note_lines[0] }}
-				<textarea class="form-control-plaintext w-auto qnotes collapse" id="misc-notes" rows="8" cols="{{ qnotes.mmsc.get_column_count() }}" readonly>{{ note_lines|join('\r') }}</textarea>
+				{% include 'util/bootstrap/form/textarea.twig' with {
+					'textarea': {
+						'id': 'misc-notes',
+						'value': note_lines|join('\r'),
+						'inputclass': 'form-control-plaintext',
+						'addclasses': ['qnotes', 'readonly', 'collapse'],
+						'attributes': {
+							'cols': qnotes.mmsc.get_column_count(),
+							'rows': note_lines|length,
+							'readonly': true,
+							'disabled': true,
+						}
+					}
+				} %}
 			</div>
 			<div class="col-sm-3">	
 				<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#misc-notes" aria-expanded="false" aria-controls="misc-notes">
