@@ -11,9 +11,11 @@ $(function () {
 		if ($('.response-alert').length) {
 			$('.response-alert').remove();
 		}
-
+		
 		if (note_row.length) {
+			
 			// {# modal.find('.action-desc').text('Editing'); #}
+			console.log(button.data('date'));
 			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');
 			modal.find('input[name=notedate]').attr('readonly', '');
 			modal.find('input[name=notedate]').closest('.datepicker').find('.dropdown-toggle').attr('disabled', '');
