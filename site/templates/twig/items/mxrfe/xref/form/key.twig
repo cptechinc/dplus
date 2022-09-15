@@ -71,22 +71,22 @@
 					'type': 'prepend',
 					'size': 'sm',
 					'attributes': {
-						'readonly': xref.mnfrid ? true : false,
-						'tabindex': xref.mnfrid ? '-1' : ''
+						'readonly': xref.isNew() == false ? true : false,
+						'tabindex': xref.isNew() == false ? '' : '-1',
 					},
 					'input': {
 						'name': 'itemID',
 						'value': xref.itemid,
 						'attributes': {
-							'readonly': xref.itemid ? true : false,
-							'tabindex': xref.itemid ? '-1' : '',
+							'readonly': xref.isNew() == false ? true : false,
+							'tabindex': xref.isNew() == false ? '' : '-1',
 						}
 					},
 					'button': {
 						'colorclass': 'btn-secondary',
 						'text': 'fa fa-search'|icon,
 						'attributes': {
-							'title': 'Search for / Choose Ite',
+							'title': 'Search for / Choose Item',
 							'data-toggle': 'modal',
 							'data-target': '#ajax-modal',
 							'data-lookupurl': page.search_lookupURL('items'),
