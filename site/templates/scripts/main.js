@@ -615,5 +615,16 @@ const swal2 = Swal.mixin({
 	confirmButtonText: 'Yes',
 	focusConfirm: false,
 	focusCancel: true,
-	allowEnterKey: true
-})
+	allowEnterKey: true,
+	onBeforeOpen: () => {
+		if ($('#loading-modal').hasClass('show')) {
+			$('#loading-modal').removeAttr('tabindex');
+		}
+	},
+	onClose: () => {
+		var loadingModal = $('#loading-modal');
+		if (loadingModal.attr('tabindex') === false || typeof loadingModal.attr('tabindex') === 'undefined') {
+			loadingModal.attr('tabindex', '-1')
+		}
+	}
+});
