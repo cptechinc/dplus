@@ -467,7 +467,8 @@ function swal_delete_notes(callback) {
 		} else {
 			var form = modal.find('form');
 			if (form.length) {
-				form.attr('data-serialized', '');
+				form.find('input[name=action]').remove();
+				// form.attr('data-serialized', '');
 			}
 			callback(false);
 		}
@@ -589,6 +590,17 @@ Array.prototype.contains = function ( needle ) {
 	}
 	return false;
 }
+
+String.prototype.rtrim = function (s) {
+    if (s == undefined)
+        s = '\\s';
+    return this.replace(new RegExp("[" + s + "]*$"), '');
+};
+String.prototype.ltrim = function (s) {
+    if (s == undefined)
+        s = '\\s';
+    return this.replace(new RegExp("^[" + s + "]*"), '');
+};
 
 // CREATE DEFAULT SWEET ALERT
 const swal2 = Swal.mixin({
