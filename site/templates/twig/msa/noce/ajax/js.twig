@@ -39,7 +39,7 @@ $(function() {
 		var modal = button.closest('.modal');
 		var note = modal.find('textarea[data-id="'+id+'"]').val();
 		var target = modal_notes_ajax.attr('data-input');
-		note = note.replace(/(\r\n|\n|\r)/gm, " ");
+		{# note = note.replace(/(\r\n|\n|\r)/gm, " "); #}
 		var newnote = $(target).val().trim() + " " + note.trim();
 		insertAtCursor($(target).get(0), note.trim());
 		modal_notes_ajax.modal('hide');
@@ -58,7 +58,7 @@ $(function() {
 		});
 	});
 
-	$("body").on('click', '.page-link', function(e) {
+	$("body").on('click', '.noce-paginator .paginator-link', function(e) {
 		e.preventDefault();
 		var href = $(this).attr('href');
 		modal_notes_ajax.find('.modal-body').load(href);
