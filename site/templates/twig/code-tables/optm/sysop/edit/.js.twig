@@ -74,12 +74,35 @@ $(function() {
 	$('#edit-code-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal  = $(this);
+		var form   = modal.find('form');
 		var code   = button.data('code');
 
 		if (code) {
 			formCode.inputs.description.focus();
 		} else {
 			formCode.inputs.code.focus();
+		}
+		form.attr('data-serialized', form.serialize());
+	});
+
+	$("#edit-code-modal").on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				alert.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.find('button[type=submit][value=update]').click();
+						return true;
+					}
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
 		}
 	});
 
