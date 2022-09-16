@@ -56,7 +56,7 @@ class VxmAlerts {
 	confirmCost(type, costbase, callback) {
 		var msg = 'This is the <b>' + type + '</b> Vendor for this item and ' +
 		'the Standard Cost Base code is <b>'+costbase+'</b>, '+
-		'do you want to update the <b>Standard Cost</b> on the Item Master?';
+		'Do you want to update the <b>Standard Cost</b> on the Item Master?';
 
 		swal2.fire({
 			title: 'Confirm Update',
@@ -65,6 +65,8 @@ class VxmAlerts {
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No',
+			focusConfirm: false,
+			focusCancel: true,
 		}).then((result) => {
 			callback(result.value);
 		});

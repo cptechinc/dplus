@@ -146,7 +146,7 @@ class VxmForm {
 						var alerts = VxmAlerts.getInstance();
 						var config = VxmConfigs.getInstance();
 						var inputs = VxmInputs.getInstance();
-						alerts.confirmCost(config.ordercodesDescriptions[inputs.ordercode.val()], inputs.cost.base.val(), function(confirmed) {
+						alerts.confirmCost(config.ordercodesDescriptions[inputs.ordercode.val()], inputs.itemid.attr('data-standardcostbase'), function(confirmed) {
 							callback(confirmed);
 						});
 					} else {
