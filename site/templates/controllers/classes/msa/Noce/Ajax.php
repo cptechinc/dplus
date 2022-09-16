@@ -42,7 +42,7 @@ class Ajax extends Noce {
 			$page->headline = "NOCE: Searching for '$data->q'";
 		}
 
-		$filter->sortby($page);
+		$filter->query->orderBy(\NotePreDefined::aliasproperty('id'));
 		$notes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 		self::initHooks();
 
