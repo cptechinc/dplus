@@ -620,11 +620,13 @@ const swal2 = Swal.mixin({
 		if ($('#loading-modal').hasClass('show')) {
 			$('#loading-modal').removeAttr('tabindex');
 		}
+		$('.modal').removeAttr('tabindex');
 	},
 	onClose: () => {
 		var loadingModal = $('#loading-modal');
 		if (loadingModal.attr('tabindex') === false || typeof loadingModal.attr('tabindex') === 'undefined') {
 			loadingModal.attr('tabindex', '-1')
 		}
+		$('.modal').attr('tabindex', '-1');
 	}
 });
