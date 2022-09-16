@@ -200,7 +200,7 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function validateCucCode($data) {
-		$table = Codes\Mar\Suc::getInstance();
+		$table = Codes\Mar\Cuc::getInstance();
 		return self::validateCodeTableCode($data, $table);
 	}
 
