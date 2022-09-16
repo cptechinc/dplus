@@ -57,7 +57,7 @@ $(function () {
 
 				alarm.unsavedChanges(function(confirmSave) {
 					if (confirmSave) {
-						form.submit();
+						form.find('button[type=submit][value="update-notes"]').click();
 						return true;
 					}
 					modal.attr('tabindex', '-1');
