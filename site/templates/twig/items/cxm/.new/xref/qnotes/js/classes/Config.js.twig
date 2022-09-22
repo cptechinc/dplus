@@ -9,14 +9,22 @@ class QnotesConfig {
 	}
 
 	constructor() {
-		this.defaults = {{ qnotes.get_form_defaults()|json_encode()|raw }};
 		this.fields = {
-			// code: {
-			// 	maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
-			// },
-			// description: {
-			// 	maxlength: {{ manager.fieldAttribute('description', 'maxlength') }}
-			// },
+			quote: {
+				default: '{{ qnotes.fieldAttribute('quote', 'default') }}'
+			},
+			pick: {
+				default: '{{ qnotes.fieldAttribute('pick', 'default') }}'
+			},
+			pack: {
+				default: '{{ qnotes.fieldAttribute('pack', 'default') }}'
+			},
+			invoice: {
+				default: '{{ qnotes.fieldAttribute('invoice', 'default') }}'
+			},
+			acknowledgement: {
+				default: '{{ qnotes.fieldAttribute('acknowledgement', 'default') }}'
+			},
 		};
 	}
 }

@@ -1,4 +1,4 @@
-{% if cxm.recordlocker.isLocked(cxm.get_recordlocker_key(item)) == false or cxm.recordlocker.userHasLocked(cxm.get_recordlocker_key(item)) %}
+{% if cxm.recordlocker.isLocked(cxm.getRecordlockerKey(item)) == false or cxm.recordlocker.userHasLocked(cxm.getRecordlockerKey(item)) %}
 	<a href="{{ page.xrefUrl(item.custid, item.custitemid, item.itemid) }}" class="btn btn-warning btn-sm">
 		<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 	</a>
@@ -8,6 +8,6 @@
 	</a>
 {% else %}
 	<span class="badge badge-secondary">
-		<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ cxm.recordlocker.getLockingUser(cxm.get_recordlocker_key(item)) }}
+		<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ cxm.recordlocker.getLockingUser(cxm.getRecordlockerKey(item)) }}
 	</span>
 {% endif %}

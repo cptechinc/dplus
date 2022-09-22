@@ -1,7 +1,6 @@
 {% include 'items/cxm/.new/xref/qnotes/js/classes.twig' %}
 
 $(function() {
-	var formdefaults = {{ qnotes.get_form_defaults()|json_encode()|raw }};
 	var qnotesModal = $('#notes-order-modal');
 	var alert = QnotesAlerts.getInstance();
 	var qnotesForm = QnotesForm.getInstance();
@@ -88,13 +87,14 @@ $(function() {
 		if (note_row.length) {
 			modal.find('input.order-form').each(function(index) {
 				var input = $(this);
+				console.log(button.data(input.attr('name')));
 				input.prop('checked', button.data(input.attr('name')) == 'Y');
 			});
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
 			modal.find('input.order-form').each(function(index) {
 				var input = $(this);
-				input.prop('checked', formdefaults[input.attr('name')] == 'Y');
+				input.prop('checked', qnotesForm.config.fields[input.attr('name')] == 'Y');
 			});
 			modal.find('textarea[name=note]').val('');
 		}

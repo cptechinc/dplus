@@ -8,6 +8,8 @@ use ItemXrefCustomer;
 // Dplus Filters
 use Dplus\Filters;
 use Dplus\Filters\Mso\Cxm as CxmFilter;
+// Dplus Qnotes
+use Dplus\Qnotes;
 // Dplus X-Refs
 use Dplus\Xrefs\Cxm as XrefManager;
 
@@ -51,21 +53,23 @@ class Cxm extends AbstractController {
 		$cxm = self::getCxm();
 
 		if ($data->action) {
-			$cxm->processInput(self::pw('input'));
+			if (strpos($data->action, 'notes') !== false) {
+				self::getQnotes()->processInput(self::pw('input'));
+			} else {
+				$cxm->processInput(self::pw('input'));
+			}
 		}
-		$session = self::pw('session');
-
-		$response = $cxm->getResponse();
-		$url      = self::custUrl($data->custID);
+		$url = self::custUrl($data->custID);
 
 		if ($cxm->exists($data->custID, $data->custitemID)) {
 			$url = self::xrefUrl($data->custID, $data->custitemID);
+			$response = $cxm->getResponse();
 
 			if ($response && $response->hasSuccess()) {
 				$url = self::xrefListUrl($data->custID, $response->key);
 			}
 		}
-		$session->redirect($url, $http301 = false);
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 	private static function xref($data) {
@@ -89,9 +93,9 @@ class Cxm extends AbstractController {
 		$page->js .= $config->twig->render('items/cxm/.new/xref/.js.twig', ['cxm' => $cxm, 'xref' => $xref]);
 
 		if ($xref->isNew() === false && $cxm->recordlocker->userHasLocked($cxm->getRecordlockerKey($xref))) {
-			$qnotes = self::pw('modules')->get('QnotesItemCxm');
+			$qnotes = self::getQnotes();
 			$page->js .= $config->twig->render('items/cxm/.new/xref/qnotes/.js.twig', ['qnotes' => $qnotes]);
-			$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['qnotes' => $qnotes]);
+			$page->js .= $config->twig->render('msa/noce/ajax/js.twig');
 		}
 		$html = self::displayXref($data, $xref);
 		$cxm->deleteResponse();
@@ -175,6 +179,7 @@ class Cxm extends AbstractController {
 		return $html;
 	}
 
+
 	private static function displayXref($data, ItemXrefCustomer $xref) {
 		$html = '';
 		$html .= self::renderCxmHeader($xref);
@@ -189,18 +194,33 @@ class Cxm extends AbstractController {
 ============================================================= */
 	private static function renderCxmHeader(ItemXrefCustomer $xref = null) {
 		$html = '';
-		$session = self::pw('session');
-		$config  = self::pw('config');
-		$response = $session->getFor('response','cxm');
+		
+		$html .= self::pw('config')->twig->render('items/cxm/bread-crumbs.twig', ['xref' => $xref]);
+		$html .= self::renderCxmResponses();
+		return $html;
+	}
 
-		$html .= $config->twig->render('items/cxm/bread-crumbs.twig', ['xref' => $xref]);
+	/**
+	 * 
+	 *	NOTE: Keep public for ITM
+	 * @return string
+	 */
+	public static function renderCxmResponses() {
+		$config   = self::pw('config');
+		$session  = self::pw('session');
+		$response = self::getCxm()->getResponse();
+
+		$html = '';
 
 		if ($response && $response->hasError()) {
-			$html .= $config->twig->render('items/cxm/response.twig', ['response' => $response]);
+			$html .= $config->twig->render('items/cxm/.new/response.twig', ['response' => $response]);
 		}
-		if ($session->response_qnote) {
-			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
-			$session->remove('response_qnote');
+
+		$qnoteResponse = self::getQnotes()->getResponse();
+
+		if ($qnoteResponse && $qnoteResponse->hasError()) {
+			$html .= $config->twig->render('items/cxm/.new/response.twig', ['response' => $qnoteResponse]);
+			self::getQnotes()->deleteResponse();
 		}
 		if ($session->response_pdm) {
 			$html .= $config->twig->render('mso/pdm/response-alert.twig', ['response' => $session->response_pdm]);
@@ -208,6 +228,11 @@ class Cxm extends AbstractController {
 		return $html;
 	}
 
+	/**
+	 * 
+	 *	NOTE: Keep public for ITM
+	 * @return string
+	 */
 	public static function renderXrefIsLockedAlert(ItemXrefCustomer $xref) {
 		if ($xref->isNew()) {
 			return '';
@@ -223,7 +248,6 @@ class Cxm extends AbstractController {
 		return $html;
 	}
 	
-
 	private static function renderCustomerList($data, PropelModelPager $customers) {
 		return self::pw('config')->twig->render('items/cxm/.new/customers/display.twig', ['customers' => $customers]);
 	}
@@ -235,41 +259,8 @@ class Cxm extends AbstractController {
 
 	private static function renderXref($data, ItemXrefCustomer $xref) {
 		$cxm    = self::getCxm();
-		$qnotes = self::pw('modules')->get('QnotesItemCxm');
+		$qnotes = self::getQnotes();
 		return self::pw('config')->twig->render('items/cxm/.new/xref/display.twig', ['xref' => $xref, 'cxm' => $cxm,  'qnotes' => $qnotes]);
-	}
-
-	public static function qnotesDisplay(ItemXrefCustomer $xref) {
-		$page   = self::pw('page');
-		$config = self::pw('config');
-		$qnotes = self::pw('modules')->get('QnotesItemCxm');
-		$html = '';
-		$html .= '<div class="mt-3"><h3>Notes</h3></div>';
-		$html .= $config->twig->render('items/cxm/xref/notes/qnotes.twig', ['item' => $xref, 'qnotes' => $qnotes]);
-		$page->js .= $config->twig->render('items/cxm/xref/notes/js.twig', ['qnotes' => $qnotes]);
-		$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['qnotes' => $qnotes]);
-		return $html;
-	}
-	
-	public static function lockXref(ItemXrefCustomer $xref) {
-		$html = '';
-		$cxm = self::getCxm();
-		if ($xref->isNew() === false) {
-			if ($cxm->lockrecord($xref) === false) {
-				$msg = "CXM ". $cxm->getRecordlockerKey($xref) ." is being locked by " . $cxm->recordlocker->getLockingUser($cxm->getRecordlockerKey($xref));
-				$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "CXM ".$cxm->getRecordlockerKey($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-				$html .= '<div class="mb-3"></div>';
-			}
-		}
-		return $html;
-	}
-
-	
-	public static function getCxm() {
-		if (empty(self::$cxm)) {
-			self::$cxm = XrefManager::instance();
-		}
-		return self::$cxm;
 	}
 
 /* =============================================================
@@ -450,5 +441,19 @@ class Cxm extends AbstractController {
 			$custitemID = $event->arguments(1);
 			$event->return = self::xrefDeleteUrl($custID, $custitemID);
 		});
+	}
+
+/* =============================================================
+	Supplmental Functions
+============================================================= */
+	public static function getCxm() {
+		if (empty(self::$cxm)) {
+			self::$cxm = XrefManager::instance();
+		}
+		return self::$cxm;
+	}
+
+	public static function getQnotes() {
+		return Qnotes\Icxm::instance();
 	}
 }
