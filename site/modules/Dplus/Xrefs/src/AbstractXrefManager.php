@@ -197,7 +197,7 @@ abstract class AbstractXrefManager extends WireData {
 	abstract protected function inputDelete(WireInput $input);
 
 
-	/* =============================================================
+/* =============================================================
 	CRUD Response
 ============================================================= */
 	/**
@@ -268,6 +268,17 @@ abstract class AbstractXrefManager extends WireData {
 		$this->wire('session')->removeFor('response', static::RECORDLOCKER_FUNCTION);
 	}
 
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function fieldHasError($inputname) {
+		$response = $this->getResponse();
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
 /* =============================================================
 	Dplus Requests
 ============================================================= */
@@ -332,7 +343,7 @@ abstract class AbstractXrefManager extends WireData {
 		$class = $this->modelClassName();
 		$keys = [];
 		foreach (static::MODEL_KEY as $field) {
-			$keys[] = $class::aliasproperty($field);
+			$keys[] = $xref->{$class::aliasproperty($field)};
 		}
 		return implode(FunctionLocker::glue(), $keys);
 	}

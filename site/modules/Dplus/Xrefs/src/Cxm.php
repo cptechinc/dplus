@@ -13,6 +13,7 @@ use ProcessWire\WireInputData;
 // Dplus Configs
 use Dplus\Configs;
 use Dplus\Codes;
+use Dplus\Filters;
 
 
 /**
@@ -27,6 +28,7 @@ class Cxm extends AbstractXrefManager {
 	const DESCRIPTION_RECORD = 'CXM X-ref {key} was {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'cxm';
 	const FIELD_ATTRIBUTES = [
+		'custitemid'     => ['type' => 'text', 'maxlength' => ItemXrefCustomer::LENGTH_CUSTITEMID],
 		'description'    => ['type' => 'text', 'maxlength' => ItemXrefCustomer::LENGTH_DESCRIPTION],
 		'description2'   => ['type' => 'text', 'maxlength' => ItemXrefCustomer::LENGTH_DESCRIPTION],
 		'conversion'     => ['type' => 'number', 'precision' => 5, 'max' => 99999],
@@ -39,7 +41,7 @@ class Cxm extends AbstractXrefManager {
 		'qty_pack_inner'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
 		'qty_pack_outer'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
 		'qty_pack_tare'     => ['type' => 'number', 'precision' => 0, 'max' => 9999],
-		'rounding'  => ['type' => 'text', 'default' => 'N', 'options' => ['D' => 'down', 'U' => 'up', 'N' => 'normal']]
+		'rounding'          => ['type' => 'text', 'default' => 'N', 'options' => ['D' => 'down', 'U' => 'up', 'N' => 'normal']]
 	];
 	const FILTERABLE_FIELDS = ['code', 'description'];
 	const RESPONSE_TEMPLATE  = 'Xref {code} {not} {crud}';
@@ -123,6 +125,19 @@ class Cxm extends AbstractXrefManager {
 	public function xref($custID, $custitemID) {
 		$q = $this->queryCustidCustitemid($custID, $custitemID);
 		return $q->findOne();
+	}
+
+	/**
+	 * Return ItemXrefCustomer from Record Locker Key
+	 * @param  string $custID     Cust ID
+	 * @param  string $custitemID Cust's Item ID'
+	 * @return ItemXrefCustomer
+	 */
+	public function xrefByRecordlockerKey($key) {
+		$keys = explode($this->recordlocker::glue(), $key);
+		$custID = $keys[0];
+		$custitemID = $keys[1];
+		return $this->xref($custID, $custitemID);
 	}
 
 	/**
@@ -239,11 +254,15 @@ class Cxm extends AbstractXrefManager {
 
 		$invalidfields = $this->_inputUpdate($input, $xref);
 		$response      = $this->saveAndRespond($xref, $invalidfields);
+		if ($response->hasSuccess() && $values->text('updatepdm') == 'true') {
+			$this->updatePdm($xref);
+		}
 		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 	/**
-	 * Update / Save Xref from Input Data
+	 * Update Xref from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
@@ -263,13 +282,7 @@ class Cxm extends AbstractXrefManager {
 		$invalidfields['rounding']     = $this->_inputUpdateRounding($values, $xref);
 
 		$invalid = array_merge_recursive($invalidfields);
-		$response = $this->saveAndRespond($xref, $invalid);
-		$this->setResponse($response);
-
-		if ($response->hasSuccess() && $values->text('updatepdm') == 'true') {
-			$this->updatePdm($xref);
-		}
-		return $response->hasSuccess();
+		return $invalid;
 	}
 
 	/**
@@ -483,6 +496,15 @@ class Cxm extends AbstractXrefManager {
 	 */
 	public function customer($custID) {
 		return Codes\Mar\Cmm::instance()->customer($custID);
+	}
+
+	/**
+	 * Return Options for Unit of Measure
+	 * @return ObjectCollection
+	 */
+	public function getUomOptions() {
+		$filter = new Filters\Min\UnitofMeasure();
+		return $filter->query->find();
 	}
 
 	/**
