@@ -61,8 +61,17 @@ class Cmm extends AbstractCodeTableEditableSingleKey {
 	 * @return ObjectCollection
 	 */
 	public function codes() {
-		$q = $this->getQueryClass();
+		$q = $this->query();
 		return $q->find();
+	}
+
+	/**
+	 * Return Customer
+	 * @param  string $id
+	 * @return Customer
+	 */
+	public function customer($id) {
+		return $this->query()->findOneById($id);
 	}
 
 /* =============================================================
