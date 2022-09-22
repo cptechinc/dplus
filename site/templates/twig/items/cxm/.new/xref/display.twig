@@ -30,7 +30,7 @@
 	</div>
 </div>
 
-{% if xref.isNew() == false and cxm.recordlocker.userHasLocked(cxm.get_recordlocker_key(xref)) %}
+{% if xref.isNew() == false and cxm.recordlocker.userHasLocked(cxm.getRecordlockerKey(xref)) %}
 	<h3>Notes</h3>
 	{% include 'items/cxm/.new/xref/qnotes.twig' %}
 {% endif %}

@@ -4,7 +4,7 @@
 	2. Is a new Item
 	NOTE: Only show delete if item already exists.
 #}
-{% if cxm.recordlocker.userHasLocked(cxm.get_recordlocker_key(xref)) or xref.isNew() %}
+{% if cxm.recordlocker.userHasLocked(cxm.getRecordlockerKey(xref)) or xref.isNew() %}
 	<button type="submit" class="btn btn-success">
 		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 	</button>

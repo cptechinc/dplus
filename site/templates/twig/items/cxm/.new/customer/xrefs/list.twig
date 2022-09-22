@@ -6,6 +6,7 @@
 	recordlocker           module RecordLockerUser
 	items                  ItemXrefCxm[]|ObjectCollection
 #}
+{% set response = cxm.getResponse() %}
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
@@ -33,9 +34,9 @@
 	<tbody>
 		{% if xrefs.count() %}
 			{% for xref in xrefs %}
-				{% set key = cxm.get_recordlocker_key(xref) %}
+				{% set key = cxm.getRecordlockerKey(xref) %}
 				{% set class = key == page.focus ? 'highlight' : '' %}
-				{% set class = (response.key == key and response.has_success()) ? 'bg-success text-white' : class %}
+				{% set class = (response.key == key and response.hasSuccess()) ? 'bg-success text-white' : class %}
 
 				<tr class="{{ class }} small" data-cxm="{{ key }}">
 					<td>{{ xref.custitemID }}</td>

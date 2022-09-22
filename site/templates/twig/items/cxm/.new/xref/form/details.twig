@@ -11,9 +11,9 @@
 		<label for="uom_customer">Customer UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="uom_customer" class="form-control form-control-sm mb-1 {{ cxm.field_has_error('uom_customer') ? 'is-invalid' : ''}}" id="uom_customer">
+		<select name="uom_customer" class="form-control form-control-sm mb-1 {{ cxm.fieldHasError('uom_customer') ? 'is-invalid' : ''}}" id="uom_customer">
 			<option value=""></option>
-			{% for uom in cxm.get_unitsofm_sales() %}
+			{% for uom in cxm.getUomOptions() %}
 				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == xref.uom_customer ? 'selected' : ''}}>
 					{{ uom.code }} - {{ uom.description }}
 				</option>
@@ -28,14 +28,14 @@
 	</div>
 	<div class="col-sm-6">
 		{% include 'util/form/input.twig' with {
-				'name': 'conversion', 'value': xref.conversion|number_format(cxm.field_attribute('conversion', 'precision')),
+				'name': 'conversion', 'value': xref.conversion|number_format(cxm.fieldAttribute('conversion', 'precision')),
 				'type': 'number',
 				'class_add': [
 					'text-right',
 					'w-75'
 				],
 				'attributes': {
-					'max': cxm.field_attribute('conversion', 'max'),
+					'max': cxm.fieldAttribute('conversion', 'max'),
 				}
 			}
 		%}
@@ -47,14 +47,14 @@
 	</div>
 	<div class="col-sm-6">
 		{% include 'util/form/input.twig' with {
-				'name': 'qty_percase', 'value': xref.qty_percase|number_format(cxm.field_attribute('qty_percase', 'precision')),
+				'name': 'qty_percase', 'value': xref.qty_percase|number_format(cxm.fieldAttribute('qty_percase', 'precision')),
 				'type': 'number',
 				'class_add': [
 					'text-right',
 					'w-75'
 				],
 				'attributes': {
-					'max': cxm.field_attribute('qty_percase', 'max'),
+					'max': cxm.fieldAttribute('qty_percase', 'max'),
 				}
 			}
 		%}
@@ -66,14 +66,14 @@
 	</div>
 	<div class="col-sm-6">
 		{% include 'util/form/input.twig' with {
-				'name': 'qty_purchase', 'value': xref.qty_purchase|number_format(cxm.field_attribute('qty_purchase', 'precision')),
+				'name': 'qty_purchase', 'value': xref.qty_purchase|number_format(cxm.fieldAttribute('qty_purchase', 'precision')),
 				'type': 'number',
 				'class_add': [
 					'text-right',
 					'w-75'
 				],
 				'attributes': {
-					'max': cxm.field_attribute('qty_purchase', 'max'),
+					'max': cxm.fieldAttribute('qty_purchase', 'max'),
 				}
 			}
 		%}
@@ -85,14 +85,14 @@
 	</div>
 	<div class="col-sm-6">
 		{% include 'util/form/input.twig' with {
-				'name': 'price_retail', 'value': xref.price_retail|number_format(cxm.field_attribute('price_retail', 'precision')),
+				'name': 'price_retail', 'value': xref.price_retail|number_format(cxm.fieldAttribute('price_retail', 'precision')),
 				'type': 'number',
 				'class_add': [
 					'text-right',
 					'w-75'
 				],
 				'attributes': {
-					'max': cxm.field_attribute('price_retail', 'max'),
+					'max': cxm.fieldAttribute('price_retail', 'max'),
 				}
 			}
 		%}
@@ -104,14 +104,14 @@
 	</div>
 	<div class="col-sm-6">
 		{% include 'util/form/input.twig' with {
-				'name': 'price_customer', 'value': xref.price_customer|number_format(cxm.field_attribute('price_customer', 'precision')),
+				'name': 'price_customer', 'value': xref.price_customer|number_format(cxm.fieldAttribute('price_customer', 'precision')),
 				'type': 'number',
 				'class_add': [
 					'text-right',
 					'w-75'
 				],
 				'attributes': {
-					'max': cxm.field_attribute('price_customer', 'max'),
+					'max': cxm.fieldAttribute('price_customer', 'max'),
 				}
 			}
 		%}
@@ -123,8 +123,8 @@
 	</div>
 	<div class="col-sm-6">
 		<p class="form-control-plaintext form-control-sm text-right w-75">
-			{{ (xref.has_customerpricing() ? xref.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}
-			<input type="hidden" name="price_contract" value="{{ (xref.has_customerpricing() ? xref.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}">
+			{{ (xref.has_customerpricing() ? xref.getCustomerPricing().baseprice : '0.00')|number_format(cxm.fieldAttribute('price_customer', 'precision')) }}
+			<input type="hidden" name="price_contract" value="{{ (xref.has_customerpricing() ? xref.getCustomerPricing().baseprice : '0.00')|number_format(cxm.fieldAttribute('price_customer', 'precision')) }}">
 		</p>
 	</div>
 </div>
@@ -133,9 +133,9 @@
 		<label for="uom_pricing">Pricing UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="uom_pricing" class="form-control form-control-sm mb-1 {{ cxm.field_has_error('uom_pricing') ? 'is-invalid' : ''}}" id="uom_pricing">
+		<select name="uom_pricing" class="form-control form-control-sm mb-1 {{ cxm.fieldHasError('uom_pricing') ? 'is-invalid' : ''}}" id="uom_pricing">
 			<option value=""></option>
-			{% for uom in cxm.get_unitsofm_sales() %}
+			{% for uom in cxm.getUomOptions() %}
 				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == xref.uom_pricing ? 'selected' : ''}}>
 					{{ uom.code }} - {{ uom.description }}
 				</option>
@@ -152,7 +152,7 @@
 		{% include 'util/form/input.twig' with {
 				'type': 'number',
 				'name': 'price_uom',
-				'value': xref.get_pricing_peruom() ? xref.get_pricing_peruom()|number_format(cxm.field_attribute('price_uom', 'precision')),
+				'value': xref.get_pricing_peruom() ? xref.get_pricing_peruom()|number_format(cxm.fieldAttribute('price_uom', 'precision')),
 				'class_add': [
 					'text-right',
 					'w-75'
@@ -160,7 +160,7 @@
 				'attributes': {
 					'readonly': xref.uom_pricing ? false : true,
 					'tabindex': xref.uom_pricing ? '' : '-1',
-					'max': cxm.field_attribute('price_uom', 'max')
+					'max': cxm.fieldAttribute('price_uom', 'max')
 				}
 			}
 		%}
@@ -172,7 +172,7 @@
 	</div>
 	<div class="col-sm-6">
 		<select name="rounding" class="form-control form-control-sm mb-1" id="rounding">
-			{% for value, label in cxm.get_rounding_options() %}
+			{% for value, label in cxm.fieldAttribute('rounding', 'options') %}
 				<option value="{{ value }}" {{ value == xref.rounding ? 'selected' : ''}}>
 					{{ label|capitalize }}
 				</option>

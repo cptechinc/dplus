@@ -1,16 +1,15 @@
 <?php namespace Controllers\Mso\Somain;
 // Purl URI Library
 use Purl\Url as Purl;
-// Propel ORM Ljbrary
+// Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
-// Dplus Model
-// use CustomerQuery;
+// Dplus Models
 use ItemXrefCustomer;
-// ProcessWire Classes, Modules
-// use ProcessWire\Page, ProcessWire\XrefCxm as CxmCRUD;
 // Dplus Filters
 use Dplus\Filters;
 use Dplus\Filters\Mso\Cxm as CxmFilter;
+// Dplus X-Refs
+use Dplus\Xrefs\Cxm as XrefManager;
 
 class Cxm extends AbstractController {
 	const DPLUSPERMISSION = 'cxm';
@@ -49,20 +48,20 @@ class Cxm extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			self::pw('session')->redirect(self::url(), $http301 = false);
 		}
+		$cxm = self::getCxm();
 
 		if ($data->action) {
-			$cxm = self::getCxm();
-			$cxm->process_input(self::pw('input'));
+			$cxm->processInput(self::pw('input'));
 		}
 		$session = self::pw('session');
 
-		$response = $session->getFor('response', 'cxm');
+		$response = $cxm->getResponse();
 		$url      = self::custUrl($data->custID);
 
-		if ($cxm->xref_exists($data->custID, $data->custitemID)) {
+		if ($cxm->exists($data->custID, $data->custitemID)) {
 			$url = self::xrefUrl($data->custID, $data->custitemID);
 
-			if ($response && $response ->has_success()) {
+			if ($response && $response->hasSuccess()) {
 				$url = self::xrefListUrl($data->custID, $response->key);
 			}
 		}
@@ -78,7 +77,7 @@ class Cxm extends AbstractController {
 		$config  = self::pw('config');
 		$page    = self::pw('page');
 		$cxm     = self::getCxm();;
-		$xref    = $cxm->get_create_xref($data->custID, $data->custitemID, $data->itemID);
+		$xref    = $cxm->getOrCreateXref($data->custID, $data->custitemID, $data->itemID);
 		
 		$page->headline = "CXM: New X-Ref";
 
@@ -87,15 +86,15 @@ class Cxm extends AbstractController {
 			$page->headline = "CXM: $xref->itemid";
 		}
 
-		$page->js .= $config->twig->render('items/cxm/xref/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
+		$page->js .= $config->twig->render('items/cxm/.new/xref/.js.twig', ['cxm' => $cxm, 'xref' => $xref]);
 
-		if ($xref->isNew() === false && $cxm->recordlocker->userHasLocked($cxm->get_recordlocker_key($xref))) {
+		if ($xref->isNew() === false && $cxm->recordlocker->userHasLocked($cxm->getRecordlockerKey($xref))) {
 			$qnotes = self::pw('modules')->get('QnotesItemCxm');
 			$page->js .= $config->twig->render('items/cxm/.new/xref/qnotes/.js.twig', ['qnotes' => $qnotes]);
 			$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['qnotes' => $qnotes]);
 		}
 		$html = self::displayXref($data, $xref);
-		self::pw('session')->removeFor('response','cxm');
+		$cxm->deleteResponse();
 		return $html;
 	}
 
@@ -124,7 +123,7 @@ class Cxm extends AbstractController {
 
 		$page->js .= self::pw('config')->twig->render('items/cxm/.new/customers/.js.twig');
 		$html = self::displayCustomerList($data, $customers);
-		self::pw('session')->removeFor('response','cxm');
+		$cxm->deleteResponse();
 		return $html;
 	}
 
@@ -153,9 +152,8 @@ class Cxm extends AbstractController {
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		
 		$page->js .= self::pw('config')->twig->render('items/cxm/.new/customer/xrefs/.js.twig');
-
 		$html = self::displayCustXrefs($data, $xrefs);
-		self::pw('session')->removeFor('response','cxm');
+		$cxm->deleteResponse();
 		return $html;
 	}
 
@@ -197,7 +195,7 @@ class Cxm extends AbstractController {
 
 		$html .= $config->twig->render('items/cxm/bread-crumbs.twig', ['xref' => $xref]);
 
-		if ($response and $response->has_error()) {
+		if ($response && $response->hasError()) {
 			$html .= $config->twig->render('items/cxm/response.twig', ['response' => $response]);
 		}
 		if ($session->response_qnote) {
@@ -219,8 +217,8 @@ class Cxm extends AbstractController {
 		if ($cxm->lockrecord($xref)) {
 			return '';
 		}
-		$msg = "CXM ". $cxm->get_recordlocker_key($xref) ." is being locked by " . $cxm->recordlocker->getLockingUser($cxm->get_recordlocker_key($xref));
-		$alert = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "CXM ".$cxm->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		$msg = "CXM ". $cxm->getRecordlockerKey($xref) ." is being locked by " . $cxm->recordlocker->getLockingUser($cxm->getRecordlockerKey($xref));
+		$alert = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "CXM ".$cxm->getRecordlockerKey($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		$html  = '<div class="mb-3">' . $alert . '</div>';
 		return $html;
 	}
@@ -252,15 +250,14 @@ class Cxm extends AbstractController {
 		$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['qnotes' => $qnotes]);
 		return $html;
 	}
-
 	
 	public static function lockXref(ItemXrefCustomer $xref) {
 		$html = '';
 		$cxm = self::getCxm();
 		if ($xref->isNew() === false) {
 			if ($cxm->lockrecord($xref) === false) {
-				$msg = "CXM ". $cxm->get_recordlocker_key($xref) ." is being locked by " . $cxm->recordlocker->getLockingUser($cxm->get_recordlocker_key($xref));
-				$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "CXM ".$cxm->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$msg = "CXM ". $cxm->getRecordlockerKey($xref) ." is being locked by " . $cxm->recordlocker->getLockingUser($cxm->getRecordlockerKey($xref));
+				$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "CXM ".$cxm->getRecordlockerKey($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 				$html .= '<div class="mb-3"></div>';
 			}
 		}
@@ -270,7 +267,7 @@ class Cxm extends AbstractController {
 	
 	public static function getCxm() {
 		if (empty(self::$cxm)) {
-			self::$cxm = self::pw('modules')->get('XrefCxm');
+			self::$cxm = XrefManager::instance();
 		}
 		return self::$cxm;
 	}
@@ -303,7 +300,7 @@ class Cxm extends AbstractController {
 		if (empty($focus)) {
 			return self::_xrefListUrl($custID);
 		}
-		$xref = self::getCxm()->xref_by_recordlocker_key($focus);
+		$xref = self::getCxm()->xrefByRecordlockerKey($focus);
 
 		if (empty($xref)) {
 			return self::_xrefListUrl($custID);
@@ -318,7 +315,6 @@ class Cxm extends AbstractController {
 			$filter->applySortFilter($sortFilter);
 		}
 		$offset = $filter->positionQuick($xref->custid, $xref->custitemid, $xref->itemid);
-		$url->query->set('offset', $offset);
 
 		$pagenbr = self::getPagenbrFromOffset($offset);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'cxm', $pagenbr);
@@ -354,7 +350,6 @@ class Cxm extends AbstractController {
 		$url = new Purl(self::url());
 		$cxm = self::getCxm();
 		$filter = new Filters\Mar\Customer();
-		$filter->init();
 
 		if ($filter->exists($custID) === false) {
 			return $url->getUrl();
@@ -412,7 +407,7 @@ class Cxm extends AbstractController {
 	Hook Functions
 ============================================================= */
 	public static function initHooks() {
-		$m = self::getCxm();
+		$m = self::pw('modules')->get('Dpages');
 
 		$m->addHook('Page(pw_template=somain)::menuUrl', function($event) {
 			$event->return = Menu::menuUrl();
@@ -436,7 +431,7 @@ class Cxm extends AbstractController {
 			$p = $event->object;
 			$xref = $event->arguments(0); // Xref
 			$cxm  = self::getCxm();
-			$event->return = $xref ? self::xrefListUrl($xref->custid, $cxm->get_recordlocker_key($xref)) : self::custUrl($p->wire('input')->get->text('custID'));
+			$event->return = $xref ? self::xrefListUrl($xref->custid, $cxm->getRecordlockerKey($xref)) : self::custUrl($p->wire('input')->get->text('custID'));
 		});
 
 		$m->addHook('Page(pw_template=somain)::xrefUrl', function($event) {

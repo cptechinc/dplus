@@ -1,4 +1,4 @@
-{% set key = cxm.get_recordlocker_key(xref) %}
+{% set key = cxm.getRecordlockerKey(xref) %}
 
 {% if cxm.recordlocker.isLocked(key) == false or cxm.recordlocker.userHasLocked(key) %}
 	<a href="{{ page.xrefUrl(xref.custid, xref.custitemid) }}" class="btn btn-warning btn-sm">

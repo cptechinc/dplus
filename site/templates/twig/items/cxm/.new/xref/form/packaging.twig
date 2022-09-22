@@ -23,13 +23,13 @@
 			<td>
 				<div class="input-group w-75 float-right">
 					{% include 'util/form/input.twig' with {
-							'name': 'qty_pack_inner', 'value': xref.qty_pack_inner|number_format(cxm.field_attribute('qty_pack_inner', 'precision')),
+							'name': 'qty_pack_inner', 'value': xref.qty_pack_inner|number_format(cxm.fieldAttribute('qty_pack_inner', 'precision')),
 							'type': 'number',
 							'class_add': [
 								'text-right',
 							],
 							'attributes': {
-								'max': cxm.field_attribute('qty_pack_inner', 'max'),
+								'max': cxm.fieldAttribute('qty_pack_inner', 'max'),
 							}
 						}
 					%}
@@ -45,13 +45,13 @@
 				<td>
 					<div class="input-group w-75 float-right">
 						{% include 'util/form/input.twig' with {
-								'name': 'qty_pack_outer', 'value': xref.qty_pack_outer|number_format(cxm.field_attribute('qty_pack_outer', 'precision')),
+								'name': 'qty_pack_outer', 'value': xref.qty_pack_outer|number_format(cxm.fieldAttribute('qty_pack_outer', 'precision')),
 								'type': 'number',
 								'class_add': [
 									'text-right',
 								],
 								'attributes': {
-									'max': cxm.field_attribute('qty_pack_outer', 'max'),
+									'max': cxm.fieldAttribute('qty_pack_outer', 'max'),
 								}
 							}
 						%}
@@ -68,13 +68,13 @@
 				<td>
 					<div class="input-group w-75 float-right">
 						{% include 'util/form/input.twig' with {
-								'name': 'qty_pack_tare', 'value': xref.qty_pack_tare|number_format(cxm.field_attribute('qty_pack_tare', 'precision')),
+								'name': 'qty_pack_tare', 'value': xref.qty_pack_tare|number_format(cxm.fieldAttribute('qty_pack_tare', 'precision')),
 								'type': 'number',
 								'class_add': [
 									'text-right',
 								],
 								'attributes': {
-									'max': cxm.field_attribute('qty_pack_tare', 'max'),
+									'max': cxm.fieldAttribute('qty_pack_tare', 'max'),
 								}
 							}
 						%}

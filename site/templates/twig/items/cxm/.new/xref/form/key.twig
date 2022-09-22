@@ -60,7 +60,7 @@
 				'name': 'custitemID', 'value': xref.custitemID,
 				'attributes': {
 					'data-custitemid': xref.custitemID,
-					'maxlength': cxm.maxlength_custitemid(),
+					'maxlength': cxm.fieldAttribute('custitemid', 'maxlength'),
 					'readonly': xref.custitemid ? true : false,
 					'tabindex': xref.custitemid ? '-1' : '',
 				}
@@ -77,7 +77,7 @@
 		{% include 'util/form/input.twig' with {
 				'name': 'description', 'value': xref.description,
 				'attributes': {
-					'maxlength': cxm.maxlength_description()
+					'maxlength': cxm.fieldAttribute('description', 'maxlength')
 				}
 			}
 		%}
@@ -91,7 +91,7 @@
 		{% include 'util/form/input.twig' with {
 				'name': 'description2', 'value': xref.description2,
 				'attributes': {
-					'maxlength': cxm.maxlength_description2()
+					'maxlength': cxm.fieldAttribute('description2', 'maxlength')
 				}
 			}
 		%}
