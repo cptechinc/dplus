@@ -103,6 +103,32 @@ class Cxm extends AbstractXrefManager {
 	}
 
 /* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Process Input Data, Update Database
+	 * @param  WireInput $input Input Data
+	 */
+	public function processInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update-cxm-shortitem':
+				$this->inputUpdateShortitem($input);
+				break;
+			case 'delete':
+				$this->inputDelete($input);
+				break;
+			case 'update':
+			case 'edit':
+				$this->inputUpdate($input);
+				break;
+				
+		}
+	}
+
+/* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
@@ -171,11 +197,20 @@ class Cxm extends AbstractXrefManager {
 	 * @param  string  $itemID
 	 * @return bool
 	 */
-	public function shortitemExists($itemID) {
+	public function itemidHasShortItemid($itemID) {
 		$q = $this->query();
 		$q->filterByCustid(Configs\Sys::config()->custid);
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
+	}
+
+	/**
+	 * Return if Short Item for Item ID exists
+	 * @param  string  $itemID
+	 * @return bool
+	 */
+	public function shortitemidExists($custitemID) {
+		return $this->exists(Configs\Sys::config()->custid, $custitemID);
 	}
 
 	/**
@@ -195,7 +230,7 @@ class Cxm extends AbstractXrefManager {
 	 * @param  string $shortitemID
 	 * @return ItemXrefCustomer
 	 */
-	public function shortitemByShortItemid($shortitemID) {
+	public function shortitem($shortitemID) {
 		return $this->xref(Configs\Sys::config()->custid, $shortitemID);
 	}
 
@@ -204,7 +239,7 @@ class Cxm extends AbstractXrefManager {
 	 * @param  string $itemID Item ID
 	 * @return ItemXrefCustomer
 	 */
-	public function getCreateXrefShortitem($itemID, $custitemID = '') {
+	public function getOrCreateXrefShortitem($itemID, $custitemID = '') {
 		if ($this->shortitemExists($itemID)) {
 			return $this->shortitemByItemid($itemID);
 		}
@@ -445,6 +480,44 @@ class Cxm extends AbstractXrefManager {
 		$new->fromArray($array);
 		$new->save();
 		$record = $new;
+	}
+
+	/**
+	 * Update Xref from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function inputUpdateShortitem(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		
+		$itemID     = $values->text('itemID');
+		$custitemID = $values->text('custitemid');
+
+		if ($this->shortitemidExists($custitemID)) {
+			$xref = $this->shortitem($custitemID);
+
+			if ($values->bool('overwrite') === false) {
+				$message = "Short ItemID '$custitemID' already exists for $xref->itemid";
+				$this->setResponse(Response::responseError($xref->itemid, $message));
+				return false;
+			}
+			
+			if ($xref->isNew() === false) {
+				$this->recreateRecord($xref);
+			}
+			$xref->setDate(date('Ymd'));
+			$xref->setTime(date('His'));
+			$response = $this->saveAndRespond($xref);
+			$this->setResponse($response);
+			return $response->hasSuccess();
+		}
+		$xref = $this->getOrCreateXrefShortitem($itemID, $custitemID);
+		$xref->setDate(date('Ymd'));
+		$xref->setTime(date('His'));
+		$response = $this->saveAndRespond($xref);
+		$this->setResponse($response);
+		return $response->hasSuccess();
 	}
 
 	/**
