@@ -287,7 +287,8 @@
 			'validate' => [
 				['GET', 'freight-code/', Json\Mso::class, 'validateFreightCode'],
 				['GET', 'price-discount/', Json\Mso::class, 'validatePriceDiscount'],
-				['GET', 'cxm/', Json\Mso::class, 'validateCxm'],
+				['GET', 'cxm/', Json\Mso::class, 'validateCxmXref'],
+				['GET', 'cxm/xref/', Json\Mso::class, 'validateCxmXref'],
 				'lsm' => [
 					['GET', 'code/', Json\Mso::class, 'validateLsmCode'],
 				],
