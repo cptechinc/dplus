@@ -432,13 +432,12 @@ class Cxm extends AbstractXrefManager {
 		$uomCustomerExists = $umm->exists($values->text('uom_customer'));
 
 		if ($uomCustomerExists) {
-			$xref->setUom_custmer($values->text('uom_customer'));
+			$xref->setUom_customer($values->text('uom_customer'));
 		}
 
 		if ($uomCustomerExists === false) {
 			$invalidfields['uom_customer'] = 'UoM Customer';
 		}
-
 		return $invalidfields;
 	}
 
