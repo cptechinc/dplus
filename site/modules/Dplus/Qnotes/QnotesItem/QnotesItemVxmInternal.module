@@ -268,7 +268,7 @@ class QnotesItemVxmInternal extends WireData implements Module {
 			$response->set_success(true);
 			$message .= " were able to be saved";
 		}
-
+		$response->set_type(self::TYPE);
 		$response->set_action(QnotesResponse::CRUD_UPDATE);
 		$response->set_message($message);
 
