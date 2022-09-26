@@ -172,6 +172,7 @@ class Cxm extends AbstractXrefManager {
 	 */
 	public function new() {
 		$xref = ItemXrefCustomer::new();
+		$xref->setConversion(1);
 		return $xref;
 	}
 
@@ -186,7 +187,7 @@ class Cxm extends AbstractXrefManager {
 			return $this->xref($custID, $custitemID);
 		}
 		$custitemID = $custitemID == 'new' ? '' : $custitemID;
-		$xref = $this->new_xref();
+		$xref = $this->new();
 		$xref->setCustid($custID);
 		$xref->setCustitemid($custitemID);
 		return $xref;
