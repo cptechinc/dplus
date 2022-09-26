@@ -1,0 +1,35 @@
+class CxmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CxmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'xref-form';
+		this.form = $('#' + this.id);
+		this.inputs = CxmInputs.getInstance();
+		this.config = CxmConfigs.getInstance();
+	}
+
+	populateItemData(item) {
+		console.log(item);
+		var node = $('.item-col');
+		node.find('.description').text();
+		node.find('.description2').text();
+		$('.item-uom').text('');
+		this.inputs.itemid.attr('data-qtypercase', 1);
+		this.inputs.itemid.attr('data-itemid', '');
+
+		if (item) {
+			node.find('.description').text(item.description);
+			node.find('.description2').text(item.description2);
+			$('.item-uom').text(item.uom_sale);
+			this.inputs.itemid.attr('data-qtypercase', item.qtypercase);
+			this.inputs.itemid.attr('data-itemid', item.itemid);
+		}
+	}
+}

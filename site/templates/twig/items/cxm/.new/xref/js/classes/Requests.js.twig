@@ -1,0 +1,49 @@
+class CxmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CxmRequests();
+		}
+		return this.instance;
+	}
+
+	validateXref(custID, custitemID, callback) {
+		var ajax = new AjaxRequest(page.jsonApiUrl('mso/validate/cxm/xref/'));
+
+		ajax.setData({custID: custID, custitemID: custitemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getItem(itemID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/item/') }}');
+		ajax.setData({itemID: itemID, fields: 'uom_sale,qtypercase'});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCustomer(custid, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/customer/') }}');
+
+		ajax.setData({custID: custid});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getGlCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mgl/mhm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateCodeUrl() {
+		return '{{ page.jsonApiUrl('mar/validate/crcd/code/') }}';
+	}
+}

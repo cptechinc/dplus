@@ -1,0 +1,21 @@
+class CxmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CxmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'xref-form',
+		this.form          = $('#' + this.id),
+		this.custid          = this.form.find('input[name=custID]');
+		this.custitemid      = this.form.find('input[name=custitemID]');
+		this.itemid          = this.form.find('input[name=itemID]');
+		this.uom_pricing     = this.form.find('select[name=uom_pricing]');
+		this.price_uom       = this.form.find('input[name=price_uom]');
+		this.price_customer  = this.form.find('input[name=price_customer]');
+	}
+}

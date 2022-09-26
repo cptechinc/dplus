@@ -3,6 +3,8 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 #}
+{% include 'items/cxm/.new/xref/js/classes.js.twig' %}
+
 $(function() {
 	var form_cxm = $('#cxm-item-form');
 	var input_itemID = form_cxm.find('input[name=itemID]');
@@ -12,6 +14,9 @@ $(function() {
 	var input_price_uom    = form_cxm.find('input[name=price_uom]');
 	var input_price_customer    = form_cxm.find('input[name=price_customer]');
 	var modal_ajax = $('#ajax-modal');
+
+	var server = CxmRequests.getInstance();
+	var formCxm = CxmForm.getInstance();
 
 /* =============================================================
 	Event Functions
@@ -57,17 +62,20 @@ $(function() {
 
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
-		populate_item_data(input.val(), function() {
 
+		server.getItem(input.val(), function(item) {
+			formCxm.populateItemData(item, function() {
+
+			});
 		});
 	});
 
 	$("body").on("change", "input[name=custID]", function(e) {
 		var input = $(this);
 
-		customerJson(input.val(), function(customer) {
-			$('.customer-name').text('');
-
+		$('.customer-name').text('');
+		
+		server.getCustomer(input.val(), function(customer) {
 			if (customer) {
 				$('.customer-name').text(customer.name);
 			}
@@ -131,6 +139,7 @@ $(function() {
 		var custID = button.data('custid');
 		var name = button.data('name');
 		input_custID.val(custID);
+		input_custID.change();
 		modal_ajax.modal('hide');
 	});
 
@@ -343,43 +352,15 @@ $(function() {
 		});
 	}
 
-	function get_item(itemID, callback) {
-		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
-		url.addQuery('itemID', itemID).addQuery('fields', 'uom_sale,qtypercase');
-		$.getJSON(url.toString(), function(item) {
-			callback(item);
-		});
-	}
-
-	function customerJson(custID, callback) {
-		var url = URI('{{ page.jsonapiURL('mar/customer/') }}');
-		url.addQuery('custID', custID);
-
-		$.getJSON(url.toString(), function(customer) {
-			callback(customer);
-		});
-	}
-
-	function populate_item_data(itemID, callback) {
-		get_item(itemID, function(item) {
-			var itemcol = $('.item-col');
-			itemcol.find('.description').text(item.description);
-			itemcol.find('.description2').text(item.description2);
-			itemcol.find('.description2').text(item.description2);
-			$('.item-uom').text(item.uom_sale);
-			input_itemID.attr('data-qtypercase', item.qtypercase);
-			input_itemID.attr('data-itemid', itemID);
-			callback();
-		});
-	}
-
 /* =============================================================
 	Per UoM Calculation Functions
 ============================================================= */
 	function calculate_peruom() {
-		if (input_itemID.attr('data-qtypercase') == '' || input_itemID.attr('data-itemid') != input_itemID.val()) {
-			populate_item_data(input_itemID.val(), function() {
-				_calculate_peruom();
+		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemidD.attr('data-itemid') != formCxm.inputs.itemid.val()) {
+			server.getItem(formCxm.inputs.itemid.val(), function(item) {
+				formCxm.populateItemData(item, function() {
+	
+				});
 			});
 		} else {
 			_calculate_peruom();
@@ -398,9 +379,11 @@ $(function() {
 	}
 
 	function calculate_custprice() {
-		if (input_itemID.attr('data-qtypercase') == '' || input_itemID.attr('data-itemid') != input_itemID.val()) {
-			populate_item_data(input_itemID.val(), function() {
-				_calculate_custprice();
+		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemid.attr('data-itemid') != formCxm.inputs.itemid.val()) {
+			server.getItem(formCxm.inputs.itemid.val(), function(item) {
+				formCxm.populateItemData(item, function() {
+	
+				});
 			});
 		} else {
 			_calculate_custprice();
