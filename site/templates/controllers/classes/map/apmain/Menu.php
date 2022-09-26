@@ -25,6 +25,12 @@ class Menu extends AbstractMenuController {
 			'title'      => Bum::TITLE,
 			'summary'    => Bum::SUMMARY
 		],
+		'cocom' => [
+			'name'       => 'cocom',
+			'permission' => Cocom::DPLUSPERMISSION,
+			'title'      => Cocom::TITLE,
+			'summary'    => Cocom::SUMMARY
+		],
 		'mxrfe' => [
 			'name'       => 'mxrfe',
 			'permission' => 'mxrfe',
@@ -64,6 +70,10 @@ class Menu extends AbstractMenuController {
 
 	public static function bumUrl() {
 		return self::subfunctionUrl('bum');
+	}
+
+	public static function cocomUrl() {
+		return self::subfunctionUrl('cocom');
 	}
 
 	public static function mxrfeUrl() {

@@ -46,6 +46,7 @@ return array(
     'Controllers\\Map\\Apmain\\AbstractController' => $baseDir . '/classes/map/apmain/AbstractController.php',
     'Controllers\\Map\\Apmain\\Aoptm' => $baseDir . '/classes/map/apmain/Aoptm.php',
     'Controllers\\Map\\Apmain\\Bum' => $baseDir . '/classes/map/apmain/Bum.php',
+    'Controllers\\Map\\Apmain\\Cocom' => $baseDir . '/classes/map/apmain/Cocom.php',
     'Controllers\\Map\\Apmain\\Menu' => $baseDir . '/classes/map/apmain/Menu.php',
     'Controllers\\Map\\Apmain\\Mxrfe' => $baseDir . '/classes/map/apmain/Mxrfe.php',
     'Controllers\\Map\\Apmain\\Vtm' => $baseDir . '/classes/map/apmain/Vtm.php',

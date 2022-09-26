@@ -15,6 +15,11 @@
 			['GET',  'page{pagenbr:\d+}', Apmain\Bum::class, 'index'],
 			['POST', '', Apmain\Bum::class, 'handleCRUD'],
 		],
+		'cocom' => [
+			['GET',  '', Apmain\Cocom::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Apmain\Cocom::class, 'index'],
+			['POST',  '', Apmain\Cocom::class, 'handleCRUD'],
+		],
 		'mxrfe' => [
 			['GET',  '', Apmain\Mxrfe::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Apmain\Mxrfe::class, 'index'],
