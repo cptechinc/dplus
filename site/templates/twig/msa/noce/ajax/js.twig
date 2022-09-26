@@ -52,7 +52,12 @@ $(function() {
 		var action = form.attr('action');
 		var search = form.find('input[name=q]').val();
 		var url = action + '?' + query;
-		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-title').text('Search / Choose Pre-Defined Note');
+		
+		if (search.length) {
+			form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		}
+		
 		form.closest('.modal').find('.modal-body').loadin(url, function() {
 
 		});
