@@ -222,7 +222,7 @@ class Cxm extends AbstractController {
 			$html .= $config->twig->render('items/cxm/.new/response.twig', ['response' => $qnoteResponse]);
 			self::getQnotes()->deleteResponse();
 		}
-		if ($session->response_pdm) {
+		if ($session->response_pdm && $session->response_pdm->has_error()) {
 			$html .= $config->twig->render('mso/pdm/response-alert.twig', ['response' => $session->response_pdm]);
 		}
 		return $html;
