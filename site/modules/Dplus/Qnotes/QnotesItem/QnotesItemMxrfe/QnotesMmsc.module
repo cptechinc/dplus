@@ -256,7 +256,7 @@ class QnotesMmsc extends WireData implements Module {
 			$response->set_success(true);
 			$message .= " were not able to be deleted";
 		}
-
+		$response->set_type($this->type());
 		$response->set_action(QnotesResponse::CRUD_DELETE);
 		$response->set_message($message);
 
