@@ -6,17 +6,11 @@
 {% include 'items/cxm/.new/xref/js/classes.js.twig' %}
 
 $(function() {
-	var form_cxm = $('#cxm-item-form');
-	var input_itemID = form_cxm.find('input[name=itemID]');
-	var input_custitemID = form_cxm.find('input[name=custitemID]');
-	var input_custID = form_cxm.find('input[name=custID]');
-	var select_uom_pricing = form_cxm.find('select[name=uom_pricing]');
-	var input_price_uom    = form_cxm.find('input[name=price_uom]');
-	var input_price_customer    = form_cxm.find('input[name=price_customer]');
 	var modal_ajax = $('#ajax-modal');
 
-	var server = CxmRequests.getInstance();
+	var server  = CxmRequests.getInstance();
 	var formCxm = CxmForm.getInstance();
+	var alert   = CxmAlerts.getInstance();
 
 /* =============================================================
 	Event Functions
@@ -24,24 +18,32 @@ $(function() {
 	$("body").on("change", "input[name=price_customer]", function(e) {
 		var input = $(this);
 		var price = parseFloat(input.val());
-		input.val(price.toFixed({{ cxm.fieldAttribute('price_customer', 'precision') }}));
-		calculate_peruom();
+		input.val(price.toFixed(formCxm.config.fields.price_customer.precision));
+		
+		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemid.attr('data-itemid') != formCxm.inputs.itemid.val()) {
+			server.getItem(formCxm.inputs.itemid.val(), function(item) {
+				formCxm.populateItemData(item, function() {
+					formCxm.calculatePriceUom();
+				});
+			});
+		} else {
+			formCxm.calculatePriceUom();
+		}
 	});
 
 	$("body").on("change", "input[name=price_retail]", function(e) {
 		var input = $(this);
 		var price = parseInt(input.val());
-		input.val(price.toFixed({{ cxm.fieldAttribute('price_retail', 'precision') }}));
+		input.val(price.toFixed(formCxm.config.fields.price_retail.precision));
 	});
 
 	$("body").on("change", "input[name=conversion]", function(e) {
 		var input = $(this);
 		var price = parseInt(input.val());
-		input.val(price.toFixed({{ cxm.fieldAttribute('conversion', 'precision') }}));
+		input.val(price.toFixed(formCxm.config.fields.conversion.precision));
 	});
 
-	$("body").on("change", "#uom_pricing", function(e) {
-		calculate_peruom();
+	$("body").on("change", "select[name=uom_pricing]", function(e) {
 		var uom = $(this).val();
 
 		if (uom.length) {
@@ -51,13 +53,32 @@ $(function() {
 			$('#price_uom').attr('readonly', '');
 			$('#price_uom').attr('tabindex', '-1');
 		}
+
+		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemid.attr('data-itemid') != formCxm.inputs.itemid.val()) {
+			server.getItem(formCxm.inputs.itemid.val(), function(item) {
+				formCxm.populateItemData(item, function() {
+					formCxm.calculatePriceUom();
+				});
+			});
+		} else {
+			formCxm.calculatePriceUom();
+		}
 	});
 
 	$("body").on("change", "#price_uom", function(e) {
 		var input = $(this);
 		var price = parseFloat(input.val());
-		input.val(price.toFixed({{ cxm.fieldAttribute('price_uom', 'precision') }}));
-		calculate_custprice();
+		input.val(price.toFixed(formCxm.config.fields.price_uom.precision));
+
+		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemid.attr('data-itemid') != formCxm.inputs.itemid.val()) {
+			server.getItem(formCxm.inputs.itemid.val(), function(item) {
+				formCxm.populateItemData(item, function() {
+					formCxm.calculatePriceCustomer();
+				});
+			});
+		} else {
+			formCxm.calculatePriceCustomer();
+		}
 	});
 
 	$("body").on("change", "input[name=itemID]", function(e) {
@@ -85,33 +106,25 @@ $(function() {
 	$("body").on("change", "input[name=convert]", function(e) {
 		var input = $(this);
 		var conversion = parseFloat(input.val());
-		input.val(conversion.toFixed({{ cxm.fieldAttribute('conversion', 'precision') }}));
+		input.val(conversion.toFixed(formCxm.config.fields.conversion.precision));
 	});
 
 
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	origForm = form_cxm.serialize();
+	origForm = formCxm.form.serialize();
 
-	$("body").on("click", "a:not(#cxm-item-form .form-link, #ajax-modal a, [data-target=#ajax-modal])", function(e) {
-		if (form_cxm.serialize() !== origForm) {
+	$("body").on("click", "a:not(#xref-form .form-link, #ajax-modal a, [data-target=#ajax-modal])", function(e) {
+		if (formCxm.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
 
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					form_cxm.find('button[type=submit]').click();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					formCxm.form.find('button[type=submit]').click();
+				} else {
 					$.get('{{ page.xrefExitUrl(xref) }}', function() {
 						window.location.href = href;
 					});
@@ -137,9 +150,8 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var custID = button.data('custid');
-		var name = button.data('name');
-		input_custID.val(custID);
-		input_custID.change();
+		formCxm.inputs.custid.val(custID);
+		formCxm.inputs.custid.change();
 		modal_ajax.modal('hide');
 	});
 
@@ -147,9 +159,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var itemID = button.data('itemid');
-		var description = button.data('description');
-		var description2 = button.data('description2');
-		input_itemID.val(itemID).change();
+		formCxm.inputs.itemid.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -173,7 +183,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	var validator = form_cxm.validate({
+	var validator = formCxm.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -232,49 +242,21 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			$('#loading-modal').modal('show');
-			submit_cxm(form);
+			formCxm.submitXref(form);
 		}
 	});
-
-
-	function submit_cxm(form) {
-		request_validate_custitemID(function(exists) {
-			if (exists === true && input_custitemID.val() != input_custitemID.data('custitemid')) {
-				swal_existing(function(editXref) {
-					if (editXref === true) {
-						var uri = new URI();
-						uri.removeQuery('custitemID');
-						uri.setQuery('custID', input_custID.val());
-						uri.setQuery('custitemID', input_custitemID.val());
-						window.location.href = uri.toString();
-					}
-					if (editXref === false) {
-						location.reload();
-					}
-				});
-			} else {
-				var allow_pdm_change = {{ cxm.allowPdmUpdate() }};
-
-				if (allow_pdm_change && parseFloat(input_price_customer.val()) != 0.0 && input_price_customer.val() != $('input[name=price_contract]').val()) {
-					swal_update_pdm(form);
-				} else {
-					form.submit();
-				}
-			}
-		});
-	}
 
 	$("body").on('change', 'input[name=custitemID]', function(e) {
 		e.preventDefault();
 
-		request_validate_custitemID(function(exists) {
-			if (exists === true && input_custitemID.val() != input_custitemID.data('custitemid')) {
-				swal_existing(function(editXref) {
+		server.validateXref(formCxm.inputs.custid.val(), formCxm.inputs.custitemid.val(), function(exists) {
+			if (exists === true && formCxm.inputs.custitemid.val() != formCxm.inputs.custitemid.data('custitemid')) {
+				alert.exists(formCxm.inputs.custid.val(), formCxm.inputs.custitemid.val(), function(editXref) {
 					if (editXref === true) {
 						var uri = new URI();
 						uri.removeQuery('custitemID');
-						uri.setQuery('custID', input_custID.val());
-						uri.setQuery('custitemID', input_custitemID.val());
+						uri.setQuery('custID', formCxm.inputs.custid.val());
+						uri.setQuery('custitemID', formCxm.inputs.custitemid.val());
 						window.location.href = uri.toString();
 					}
 					if (editXref === false) {
@@ -285,119 +267,13 @@ $(function() {
 		});
 	});
 
-	function swal_existing(callback) {
-		swal2.fire({
-			title: "Customer Item " + input_custitemID.val() + " exists",
-			text: 'Would you like to go edit this item?',
-			icon: 'error',
-			showCancelButton: true,
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'No',
-		}).then((result) => {
-			callback(result.value ? true : false)
-		});
-	}
-
-	function swal_update_pdm(form) {
-		var html = '<table class="table table-sm">' +
-			'<tr>' +
-				'<td>Discount Price</td>' +
-				'<td class="text-right">'+ $('input[name=price_contract]').val() +'</td>' +
-			'</tr>' +
-			'<tr>' +
-				'<td>Customer X-ref Price</td>' +
-				'<td class="text-right">'+input_price_customer.val()+'</td>'+
-			'</tr>'+
-		'</table>';
-		html += 'Do you want to ';
-		if (parseFloat(input_price_customer.val()) == 0.00) {
-			html += 'create';
-		} else {
-			html += 'update';
-		}
-		html += ' discount record with this price?';
-
-		swal2.fire({
-			title: "Confirmation",
-			html: html,
-			icon: 'question',
-			showCancelButton: true,
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'No',
-		}).then((result) => {
-			if (result.value) {
-				$('input[name=updatepdm]').val('true');
-			} else {
-				$('input[name=updatepdm]').val('false');
-			}
-			form.submit();
-		});
-	}
 
 /* =============================================================
 	AJAX Request Functions
 ============================================================= */
-	/**
-	 * Gets boolean value if CXM item exists then calls callback function
-	 * @param  {Function} callback
-	 * @return bool       Does CXM item exist?
-	 */
-	function request_validate_custitemID(callback) {
-		var url = new URI('{{ page.jsonapiURL('mso/validate/cxm/') }}');
-		url.addQuery('custID', input_custID.val());
-		url.addQuery('custitemID', input_custitemID.val());
 
-		$.getJSON(url.toString(), function( valid ) {
-			callback(valid);
-		});
-	}
 
 /* =============================================================
 	Per UoM Calculation Functions
 ============================================================= */
-	function calculate_peruom() {
-		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemidD.attr('data-itemid') != formCxm.inputs.itemid.val()) {
-			server.getItem(formCxm.inputs.itemid.val(), function(item) {
-				formCxm.populateItemData(item, function() {
-	
-				});
-			});
-		} else {
-			_calculate_peruom();
-		}
-	}
-
-	function _calculate_peruom() {
-		var custprice = parseFloat(input_price_customer.val());
-		var qty_percase = parseFloat(input_itemID.attr('data-qtypercase'));
-		var conversion = select_uom_pricing.find('option:selected').data('conversion');
-		var peruom = 0;
-		if (conversion) {
-			peruom = (custprice / qty_percase) * parseFloat(conversion);
-		}
-		input_price_uom.val(peruom.toFixed(3));
-	}
-
-	function calculate_custprice() {
-		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemid.attr('data-itemid') != formCxm.inputs.itemid.val()) {
-			server.getItem(formCxm.inputs.itemid.val(), function(item) {
-				formCxm.populateItemData(item, function() {
-	
-				});
-			});
-		} else {
-			_calculate_custprice();
-		}
-	}
-
-	function _calculate_custprice() {
-		var peruom = input_price_uom.val();
-		var qty_percase = parseFloat(input_itemID.attr('data-qtypercase'));
-		var conversion = select_uom_pricing.find('option:selected').data('conversion');
-		if (conversion) {
-			var custprice = (peruom * qty_percase) / conversion;
-			input_price_customer.val(custprice.toFixed({{ cxm.fieldAttribute('price_customer', 'precision') }}));
-		}
-		input_price_uom.val(peruom.toFixed({{ cxm.fieldAttribute('price_uom', 'precision') }}));
-	}
 });

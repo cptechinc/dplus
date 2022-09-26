@@ -114,7 +114,9 @@
 						'value': xref.itemid,
 						'attributes': {
 							'placeholder': '',
-							'aria-label':  'Item ID'
+							'aria-label':  'Item ID',
+							'data-itemid': xref.itemid,
+							'data-qtypercase': xref.item.qtypercase,
 						}
 					},
 					'button': {
@@ -127,7 +129,7 @@
 							'data-toggle': 'modal',
 							'data-target': '#ajax-modal',
 							'data-lookupurl': page.search_lookupURL('items'),
-							'data-input': '#itemID'
+							'data-input': '#itemID',
 						}
 					}
 				}

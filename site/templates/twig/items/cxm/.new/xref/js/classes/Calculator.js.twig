@@ -1,0 +1,34 @@
+class CxmCalculator {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CxmCalculator();
+		}
+		return this.instance;
+	}
+
+	pricePerUom(custprice, qty_percase, uomconversion) {
+		var custprice     = parseFloat(custprice);
+		var qty_percase   = parseFloat(qty_percase);
+		var uomconversion = parseFloat(uomconversion);
+		var price = 0;
+		
+		if (conversion) {
+			price = (custprice / qty_percase) * parseFloat(uomconversion);
+		}
+		return price;
+	}
+
+	priceCustomer(uomprice, qty_percase, uomconversion) {
+		var uomprice     = parseFloat(uomprice);
+		var qty_percase   = parseFloat(qty_percase);
+		var uomconversion = parseFloat(uomconversion);
+		var price = 0;
+		
+		if (conversion) {
+			price = (uomprice * qty_percase) / conversion;
+		}
+		return price;
+	}
+}

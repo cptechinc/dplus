@@ -16,7 +16,6 @@ class CxmForm {
 	}
 
 	populateItemData(item) {
-		console.log(item);
 		var node = $('.item-col');
 		node.find('.description').text();
 		node.find('.description2').text();
@@ -31,5 +30,64 @@ class CxmForm {
 			this.inputs.itemid.attr('data-qtypercase', item.qtypercase);
 			this.inputs.itemid.attr('data-itemid', item.itemid);
 		}
+	}
+
+	calculatePriceUom() {
+		var inputs = this.inputs;
+		var calculator = CxmCalculator.getInstance();
+		var custprice     = inputs.price_customer.val();
+		var qtypercase    = inputs.itemid.attr('data-qtypercase');
+		var uomconversion = inputs.uom_pricing.find('option:selected').data('conversion');
+		var price = calculator.pricePerUom(custprice, qtypercase, uomconversion);
+		inputs.price_uom.val(price.toFixed(this.config.fields.price_uom.precision));
+	}
+
+	calculatePriceCustomer() {
+		var inputs = this.inputs;
+		var calculator = CxmCalculator.getInstance();
+		var uomprice      = parseFloat(inputs.price_uom.val());
+		var qtypercase    = inputs.itemid.attr('data-qtypercase');
+		var uomconversion = inputs.uom_pricing.find('option:selected').data('conversion');
+		var price = calculator.priceCustomer(uomprice, qtypercase, uomconversion);
+		inputs.price_customer.val(price.toFixed(this.config.fields.price_customer.precision));
+		inputs.price_uom.val(uomprice.toFixed(this.config.fields.price_uom.precision));
+	}
+
+	submitXref(form) {
+		var alert   = CxmAlerts.getInstance();
+		var server  = CxmRequests.getInstance();
+		var inputs  = this.inputs;
+		var config  = this.config;
+
+		server.validateXref(inputs.custid.val(), inputs.custitemid.val(), function(exists) {
+			if (exists === true && inputs.custitemid.val() != inputs.custitemid.data('custitemid')) {
+				alert.exists(inputs.custid.val(), inputs.custitemid.val(), function(editXref) {
+					if (editXref === true) {
+						var uri = new URI();
+						uri.removeQuery('custitemID');
+						uri.setQuery('custID', inputs.custid.val());
+						uri.setQuery('custitemID', inputs.custitemid.val());
+						window.location.href = uri.toString();
+					}
+					if (editXref === false) {
+						location.reload();
+					}
+				});
+			} else {
+
+				if (config.allowPdmUpdate && parseFloat(inputs.price_customer.val()) != 0.0 && inputs.price_customer.val() != inputs.price_contract.val()) {
+					alert.promptUpdatePdm(inputs.price_customer.val(), inputs.price_contract.val(), function(updatePdm) {
+						if (updatePdm) {
+							$('input[name=updatepdm]').val('true');
+						} else {
+							$('input[name=updatepdm]').val('false');
+						}
+						form.submit();
+					});
+				} else {
+					form.submit();
+				}
+			}
+		});
 	}
 }

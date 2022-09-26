@@ -9,7 +9,7 @@ class CxmRequests {
 	}
 
 	validateXref(custID, custitemID, callback) {
-		var ajax = new AjaxRequest(page.jsonApiUrl('mso/validate/cxm/xref/'));
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mso/validate/cxm/xref/') }}');
 
 		ajax.setData({custID: custID, custitemID: custitemID});
 		ajax.request(function(response) {
