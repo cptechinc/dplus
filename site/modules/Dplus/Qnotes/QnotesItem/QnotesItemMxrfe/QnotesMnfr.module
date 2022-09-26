@@ -139,6 +139,7 @@ class QnotesMnfr extends WireData implements Module {
 		$values = $input->$rm;
 		$mnfrID = $values->text('mnfrID');
 		$mnfritemID = $values->text('mnfritemID');
+		$itemID = $values->text('itemID');
 
 		$q = $this->query_xref($mnfrID, $mnfritemID);
 
@@ -258,6 +259,7 @@ class QnotesMnfr extends WireData implements Module {
 			$response->set_success(true);
 			$message .= " were not able to be deleted";
 		}
+		$response->set_type($this->type());
 
 		$response->set_action(QnotesResponse::CRUD_DELETE);
 		$response->set_message($message);
