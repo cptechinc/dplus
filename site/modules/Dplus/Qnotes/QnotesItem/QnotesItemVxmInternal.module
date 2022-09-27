@@ -141,6 +141,7 @@ class QnotesItemVxmInternal extends WireData implements Module {
 		$time      = $values->text('rawnotetime');
 
 		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
+		$q->filterByUserid($userID);
 		$q->filterByNotedate($date);
 		$q->filterByNotetime($time);
 
@@ -183,12 +184,16 @@ class QnotesItemVxmInternal extends WireData implements Module {
 			$notetime = date(ItemXrefVendorNoteInternal::FORMAT_NOTETIME);
 		}
 
-		$this->delete_notes($itemID, $vendorID, $userID, date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE, strtotime($notedate)), $notetimeraw);
+		if (empty($notetimeraw)) {
+			$notetimeraw = date(ItemXrefVendorNoteInternal::FORMAT_NOTETIME, strtotime($notedate.$notetime)).'00';
+		}
 
+		$this->delete_notes($itemID, $vendorID, $userID, date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE, strtotime($notedate)), $notetimeraw);
+		
 		$note = $values->textarea('note');
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
-
+		
 
 		if (empty(array_filter($note_lines))) {
 			$record = ItemXrefVendorNoteInternal::new();
@@ -196,7 +201,7 @@ class QnotesItemVxmInternal extends WireData implements Module {
 			$record->setItemid($itemID);
 			$record->setUserid($userID);
 			$record->generateKey2(); // PK
-			$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $vendorID, [1]);
+			$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $vendorID, [1]);			
 			return true;
 		}
 
@@ -208,14 +213,16 @@ class QnotesItemVxmInternal extends WireData implements Module {
 			$record->setNotedate(date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE, strtotime($notedate)));
 			$record->setNotetime(date(ItemXrefVendorNoteInternal::FORMAT_NOTETIME, strtotime($notedate.$notetime)).'00');
 			$record->setUserid($userID);
-			$record->generateKey2(); // PK
 			$record->setSequence($sequence); // PK
+			$record->generateKey2(); // PK
+			
 			$record->setNote($line);
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');
 			$lines_saved[$sequence] = $record->save();
 		}
+		
 		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $vendorID, $lines_saved);
 	}
 
@@ -230,6 +237,7 @@ class QnotesItemVxmInternal extends WireData implements Module {
 	 */
 	public function delete_notes($itemID, $vendorID, $userID, $date, $time) {
 		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
+		$q->filterByUserid($userID);
 		$q->filterByNotedate($date);
 		$q->filterByNotetime($time);
 
