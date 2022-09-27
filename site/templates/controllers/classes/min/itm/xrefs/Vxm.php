@@ -10,7 +10,7 @@ use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 // DplusFilters
 use Dplus\Filters\Map\Vxm as VxmFilter;
 // Mvc Controllers
-use Controllers\Map\Vxm as VxmController;
+use Controllers\Map\Apmain\Vxm as VxmController;
 
 class Vxm extends Base {
 	const PERMISSION_ITMP = 'xrefs';

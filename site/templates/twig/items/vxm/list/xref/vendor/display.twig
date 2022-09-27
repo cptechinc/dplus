@@ -6,16 +6,11 @@
 	{% include 'items/itm/response-alert.twig' with {'response': response} %}
 {% endif %}
 
-<div class="card">
-	<div class="mb-3">
-		{% include 'items/vxm/search/xref/vendor/form.twig' %}
-		{% if input.get.text('q') %}
-			<a href="{{ page.vendorUrl(input.get.text('vendorID')) }}" class="btn btn-warning mt-2">
-				<i class="fa fa-times"></i> Clear Search
-			</a>
-		{% endif %}
-	</div>
+<div class="mb-3">
+	{% include 'items/vxm/list/xref/vendor/toolbar.twig' %}
+</div>
 
+<div class="card">
 	{% include 'items/vxm/list/xref/vendor/list.twig' %}
 
 	{% include 'util/paginator/propel.twig' with {'pager': items} %}

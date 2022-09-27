@@ -2,18 +2,20 @@
 {% set segments = input.urlSegments() %}
 {% set lastsegment = segments[segments|length] %}
 
+
 <div class="row">
 	<div class="col-sm-3">
-		<a href="{{ page.mnfrListUrl(values.text('mnfrID')) }}" class="btn btn-primary">
+		<a href="{{ page.custListUrl(values.text('custID')) }}" class="btn btn-primary">
 			<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ input.urlSegmentLast()|upper }}
 		</a>
 	</div>
 	<div class="col-sm-3"></div>
 
 	<div class="col-sm-6">
-		{% include 'items/mxrfe/search/vendor/form.twig' with {'mnfrID': input.get.text('mnfrID'), 'value': input.get.text('q')} %}
+		{% include 'items/cxm/.new/customer/xrefs/form.twig' %}
+
 		{% if input.get.text('q') %}
-			<a href="{{ page.mnfrUrl(input.get.text('mnfrID')) }}" class="btn btn-warning mt-2">
+			<a href="{{ page.custUrl(input.get.text('custID')) }}" class="btn btn-warning mt-2">
 				<i class="fa fa-times"></i> Clear Search
 			</a>
 		{% endif %}

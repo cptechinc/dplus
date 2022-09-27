@@ -8,13 +8,8 @@
 	response               XrefResponse|null
 #}
 <div class="mb-3">
-	{% include 'items/cxm/.new/customer/xrefs/form.twig' %}
+	{% include 'items/cxm/.new/customer/xrefs/toolbar.twig' %}
 
-	{% if input.get.text('q') %}
-		<a href="{{ page.custUrl(input.get.text('custID')) }}" class="btn btn-warning mt-2">
-			<i class="fa fa-times"></i> Clear Search
-		</a>
-	{% endif %}
 </div>
 
 {% include 'items/cxm/.new/customer/xrefs/list.twig' %}

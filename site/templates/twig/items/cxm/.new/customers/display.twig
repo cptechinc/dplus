@@ -1,11 +1,5 @@
 <div class="mb-3">
-	{% include 'items/cxm/.new/customers/form.twig' %}
-
-	{% if input.get.text('q') %}
-		<a href="{{ input.url() }}" class="btn btn-warning mt-2">
-			<i class="fa fa-times"></i> Clear Search
-		</a>
-	{% endif %}
+	{% include 'items/cxm/.new/customers/toolbar.twig' %}
 </div>
 <div>
 	<div class="row">

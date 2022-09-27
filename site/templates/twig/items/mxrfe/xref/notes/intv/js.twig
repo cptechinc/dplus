@@ -16,10 +16,10 @@ $(function () {
 			
 			// {# modal.find('.action-desc').text('Editing'); #}
 			console.log(button.data('date'));
-			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');
-			modal.find('input[name=notedate]').attr('readonly', '');
-			modal.find('input[name=notedate]').closest('.datepicker').find('.dropdown-toggle').attr('disabled', '');
-			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', '');
+			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', 'readonly');
+			modal.find('input[name=notedate]').attr('readonly', 'readonly');
+			modal.find('input[name=notedate]').closest('.datepicker').find('.dropdown-toggle').attr('disabled', 'disabled');
+			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', 'readonly');
 			modal.find('input[name=rawnotetime]').val(button.data('rawnotetime'));
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 			modal.find('button[value=delete-notes]').addClass('show');

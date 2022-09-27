@@ -4,4 +4,7 @@
 	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'vxm')} %}
 {% endif %}
 
+<div class="mb-3">
+	{% include 'items/vxm/search/vendor/toolbar.twig' %}
+</div>
 {% include 'items/vxm/search/vendor/search.twig' with {'vendors': vendors} %}

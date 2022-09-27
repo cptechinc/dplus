@@ -10,14 +10,6 @@
 {% endblock %}
 
 {% block body %}
-	<div class="mb-3">
-		{% include 'items/mxrfe/search/vendor/form.twig' with {'mnfrID': input.get.text('mnfrID'), 'value': input.get.text('q')} %}
-		{% if input.get.text('q') %}
-			<a href="{{ page.mnfrUrl(input.get.text('mnfrID')) }}" class="btn btn-warning mt-2">
-				<i class="fa fa-times"></i> Clear Search
-			</a>
-		{% endif %}
-	</div>
 	{% include 'items/mxrfe/list/vendor/list.twig' with {'mxrfe': mxrfe, 'xrefs': xrefs} %}
 	{% include 'util/paginator/propel.twig' with {'pager': xrefs} %}
 {% endblock %}
