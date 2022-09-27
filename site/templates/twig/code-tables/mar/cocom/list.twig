@@ -17,9 +17,11 @@
 		<div class="col-sm-1 text-right">
 			Date
 		</div>
-		<div class="col-sm-2 text-center">
-			
-		</div>
+		{% if input.get.offsetExists('print') == false %}
+			<div class="col-sm-2 text-center">
+				
+			</div>
+		{% endif %}
 	</div>
 {% endblock %}
 
@@ -47,13 +49,15 @@
 			<div class="col-sm-1 text-right">
 				{{ code.country_date|convertdate(manager.fieldAttribute('country_date', 'displayformat')) }}
 			</div>
-			<div class="col-sm-2 text-center">
-				{% if page.is_print() == false %}
-					<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
-						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-					</button>
-				{% endif %}
-			</div>
+			{% if input.get.offsetExists('print') == false %}
+				<div class="col-sm-2 text-center">
+					{% if page.is_print() == false %}
+						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					{% endif %}
+				</div>
+			{% endif %}
 		</div>
 	{% endblock %}
 {% endfor %}
