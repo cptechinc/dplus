@@ -1,4 +1,6 @@
 <?php namespace Controllers\Mar\Armain;
+// ProcessWire
+use ProcessWire\WireData;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -21,5 +23,10 @@ class Worm extends AbstractCodeTableController {
 
 	public static function getCodeTable() {
 		return Codes\Mar\Worm::instance();
+	}
+
+	protected static function renderModal(WireData $data) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mar/worm/edit-modal.twig', ['manager' => $codeTable]);
 	}
 }
