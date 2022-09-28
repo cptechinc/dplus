@@ -7,6 +7,7 @@
 		<script>
 			var api    = <?= json_encode($config->js('api')); ?>;
 			var config = <?= json_encode($config->js('config')); ?>;
+			var agent  = <?= json_encode($config->js('agent')); ?>;
 		</script>
 		<?php if ($page->js) : ?>
 			<script>
