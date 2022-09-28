@@ -18,3 +18,8 @@ $config->js('config', [
 		'docvwr' => $docView->url('')
 	]
 ]);
+
+$agent = new Jenssegers\Agent\Agent();
+$config->js('agent', [
+	'browser' => strtolower($agent->browser())
+]);
