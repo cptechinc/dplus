@@ -28,6 +28,8 @@ class Factory extends WireData {
 	 * @return bool
 	 */
 	public function exists($function = '') {
+		$function = strtolower($function);
+		
 		foreach (self::ROUTERS as $router) {
 			if ($router::exists($function)) {
 				$this->router = $router;
@@ -43,6 +45,8 @@ class Factory extends WireData {
 	 * @return bool
 	 */
 	public function route($function) {
+		$function = strtolower($function);
+
 		if (empty($this->router) === false) {
 			if ($this->router::exists($function)) {
 				$this->router::route($function);
