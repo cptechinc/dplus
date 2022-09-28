@@ -59,7 +59,6 @@ class Worm extends AbstractCodeTableEditableSingleKey {
 	 * @return ArWriteOffCode
 	 */
 	public function new($id = '') {
-		$this->initFieldAttributes();
 		$code = new ArWriteOffCode();
 
 		if (empty($id) === false && strtolower($id) != 'new') {
