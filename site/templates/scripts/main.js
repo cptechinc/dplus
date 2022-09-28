@@ -630,3 +630,14 @@ const swal2 = Swal.mixin({
 		$('.modal').attr('tabindex', '-1');
 	}
 });
+
+function backToUrl(url) {
+	var uri = URI(url);
+	var queryData = uri.query(true);
+	if (queryData.hasOwnProperty('focus') === false) {
+		window.location.href = url;
+	}
+	delete queryData.focus;
+	uri.query(queryData);
+	window.location.href = uri.toString();
+}
