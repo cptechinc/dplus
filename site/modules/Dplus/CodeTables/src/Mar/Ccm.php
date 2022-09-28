@@ -2,17 +2,13 @@
 // Dplus Models
 use ArCommissionCode;
 // Dplus Codes
-use Dplus\Codes\AbstractCodeTableEditable;
-use Dplus\Codes\SingleKeyTraits;
-use Dplus\Codes\SingleKeyEditableTraits;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
+
 
 /**
  * Class that handles the CRUD of the CCM code table
  */
-class Ccm extends AbstractCodeTableEditable {
-	use SingleKeyTraits;
-	use SingleKeyEditableTraits;
-
+class Ccm extends AbstractCodeTableEditableSingleKey{
 	const MODEL              = 'ArCommissionCode';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_cust_comm';
