@@ -14,7 +14,7 @@
 			<div class="w-100 d-flex justify-content-between">
 				<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
 				<div>{{ page.headline }}</div>
-				<div><span class="topage">Page </span></div>
+				<div></div>
 			</div>
 		</th>
 	</tr>
@@ -39,7 +39,11 @@
 		<td>{{ code.numeric }}</td>
 		<td>{{ code.custom }}</td>
 		<td>{{ code.description }}</td>
-		<td class="text-right">{{ code.exchange_rate|number_format(manager.fieldAttribute('exchange_rate', 'precision')) }}</td>
-		<td class="text-right">{{ code.country_date|convertdate(manager.fieldAttribute('country_date', 'displayformat')) }}</td>
+		<td class="text-right">
+			{{ code.echange_rate|number_format(manager.fieldAttribute('exchange_rate', 'precision')) }}
+		</td>
+		<td class="text-right">
+			{{ code.country_date|convertdate(manager.fieldAttribute('country_date', 'displayformat')) }}
+		</td>
 	{% endblock %}
 {% endfor %}
