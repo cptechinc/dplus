@@ -22,11 +22,21 @@
 	</div>
 {% endif %}
 
+{% if input.get.offsetExists('print') %}
+	<div class="d-flex justify-content-between mb-3">
+		<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+		<div>{{ page.headline }}</div>
+		<div>Page {{ input.pageNum }}</div>
+	</div>
+{% endif %}
+
 <div class="card">
 	{% include 'code-tables/optm/sysop/list/list.twig' %}
-	<div class="card-body">
-		{% include 'util/paginator/propel.twig' with {'pager': codes} %}
-	</div>
+	{% if input.get.offsetExists('print') == false %}
+		<div class="card-body">
+			{% include 'util/paginator/propel.twig' with {'pager': codes} %}
+		</div>
+	{% endif %}
 </div>
 
 {% include 'code-tables/optm/sysop/edit/modal.twig' %}

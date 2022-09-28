@@ -1,0 +1,45 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+
+
+{% extends 'code-tables/list-print.twig' %}
+
+{% block print_headings_row %}
+	<tr>
+		<th colspan="7">
+			<div class="w-100 d-flex justify-content-between">
+				<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+				<div>{{ page.headline }}</div>
+				<div><span class="topage">Page </span></div>
+			</div>
+		</th>
+	</tr>
+{% endblock %}
+
+{% block headings_row %}
+	<tr class="bg-dark text-white column-headers">
+		{% block headings_columns %}
+			<th colspan="3">ISO Codes</th>
+			<th>Custom</th>
+			<th>Description</th>
+			<th class="text-right">Exchange Rate</th>
+			<th class="text-right">Date</th>
+		{% endblock %}
+	</tr>
+{% endblock %}
+
+{% for code in codes %}
+	{% block code_columns %}
+		<td>{{ code.code }}</td>
+		<td>{{ code.iso2 }}</td>
+		<td>{{ code.numeric }}</td>
+		<td>{{ code.custom }}</td>
+		<td>{{ code.description }}</td>
+		<td class="text-right">{{ code.exchange_rate|number_format(manager.fieldAttribute('exchange_rate', 'precision')) }}</td>
+		<td class="text-right">{{ code.country_date|convertdate(manager.fieldAttribute('country_date', 'displayformat')) }}</td>
+	{% endblock %}
+{% endfor %}

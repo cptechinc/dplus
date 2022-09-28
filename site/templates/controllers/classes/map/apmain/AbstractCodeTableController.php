@@ -100,12 +100,13 @@ abstract class AbstractCodeTableController extends AbstractController {
 	Displays
 ============================================================= */
 	protected static function displayList(WireData $data, PropelModelPager $codes) {
+		self::sanitizeParametersShort($data, ['print|bool']);
 		$html  = '';
 		$html .= static::renderBreadcrumbs($data);
 		$html .= static::renderResponse($data);
-		$html .= static::renderList($data, $codes);
+		$html .= boolval($data->print) ? static::renderListForPrinting($data, $codes) : static::renderList($data, $codes);
 
-		if (self::pw('input')->get->offsetExists('print') === false) {
+		if (boolval($data->print) === false) {
 			$html .= self::pw('config')->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
 		}
 
@@ -125,6 +126,11 @@ abstract class AbstractCodeTableController extends AbstractController {
 	protected static function renderList(WireData $data, PropelModelPager $codes) {
 		$codeTable = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
 	protected static function renderCode(WireData $data, Code $code) {

@@ -16,6 +16,14 @@
 	{% include 'code-tables/optm/list/toolbar.twig' %}
 </div>
 
+{% if input.get.offsetExists('print') %}
+	<div class="d-flex justify-content-between mb-3">
+		<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+		<div>{{ page.headline }}</div>
+		<div>Page {{ input.pageNum }}</div>
+	</div>
+{% endif %}
+
 {% if response and response.hasSuccess() == false %}
 	<div class="mb-3">
 		{% include 'code-tables/response.twig' %}
@@ -24,4 +32,6 @@
 
 {% include 'code-tables/optm/list/list.twig' %}
 
-{% include 'util/paginator/propel.twig' with {'pager': codes} %}
+{% if input.get.offsetExists('print') == false %}
+	{% include 'util/paginator/propel.twig' with {'pager': codes} %}
+{% endif %}

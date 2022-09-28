@@ -406,3 +406,37 @@ form label {
 .card .card-toolbar {
 	background-color: rgba(56, 163, 162, .45);
 }
+
+/*==============================================================
+	Code Tables Styles
+==============================================================*/
+.code-list .column-headers th {
+	padding-top: .75rem;;
+	padding-bottom: .75rem;;
+}
+
+@page {
+	size: A4;
+	margin: 5mm 5mm 5mm 5mm;
+	counter-reset: page;
+}
+
+
+
+@media print {
+	html, body {
+		width: 210mm;
+		height: 297mm;
+	}
+	@page {
+		size: A4;
+		margin: 5mm 5mm 5mm 5mm;
+		counter-reset: page;
+	}
+
+
+	.print-page-number::before {
+		counter-increment: page;
+        content: "Page " counter(page);
+	}
+}

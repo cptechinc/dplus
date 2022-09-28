@@ -12,7 +12,7 @@
 
 {% block header %}
 	<div class="row">
-		<div class="col-sm-6 mb-3">
+		<div class="col-sm-6 mb-3 d-print-none">
 			{% if page.is_print() %}
 				<button onclick="window.history.back();" class="btn btn-primary d-print-none">
 					<i class="fa fa-undo" aria-hidden="true"></i> Back
@@ -43,7 +43,7 @@
 							</div>
 						{% endif %}
 
-						<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 order-1 order-sm-2">
+						<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 d-print-none {{ page.is_print() ? 'collapse' : '' }} order-1 order-sm-2">
 							<div class="input-group">
 								<div class="input-group-btn search-panel">
 									<div class="dropdown">
@@ -74,6 +74,13 @@
 			{% endblock %}
 		</div>
 	</div>
+	{% if input.get.offsetExists('print') %}
+		<div class="w-100 d-flex justify-content-between mb-3 print-header">
+			<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+			<div>{{ page.headline }}</div>
+			<div>Page {{ input.pageNum }}</div>
+		</div>
+	{% endif %}
 {% endblock %}
 
 <div class="list-group codes-list mb-3">
@@ -109,8 +116,8 @@
 					<div class="col-5 col-sm-6">
 						{{ code.description }}
 					</div>
-					<div class="col-4 col-sm-3 text-center">
-						{% if page.is_print() == false %}
+					<div class="col-4 col-sm-3 text-center d-print-none">
+						{% if input.get.offsetExists('print') == false %}
 							<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</button>
