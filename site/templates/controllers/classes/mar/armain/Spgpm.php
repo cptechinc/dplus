@@ -6,7 +6,7 @@ use Dplus\Codes;
 
 
 class Spgpm extends AbstractCodeTableController {
-	const DPLUSPERMISSION = 'ccm';
+	const DPLUSPERMISSION = 'spgpm';
 	const TITLE      = 'Salesperson Group Code';
 	const SUMMARY    = 'View / Edit Salesperson Group Codes';
 	const SHOWONPAGE = 10;
