@@ -234,12 +234,14 @@ class Msa extends Controller {
 			return boolval($data->new) ? $exists === false : $exists;
 		}
 
+		$reflect = new \ReflectionClass($crud);
+
 		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Sysop $data->sysop Code $data->code already exists";
+			return $exists === false ? true : strtoupper($reflect->getShortName()) . " $data->sysop Code $data->code already exists";
 		}
 
 		if ($exists === false) {
-			return "Sysop $data->sysop Code $data->code not found";
+			return strtoupper($reflect->getShortName()) . " $data->sysop Code $data->code not found";
 		}
 		return true;
 	}
