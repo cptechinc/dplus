@@ -28,14 +28,7 @@ class Worm extends AbstractCodeTableEditableSingleKey {
 	const FIELD_ATTRIBUTES = [
 		'code'             => ['type' => 'text', 'maxlength' => ArWriteOffCode::MAX_LENGTH_CODE],
 		'description'      => ['type' => 'text', 'maxlength' => 20],
-		'writeoff'         => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
 	];
-
-	public function codeJson(Code $code) {
-		$json = parent::codeJson($code);
-		$json['writeoff'] = $code->writeoff;
-		return $json;
-	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -65,25 +58,6 @@ class Worm extends AbstractCodeTableEditableSingleKey {
 			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
-		$code->setWriteoff($this->fieldAttribute('writeoff', 'default'));
 		return $code;
-	}
-
-/* =============================================================
-	CRUD Processing
-============================================================= */
-	/**
-	 * Update Record with Input Data
-	 * @param  WireInput       $input Input Data
-	 * @param  ArWriteOffCode  $code
-	 * @return array
-	 */
-	protected function _inputUpdate(WireInput $input, Code $code) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		$invalidfields   = parent::_inputUpdate($input, $code);
-		$code->setWriteoff($values->yn('writeoff'));
-		return $invalidfields;
 	}
 }

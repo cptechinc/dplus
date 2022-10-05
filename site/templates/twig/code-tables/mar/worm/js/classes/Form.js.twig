@@ -23,7 +23,6 @@ class CodeForm {
 			this.inputs.code.val(json.code);
 			this.inputs.code.attr('readonly', 'true');
 			this.inputs.description.val(json.description);
-			this.inputs.writeoff.val(json.writeoff);
 			var validator = this.inputs.form.validate();
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
@@ -32,7 +31,6 @@ class CodeForm {
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');
 		this.inputs.description.val('');
-		this.inputs.writeoff.val('N');
 	}
 
 	updateDeleteLink(json = null) {
