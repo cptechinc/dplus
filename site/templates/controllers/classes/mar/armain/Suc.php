@@ -7,8 +7,8 @@ use Dplus\Codes;
 
 class Suc extends AbstractCodeTableController {
 	const DPLUSPERMISSION = 'suc';
-	const TITLE      = 'Ship-to User Code';
-	const SUMMARY    = 'View / Edit Ship-to User Codes';
+	const TITLE      = 'Ship-To User Code';
+	const SUMMARY    = 'View / Edit Ship-To User Codes';
 	const SHOWONPAGE = 10;
 
 	public static function _url() {
