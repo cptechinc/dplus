@@ -1,4 +1,8 @@
 <?php namespace Controllers\Mar\Armain;
+// Propel ORM Library
+use Propel\Runtime\Util\PropelModelPager;
+// ProcessWire
+use ProcessWire\WireData;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
@@ -21,5 +25,18 @@ class Cpm extends AbstractCodeTableController {
 
 	public static function getCodeTable() {
 		return Codes\Mar\Cpm::instance();
+	}
+
+/* =============================================================
+	Render HTML / JS
+============================================================= */
+	protected static function renderList(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mar/cpm/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
+	protected static function renderModal(WireData $data) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mar/cpm/edit-modal.twig', ['manager' => $codeTable]);
 	}
 }
