@@ -194,4 +194,17 @@ class Mtm extends AbstractCodeTableEditableSingleKey {
 		}
 		return [];
 	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return GL Account Description
+	 * @param  string $id GL Code
+	 * @return string
+	 */
+	public function glAcctDescription($id) {
+		$mhm = Codes\Mgl\Mhm::getInstance();
+		return $mhm->exists($id) ? $mhm->description($id) : '';
+	}
 }

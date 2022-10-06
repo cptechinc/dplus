@@ -32,6 +32,7 @@ class Tm extends AbstractCodeTableEditableSingleKey {
 		'description'      => ['type' => 'text', 'maxlength' => 20],
 	];
 	const NUMBER_TAXCODES = ArCustTaxCode::NUMBER_TAXCODES;
+	protected static $instance;
 
 	/**
 	 * Return JSON array
@@ -121,5 +122,27 @@ class Tm extends AbstractCodeTableEditableSingleKey {
 			$taxcodes[] = $taxcode;
 		}
 		return [];
+	}
+
+	public function getMtm() {
+		return Mtm::instance();
+	}
+
+	public function getMtmCode($id) {
+		return Mtm::instance()->code($id);
+	}
+
+	public function getTaxPercentTotal(ArCustTaxCode $code) {
+		$total = 0;
+		$mtm = Mtm::instance();
+
+		for ($i = 1; $i <= ArCustTaxCode::NUMBER_TAXCODES; $i++) {
+			if ($mtm->exists($code->taxcode($i)) === false) {
+				continue;
+			};
+			$taxcode = $mtm->code($code->taxcode($i));
+			$total += $this->sanitizer->float($taxcode->percent, ['precision' => $mtm->fieldAttribute('percent', 'precision')]);
+		} 
+		return $this->sanitizer->float($total, ['precision' => $mtm->fieldAttribute('percent', 'precision')]);
 	}
 }

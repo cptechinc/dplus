@@ -61,13 +61,15 @@
 		</thead>
 		<tbody>
 			{% for code in codes %}
-				<tr data-code="{{ code.code }}" class="{{ (response.key == code.code and response.hasSuccess() ) ? 'bg-success text-white' : ''}}">
-					{% block code_columns %}
-						<td>{{ code.code }}</td>
-						<td>{{ code.description }}</td>
-						<td></td>
-					{% endblock %}
-				</tr>
+				{% block code_row %}
+					<tr data-code="{{ code.code }}" class="{{ (response.key == code.code and response.hasSuccess() ) ? 'bg-success text-white' : ''}}">
+						{% block code_columns %}
+							<td>{{ code.code }}</td>
+							<td>{{ code.description }}</td>
+							<td></td>
+						{% endblock %}
+					</tr>
+				{% endblock %}
 			{% endfor %}
 		</tbody>
 	</table>

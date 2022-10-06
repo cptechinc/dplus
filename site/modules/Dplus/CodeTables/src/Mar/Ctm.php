@@ -34,15 +34,15 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 		'description' => ['type' => 'text', 'maxlength' => 20],
 		'maillist'    => ['type' => 'text', 'default' => 'N'],
 		'email'       => ['type' => 'text', 'maxlength' => 50],
-		'glsales'     => ['type' => 'text', 'title' => 'Sales'],
-		'glcredits'   => ['type' => 'text', 'title' => 'Credits'],
-		'glcogs'      => ['type' => 'text', 'title' => 'Cost of Goods Sold'],
-		'glfreight'   => ['type' => 'text', 'title' => 'Freight (To Customer)'],
-		'glmisc'      => ['type' => 'text', 'title' => 'Miscellaneous Amounts'],
-		'glar'        => ['type' => 'text', 'title' => 'Accounts Receivable'],
-		'glcash'      => ['type' => 'text', 'title' => 'Accounts Receivable Cash'],
-		'glfinance'   => ['type' => 'text', 'title' => 'Finance Charge'],
-		'gldiscounts' => ['type' => 'text', 'title' => 'Discounts Taken'],
+		'glsales'     => ['type' => 'text', 'label' => 'Sales'],
+		'glcredits'   => ['type' => 'text', 'label' => 'Credits'],
+		'glcogs'      => ['type' => 'text', 'label' => 'Cost of Goods Sold'],
+		'glfreight'   => ['type' => 'text', 'label' => 'Freight (To Customer)'],
+		'glmisc'      => ['type' => 'text', 'label' => 'Miscellaneous Amounts'],
+		'glar'        => ['type' => 'text', 'label' => 'Accounts Receivable'],
+		'glcash'      => ['type' => 'text', 'label' => 'Accounts Receivable Cash'],
+		'glfinance'   => ['type' => 'text', 'label' => 'Finance Charge'],
+		'gldiscounts' => ['type' => 'text', 'label' => 'Discounts Taken'],
 	];
 	/** @var self */
 	protected static $instance;
@@ -186,7 +186,7 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 
 		foreach ($this->glaccounts() as $field) {
 			if ($mhm->exists($values->text($field)) === false) {
-				$invalidfields[$field] = $this->fieldAttribute($field, 'title');
+				$invalidfields[$field] = $this->fieldAttribute($field, 'label');
 			} else {
 				$setAcct = 'set' . ucfirst($field);
 				$code->$setAcct($values->text($field));

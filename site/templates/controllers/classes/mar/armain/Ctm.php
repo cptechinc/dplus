@@ -85,7 +85,7 @@ class Ctm extends AbstractCodeTableController {
 		self::pw('page')->show_breadcrumbs = false;
 		$ctm = self::getCodeTable();
 		$ctm->recordlocker->deleteLock();
-		$html =  parent::list($data);
+		$html = parent::list($data);
 		return $html;
 	}
 
@@ -107,6 +107,11 @@ class Ctm extends AbstractCodeTableController {
 	protected static function renderList(WireData $data, PropelModelPager $codes) {
 		$codeTable = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/mar/ctm/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mar/ctm/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
 	protected static function renderModal(WireData $data) {
