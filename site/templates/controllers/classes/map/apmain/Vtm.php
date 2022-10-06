@@ -38,6 +38,11 @@ class Vtm extends AbstractCodeTableController {
 		return self::pw('config')->twig->render('code-tables/map/vtm/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/map/vtm/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
 	protected static function renderModal(WireData $data) {
 		$codeTable = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/map/vtm/edit-modal.twig', ['manager' => $codeTable]);
