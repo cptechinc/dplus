@@ -30,13 +30,18 @@ class Tm extends AbstractCodeTableController {
 /* =============================================================
 	Render HTML / JS
 ============================================================= */
-protected static function renderList(WireData $data, PropelModelPager $codes) {
-	$codeTable = static::getCodeTable();
-	return self::pw('config')->twig->render('code-tables/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
-}
+	protected static function renderList(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
 
-protected static function renderModal(WireData $data) {
-	$codeTable = static::getCodeTable();
-	return self::pw('config')->twig->render('code-tables/mar/tm/edit-modal.twig', ['manager' => $codeTable]);
-}
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mar/tm/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
+	protected static function renderModal(WireData $data) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mar/tm/edit-modal.twig', ['manager' => $codeTable]);
+	}
 }
