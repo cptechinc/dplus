@@ -18,7 +18,8 @@ $("body").on("change", "input[name=code]", function(e) {
 							formCode.form.attr('data-serialized', formCode.form.serialize());
 						} else {
 							formCode.form.attr('data-serialized', '');
-							modal.modal('hide');
+							formCode.updateInputsFromJson(response);
+							formCode.inputs.code.focus();
 						}
 					});
 				} else {
@@ -29,6 +30,7 @@ $("body").on("change", "input[name=code]", function(e) {
 					}
 					formCode.form.attr('data-serialized', '');
 					formCode.updateInputsFromJson();
+					formCode.inputs.code.focus();
 				}
 			});
 		}

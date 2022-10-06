@@ -37,7 +37,9 @@ $(function() {
 
 					if (editCode === false) {
 						formCode.form.validate().resetForm();
-						modal.modal('hide');
+						formCode.updateInputsFromJson();
+						formCode.form.attr('data-serialized', '');
+						formCode.inputs.code.focus();
 						return false;
 					}
 
@@ -45,6 +47,7 @@ $(function() {
 						if (response) {
 							modal.find('.modal-title').text('Edit Code ' + input.val());
 							formCode.updateInputsFromJson(response);
+							formCode.form.attr('data-serialized', formCode.form.serialize());
 						}
 					});
 				});
