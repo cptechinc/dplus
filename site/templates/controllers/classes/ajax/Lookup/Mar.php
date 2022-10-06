@@ -35,4 +35,17 @@ class Mar extends Lookup {
 		$data->addSortColumns = [\Customer::aliasproperty('id')];
 		return self::filterResults($filter, $data);
 	}
+
+	/**
+	 * Search SalesPerson Groups
+	 * @param  object $data
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function salesPersonGroups($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Tax Codes";
+		$filter = new Filters\Mar\SalespersonGroupCode();
+		return self::filterResults($filter, $data);
+	}
 }

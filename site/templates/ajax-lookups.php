@@ -60,6 +60,10 @@
 			'mtm' => [
 				['GET', '', AjaxLookup\Mar::class, 'taxCodes'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'taxCodes'],
+			],
+			'spgpm' => [
+				['GET', '', AjaxLookup\Mar::class, 'salesPersonGroups'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'salesPersonGroups'],
 			]
 		],
 		'mgl' => [
