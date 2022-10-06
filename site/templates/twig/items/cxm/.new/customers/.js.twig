@@ -55,6 +55,13 @@ $(function() {
 		ajaxModal.find('.modal-body').load(href);
 	});
 
+	$("body").on('click', '#ajax-modal a.sort', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(button.attr('href'));
+	});
+
 /* =============================================================
 	New CXM Modal Functions
 ============================================================= */
