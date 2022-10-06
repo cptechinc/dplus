@@ -22,7 +22,7 @@ class Bmm extends AbstractController {
 		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission(self::pw('user')) === false) {
-			return self::displayUserNotPermitted();
+			return self::renderUserNotPermittedAlert();
 		}
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -43,7 +43,7 @@ class Bmm extends AbstractController {
 		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission(self::pw('user')) === false) {
-			return self::displayUserNotPermitted();
+			self::pw('session')->redirect(self::bmmUrl(), $http301=false);
 		}
 		$url  = self::bomUrl($data->bomID);
 		$bmm  = self::getBmm();
