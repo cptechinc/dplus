@@ -43,7 +43,10 @@ abstract class Lookup extends Controller {
 			$filter->search($data->q);
 			$page->headline = "Searching for '$data->q'";
 		}
-		$filter->sortby($page);
+		$filter->sort($input->get);
+		if ($data->has('addSortColumns')) {
+			$filter->query->orderBy($data->addSortColumns[0]);
+		}
 		$path = $input->urlSegment(count($input->urlSegments()));
 		$path = rtrim(str_replace($page->url, '', self::pw('input')->url()), '/');
 		$path = preg_replace('/page\d+/', '', $path);
