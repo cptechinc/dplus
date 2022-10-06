@@ -1,0 +1,89 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	item                   ItemXrefCustomer
+	xref.item              ItemMasterItem
+#}
+<table class="table table-striped table-sm">
+	<thead>
+		<tr>
+			<th class="col-sm-4">Packaging</th>
+			<th class="col-sm-4 text-right">Cust</th>
+			<th class="col-sm-4 text-right">Item</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="form-group">
+			<td>
+				<label for="qty_pack_inner">Items per Inner</label>
+			</td>
+			<td>
+				<div class="input-group w-75 float-right">
+					{% include 'util/form/input.twig' with {
+							'name': 'qty_pack_inner', 'value': xref.qty_pack_inner|number_format(cxm.fieldAttribute('qty_pack_inner', 'precision')),
+							'type': 'number',
+							'class_add': [
+								'text-right',
+							],
+							'attributes': {
+								'max': cxm.fieldAttribute('qty_pack_inner', 'max'),
+							}
+						}
+					%}
+				</div>
+			</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm text-right">{{ xref.item.qty_pack_inner }}</p>
+			</td>
+			<tr class="form-group">
+				<td>
+					<label for="qty_pack_outer">Items per Outer</label>
+				</td>
+				<td>
+					<div class="input-group w-75 float-right">
+						{% include 'util/form/input.twig' with {
+								'name': 'qty_pack_outer', 'value': xref.qty_pack_outer|number_format(cxm.fieldAttribute('qty_pack_outer', 'precision')),
+								'type': 'number',
+								'class_add': [
+									'text-right',
+								],
+								'attributes': {
+									'max': cxm.fieldAttribute('qty_pack_outer', 'max'),
+								}
+							}
+						%}
+					</div>
+				</td>
+				<td>
+					<p class="form-control-plaintext form-control-sm text-right float-right">{{ xref.item.qty_pack_outer }}</p>
+				</td>
+			</tr>
+			<tr class="form-group">
+				<td>
+					<label for="qty_tare">Items per Tare</label>
+				</td>
+				<td>
+					<div class="input-group w-75 float-right">
+						{% include 'util/form/input.twig' with {
+								'name': 'qty_pack_tare', 'value': xref.qty_pack_tare|number_format(cxm.fieldAttribute('qty_pack_tare', 'precision')),
+								'type': 'number',
+								'class_add': [
+									'text-right',
+								],
+								'attributes': {
+									'max': cxm.fieldAttribute('qty_pack_tare', 'max'),
+								}
+							}
+						%}
+					</div>
+				</td>
+				<td>
+					<p class="form-control-plaintext form-control-sm text-right">{{ xref.item.qty_tare }}</p>
+				</td>
+			</tr>
+		</tr>
+	</tbody>
+</table>

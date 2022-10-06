@@ -234,12 +234,14 @@ class Msa extends Controller {
 			return boolval($data->new) ? $exists === false : $exists;
 		}
 
+		$reflect = new \ReflectionClass($crud);
+
 		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Sysop $data->sysop Code $data->code already exists";
+			return $exists === false ? true : strtoupper($reflect->getShortName()) . " $data->sysop Code $data->code already exists";
 		}
 
 		if ($exists === false) {
-			return "Sysop $data->sysop Code $data->code not found";
+			return strtoupper($reflect->getShortName()) . " $data->sysop Code $data->code not found";
 		}
 		return true;
 	}
@@ -248,11 +250,26 @@ class Msa extends Controller {
 		$fields = ['system|text', 'sysop|text', 'code|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		$crud   = MsaCRUDs\SysopOptions::getInstance();
-		if ($crud->exists($data->system, $data->sysop, $data->code) === false) {
+		switch ($data->system) {
+			case 'AP':
+				$crud = Codes\Map\Aoptm::getInstance();
+				break;
+			case 'AR':
+				$crud = Codes\Mar\Roptm::getInstance();
+				break;
+			case 'IN':
+				$crud = Codes\Min\Ioptm::getInstance();
+				break;
+			case 'PO':
+				break;
+			case 'SO':
+				$crud = Codes\Mso\Soptm::getInstance();
+				break;
+		}
+		if ($crud->exists($data->sysop, $data->code) === false) {
 			return false;
 		}
-		return $crud->codeJson($crud->code($data->system, $data->sysop, $data->code));
+		return $crud->codeJson($crud->code($data->sysop, $data->code));
 	}
 
 	public static function getSysopRequiredCodes($data) {

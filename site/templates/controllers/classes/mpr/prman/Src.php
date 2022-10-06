@@ -10,9 +10,9 @@ use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Codes\Mpr\Src as SrcManager;
 // Mvc Controllers
-use Controllers\Mpr\Prman\Base;
+use Controllers\Templates\AbstractController;
 
-class Src extends Base {
+class Src extends AbstractController {
 	const DPLUSPERMISSION = 'src';
 	const SHOWONPAGE = 10;
 
@@ -53,7 +53,7 @@ class Src extends Base {
 
 		$page->headline = "Source Code";
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "SRC: Searching for '$data->q'";
 		}
@@ -73,9 +73,13 @@ class Src extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function url() {
+		return Menu::srcUrl();
+	}
+
 	public static function srcUrl($code = '') {
 		if (empty($code)) {
-			return Menu::srcUrl();
+			return self::url();
 		}
 		return self::srcFocusUrl($code);
 	}
@@ -83,19 +87,19 @@ class Src extends Base {
 	public static function srcFocusUrl($focus) {
 		$filter = new Filters\Mpr\ProspectSource();
 		if ($filter->exists($focus) === false) {
-			return Menu::srcUrl();
+			return self::url();
 		}
 		$position = $filter->positionQuick($focus);
 		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
 
-		$url = new Purl(Menu::srcUrl());
+		$url = new Purl(self::url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'src', $pagenbr);
 		return $url->getUrl();
 	}
 
 	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::srcUrl());
+		$url = new Purl(self::url());
 		$url->query->set('code', $code);
 		$url->query->set('action', 'delete-code');
 		return $url->getUrl();

@@ -10,10 +10,9 @@ use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 // Dplus Filters
 use Dplus\Filters\Map\Vendor as VendorFilter;
 use Dplus\Filters\Map\Vxm    as VxmFilter;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Vxm extends Controller {
+class Vxm extends AbstractController{
+	const DPLUSPERMISSION = 'vxm';
 	private static $vxm;
 
 /* =============================================================
@@ -28,6 +27,10 @@ class Vxm extends Controller {
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
 		}
 
 		self::initHooks();
@@ -46,6 +49,10 @@ class Vxm extends Controller {
 		self::sanitizeParameters($data, $fields);
 		$input  = self::pw('input');
 		$vxm    = self::vxmMaster();
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 
 		if ($data->action) {
 			$vxm->process_input($input);
@@ -82,7 +89,7 @@ class Vxm extends Controller {
 			$page->headline = "VXM: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
-			$page->headline = "VXM: " . $vxm->get_recordlocker_key($xref);
+			$page->headline = "VXM: " . $xref->itemid;
 		}
 
 		$page->js .= self::pw('config')->twig->render('items/vxm/xref/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
@@ -101,7 +108,7 @@ class Vxm extends Controller {
 		$filter->vendorid($vxm->vendorids());
 
 		if ($data->q) {
-			$page->headline = "VXM: Searching Vendors for '$data->q'";
+			$page->headline = "VXM";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);
@@ -121,9 +128,9 @@ class Vxm extends Controller {
 		$filter = new VxmFilter();
 		$filter->vendorid($data->vendorID);
 		$filter->sortby($page);
-		$page->headline = "VXM: Vendor $data->vendorID";
+		$page->headline = "VXM: $data->vendorID";
 		if ($data->q) {
-			$page->headline = "VXM: Searching $data->vendorID X-Refs for '$data->q'";
+			// $page->headline = "VXM: Searching $data->vendorID X-Refs for '$data->q'";
 			$filter->search($data->q);
 		}
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
@@ -145,7 +152,7 @@ class Vxm extends Controller {
 		$vendor = $vxm->get_vendor($data->vendorID);
 
 		$html = '';
-		$html .= $config->twig->render('items/vxm/bread-crumbs.twig');
+		$html .= $config->twig->render('items/vxm/bread-crumbs.twig', ['xref' => $xref]);
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/vxm/xref/form/display.twig', ['vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
 
@@ -160,8 +167,9 @@ class Vxm extends Controller {
 		$config = self::pw('config');
 		$qnotes = self::pw('modules')->get('QnotesItemVxm');
 		$html = "<hr>";
-		if (self::pw('session')->response_qnote) {
-			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => self::pw('session')->response_qnote]);
+		$responseQnote = self::pw('session')->response_qnote;
+		if (empty($responseQnote) === false && $responseQnote->has_success() === false) {
+			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $responseQnote]);
 		}
 		$page->searchURL = self::pw('pages')->get('pw_template=msa-noce-ajax')->url;
 		$html .= $config->twig->render('items/vxm/notes/notes.twig', ['qnotes' => $qnotes, 'item' => $xref]);
@@ -215,6 +223,14 @@ class Vxm extends Controller {
 	URL Functions
 ============================================================= */
 	/**
+	 * Return URL for Vxm
+	 * @return string
+	 */
+	public static function url() {
+		return Menu::vxmUrl();
+	}
+
+	/**
 	 * Return URL for Vxm Vendor
 	 * @param  string $vendorID  Vendor ID
 	 * @return string
@@ -240,13 +256,12 @@ class Vxm extends Controller {
 		$xref = $vxm->xref_by_recordlocker_key($focus);
 
 		if ($xref) {
-			$page = self::pw('pages')->get('template=vxm');
 			$url->query->set('focus', $focus);
 			$filter = new VxmFilter();
 			$filter->vendorid($vendorID);
 			$position = $filter->position($xref);
 			$pagenbr = self::getPagenbrFromOffset($position);
-			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+			$url = self::pw('modules')->get('Dpurl')->paginate($url, 'vxm', $pagenbr);
 		}
 		return $url->getUrl();
 	}
@@ -340,7 +355,7 @@ class Vxm extends Controller {
 			$p = $event->object;
 			$xref = $event->arguments(0); // Xref
 			$vxm  = self::vxmMaster();
-			$event->return = self::vendorFocusUrl($xref->vendorid, $vxm->get_recordlocker_key($xref));
+			$event->return = $xref ? self::vendorFocusUrl($xref->vendorid, $vxm->get_recordlocker_key($xref)) : self::vendorUrl($p->wire('input')->get->text('vendorID'));
 		});
 
 		$m->addHook('Page(pw_template=apmain)::xrefUrl', function($event) {

@@ -7,6 +7,7 @@ class Min extends Base {
 	const ROUTES = [
 		'addm'   => ['', Inmain\Menu::class, 'addmUrl'],
 		'csccm'  => ['', Inmain\Menu::class, 'csccmUrl'],
+		'i2i'    => ['', Inmain\Menu::class, 'i2iUrl'],
 		'iarn'   => ['', Inmain\Iarn::class, 'iarnUrl'],
 		'iasm'   => ['', Inmain\Menu::class, 'iasmUrl'],
 		'igcm'   => ['', Inmain\Menu::class, 'igcmUrl'],
@@ -19,6 +20,8 @@ class Min extends Base {
 		'msdsm'  => ['', Inmain\Menu::class, 'msdsmUrl'],
 		'spit'   => ['', Inmain\Menu::class, 'spitUrl'],
 		'stcm'   => ['', Inmain\Menu::class, 'stcmUrl'],
+		'tarm'   => ['', Inmain\Menu::class, 'tarmUrl'],
 		'umm'    => ['', Inmain\Menu::class, 'ummUrl'],
+		'upcx'   => ['', Inmain\Menu::class, 'upcxUrl'],
 	];
 }

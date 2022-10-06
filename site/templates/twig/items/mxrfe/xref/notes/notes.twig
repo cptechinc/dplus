@@ -8,7 +8,7 @@
 #}
 {% set response = session.get('response_qnote') %}
 
-{% if response %}
+{% if response and response.has_error() %}
 	{% include 'code-tables/code-table-response.twig' with {'response': response} %}
 {% endif %}
 

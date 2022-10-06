@@ -10,32 +10,7 @@ $(function() {
 	hide, unsaved changes events is handled by scripts/code-tables/modal-events.js
 ============================================================= */
 	{% include 'code-tables/js/events/show-shown.js.twig' %}
-
-	$("body").on("change", "input[name=code]", function(e) {
-		var input = $(this);
-		var code = input.val();
-
-		server.validateCode(code, function(exists) {
-			if (exists === true) {
-				alert.codeExists(code, function(editCode) {
-					var modal = formCode.form.closest('.modal');
-
-					if (editCode) {
-						server.getCode(code, function(response) {
-							if (response) {
-								modal.find('.modal-title').text('Edit Code');
-								formCode.updateInputsFromJson(response);
-							} else {
-								modal.modal('hide');
-							}
-						});
-					} else {
-						modal.modal('hide');
-					}
-				});
-			}
-		});
-	});
+	{% include 'code-tables/js/events/input-code-change.js.twig' %}
 
 	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
 		if (formCode.inputs.code.val() == '') {
@@ -72,7 +47,7 @@ $(function() {
 			}
 		},
 		submitHandler: function(form) {
-			var formCode = IgcmForm.getInstance();
+			var formCode = CodeForm.getInstance();
 			var server   = IgcmRequests.getInstance();
 			var code = formCode.inputs.code.val();
 
@@ -104,26 +79,6 @@ $(function() {
 					});
 				});
 			}
-		}
-	});
-
-/* =============================================================
-	Form Functions
-============================================================= */
-	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
-		var form = formCode.inputs.form;
-		form.validate().resetForm();
-		form.find('.is-invalid').removeClass("is-invalid");
-		form.find('.is-valid').removeClass("is-valid");
-		form.find('.invalid-feedback').remove();
-		form.find('.valid-feedback').remove();
-
-		if (form.attr('data-code')) {
-			$('.code-table-alert').remove();
-			$('.bg-success').removeClass('bg-success text-white');
-			$('.highlight').removeClass('highlight');
-			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
-			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
 		}
 	});
 })

@@ -14,7 +14,7 @@
 			<th class="pt-3 pb-3">Validate</th>
 			<th class="pt-3 pb-3">Force</th>
 			<th class="pt-3 pb-3">Note Seq</th>
-			<th class="pt-3 pb-3 text-center"></th>
+			<th class="pt-3 pb-3 text-center d-print-none"></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -33,22 +33,24 @@
 				<td>{{ code.validate|yesorno|capitalize }}</td>
 				<td>{{ code.force|yesorno|capitalize }}</td>
 				<td>{{ code.notecode }}</td>
-				<td class="text-center">
-					{% if code.isNote() %}
-						<button class="btn btn-sm btn-warning" disabled>
-							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-						</button>
-					{% else %}
-						{% if sysopM.recordlocker.isLocked(sysopM.getRecordlockerKey(code)) == false or sysopM.recordlocker.userHasLocked(sysopM.getRecordlockerKey(code)) %}
-							<a href="{{ page.sysopUrl(code.id) }}" class="btn btn-warning btn-sm">
+				<td class="text-center d-print-none">
+					<div class="d-print-none">
+							{% if code.isNote() %}
+							<button class="btn btn-sm btn-warning" disabled>
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-							</a>
+							</button>
 						{% else %}
-							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ sysopM.recordlocker.getLockingUser(sysopM.getRecordlockerKey(code)) }}
-							</span>
+							{% if sysopM.recordlocker.isLocked(sysopM.getRecordlockerKey(code)) == false or sysopM.recordlocker.userHasLocked(sysopM.getRecordlockerKey(code)) %}
+								<a href="{{ page.sysopUrl(code.id) }}" class="btn btn-warning btn-sm">
+									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+								</a>
+							{% else %}
+								<span class="badge badge-secondary">
+									<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ sysopM.recordlocker.getLockingUser(sysopM.getRecordlockerKey(code)) }}
+								</span>
+							{% endif %}
 						{% endif %}
-					{% endif %}
+					</div>
 				</td>
 			</tr>
 		{% endfor %}

@@ -1,6 +1,40 @@
-<div class="form-group">
-	<textarea class="form-control-plaintext" id="notes-detail" cols="{{ qnotes.notes.detail.get_column_count() }}" readonly>{{ qnotes.notes.detail.get_notes_array(item.ouritemid, item.vendorid)|join('\r') }}</textarea>
+{% set note_lines = qnotes.notes.detail.get_notes_array(item.ouritemid, item.vendorid) %}
+
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-dark text-white">
+		<div class="row">
+			<div class="col-sm-10">Detail Note</div>
+		</div>
+	</div>
+	<div class="list-group-item qnote-row">
+		<div class="row">
+			<div class="col-sm-9">
+				{{ note_lines[0] }}
+				{% include 'util/bootstrap/form/textarea.twig' with {
+					'textarea': {
+						'id': 'notes-detail',
+						'value': note_lines|join('\r'),
+						'inputclass': 'form-control-plaintext',
+						'addclasses': ['qnotes', 'readonly', 'collapse'],
+						'attributes': {
+							'cols': qnotes.notes.detail.get_column_count(),
+							'rows': note_lines|length,
+							'readonly': true,
+							'disabled': true,
+						}
+					}
+				} %}
+			</div>
+			<div class="col-sm-3">	
+				<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-detail" aria-expanded="false" aria-controls="notes-detail">
+					<i class="fa fa-eye" aria-hidden="true"></i> Show
+				</button>
+				&nbsp; &nbsp;
+				<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#notes-detail-modal">
+					<i class="fa fa-pencil"></i> Edit
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
-<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#notes-detail-modal">
-	<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-</button>
+

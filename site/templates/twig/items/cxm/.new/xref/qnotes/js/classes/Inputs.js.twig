@@ -1,0 +1,21 @@
+class QnotesInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new QnotesInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'qnotes-form',
+		this.form          = $('#' + this.id),
+		this.note          = this.form.find('input[name=note]');
+		this.qnote   = this.form.find('input[name=quote]');
+		this.pick    = this.form.find('input[name=pick]');
+		this.pack    = this.form.find('input[name=pack]');
+		this.invoice = this.form.find('input[name=invoice]');
+		this.acknowledgement = this.form.find('input[name=acknwoledgement]');
+	}
+}

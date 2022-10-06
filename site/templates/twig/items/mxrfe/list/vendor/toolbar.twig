@@ -2,21 +2,20 @@
 {% set segments = input.urlSegments() %}
 {% set lastsegment = segments[segments|length] %}
 
+<div class="row">
+	<div class="col-sm-3">
+		<a href="{{ page.mnfrListUrl(values.text('mnfrID')) }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ input.urlSegmentLast()|upper }}
+		</a>
+	</div>
+	<div class="col-sm-3"></div>
 
-{% if page.is_print() %}
-	<button onclick="window.history.back();" class="btn btn-primary d-print-none">
-		<i class="fa fa-undo" aria-hidden="true"></i> Back
-	</button>
-	&nbsp;
-	<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
-		<i class="fa fa-print" aria-hidden="true"></i> Print
-	</button>
-{% else %}
-	<a href="{{ page.mnfrListUrl(values.text('mnfrID')) }}" class="btn btn-primary">
-		<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ input.urlSegmentLast()|upper }}
-	</a>
-	&nbsp;
-	<a href="{{ page.get_printURL() }}" class="btn btn-primary">
-		<i class="fa fa-print" aria-hidden="true"></i> View Printable
-	</a>
-{% endif %}
+	<div class="col-sm-6">
+		{% include 'items/mxrfe/search/vendor/form.twig' with {'mnfrID': input.get.text('mnfrID'), 'value': input.get.text('q')} %}
+		{% if input.get.text('q') %}
+			<a href="{{ page.mnfrUrl(input.get.text('mnfrID')) }}" class="btn btn-warning mt-2">
+				<i class="fa fa-times"></i> Clear Search
+			</a>
+		{% endif %}
+	</div>
+</div>

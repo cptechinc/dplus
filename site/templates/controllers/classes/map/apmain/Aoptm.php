@@ -10,10 +10,9 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Aoptm extends Controller {
+class Aoptm extends AbstractController {
+	const DPLUSPERMISSION = 'aoptm';
 	const SYSTEM = 'AP';
 
 /* =============================================================
@@ -27,6 +26,10 @@ class Aoptm extends Controller {
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
 		}
 
 		self::initHooks();
@@ -44,14 +47,14 @@ class Aoptm extends Controller {
 		$page->headline = "AOPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getAoptm()->recordlocker->deleteLock();
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getAoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getAoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getAoptm()->deleteResponse();
 		return $html;
@@ -65,7 +68,7 @@ class Aoptm extends Controller {
 
 		$filter = self::getFilterSysop();
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
@@ -84,6 +87,10 @@ class Aoptm extends Controller {
 		$fields = ['action|text', 'sysop|text', 'code|text'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 
 		if ($data->action) {
 			self::getAoptm()->processInput(self::pw('input'));
@@ -123,6 +130,9 @@ class Aoptm extends Controller {
 		$response = self::getAoptm()->getResponse();
 
 		if (empty($response)) {
+			return '';
+		}
+		if ($response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

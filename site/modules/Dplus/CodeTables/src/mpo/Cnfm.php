@@ -9,13 +9,13 @@ use PoConfirmCodeQuery, PoConfirmCode;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the CNFM code table
  */
-class Cnfm extends Base {
+class Cnfm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'PoConfirmCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'po_confirm_code';

@@ -1,0 +1,36 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	xref                   ItemXrefCustomer
+#}
+{% set item = xref %}
+<div class="card mb-3">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-2">
+				<strong> {{ page.pw_template == 'itm' ? 'Item ID' : 'Customer ID' }}</strong>
+			</div>
+			<div class="col-sm-4">
+				<div class="d-flex justify-content-between">
+					<div>
+						{{ page.pw_template == 'itm' ? xref.itemid : xref.custid }}
+					</div>
+					<div>
+						{{ page.pw_template == 'itm' ? xref.item.description : xref.customer.name }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-body">
+		{% include 'items/cxm/.new/xref/form.twig' %}
+	</div>
+</div>
+
+{% if xref.isNew() == false and cxm.recordlocker.userHasLocked(cxm.getRecordlockerKey(xref)) %}
+	<h3>Notes</h3>
+	{% include 'items/cxm/.new/xref/qnotes.twig' %}
+{% endif %}

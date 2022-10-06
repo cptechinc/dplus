@@ -92,6 +92,14 @@ abstract class AbstractCodeTable extends WireData {
 		return $field;
 	}
 
+	/**
+	 * Intialize Field Attributes that need values set from Configs
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		
+	}
+
 /* =============================================================
 	Model Functions
 ============================================================= */

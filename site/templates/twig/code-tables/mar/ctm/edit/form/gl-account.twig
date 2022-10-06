@@ -1,0 +1,40 @@
+<div class="form-group">
+	<div class="row">
+		<div class="col-sm-4">
+			<label for="{{ name }}">{{ label }}</label>
+		</div>
+		<div class="col-sm-3">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': name,
+							'value': value,
+							'addclasses': ['gl-account'],
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'General Ledger Account',
+								'data-jqv': 'true'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search General Ledger Accounts',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('mgl/mhm/'),
+								'data-input': '#' ~ name
+							}
+						}
+					}
+				}
+			%}
+		</div>
+		<div class="col-sm-5">
+			<p class="form-control-plaintext form-control-sm text-muted gl-acct-name">{{ description }}</p>
+		</div>
+	</div>
+</div>

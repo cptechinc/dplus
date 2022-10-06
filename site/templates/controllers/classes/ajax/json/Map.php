@@ -13,6 +13,7 @@ use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
 use Dplus\CodeValidators\Map\Mxrfe as MxrfeValidator;
 // Dplus Codes
 use Dplus\Codes;
+use Dplus\Configs;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -167,7 +168,9 @@ class Map extends Controller {
 		}
 		$response['allow'] = $vxm->allow_itm_cost_update_xref($xref);
 		if ($response['allow']) {
-			$response['confirm'] = $vxm->configs->ap->confirm_update_itm_cost();
+			/** @var \ConfigAp */
+			$configAP = Configs\Ap::config();
+			$response['confirm'] = $configAP ->confirm_update_itm_cost();
 		}
 		return $response;
 	}

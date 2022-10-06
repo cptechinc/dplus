@@ -1,0 +1,23 @@
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values = input.get %}
+
+{% block current_page %}
+	<li class="breadcrumb-item">
+		<a href="{{ page.menuUrl() }}">
+			<i class="fa fa-list" aria-hidden="true"></i> MSA
+		</a>
+	</li>
+
+	{% if values.offsetExists('system') and values.offsetExists('code') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.sysopUrl([values.text('system'), values.text('code')]|join('|')) }}">
+				SYSOP
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ values.text('system') }}</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ values.text('code') }}</li>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">SYSOP</li>
+	{% endif %}
+{% endblock %}

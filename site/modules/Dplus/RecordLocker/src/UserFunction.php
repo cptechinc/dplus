@@ -69,6 +69,15 @@ class UserFunction extends WireData {
 	}
 
 	/**
+	 * Returns if Function is being locked by User ID
+	 * @param  mixed  $key  ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function isLockedByUser($key) {
+		return self::locker()->userHasRecordLocked($this->function, $key, $this->user->loginid);
+	}
+
+	/**
 	 * Returns if Function is being locked
 	 * @param  string $key  ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return bool

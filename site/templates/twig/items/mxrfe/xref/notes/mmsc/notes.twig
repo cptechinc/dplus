@@ -7,7 +7,45 @@
 	qnotes                 module QnotesItemMxrfe
 	qnotes.mmsc            module QnotesMmsc
 #}
-<textarea class="form-control-plaintext w-auto qnotes" id="misc-notes" rows="8" cols="{{ qnotes.mmsc.get_column_count() }}" readonly>{{ qnotes.mmsc.notes_array(xref.mnfrid, xref.mnfritemid)|join('\r') }}</textarea>
-<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#notes-mmsc-modal" data-notesinput="#misc-notes">
-	<i class="fa fa-pencil"></i> Edit
-</button>
+
+
+{% set note_lines = qnotes.mmsc.notes_array(xref.mnfrid, xref.mnfritemid) %}
+
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-dark text-white">
+		<div class="row">
+			<div class="col-sm-10">Misc Note</div>
+		</div>
+	</div>
+	<div class="list-group-item qnote-row">
+		<div class="row">
+			<div class="col-sm-9">
+				{{ note_lines[0] }}
+				{% include 'util/bootstrap/form/textarea.twig' with {
+					'textarea': {
+						'id': 'misc-notes',
+						'value': note_lines|join('\r'),
+						'inputclass': 'form-control-plaintext',
+						'addclasses': ['qnotes', 'readonly', 'collapse'],
+						'attributes': {
+							'cols': qnotes.mmsc.get_column_count(),
+							'rows': note_lines|length,
+							'readonly': true,
+							'disabled': true,
+						}
+					}
+				} %}
+			</div>
+			<div class="col-sm-3">	
+				<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#misc-notes" aria-expanded="false" aria-controls="misc-notes">
+					<i class="fa fa-eye" aria-hidden="true"></i> Show
+				</button>
+				&nbsp; &nbsp;
+				<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#notes-mmsc-modal" data-notesinput="#misc-notes">
+					<i class="fa fa-pencil"></i> Edit
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+

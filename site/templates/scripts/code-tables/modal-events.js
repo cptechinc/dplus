@@ -56,7 +56,7 @@ $(function() {
 			$('.bg-success').removeClass('bg-success text-white');
 			$('.highlight').removeClass('highlight');
 			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
-			$('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
+			// $('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
 		}
 	});
 });

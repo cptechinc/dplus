@@ -274,10 +274,6 @@ class XrefCxm extends WireData implements Module {
 			$modules = $this->wire('modules');
 
 			switch ($values->text('action')) {
-				case 'update-notes':
-				case 'delete-notes':
-					$modules->get('QnotesItemCxm')->process_input($input);
-					break;
 				case 'update-cxm-shortitem':
 					$this->inputUpdateShortitem($input);
 					break;

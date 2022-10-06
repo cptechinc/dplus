@@ -10,10 +10,9 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD, ProcessWire\WireInput;
 // Dplus Filters
 use Dplus\Filters\Map\Mxrfe  as MxrfeFilter;
 use Dplus\Filters\Map\Vendor as VendorFilter;
-// Mvc Controllers
-use Controllers\Map\Apmain\Base;
 
-class Mxrfe extends Base {
+class Mxrfe extends AbstractController {
+	const DPLUSPERMISSION = 'mxrfe';
 	private static $mxrfe;
 
 /* =============================================================
@@ -28,6 +27,10 @@ class Mxrfe extends Base {
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
+		}
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
 		}
 
 		self::initHooks();
@@ -45,6 +48,10 @@ class Mxrfe extends Base {
 		$fields = ['action|text'];
 		self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect(self::url(), $http301 = false);
+		}
 
 		if ($data->action) {
 			$mxrfe = self::mxrfeMaster();
@@ -69,7 +76,7 @@ class Mxrfe extends Base {
 			$page->headline = "MXRFE: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
-			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
+			$page->headline = "MXRFE: $xref->itemid";
 		}
 		$page->js   .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 		$html = self::displayXref($data, $xref);
@@ -87,7 +94,7 @@ class Mxrfe extends Base {
 		$filter->init();
 		$filter->vendorid($mxrfe->vendorids());
 		if ($data->q) {
-			$page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
+			// $page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);
@@ -107,9 +114,9 @@ class Mxrfe extends Base {
 		$filter = new MxrfeFilter();
 		$filter->vendorid($data->mnfrID);
 		$filter->sortby($page);
-		$page->headline = "MXRFE: Mnfr $data->mnfrID";
+		$page->headline = "MXRFE: $data->mnfrID";
 		if ($data->q) {
-			$page->headline = "MXRFE: Searching $data->mnfrID X-Refs for '$data->q'";
+			// $page->headline = "MXRFE: Searching $data->mnfrID X-Refs for '$data->q'";
 			$filter->search($data->q);
 		}
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
@@ -129,7 +136,7 @@ class Mxrfe extends Base {
 		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
 
 		$html = '';
-		$html .= self::mxrfeHeaders();
+		$html .= self::mxrfeHeaders($xref);
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/mxrfe/xref/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
 
@@ -164,16 +171,21 @@ class Mxrfe extends Base {
 		return $html;
 	}
 
-	private static function mxrfeHeaders() {
+	private static function mxrfeHeaders(ItemXrefManufacturer $xref = null) {
 		$html = '';
 		$session = self::pw('session');
 		$config  = self::pw('config');
 
-		$html .= $config->twig->render('items/mxrfe/bread-crumbs.twig');
+		$html .= $config->twig->render('items/mxrfe/bread-crumbs.twig', ['xref' => $xref]);
 
-		if ($session->getFor('response','mxrfe')) {
-			$html .= $config->twig->render('items/cxm/response.twig', ['response' => $session->getFor('response','mxrfe')]);
+		$response = $session->getFor('response','mxrfe');
+		if (empty($response)) {
+			return $html;
 		}
+		if ($response->has_success()) {
+			return $html;
+		}
+		$html .= $config->twig->render('items/cxm/response.twig', ['response' => $response]);
 		return $html;
 	}
 
@@ -212,6 +224,14 @@ class Mxrfe extends Base {
 /* =============================================================
 	URL Functions
 ============================================================= */
+	/**
+	 * Return URL to MXRFE
+	 * @return string
+	 */
+	public static function url() {
+		return Menu::mxrfeUrl();
+	}
+
 	/**
 	 * Return URL to MXRFE X-Ref
 	 * @param  string $mnfrID      Manufacturer ID
@@ -395,7 +415,9 @@ class Mxrfe extends Base {
 
 		$m->addHook('Page(pw_template=apmain)::xrefExitUrl', function($event) {
 			$m = self::pw('modules')->get('XrefMxrfe');
+			$p = $event->object;
 			$xref = $event->arguments(0);
+			$event->return = $xref ? self::mnfrFocusUrl($xref->vendorid, $m->get_recordlocker_key($xref)) : self::mnfrUrl($p->wire('input')->get->text('mnfrID'));
 			$event->return = self::mnfrUrl($xref->vendorid, $m->get_recordlocker_key($xref));
 		});
 

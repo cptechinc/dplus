@@ -8,19 +8,29 @@ $("body").on("change", "input[name=code]", function(e) {
 	server.validateCode(code, function(exists) {
 		if (exists === true) {
 			alert.codeExists(code, function(editCode) {
-				if (editCode) {
-					var modal = input.closest('.modal');
+				var modal = input.closest('.modal');
 
-					if (editCode) {
-						server.getCode(code, function(response) {
-							if (response) {
-								modal.find('.modal-title').text('Edit Code');
-								formCode.updateInputsFromJson(response);
-							}
-						});
-					} else {
-						modal.modal('hide');
+				if (editCode) {
+					server.getCode(code, function(response) {
+						if (response) {
+							modal.find('.modal-title').text('Edit Code');
+							formCode.updateInputsFromJson(response);
+							formCode.form.attr('data-serialized', formCode.form.serialize());
+						} else {
+							formCode.form.attr('data-serialized', '');
+							formCode.updateInputsFromJson(response);
+							formCode.inputs.code.focus();
+						}
+					});
+				} else {
+					var validator = formCode.form.validate();
+
+					if (validator) {
+						validator.resetForm();
 					}
+					formCode.form.attr('data-serialized', '');
+					formCode.updateInputsFromJson();
+					formCode.inputs.code.focus();
 				}
 			});
 		}

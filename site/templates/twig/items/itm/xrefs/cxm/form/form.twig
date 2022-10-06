@@ -1,4 +1,4 @@
-{% extends 'items/cxm/xref/form/form.twig' %}
+{% extends 'items/cxm/.new/xref/form.twig' %}
 
 {% block edit_buttons %}
 	{% if itm.recordlocker.isLocked(xref.itemid) == false or itm.recordlocker.userHasLocked(xref.itemid) %}

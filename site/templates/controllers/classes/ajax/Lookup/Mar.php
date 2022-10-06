@@ -15,4 +15,24 @@ class Mar extends Lookup {
 		$filter = new Filters\Mar\ArTaxCode();
 		return self::filterResults($filter, $data);
 	}
+
+	/**
+	 * Search Customers
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function customers($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
+		$filter = new Filters\Mar\Customer();
+		$filter->user(self::pw('user'));
+		$page->headline = "Customers";
+		if ($data->q) {
+			$filter->search($data->q);
+			$page->headline = "Searching for $data->q";
+		}
+		$data->addSortColumns = [\Customer::aliasproperty('id')];
+		return self::filterResults($filter, $data);
+	}
 }

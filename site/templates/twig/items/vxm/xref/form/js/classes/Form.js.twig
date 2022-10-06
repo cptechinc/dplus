@@ -39,6 +39,7 @@ class VxmForm {
 
 	populateItemData(itemID) {
 		var requests = VxmRequests.getInstance();
+		var calculator = this.calculator;
 
 		requests.getItm(itemID, ['uom','iskit','pricing','standardcostbasedon'], function(item) {
 			var form = new VxmForm();
@@ -51,10 +52,10 @@ class VxmForm {
 				itemcol.find('.description').text(item.description);
 				itemcol.find('.description2').text(item.description2);
 				itemcol.find('.uom-sale').text(item.uom.sale.description);
-				$('.uom-sale-code').attr('data-conversion', item.uom.sale.conversion);
+				$('.uom-sale-code').attr('data-conversion', item.uom.purchase.conversion);
 				$('.uom-sale-code').text(item.uom.sale.code);
-				form.inputs.listprice.val(item.pricing.base).change();
-				form.inputs.uom.val(item.uom.sale.code).change();
+				form.inputs.uom.val(item.uom.purchase.code).change();
+				form.inputs.listprice.val(calculator.listprice(item.pricing.base, item.uom.purchase.conversion)).change();
 				form.enableDisableKit();
 			} else {
 				form.inputs.itemid.attr('data-iskit', 'false');
@@ -145,7 +146,7 @@ class VxmForm {
 						var alerts = VxmAlerts.getInstance();
 						var config = VxmConfigs.getInstance();
 						var inputs = VxmInputs.getInstance();
-						alerts.confirmCost(config.ordercodesDescriptions[inputs.ordercode.val()], inputs.cost.base.val(), function(confirmed) {
+						alerts.confirmCost(config.ordercodesDescriptions[inputs.ordercode.val()], inputs.itemid.attr('data-standardcostbase'), function(confirmed) {
 							callback(confirmed);
 						});
 					} else {
@@ -163,6 +164,10 @@ class VxmForm {
 	updateEachListPriceUsingOrdercodeCosting() {
 		var config = VxmConfigs.getInstance();
 		var changeItmCost = config.ordercodesForChangingItmCost.contains(this.inputs.ordercode.val());
+		this.inputs.eachlistprice.val(floatParse(this.getListPriceEach()).toFixed(config.fields.listprice.precision));
+		console.log('changeItmCost ' + changeItmCost);
+		console.log('allowListPriceUpdate ' + config.allowListPriceUpdate);
+
 		if (changeItmCost && config.allowListPriceUpdate) {
 			this.inputs.eachlistprice.val(floatParse(this.getListPriceEach()).toFixed(config.fields.listprice.precision));
 		}

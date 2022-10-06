@@ -16,30 +16,27 @@
 	{% include 'code-tables/optm/sysop/toolbar.twig' %}
 </div>
 
-{% if response %}
+{% if response and response.hasSuccess() == false %}
 	<div class="mb-3">
 		{% include 'code-tables/response.twig' %}
 	</div>
 {% endif %}
 
+{% if input.get.offsetExists('print') %}
+	<div class="d-flex justify-content-between mb-3">
+		<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+		<div>{{ page.headline }}</div>
+		<div>Page {{ input.pageNum }}</div>
+	</div>
+{% endif %}
+
 <div class="card">
 	{% include 'code-tables/optm/sysop/list/list.twig' %}
-
-	<div class="card-body">
-		{% include 'util/paginator/propel.twig' with {'pager': codes} %}
-	</div>
-
-	<div class="card-footer">
-		<div class="d-flex justify-content-between align-items-center">
-			<div></div>
-			<div></div>
-			<div>
-				<a href="{{ page.optmUrl(sysop.id) }}" class="btn btn-sm btn-warning">
-					<i class="fa fa-times" aria-hidden="true"></i> Close
-				</a>
-			</div>
+	{% if input.get.offsetExists('print') == false %}
+		<div class="card-body">
+			{% include 'util/paginator/propel.twig' with {'pager': codes} %}
 		</div>
-	</div>
+	{% endif %}
 </div>
 
 {% include 'code-tables/optm/sysop/edit/modal.twig' %}

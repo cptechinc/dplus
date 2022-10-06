@@ -1,0 +1,57 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                ItemXrefCustomer
+	qnotes              Dplus\Qnotes\Icxm
+#}
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-dark text-white">
+		<div class="form-row">
+			{% for field in constant('FIELDS_FORMS', qnotes) %}
+				<div class="col">
+					{{ qnotes.fieldAttribute(field, 'label')|capitalize }}
+				</div>
+			{% endfor %}
+			<div class="col-sm-2">
+				<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-order-modal" data-form="">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add Note
+				</button>
+			</div>
+		</div>
+	</div>
+	{% for note in qnotes.getNotesSummarized(xref.itemid, xref.custid) %}
+		<div class="list-group-item qnote-order-row" data-form="{{ note.form }}">
+			<div class="form-row mb-1">
+				{% for field in constant('FIELDS_FORMS', qnotes)  %}
+					<div class="col">
+						{{ attribute(note, field) }}
+					</div>
+				{% endfor %}
+				<div class="col-sm-2">
+					<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-order-{{ note.form }}" aria-controls="notes-order-{{ note.form }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					&nbsp;
+					<button type="button" class="btn btn-secondary btn-sm edit" data-toggle="modal" data-target="#notes-order-modal" data-form="{{ note.form }}" {% for field in constant('FIELDS_FORMS', qnotes) %} data-{{field}}="{{ attribute(note, field) }}" {% endfor %}>
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</button>
+				</div>
+			</div>
+			{% set note_lines = qnotes.getNotesArray(xref.itemid, xref.custid, note.form) %}
+			{% include 'util/bootstrap/form/textarea.twig' with {
+					'textarea': {
+						'id': 'notes-order-' ~ note.form,
+						'value': note_lines|join('\r'),
+						'inputclass': 'form-control-plaintext',
+						'addclasses': ['qnotes', 'readonly', 'collapse'],
+						'attributes': {
+							'cols': qnotes.fieldAttribute('note', 'cols'),
+							'rows': note_lines|length,
+							'readonly': true,
+							'disabled': true,
+						}
+					}
+				} %}
+		</div>
+	{% endfor %}
+</div>

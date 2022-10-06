@@ -23,7 +23,7 @@
 	{% for i in 1..3 %}
 		<div class="form-group">
 			<label for="address{{ i }}}">Address {{ i }}</label>
-			<input type="text" name="address{{ i }}}" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('address' ~ i, 'maxlength') }}" id="address{{ i }}}">
+			<input type="text" name="address{{ i }}" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('address' ~ i, 'maxlength') }}" id="address{{ i }}}">
 		</div>
 	{% endfor %}
 

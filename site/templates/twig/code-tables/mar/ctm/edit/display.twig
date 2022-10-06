@@ -1,0 +1,8 @@
+{% include 'code-tables/mar/ctm/edit/form.twig' %}
+
+<hr>
+
+{% if code.isNew() == false %}
+	<h3>Notes</h3>
+	{% include 'code-tables/mar/ctm/edit/qnotes/display.twig' %}
+{% endif %}

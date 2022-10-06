@@ -11,13 +11,13 @@ use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the TTM code table
  */
-class Bum extends Base {
+class Bum extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ApBuyer';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ap_buyr_code';
@@ -29,11 +29,10 @@ class Bum extends Base {
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 6],
 		'description' => ['type' => 'text', 'maxlength' => 20],
+		'email'       => ['type' => 'text', 'label' => 'Email']
 	];
 
 	protected static $instance;
-
-	private $fieldAttributes;
 
 	/**
 	 * Return Array ready for JSON

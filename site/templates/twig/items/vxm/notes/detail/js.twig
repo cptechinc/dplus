@@ -1,19 +1,60 @@
 $(function () {
 	var form_detail  = $('#detail-form');
 	var modal_detail = $('#notes-detail-modal');
+	var alarm = Alerts.getInstance();
 
 	modal_detail.on('shown.bs.modal', function (e) {
 		var modal = $(this);
+		var form  = modal.find('form');
 		var button = $(e.relatedTarget);
 		var note   = $('#notes-detail').val();
 
 		if (note.length) {
-			modal.find('.action-desc').text('Editing');
+			// modal.find('.action-desc').text('Editing');
 			modal.find('textarea[name=note]').val(note);
+			modal.find('button[value=delete-notes]').addClass('show');
 		} else {
-			modal.find('.action-desc').text('Adding');
+			// modal.find('.action-desc').text('Adding');
 			modal.find('textarea[name=note]').val('');
+			modal.find('button[value=delete-notes]').removeClass('show');
 		}
+
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+		form.attr('data-serialized', form.serialize());
+	});
+
+	modal_detail.on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var alarm = Alerts.getInstance();
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				if (modal.length) {
+					modal.removeAttr('tabindex');
+				}
+
+				alarm.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.find('button[type=submit][value="update-notes"]').click();
+						return true;
+					}
+					modal.attr('tabindex', '-1');
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
+		}
+	});
+
+	modal_detail.on('shown.bs.modal', function (e) {
+		var modal = $(this);
+		modal.find('textarea').focus();
 	});
 
 /* =============================================================
@@ -30,6 +71,11 @@ $(function () {
 		messages: {},
 		submitHandler: function(form) {
 			var values = $(form).formValues();
+			if (values.action) {
+
+			} else {
+				values.action = 'update-notes';
+			}
 			$('<input type="hidden" name="action" value="'+values.action+'">').appendTo($(form));
 
 			if (values.action == 'delete-notes') {

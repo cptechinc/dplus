@@ -1,0 +1,20 @@
+<div class="mb-3">
+	{% include 'items/cxm/.new/customers/toolbar.twig' %}
+</div>
+<div>
+	<div class="row">
+		<div class="col-sm-8">
+			<h4>{{ customers.getNbResults() }} Customers</h4>
+		</div>
+		<div class="col-sm-4 text-right">
+			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#new-cxm-modal">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add X-Ref Customer
+			</button>
+		</div>
+	</div>
+	{% include 'items/cxm/.new/customers/list.twig' %}
+</div>
+
+{% include 'util/paginator/propel.twig' with {'pager': customers} %}
+{% include 'items/cxm/new-cxm-modal.twig' %}
+

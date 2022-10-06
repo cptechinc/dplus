@@ -9,15 +9,17 @@ use CountryCode;
 use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
+// Dplus Databases
+use Dplus\Databases\Connectors\Dplus as DbDplus;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use ProcessWire\WireInputData;
 
 /**
  * Class that handles the CRUD of the COCOM code table
  */
-class Cocom extends Base {
+class Cocom extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'CountryCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'country_codes';
@@ -143,5 +145,18 @@ class Cocom extends Base {
 		$code->setExchange_rate($newRate);
 		$code->setCountry_date(date($this->fieldAttribute('country_date', 'dateformat')));
 		return [];
+	}
+
+/* =============================================================
+	Dplus Requests
+============================================================= */
+	/**
+	 * Return Request Data Neeeded for Dplus Update
+	 * @param  Code $code  Code
+	 * @return array
+	 */
+	protected function generateRequestData($code) {
+		$dplusdb = DbDplus::instance()->dbconfig->dbName;
+		return ["DBNAME=$dplusdb", 'UPDATECOUNTRY', "CODE=$code->id"];
 	}
 }

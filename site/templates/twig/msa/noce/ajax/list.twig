@@ -5,7 +5,7 @@
 	qnotes                 Dplus\Qnotes\Noce
 	notes                  NotesPredefined[]
 #}
-<div class="list-group">
+<div class="list-group mb-3">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
 			<div class="col-2">
@@ -40,10 +40,29 @@
 			<div class="row align-items-center">
 				<div class="col-2"></div>
 				<div class="col-6">
-					<textarea class="collapse form-control-plaintext hidden-note" data-id="{{ note.id }}" id="notes-{{ note.id|urlencode|attrJS }}" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" rows="10" readonly>{{ qnotes.getNotesArray(note.id)|join('\r') }}</textarea>
+					{% set note_lines = qnotes.getNotesArray(note.id) %}
+					{% include 'util/bootstrap/form/textarea.twig' with {
+						'textarea': {
+							'id': 'notes-' ~ note.id|urlencode|attrJS,
+							'value': note_lines|join('\r'),
+							'inputclass': 'form-control-plaintext',
+							'addclasses': ['qnotes', 'readonly', 'collapse'],
+							'attributes': {
+								'cols': qnotes.fieldAttribute('note', 'cols'),
+								'rows': note_lines|length,
+								'readonly': true,
+								'disabled': true,
+								'data-id': note.id
+							}
+						}
+					} %}
 				</div>
 				<div class="col-4"></div>
 			</div>
 		</div>
 	{% endfor %}
+</div>
+
+<div class="noce-paginator">
+	{% include 'util/paginator/propel.twig' with {'pager': notes }%}
 </div>

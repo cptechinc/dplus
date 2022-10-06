@@ -18,7 +18,7 @@
 			<th>List Seq</th>
 			<th>
 				{% if page.is_print() == false %}
-					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light btn-sm">
+					<a href="{{ input.url() ~ '?code=new' }}" class="btn btn-light btn-sm">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 					</a>
 				{% endif %}

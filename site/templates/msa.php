@@ -45,7 +45,7 @@
 
 	if ($router->hasError() === false) {
 		$config->scripts->append($modules->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
-		$page->show_breadcrumbs = false;
+		// $page->show_breadcrumbs = false;
 	}
 
 	if ($config->ajax) {

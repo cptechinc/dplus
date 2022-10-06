@@ -1,31 +1,17 @@
 {% extends 'items/mxrfe/display.twig' %}
 
 {% block toolbar %}
-	<div class="mb-3">
-		{% include 'items/mxrfe/list/vendor/toolbar.twig' %}
-	</div>
+	
 {% endblock %}
 
 {% block header %}
 {% endblock %}
 
 {% block body %}
-	<div class="card-body">
-		{% include 'items/mxrfe/search/vendor/form.twig' with {'mnfrID': input.get.text('mnfrID')} %}
-	</div>
 	{% include 'items/mxrfe/list/vendor/list.twig' with {'mxrfe': mxrfe, 'xrefs': xrefs} %}
 	{% include 'util/paginator/propel.twig' with {'pager': xrefs} %}
 {% endblock %}
 
 {% block footer %}
-	<div class="card-footer">
-		<div class="d-flex justify-content-between align-items-center">
-			<div></div>
-			<div>
-				<a href="{{ page.mnfrListUrl(input.get.text('mnfrID')) }}" class="btn btn-warning btn-sm">
-					<i class="fa fa-times" aria-hidden="true"></i> Close
-				</a>
-			</div>
-		</div>
-	</div>
+	
 {% endblock %}

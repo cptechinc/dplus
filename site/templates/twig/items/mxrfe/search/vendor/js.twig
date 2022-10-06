@@ -1,7 +1,7 @@
 $(function() {
 	{% if input.get.offsetExists('focus') and input.get.text('focus') != 'new' %}
 		$('tr[data-vendorid="{{ input.get.text('focus') }}"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('[data-vendorid="{{ input.get.text('focus') }}"]').offset().top,},700,'linear');
+		// $('html, body').animate({scrollTop: $('[data-vendorid="{{ input.get.text('focus') }}"]').offset().top,},700,'linear');
 	{% endif %}
 
 /* =============================================================
@@ -44,6 +44,13 @@ $(function() {
 		e.preventDefault();
 		var href = $(this).attr('href');
 		modal_ajax.find('.modal-body').load(href);
+	});
+
+	$("body").on('click', '#ajax-modal a.sort', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(button.attr('href'));
 	});
 
 /* =============================================================

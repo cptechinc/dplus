@@ -1,0 +1,279 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+{% include 'items/cxm/.new/xref/js/classes.js.twig' %}
+
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+
+	var server  = CxmRequests.getInstance();
+	var formCxm = CxmForm.getInstance();
+	var alert   = CxmAlerts.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "input[name=price_customer]", function(e) {
+		var input = $(this);
+		var price = parseFloat(input.val());
+		input.val(price.toFixed(formCxm.config.fields.price_customer.precision));
+		
+		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemid.attr('data-itemid') != formCxm.inputs.itemid.val()) {
+			server.getItem(formCxm.inputs.itemid.val(), function(item) {
+				formCxm.populateItemData(item, function() {
+					formCxm.calculatePriceUom();
+				});
+			});
+		} else {
+			formCxm.calculatePriceUom();
+		}
+	});
+
+	$("body").on("change", "input[name=price_retail]", function(e) {
+		var input = $(this);
+		var price = parseInt(input.val());
+		input.val(price.toFixed(formCxm.config.fields.price_retail.precision));
+	});
+
+	$("body").on("change", "input[name=conversion]", function(e) {
+		var input = $(this);
+		var price = parseInt(input.val());
+		input.val(price.toFixed(formCxm.config.fields.conversion.precision));
+	});
+
+	$("body").on("change", "select[name=uom_pricing]", function(e) {
+		var uom = $(this).val();
+
+		if (uom.length) {
+			$('#price_uom').removeAttr('readonly');
+			$('#price_uom').removeAttr('tabindex');
+		} else {
+			$('#price_uom').attr('readonly', '');
+			$('#price_uom').attr('tabindex', '-1');
+		}
+
+		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemid.attr('data-itemid') != formCxm.inputs.itemid.val()) {
+			server.getItem(formCxm.inputs.itemid.val(), function(item) {
+				formCxm.populateItemData(item, function() {
+					formCxm.calculatePriceUom();
+				});
+			});
+		} else {
+			formCxm.calculatePriceUom();
+		}
+	});
+
+	$("body").on("change", "#price_uom", function(e) {
+		var input = $(this);
+		var price = parseFloat(input.val());
+		input.val(price.toFixed(formCxm.config.fields.price_uom.precision));
+
+		if (formCxm.inputs.itemid.attr('data-qtypercase') == '' || formCxm.inputs.itemid.attr('data-itemid') != formCxm.inputs.itemid.val()) {
+			server.getItem(formCxm.inputs.itemid.val(), function(item) {
+				formCxm.populateItemData(item, function() {
+					formCxm.calculatePriceCustomer();
+				});
+			});
+		} else {
+			formCxm.calculatePriceCustomer();
+		}
+	});
+
+	$("body").on("change", "input[name=itemID]", function(e) {
+		var input = $(this);
+
+		server.getItem(input.val(), function(item) {
+			formCxm.populateItemData(item, function() {
+
+			});
+		});
+	});
+
+	$("body").on("change", "input[name=custID]", function(e) {
+		var input = $(this);
+
+		$('.customer-name').text('');
+		
+		server.getCustomer(input.val(), function(customer) {
+			if (customer) {
+				$('.customer-name').text(customer.name);
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=convert]", function(e) {
+		var input = $(this);
+		var conversion = parseFloat(input.val());
+		input.val(conversion.toFixed(formCxm.config.fields.conversion.precision));
+	});
+
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formCxm.form.serialize();
+
+	$("body").on("click", "a:not(#xref-form .form-link, #ajax-modal a, [data-target=#ajax-modal])", function(e) {
+		if (formCxm.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					formCxm.form.find('button[type=submit]').click();
+				} else {
+					$.get('{{ page.xrefExitUrl(xref) }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(button.data('lookupurl'), function() {});
+	});
+
+	$("body").on('click', '.customer-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var custID = button.data('custid');
+		formCxm.inputs.custid.val(custID);
+		formCxm.inputs.custid.change();
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		formCxm.inputs.itemid.val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = formCxm.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			rounding: {required: true},
+			custID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('mar/validate/custid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true'
+					}
+				}
+			},
+			custitemID: {
+				required: true,
+				maxlength: {{ cxm.fieldAttribute('custitemid', 'maxlength') }},
+				remote: {
+					url: '{{ page.jsonapiURL('mso/validate/cxm/') }}',
+					type: "get",
+					data: {
+						custID: function() {
+							return $('input[name=custID]').val();
+						},
+						new: function() {
+							var input = $('input[name=custitemID]');
+
+							if (input.val() != input.data('custitemid')) {
+								return 'true';
+							}
+							return 'false';
+						}
+					}
+				}
+			},
+			itemID: {
+				{% if page.pw_template == 'somain' %}
+					required: true,
+					remote: {
+						url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+						type: "get",
+						data: {
+							jqv: 'true'
+						}
+					}
+				{% endif %}
+			},
+		},
+		messages: {
+			itemID: "Use a valid Item ID",
+			custID: "Use a valid Cust ID",
+			custitemID: "Use a valid Cust Item ID, (No more than {{ cxm.fieldAttribute('custitemid', 'maxlength') }} characters)",
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+			formCxm.submitXref(form);
+		}
+	});
+
+	$("body").on('change', 'input[name=custitemID]', function(e) {
+		e.preventDefault();
+
+		server.validateXref(formCxm.inputs.custid.val(), formCxm.inputs.custitemid.val(), function(exists) {
+			if (exists === true && formCxm.inputs.custitemid.val() != formCxm.inputs.custitemid.data('custitemid')) {
+				alert.exists(formCxm.inputs.custid.val(), formCxm.inputs.custitemid.val(), function(editXref) {
+					if (editXref === true) {
+						var uri = new URI();
+						uri.removeQuery('custitemID');
+						uri.setQuery('custID', formCxm.inputs.custid.val());
+						uri.setQuery('custitemID', formCxm.inputs.custitemid.val());
+						window.location.href = uri.toString();
+					}
+					if (editXref === false) {
+						location.reload();
+					}
+				});
+			}
+		});
+	});
+
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+
+
+/* =============================================================
+	Per UoM Calculation Functions
+============================================================= */
+});

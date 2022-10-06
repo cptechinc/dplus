@@ -1,0 +1,29 @@
+class CtmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CtmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id     = 'code-form',
+		this.form    = $('#' + this.id),
+		this.code   = this.form.find('input[name=code]');
+		this.description = this.form.find('input[name=description]');
+		this.glAccts = {
+			sales: this.form.find('input[name=glsales]'),
+			credits: this.form.find('input[name=glcredits]'),
+			cogs: this.form.find('input[name=glcogs]'),
+			freight: this.form.find('input[name=glfreight]'),
+			misc: this.form.find('input[name=glmisc]'),
+			ar: this.form.find('input[name=glar]'),
+			cash: this.form.find('input[name=glcash]'),
+			finance: this.form.find('input[name=glfinance]'),
+			discounts: this.form.find('input[name=gldiscounts]'),
+		}
+	}
+
+}

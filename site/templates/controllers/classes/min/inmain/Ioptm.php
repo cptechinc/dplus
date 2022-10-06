@@ -10,11 +10,8 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Min\Base;
 
-class Ioptm extends Base {
+class Ioptm extends AbstractController {
 	const SYSTEM = 'IN';
 	const DPLUSPERMISSION = 'ioptm';
 
@@ -23,7 +20,7 @@ class Ioptm extends Base {
 ============================================================= */
 	public static function index($data) {
 		if (self::validateUserPermission() === false) {
-			return self::displayAlertUserPermission($data);
+			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
 		$fields = ['sysop|text', 'code|text', 'action|text'];
@@ -46,7 +43,7 @@ class Ioptm extends Base {
 		$page->headline = "IOPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
@@ -55,7 +52,7 @@ class Ioptm extends Base {
 
 		self::initHooks();
 		self::pw('page')->show_breadcrumbs = false;
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getIoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getIoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getIoptm()->deleteResponse();
 		return $html;
@@ -67,7 +64,7 @@ class Ioptm extends Base {
 		self::getSysop()->recordlocker->deleteLock();
 
 		$filter = self::getFilterSysop();
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
@@ -131,6 +128,9 @@ class Ioptm extends Base {
 		$response = self::getIoptm()->getResponse();
 
 		if (empty($response)) {
+			return '';
+		}
+		if ($response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

@@ -11,7 +11,7 @@ use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Mpm\Pmmain\Bmm as BmmManager;
 
-class Bmm extends Base {
+class Bmm extends AbstractController {
 	const DPLUSPERMISSION = 'bmm';
 	private static $bmm;
 
@@ -22,7 +22,7 @@ class Bmm extends Base {
 		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission(self::pw('user')) === false) {
-			return self::displayAlertUserPermission($data);
+			return self::renderUserNotPermittedAlert();
 		}
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -43,7 +43,7 @@ class Bmm extends Base {
 		$fields = ['bomID|text', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		if (self::validateUserPermission(self::pw('user')) === false) {
-			return self::displayAlertUserPermission($data);
+			self::pw('session')->redirect(self::bmmUrl(), $http301=false);
 		}
 		$url  = self::bomUrl($data->bomID);
 		$bmm  = self::getBmm();
@@ -104,7 +104,7 @@ class Bmm extends Base {
 			self::pw('session')->redirect(self::bomUrl($data->q), $http301 = false);
 		}
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "BMM: Searching for '$data->q'";
 		}

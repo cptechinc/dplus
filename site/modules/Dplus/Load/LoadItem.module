@@ -66,6 +66,11 @@ class LoadItem extends WireData implements Module {
 						'code'        => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->code : '',
 						'description' => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->description : '',
 						'conversion'  => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->conversion : '',
+					],
+					'purchase' => [
+						'code'        => $item->UnitofMeasurePurchase ? $item->UnitofMeasurePurchase->code : '',
+						'description' => $item->UnitofMeasurePurchase ? $item->UnitofMeasurePurchase->description : '',
+						'conversion'  => $item->UnitofMeasurePurchase ? $item->UnitofMeasurePurchase->conversion : '',
 					]
 				];
 				continue;

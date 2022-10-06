@@ -12,22 +12,22 @@
 	{% if values.offsetExists('mnfrID') %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.mnfrListUrl(input.get.text('mnfrID')) }}">
-				<i class="fa fa-arrows" aria-hidden="true"></i> MXRFE
+				<i class="fa fa-microchip" aria-hidden="true"></i> MXRFE
 			</a>
 		</li>
 		{% if (values.offsetExists('mnfritemID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.mnfrUrl(values.text('mnfrID')) }}">Mnfr / Comp: {{ values.text('mnfrID') }}</a>
+				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.text('mnfrID') }}</a>
 			</li>
 			{% if values.text('mnfritemID') == 'new' %}
-				<li class="breadcrumb-item active" aria-current="page">New Item X-ref</li>
+				<li class="breadcrumb-item active" aria-current="page">New</li>
 			{% else %}
-				<li class="breadcrumb-item active" aria-current="page">X-Ref Item: {{ values.text('mnfritemID') }}</li>
+				<li class="breadcrumb-item active" aria-current="page">{{ values.text('mnfritemID') }}</li>
 			{% endif %}
 		{% else %}
 			{% if values.offsetExists('mnfrID') and values.text('mnfrID') %}
 				<li class="breadcrumb-item active" aria-current="page">
-					<i class="fa fa-user" aria-hidden="true"></i> Mnfr / Comp: {{ values.text('mnfrID') }}
+					{{ values.text('mnfrID') }}
 				</li>
 			{% endif %}
 		{% endif %}
@@ -35,8 +35,10 @@
 		<li class="breadcrumb-item">
 			<a href="{{ page.url }}">{{ page.title }}</a>
 		</li>
-		<li class="breadcrumb-item active" aria-current="page">Item: {{ values.text('itemID') }}</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ values.text('itemID') }}</li>
 	{% else %}
-		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			<i class="fa fa-microchip" aria-hidden="true"></i> MXRFE
+		</li>
 	{% endif %}
 {% endblock %}

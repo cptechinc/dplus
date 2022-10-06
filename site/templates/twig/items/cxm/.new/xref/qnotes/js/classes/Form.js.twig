@@ -1,0 +1,36 @@
+class QnotesForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new QnotesForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'qnotes-form';
+		this.form = $('#' + this.id);
+		this.inputs = QnotesInputs.getInstance();
+		this.config = QnotesConfig.getInstance();
+	}
+
+	hasDocumentSelected() {
+		return this.form.find('input.order-form:checked').length > 0;
+	}
+
+	getNoteFormscode() {
+		var formcode = '';
+
+		this.form.find('input.order-form').each(function() {
+			var input = $(this);
+			formcode += input.prop('checked') ? 'Y' : 'N';
+		});
+		return formcode;
+	}
+
+	noteFormsExists() {
+		var formcode = this.getNoteFormscode();
+		return $('.qnote-order-row[data-form='+formcode+']').length > 0;
+	}
+}

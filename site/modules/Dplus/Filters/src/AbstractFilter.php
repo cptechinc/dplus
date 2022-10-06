@@ -32,6 +32,7 @@ abstract class AbstractFilter extends WireData {
 	];
 
 	public $query;
+	public $hasSort = false;
 
 /* =============================================================
 	Abstract Functions
@@ -159,6 +160,7 @@ abstract class AbstractFilter extends WireData {
 	 */
 	public function sort(WireInputData $data) {
 		if ($data->offsetExists('orderby') === false) {
+			$this->hasSort = false;
 			return false;
 		}
 		$sortArray = $data->array('orderby', ['delimiter' => '-']);
@@ -170,6 +172,7 @@ abstract class AbstractFilter extends WireData {
 		$model = static::MODEL;
 
 		if ($model::aliasproperty_exists($sortData->column) === false) {
+			$this->hasSort = false;
 			return false;
 		}
 
@@ -178,7 +181,8 @@ abstract class AbstractFilter extends WireData {
 				$sortData->direction = strtoupper($sortArray[1]);
 			}
 		}
-		$this->orderBy($sortData->column, $sortData->column);
+		$this->hasSort = true;
+		$this->orderBy($sortData->column, $sortData->direction);
 		return true;
 	}
 

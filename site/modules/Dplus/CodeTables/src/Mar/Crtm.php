@@ -2,12 +2,12 @@
 // Dplus Models
 use ArRouteCode;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the TRM code table
  */
-class Crtm extends Base {
+class Crtm extends AbstractCodeTableEditableSingleKey{
 	const MODEL              = 'ArRouteCode';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_cust_rout';

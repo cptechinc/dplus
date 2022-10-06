@@ -1,18 +1,10 @@
-<div>
-	{% include 'util/form/search-form.twig' with {
-			'formid': 'vendor-search-form', 'url': input.paginateUrl(1, {'includeQueryString': false}),
-			'label': '',
-			'name': 'q', 'id': 'vendorq', 'q': '', 'value': input.get.text('q'), 'placeholder': 'Search Manufacturers by ID, Name, Address, City, State, Zip'
-		}
-	%}
-</div>
 <div class="row">
 	<div class="col-sm-8">
 		<h4>{{ vendors.getNbResults() }} Manufacturers</h4>
 	</div>
 	<div class="col-sm-4 text-right">
 		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#new-xref-modal">
-			<i class="fa fa-plus" aria-hidden="true"></i> Add X-Ref
+			<i class="fa fa-plus" aria-hidden="true"></i> Add X-Ref Manufacturer
 		</button>
 	</div>
 </div>

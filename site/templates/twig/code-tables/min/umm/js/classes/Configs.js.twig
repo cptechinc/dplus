@@ -11,16 +11,21 @@ class UmmConfigs {
 	constructor() {
 		this.fields = {
 			code: {
-				maxlength: {{ umm.fieldAttribute('code', 'maxlength') }}
+				maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
 			},
 			description: {
-				maxlength: {{ umm.fieldAttribute('description', 'maxlength') }}
+				maxlength: {{ manager.fieldAttribute('description', 'maxlength') }}
 			},
 			pricebyweight: {
-				default: '{{ umm.fieldAttribute('pricebyweight', 'default') }}'
+				default: '{{ manager.fieldAttribute('pricebyweight', 'default') }}'
 			},
 			stockbycase: {
-				default: '{{ umm.fieldAttribute('stockbycase', 'default') }}'
+				default: '{{ manager.fieldAttribute('stockbycase', 'default') }}'
+			},
+			conversion: {
+				default: '{{ manager.fieldAttribute('conversion', 'default') }}',
+				precision: '{{ manager.fieldAttribute('conversion', 'precision') }}',
+				max: '{{ manager.fieldAttribute('conversion', 'max') }}',
 			},
 		};
 	}

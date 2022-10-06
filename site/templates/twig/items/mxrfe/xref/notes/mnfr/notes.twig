@@ -6,8 +6,47 @@
 	xref                   ItemXrefManufacturer
 	qnotes                 module QnotesItemMxrfe
 	qnotes.mnfr            module QnotesMnfr
+	notes_summarized($mnfrID, $mnfritemID) 
 #}
-<textarea class="form-control-plaintext w-auto qnotes" id="manf-notes" rows="8" cols="{{ qnotes.mnfr.get_column_count() }}" readonly>{{ qnotes.mnfr.notes_array(xref.mnfrid, xref.mnfritemid)|join('\r') }}</textarea>
-<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#notes-mnfr-modal" data-notesinput="#manf-notes">
-	<i class="fa fa-pencil"></i> Edit
-</button>
+{% set note_lines = qnotes.mnfr.notes_array(xref.mnfrid, xref.mnfritemid) %}
+
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-dark text-white">
+		<div class="row">
+			<div class="col-sm-10">Manufacturer Note</div>
+		</div>
+	</div>
+	<div class="list-group-item qnote-row">
+		<div class="row">
+			<div class="col-sm-9">
+				{{ note_lines[0] }}
+				{% include 'util/bootstrap/form/textarea.twig' with {
+					'textarea': {
+						'id': 'manf-notes',
+						'value': note_lines|join('\r'),
+						'inputclass': 'form-control-plaintext',
+						'addclasses': ['qnotes', 'readonly', 'collapse'],
+						'attributes': {
+							'cols': qnotes.mnfr.get_column_count(),
+							'rows': note_lines|length,
+							'readonly': true,
+							'disabled': true,
+						}
+					}
+				} %}
+			</div>
+			<div class="col-sm-3">	
+				<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#manf-notes" aria-expanded="false" aria-controls="manf-notes">
+					<i class="fa fa-eye" aria-hidden="true"></i> Show
+				</button>
+				&nbsp; &nbsp;
+				<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#notes-mnfr-modal" data-notesinput="#manf-notes">
+					<i class="fa fa-pencil"></i> Edit
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+

@@ -51,14 +51,16 @@
 		['GET', 'item-groups/', AjaxLookup::class, 'itemGroups'],
 		['GET', 'item-groups/page{pagenbr:\d+}/', AjaxLookup::class, 'itemGroups'],
 		// Customers
-		['GET', 'customers/', AjaxLookup::class, 'customers'],
-		['GET', 'customers/page{pagenbr:\d+}/', AjaxLookup::class, 'customers'],
+		['GET', 'customers/', AjaxLookup\Mar::class, 'customers'],
+		['GET', 'customers/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'customers'],
 		// Country Codes
 		['GET', 'country-codes/', AjaxLookup::class, 'countryCodes'],
 		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'countryCodes'],
 		'mar' => [
-			['GET', 'mtm/', AjaxLookup\Mar::class, 'taxCodes'],
-			['GET', 'mtm/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'taxCodes'],
+			'mtm' => [
+				['GET', '', AjaxLookup\Mar::class, 'taxCodes'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'taxCodes'],
+			]
 		],
 		'mgl' => [
 			// General Ledger Codes

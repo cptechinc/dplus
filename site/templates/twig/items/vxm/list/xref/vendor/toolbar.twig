@@ -1,0 +1,21 @@
+{% set values = input.get %}
+{% set segments = input.urlSegments() %}
+{% set lastsegment = segments[segments|length] %}
+
+<div class="row">
+	<div class="col-sm-3">
+		<a href="{{ page.vendorListUrl(values.text('vendorID')) }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ input.urlSegmentLast()|upper }}
+		</a>
+	</div>
+	<div class="col-sm-3"></div>
+
+	<div class="col-sm-6">
+		{% include 'items/vxm/search/xref/vendor/form.twig' %}
+		{% if input.get.text('q') %}
+			<a href="{{ page.vendorUrl(input.get.text('vendorID')) }}" class="btn btn-warning mt-2">
+				<i class="fa fa-times"></i> Clear Search
+			</a>
+		{% endif %}
+	</div>
+</div>

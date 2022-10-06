@@ -14,10 +14,8 @@ use Dplus\Configs;
 // Dplus Filters
 use Dplus\Filters;
 use Dplus\Filters\Min\Upcx as UpcxFilter;
-// Mvc Controllers
-use Controllers\Min\Base;
 
-class Upcx extends Base {
+class Upcx extends AbstractController {
 	const DPLUSPERMISSION = 'upcx';
 	private static $upcx;
 
@@ -26,7 +24,7 @@ class Upcx extends Base {
 ============================================================= */
 	public static function index($data) {
 		if (self::validateUserPermission() === false) {
-			return self::displayAlertUserPermission($data);
+			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
 		$fields = ['upc|text', 'itemID|text', 'action|text'];

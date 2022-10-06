@@ -144,6 +144,7 @@
 				['GET', 'cocom/code/', Json\Mar::class, 'validateCocomCode'],
 				['GET', 'crcd/code/', Json\Mar::class, 'validateCrcdCode'],
 				['GET', 'crtm/code/', Json\Mar::class, 'validateCrtmCode'],
+				['GET', 'ctm/code/', Json\Mar::class, 'validateCtmCode'],
 				['GET', 'cuc/code/', Json\Mar::class, 'validateCucCode'],
 				['GET', 'mtm/code/', Json\Mar::class, 'validateMtmCode'],
 				['GET', 'pty3/account/', Json\Mar::class, 'validatePty3Account'],
@@ -161,6 +162,7 @@
 			['GET', 'cpm/code/', Json\Mar::class, 'getCpmCode'],
 			['GET', 'crcd/code/', Json\Mar::class, 'getCrcdCode'],
 			['GET', 'crtm/code/', Json\Mar::class, 'getCrtmCode'],
+			['GET', 'ctm/code/', Json\Mar::class, 'getCtmCode'],
 			['GET', 'cuc/code/', Json\Mar::class, 'getCucCode'],
 			['GET', 'mtm/code/', Json\Mar::class, 'getMtmCode'],
 			['GET', 'pty3/account/', Json\Mar::class, 'getPty3Account'],
@@ -285,7 +287,8 @@
 			'validate' => [
 				['GET', 'freight-code/', Json\Mso::class, 'validateFreightCode'],
 				['GET', 'price-discount/', Json\Mso::class, 'validatePriceDiscount'],
-				['GET', 'cxm/', Json\Mso::class, 'validateCxm'],
+				['GET', 'cxm/', Json\Mso::class, 'validateCxmXref'],
+				['GET', 'cxm/xref/', Json\Mso::class, 'validateCxmXref'],
 				'lsm' => [
 					['GET', 'code/', Json\Mso::class, 'validateLsmCode'],
 				],

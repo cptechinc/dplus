@@ -15,12 +15,5 @@ class MsdsCode extends CodeFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q, $cols = []) {
-		$columns = [
-			Model::aliasproperty('id'),
-			Model::aliasproperty('description'),
-			Model::aliasproperty('effectivedate'),
-		];
-		$this->query->searchFilter($columns, strtoupper($q));
-	}
+	
 }

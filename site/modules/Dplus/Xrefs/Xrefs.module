@@ -2,6 +2,7 @@
 
 use Purl\Url;
 
+include_once(__DIR__.'/vendor/autoload.php');
 include_once(__DIR__.'/XrefResponse.php');
 
 class Xrefs extends WireData implements Module {

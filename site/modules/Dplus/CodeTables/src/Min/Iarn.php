@@ -8,12 +8,12 @@ use InvAdjustmentReason;
 // Dplus Codes
 use Dplus\Codes;
 use Dplus\Codes\Response;
-use Dplus\Codes\AbstractCodeTableSimpleEditable;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey ;
 
 /**
  * Class that handles the CRUD of the IARN code table
  */
-class Iarn extends AbstractCodeTableSimpleEditable {
+class Iarn extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'InvAdjustmentReason';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'inv_iarn_code';

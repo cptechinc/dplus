@@ -12,7 +12,8 @@ use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
 
-class Soptm extends Base {
+class Soptm extends AbstractController {
+	const DPLUSPERMISSION = 'soptm';
 	const SYSTEM = 'SO';
 
 /* =============================================================
@@ -28,6 +29,9 @@ class Soptm extends Base {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
 		self::initHooks();
 		if (empty($data->sysop) === false) {
 			return self::sysop($data);
@@ -42,14 +46,14 @@ class Soptm extends Base {
 		$page->headline = "SOPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getSoptm()->recordlocker->deleteLock();
 
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getSoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getSoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getSoptm()->deleteResponse();
 		return $html;
@@ -62,7 +66,7 @@ class Soptm extends Base {
 
 		$filter = self::getFilterSysop();
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
@@ -81,6 +85,10 @@ class Soptm extends Base {
 		$fields = ['action|text', 'sysop|text', 'code|text'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 
 		if ($data->action) {
 			self::getSoptm()->processInput(self::pw('input'));
@@ -121,6 +129,9 @@ class Soptm extends Base {
 		$response = self::getSoptm()->getResponse();
 
 		if (empty($response)) {
+			return '';
+		}
+		if ($response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

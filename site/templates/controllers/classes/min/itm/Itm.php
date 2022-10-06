@@ -100,7 +100,7 @@ class Itm extends Base {
 		}
 
 		$filter = new ItemMasterFilter();
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			self::pw('page')->headline = "ITM: Searching for '$data->q'";
 		}

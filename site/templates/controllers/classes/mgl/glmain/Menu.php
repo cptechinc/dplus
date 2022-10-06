@@ -1,84 +1,46 @@
 <?php namespace Controllers\Mgl\Glmain;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
-use Controllers\Mgl\Menu as MenuMgl;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
+use Controllers\Mgl\Menu as MglMenu;
 
-class Menu extends Base {
+/**
+ * Glmain\Menu
+ * 
+ * Class for rendering the Glmain Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'glmain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
 		'ttm' => [
 			'name'       => 'ttm',
-			'permission' => 'ttm',
-			'title'      => 'Statement Text Code',
-			'summary'    => 'View / Edit Statement Text Code'
+			'permission' => Ttm::DPLUSPERMISSION,
+			'title'      => Ttm::TITLE,
+			'summary'    => Ttm::SUMMARY
 		],
 		'dtm' => [
 			'name'       => 'dtm',
-			'permission' => 'dtm',
-			'title'      => 'Distribution Code',
-			'summary'    => 'View / Edit Distribution Text Code'
+			'permission' => Dtm::DPLUSPERMISSION,
+			'title'      => Dtm::TITLE,
+			'summary'    => Dtm::SUMMARY
 		]
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
-		}
-		self::initHooks();
-		self::pw('page')->headline = "General Ledger Maintenance";
-		return self::menu($data);
-	}
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function menuUrl() {
-		return MenuMgl::glmainUrl();
-	}
-
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::menuUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
-	}
-
-	public static function ttmUrl() {
-		return self::subfunctionUrl('ttm');
+	public static function _url() {
+		return MglMenu::glmainUrl();
 	}
 
 	public static function dtmUrl() {
 		return self::subfunctionUrl('dtm');
 	}
 
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::displayMenu($data, $functions);
-	}
-
-	private static function displayMenu($data, array $functions) {
-		$html = '';
-		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
-		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
-		return $html;
+	public static function ttmUrl() {
+		return self::subfunctionUrl('ttm');
 	}
 
 /* =============================================================
@@ -88,7 +50,7 @@ class Menu extends Base {
 		$m = self::pw('modules')->get('Dpages');
 
 		$m->addHook('Page(pw_template=mgl)::menuTitle', function($event) {
-			$event->return = MenuMgl::TITLE;
+			$event->return = MglMenu::TITLE;
 		});
 
 		$m->addHook('Page(pw_template=mgl)::subfunctionUrl', function($event) {

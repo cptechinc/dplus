@@ -1,0 +1,64 @@
+class CxmAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CxmAlerts();
+		}
+		return this.instance;
+	}
+
+	exists(custID, custitemID, callback) {
+		swal2.fire({
+			title: custID +" X-Ref " + custitemID + " exists",
+			text: 'Would you like to go edit this X-Ref?',
+			icon: 'error',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			callback(result.value ? true : false)
+		});
+	}
+
+	promptUpdatePdm(custPrice, contractPrice, callback) {
+		var html = '<table class="table table-sm">' +
+			'<tr>' +
+				'<td>Discount Price</td>' +
+				'<td class="text-right">'+ contractPrice +'</td>' +
+			'</tr>' +
+			'<tr>' +
+				'<td>Customer X-ref Price</td>' +
+				'<td class="text-right">'+custPrice+'</td>'+
+			'</tr>'+
+		'</table>';
+
+		var question = 'Do you want to ';
+		if (parseFloat(custPrice == 0.00)) {
+			question += 'create';
+		} else {
+			question += 'update';
+		}
+		question += ' discount record with this price?';
+		
+		html += question;
+
+		swal2.fire({
+			title: "Update PDM?",
+			html: html,
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			callback(result.value);
+			if (result.value) {
+				$('input[name=updatepdm]').val('true');
+			} else {
+				$('input[name=updatepdm]').val('false');
+			}
+			form.submit();
+		});
+	}
+
+}

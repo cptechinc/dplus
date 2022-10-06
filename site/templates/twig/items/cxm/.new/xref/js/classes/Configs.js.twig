@@ -1,0 +1,28 @@
+class CxmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CxmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.allowPdmUpdate = {{ cxm.allowPdmUpdate() ? 'true' : 'false' }},
+		this.fields = {
+			conversion: {
+				precision: {{ cxm.fieldAttribute('conversion', 'precision') }}
+			},
+			price_customer: {
+				precision: {{ cxm.fieldAttribute('price_customer', 'precision') }}
+			},
+			price_retail: {
+				precision: {{ cxm.fieldAttribute('price_retail', 'precision') }}
+			},
+			price_uom: {
+				precision: {{ cxm.fieldAttribute('price_uom', 'precision') }}
+			},
+		};
+	}
+}

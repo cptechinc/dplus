@@ -10,10 +10,11 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Codes
 use Dplus\Codes\Response;
 use Dplus\Codes\Base;
+use Dplus\Codes\AbstractCodeTable;
 // Dplus Databases
 use Dplus\Databases\Connectors\Dplus as DbDplus;
 
-abstract class Simple extends Base {
+abstract class Simple extends AbstractCodeTable {
 	protected static $instance;
 
 	public static function getInstance() {

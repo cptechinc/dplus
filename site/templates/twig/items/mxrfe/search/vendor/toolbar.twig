@@ -3,20 +3,29 @@
 {% set lastsegment = segments[segments|length] %}
 
 
-{% if page.is_print() %}
-	<button onclick="window.history.back();" class="btn btn-primary d-print-none">
-		<i class="fa fa-undo" aria-hidden="true"></i> Back
-	</button>
-	&nbsp;
-	<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
-		<i class="fa fa-print" aria-hidden="true"></i> Print
-	</button>
-{% else %}
-	<a href="{{ page.url }}" class="btn btn-primary">
-		<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ page.name|upper }}
-	</a>
-	&nbsp;
-	<a href="{{ page.get_printURL() }}" class="btn btn-primary">
-		<i class="fa fa-print" aria-hidden="true"></i> View Printable
-	</a>
-{% endif %}
+<div class="row">
+	<div class="col-sm-3">
+		<a href="{{ page.url }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> Back to Maintenance
+		</a>
+	</div>
+	<div class="col-sm-3"></div>
+
+	<div class="col-sm-6">
+		<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit">
+			<div class="input-group">
+				<input class="form-control inline" type="text" name="q" value="{{ input.get.text('q') }}" placeholder="Search Vendors by ID, Name, Address, City, State, Zip" autofocus>
+				<span class="input-group-btn">
+					<button type="submit" class="btn btn-light">
+						<i class="fa fa-search"></i> <span class="sr-only">Search</span>
+					</button>
+				</span>
+			</div>
+		</form>
+		{% if input.get.text('q') %}
+			<a href="{{ input.url() }}" class="btn btn-warning mt-2">
+				<i class="fa fa-times"></i> Clear Search
+			</a>
+		{% endif %}
+	</div>
+</div>

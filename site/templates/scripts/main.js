@@ -94,6 +94,13 @@ $(function() {
 		var uri = URI();
 		var queryData = uri.query(true);
 
+		var uriAction = URI(form.attr('action'));
+		uri.path(uriAction.path());
+
+		if (queryData.hasOwnProperty('focus')) {
+			delete queryData.focus;
+		}
+
 		if (queryData.hasOwnProperty('q')) {
 			delete queryData.q;
 		}
@@ -210,11 +217,8 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var modal = button.closest('.modal');
-		console.log(button);
-		console.log(modal);
 
 		if (modal.length) {
-			console.log('wassup');
 			modal.removeAttr('tabindex');
 		}
 
@@ -442,6 +446,7 @@ function swal_delete_notes(callback) {
 
 	if (modal.length) {
 		modal.removeAttr('tabindex');
+		
 	}
 
 	swal2.fire({
@@ -456,9 +461,15 @@ function swal_delete_notes(callback) {
 		if (modal.length) {
 			modal.attr('tabindex', '-1');
 		}
+		
 		if (result.value) {
 			callback(true);
 		} else {
+			var form = modal.find('form');
+			if (form.length) {
+				form.find('input[name=action]').remove();
+				// form.attr('data-serialized', '');
+			}
 			callback(false);
 		}
 	});
@@ -580,6 +591,17 @@ Array.prototype.contains = function ( needle ) {
 	return false;
 }
 
+String.prototype.rtrim = function (s) {
+    if (s == undefined)
+        s = '\\s';
+    return this.replace(new RegExp("[" + s + "]*$"), '');
+};
+String.prototype.ltrim = function (s) {
+    if (s == undefined)
+        s = '\\s';
+    return this.replace(new RegExp("^[" + s + "]*"), '');
+};
+
 // CREATE DEFAULT SWEET ALERT
 const swal2 = Swal.mixin({
 	customClass: {
@@ -593,5 +615,29 @@ const swal2 = Swal.mixin({
 	confirmButtonText: 'Yes',
 	focusConfirm: false,
 	focusCancel: true,
-	allowEnterKey: true
-})
+	allowEnterKey: true,
+	onBeforeOpen: () => {
+		if ($('#loading-modal').hasClass('show')) {
+			$('#loading-modal').removeAttr('tabindex');
+		}
+		$('.modal').removeAttr('tabindex');
+	},
+	onClose: () => {
+		var loadingModal = $('#loading-modal');
+		if (loadingModal.attr('tabindex') === false || typeof loadingModal.attr('tabindex') === 'undefined') {
+			loadingModal.attr('tabindex', '-1')
+		}
+		$('.modal').attr('tabindex', '-1');
+	}
+});
+
+function backToUrl(url) {
+	var uri = URI(url);
+	var queryData = uri.query(true);
+	if (queryData.hasOwnProperty('focus') === false) {
+		window.location.href = url;
+	}
+	delete queryData.focus;
+	uri.query(queryData);
+	window.location.href = uri.toString();
+}

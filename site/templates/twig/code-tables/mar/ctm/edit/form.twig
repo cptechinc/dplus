@@ -1,0 +1,65 @@
+<form action="{{ input.url() }}" method="POST" id="code-form" data-code="{{ code.code }}">
+	<input type="hidden" name="action" value="update">
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="code">Code</label>
+				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('code', 'description') }}">
+			</div>
+
+			<div class="form-group">
+				<label for="mail_list">Mail List</label>
+				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'hideblankoption' : 'true', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+			
+			{% if manager.updateGlAccts() == false %}
+				<div class="form-group">
+					<label for="email">Order Approval Email</label>
+					<input type="email" name="email" class="form-control email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
+				</div>
+			{% endif %}
+		</div>
+		<div class="col-sm-6">
+			{% if manager.updateGlAccts() %}
+				<legend>GL Accounts</legend>
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glsales', 'label': 'Sales', 'value': code.glsales, 'description': manager.glAcctDescription(code.glsales)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcredits', 'label': 'Credits', 'value': code.glcredits, 'description': manager.glAcctDescription(code.glcredits)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcogs', 'label': 'Cost of Gods Sold', 'value': code.glcogs, 'description': manager.glAcctDescription(code.glcogs)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glfreight', 'label': 'Freight (To Customer)', 'value': code.glfreight, 'description': manager.glAcctDescription(code.glfreight)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glmisc', 'label': 'Miscellaneous Amounts', 'value': code.glmisc, 'description': manager.glAcctDescription(code.glmisc)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glar', 'label': 'Accounts Receivable', 'value': code.glar, 'description': manager.glAcctDescription(code.glar)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcash', 'label': 'Accounts Receivable Cash', 'value': code.glcash, 'description': manager.glAcctDescription(code.glcash)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glfinance', 'label': 'Finance Charge', 'value': code.glfinance, 'description': manager.glAcctDescription(code.glfinance)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'gldiscounts', 'label': 'Discounts Taken', 'value': code.gldiscounts, 'description': manager.glAcctDescription(code.gldiscounts)} %}
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if manager.recordlocker.userHasLocked(code.code) or code.isNew() %}
+			<button type="sumbit" class="btn btn-success form_button"=>
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if code.isNew() == false %}
+				<a href="{{ page.codeDeleteUrl(code.code) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.codeListUrl(code.code) }}" class="btn btn-warning pull-right">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

@@ -4,55 +4,62 @@
 
 	<div class="form-group">
 		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
+		<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
+		<input type="text" name="description" class="form-control" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 	</div>
 
-	<div class="form-group">
-		<label for="conversion">Conversion</label>
-		{% include 'util/bootstrap/form/input.twig' with {
-				'input': {
-					'name': 'conversion',
-					'type': 'number',
-					'value': 1.00,
-					'addclasses': ['text-right'],
-					'attributes': {
-						'aria-label':  'Conversion',
-						'precision': manager.fieldAttribute('conversion', 'precision')
+	<div class="form-row mb-3">
+		<div class="col-sm-5">
+			<div class="form-group">
+				<label for="conversion">Conversion</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'conversion',
+							'type': 'number',
+							'value': 1.00,
+							'addclasses': ['text-right'],
+							'attributes': {
+								'aria-label':  'Conversion',
+								'precision': manager.fieldAttribute('conversion', 'precision'),
+								'max': manager.fieldAttribute('conversion', 'max')
+							}
+						}
 					}
-				}
-			}
-		%}
-	</div>
-
-	<div class="form-group">
-		<label for="pricebyweight">Price By Weight</label>
-		{% include 'util/bootstrap/form/select-simple.twig' with {
-				'select': {
-					'name': 'pricebyweight',
-					'value' : manager.fieldAttribute('pricebyweight', 'default'),
-					'haskeys': true,
-					'options': {'Y': 'Yes', 'N': 'No'}
-				}
-			}
-		%}
-	</div>
-
-	<div class="form-group">
-		<label for="stockbycase">Stock By Case</label>
-		{% include 'util/bootstrap/form/select-simple.twig' with {
-				'select': {
-					'name': 'stockbycase',
-					'value' : manager.fieldAttribute('stockbycase', 'default'),
-					'haskeys': true,
-					'options': {'Y': 'Yes', 'N': 'No'}
-				}
-			}
-		%}
+				%}
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label for="pricebyweight">Price By Weight</label>
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+						'select': {
+							'name': 'pricebyweight',
+							'value' : manager.fieldAttribute('pricebyweight', 'default'),
+							'haskeys': true,
+							'options': {'Y': 'Yes', 'N': 'No'}
+						}
+					}
+				%}
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="form-group">
+				<label for="stockbycase">Stock By Case</label>
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+						'select': {
+							'name': 'stockbycase',
+							'value' : manager.fieldAttribute('stockbycase', 'default'),
+							'haskeys': true,
+							'options': {'Y': 'Yes', 'N': 'No'}
+						}
+					}
+				%}
+			</div>
+		</div>
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">

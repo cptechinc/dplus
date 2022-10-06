@@ -1,0 +1,40 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+
+
+{% extends 'code-tables/list-print.twig' %}
+
+{% block print_headings_row %}
+	<tr>
+		<th colspan="4">
+			<div class="w-100 d-flex justify-content-between">
+				<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+				<div>{{ page.headline }}</div>
+				<div></div>
+			</div>
+		</th>
+	</tr>
+{% endblock %}
+
+{% block headings_row %}
+	<tr class="bg-dark text-white column-headers">
+		{% block headings_columns %}
+			<th>Resource</th>
+			<th>Name</th>
+			<th colspan="2">Work Center</th>
+		{% endblock %}
+	</tr>
+{% endblock %}
+
+{% for code in codes %}
+	{% block code_columns %}
+		<td>{{ code.code }}</td>
+		<td>{{ code.description }}</td>
+		<td>{{ code.workcenterid }}</td>
+		<td>{{ code.workcenter.description }}</td>
+	{% endblock %}
+{% endfor %}

@@ -8,3 +8,10 @@
 
 {% block footer %}
 {% endblock %}
+
+{% block extras %}
+	{% if xref.isNew() == false and cxm.recordlocker.userHasLocked(cxm.getRecordlockerKey(xref)) %}
+		<h3>Notes</h3>
+		{% include 'items/cxm/.new/xref/qnotes.twig' %}
+	{% endif %}
+{% endblock %}

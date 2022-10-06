@@ -1,19 +1,18 @@
 <?php namespace Dplus\Codes\Mar;
 // Propel Classes
-use Propel\Runtime\Collection\ObjectCollection;
+// use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ProcessWire\WireInput;
 // Dplus Models
-use ArCustTypeCodeQuery, ArCustTypeCode;
-// Dplus Validators
-use Dplus\CodeValidators as Validators;
+use ArCustTypeCode;
+use ConfigAr;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
+
 
 /**
  * Class that handles the CRUD of the CTM code table
@@ -21,7 +20,7 @@ use Dplus\Codes\Response;
  * @property Ctm\Qnotes $qnotes
  * @property bool       $updateGlAccts  Should GL Accounts be updated
  */
-class Ctm extends Base {
+class Ctm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArCustTypeCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ar_cust_type';
@@ -32,18 +31,18 @@ class Ctm extends Base {
 	const DPLUS_TABLE           = 'CTM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => ArCustTypeCode::MAX_LENGTH_CODE],
-		'description' => ['type' => 'text', 'maxlength' => 2],
+		'description' => ['type' => 'text', 'maxlength' => 20],
 		'maillist'    => ['type' => 'text', 'default' => 'N'],
 		'email'       => ['type' => 'text', 'maxlength' => 50],
-		'glsales'     => ['type' => 'text', 'title' => 'Sales'],
-		'glcredits'   => ['type' => 'text', 'title' => 'Credits'],
-		'glcogs'      => ['type' => 'text', 'title' => 'Cost of Goods Sold'],
-		'glfreight'   => ['type' => 'text', 'title' => 'Freight (To Customer)'],
-		'glmisc'      => ['type' => 'text', 'title' => 'Miscellaneous Amounts'],
-		'glar'        => ['type' => 'text', 'title' => 'Accounts Receivable'],
-		'glcash'      => ['type' => 'text', 'title' => 'Accounts Receivable Cash'],
-		'glfinance'   => ['type' => 'text', 'title' => 'Finance Charge'],
-		'gldiscounts' => ['type' => 'text', 'title' => 'Discounts Taken'],
+		'glsales'     => ['type' => 'text', 'label' => 'Sales'],
+		'glcredits'   => ['type' => 'text', 'label' => 'Credits'],
+		'glcogs'      => ['type' => 'text', 'label' => 'Cost of Goods Sold'],
+		'glfreight'   => ['type' => 'text', 'label' => 'Freight (To Customer)'],
+		'glmisc'      => ['type' => 'text', 'label' => 'Miscellaneous Amounts'],
+		'glar'        => ['type' => 'text', 'label' => 'Accounts Receivable'],
+		'glcash'      => ['type' => 'text', 'label' => 'Accounts Receivable Cash'],
+		'glfinance'   => ['type' => 'text', 'label' => 'Finance Charge'],
+		'gldiscounts' => ['type' => 'text', 'label' => 'Discounts Taken'],
 	];
 	/** @var self */
 	protected static $instance;
@@ -62,6 +61,7 @@ class Ctm extends Base {
 		if (is_bool($this->updateGlAccts) === true) {
 			return $this->updateGlAccts;
 		}
+		/** @var ConfigAr */
 		$configAR = Configs\Ar::config();
 		$this->updateGlAccts = $configAR->glReportType() == 'customer';
 		return $this->updateGlAccts;
@@ -112,6 +112,24 @@ class Ctm extends Base {
 /* =============================================================
 	CRUD Creates
 ============================================================= */
+	/**
+	 * Return New Code
+	 * @param  string $id
+	 * @return Code
+	 */
+	public function new($id = '') {
+		$code = parent::new($id);
+		/** @var ConfigAr */
+		$configAR = Configs\Ar::config();
+
+		$code->glfreight = $configAR->defaultGlCodeFreight;
+		$code->glmisc    = $configAR->defaultGlCodeMisc;
+		$code->glar      = $configAR->defaultGlCodeAr;
+		$code->glcash    = $configAR->defaultGlCodeCash;
+		$code->glfinance   = $configAR->defaultGlCodeFinance;
+		$code->gldiscounts = $configAR->defaultGlCodeDiscounts;
+		return $code;
+	}
 
 /* =============================================================
 	CRUD Processing
@@ -142,7 +160,9 @@ class Ctm extends Base {
 		$values = $input->$rm;
 
 		$code->setMaillist($values->yn('maillist'));
-		$code->setEmail($values->email('email'));
+		if ($this->updateGlAccts() === false) {
+			$code->setEmail($values->email('email'));
+		}
 		$invalidfields = $this->_inputUpdateGlAccts($input, $code);
 		return $invalidfields;
 	}
@@ -166,7 +186,7 @@ class Ctm extends Base {
 
 		foreach ($this->glaccounts() as $field) {
 			if ($mhm->exists($values->text($field)) === false) {
-				$invalidfields[$fields] = $this->fieldAttribute($field, 'title');
+				$invalidfields[$field] = $this->fieldAttribute($field, 'label');
 			} else {
 				$setAcct = 'set' . ucfirst($field);
 				$code->$setAcct($values->text($field));

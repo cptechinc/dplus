@@ -1,168 +1,50 @@
 <?php namespace Controllers\Min\Inmain;
-// External Libraries, classes
-use Purl\Url as Purl;
+// ProcessWire 
+use ProcessWire\WireData;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
-// Dplus Filters
+// Dplus
 use Dplus\Filters;
-// Dplus CRUD
-use Dplus\Codes\Min\Tarm as TarmManager;
-// Mvc Controllers
-use Controllers\Min\Base;
+use Dplus\Codes;
 
-class Tarm extends Base {
+/**
+ * Tarm
+ * 
+ * Controller for handling HTTP Requests for the Tarm Codetable
+ */
+class Tarm extends AbstractCodeTableController {
 	const DPLUSPERMISSION = 'tarm';
+	const TITLE      = 'Tariff Code';
+	const SUMMARY    = 'View / Edit Tariff Codes';
 	const SHOWONPAGE = 10;
 
-	private static $tarm;
-
-/* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		if (self::validateUserPermission() === false) {
-			return self::displayAlertUserPermission($data);
-		}
-		// Sanitize Params, parse route from params
-		$fields = ['code|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		if (empty($data->action) === false) {
-			return self::handleCRUD($data);
-		}
-		self::pw('page')->show_breadcrumbs = false;
-		return self::list($data);
-	}
-
-	public static function handleCRUD($data) {
-		if (self::validateUserPermission() === false) {
-			return self::pw('session')->redirect(self::url(), $http301 = false);
-		}
-		$fields = ['code|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-		$url   = self::url();
-		$tarm  = self::getTarm();
-
-		if ($data->action) {
-			$tarm->processInput(self::pw('input'));
-			$url  = self::tarmUrl($data->code);
-		}
-		self::pw('session')->redirect($url, $http301 = false);
-	}
-
-	private static function list($data) {
-		$fields = ['q|text'];
-		self::sanitizeParametersShort($data, $fields);
-		$page   = self::pw('page');
-		$filter = new Filters\Min\TariffCode();
-
-		$page->headline = "Tariff Code";
-
-		if (empty($data->q) === false) {
-			$filter->search($data->q);
-			$page->headline = "TARM: Searching for '$data->q'";
-		}
-
-		$filter->sortby($page);
-		$input = self::pw('input');
-		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
-		self::initHooks();
-
-		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
-		$page->js .= self::pw('config')->twig->render('code-tables/min/tarm/.js.twig', ['tarm' => self::getTarm()]);
-		$html = self::displayList($data, $codes);
-		self::getTarm()->deleteResponse();
-		return $html;
-	}
-
-/* =============================================================
-	URLs
-============================================================= */
-	public static function url() {
+	public static function _url() {
 		return Menu::tarmUrl();
 	}
 
-	public static function tarmUrl($code = '') {
-		if (empty($code)) {
-			return self::url();
-		}
-		return self::tarmFocusUrl($code);
+	public static function getCodeFilter() {
+		return new Filters\Min\TariffCode();
 	}
 
-	public static function tarmFocusUrl($focus) {
-		$filter = new Filters\Min\TariffCode();
-		if ($filter->exists($focus) === false) {
-			return self::url();
-		}
-		$position = $filter->positionQuick($focus);
-		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
-
-		$url = new Purl(self::url());
-		$url->query->set('focus', $focus);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'tarm', $pagenbr);
-		return $url->getUrl();
-	}
-
-	public static function codeDeleteUrl($code) {
-		$url = new Purl(self::url());
-		$url->query->set('code', $code);
-		$url->query->set('action', 'delete-code');
-		return $url->getUrl();
+	public static function getCodeTable() {
+		return Codes\Min\Tarm::instance();
 	}
 
 /* =============================================================
-	Displays
+	Render HTML / JS
 ============================================================= */
-	private static function displayList($data, PropelModelPager $codes) {
-		$config = self::pw('config');
-		$tarm = self::getTarm();
-
-		$html  = '';
-		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
-		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/min/tarm/list.twig', ['manager' => $tarm, 'codes' => $codes]);
-		if (self::pw('input')->get->offsetExists('print') === false) {
-			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
-		}
-		$html .= $config->twig->render('code-tables/min/tarm/edit-modal.twig', ['manager' => $tarm]);
-		return $html;
+	protected static function renderList(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/min/tarm/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
-	public static function displayResponse($data) {
-		$tarm = self::getTarm();
-		$response = $tarm->getResponse();
-		if (empty($response)) {
-			return '';
-		}
-		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/min/tarm/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
-/* =============================================================
-	Hooks
-============================================================= */
-	public static function initHooks() {
-		$m = self::pw('modules')->get('Dpages');
-
-		$m->addHook('Page(pw_template=inmain)::menuUrl', function($event) {
-			$event->return = Menu::menuUrl();
-		});
-
-		$m->addHook('Page(pw_template=inmain)::menuTitle', function($event) {
-			$event->return = Menu::TITLE;
-		});
-
-		$m->addHook('Page(pw_template=inmain)::codeDeleteUrl', function($event) {
-			$event->return = self::codeDeleteUrl($event->arguments(0));
-		});
-	}
-
-/* =============================================================
-	Supplemental
-============================================================= */
-	public static function getTarm() {
-		if (empty(self::$tarm)) {
-			self::$tarm = new TarmManager();
-		}
-		return self::$tarm;
+	protected static function renderModal(WireData $data) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/min/tarm/edit-modal.twig', ['manager' => $codeTable]);
 	}
 }

@@ -55,7 +55,7 @@ class Sysop extends Base {
 
 		$page->headline = "System Optional Codes";
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q);
 			$page->headline = "SYSOP: Searching for '$data->q'";
 		}
@@ -99,7 +99,7 @@ class Sysop extends Base {
 		$sysop  = self::getSysop();
 
 		$html  = '';
-		// $html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
+		$html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('code-tables/msa/sysop/list/filter.twig', ['sysop' => $sysop]);
 		$html .= $config->twig->render('code-tables/msa/sysop/list.twig', ['sysop' => $sysop, 'codes' => $codes]);
@@ -112,6 +112,7 @@ class Sysop extends Base {
 		$sysop  = self::getSysop();
 
 		$html  = '';
+		$html .= $config->twig->render('code-tables/msa/sysop/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= self::displayLock($data, $code);
 		$html .= $config->twig->render('code-tables/msa/sysop/form.twig', ['sysop' => $sysop, 'code' => $code]);

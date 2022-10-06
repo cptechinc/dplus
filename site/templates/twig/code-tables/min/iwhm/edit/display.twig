@@ -1,1 +1,10 @@
-{% include 'code-tables/min/iwhm/edit/form.twig' %}
+<div class="mb-3">
+	{% include 'code-tables/min/iwhm/edit/form.twig' %}
+</div>
+
+<hr>
+
+{% if warehouse.isNew() == false %}
+	{% include 'code-tables/min/iwhm/edit/qnotes/display.twig' with {'qnotes': iwhm.qnotes} %}
+	{% include 'msa/noce/ajax/notes-modal.twig' %}
+{% endif %}

@@ -7,13 +7,12 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Models
 use GlTextCodeQuery, GlTextCode;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
-use Dplus\Codes\Response;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the TTM code table
  */
-class Ttm extends Base {
+class Ttm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'GlTextCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'gl_text_code';

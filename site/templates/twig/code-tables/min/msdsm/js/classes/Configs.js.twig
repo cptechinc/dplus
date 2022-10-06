@@ -11,13 +11,13 @@ class MsdsmConfigs {
 	constructor() {
 		this.fields = {
 			code: {
-				maxlength: {{ msdsm.fieldAttribute('code', 'maxlength') }}
+				maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
 			},
 			description: {
-				maxlength: {{ msdsm.fieldAttribute('description', 'maxlength') }}
+				maxlength: {{ manager.fieldAttribute('description', 'maxlength') }}
 			},
 			effectivedate: {
-				dateformat: '{{ msdsm.fieldAttribute('effectivedate', 'dateformat') }}',
+				dateformat: '{{ manager.fieldAttribute('effectivedate', 'dateformat') }}',
 				momentformat: "MM/DD/Y"
 			}
 		};

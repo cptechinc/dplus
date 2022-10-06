@@ -1,0 +1,30 @@
+class QnotesConfig {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new QnotesConfig();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			quote: {
+				default: '{{ qnotes.fieldAttribute('quote', 'default') }}'
+			},
+			pick: {
+				default: '{{ qnotes.fieldAttribute('pick', 'default') }}'
+			},
+			pack: {
+				default: '{{ qnotes.fieldAttribute('pack', 'default') }}'
+			},
+			invoice: {
+				default: '{{ qnotes.fieldAttribute('invoice', 'default') }}'
+			},
+			acknowledgement: {
+				default: '{{ qnotes.fieldAttribute('acknowledgement', 'default') }}'
+			},
+		};
+	}
+}

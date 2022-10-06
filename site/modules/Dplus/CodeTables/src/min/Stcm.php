@@ -11,13 +11,13 @@ use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the STCM code table
  */
-class Stcm extends Base {
+class Stcm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'InvStockCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_stcm_code';

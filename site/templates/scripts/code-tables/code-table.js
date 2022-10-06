@@ -14,7 +14,11 @@ $(function() {
 	});
 
 	if (queryData.hasOwnProperty('focus') && queryData.focus != 'new') {
-		$('.code[data-code="' + queryData.focus + '"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('.code[data-code="' + queryData.focus + '"]').offset().top,},700,'linear');
+		var focusElement = $('.code[data-code="' + queryData.focus + '"]');
+
+		if (focusElement.length) {
+			focusElement.addClass('highlight');
+			// $('html, body').animate({scrollTop: focusElement.offset().top,},700,'linear');
+		}
 	}
 });

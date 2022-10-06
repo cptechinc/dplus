@@ -505,6 +505,7 @@ class DplusPwPages extends WireData implements Module {
 			$page = $event->object;
 			$url = new Url($page->fullURL->getUrl());
 			$url->query->set('print', 'true');
+			$url->query->remove('focus');
 			$event->return = $url->getUrl();
 		});
 

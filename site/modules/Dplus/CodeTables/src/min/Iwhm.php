@@ -15,7 +15,7 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
@@ -23,7 +23,7 @@ use Dplus\Codes\Response;
  *
  * @property Iwhm\Qnotes $qnotes
  */
-class Iwhm extends Base {
+class Iwhm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'Warehouse';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_whse_code';
@@ -46,6 +46,7 @@ class Iwhm extends Base {
 		'pickdetail'      => ['type' => 'text', 'default' => 'N', 'options' => ['A' => 'Available', 'S' => 'Selected', 'N' => 'No']],
 		'consignment'     => ['type' => 'text', 'default' => 'N'],
 	];
+	const FILTERABLE_FIELDS = ['code', 'name'];
 
 	protected static $instance;
 	private $fieldAttributes;

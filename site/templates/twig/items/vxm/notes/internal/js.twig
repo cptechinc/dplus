@@ -1,28 +1,70 @@
 $(function () {
 	var form_intv  = $('#intv-form');
 	var modal_intv = $('#notes-internal-modal');
+	var alarm = Alerts.getInstance();
 
-	modal_intv.on('shown.bs.modal', function (e) {
+	modal_intv.on('show.bs.modal', function (e) {
 		var modal = $(this);
+		var form  = modal.find('form');
 		var button = $(e.relatedTarget);
 		var note_row = button.closest('.qnote-row');
 
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+
 		if (note_row.length) {
-			modal.find('.action-desc').text('Editing');
-			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');
-			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', '');
+			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', 'readonly');
+			modal.find('input[name=notedate]').attr('readonly', 'readonly');
+			modal.find('input[name=notedate]').closest('.datepicker').find('.dropdown-toggle').attr('disabled', 'disabled');
+			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', 'readonly');
 			modal.find('input[name=rawnotetime]').val(button.data('rawnotetime'));
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
+			modal.find('button[value=delete-notes]').addClass('show');
 		} else {
-			modal.find('.action-desc').text('Adding');
+			// modal.find('.action-desc').text('Adding');
 			modal.find('input[name=rawnotetime]').val('');
 			modal.find('textarea[name=note]').val('');
+			modal.find('button[value=delete-notes]').removeClass('show');
 
 			$.getJSON('{{ page.jsonApiUrl('misc/date-time/') }}', function(datetime) {
 				modal.find('input[name=notetime]').val(datetime.time).removeAttr('readonly');
 				modal.find('input[name=notedate]').val(datetime.date).removeAttr('readonly');
 			});
 		}
+		form.attr('data-serialized', form.serialize());
+	});
+
+	modal_intv.on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var alarm = Alerts.getInstance();
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				if (modal.length) {
+					modal.removeAttr('tabindex');
+				}
+
+				alarm.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.find('button[type=submit][value="update-notes"]').click();
+						return true;
+					}
+					modal.attr('tabindex', '-1');
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
+		}
+	});
+
+	modal_intv.on('shown.bs.modal', function (e) {
+		var modal = $(this);
+		modal.find('textarea').focus();
 	});
 
 /* =============================================================

@@ -1,160 +1,46 @@
 <?php namespace Controllers\Mso\Somain;
-// External Libraries, classes
-use Purl\Url as Purl;
+// ProcessWire 
+use ProcessWire\WireData;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
-// Dplus Models
-use ProspectSource;
-// Dplus Filters
+// Dplus
 use Dplus\Filters;
-// Dplus CRUD
-use Dplus\Codes\Mso\Rgasc as RgascManager;
-// Mvc Controllers
-use Controllers\Mso\Somain\Base;
+use Dplus\Codes;
 
-class Rgasc extends Base {
+
+class Rgasc extends AbstractCodeTableController {
 	const DPLUSPERMISSION = 'rgasc';
+	const TITLE      = 'RGA / Return Ship-via Code';
+	const SUMMARY    = 'View / Edit RGA / Return Ship-via Codes';
 	const SHOWONPAGE = 10;
 
-	private static $rgasc;
-
-/* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		$fields = ['code|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-		self::pw('page')->show_breadcrumbs = false;
-		self::pw('page')->headline = 'RGA/Return Ship Via Code';
-
-		if (empty($data->action) === false) {
-			return self::handleCRUD($data);
-		}
-		return self::list($data);
+	public static function _url() {
+		return Menu::rgascUrl();
 	}
 
-	public static function handleCRUD($data) {
-		$fields = ['code|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-		$url  = self::rgascUrl();
-		$rgasc  = self::getRgasc();
-
-		if ($data->action) {
-			$rgasc->processInput(self::pw('input'));
-			$url = self::rgascUrl($data->code);
-		}
-		self::pw('session')->redirect($url, $http301 = false);
+	public static function getCodeFilter() {
+		return new Filters\Mso\SoRgaCode();
 	}
 
-	private static function list($data) {
-		$fields = ['q|text'];
-		self::sanitizeParametersShort($data, $fields);
-		$page   = self::pw('page');
-		$page->headline = "RGA/Return Ship Via Code";
-
-		$filter = new Filters\Mso\SoRgaCode();
-
-		if (empty($data->q) === false) {
-			$filter->search($data->q);
-			$page->headline = "RGASC: Searching for '$data->q'";
-		}
-
-		$filter->sortby($page);
-		$input = self::pw('input');
-		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
-		self::initHooks();
-
-		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
-		$page->js .= self::pw('config')->twig->render('code-tables/mso/rgasc/.js.twig', ['rgasc' => self::getRgasc()]);
-		$html = self::displayList($data, $codes);
-		self::getRgasc()->deleteResponse();
-		return $html;
+	public static function getCodeTable() {
+		return Codes\Mso\Rgasc::instance();
 	}
 
 /* =============================================================
-	URLs
+	Render HTML / JS
 ============================================================= */
-	public static function rgascUrl($code = '') {
-		if (empty($code)) {
-			return Menu::rgascUrl();
-		}
-		return self::rgascFocusUrl($code);
+	protected static function renderList(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mso/rgasc/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
-	public static function rgascFocusUrl($focus) {
-		$filter = new Filters\Mso\SoRgaCode();
-		if ($filter->exists($focus) === false) {
-			return Menu::rgascUrl();
-		}
-		$position = $filter->positionQuick($focus);
-		$pagenbr = self::getPagenbrFromOffset($position, self::SHOWONPAGE);
-
-		$url = new Purl(Menu::rgascUrl());
-		$url->query->set('focus', $focus);
-		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'rgasc', $pagenbr);
-		return $url->getUrl();
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mso/rgasc/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
-	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::rgascUrl());
-		$url->query->set('code', $code);
-		$url->query->set('action', 'delete-code');
-		return $url->getUrl();
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function displayList($data, PropelModelPager $codes) {
-		$config = self::pw('config');
-		$rgasc = self::getRgasc();
-
-		$html  = '';
-		$html .= $config->twig->render('code-tables/bread-crumbs.twig');
-		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('code-tables/mso/rgasc/list.twig', ['manager' => $rgasc, 'codes' => $codes]);
-		if (self::pw('input')->get->offsetExists('print') === false) {
-			$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $codes]);
-		}
-		$html .= $config->twig->render('code-tables/mso/rgasc/edit-modal.twig', ['manager' => $rgasc]);
-		return $html;
-	}
-
-	public static function displayResponse($data) {
-		$rgasc = self::getRgasc();
-		$response = $rgasc->getResponse();
-		if (empty($response)) {
-			return '';
-		}
-		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
-	}
-
-/* =============================================================
-	Hooks
-============================================================= */
-	public static function initHooks() {
-		$m = self::pw('modules')->get('Dpages');
-
-		$m->addHook('Page(pw_template=somain)::menuUrl', function($event) {
-			$event->return = Menu::menuUrl();
-		});
-
-		$m->addHook('Page(pw_template=somain)::menuTitle', function($event) {
-			$event->return = Menu::TITLE;
-		});
-
-		$m->addHook('Page(pw_template=somain)::codeDeleteUrl', function($event) {
-			$event->return = self::codeDeleteUrl($event->arguments(0));
-		});
-	}
-
-/* =============================================================
-	Supplemental
-============================================================= */
-	public static function getRgasc() {
-		if (empty(self::$rgasc)) {
-			self::$rgasc = new RgascManager();
-		}
-		return self::$rgasc;
+	protected static function renderModal(WireData $data) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mso/rgasc/edit-modal.twig', ['manager' => $codeTable]);
 	}
 }

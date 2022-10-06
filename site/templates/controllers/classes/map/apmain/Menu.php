@@ -1,12 +1,15 @@
 <?php namespace Controllers\Map\Apmain;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends Base {
+/**
+ * Apmain\Menu
+ * 
+ * Class for rendering the Apmain Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'apmain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -18,9 +21,15 @@ class Menu extends Base {
 		],
 		'bum' => [
 			'name'       => 'bum',
-			'permission' => 'bum',
-			'title'      => 'Vendor Buyer Code',
-			'summary'    => 'View / Edit Vendor Buyer Code'
+			'permission' => Bum::DPLUSPERMISSION,
+			'title'      => Bum::TITLE,
+			'summary'    => Bum::SUMMARY
+		],
+		'cocom' => [
+			'name'       => 'cocom',
+			'permission' => Cocom::DPLUSPERMISSION,
+			'title'      => Cocom::TITLE,
+			'summary'    => Cocom::SUMMARY
 		],
 		'mxrfe' => [
 			'name'       => 'mxrfe',
@@ -30,9 +39,9 @@ class Menu extends Base {
 		],
 		'vtm' => [
 			'name'       => 'vtm',
-			'permission' => 'vtm',
-			'title'      => 'Vendor Type Code',
-			'summary'    => 'View / Edit Vendor Type Code'
+			'permission' => Vtm::DPLUSPERMISSION,
+			'title'      => Vtm::TITLE,
+			'summary'    => Vtm::SUMMARY
 		],
 		'vxm' => [
 			'name'       => 'vxm',
@@ -43,81 +52,40 @@ class Menu extends Base {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
-		}
-		self::initHooks();
-		return self::menu($data);
-	}
-
-
-/* =============================================================
 	URLs
 ============================================================= */
 	public static function mapUrl() {
 		return self::pw('pages')->get('dplus_function=map')->url;
 	}
 
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::apmainUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
-	}
-
-	public static function apmainUrl() {
+	public static function _url() {
 		$url = new Purl(self::mapUrl());
 		$url->path->add('apmain');
 		return $url->getUrl();
-	}
-
-	public static function menuUrl() {
-		return self::apmainUrl();
-	}
-
-	public static function vtmUrl() {
-		return self::subfunctionUrl('vtm');
-	}
-
-	public static function bumUrl() {
-		return self::subfunctionUrl('bum');
-	}
-
-	public static function mxrfeUrl() {
-		return self::subfunctionUrl('mxrfe');
 	}
 
 	public static function aoptmUrl() {
 		return self::subfunctionUrl('aoptm');
 	}
 
+	public static function bumUrl() {
+		return self::subfunctionUrl('bum');
+	}
+
+	public static function cocomUrl() {
+		return self::subfunctionUrl('cocom');
+	}
+
+	public static function mxrfeUrl() {
+		return self::subfunctionUrl('mxrfe');
+	}
+
+	public static function vtmUrl() {
+		return self::subfunctionUrl('vtm');
+	}
+
 	public static function vxmUrl() {
 		return self::subfunctionUrl('vxm');
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::displayMenu($data, $functions);
-	}
-
-	private static function displayMenu($data, array $functions) {
-		$html = '';
-		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
-		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
-		return $html;
 	}
 
 /* =============================================================
@@ -131,7 +99,7 @@ class Menu extends Base {
 		});
 
 		$m->addHook('Page(pw_template=apmain)::apmainUrl', function($event) {
-			$event->return = self::apmainUrl($event->arguments(0));
+			$event->return = self::url();
 		});
 	}
 }

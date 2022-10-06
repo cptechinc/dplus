@@ -10,10 +10,9 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Roptm extends Controller {
+class Roptm extends AbstractController {
+	const DPLUSPERMISSION = 'roptm';
 	const SYSTEM = 'AR';
 
 /* =============================================================
@@ -29,6 +28,10 @@ class Roptm extends Controller {
 			return self::handleCRUD($data);
 		}
 
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->sysop) === false) {
 			return self::sysop($data);
 		}
@@ -42,14 +45,14 @@ class Roptm extends Controller {
 		$page->headline = "ROPTM: $data->sysop Optional Codes";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		self::getRoptm()->recordlocker->deleteLock();
 		self::initHooks();
-		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/js.twig', ['optm' => self::getRoptm()]);
+		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getRoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
 		self::getRoptm()->deleteResponse();
 		return $html;
@@ -63,7 +66,7 @@ class Roptm extends Controller {
 
 		$filter = self::getFilterSysop();
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
@@ -84,6 +87,10 @@ class Roptm extends Controller {
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
 
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
+
 		if ($data->action) {
 			self::getRoptm()->processInput(self::pw('input'));
 
@@ -96,7 +103,6 @@ class Roptm extends Controller {
 					break;
 			}
 		}
-
 		self::pw('session')->redirect($url, $http301 = false);
 	}
 
@@ -123,6 +129,9 @@ class Roptm extends Controller {
 		$response = self::getRoptm()->getResponse();
 
 		if (empty($response)) {
+			return '';
+		}
+		if ($response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

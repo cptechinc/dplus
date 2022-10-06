@@ -791,6 +791,9 @@ class XrefVxm extends WireData implements Module {
 	 */
 	public function baseprice(ItemXrefVendor $xref) {
 		if ($this->use_itm_baseprice($xref)) {
+			if (empty($xref->imitem)) {
+				return $xref->get_listprice_uom_sale();
+			}
 			return $xref->imitem->pricing->baseprice;
 		}
 		return $xref->get_listprice_uom_sale();

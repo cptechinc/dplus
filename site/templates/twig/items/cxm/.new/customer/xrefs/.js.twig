@@ -1,0 +1,13 @@
+$(function() {
+	var uri = URI();
+	var queryData = uri.query(true);
+
+	if (queryData.hasOwnProperty('focus') && queryData.focus != 'new') {
+		var focusElement = $('tr[data-cxm="'+queryData.focus+'"]');
+
+		if (focusElement.length) {
+			focusElement.addClass('highlight');
+			// $('html, body').animate({scrollTop: focusElement.offset().top,},700,'linear');
+		}
+	}
+});

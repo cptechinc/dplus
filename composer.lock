@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "6260d7b0e3bba03852a5b621eba15e6c05d1321d"
+                "reference": "23f6c715ebd690d9e8c9c6cf0194619a7dc6a936"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/6260d7b0e3bba03852a5b621eba15e6c05d1321d",
-                "reference": "6260d7b0e3bba03852a5b621eba15e6c05d1321d",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/23f6c715ebd690d9e8c9c6cf0194619a7dc6a936",
+                "reference": "23f6c715ebd690d9e8c9c6cf0194619a7dc6a936",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 "issues": "https://github.com/cptechinc/dplus-model/issues",
                 "source": "https://github.com/cptechinc/dplus-model/tree/master"
             },
-            "time": "2022-08-24T19:42:10+00:00"
+            "time": "2022-10-05T14:26:37+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -59,6 +59,7 @@
                 "reference": "9536db816f1bcd5d57702a534ba289ef17f2eb5e",
                 "shasum": ""
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -78,6 +79,10 @@
                 "qnote",
                 "quote"
             ],
+            "support": {
+                "issues": "https://github.com/cptechinc/dpluso-model/issues",
+                "source": "https://github.com/cptechinc/dpluso-model/tree/master"
+            },
             "time": "2021-11-24T15:36:46+00:00"
         },
         {

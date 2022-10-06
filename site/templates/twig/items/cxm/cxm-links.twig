@@ -1,11 +1,6 @@
 {% set values = page.wire('input').get %}
 
 <div class="mb-3">
-	&nbsp;
-	<a href="{{ page.custListUrl(values.text('custID')) }}" class="btn btn-primary">
-		<i class="fa fa-arrows" aria-hidden="true"></i> CXM
-	</a>
-
 	{% if values.offsetExists('custitemID') %}
 		<a href="{{ page.custUrl(values.text('custID')) }}" class="btn btn-primary"> View Customer {{ page.custID }}</a>
 	{% endif %}

@@ -27,6 +27,10 @@ class VxmCalculator {
 		return floatParse(listprice) / floatParse(uomconversion);
 	}
 
+	listprice(eachlistprice, uomconversion) {
+		return floatParse(eachlistprice) * floatParse(uomconversion);
+	}
+
 	priceFromCostMargin(cost, margin) {
 		return cost / (1 - (margin / 100));
 	}

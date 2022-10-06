@@ -1,14 +1,13 @@
 <?php namespace Controllers\Mpm;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-use stdClass;
-// Purl Library
-use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
-// Mvc Controllers
-use Controllers\Mpm\Base;
-
-class Menu extends Base {
+/**
+ * Mpm\Menu
+ * 
+ * Class for rendering the Mpm Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'mpm';
 	const TITLE = 'Production Management';
 	const SUBFUNCTIONS = [
@@ -21,54 +20,18 @@ class Menu extends Base {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
-		}
-		return self::menu($data);
-	}
-
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function mpmUrl() {
+	public static function _url() {
 		return self::pw('pages')->get('pw_template=mpm')->url;
 	}
 
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::mpmUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
+	public static function mpmUrl() {
+		return self::url();
 	}
 
 	public static function pmmainUrl() {
 		return self::subfunctionUrl('pmmain');
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::displayMenu($data, $functions);
-	}
-
-	private static function displayMenu($data, array $functions) {
-		$html = '';
-		$html .= self::pw('config')->twig->render('dplus-menu/bread-crumbs.twig');
-		$html .= self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
-		return $html;
 	}
 
 /* =============================================================

@@ -1,69 +1,37 @@
 <?php namespace Controllers\Mpo\Poadmn;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
-// Mvc Controllers
-use Controllers\Min\Inproc\Base;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends Base {
+/**
+ * Poadmn\Menu
+ * 
+ * Class for Rendering the Poadmn Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'poadmn';
 	const TITLE = 'Administration';
 	const SUBFUNCTIONS = [
 		'cnfm' => [
 			'name'       => 'cnfm',
-			'permission' => 'cnfm',
-			'title'      => 'Confirmation Code',
-			'summary'    => 'View / Edit Confirmation Codes'
+			'permission' => Cnfm::DPLUSPERMISSION,
+			'title'      => Cnfm::TITLE,
+			'summary'    => Cnfm::SUMMARY
 		]
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
-		}
-		return self::menu($data);
-	}
-
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function menuUrl() {
+	public static function _url() {
 		return self::pw('pages')->get('pw_template=poadmn')->url;
 	}
 
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::menuUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
-	}
-
 	public static function cnfmUrl() {
-		$url = new Purl(self::menuUrl());
+		$url = new Purl(self::url());
 		$url->path->add('cnfm');
 		return $url->getUrl();
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================

@@ -13,17 +13,14 @@ use Dplus\DocManagement\Copier;
 use Dplus\DocManagement\Folders;
 // Dplus CRUD
 use Dplus\Min\Inmain\Itmimg as ImgManager;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Min\Base;
 
-class Itmimg extends Base {
+class Itmimg extends AbstractController {
 	const DPLUSPERMISSION = '';
 	private static $docm;
 
 	public static function index($data) {
 		if (self::validateUserPermission() === false) {
-			return self::displayAlertUserPermission($data);
+			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
 		$fields = ['itemID|text', 'q|text', 'action|text'];

@@ -1,0 +1,61 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+
+
+{% extends 'code-tables/list-print.twig' %}
+
+{% block print_headings_row %}
+	<tr>
+		<th colspan="2">
+			<div class="w-100 d-flex justify-content-between">
+				<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+				<div>{{ page.headline }}</div>
+				<div></div>
+			</div>
+		</th>
+	</tr>
+{% endblock %}
+
+{% block headings_row %}
+	<tr class="bg-dark text-white column-headers">
+		{% block headings_columns %}
+			<th>Code</th>
+			<th>Text</th>
+		{% endblock %}
+	</tr>
+{% endblock %}
+
+{% for code in codes %}
+	{% block code_row %}
+		<tr>
+			<td>{{ code.code }}</td>
+			<td>
+				{% if code.text1 != '' %}
+					{% set note_lines = [code.text1, code.text2, code.text3, code.text4] %}
+					{% set line_count = 1 %}
+					{% set line_count = code.text2 ? 2 : line_count %}
+					{% set line_count = code.text3 ? 3 : line_count %}
+					{% set line_count = code.text4 ? 4 : line_count %}
+
+					{% include 'util/bootstrap/form/textarea.twig' with {
+						'textarea': {
+							'value': note_lines|join('\r'),
+							'inputclass': 'form-control-plaintext',
+							'addclasses': ['qnotes', 'readonly'],
+							'attributes': {
+								'cols': manager.fieldAttribute('text1', 'maxlength'),
+								'rows': line_count,
+								'readonly': true,
+								'disabled': true,
+							}
+						}
+					} %}
+				{% endif %}
+			</td>
+		</tr>
+	{% endblock %}
+{% endfor %}

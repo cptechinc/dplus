@@ -2,16 +2,18 @@
 // Propel
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dplus Model
-use DplusUserQuery, DplusUser;
+// use DplusUserQuery, DplusUser;
 use SalesOrderDetailQuery, SalesOrderDetail;
 use SalesHistoryDetailQuery, SalesHistoryDetail;
 // ProcessWire Classes, Modules
-use ProcessWire\Module, ProcessWire\ProcessWire;
+use ProcessWire\ProcessWire;
+use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\CodeValidators\Mso	 as MsoValidator;
 use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
 // Dplus Codes
 use Dplus\Codes;
+use Dplus\Xrefs;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -140,6 +142,28 @@ class Mso extends Controller {
 			return "X-ref $data->custID-$data->custitemID not found";
 		}
 		return $exists;
+	}
+
+	public static function validateCxmXref(WireData $data) {
+		$fields = ['custID|text', 'custitemID|text', 'new|bool', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$cxm = Xrefs\Cxm::instance();
+		$exists = $cxm->exists($data->custID, $data->custitemID);
+		$description = $cxm::DESCRIPTION_RECORD . "$data->custID|$data->custitemID";
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "$description already exists";
+		}
+
+		if ($exists === false) {
+			return "$description not found";
+		}
+		return true;
 	}
 
 	public static function getPricing($data) {

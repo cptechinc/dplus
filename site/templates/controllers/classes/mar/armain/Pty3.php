@@ -9,10 +9,9 @@ use Dplus\Filters;
 use Dplus\Mar\Armain\Pty3 as RecordManager;
 use Dplus\Mar\Armain\Cmm as CustomerManager;
 // Mvc Controllers
-use Controllers\Mar\AbstractController as Base;
 use ProcessWire\WireData;
 
-class Pty3 extends Base {
+class Pty3 extends AbstractController {
 	const DPLUSPERMISSION = 'pty3';
 	const TITLE = 'Customer 3rd Party Freight';
 	const SUMMARY    = 'View / Edit Customer 3rd Party Freight Accounts';
@@ -32,6 +31,9 @@ class Pty3 extends Base {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
 		if (empty($data->custID) === false) {
 			$customers= CustomerManager::instance();
 			if ($customers->exists($data->custID) === false) {
@@ -47,6 +49,10 @@ class Pty3 extends Base {
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::pty3Url($data->custID);
 		$recordsManager = self::getRecordManager();
+
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 
 		if ($data->action) {
 			$recordsManager->processInput(self::pw('input'));
@@ -64,7 +70,7 @@ class Pty3 extends Base {
 		$filter = new Filters\Mar\Customer();
 		$filter->custid(self::getRecordManager()->custids());
 
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$customers= CustomerManager::instance();
 			if ($customers->exists($data->q)) {
 				self::pw('session')->redirect(self::pty3CustUrl($data->q), $http301 = false);
@@ -74,7 +80,6 @@ class Pty3 extends Base {
 		$input = self::pw('input');
 		$filter->sort($input->get);
 		$customers = $filter->query->paginate($input->pageNum, self::SHOWONPAGE);
-
 
 		self::initHooks();
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/mar/armain/pty3/customer-list.js'));
@@ -92,7 +97,7 @@ class Pty3 extends Base {
 		$filter = new Filters\Mar\ArCust3partyFreight();
 		$filter->custid($data->custID);
 		$filter->sort($input->get);
-		if (empty($data->q) === false) {
+		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$accounts = $filter->query->paginate($input->pageNum, self::SHOWONPAGE);
@@ -202,6 +207,9 @@ class Pty3 extends Base {
 		$recordsManager = self::getRecordManager();
 		$response = $recordsManager->getResponse();
 		if (empty($response)) {
+			return '';
+		}
+		if ($response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

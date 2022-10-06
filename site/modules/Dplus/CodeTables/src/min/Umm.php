@@ -12,13 +12,13 @@ use Dplus\CodeValidators as Validators;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the UMM code table
  */
-class Umm extends Base {
+class Umm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'UnitofMeasureSale';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_uom_sale';
@@ -30,7 +30,7 @@ class Umm extends Base {
 	const FIELD_ATTRIBUTES = [
 		'code'          => ['type' => 'text', 'maxlength' => UnitofMeasureSale::MAX_LENGTH_CODE],
 		'description'   => ['type' => 'text', 'maxlength' => 20],
-		'conversion'    => ['type' => 'number', 'precision' => 5, 'max' => 9999999.00000],
+		'conversion'    => ['type' => 'number', 'precision' => 5, 'max' => 9999999.99999, 'default' => 1.00000],
 		'stockbycase' => ['type' => 'text', 'default' => 'N'],
 		'pricebyweight' => ['type' => 'text', 'default' => 'N'],
 	];

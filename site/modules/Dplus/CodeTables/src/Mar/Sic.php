@@ -7,12 +7,12 @@ use ArStandardIndustrialClass;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the SIC code table
  */
-class Sic extends Base {
+class Sic extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArStandardIndustrialClass';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_cust_sic';

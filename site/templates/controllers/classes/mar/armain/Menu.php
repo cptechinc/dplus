@@ -1,50 +1,59 @@
 <?php namespace Controllers\Mar\Armain;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
-// ProcessWire Classes, Modules
-use ProcessWire\Page;
-// Mvc Controllers
-use Controllers\Mar\AbstractController as Base;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends Base {
+/**
+ * Armain\Menu
+ * 
+ * Class for rendering the Armain Menu
+ */
+class Menu extends AbstractMenuController  {
 	const DPLUSPERMISSION = 'armain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
 		'ccm' => [
 			'name'       => 'ccm',
-			'permission' => 'ccm',
-			'title'      => 'Customer Commission Code',
-			'summary'    => 'View / Edit Customer Commission Codes'
+			'permission' => Ccm::DPLUSPERMISSION,
+			'title'      => Ccm::TITLE,
+			'summary'    => Ccm::SUMMARY
 		],
 		'cocom' => [
 			'name'       => 'cocom',
-			'permission' => 'cocom',
-			'title'      => 'Country Code',
-			'summary'    => 'View / Edit Country Codes'
+			'permission' => Cocom::DPLUSPERMISSION,
+			'title'      => Cocom::TITLE,
+			'summary'    => Cocom::SUMMARY
 		],
 		'cpm' => [
 			'name'       => 'cpm',
-			'permission' => 'cpm',
-			'title'      => 'Customer Price Code',
-			'summary'    => 'View / Edit Customer Price Codes'
+			'permission' => Cpm::DPLUSPERMISSION,
+			'title'      => Cpm::TITLE,
+			'summary'    => Cpm::SUMMARY
 		],
 		'crcd' => [
 			'name'       => 'crcd',
-			'permission' => 'crcd',
-			'title'      => 'Credit Card Code',
-			'summary'    => 'View / Edit Credit Card  Codes'
+			'permission' => Crcd::DPLUSPERMISSION,
+			'title'      => Crcd::TITLE,
+			'summary'    => Crcd::SUMMARY
 		],
 		'crtm' => [
 			'name'       => 'crtm',
-			'permission' => 'crtm',
-			'title'      => 'Customer Route Code',
-			'summary'    => 'View / Edit Customer Route Codes'
+			'permission' => Crtm::DPLUSPERMISSION,
+			'title'      => Crtm::TITLE,
+			'summary'    => Crtm::SUMMARY
+		],
+		'ctm' => [
+			'name'       => 'ctm',
+			'permission' => Ctm::DPLUSPERMISSION,
+			'title'      => Ctm::TITLE,
+			'summary'    => Ctm::SUMMARY
 		],
 		'cuc' => [
 			'name'       => 'cuc',
-			'permission' => 'cuc',
-			'title'      => 'Customer User Code',
-			'summary'    => 'View / Edit Customer User Codes'
+			'permission' => Cuc::DPLUSPERMISSION,
+			'title'      => Cuc::TITLE,
+			'summary'    => Cuc::SUMMARY
 		],
 		'mtm' => [
 			'name'       => 'mtm',
@@ -66,21 +75,21 @@ class Menu extends Base {
 		],
 		'sic' => [
 			'name'       => 'sic',
-			'permission' => 'sic',
-			'title'      => 'Standard Industrial Class',
-			'summary'    => 'View / Edit AR Standard Industrial Class'
+			'permission' => Sic::DPLUSPERMISSION,
+			'title'      => Sic::TITLE,
+			'summary'    => Sic::SUMMARY
 		],
 		'spgpm' => [
 			'name'       => 'spgpm',
-			'permission' => 'spgpm',
-			'title'      => 'Salesperson Group Code',
-			'summary'    => 'View / Edit AR Salesperson Group Codes'
+			'permission' => Spgpm::DPLUSPERMISSION,
+			'title'      => Spgpm::TITLE,
+			'summary'    => Spgpm::SUMMARY
 		],
 		'suc' => [
 			'name'       => 'suc',
-			'permission' => 'suc',
-			'title'      => 'Ship-to User Code',
-			'summary'    => 'View / Edit AR Ship-to User Codes'
+			'permission' => Suc::DPLUSPERMISSION,
+			'title'      => Suc::TITLE,
+			'summary'    => Suc::SUMMARY
 		],
 		'tm' => [
 			'name'       => 'tm',
@@ -90,44 +99,19 @@ class Menu extends Base {
 		],
 		'worm' => [
 			'name'       => 'worm',
-			'permission' => 'worm',
-			'title'      => 'Write-Off Reason Code',
-			'summary'    => 'View / Edit Write-Off ReasonCodes'
+			'permission' => Worm::DPLUSPERMISSION,
+			'title'      => Worm::TITLE,
+			'summary'    => Worm::SUMMARY
 		],
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
-		}
-		return self::menu($data);
-	}
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function url() {
-		$url = new Purl(parent::menuUrl());
-		$url->path->add('armain');
-		return $url->getUrl();
+	public static function _url() {
+		return self::pw('pages')->get('pw_template=armain')->url;
 	}
 	
-	public static function menuUrl() {
-		return self::url();
-	}
-
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::menuUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
-	}
-
 	public static function ccmUrl() {
 		return self::subfunctionUrl('ccm');
 	}
@@ -146,6 +130,10 @@ class Menu extends Base {
 
 	public static function crtmUrl() {
 		return self::subfunctionUrl('crtm');
+	}
+
+	public static function ctmUrl() {
+		return self::subfunctionUrl('ctm');
 	}
 
 	public static function cucUrl() {
@@ -182,21 +170,6 @@ class Menu extends Base {
 	
 	public static function wormUrl() {
 		return self::subfunctionUrl('worm');
-	}
-
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		self::initHooks();
-		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================

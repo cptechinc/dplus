@@ -9,12 +9,12 @@ use Customer;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Codes
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
 /**
  * Class that handles the CRUD of the CMM code table
  */
-class Cmm extends Base {
+class Cmm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'Customer';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'ar_cust_mast';
@@ -61,8 +61,17 @@ class Cmm extends Base {
 	 * @return ObjectCollection
 	 */
 	public function codes() {
-		$q = $this->getQueryClass();
+		$q = $this->query();
 		return $q->find();
+	}
+
+	/**
+	 * Return Customer
+	 * @param  string $id
+	 * @return Customer
+	 */
+	public function customer($id) {
+		return $this->query()->findOneById($id);
 	}
 
 /* =============================================================

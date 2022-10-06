@@ -1,7 +1,7 @@
 $(function() {
 	{% if page.focus and page.focus != 'new' %}
 		$('tr[data-custid="{{ page.focus }}"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('tr[data-custid="{{ page.focus }}"]').offset().top,},700,'linear');
+		// $('html, body').animate({scrollTop: $('tr[data-custid="{{ page.focus }}"]').offset().top,},700,'linear');
 	{% endif %}
 /* =============================================================
 	Lookup Modal Functions

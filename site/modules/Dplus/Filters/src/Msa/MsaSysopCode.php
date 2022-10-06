@@ -8,13 +8,13 @@ use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Recordlocker
 use Dplus\RecordLocker\Locker as Recordlocker;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
 * Wrapper Class for MsaSysopCodeQuery
 * For Searching Optional Codes
 */
-class MsaSysopCode extends AbstractFilter {
+class MsaSysopCode extends CodeFilter {
 	const MODEL   = 'MsaSysopCode';
 	const SYSTEMS = [
 		'AP', 'AR',
@@ -26,30 +26,6 @@ class MsaSysopCode extends AbstractFilter {
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function _search($q, $cols = []) {
-		$cols = array_filter($cols);
-		$columns = [];
-
-		if (empty($cols)) {
-			$columns = [
-				Model::aliasproperty('code'),
-				Model::aliasproperty('description'),
-			];
-			$this->query->searchFilter($columns, strtoupper($q));
-			return true;
-		}
-
-		foreach ($cols as $col) {
-			if (Model::aliasproperty_exists($col)) {
-				$columns[] = Model::aliasproperty($col);
-			}
-		}
-		if (empty($columns)) {
-			return true;
-		}
-		$this->query->searchFilter($columns, strtoupper($q));
-		return true;
-	}
 
 /* =============================================================
 	2. Base Filter Functions

@@ -14,13 +14,13 @@ use Dplus\Filters;
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes;
-use Dplus\Codes\Base\Simple as Base;
+use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the TARM code table
  */
-class Tarm extends Base {
+class Tarm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'TariffCode';
 	const MODEL_KEY          = 'id';
 	const MODEL_TABLE        = 'inv_tari_code';

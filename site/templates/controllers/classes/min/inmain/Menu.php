@@ -3,10 +3,15 @@
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
-// Mvc Controllers
-use Controllers\Min\Base;
+// Controllers
+use Controllers\Templates\AbstractMenuController;
 
-class Menu extends Base {
+/**
+ * Inmain\Menu
+ * 
+ * Class for rendering the Inmain Menu
+ */
+class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'inmain';
 	const TITLE = 'Maintenance';
 	const SUBFUNCTIONS = [
@@ -18,9 +23,9 @@ class Menu extends Base {
 		],
 		'csccm' => [
 			'name'       => 'csccm',
-			'permission' => 'csccm',
-			'title'      => 'Customer Stocking Cell',
-			'summary'    => 'View / Edit Customer Stocking Cell'
+			'permission' => Csccm::DPLUSPERMISSION,
+			'title'      => Csccm::TITLE,
+			'summary'    => Csccm::SUMMARY
 		],
 		'i2i' => [
 			'name'       => 'i2i',
@@ -36,33 +41,33 @@ class Menu extends Base {
 		],
 		'iasm' => [
 			'name'       => 'iasm',
-			'permission' => 'iasm',
-			'title'      => 'Inventory Assortment Code',
-			'summary'    => 'View / Edit Inventory Assortment Code'
+			'permission' => Iasm::DPLUSPERMISSION,
+			'title'      => Iasm::TITLE,
+			'summary'    => Iasm::SUMMARY
 		],
 		'igcm' => [
 			'name'       => 'igcm',
-			'permission' => 'igcm',
-			'title'      => 'Inventory Commission Code',
-			'summary'    => 'View / Edit Inventory Commission Code'
+			'permission' => Igcm::DPLUSPERMISSION,
+			'title'      => Igcm::TITLE,
+			'summary'    => Igcm::SUMMARY
 		],
 		'igm' => [
 			'name'       => 'igm',
-			'permission' => 'igm',
-			'title'      => 'Inventory Group Code',
-			'summary'    => 'View / Edit Inventory Group Code'
+			'permission' => Igm::DPLUSPERMISSION,
+			'title'      => Igm::TITLE,
+			'summary'    => Igm::SUMMARY
 		],
 		'igpm' => [
 			'name'       => 'igpm',
-			'permission' => 'igpm',
-			'title'      => 'Inventory Price Code',
-			'summary'    => 'View / Edit Inventory Price Code'
+			'permission' => Igpm::DPLUSPERMISSION,
+			'title'      => Igpm::TITLE,
+			'summary'    => Igpm::SUMMARY
 		],
 		'iplm' => [
 			'name'       => 'iplm',
-			'permission' => 'iplm',
-			'title'      => 'Inventory Product Line Code',
-			'summary'    => 'View / Edit Inventory Product Line Code'
+			'permission' => Iplm::DPLUSPERMISSION,
+			'title'      => Iplm::TITLE,
+			'summary'    => Iplm::SUMMARY
 		],
 		'ioptm' => [
 			'name'       => 'ioptm',
@@ -90,39 +95,39 @@ class Menu extends Base {
 		],
 		'iwhm' => [
 			'name'       => 'iwhm',
-			'permission' => 'iwhm',
-			'title'      => 'Warehouse',
-			'summary'    => 'View / Edit Warehouse'
+			'permission' => Iwhm::DPLUSPERMISSION,
+			'title'      => Iwhm::TITLE,
+			'summary'    => Iwhm::SUMMARY
 		],
 		'msdsm' => [
 			'name'       => 'msdsm',
-			'permission' => 'msdsm',
-			'title'      => 'Material Safety Data Sheet Code',
-			'summary'    => 'View / Edit Material Safety Data Sheet Code'
+			'permission' => Msdsm::DPLUSPERMISSION,
+			'title'      => Msdsm::TITLE,
+			'summary'    => Msdsm::SUMMARY
 		],
 		'spit' => [
 			'name'       => 'spit',
-			'permission' => 'spit',
-			'title'      => 'Special Item Code',
-			'summary'    => 'View / Edit Special Item Code'
+			'permission' => Spit::DPLUSPERMISSION,
+			'title'      => Spit::TITLE,
+			'summary'    => Spit::SUMMARY
 		],
 		'stcm' => [
 			'name'       => 'stcm',
-			'permission' => 'stcm',
-			'title'      => 'Stock Code',
-			'summary'    => 'View / Edit Stock Code'
+			'permission' => Stcm::DPLUSPERMISSION,
+			'title'      => Stcm::TITLE,
+			'summary'    => Stcm::SUMMARY
 		],
 		'tarm' => [
 			'name'       => 'tarm',
-			'permission' => 'tarm',
-			'title'      => 'Tariff Code',
-			'summary'    => 'View / Edit Tariff Code'
+			'permission' => Tarm::DPLUSPERMISSION,
+			'title'      => Tarm::TITLE,
+			'summary'    => Tarm::SUMMARY
 		],
 		'umm' => [
 			'name'       => 'umm',
-			'permission' => 'umm',
-			'title'      => 'Unit of Measure Code',
-			'summary'    => 'View / Edit Unit of Measure Code'
+			'permission' => Umm::DPLUSPERMISSION,
+			'title'      => Umm::TITLE,
+			'summary'    => Umm::SUMMARY
 		],
 		'upcx' => [
 			'name'       => 'upcx',
@@ -133,31 +138,10 @@ class Menu extends Base {
 	];
 
 /* =============================================================
-	Indexes
-============================================================= */
-	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
-		}
-		return self::menu($data);
-	}
-
-/* =============================================================
 	URLs
 ============================================================= */
-	public static function menuUrl() {
-		$url = new Purl(parent::menuUrl());
-		$url->path->add('inmain');
-		return $url->getUrl();
-	}
-
-	public static function subfunctionUrl($key) {
-		$url = new Purl(self::menuUrl());
-		if (array_key_exists($key, self::SUBFUNCTIONS)) {
-			$url->path->add($key);
-		}
-		return $url->getUrl();
+	public static function _url() {
+		return self::pw('pages')->get('pw_template=inmain')->url;
 	}
 
 	public static function addmUrl() {
@@ -238,21 +222,6 @@ class Menu extends Base {
 
 	public static function upcxUrl() {
 		return self::subfunctionUrl('upcx');
-	}
-
-/* =============================================================
-	Displays
-============================================================= */
-	private static function menu($data) {
-		$functions = [];
-		foreach (self::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || self::pw('user')->hasPermissionCode($function['permission'])) {
-				$functions[$key] = $function;
-			}
-		}
-		self::pw('page')->show_breadcrumbs = true;
-		self::initHooks();
-		return self::pw('config')->twig->render('dplus-menu/function-menu.twig', ['functions' => $functions]);
 	}
 
 /* =============================================================

@@ -151,11 +151,10 @@ $(function() {
 		var input = $(this);
 		var config = VxmConfigs.getInstance();
 		input.val(floatParse(input.val()).toFixed(config.fields.listprice.precision));
-
+		
 		if ((formVxm.inputs.ordercode.val() == config.ordercodes.primary && config.allowListPriceUpdate) || input.closest('form').data('new') == true) {
 			formVxm.updateEachListPriceUsingOrdercodeCosting();
 		}
-
 		formVxm.inputs.updateMarginsOrCostsAfterListprice();
 	});
 
