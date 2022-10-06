@@ -90,6 +90,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 		static::initHooks();
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-table.js'));
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/ajax-modal.js'));
 		$page->js .= static::renderJs($data);
 		$html = self::displayList($data, $codes);
 		static::getCodeTable()->deleteResponse();

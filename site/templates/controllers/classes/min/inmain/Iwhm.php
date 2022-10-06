@@ -76,6 +76,7 @@ class Iwhm extends AbstractCodeTableController {
 			$iwhm->lockrecord($warehouse);
 		}
 		self::initHooks();
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/ajax-modal.js'));
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/iwhm/edit/.js.twig', ['iwhm' => $iwhm]);
 
 		if ($warehouse->isNew() === false) {

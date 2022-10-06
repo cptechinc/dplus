@@ -70,6 +70,7 @@ class Ctm extends AbstractCodeTableController {
 			$ctm->lockrecord($code);
 		}
 		self::initHooks();
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/ajax-modal.js'));
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mar/ctm/edit/.js.twig', ['ctm' => $ctm]);
 
 		if ($code->isNew() === false) {

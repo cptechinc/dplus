@@ -72,54 +72,36 @@ $(function() {
 			}
 		}
 	});
-
+	
 	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
 		if (formCode.inputs.code.val() == '') {
 			formCode.inputs.code.focus();
 		}
 	});
 
-/* =============================================================
-	Lookup Modal Functions
-============================================================= */
-	ajaxModal.on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal = $(this);
-		modal.attr('data-input', button.data('input'));
+	$("body").on("change", "input.whse-input", function(e) {
+		var input = $(this);
+		input.closest('.form-group.whse').find('.whse-name').text('');
 
-		modal.find('.modal-title').text(button.attr('title'));
-		modal.resizeModal('xl');
-		modal.find('.modal-body').loadin(button.data('lookupurl'), function() {});
+		server.getCode(input.val(), function(warehouse) {
+			if (warehouse) {
+				input.closest('.form-group.whse').find('.whse-name').text(warehouse.name);
+			}
+		});
 	});
 
-	$("body").on('click', '.code-link', function(e) {
+/* =============================================================
+	Lookup Modal Functions
+	ajax modal events is handled by scripts/code-tables/ajax-modal.js
+============================================================= */
+	$("body").on('click', '.whse-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var modal  = button.closest('.modal');
 		var input  = $(modal.attr('data-input'));
-		input.val(button.data('code'));
-		if (input.data('jqv')) {
-			input.change();
-		}
+		input.val(button.data('whseid'));
+		input.change();
 		modal.modal('hide');
-	});
-
-	$("body").on('submit', '#ajax-modal form', function(e) {
-		e.preventDefault();
-		var form = $(this);
-		var query = form.serialize();
-		var action = form.attr('action');
-		var search = form.find('input[name=q]').val();
-		var url = action + '?' + query;
-		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
-		form.closest('.modal').find('.modal-body').loadin(url, function() {});
-	});
-
-	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var modal  = button.closest('.modal');
-		modal.find('.modal-body').load(button.attr('href'));
 	});
 
 /* =============================================================

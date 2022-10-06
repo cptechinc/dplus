@@ -50,10 +50,11 @@ class Igm extends AbstractCodeTableController {
 		}
 
 		self::initHooks();
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/ajax-modal.js'));
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/igm/edit/.js.twig', ['igm' => $igm]);
 		$html = self::displayCode($data, $invGroup);
 		self::getCodeTable()->deleteResponse();
-		self::getCodeTable()->qnotes->iwhs->deleteResponse();
+		// self::getCodeTable()->qnotes->iwhs->deleteResponse();
 		return $html;
 	}
 
