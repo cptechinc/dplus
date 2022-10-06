@@ -117,6 +117,11 @@ class Iwhm extends AbstractCodeTableController {
 		return self::pw('config')->twig->render('code-tables/min/iwhm/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/min/iwhm/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
 	protected static function renderCode(WireData $data, Code $code) {
 		$iwhm = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/min/iwhm/edit/display.twig', ['iwhm' => $iwhm, 'warehouse' => $code]);

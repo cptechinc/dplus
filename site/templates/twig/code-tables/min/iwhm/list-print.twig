@@ -1,0 +1,56 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+
+
+{% extends 'code-tables/list-print.twig' %}
+
+{% block print_headings_row %}
+	<tr>
+		<th colspan="7">
+			<div class="w-100 d-flex justify-content-between">
+				<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+				<div>{{ page.headline }}</div>
+				<div></div>
+			</div>
+		</th>
+	</tr>
+{% endblock %}
+
+{% block headings_row %}
+	<tr class="bg-dark text-white column-headers">
+		{% block headings_columns %}
+			<th>Code</th>
+			<th>Name</th>
+			<th>Address 1</th>
+			<th>Address 2</th>
+			<th>City</th>
+			<th>State</th>
+			<th>Zip</th>
+		{% endblock %}
+	</tr>
+{% endblock %}
+
+{% for code in codes %}
+	{% block code_row %}
+		<tr>
+			<td>{{ code.id }}</td>
+			<td>{{ code.name }}</td>
+			<td>{{ code.address }}</td>
+			<td>{{ code.address2 }}</td>
+			<td>{{ code.city }}</td>	
+			<td>{{ code.state }}</td>
+			<td>{{ code.zip }}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>Profit Whse: {{ code.whseprofit }}</td>
+			<td>Asset Whse: {{ code.whseasset }}</td>
+			<td></td>
+			<td colspan="3">Country: {{ code.country }}</td>
+		</tr>
+	{% endblock %}
+{% endfor %}

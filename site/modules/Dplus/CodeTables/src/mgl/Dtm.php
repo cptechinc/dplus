@@ -5,7 +5,7 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
 use ProcessWire\WireInput;
 // Dplus Models
-use  GlDistCode;
+use GlDistCode;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Codes

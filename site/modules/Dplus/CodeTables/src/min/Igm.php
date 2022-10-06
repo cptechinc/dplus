@@ -1,11 +1,10 @@
 <?php namespace Dplus\Codes\Min;
 // Propel Classes
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ProcessWire\WireInput;
 // Dplus Models
-use InvGroupCodeQuery, InvGroupCode;
+use InvGroupCode;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus Configs

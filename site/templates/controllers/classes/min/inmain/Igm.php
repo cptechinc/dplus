@@ -84,6 +84,11 @@ class Igm extends AbstractCodeTableController {
 		return self::pw('config')->twig->render('code-tables/min/igm/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/min/igm/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
 	protected static function renderCode(WireData $data, Code $code) {
 		$igm = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/min/igm/edit/display.twig', ['igm' => $igm, 'invgroup' => $code]);

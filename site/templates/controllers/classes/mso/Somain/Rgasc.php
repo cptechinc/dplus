@@ -34,6 +34,11 @@ class Rgasc extends AbstractCodeTableController {
 		return self::pw('config')->twig->render('code-tables/mso/rgasc/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/mso/rgasc/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
 	protected static function renderModal(WireData $data) {
 		$codeTable = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/mso/rgasc/edit-modal.twig', ['manager' => $codeTable]);

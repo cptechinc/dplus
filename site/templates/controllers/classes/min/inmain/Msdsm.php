@@ -38,6 +38,11 @@ class Msdsm extends AbstractCodeTableController {
 		return self::pw('config')->twig->render('code-tables/min/msdsm/list.twig', ['manager' => $codeTable, 'codes' => $codes]);
 	}
 
+	protected static function renderListForPrinting(WireData $data, PropelModelPager $codes) {
+		$codeTable = static::getCodeTable();
+		return self::pw('config')->twig->render('code-tables/min/msdsm/list-print.twig', ['manager' => $codeTable, 'codes' => $codes]);
+	}
+
 	protected static function renderModal(WireData $data) {
 		$codeTable = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/min/msdsm/edit-modal.twig', ['manager' => $codeTable]);
