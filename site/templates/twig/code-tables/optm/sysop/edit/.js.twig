@@ -45,7 +45,7 @@ $(function() {
 
 					server.getCode(formCode.inputs.sysop.val(), input.val(), function(response) {
 						if (response) {
-							modal.find('.modal-title').text('Edit Code ' + input.val());
+							modal.find('.modal-title').text('Edit Code');
 							formCode.updateInputsFromJson(response);
 							formCode.form.attr('data-serialized', formCode.form.serialize());
 						}
