@@ -3,5 +3,28 @@
 		{% include 'code-tables/min/iwhm/edit/qnotes/qnotes.twig' %}
 	</div>
 </div>
+<ul class="nav nav-tabs mb-3" id="notes-tab" role="tablist">
+	
+		{% for qnotesSub in qnotes.getQnotes() %}
+			<li class="nav-item" role="presentation">
+				{% set displayClass = loop.first ? 'active' : '' %}
+				{% set displayClass = response.type == qnotesSub.type() ? 'active' : displayClass %}
 
+				<a href="#{{ qnotesSub.type() }}" class="nav-link {{ displayClass}}" id="{{ qnotesSub.type() }}-tab" data-toggle="tab"  href="#{{ qnotesSub.type() }}" aria-controls="{ qnotesSub.type() }}">
+					{{ qnotesSub.typeDescription() }}
+				</a>
+			</li>
+		{% endfor %}
+
+</ul>
+<div class="tab-content" id="notes-tab-content">
+	{% for qnotesSub in qnotes.getQnotes() %}
+		{% set displayClass = loop.first ? 'active show' : '' %}
+		{% set displayClass = response.type == qnotesSub.type() ? 'show active' : displayClass %}
+
+		<div class="tab-pane fade {{ displayClass }}" id="{{ qnotesSub.type() }}" role="tabpanel" aria-labelledby="{{ qnotesSub.type() }}-tab">
+			{% include 'code-tables/min/iwhm/edit/qnotes/qnotes-type.twig' %}
+		</div>
+	{% endfor %}
+</div>
 {% include 'code-tables/min/iwhm/edit/qnotes/modal.twig' %}
