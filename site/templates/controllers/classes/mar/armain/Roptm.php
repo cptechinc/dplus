@@ -19,7 +19,7 @@ class Roptm extends AbstractController {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['sysop|text', 'code|text', 'action|text'];
+		$fields = ['sysop|string', 'code|string', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
@@ -83,7 +83,7 @@ class Roptm extends AbstractController {
 	CRUD
 ============================================================= */
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'sysop|text', 'code|text'];
+		$fields = ['action|text', 'sysop|string', 'code|string'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
 

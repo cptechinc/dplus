@@ -64,7 +64,7 @@ class Cpm extends AbstractCodeTableEditableSingleKey {
 		$code = new ArPriceCode();
 
 		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setCode($id);
 		}
 		$code->setSurcharge($this->fieldAttribute('surcharge', 'default'));

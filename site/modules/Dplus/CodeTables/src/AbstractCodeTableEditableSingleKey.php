@@ -53,7 +53,7 @@ abstract class AbstractCodeTableEditableSingleKey extends AbstractCodeTableEdita
 		$maxlength = $this->fieldAttribute('code', 'maxlength');
 
 		if ($maxlength) {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $maxlength]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $maxlength]);
 		}
 		if (empty($id) === false && $id != 'new') {
 			$code->setId($id);
@@ -73,7 +73,7 @@ abstract class AbstractCodeTableEditableSingleKey extends AbstractCodeTableEdita
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id     = $values->string('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 		$invalidfields = [];
 
 		$code          = $this->getOrCreate($id);
@@ -91,7 +91,7 @@ abstract class AbstractCodeTableEditableSingleKey extends AbstractCodeTableEdita
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id     = $values->string('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 
 		if ($this->exists($id) === false) {
 			$response = Response::responseSuccess("Code $id was deleted");

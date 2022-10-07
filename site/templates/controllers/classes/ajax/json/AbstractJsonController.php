@@ -13,7 +13,7 @@ class AbstractJsonController extends Controller{
 	}
 
 	protected static function validateCodeTableCode(WireData $data, AbstractCodeTable $table, $codedesc = '') {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		$fields = ['code|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$codedesc = $codedesc ? $codedesc : $table::DESCRIPTION_RECORD;
@@ -35,7 +35,7 @@ class AbstractJsonController extends Controller{
 	}
 
 	protected static function getCodeTableCode(WireData $data, AbstractCodeTable $table) {
-		self::sanitizeParametersShort($data, ['code|text']);
+		self::sanitizeParametersShort($data, ['code|string']);
 
 		if ($table->exists($data->code) === false) {
 			return false;

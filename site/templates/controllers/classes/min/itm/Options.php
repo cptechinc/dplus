@@ -23,7 +23,7 @@ class Options extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'system|text', 'sysop|text', 'code|text', 'action|text'];
+		$fields = ['itemID|text', 'system|text', 'sysop|text', 'code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -46,7 +46,7 @@ class Options extends Base {
 			return self::displayAlertUserPermission($data);
 		}
 
-		$fields     = ['itemID|text', 'system|text', 'sysop|text', 'code|text', 'action|text'];
+		$fields     = ['itemID|text', 'system|text', 'sysop|text', 'code|string', 'action|text'];
 		$data       = self::sanitizeParameters($data, $fields);
 		$input      = self::pw('input');
 		$itmOptions = self::getItmOptions();

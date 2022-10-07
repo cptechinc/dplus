@@ -18,6 +18,7 @@ $(function() {
 	var query = uri.query(true);
 
 	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
+		console.log(query.focus);
 		$('.code[data-id="'+query.focus+'"]').addClass('highlight');
 		// $('html, body').animate({scrollTop: $('.code[data-id="'+query.focus+'"]').offset().top,},700,'linear');
 	}
