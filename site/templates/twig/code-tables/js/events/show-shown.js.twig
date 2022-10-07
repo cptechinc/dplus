@@ -17,7 +17,14 @@ $('#edit-code-modal').on('shown.bs.modal', function (event) {
 	var code   = button.data('code');
 
 	if (code) {
-		formCode.inputs.description.focus();
+		if (formCode.form.find('input[name=description]').length) {
+			formCode.inputs.description.focus();
+			return true;
+		}
+		if (formCode.form.find('input[name=name]').length) {
+			formCode.inputs.name.focus();
+			return true;
+		}
 	} else {
 		formCode.inputs.code.focus();
 	}

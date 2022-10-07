@@ -8,7 +8,13 @@ $(function() {
 		var code   = button.data('code');
 
 		if (code) {
-			form.find('input[name=description]').focus();
+			if (form.find('input[name=description]').length) {
+				form.find('input[name=description]').focus();
+				return true;
+			}
+			if (form.find('input[name=name]').length) {
+				form.find('input[name=name]').focus();
+			}
 		} else {
 			form.find('input[name=code]').focus();
 		}

@@ -38,7 +38,7 @@ class Msa extends Controller {
 		return $exists ? true : "User $userID Not Found";
 	}
 
-	public static function getUserid($data) {
+	public static function getUser($data) {
 		$fields = ['userID|text', 'loginID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
@@ -47,7 +47,7 @@ class Msa extends Controller {
 		if ($validate->userid($userID) === false) {
 			return false;
 		}
-		$login = DplusUserQuery::create()->findOneByLoginid($loginID);
+		$login = DplusUserQuery::create()->findOneByUserid($userID);
 		return array(
 			'loginid' => $userID,
 			'name'    => $login->name,
