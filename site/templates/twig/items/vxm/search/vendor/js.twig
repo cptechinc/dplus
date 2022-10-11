@@ -1,7 +1,7 @@
 $(function() {
-	{% if page.focus and page.focus != 'new' %}
-		$('tr[data-vendorid="{{ page.focus }}"]').addClass('highlight');
-		// $('html, body').animate({scrollTop: $('tr[data-vendorid="{{ page.focus }}"]').offset().top,},700,'linear');
+	{% if input.get.offsetExists('focus') and input.get.string('focus') != 'new' %}
+		$('tr[data-vendorid="{{ input.get.string('focus') }}"]').addClass('highlight');
+		// $('html, body').animate({scrollTop: $('tr[data-vendorid="{{ input.get.string('focus') }}"]').offset().top,},700,'linear');
 	{% endif %}
 
 	$("body").on('change', 'input[name=vendorID]', function(e) {

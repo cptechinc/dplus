@@ -9,7 +9,7 @@
 		{% include 'purchase-orders/vendor/purchase-orders-list.twig' %}
 
 		<div class="card-footer bg-secondary">
-			<a href="{{ page.poListUrl(input.get.text('vendorID')) }}" class="text-white">
+			<a href="{{ page.poListUrl(input.get.string('vendorID')) }}" class="text-white">
 				View More Purchase Orders <i class="fa fa-sign-in" aria-hidden="true"></i>
 			</a>
 		</div>

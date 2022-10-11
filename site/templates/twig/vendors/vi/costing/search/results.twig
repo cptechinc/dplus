@@ -23,7 +23,7 @@
 		{% for item in items %}
 			<tr data-itemid="{{ item.itemid }}">
 				<td>
-					<a href="{{ page.costingItemUrl(input.get.text('vendorID'), item.itemid) }}" class="link">
+					<a href="{{ page.costingItemUrl(input.get.string('vendorID'), item.itemid) }}" class="link">
 						<strong>{{ item.itemid }}</strong>
 					</a>
 				</td>
