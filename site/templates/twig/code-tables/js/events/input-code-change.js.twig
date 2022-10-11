@@ -5,7 +5,6 @@ $("body").on("change", "input[name=code]", function(e) {
 	var input = $(this);
 	var code = input.val();
 
-	console.log(code);
 	server.validateCode(code, function(exists) {
 		if (exists === true) {
 			alert.codeExists(code, function(editCode) {
