@@ -4,19 +4,19 @@
 
 <div class="row">
 	<div class="col-sm-3">
-		<a href="{{ page.mnfrListUrl(values.text('mnfrID')) }}" class="btn btn-primary">
+		<a href="{{ page.mnfrListUrl(values.string('mnfrID')) }}" class="btn btn-primary">
 			<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ input.urlSegmentLast()|upper }}
 		</a>
 	</div>
 	<div class="col-sm-3 text-right">	
 		{% if input.get.text('q') %}
-			<a href="{{ page.mnfrUrl(input.get.text('mnfrID')) }}" class="btn btn-warning">
+			<a href="{{ page.mnfrUrl(input.get.string('mnfrID')) }}" class="btn btn-warning">
 				<i class="fa fa-times"></i> Clear Search
 			</a>
 		{% endif %}
 	</div>
 
 	<div class="col-sm-6">
-		{% include 'items/mxrfe/search/vendor/form.twig' with {'mnfrID': input.get.text('mnfrID'), 'value': input.get.text('q')} %}
+		{% include 'items/mxrfe/search/vendor/form.twig' with {'mnfrID': input.get.string('mnfrID'), 'value': input.get.text('q')} %}
 	</div>
 </div>

@@ -19,7 +19,7 @@ class Mxrfe extends AbstractController {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['mnfrID|text', 'mnfritemID|text', 'q|text', 'action|text'];
+		$fields = ['mnfrID|string', 'mnfritemID|text', 'q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
@@ -61,7 +61,7 @@ class Mxrfe extends AbstractController {
 	}
 
 	private static function xref($data) {
-		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text', 'action|text'];
+		$fields = ['mnfrID|string', 'mnfritemID|text', 'itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if ($data->action) {
@@ -106,7 +106,7 @@ class Mxrfe extends AbstractController {
 	}
 
 	public static function mnfrXrefs($data) {
-		self::sanitizeParametersShort($data, ['mnfrID|text']);
+		self::sanitizeParametersShort($data, ['mnfrID|string']);
 		$page   = self::pw('page');
 		$mxrfe  = self::mxrfeMaster();
 		$mxrfe->recordlocker->deleteLock();
@@ -357,13 +357,13 @@ class Mxrfe extends AbstractController {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if (empty($values->text('mnfrID')) && $values->text('action') != 'update-notes' && $values->text('action') != 'delete-notes') {
+		if (empty($values->string('mnfrID')) && $values->text('action') != 'update-notes' && $values->text('action') != 'delete-notes') {
 			return Menu::mxrfeUrl();
 		}
 
-		$mnfrID     = $values->text('mnfrID');
-		$mnfritemID = $values->text('mnfritemID');
-		$itemID     = $values->text('itemID');
+		$mnfrID     = $values->string('mnfrID');
+		$mnfritemID = $values->string('mnfritemID');
+		$itemID     = $values->string('itemID');
 		$mxrfe = self::mxrfeMaster();
 
 		if (in_array($values->text('action'), ['delete-xref', 'update-notes', 'delete-notes']) === false) {
@@ -384,8 +384,8 @@ class Mxrfe extends AbstractController {
 			case 'delete-notes':
 			case 'update-notes';
 				if (strtolower($values->text('type')) == 'intv') {
-					$mnfrID     = $values->text('vendorID');
-					$mnfritemID = $values->text('vendoritemID');
+					$mnfrID     = $values->string('vendorID');
+					$mnfritemID = $values->string('vendoritemID');
 				}
 				return self::xrefUrl($mnfrID, $mnfritemID, $itemID);
 				break;
