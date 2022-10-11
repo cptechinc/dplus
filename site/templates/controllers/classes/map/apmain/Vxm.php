@@ -5,6 +5,7 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefVendor;
+use Vendor;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 // Dplus Filters
@@ -111,7 +112,8 @@ class Vxm extends AbstractController{
 			$page->headline = "VXM";
 			$filter->search($data->q);
 		}
-		$filter->sortby($page);
+		$filter->sort(self::pw('input')->get);
+		$filter->query->orderBy(Vendor::aliasproperty('id'));
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$page->js .= self::pw('config')->twig->render('items/vxm/search/vendor/js.twig');
 		$html = self::displayListVendors($data, $vendors);

@@ -9,7 +9,13 @@
 			<i class="fa fa-undo" aria-hidden="true"></i> Back to Maintenance
 		</a>
 	</div>
-	<div class="col-sm-3"></div>
+	<div class="col-sm-3 text-right">
+		{% if input.get.text('q') %}
+			<a href="{{ input.url() }}" class="btn btn-warning">
+				<i class="fa fa-times"></i> Clear Search
+			</a>
+		{% endif %}
+	</div>
 
 	<div class="col-sm-6">
 		<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit">
@@ -22,10 +28,5 @@
 				</span>
 			</div>
 		</form>
-		{% if input.get.text('q') %}
-			<a href="{{ input.url() }}" class="btn btn-warning mt-2">
-				<i class="fa fa-times"></i> Clear Search
-			</a>
-		{% endif %}
 	</div>
 </div>
