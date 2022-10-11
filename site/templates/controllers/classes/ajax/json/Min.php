@@ -19,107 +19,14 @@ use Dplus\CodeValidators\Min\Upcx as UpcxValidator;
 use Controllers\Ajax\Json\AbstractJsonController;
 
 class Min extends AbstractJsonController {
-
-	public static function validateStockCode($data) {
-		self::sanitizeParametersShort($data, ['code|text', 'jqv|bool']);
-		$validate = self::validator();
-
-		if ($validate->stockcode($data->code) === false) {
-			return $data->jqv ? "Tariff Code $code not found" : false;
-		}
-		return true;
-	}
-
-	public static function validateSpecialItemCode($data) {
-		self::sanitizeParametersShort($data, ['code|text', 'jqv|bool']);
-		$validate = self::validator();
-
-		if ($validate->specialitem($data->code) === false) {
-			return $data->jqv ? "Special Item Code $code not found" : false;
-		}
-		return true;
-	}
-
-	public static function validateTariffCode($data) {
-		$fields = ['code|text', 'tariffcode|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		$code = $data->code ? $data->code : $data->tariffcode;
-
-		if ($validate->tariffcode($code) === false) {
-			return "Tariff Code $code not found";
-		}
-		return true;
-	}
-
-	public static function getTariffCode($data) {
-		$fields = ['code|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		if ($validate->tariffcode($data->code) === false) {
-			return false;
-		}
-		$tariff = TariffCodeQuery::create()->findOneByCode($data->code);
-		return array(
-			'code'        => $data->code,
-			'number'      => $tariff->number,
-			'rate'        => $tariff->duty_rate,
-			'description' => $tariff->description
-		);
-	}
-
 	public static function validateCountryCode($data) {
-		$fields = ['code|text', 'countrycode|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		$code = $data->code ? $data->code : $data->tariffcode;
-
-		if ($validate->countrycode($code) === false) {
-			return "Country Code $code not found";
-		}
-		return true;
+		$data->code = $data->code ? $data->code : $data->countrycode;
+		return Mar::validateCocomCode($data);
 	}
 
 	public static function getCountryCode($data) {
-		$fields = ['code|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-
-		if ($validate->countrycode($data->code) === false) {
-			return false;
-		}
-		$c = CountryCodeQuery::create()->findOneByCode($data->code);
-		return array(
-			'code'        => $data->code,
-			'description' => $c->description
-		);
-	}
-
-	public static function validateMsdsCode($data) {
-		$fields = ['code|text', 'msdscode|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		$code = $data->code ? $data->code : $data->msdscode;
-
-		if ($validate->msdscode($code) === false) {
-			return "MSDS Code $code not found";
-		}
-		return true;
-	}
-
-	public static function getMsdsCode($data) {
-		$fields = ['code|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-
-		if ($validate->msdscode($data->code) === false) {
-			return false;
-		}
-		$msds = self::pw('modules')->get('CodeTablesMsdsm')->get_code($data->code);
-		return array(
-			'code'        => $data->code,
-			'description' => $msds->description
-		);
+		$data->code = $data->code ? $data->code : $data->countrycode;
+		return Mar::getCocomCode($data);
 	}
 
 	public static function validateItemid($data) {
@@ -167,37 +74,21 @@ class Min extends AbstractJsonController {
 		return $response;
 	}
 
-	public static function validateInvGroupCode($data) {
-		$fields = ['code|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-
-		if ($validate->itemgroup($data->code) === false) {
-			return "Inv Group Code $data->code not found";
-		}
-		return true;
-	}
-
 	public static function validateWarehouseid($data) {
-		$fields = ['whseID|text', 'id|text', 'jqv|bool'];
+		$fields = ['whseID|string', 'id|string', 'jqv|bool'];
 		if (empty($data->whseID) === false) {
 			$data->id = $data->whseID;
 		}
 		self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
 
 		if ($data->id == '**') {
 			return true;
 		}
-
-		if ($validate->whseid($data->id) === false) {
-			return $data->jqv ? "Warehouse ID $data->id not found" : false;
-		}
-		return true;
+		return self::validateIwhmCode($data);
 	}
 
 	public static function validateWarehouseBinid($data) {
-		$fields = ['whseID|text', 'binID|text', 'jqv|bool'];
+		$fields = ['whseID|string', 'binID|string', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
@@ -333,7 +224,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateItmWhse($data) {
-		$fields = ['itemID|text', 'whseID|text', 'new|bool', 'jqv|bool'];
+		$fields = ['itemID|text', 'whseID|string', 'new|bool', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 		$exists = $validate->itmWhse($data->itemID, $data->whseID);
@@ -416,21 +307,6 @@ class Min extends AbstractJsonController {
 		return $available === false ? "Short Item $data->shortitemID already exists" : 'true';
 	}
 
-	public static function getUom($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-		$umm = self::pw('modules')->get('CodeTablesUmm');
-		if ($umm->code_exists($data->code) === false) {
-			return false;
-		}
-		$uom = $umm->get_code($data->code);
-		return [
-			'code'        => $uom->code,
-			'description' => $uom->description,
-			'conversion'  => $uom->conversion
-		];
-	}
-
 	public static function validateAddm($data) {
 		$fields = ['itemID|text', 'addonID|text', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -470,7 +346,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function getItmpUser($data) {
-		$fields = ['userID|text', 'code|text'];
+		$fields = ['userID|text', 'code|line'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$manager = MinMaintenance\Itmp::instance();
@@ -551,7 +427,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateIwhmCode($data) {
-		$fields = ['id|text'];
+		$fields = ['id|string'];
 		self::sanitizeParametersShort($data, $fields);
 		if (empty($data->id) === false) {
 			$data->code = $data->id;
@@ -562,7 +438,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function getIwhmCode($data) {
-		$fields = ['id|text'];
+		$fields = ['id|string'];
 		self::sanitizeParametersShort($data, $fields);
 		if (empty($data->id) === false) {
 			$data->code = $data->id;
@@ -573,11 +449,13 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateMsdsmCode($data) {
+		$data->code = $data->code ? $data->code : $data->msdscode;
 		$table = Codes\Min\Msdsm::getInstance();
 		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getMsdsmCode($data) {
+		$data->code = $data->code ? $data->code : $data->msdscode;
 		$table = Codes\Min\Msdsm::getInstance();
 		return self::getCodeTableCode($data, $table);
 	}
@@ -603,11 +481,13 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateTarmCode($data) {
+		$data->code = $data->code ? $data->code : $data->tariffcode;
 		$table = Codes\Min\Tarm::getInstance();
 		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getTarmCode($data) {
+		$data->code = $data->code ? $data->code : $data->tariffcode;
 		$table = Codes\Min\Tarm::getInstance();
 		return self::getCodeTableCode($data, $table);
 	}

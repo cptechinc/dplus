@@ -1,17 +1,13 @@
 <?php namespace Controllers\Ajax\Json;
 // Dplus Model
-use PurchaseOrderQuery, PurchaseOrder;
-use PurchaseOrderDetailQuery, PurchaseOrderDetail;
-// ProcessWire Classes, Modules
-use ProcessWire\Module, ProcessWire\ProcessWire;
+use  PurchaseOrder;
+use PurchaseOrderDetailQuery;
 // Dplus Codes
 use Dplus\Codes\Mpo\Cnfm;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Mpo extends Controller {
+class Mpo extends AbstractJsonController {
 	public static function test() {
 		return 'test';
 	}
@@ -69,35 +65,12 @@ class Mpo extends Controller {
 	}
 
 	public static function validateCnfmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-		$validate = new MpoValidator();
-		$exists = $validate->cnfm($data->code);
-
-		if (boolval($data->jqv) === false) {
-			if (boolval($data->new)) {
-				return $exists === false;
-			}
-			return $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === true ? "Code $data->code already exists" : true;
-		}
-		return $exists === false ? "Code $data->code not found" : true;
+		$table = Cnfm::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getCnfmCode($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
-		$cnfm = Cnfm::getInstance();
-		if ($cnfm->exists($data->code) === false) {
-			return false;
-		}
-		$code = $cnfm->code($data->code);
-		$response = [
-			'code'        => $code->code,
-			'description' => $code->description
-		];
-		return $response;
+		$table = Cnfm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 }

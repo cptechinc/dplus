@@ -6,7 +6,7 @@ use PurchaseOrderQuery, PurchaseOrder;
 use PhoneBookQuery, PhoneBook;
 use VendorQuery, Vendor;
 // ProcessWire Mlasses, Modules
-use ProcessWire\Module, ProcessWire\ProcessWire;
+use ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Map       as MapValidator;
 use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
@@ -14,10 +14,8 @@ use Dplus\CodeValidators\Map\Mxrfe as MxrfeValidator;
 // Dplus Codes
 use Dplus\Codes;
 use Dplus\Configs;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Map extends Controller {
+class Map extends AbstractJsonController {
 	public static function test() {
 		return 'test';
 	}
@@ -91,6 +89,13 @@ class Map extends Controller {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 		return $validate->vendor_has_xref_itemid($data->itemID, $data->vendorID);
+	}
+
+	public static function validateVxmVendorExists($data) {
+		$fields = ['vendorID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$vxm = self::pw('modules')->get('XrefVxm');
+		return $vxm->vendorExists($data->vendorID);
 	}
 
 	public static function validateVendoritemMatchesItemid($data) {
@@ -280,72 +285,22 @@ class Map extends Controller {
 	}
 
 	public static function validateVtmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$vtm = Codes\Map\Vtm::getInstance();
-		$exists = $vtm->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Vendor Type $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Vendor Type $data->code not found";
-		}
-		return true;
+		$table = Codes\Map\Vtm::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getVtmCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$vtm = Codes\Map\Vtm::getInstance();
-
-		if ($vtm->exists($data->code) === false) {
-			return false;
-		}
-
-		$code = $vtm->code($data->code);
-		return $vtm->codeJson($code);
+		$table = Codes\Map\Vtm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateBumCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$bum = Codes\Map\Bum::getInstance();
-		$exists = $bum->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "AP Buyer $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "AP Buyer $data->code not found";
-		}
-		return true;
+		$table = Codes\Map\Bum::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getBumCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$bum = Codes\Map\Bum::getInstance();
-
-		if ($bum->exists($data->code) === false) {
-			return false;
-		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		$table = Codes\Map\Bum::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 }
