@@ -59,7 +59,7 @@ class Lookup extends Controller {
 	 */
 	public static function vendorContacts($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		self::sanitizeParametersShort($data, ['vendorID|text']);
+		self::sanitizeParametersShort($data, ['vendorID|string']);
 		self::pw('page')->headline = "Vendor Contacts";
 		$filter = new PhoneBookFilter();
 		$filter->init();
@@ -75,7 +75,7 @@ class Lookup extends Controller {
 	 */
 	public static function vendorShipfroms($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		self::sanitizeParametersShort($data, ['vendorID|text']);
+		self::sanitizeParametersShort($data, ['vendorID|string']);
 		self::pw('page')->headline = "Vendor Ship-Froms";
 		$filter = new Filters\Map\VendorShipfrom();
 		$filter->init();

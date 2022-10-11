@@ -21,7 +21,7 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function validateVendorid($data) {
-		$fields = ['vendorID|text', 'jqv|bool'];
+		$fields = ['vendorID|string', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MapValidator();
 
@@ -32,7 +32,7 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function validateVendorShipfromid($data) {
-		$fields = ['vendorID|text', 'shipfromID|text', 'jqv|bool'];
+		$fields = ['vendorID|string', 'shipfromID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MapValidator();
 
@@ -44,7 +44,7 @@ class Map extends AbstractJsonController {
 
 	public static function validateVxm($data) {
 		$exists = false;
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'jqv|bool', 'new|bool'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text', 'jqv|bool', 'new|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 		$exists = $validate->exists($data->vendorID, $data->vendoritemID, $data->itemID);
@@ -65,7 +65,7 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function validateVxmCanBePrimary($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'jqv|bool'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 		$vxm = self::pw('modules')->get('XrefVxm');
@@ -85,14 +85,14 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function validateVxmExistsForItemid($data) {
-		$fields = ['vendorID|text', 'itemID|text'];
+		$fields = ['vendorID|string', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 		return $validate->vendor_has_xref_itemid($data->itemID, $data->vendorID);
 	}
 
 	public static function validateVxmVendorExists($data) {
-		$fields = ['vendorID|text'];
+		$fields = ['vendorID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$vxm = self::pw('modules')->get('XrefVxm');
 		return $vxm->vendorExists($data->vendorID);
@@ -106,7 +106,7 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function getVxm($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 
@@ -135,7 +135,7 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function getVxmByItemid($data) {
-		$fields = ['vendorID|text', 'itemID|text'];
+		$fields = ['vendorID|string', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 
@@ -158,7 +158,7 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function validateVxmUpdateItmCost($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'ordercode|text'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text', 'ordercode|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$response = ['allow' => false, 'confirm' => false];
 		$validate = new VxmValidator();
@@ -203,7 +203,7 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function getVendor($data) {
-		$fields = ['vendorID|text'];
+		$fields = ['vendorID|string'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$q = new VendorQuery();
 		$q->filterByVendorid($data->vendorID);
@@ -226,7 +226,7 @@ class Map extends AbstractJsonController {
 	}
 
 	public static function getVendorContact($data) {
-		$fields = ['vendorID|text', 'shipfromID|text', 'contact|text'];
+		$fields = ['vendorID|string', 'shipfromID|text', 'contact|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$q = new PhoneBookQuery();
 		$q->filterByVendorid($data->vendorID);

@@ -179,7 +179,7 @@ class PrintGs1 extends Base {
 	}
 
 	static private function scanResultDisplay($data, array $json) {
-		self::sanitizeParametersShort($data, ['scan|text', 'itemID|text', 'vendorID|text']);
+		self::sanitizeParametersShort($data, ['scan|text', 'itemID|text', 'vendorID|string']);
 		self::initHooks();
 
 		if (array_key_exists('lots', $json)) {

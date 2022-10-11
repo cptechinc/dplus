@@ -20,7 +20,7 @@ class Vendor extends InvoiceList {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['vendorID|text'];
+		$fields = ['vendorID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = new Validators\Map();
 

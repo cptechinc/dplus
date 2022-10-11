@@ -20,7 +20,7 @@ class Vxm extends AbstractController{
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'q|text', 'action|text'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
@@ -46,7 +46,7 @@ class Vxm extends AbstractController{
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'vendorID|text', 'vendoritemID|text', 'itemID|text'];
+		$fields = ['action|text', 'vendorID|string', 'vendoritemID|text', 'itemID|text'];
 		self::sanitizeParameters($data, $fields);
 		$input  = self::pw('input');
 		$vxm    = self::vxmMaster();
@@ -74,7 +74,7 @@ class Vxm extends AbstractController{
 	}
 
 	private static function xref($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'action|text'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if ($data->action) {
@@ -122,7 +122,7 @@ class Vxm extends AbstractController{
 	}
 
 	private static function vendorXrefs($data) {
-		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
+		$data = self::sanitizeParametersShort($data, ['vendorID|string']);
 		$page   = self::pw('page');
 		$vxm    = self::vxmMaster();
 		$vxm->recordlocker->deleteLock();

@@ -18,7 +18,7 @@ class Costing extends Subfunction {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['vendorID|text', 'itemID|text', 'q|text', 'refresh|bool'];
+		$fields = ['vendorID|string', 'itemID|text', 'q|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateVendorid($data->vendorID) === false) {
@@ -86,7 +86,7 @@ class Costing extends Subfunction {
 	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['vendorID|text', 'itemID|text']);
+		$data    = self::sanitizeParametersShort($data, ['vendorID|string', 'itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$session = self::pw('session');
@@ -142,7 +142,7 @@ class Costing extends Subfunction {
 	Data Requests
 ============================================================= */
 	private static function requestJson($vars) {
-		$fields = ['vendorID|text', 'itemID|text', 'sessionID|text'];
+		$fields = ['vendorID|string', 'itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['VICOST', "VENDID=$vars->vendorID", "ITEMID=$vars->itemID"];

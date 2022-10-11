@@ -54,8 +54,8 @@
 			{% for customer in customers %}
 				<tr data-custid="{{ customer.id }}">
 					<td scope="row">
-						<a href="{{ page.custUrl(customer.id) }}" class="link">
-							<strong>{{ customer.id }}</strong>
+						<a href="{{ page.custUrl(customer.id) }}" class="link text-monospace">
+							<strong>{{ customer.id|replace({' ': '&nbsp;'})|raw }}</strong>
 						</a>
 					</td>
 					<td>{{ customer.name }}</td>

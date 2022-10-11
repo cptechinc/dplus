@@ -30,7 +30,7 @@ class Edit extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$data = self::sanitizeParametersShort($data, ['action|text', 'vendorID|text', 'ponbr|text']);
+		$data = self::sanitizeParametersShort($data, ['action|text', 'vendorID|string', 'ponbr|text']);
 		$data->ponbr = PurchaseOrder::get_paddedponumber($data->ponbr);
 
 		if (empty($data->action) === true) {
