@@ -23,7 +23,7 @@ class Customer extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		self::sanitizeParametersShort($data, ['custID|text']);
+		self::sanitizeParametersShort($data, ['custID|string']);
 
 		if (empty($data->custID)) {
 			self::pw('page')->js .= self::pw('config')->twig->render('quotes/customer/customer-form.js.twig');

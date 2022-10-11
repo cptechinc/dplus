@@ -172,7 +172,7 @@ abstract class Base extends Controller {
 	}
 
 	public static function validateCustidPermission($data) {
-		self::sanitizeParametersShort($data, ['custID|text']);
+		self::sanitizeParametersShort($data, ['custID|string']);
 		$user = self::pw('user');
 
 		if (self::validateCustid($data->custID) === false) {

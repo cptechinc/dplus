@@ -82,7 +82,7 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function validateCustid($data) {
-		$fields = ['custID|text', 'new|bool', 'jqv|bool'];
+		$fields = ['custID|string', 'new|bool', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MarValidator();
 		$exists = $validate->custid($data->custID);
@@ -103,7 +103,7 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function getCustomer($data) {
-		self::sanitizeParametersShort($data, ['custID|text']);
+		self::sanitizeParametersShort($data, ['custID|string']);
 		$validate = new MarValidator();
 
 		if ($validate->custid($data->custID) === false) {
@@ -117,7 +117,7 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function getCustomerShipto($data) {
-		self::sanitizeParametersShort($data, ['custID|text']);
+		self::sanitizeParametersShort($data, ['custID|string']);
 		$validate = new MarValidator();
 
 		if ($validate->custShiptoid($data->custID, $data->shiptoID) === false) {

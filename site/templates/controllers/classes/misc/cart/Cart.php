@@ -18,7 +18,7 @@ class Cart extends Controller {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'custID|text', 'action|text'];
+		$fields = ['itemID|text', 'custID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -38,7 +38,7 @@ class Cart extends Controller {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'custID|text'];
+		$fields = ['action|text', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$cart = self::getCart();
 		$cart->processInput(self::pw('input'));

@@ -95,7 +95,7 @@ class Mso extends AbstractJsonController {
 	}
 
 	public static function validateCxm($data) {
-		$fields = ['custID|text', 'custitemID|text', 'new|bool', 'jqv|bool'];
+		$fields = ['custID|string', 'custitemID|text', 'new|bool', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new CxmValidator();
 		$exists = $validate->exists($data->custID, $data->custitemID);
@@ -115,7 +115,7 @@ class Mso extends AbstractJsonController {
 	}
 
 	public static function validateCxmXref(WireData $data) {
-		$fields = ['custID|text', 'custitemID|text', 'new|bool', 'jqv|bool'];
+		$fields = ['custID|string', 'custitemID|text', 'new|bool', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$cxm = Xrefs\Cxm::instance();
@@ -137,7 +137,7 @@ class Mso extends AbstractJsonController {
 	}
 
 	public static function getPricing($data) {
-		$fields = ['itemID|text', 'custID|text'];
+		$fields = ['itemID|text', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$pricingM = self::pw('modules')->get('ItemPricing');
 		$pricingM->request_search($data->itemID, $data->custID);

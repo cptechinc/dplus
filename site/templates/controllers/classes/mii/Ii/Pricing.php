@@ -12,7 +12,7 @@ class Pricing extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'refresh|bool', 'custID|text'];
+		$fields = ['itemID|text', 'refresh|bool', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidPermission($data) === false) {
@@ -50,7 +50,7 @@ class Pricing extends Base {
 	Data Requests
 ============================================================= */
 	private static function requestJson($vars) {
-		$fields = ['itemID|text', 'custID|text', 'sessionID|text'];
+		$fields = ['itemID|text', 'custID|string', 'sessionID|text'];
 		$vars = self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['IIPRICE', "ITEMID=$vars->itemID"];
@@ -82,7 +82,7 @@ class Pricing extends Base {
 	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'custID|text']);
+		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'custID|string']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$session = self::pw('session');

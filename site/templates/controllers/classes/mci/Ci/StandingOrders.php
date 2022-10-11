@@ -11,7 +11,7 @@ class StandingOrders extends Subfunction {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'refresh|bool'];
+		$fields = ['custID|string', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
@@ -38,7 +38,7 @@ class StandingOrders extends Subfunction {
 	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['custID|text']);
+		$data    = self::sanitizeParametersShort($data, ['custID|string']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$session = self::pw('session');
@@ -97,7 +97,7 @@ class StandingOrders extends Subfunction {
 	Data Requests
 ============================================================= */
 	private static function requestJson($vars) {
-		$fields = ['custID|text', 'shiptoID|text', 'sessionID|text'];
+		$fields = ['custID|string', 'shiptoID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['CISTANDORDR', "CUSTID=$vars->custID", "SHIPID=$vars->shiptoID"];

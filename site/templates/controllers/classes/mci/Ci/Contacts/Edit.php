@@ -25,7 +25,7 @@ class Edit extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'shiptoID|text', 'q|text'];
+		$fields = ['custID|string', 'shiptoID|text', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
@@ -41,7 +41,7 @@ class Edit extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['custID|text', 'shiptoID|text', 'contactID|text', 'name|text', 'action|text'];
+		$fields = ['custID|string', 'shiptoID|text', 'contactID|text', 'name|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url = self::ciContactEditUrl($data->custID, $data->shiptoID, $data->contactID);
 

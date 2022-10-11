@@ -43,7 +43,7 @@ class Cxm extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'custID|text', 'custitemID|text', 'action|text'];
+		$fields = ['itemID|text', 'custID|string', 'custitemID|text', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 
 		$cxm = CxmController::getCxm();

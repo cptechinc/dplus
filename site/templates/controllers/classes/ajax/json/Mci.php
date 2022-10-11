@@ -12,7 +12,7 @@ class Mci extends Controller {
 	}
 
 	public static function validateCustid($data) {
-		$fields = ['custID|text', 'jqv|bool'];
+		$fields = ['custID|string', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 

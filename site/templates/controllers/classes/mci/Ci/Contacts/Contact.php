@@ -23,7 +23,7 @@ class Contact extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'shiptoID|text', 'q|text'];
+		$fields = ['custID|string', 'shiptoID|text', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
