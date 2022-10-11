@@ -12,19 +12,19 @@
 
 		{% if input.countSegments() %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.ciUrl(values.text('custID')) }}">
-					{{ values.text('custID') }}
+				<a href="{{ page.ciUrl(values.string('custID')) }}">
+					{{ values.string('custID') }}
 				</a>
 			</li>
 			{% if values.offsetExists('shiptoID') and values.text('shiptoID') != '' %}
 				<li class="breadcrumb-item">
-					<a href="{{ page.ciShiptoUrl(values.text('custID')) }}">
+					<a href="{{ page.ciShiptoUrl(values.string('custID')) }}">
 						Ship-tos
 					</a>
 				</li>
 				{% if input.lastSegment() != 'ship-tos' %}
 					<li class="breadcrumb-item">
-						<a href="{{ page.ciShiptoUrl(values.text('custID'), values.text('shiptoID')) }}">
+						<a href="{{ page.ciShiptoUrl(values.string('custID'), values.text('shiptoID')) }}">
 							{{ values.text('shiptoID') }}
 						</a>
 					</li>
@@ -36,7 +36,7 @@
 				{% endif %}
 			{% elseif (input.lastSegment == 'contact') %}
 				<li class="breadcrumb-item">
-					<a href="{{ page.ciContactsUrl(values.text('custID')) }}">
+					<a href="{{ page.ciContactsUrl(values.string('custID')) }}">
 						Contacts
 					</a>
 				</li>
@@ -49,7 +49,7 @@
 				</li>
 			{% endif %}
 		{% else %}
-			<li class="breadcrumb-item active" aria-current="page">{{ values.text('custID') }}</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ values.string('custID') }}</li>
 		{% endif %}
 	{% else %}
 		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>

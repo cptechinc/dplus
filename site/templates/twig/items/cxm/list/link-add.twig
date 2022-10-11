@@ -1,5 +1,5 @@
 {% if input.get.offsetExists('custID') %}
-	<a href="{{ page.xrefNewUrl(input.get.text('custID')) }}" class="btn btn-sm btn-light">
+	<a href="{{ page.xrefNewUrl(input.get.string('custID')) }}" class="btn btn-sm btn-light">
 		<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 	</a>
 {% else %}

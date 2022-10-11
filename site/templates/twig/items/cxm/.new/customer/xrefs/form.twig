@@ -1,5 +1,5 @@
 <form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit">
-	<input type="hidden" name="custID" value="{{ input.get.text('custID') }}">
+	<input type="hidden" name="custID" value="{{ input.get.string('custID') }}">
 	<div class="input-group">
 		<input class="form-control inline" type="text" name="q" value="{{ input.get.text('q') }}" id="itemID" placeholder="Search By Cust Item ID, Item ID" autofocus>
 		<span class="input-group-btn">
