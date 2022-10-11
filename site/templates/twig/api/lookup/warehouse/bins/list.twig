@@ -1,0 +1,9 @@
+{% set whse = page.wire('modules').get('CodeTables').getCodeTable('min', 'iwhm').whse(input.get.string('whseID')) %}
+
+{% if whse.are_binsranged() %}
+	{% include 'api/lookup/warehouse/bins/list/ranged.twig' %}
+{% endif %}
+
+{% if whse.are_binsranged() == false %}
+	{% include 'api/lookup/warehouse/bins/list/list.twig' %}
+{% endif %}

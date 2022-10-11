@@ -12,8 +12,8 @@
 		{% if pitches|length == 0 %}
 			<tr>
 				<td>
-					<a href="#" class="link printer-link" data-id="{{ printer.id }}" data-pitch="" data-printer="{{ printer.id }}">
-						{{ printer.id }}
+					<a href="#" class="link printer-link text-monospace" data-id="{{ printer.id }}" data-pitch="" data-printer="{{ printer.id }}">
+						{{ printer.id|replace({' ': '&nbsp;'})|raw }}
 					</a>
 				</td>
 				<td></td>

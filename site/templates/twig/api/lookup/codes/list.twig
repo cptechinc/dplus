@@ -8,8 +8,8 @@
 	{% for code in results %}
 		<tr>
 			<td>
-				<a href="#" class="link code-link" data-code="{{ code.code }}">
-					{{ code.code }}
+				<a href="#" class="link code-link text-monospace" data-code="{{ code.code }}">
+					{{ code.code|replace({' ': '&nbsp;'})|raw }}
 				</a>
 			</td>
 			<td>{{ code.description }}</td>

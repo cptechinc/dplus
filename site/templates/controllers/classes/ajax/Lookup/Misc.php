@@ -4,19 +4,6 @@ use Dplus\Filters;
 
 class Misc extends Lookup {
 	/**
-	 * Search State Codes
-	 * @param  object $data
-	 *                     q        Search Term
-	 * @return void
-	 */
-	public static function stateCodes($data) {
-		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		self::pw('page')->headline = "State Codes";
-		$filter = new Filters\Misc\StateCode();
-		return self::filterResults($filter, $data);
-	}
-
-	/**
 	 * Search Country Codes
 	 * @param  object $data
 	 *                     q   Search Term
@@ -26,6 +13,19 @@ class Misc extends Lookup {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		self::pw('page')->headline = "Country Codes";
 		$filter = new Filters\Misc\CountryCode();
+		return self::filterResults($filter, $data);
+	}
+
+	/**
+	 * Search State Codes
+	 * @param  object $data
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function stateCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "State Codes";
+		$filter = new Filters\Misc\StateCode();
 		return self::filterResults($filter, $data);
 	}
 }

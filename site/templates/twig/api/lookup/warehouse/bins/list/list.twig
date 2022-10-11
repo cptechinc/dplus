@@ -3,7 +3,10 @@
 		<a href="#" class="list-group-item bin-link" data-binid="{{ bin.from }}">
 			<div class="row">
 				<div class="col-6">
-					<h6 class="list-group-item-heading">{{ bin.from }}</h6>
+					<h6 class="list-group-item-heading text-monospace">{{ bin.from|replace({' ': '&nbsp;'})|raw }}</h6>
+				</div>
+				<div class="col-6">
+					{{ bin.description }}
 				</div>
 			</div>
 		</a>

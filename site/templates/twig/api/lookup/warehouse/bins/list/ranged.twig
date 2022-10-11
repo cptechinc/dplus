@@ -7,8 +7,8 @@
 	</thead>
 	{% for bin in results %}
 		<tr>
-			<td>{{ bin.from }}</td>
-			<td>{{ bin.through }}</td>
+			<td class="text-monospace">{{ bin.from|replace({' ': '&nbsp;'})|raw }}</td>
+			<td class="text-monospace">{{ bin.through|replace({' ': '&nbsp;'})|raw }}</td>
 		</tr>
 	{% endfor %}
 </table>
