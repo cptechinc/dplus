@@ -5,6 +5,7 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefManufacturer;
+use Vendor;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD, ProcessWire\WireInput;
 // Dplus Filters
@@ -97,7 +98,8 @@ class Mxrfe extends AbstractController {
 			// $page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
 			$filter->search($data->q);
 		}
-		$filter->sortby($page);
+		$filter->sort(self::pw('input')->get);
+		$filter->query->orderBy(Vendor::aliasproperty('id'));
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$page->js .= self::pw('config')->twig->render('items/mxrfe/search/vendor/js.twig');
 		$html = self::displayListMnfrs($data, $vendors);

@@ -5,6 +5,7 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
 use ItemXrefCustomer;
+use Customer;
 // Dplus Filters
 use Dplus\Filters;
 use Dplus\Filters\Mso\Cxm as CxmFilter;
@@ -122,7 +123,8 @@ class Cxm extends AbstractController {
 			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
 			$sortFilter->saveToSession('customer', 'cxm');
 		}
-		$filter->sortby($page);
+		$filter->sort(self::pw('input')->get);
+		$filter->query->orderBy(Customer::aliasproperty('id'));
 		$customers = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
 		$page->js .= self::pw('config')->twig->render('items/cxm/.new/customers/.js.twig');
