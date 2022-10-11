@@ -34,7 +34,9 @@
 
 {% for code in codes %}
 	{% block code_columns %}
-		<td>{{ code.code }}</td>
+		<td>
+			<span class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+		</td>
 		<td>{{ code.iso2 }}</td>
 		<td>{{ code.numeric }}</td>
 		<td>{{ code.custom }}</td>

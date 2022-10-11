@@ -28,7 +28,7 @@
 	{% block code_row %}
 		<div class="row align-items-center">
 			<div class="col-sm-2">
-				{{ code.code }}
+				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
 			<div class="col-sm-4">
 				{{ code.description }}

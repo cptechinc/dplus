@@ -32,7 +32,9 @@
 {% for code in codes %}
 	{% block code_row %}
 		<tr>
-			<td>{{ code.code }}</td>
+			<td>
+				<span class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+			</td>
 			<td>
 				{% if code.text1 != '' %}
 					{% set note_lines = [code.text1, code.text2, code.text3, code.text4] %}

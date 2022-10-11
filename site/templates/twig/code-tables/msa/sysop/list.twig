@@ -30,7 +30,7 @@
 			{# data-code attribute and class code is for the highlight on close #}
 			<tr data-code="{{ sysop.getRecordlockerKey(code) }}" class="code {{ (response.key == (sysop.getRecordlockerKey(code)) and response.hasSuccess() ) ? 'bg-success text-white' : ''}}">
 				<td>{{ code.system }}</td>
-				<td>{{ code.code }}</td>
+				<td>{{ code.code|replace({' ': '&nbsp;'})|raw }}</td>
 				<td>{{ code.description }}</td>
 				<td>{{ code.validate|yesorno|capitalize }}</td>
 				<td>{{ code.force|yesorno|capitalize }}</td>

@@ -37,7 +37,9 @@
 {% for code in codes %}
 	{% block code_row %}
 		<tr>
-			<td>{{ code.id }}</td>
+			<td>
+				<span class="text-monospace">{{ code.id|replace({' ': '&nbsp;'})|raw }}</span>
+			</td>
 			<td>{{ code.name }}</td>
 			<td>{{ code.address }}</td>
 			<td>{{ code.address2 }}</td>

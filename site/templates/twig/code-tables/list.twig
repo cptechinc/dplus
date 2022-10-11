@@ -110,8 +110,8 @@
 		<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key is same as(code.code) and response.hasSuccess()) ? 'bg-success text-white' : ''}}">
 			{% block code_row %}
 				<div class="row align-items-center">
-					<div class="col-3 col-sm-3">
-						{{ code.code }}
+					<div class="col-3 col-sm-3 font-monospace">
+						{{ code.code|replace({' ': '&nbsp;'})|raw }}
 					</div>
 					<div class="col-5 col-sm-6">
 						{{ code.description }}
