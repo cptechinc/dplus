@@ -129,6 +129,17 @@ class XrefMxrfe extends WireData implements Module {
 	}
 
 	/**
+	 * Return if Vendor Exists
+	 * @param  string $mnfrID
+	 * @return bool
+	 */
+	public function mnfrExists($mnfrID) {
+		$q = $this->query();
+		$q->filterByVendorid($mnfrID);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return New Xref with defaults
 	 * @return ItemXrefManufacturer
 	 */
@@ -162,6 +173,8 @@ class XrefMxrfe extends WireData implements Module {
 		}
 		return $record;
 	}
+
+
 
 /* =============================================================
 	CRUD Processing Functions

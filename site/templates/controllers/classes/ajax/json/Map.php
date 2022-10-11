@@ -191,6 +191,13 @@ class Map extends AbstractJsonController {
 		return true;
 	}
 
+	public static function validateMxrfeManufacturerExists($data) {
+		$fields = ['mnfrID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$mxrfe = self::pw('modules')->get('XrefMxrfe');
+		return $mxrfe->mnfrExists($data->mnfrID);
+	}
+
 	public static function validateMxrfeNew($data) {
 		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);

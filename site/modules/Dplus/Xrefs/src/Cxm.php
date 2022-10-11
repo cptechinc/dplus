@@ -265,6 +265,17 @@ class Cxm extends AbstractXrefManager {
 		return $q->find()->toArray();
 	}
 
+	/**
+	 * Return if Cust ID has an X-Ref
+	 * @param  string $custID     Cust ID
+	 * @return bool
+	 */
+	public function custidExists($custID) {
+		$q = $this->query();
+		$q->filterByCustid($custID);
+		return boolval($q->count());
+	}
+
 /* =============================================================
 	CRUD Processing
 ============================================================= */

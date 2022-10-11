@@ -122,8 +122,12 @@
 					['GET', 'primary-ordercode/', Json\Map::class, 'validateVxmCanBePrimary'],
 					['GET', 'update-itm-cost/', Json\Map::class, 'validateVxmUpdateItmCost'],
 				],
-				['GET', 'mxrfe/', Json\Map::class, 'validateMxrfe'],
-				['GET', 'mxrfe/new/', Json\Map::class, 'validateMxrfeNew'],
+				'mxrfe' => [
+					['GET', '', Json\Map::class, 'validateMxrfe'],
+					['GET', 'vendorid/', Json\Map::class, 'validateMxrfeManufacturerExists'],
+					['GET', 'new/', Json\Map::class, 'validateMxrfeNew'],
+				]
+				
 			],
 			'vtm' => [
 				['GET', 'code/', Json\Map::class, 'getVtmCode'],
@@ -286,10 +290,13 @@
 			['GET', 'rgarc/code/', Json\Mso::class, 'getRgarcCode'],
 			['GET', 'rgasc/code/', Json\Mso::class, 'getRgascCode'],
 			'validate' => [
+				'cxm' => [
+					['GET', '', Json\Mso::class, 'validateCxmXref'],
+					['GET', 'custid/', Json\Mso::class, 'validateCxmCustomerExists'],
+					['GET', 'xref/', Json\Mso::class, 'validateCxmXref'],
+				],
 				['GET', 'freight-code/', Json\Mso::class, 'validateMfcmCode'],
 				['GET', 'price-discount/', Json\Mso::class, 'validatePriceDiscount'],
-				['GET', 'cxm/', Json\Mso::class, 'validateCxmXref'],
-				['GET', 'cxm/xref/', Json\Mso::class, 'validateCxmXref'],
 				'lsm' => [
 					['GET', 'code/', Json\Mso::class, 'validateLsmCode'],
 				],

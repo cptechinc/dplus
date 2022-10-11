@@ -94,26 +94,6 @@ class Mso extends AbstractJsonController {
 		return $response;
 	}
 
-	public static function validateCxm($data) {
-		$fields = ['custID|string', 'custitemID|text', 'new|bool', 'jqv|bool'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = new CxmValidator();
-		$exists = $validate->exists($data->custID, $data->custitemID);
-
-		if ($data->new) {
-			$valid = $exists === false;
-
-			if ($valid === false && $data->jqv) {
-				return "X-ref $data->custID-$data->custitemID exists";
-			}
-			return $valid;
-		}
-		if ($exists === false && $data->jqv) {
-			return "X-ref $data->custID-$data->custitemID not found";
-		}
-		return $exists;
-	}
-
 	public static function validateCxmXref(WireData $data) {
 		$fields = ['custID|string', 'custitemID|text', 'new|bool', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -134,6 +114,15 @@ class Mso extends AbstractJsonController {
 			return "$description not found";
 		}
 		return true;
+	}
+
+	public static function validateCxmCustomerExists($data) {
+		$fields = ['custID|string', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$cxm = Xrefs\Cxm::instance();
+		$exists = $cxm->custidExists($data->custID);
+
+		return $exists;
 	}
 
 	public static function getPricing($data) {

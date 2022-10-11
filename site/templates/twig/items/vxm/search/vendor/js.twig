@@ -70,6 +70,7 @@ $(function() {
 		var query = form.serialize();
 		var action = form.attr('action');
 		var search = form.find('input[name=q]').val();
+		search = search.length ? search : 'Vendors';
 		var url = action + '?' + query;
 		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
 		form.closest('.modal').find('.modal-body').loadin(url, function() {});
