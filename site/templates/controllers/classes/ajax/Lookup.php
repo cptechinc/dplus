@@ -132,6 +132,7 @@ class Lookup extends Controller {
 		self::pw('page')->headline = "Vendors";;
 		$filter = new VendorFilter();
 		$filter->init();
+		$data->addSortColumns = [\Vendor::aliasproperty('id')];
 		return self::filterResults($filter, $data);
 	}
 
@@ -400,7 +401,12 @@ class Lookup extends Controller {
 			$filter->search($data->q);
 			$page->headline = "Searching for '$data->q'";
 		}
-		$filter->sortby($page);
+		$filter->sort(self::pw('input')->get);
+	
+		if ($data->has('addSortColumns')) {
+			$filter->query->orderBy($data->addSortColumns[0]);
+		}
+		
 		$path = $input->urlSegment(count($input->urlSegments()));
 		$path = rtrim(str_replace($page->url, '', self::pw('input')->url()), '/');
 		$path = preg_replace('/page\d+/', '', $path);
@@ -410,6 +416,7 @@ class Lookup extends Controller {
 	private static function filterResultsTwig($path = 'codes', BaseQuery $query, $q = '') {
 		$input = self::pw('input');
 		$results = $query->paginate($input->pageNum, 10);
+		$query->find();
 		$twigpath = "api/lookup/codes/search.twig";
 
 		if (self::pw('config')->twigloader->exists("api/lookup/$path/search.twig")) {
