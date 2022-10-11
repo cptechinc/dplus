@@ -25,11 +25,11 @@ class AbstractJsonController extends Controller{
 		}
 
 		if (boolval($data->new) === true) {
-			return $exists === false ? true : "$codedesc $data->code already exists";
+			return $exists === false ? true : "$codedesc '$data->code' already exists";
 		}
 
 		if ($exists === false) {
-			return "$codedesc $data->code not found";
+			return "$codedesc '$data->code' not found";
 		}
 		return true;
 	}
