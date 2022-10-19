@@ -54,6 +54,7 @@ class Tarm extends AbstractCodeTableEditableSingleKey {
 			'description'   => $code->description,
 			'number'        => $code->number,
 			'percent'       => $sanitizer->float($code->percent, ['precision' => $this->fieldAttribute('percent', 'precision')]),
+			'rate'          => $sanitizer->float($code->percent, ['precision' => $this->fieldAttribute('percent', 'precision')]),
 			'countries'     => $this->countriesM->codesForTariffCode($code->code)
 		];
 	}
@@ -83,7 +84,7 @@ class Tarm extends AbstractCodeTableEditableSingleKey {
 		$code = new TariffCode();
 
 		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
 		return $code;

@@ -143,7 +143,7 @@ abstract class Base extends Controller {
 	}
 
 	public static function validateVendoridPermission($data) {
-		self::sanitizeParametersShort($data, ['vendorID|text']);
+		self::sanitizeParametersShort($data, ['vendorID|string']);
 		$user = self::pw('user');
 
 		if (self::validateVendorid($data->vendorID) === false) {

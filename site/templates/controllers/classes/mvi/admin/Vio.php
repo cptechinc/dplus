@@ -144,7 +144,7 @@ class Vio extends Controller {
 	}
 
 	public static function validateVendoridPermission($data) {
-		self::sanitizeParametersShort($data, ['vendorID|text']);
+		self::sanitizeParametersShort($data, ['vendorID|string']);
 		return self::validateUserPermission($data);
 	}
 

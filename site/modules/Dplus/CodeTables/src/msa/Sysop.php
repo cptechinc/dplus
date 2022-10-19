@@ -201,7 +201,7 @@ class Sysop extends Base {
 		}
 
 		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
 
@@ -248,7 +248,7 @@ class Sysop extends Base {
 			$this->setResponse(Response::responseError("System $system not found"));
 			return false;
 		}
-		$code = $this->getOrCreate($values->text('system'), $values->text('code'));
+		$code = $this->getOrCreate($values->text('system'), $values->string('code'));
 
 		if ($this->lockrecord($code) === false) {
 			$msg = "$code->system Code $code->id is Locked By " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($code));
@@ -306,11 +306,11 @@ class Sysop extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if ($this->exists($values->text('system'), $values->text('code')) === false) {
+		if ($this->exists($values->text('system'), $values->string('code')) === false) {
 			return true;
 		}
 
-		$code = $this->code($values->text('system'), $values->text('code'));
+		$code = $this->code($values->text('system'), $values->string('code'));
 		if ($this->lockrecord($code) === false) {
 			$msg = "$code->system Code $code->id is Locked By " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($code));
 			$this->setResponse(Response::responseError($msg));

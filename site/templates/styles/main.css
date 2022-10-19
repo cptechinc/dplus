@@ -272,6 +272,14 @@ a.image-link:hover {
 	background: #FADA5E;
 }
 
+.font-monospace {
+	font-family: monospace;
+}
+
+.text-underlined {
+	text-decoration: underline;
+}
+
 /*==============================================================
 	FORM Styles
 ==============================================================*/
@@ -310,7 +318,6 @@ textarea.no-resize {
 textarea.qnotes.readonly {
 	overflow-y: auto;
 }
-
 
 div.qnotes {
 	font-family: monospace;

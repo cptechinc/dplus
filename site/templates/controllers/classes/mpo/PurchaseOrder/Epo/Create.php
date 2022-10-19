@@ -16,7 +16,7 @@ class Create extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['ponbr|text', 'action|text', 'vendorID|text'];
+		$fields = ['ponbr|text', 'action|text', 'vendorID|string'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
@@ -30,7 +30,7 @@ class Create extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		self::sanitizeParametersShort($data, ['action|text', 'vendorID|text']);
+		self::sanitizeParametersShort($data, ['action|text', 'vendorID|string']);
 
 		if (empty($data->action) === true) {
 			self::pw('session')->redirect(self::pw('page')->url, $http301 = false);

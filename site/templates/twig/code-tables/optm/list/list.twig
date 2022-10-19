@@ -28,7 +28,7 @@
 
 		{% for code in codes %}
 			<tr data-id="{{ code.id }}">
-				<td>{{ code.id }}</td>
+				<td class="text-monospace">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
 				<td>{{ code.description }}</td>
 				<td>{{ code.validate|yesorno|capitalize }}</td>
 				<td>{{ code.force|yesorno|capitalize }}</td>

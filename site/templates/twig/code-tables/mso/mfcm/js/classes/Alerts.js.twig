@@ -9,9 +9,11 @@ class MfcmAlerts extends Alerts {
 	}
 
 	codeExists(code, callback) {
+		var html = 'Edit Code <span class="font-monospace font-weight-bold text-underlined">' + code.replace(' ', '&nbsp;') + '</span>?';
+
 		swal2.fire({
 			title: 'Code Exists',
-			text: 'Edit Code ' + code + '?',
+			html: html,
 			icon: 'question',
 			showCancelButton: true,
 			confirmButtonText: 'Yes'

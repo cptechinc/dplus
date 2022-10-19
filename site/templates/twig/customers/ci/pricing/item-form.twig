@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-sm-4">
 		<form action="{{ input.url() }}" method="get"id="pricing-itemid-form">
-			<input type="hidden" name="custID" value="{{ input.get.text('custID') }}">
+			<input type="hidden" name="custID" value="{{ input.get.string('custID') }}">
 
 			<div class="form-group">
 				<label for="itemID">Item ID</label>

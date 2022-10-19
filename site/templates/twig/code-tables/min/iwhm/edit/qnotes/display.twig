@@ -1,21 +1,16 @@
-<div class="row">
-	<div class="col-sm-6">
-		{% include 'code-tables/min/iwhm/edit/qnotes/qnotes.twig' %}
-	</div>
-</div>
+<h3>Notes</h3>
+
 <ul class="nav nav-tabs mb-3" id="notes-tab" role="tablist">
-	
-		{% for qnotesSub in qnotes.getQnotes() %}
-			<li class="nav-item" role="presentation">
-				{% set displayClass = loop.first ? 'active' : '' %}
-				{% set displayClass = response.type == qnotesSub.type() ? 'active' : displayClass %}
+	{% for qnotesSub in qnotes.getQnotes() %}
+		<li class="nav-item" role="presentation">
+			{% set displayClass = loop.first ? 'active' : '' %}
+			{% set displayClass = response.type == qnotesSub.type() ? 'active' : displayClass %}
 
-				<a href="#{{ qnotesSub.type() }}" class="nav-link {{ displayClass}}" id="{{ qnotesSub.type() }}-tab" data-toggle="tab"  href="#{{ qnotesSub.type() }}" aria-controls="{ qnotesSub.type() }}">
-					{{ qnotesSub.typeDescription() }}
-				</a>
-			</li>
-		{% endfor %}
-
+			<a href="#{{ qnotesSub.type() }}" class="nav-link {{ displayClass}}" id="{{ qnotesSub.type() }}-tab" data-toggle="tab"  href="#{{ qnotesSub.type() }}" aria-controls="{ qnotesSub.type() }}">
+				{{ qnotesSub.typeDescription() }}
+			</a>
+		</li>
+	{% endfor %}
 </ul>
 <div class="tab-content" id="notes-tab-content">
 	{% for qnotesSub in qnotes.getQnotes() %}

@@ -32,11 +32,11 @@
 		{% endif %}
 
 		{% for code in codes %}
-			{% set class = code.id == input.get.text('focus') ? 'highlight' : '' %}
-			{% set class = optm.getRecordlockerKey(code) == response.key ? 'bg-success text-white' : class %}
+			{% set class = code.id == input.get.string('focus') ? 'highlight' : '' %}
+			{% set class = optm.getRecordlockerKey(code) is same as(response.key) ? 'bg-success text-white' : class %}
 
 			<tr data-id="{{ code.id }}" class="code {{ class }}">
-				<td>{{ code.id }}</td>
+				<td class="text-monospace">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
 				<td>{{ code.description }}</td>
 				<td class="text-right">
 					{% if input.get.offsetExists('print') == false %}

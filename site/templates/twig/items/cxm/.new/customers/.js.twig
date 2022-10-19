@@ -12,6 +12,34 @@ $(function() {
 		}
 	}
 
+	$("body").on('change', 'input[name=custID]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mso/validate/cxm/custid/') }}');
+		ajax.setData({custID: input.val()});
+		ajax.request(function(exists) {
+			if (exists) {
+				swal2.fire({
+					title: "Customer " + input.val() + " exists",
+					text: 'Edit X-Ref Items?',
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.value) {
+						var uri = new URI();
+						uri.addQuery('custID', input.val());
+						window.location.href = uri.toString();
+					} else {
+						input.val('');
+					}
+				});
+			}
+		});
+	});
+
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */
@@ -20,6 +48,10 @@ $(function() {
 	ajaxModal.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
+		if (button.closest('form').length) {
+			button.closest('form').find('input[name=custID]').val('');
+			button.closest('form').validate().resetForm();
+		}
 		var url = button.data('lookupurl');
 
 		modal.attr('data-input', button.data('input'));
@@ -44,6 +76,7 @@ $(function() {
 		var query = form.serialize();
 		var action = form.attr('action');
 		var search = form.find('input[name=q]').val();
+		search = search.length ? search : 'Customers';
 		var url = action + '?' + query;
 		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
 		form.closest('.modal').find('.modal-body').loadin(url, function() {});
@@ -67,9 +100,16 @@ $(function() {
 ============================================================= */
 	var modal_new = $('#new-cxm-modal');
 
+	modal_new.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		modal.find('input[name=custID]').val('');
+		modal.find('form').validate().resetForm();
+	});
+
 	modal_new.on('shown.bs.modal', function (event) {
 		var modal = $(this);
 		modal.find('input[name=custID]').focus();
+		modal.find('form').validate().resetForm();
 	});
 
 	var validator = $('#new-cxm-form').validate({

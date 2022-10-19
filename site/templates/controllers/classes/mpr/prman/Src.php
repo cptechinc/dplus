@@ -22,7 +22,7 @@ class Src extends AbstractController {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -33,7 +33,7 @@ class Src extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::srcUrl();
 		$src  = self::getSrc();

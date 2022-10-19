@@ -36,7 +36,9 @@
 		{% for i in 1..manager.getNbrOfGlAccts() if code.getAccountNbr(i) %}
 			{% set glAcct = code.getGlAccount(code.getAccountNbr(i)) %}
 			<tr>
-				<td>{{ loop.first ? code.code : '' }}</td>
+				<td>
+					<span class="text-monospace">{{ loop.first ? code.code|replace({' ': '&nbsp;'})|raw : '' }}</span>
+				</td>
 				<td>{{ glAcct.code }}</td>
 				<td>{{ glAcct.description }}</td>
 				<td class="text-right">{{ code.getAccountPct(i) }}</td>

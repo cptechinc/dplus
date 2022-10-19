@@ -74,7 +74,7 @@ class Cocom extends AbstractCodeTableEditableSingleKey {
 		$code = new CountryCode();
 
 		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
 		$code->setExchange_rate($this->fieldAttribute('exchange_rate', 'default'));

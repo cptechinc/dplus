@@ -109,7 +109,7 @@ abstract class SysopOptionalCode extends Base {
 		$code->setSysop($sysop);
 
 		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
 		return $code;
@@ -140,9 +140,8 @@ abstract class SysopOptionalCode extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = [];
-
-		$code = $this->getOrCreate($values->text('sysop'), $values->text('code'));
-
+		$code = $this->getOrCreate($values->string('sysop'), $values->string('code'));
+		
 		if ($this->lockrecord($code) === false) {
 			$msg = "$code->system Code $code->id is Locked By " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($code));
 			$this->setResponse(Response::responseError($msg));
@@ -177,11 +176,11 @@ abstract class SysopOptionalCode extends Base {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if ($this->exists($values->text('sysop'), $values->text('code')) === false) {
+		if ($this->exists($values->string('sysop'), $values->string('code')) === false) {
 			return true;
 		}
 
-		$code = $this->code($values->text('sysop'), $values->text('code'));
+		$code = $this->code($values->string('sysop'), $values->string('code'));
 		if ($this->lockrecord($code) === false) {
 			$msg = "$code->sysop Code $code->id is Locked By " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($code));
 			$this->setResponse(Response::responseError($msg));

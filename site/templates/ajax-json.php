@@ -49,24 +49,24 @@
 				['GET', 'stcm/code/', Json\Min::class, 'validateStcmCode'],
 				['GET', 'tarm/code/', Json\Min::class, 'validateTarmCode'],
 				['GET', 'umm/code/', Json\Min::class, 'validateUmmCode'],
-				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
+				['GET', 'tariff-code/', Json\Min::class, 'validateTarmCode'],
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
-				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
+				['GET', 'msds-code/', Json\Min::class, 'validateMsdsmCode'],
 				['GET', 'itemid/', Json\Min::class, 'validateItemid'],
 				'warehouse' => [
 					['GET', '', Json\Min::class, 'validateWarehouseid'],
 					['GET', 'bin/', Json\Min::class, 'validateWarehouseBinid'],
 				],
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
-				['GET', 'item-group/', Json\Min::class, 'validateInvGroupCode'],
+				['GET', 'item-group/', Json\Min::class, 'validateIgmCode'],
 				'upcx' => [
 					['GET', 'upc/', Json\Min::class, 'validateUpc'],
 					['GET', 'upc/primary/', Json\Min::class, 'validateUpcPrimary'],
 					['GET', 'upc/xref/', Json\Min::class, 'validateUpcXref'],
 				],
 				'code' => [
-					['GET', 'stock/', Json\Min::class, 'validateStockCode'],
-					['GET', 'special-item/', Json\Min::class, 'validateSpecialItemCode'],
+					['GET', 'stock/', Json\Min::class, 'validateStcmCode'],
+					['GET', 'special-item/', Json\Min::class, 'validateSpitCode'],
 				],
 				'i2i' => [
 					['GET', 'xref/', Json\Min::class, 'validateI2iExists'],
@@ -83,15 +83,15 @@
 					['GET', 'xref/', Json\Min::class, 'validateAddm'],
 				],
 			],
-			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
+			['GET', 'tariff-code/', Json\Min::class, 'getTarmCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
-			['GET', 'msds-code/', Json\Min::class, 'getMsdsCode'],
+			['GET', 'msds-code/', Json\Min::class, 'getMsdsmCode'],
 			['GET', 'item/', Json\Min::class, 'getItm'],
 			'upcx' => [
 				['GET', 'primary/', Json\Min::class, 'getPrimaryUpc'],
 			],
 			'umm' => [
-				['GET', 'uom/', Json\Min::class, 'getUom'],
+				['GET', 'uom/', Json\Min::class, 'getUmmCode'],
 			],
 			'itm' => [
 				'options' => [
@@ -117,12 +117,17 @@
 				'vxm' => [
 					['GET', '', Json\Map::class, 'validateVxm'],
 					['GET', 'itemid/', Json\Map::class, 'validateVxmExistsForItemid'],
+					['GET', 'vendorid/', Json\Map::class, 'validateVxmVendorExists'],
 					['GET', 'vendoritemid-itemid/', Json\Map::class, 'validateVendoritemMatchesItemid'],
 					['GET', 'primary-ordercode/', Json\Map::class, 'validateVxmCanBePrimary'],
 					['GET', 'update-itm-cost/', Json\Map::class, 'validateVxmUpdateItmCost'],
 				],
-				['GET', 'mxrfe/', Json\Map::class, 'validateMxrfe'],
-				['GET', 'mxrfe/new/', Json\Map::class, 'validateMxrfeNew'],
+				'mxrfe' => [
+					['GET', '', Json\Map::class, 'validateMxrfe'],
+					['GET', 'vendorid/', Json\Map::class, 'validateMxrfeManufacturerExists'],
+					['GET', 'new/', Json\Map::class, 'validateMxrfeNew'],
+				]
+				
 			],
 			'vtm' => [
 				['GET', 'code/', Json\Map::class, 'getVtmCode'],
@@ -190,13 +195,13 @@
 			'validate' => [
 				['GET', 'gl-code/', Json\Mgl::class, 'validateGlCode'],
 				['GET', 'mhm/code/', Json\Mgl::class, 'validateGlCode'],
-				['GET', 'ttm/code/', Json\Mgl::class, 'validateStmtCode'],
-				['GET', 'dtm/code/', Json\Mgl::class, 'validateDistCode'],
+				['GET', 'ttm/code/', Json\Mgl::class, 'validateTtmCode'],
+				['GET', 'dtm/code/', Json\Mgl::class, 'validateDtmCode'],
 			],
 			['GET', 'gl-code/', Json\Mgl::class, 'getGlCode'],
 			['GET', 'mhm/code/', Json\Mgl::class, 'getGlCode'],
-			['GET', 'ttm/code/', Json\Mgl::class, 'getStmtCode'],
-			['GET', 'dtm/code/', Json\Mgl::class, 'getDistCode'],
+			['GET', 'ttm/code/', Json\Mgl::class, 'getTtmCode'],
+			['GET', 'dtm/code/', Json\Mgl::class, 'getDtmCode'],
 		],
 		'mki' => [
 			'validate' => [
@@ -287,10 +292,13 @@
 			['GET', 'rgarc/code/', Json\Mso::class, 'getRgarcCode'],
 			['GET', 'rgasc/code/', Json\Mso::class, 'getRgascCode'],
 			'validate' => [
-				['GET', 'freight-code/', Json\Mso::class, 'validateFreightCode'],
+				'cxm' => [
+					['GET', '', Json\Mso::class, 'validateCxmXref'],
+					['GET', 'custid/', Json\Mso::class, 'validateCxmCustomerExists'],
+					['GET', 'xref/', Json\Mso::class, 'validateCxmXref'],
+				],
+				['GET', 'freight-code/', Json\Mso::class, 'validateMfcmCode'],
 				['GET', 'price-discount/', Json\Mso::class, 'validatePriceDiscount'],
-				['GET', 'cxm/', Json\Mso::class, 'validateCxmXref'],
-				['GET', 'cxm/xref/', Json\Mso::class, 'validateCxmXref'],
 				'lsm' => [
 					['GET', 'code/', Json\Mso::class, 'validateLsmCode'],
 				],
@@ -302,7 +310,7 @@
 			'sales-order' => [
 				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
 			],
-			['GET', 'freight-code/', Json\Mso::class, 'getFreightCode'],
+			['GET', 'freight-code/', Json\Mso::class, 'getMfcmCode'],
 			'eso' => [
 				['GET', 'pricing/', Json\Mso::class, 'getPricing'],
 			],

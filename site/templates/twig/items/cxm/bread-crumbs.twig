@@ -11,13 +11,13 @@
 
 	{% if values.offsetExists('custID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.custListUrl(values.text('custID')) }}">
+			<a href="{{ page.custListUrl(values.string('custID')) }}">
 				<i class="fa fa-microchip" aria-hidden="true"></i> CXM
 			</a>
 		</li>
 		{% if (values.offsetExists('custitemID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.text('custID') }}</a>
+				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.string('custID') }}</a>
 			</li>
 			{% if values.text('custitemID') == 'new' %}
 				<li class="breadcrumb-item active" aria-current="page">Create X-ref</li>
@@ -26,7 +26,7 @@
 			{% endif %}
 		{% else %}
 			{% if values.offsetExists('custID') %}
-				<li class="breadcrumb-item active" aria-current="page">{{ values.text('custID')}}</li>
+				<li class="breadcrumb-item active" aria-current="page">{{ values.string('custID')}}</li>
 			{% endif %}
 		{% endif %}
 	{% elseif values.text('itemID') %}

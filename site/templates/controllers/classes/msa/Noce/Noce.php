@@ -20,7 +20,7 @@ class Noce extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -31,7 +31,7 @@ class Noce extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url     = self::noceUrl();
 		$qnotes  = self::getQnotes();

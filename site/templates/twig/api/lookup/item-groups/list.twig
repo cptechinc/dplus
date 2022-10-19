@@ -13,8 +13,8 @@
 	{% for group in results %}
 		<tr>
 			<td>
-				<a href="#" class="link itemgroup-link" data-code="{{ group.code }}">
-					{{ group.code }}
+				<a href="#" class="link itemgroup-link text-monospace" data-code="{{ group.code }}">
+					{{ group.code|replace({' ': '&nbsp;'})|raw }}
 				</a>
 			</td>
 			<td>{{ group.description }}</td>

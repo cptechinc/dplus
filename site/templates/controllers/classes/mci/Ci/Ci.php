@@ -45,7 +45,7 @@ class Ci extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'q|text'];
+		$fields = ['custID|string', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->custID) === false) {
@@ -76,13 +76,13 @@ class Ci extends Base {
 	}
 
 	private static function customer($data) {
-		$fields = ['custID|text'];
+		$fields = ['custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
 			return self::displayInvalidCustomerOrPermissions($data);
 		}
-
+		
 		$customer = CustomerQuery::create()->findOneById($data->custID);
 		$page   = self::pw('page');
 		$page->show_breadcrumbs = false;

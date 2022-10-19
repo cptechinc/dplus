@@ -20,7 +20,7 @@ class Sysop extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['system|text', 'code|text', 'action|text'];
+		$fields = ['system|text', 'code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -35,7 +35,7 @@ class Sysop extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['system|text', 'code|text', 'action|text'];
+		$fields = ['system|text', 'code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::sysopUrl();
 		$sysop  = self::getSysop();

@@ -265,6 +265,17 @@ class Cxm extends AbstractXrefManager {
 		return $q->find()->toArray();
 	}
 
+	/**
+	 * Return if Cust ID has an X-Ref
+	 * @param  string $custID     Cust ID
+	 * @return bool
+	 */
+	public function custidExists($custID) {
+		$q = $this->query();
+		$q->filterByCustid($custID);
+		return boolval($q->count());
+	}
+
 /* =============================================================
 	CRUD Processing
 ============================================================= */
@@ -276,8 +287,11 @@ class Cxm extends AbstractXrefManager {
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$custID = $values->text('custID');
-		$custitemID = $values->text('original_custitemID') != $values->text('custitemID') ? $values->text('original_custitemID') : $values->text('custitemID');
+		$custID = $values->string('custID');
+		if ($values->string('original_custitemID') == '') {
+			$values->original_custitemID = $values->custitemID;
+		}
+		$custitemID = $values->string('original_custitemID') != $values->string('custitemID') ? $values->string('original_custitemID') : $values->string('custitemID');
 		$invalidfields = [];
 
 		$xref = $this->getOrCreateXref($custID, $custitemID);
@@ -329,11 +343,11 @@ class Cxm extends AbstractXrefManager {
 	 */
 	private function _inputUpdateKey(WireInputData $values, ItemXrefCustomer $xref) {
 		$itm = $this->wire('modules')->get('Itm');
-		$itemExists = $itm->exists($values->text('itemID'));
+		$itemExists = $itm->exists($values->string('itemID'));
 		$invalidfields = [];
 
 		if ($itemExists) {
-			$xref->setItemid($values->text('itemID'));
+			$xref->setItemid($values->string('itemID'));
 		}
 
 		if ($itemExists === false) {
@@ -345,11 +359,11 @@ class Cxm extends AbstractXrefManager {
 		}
 		$cmm = Codes\Mar\Cmm::instance();
 		
-		if ($cmm->exists($values->text('custID')) === false) {
+		if ($cmm->exists($values->string('custID')) === false) {
 			$invalidfields['custID'] = 'Customer ID';
 			return $invalidfields;
 		}
-		$xref->setCustid($values->text('custID'));
+		$xref->setCustid($values->string('custID'));
 		return $invalidfields;
 	}
 
@@ -419,20 +433,20 @@ class Cxm extends AbstractXrefManager {
 		$umm = Codes\Min\Umm::instance();
 		$invalidfields = [];
 
-		$uomPricingExists = $umm->exists($values->text('uom_pricing'));
+		$uomPricingExists = $umm->exists($values->string('uom_pricing'));
 
 		if ($uomPricingExists) {
-			$xref->setUom_pricing($values->text('uom_pricing'));
+			$xref->setUom_pricing($values->string('uom_pricing'));
 		}
 
 		if ($uomPricingExists === false) {
 			$invalidfields['uom_pricing'] = 'UoM Pricing';
 		}
 
-		$uomCustomerExists = $umm->exists($values->text('uom_customer'));
+		$uomCustomerExists = $umm->exists($values->string('uom_customer'));
 
 		if ($uomCustomerExists) {
-			$xref->setUom_customer($values->text('uom_customer'));
+			$xref->setUom_customer($values->string('uom_customer'));
 		}
 
 		if ($uomCustomerExists === false) {
@@ -491,8 +505,8 @@ class Cxm extends AbstractXrefManager {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		
-		$itemID     = $values->text('itemID');
-		$custitemID = $values->text('custitemid');
+		$itemID     = $values->string('itemID');
+		$custitemID = $values->string('custitemid');
 
 		if ($this->shortitemidExists($custitemID)) {
 			$xref = $this->shortitem($custitemID);
@@ -528,8 +542,8 @@ class Cxm extends AbstractXrefManager {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$custID = $values->text('custID');
-		$custitemID = $values->text('custitemID');
+		$custID = $values->string('custID');
+		$custitemID = $values->string('custitemID');
 
 		if ($this->exists($custID, $custID) === false) {
 			return true;

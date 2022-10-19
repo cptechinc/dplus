@@ -73,6 +73,26 @@ function AjaxRequest(url) {
 	}
 }
 
+class AjaxResponse {
+	xhr = null;
+	headers = {};
+	response = null;
+	constructor(xhr, response) {
+		this.xhr = xhr;
+		this.response = response;
+		const arr = xhr.getAllResponseHeaders().trim().split(/[\r\n]+/);
+		const headerMap = {};
+
+		arr.forEach((line) => {
+			const parts = line.split(': ');
+			const header = parts.shift();
+			const value = parts.join(': ');
+			headerMap[header] = value;
+		});
+		this.headers = headerMap;
+	}
+}
+
 class Alerts {
 	static instance = null;
 

@@ -44,7 +44,7 @@ class Iwhm extends AbstractCodeTableController {
 		if (self::validateUserPermission() === false) {
 			return self::pw('session')->redirect(self::url(), $http301 = false);
 		}
-		$fields = ['code|text', 'whseID|text', 'action|text'];
+		$fields = ['code|string', 'whseID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::url();
 		$iwhm = self::getCodeTable();

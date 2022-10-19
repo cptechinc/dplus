@@ -47,7 +47,7 @@
 			</div>
 		{% endif %}
 		<div class="card-footer bg-secondary">
-			<a href="{{ page.ciContactsUrl(input.get.text('custID'), input.get.text('shiptoID'))}}" class="text-white">View More Contacts <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+			<a href="{{ page.ciContactsUrl(input.get.string('custID'), input.get.text('shiptoID'))}}" class="text-white">View More Contacts <i class="fa fa-sign-in" aria-hidden="true"></i></a>
 		</div>
 	</div>
 </div>

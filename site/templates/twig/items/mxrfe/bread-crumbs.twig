@@ -11,13 +11,13 @@
 
 	{% if values.offsetExists('mnfrID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.mnfrListUrl(input.get.text('mnfrID')) }}">
+			<a href="{{ page.mnfrListUrl(input.get.string('mnfrID')) }}">
 				<i class="fa fa-microchip" aria-hidden="true"></i> MXRFE
 			</a>
 		</li>
 		{% if (values.offsetExists('mnfritemID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.text('mnfrID') }}</a>
+				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.string('mnfrID') }}</a>
 			</li>
 			{% if values.text('mnfritemID') == 'new' %}
 				<li class="breadcrumb-item active" aria-current="page">New</li>
@@ -25,9 +25,9 @@
 				<li class="breadcrumb-item active" aria-current="page">{{ values.text('mnfritemID') }}</li>
 			{% endif %}
 		{% else %}
-			{% if values.offsetExists('mnfrID') and values.text('mnfrID') %}
+			{% if values.offsetExists('mnfrID') and values.string('mnfrID') %}
 				<li class="breadcrumb-item active" aria-current="page">
-					{{ values.text('mnfrID') }}
+					{{ values.string('mnfrID') }}
 				</li>
 			{% endif %}
 		{% endif %}

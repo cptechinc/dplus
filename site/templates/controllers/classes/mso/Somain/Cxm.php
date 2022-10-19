@@ -5,6 +5,7 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
 use ItemXrefCustomer;
+use Customer;
 // Dplus Filters
 use Dplus\Filters;
 use Dplus\Filters\Mso\Cxm as CxmFilter;
@@ -21,7 +22,7 @@ class Cxm extends AbstractController {
 	private static $cxm;
 
 	public static function index($data) {
-		$fields = ['custID|text', 'custitemID|text', 'q|text', 'action|text'];
+		$fields = ['custID|string', 'custitemID|text', 'q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->headline = 'Customer Item X-Ref';
@@ -44,7 +45,7 @@ class Cxm extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'custID|text', 'custitemID|text'];
+		$fields = ['action|text', 'custID|string', 'custitemID|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateUserPermission() === false) {
@@ -73,7 +74,7 @@ class Cxm extends AbstractController {
 	}
 
 	private static function xref($data) {
-		$fields = ['custID|text', 'custitemID|text', 'itemID|text', 'action|text'];
+		$fields = ['custID|string', 'custitemID|text', 'itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);
@@ -122,7 +123,8 @@ class Cxm extends AbstractController {
 			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
 			$sortFilter->saveToSession('customer', 'cxm');
 		}
-		$filter->sortby($page);
+		$filter->sort(self::pw('input')->get);
+		$filter->query->orderBy(Customer::aliasproperty('id'));
 		$customers = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
 		$page->js .= self::pw('config')->twig->render('items/cxm/.new/customers/.js.twig');
@@ -132,7 +134,7 @@ class Cxm extends AbstractController {
 	}
 
 	private static function listCustXrefs($data) {
-		self::sanitizeParametersShort($data, ['custID|text', 'q|text', 'orderby|text']);
+		self::sanitizeParametersShort($data, ['custID|string', 'q|text', 'orderby|text']);
 		Filters\SortFilter::removeFromSession('xrefs', 'cxm');
 		$page = self::pw('page');
 		$cxm  = self::getCxm();

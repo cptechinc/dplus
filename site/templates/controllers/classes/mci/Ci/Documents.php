@@ -19,7 +19,7 @@ class Documents extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'folder|text', 'document|text'];
+		$fields = ['custID|string', 'folder|text', 'document|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
@@ -41,7 +41,7 @@ class Documents extends Base {
 
 	private static function documents($data) {
 		self::initHooks();
-		self::sanitizeParametersShort($data, ['custID|text', 'folder|text']);
+		self::sanitizeParametersShort($data, ['custID|string', 'folder|text']);
 		$list = self::createList($data->custID);
 
 		switch ($data->folder) {

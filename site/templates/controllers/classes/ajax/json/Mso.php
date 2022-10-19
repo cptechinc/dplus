@@ -14,40 +14,10 @@ use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
 // Dplus Codes
 use Dplus\Codes;
 use Dplus\Xrefs;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Mso extends Controller {
+class Mso extends AbstractJsonController {
 	public static function test() {
 		return 'test';
-	}
-
-	public static function validateFreightCode($data) {
-		$fields = ['code|text', 'freightcode|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		$code = $data->code ? $data->code : $data->freightcode;
-
-		if ($validate->freightcode($code) === false) {
-			return "Freight Code $code not found";
-		}
-		return true;
-	}
-
-	public static function getFreightCode($data) {
-		$fields = ['code|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-
-		if ($validate->freightcode($data->code) === false) {
-			return false;
-		}
-
-		$freight = self::pw('modules')->get('CodeTablesMfcm')->get_code($data->code);
-		return array(
-			'code'		  => $data->code,
-			'description' => $freight->description
-		);
 	}
 
 	public static function validatePriceDiscount($data) {
@@ -124,28 +94,8 @@ class Mso extends Controller {
 		return $response;
 	}
 
-	public static function validateCxm($data) {
-		$fields = ['custID|text', 'custitemID|text', 'new|bool', 'jqv|bool'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = new CxmValidator();
-		$exists = $validate->exists($data->custID, $data->custitemID);
-
-		if ($data->new) {
-			$valid = $exists === false;
-
-			if ($valid === false && $data->jqv) {
-				return "X-ref $data->custID-$data->custitemID exists";
-			}
-			return $valid;
-		}
-		if ($exists === false && $data->jqv) {
-			return "X-ref $data->custID-$data->custitemID not found";
-		}
-		return $exists;
-	}
-
 	public static function validateCxmXref(WireData $data) {
-		$fields = ['custID|text', 'custitemID|text', 'new|bool', 'jqv|bool'];
+		$fields = ['custID|string', 'custitemID|text', 'new|bool', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$cxm = Xrefs\Cxm::instance();
@@ -166,8 +116,17 @@ class Mso extends Controller {
 		return true;
 	}
 
+	public static function validateCxmCustomerExists($data) {
+		$fields = ['custID|string', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$cxm = Xrefs\Cxm::instance();
+		$exists = $cxm->custidExists($data->custID);
+
+		return $exists;
+	}
+
 	public static function getPricing($data) {
-		$fields = ['itemID|text', 'custID|text'];
+		$fields = ['itemID|text', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$pricingM = self::pw('modules')->get('ItemPricing');
 		$pricingM->request_search($data->itemID, $data->custID);
@@ -203,135 +162,43 @@ class Mso extends Controller {
 	}
 
 	public static function validateLsmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mso\Lsm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Lost Sales Reason $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Lost Sales Reason $data->code not found";
-		}
-		return true;
+		$table = Codes\Mso\Lsm::instance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getLsmCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mso\Lsm::getInstance();
-
-		if ($manager->exists($data->code) === false) {
-			return false;
-		}
-		return $manager->codeJson($manager->code($data->code));
+		$table = Codes\Mso\Lsm::instance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateMfcmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mso\Mfcm::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Motor Freight Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Motor Freight Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mso\Mfcm::instance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getMfcmCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mso\Mfcm::getInstance();
-
-		if ($manager->exists($data->code) === false) {
-			return false;
-		}
-		return $manager->codeJson($manager->code($data->code));
+		$table = Codes\Mso\Mfcm::instance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateRgarcCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mso\Rgarc::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "RGA/Return Reason Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "RGA/Return Reason Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mso\Rgarc::instance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getRgarcCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mso\Rgarc::getInstance();
-
-		if ($manager->exists($data->code) === false) {
-			return false;
-		}
-		return $manager->codeJson($manager->code($data->code));
+		$table = Codes\Mso\Rgarc::instance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateRgascCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mso\Rgasc::getInstance();
-		$exists = $manager->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "RGA/Return Ship Via Code $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "RGA/Return Ship Via Code $data->code not found";
-		}
-		return true;
+		$table = Codes\Mso\Rgasc::instance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getRgascCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$manager = Codes\Mso\Rgasc::getInstance();
-
-		if ($manager->exists($data->code) === false) {
-			return false;
-		}
-		return $manager->codeJson($manager->code($data->code));
+		$table = Codes\Mso\Rgasc::instance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	private static function validator() {

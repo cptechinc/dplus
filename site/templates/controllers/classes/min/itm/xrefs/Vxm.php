@@ -42,7 +42,7 @@ class Vxm extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'vendorID|text', 'vendoritemID|text', 'action|text'];
+		$fields = ['itemID|text', 'vendorID|string', 'vendoritemID|text', 'action|text'];
 		$data  = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 		$vxm   = VxmController::vxmMaster();

@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-sm-6">
 		<form action="{{ input.url() }}" method="get" class="allow-enterkey-submit">
-			<input type="hidden" name="custID" value="{{ input.get.text('custID') }}">
+			<input type="hidden" name="custID" value="{{ input.get.string('custID') }}">
 			<div class="form-group">
 				<label for="custpo">Cust PO #</label>
 				<input class="form-control form-group inline" type="text" name="custpo" id="custpo" placeholder="Customer PO #" autofocus>

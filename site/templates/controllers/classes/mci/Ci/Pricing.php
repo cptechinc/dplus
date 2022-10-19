@@ -12,7 +12,7 @@ class Pricing extends Subfunction {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'itemID|text', 'refresh|bool'];
+		$fields = ['custID|string', 'itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
@@ -45,7 +45,7 @@ class Pricing extends Subfunction {
 	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['custID|text', 'itemID|text']);
+		$data    = self::sanitizeParametersShort($data, ['custID|string', 'itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$session = self::pw('session');
@@ -113,7 +113,7 @@ class Pricing extends Subfunction {
 	Data Requests
 ============================================================= */
 	private static function requestJson($vars) {
-		$fields = ['itemID|text', 'custID|text', 'sessionID|text'];
+		$fields = ['itemID|text', 'custID|string', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['CIPRICE', "ITEMID=$vars->itemID", "CUSTID=$vars->custID"];

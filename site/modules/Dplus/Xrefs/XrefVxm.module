@@ -212,6 +212,17 @@ class XrefVxm extends WireData implements Module {
 		return $q->find()->toArray();
 	}
 
+	/**
+	 * Return if Vendor Exists
+	 * @param  string $vendorID
+	 * @return bool
+	 */
+	public function vendorExists($vendorID) {
+		$q = $this->query();
+		$q->filterByVendorid($vendorID);
+		return boolval($q->count());
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */

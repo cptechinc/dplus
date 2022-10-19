@@ -23,7 +23,7 @@ class Sic extends AbstractCodeTableEditableSingleKey {
 	const DPLUS_TABLE           = 'SIC';
 	const FIELD_ATTRIBUTES = [
 		'code'             => ['type' => 'text', 'maxlength' => ArStandardIndustrialClass::MAX_LENGTH_CODE],
-		'description'      => ['type' => 'text', 'maxlength' => 20],
+		'description'      => ['type' => 'text', 'maxlength' => 40],
 	];
 
 /* =============================================================
@@ -51,7 +51,7 @@ class Sic extends AbstractCodeTableEditableSingleKey {
 		$code = new ArStandardIndustrialClass();
 
 		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
 		return $code;

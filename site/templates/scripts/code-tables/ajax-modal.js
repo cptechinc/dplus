@@ -42,8 +42,13 @@ $(function() {
 		var action = form.attr('action');
 		var search = form.find('input[name=q]').val();
 		var url = action + '?' + query;
-		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
-		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+		var modal = form.closest('.modal');
+		
+		modal.find('.modal-body').loadin(url, function(ajaxResponse) {
+			if (ajaxResponse.headers.hasOwnProperty('page-headline')) {
+				modal.find('.modal-title').text('Search ' + ajaxResponse.headers['page-headline']);
+			}
+		});
 	});
 
 	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
@@ -51,6 +56,17 @@ $(function() {
 		var button = $(this);
 		var modal  = button.closest('.modal');
 		modal.find('.modal-body').load(button.attr('href'));
+	});
+
+	$("body").on('click', '#ajax-modal a.clear-search', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').loadin(button.attr('href'), function(ajaxResponse) {
+			if (ajaxResponse.headers.hasOwnProperty('page-headline')) {
+				modal.find('.modal-title').text('Search ' + ajaxResponse.headers['page-headline']);
+			}
+		});
 	});
 
 	$("body").on('click', '#ajax-modal a.sort', function(e) {

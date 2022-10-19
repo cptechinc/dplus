@@ -27,13 +27,13 @@
 
 	{% if input.get.offsetExists('custID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.pty3Url(input.get.text('custID')) }}">
+			<a href="{{ page.pty3Url(input.get.string('custID')) }}">
 				<i class="fa fa-microchip" aria-hidden="true"></i> {{ input.urlSegmentLast()|upper }}
 			</a>
 		</li>
 
 		<li class="breadcrumb-item active" aria-current="page">
-			{{ input.get.text('custID') }}
+			{{ input.get.string('custID') }}
 		</li>
 	{% else %}
 		<li class="breadcrumb-item active" aria-current="page">

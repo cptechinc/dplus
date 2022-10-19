@@ -35,8 +35,8 @@
 			{% for customer in results %}
 				<tr>
 					<td scope="row">
-						<a href="#" class="link customer-link" data-custid="{{ customer.id }}" data-cust_name="{{ customer.name }}" >
-							<strong>{{ customer.id }}</strong>
+						<a href="#" class="link customer-link text-monospace" data-custid="{{ customer.id }}" data-cust_name="{{ customer.name }}" >
+							<strong>{{ customer.id|replace({' ': '&nbsp;'})|raw }}</strong>
 						</a>
 					</td>
 					<td class="{{ datamatcher.string(customer.name, q) ? 'highlight' : '' }}">

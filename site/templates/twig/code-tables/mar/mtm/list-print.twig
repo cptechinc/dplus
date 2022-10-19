@@ -35,7 +35,9 @@
 {% for code in codes %}
 	{% block code_row %}
 		<tr>
-			<td>{{ code.code }}</td>
+			<td>
+				<span class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+			</td>
 			<td>{{ code.description }}</td>
 			<td class="text-right">{{ code.percent }}</td>
 			<td>{{ code.gl_account }} &nbsp; {{ manager.glAcctDescription(code.gl_account) }}</td>

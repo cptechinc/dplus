@@ -25,7 +25,7 @@ class Ecr extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		self::sanitizeParametersShort($data, ['custID|text', 'invnbr|text']);
+		self::sanitizeParametersShort($data, ['custID|string', 'invnbr|text']);
 		if (self::validateUserPermission() === false) {
 			return self::displayUserNotPermitted();
 		}

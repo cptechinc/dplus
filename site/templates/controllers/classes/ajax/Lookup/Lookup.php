@@ -24,6 +24,7 @@ abstract class Lookup extends Controller {
 		$input = self::pw('input');
 		$page  = self::pw('page');
 		$filter->filter_input(self::pw('input'));
+		header("page-headline: $page->headline");
 
 		if ($data->q) {
 			$filter->search($data->q);
@@ -38,6 +39,7 @@ abstract class Lookup extends Controller {
 		$input = self::pw('input');
 		$page  = self::pw('page');
 		$filter->filterInput(self::pw('input'));
+		header("page-headline: $page->headline");
 
 		if ($data->q) {
 			$filter->search($data->q);

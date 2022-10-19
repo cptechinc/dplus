@@ -56,7 +56,7 @@ class Msa extends Controller {
 	}
 
 	public static function validateLgrp($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		$fields = ['code|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$lgrp = MsaCodes\Lgrp::getInstance();
@@ -77,7 +77,7 @@ class Msa extends Controller {
 	}
 
 	public static function getLgrp($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
+		self::sanitizeParametersShort($data, ['code|string']);
 
 		$lgrp = MsaCodes\Lgrp::getInstance();
 		if ($lgrp->exists($data->code) === false) {
@@ -92,7 +92,7 @@ class Msa extends Controller {
 	}
 
 	public static function validateNoceid($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		$fields = ['code|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$qnotes = Qnotes\Noce::getInstance();
@@ -113,7 +113,7 @@ class Msa extends Controller {
 	}
 
 	public static function getNoceNote($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
+		self::sanitizeParametersShort($data, ['code|string']);
 
 		$qnotes = Qnotes\Noce::getInstance();
 
@@ -129,7 +129,7 @@ class Msa extends Controller {
 	}
 
 	public static function validateSysop($data) {
-		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
+		$fields = ['system|text', 'sysop|string', 'code|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$sysop = Codes\Msa\Sysop::getInstance();
@@ -153,7 +153,7 @@ class Msa extends Controller {
 	}
 
 	public static function getSysop($data) {
-		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
+		$fields = ['system|text', 'sysop|string', 'code|string', 'jqv|bool', 'new|bool'];
 		if ($data->sysop) {
 			$data->code = $data->sysop;
 		}
@@ -168,7 +168,7 @@ class Msa extends Controller {
 	}
 
 	public static function validateSysopNotecode($data) {
-		$fields = ['notecode|text', 'jqv|bool', 'new|bool'];
+		$fields = ['notecode|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$sysop = Codes\Msa\Sysop::getInstance();
@@ -209,7 +209,7 @@ class Msa extends Controller {
 	}
 
 	public static function validateSysopOption($data) {
-		$fields = ['system|text', 'sysop|text', 'code|text', 'jqv|bool', 'new|bool'];
+		$fields = ['system|text', 'sysop|string', 'code|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		switch ($data->system) {
@@ -247,7 +247,7 @@ class Msa extends Controller {
 	}
 
 	public static function getSysopOption($data) {
-		$fields = ['system|text', 'sysop|text', 'code|text'];
+		$fields = ['system|text', 'sysop|string', 'code|string'];
 		self::sanitizeParametersShort($data, $fields);
 
 		switch ($data->system) {
