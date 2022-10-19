@@ -33,11 +33,11 @@ class Mtm extends AbstractCodeTableEditableSingleKey {
 		'percent'		       => ['type' => 'number', 'max' => 99.999, 'precision' => 3, 'default' => 0.000],
 		'gl_account'		   => ['type' => 'text'],
 		'freight_tax_code'     => ['type' => 'text'],
-		'limit'		           => ['type' => 'number', 'max' =>  99999, 'precision' => 0, 'default' => ''],
-		'note1'			       => ['type' => 'text', 'maxlength' => 45],
-		'note2'			       => ['type' => 'text', 'maxlength' => 45],
-		'note3'			       => ['type' => 'text', 'maxlength' => 45],
-		'note4'			       => ['type' => 'text', 'maxlength' => 45],
+		'limit'		           => ['type' => 'number', 'max' =>  999999, 'precision' => 0, 'default' => ''],
+		'note1'			       => ['type' => 'text', 'maxlength' => 50],
+		'note2'			       => ['type' => 'text', 'maxlength' => 50],
+		'note3'			       => ['type' => 'text', 'maxlength' => 50],
+		'note4'			       => ['type' => 'text', 'maxlength' => 50],
 		'tax_type'             => ['type' => 'text', 'options' => ['S' => 'State', 'C' => 'County', 'L' => 'Local', 'T' => 'Transit']],
 	];
 

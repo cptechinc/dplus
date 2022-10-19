@@ -23,7 +23,7 @@ class Sic extends AbstractCodeTableEditableSingleKey {
 	const DPLUS_TABLE           = 'SIC';
 	const FIELD_ATTRIBUTES = [
 		'code'             => ['type' => 'text', 'maxlength' => ArStandardIndustrialClass::MAX_LENGTH_CODE],
-		'description'      => ['type' => 'text', 'maxlength' => 20],
+		'description'      => ['type' => 'text', 'maxlength' => 40],
 	];
 
 /* =============================================================
