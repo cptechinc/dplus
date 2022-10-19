@@ -128,14 +128,8 @@ $(function() {
 			}
 
 			if (valid) {
-				if (formCode.inputs.form.attr('data-code') == code) {
+				if (formCode.inputs.form.attr('data-code') == code || formCode.inputs.form.attr('data-code') == '') {
 					form.submit();
-				} else {
-					formCode.validateCodeForSubmit(code, function(submitForm) {
-						if (submitForm) {
-							form.submit();
-						}
-					})
 				}
 			}
 		}

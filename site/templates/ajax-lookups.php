@@ -6,29 +6,29 @@
 	$routes = [
 		['GET', '', AjaxLookup::class, 'test'],
 		// Tariff Codes
-		['GET', 'tariff-codes/', AjaxLookup::class, 'tariffCodes'],
-		['GET', 'tariff-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'tariffCodes'],
+		['GET', 'tariff-codes/', AjaxLookup\Min::class, 'tariffCodes'],
+		['GET', 'tariff-codes/page{pagenbr:\d+}/', AjaxLookup\Min::class, 'tariffCodes'],
 		// Itm
-		['GET', 'items', AjaxLookup::class, 'itmItems'],
-		['GET', 'items/page{pagenbr:\d+}/', AjaxLookup::class, 'itmItems'],
+		['GET', 'items', AjaxLookup\Min::class, 'itmItems'],
+		['GET', 'items/page{pagenbr:\d+}/', AjaxLookup\Min::class, 'itmItems'],
 		// Msds Codes
-		['GET', 'msds-codes/', AjaxLookup::class, 'msdsCodes'],
-		['GET', 'msds-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'msdsCodes'],
+		['GET', 'msds-codes/', AjaxLookup\Min::class, 'msdsCodes'],
+		['GET', 'msds-codes/page{pagenbr:\d+}/', AjaxLookup\Min::class, 'msdsCodes'],
 		// Freight Codes
-		['GET', 'freight-codes/', AjaxLookup::class, 'freightCodes'],
-		['GET', 'freight-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'freightCodes'],
+		['GET', 'freight-codes/', AjaxLookup\Mso::class, 'freightCodes'],
+		['GET', 'freight-codes/page{pagenbr:\d+}/', AjaxLookup\Mso::class, 'freightCodes'],
 		// VXM
 		['GET', 'vxm/', AjaxLookup::class, 'vxm'],
 		['GET', 'vxm/page{pagenbr:\d+}/', AjaxLookup::class, 'vxm'],
 		// Warehouse
-		['GET', 'warehouses/', AjaxLookup::class, 'warehouses'],
-		['GET', 'warehouses/page{pagenbr:\d+}/', AjaxLookup::class, 'warehouses'],
+		['GET', 'warehouses/', AjaxLookup\Min::class, 'warehouses'],
+		['GET', 'warehouses/page{pagenbr:\d+}/', AjaxLookup\Min::class, 'warehouses'],
 		// Warehouse Bins
-		['GET', 'warehouse/bins/', AjaxLookup::class, 'warehouseBins'],
-		['GET', 'warehouse/bins/page{pagenbr:\d+}/', AjaxLookup::class, 'warehouseBins'],
+		['GET', 'warehouse/bins/', AjaxLookup\Min::class, 'warehouseBins'],
+		['GET', 'warehouse/bins/page{pagenbr:\d+}/', AjaxLookup\Min::class, 'warehouseBins'],
 		// User
-		['GET', 'users/', AjaxLookup::class, 'users'],
-		['GET', 'users/page{pagenbr:\d+}/', AjaxLookup::class, 'users'],
+		['GET', 'users/', AjaxLookup\Msa::class, 'users'],
+		['GET', 'users/page{pagenbr:\d+}/', AjaxLookup\Msa::class, 'users'],
 		// Vendors
 		['GET', 'vendors/', AjaxLookup::class, 'vendors'],
 		['GET', 'vendors/page{pagenbr:\d+}/', AjaxLookup::class, 'vendors'],
@@ -45,17 +45,17 @@
 		['GET', 'purchase-orders/', AjaxLookup::class, 'purchaseOrders'],
 		['GET', 'purchase-orders/page{pagenbr:\d+}/', AjaxLookup::class, 'purchaseOrders'],
 		// General Ledger Codes
-		['GET', 'gl-codes/', AjaxLookup::class, 'generalLedgerCodes'],
-		['GET', 'gl-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'generalLedgerCodes'],
+		['GET', 'gl-codes/', AjaxLookup\Mgl::class, 'generalLedgerCodes'],
+		['GET', 'gl-codes/page{pagenbr:\d+}/', AjaxLookup\Mgl::class, 'generalLedgerCodes'],
 		// Item Groups
-		['GET', 'item-groups/', AjaxLookup::class, 'itemGroups'],
-		['GET', 'item-groups/page{pagenbr:\d+}/', AjaxLookup::class, 'itemGroups'],
+		['GET', 'item-groups/', AjaxLookup\Min::class, 'itemGroups'],
+		['GET', 'item-groups/page{pagenbr:\d+}/', AjaxLookup\Min::class, 'itemGroups'],
 		// Customers
 		['GET', 'customers/', AjaxLookup\Mar::class, 'customers'],
 		['GET', 'customers/page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'customers'],
 		// Country Codes
-		['GET', 'country-codes/', AjaxLookup::class, 'countryCodes'],
-		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup::class, 'countryCodes'],
+		['GET', 'country-codes/', AjaxLookup\Misc::class, 'countryCodes'],
+		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup\Misc::class, 'countryCodes'],
 		'mar' => [
 			'mtm' => [
 				['GET', '', AjaxLookup\Mar::class, 'taxCodes'],
@@ -64,13 +64,17 @@
 		],
 		'mgl' => [
 			// General Ledger Codes
-			['GET', 'mhm/', AjaxLookup::class, 'generalLedgerCodes'],
-			['GET', 'mhm/page{pagenbr:\d+}/', AjaxLookup::class, 'generalLedgerCodes'],
+			['GET', 'mhm/', AjaxLookup\Mgl::class, 'generalLedgerCodes'],
+			['GET', 'mhm/page{pagenbr:\d+}/', AjaxLookup\Mgl::class, 'generalLedgerCodes'],
 		],
 		'min' => [
 			'iplm' => [
 				['GET', '', AjaxLookup\Min::class, 'productLines'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Min::class, 'productLines'],
+			],
+			'igm' => [
+				['GET', '', AjaxLookup\Min::class, 'itemGroups'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Min::class, 'itemGroups'],
 			],
 		],
 		'misc' => [
@@ -79,7 +83,7 @@
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Misc::class, 'stateCodes'],
 			],
 			['GET', 'country-codes/', AjaxLookup\Misc::class, 'countryCodes'],
-		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup\Misc::class, 'countryCodes'],
+			['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup\Misc::class, 'countryCodes'],
 		],
 		'mpo' => [
 			['GET', 'ap-invoices/', AjaxLookup::class, 'purchaseOrders'],
@@ -93,24 +97,24 @@
 		],
 		'msa' => [
 			'sysop' => [
-				['GET', '', AjaxLookup::class, 'sysopCodes'],
-				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'sysopCodes'],
+				['GET', '', AjaxLookup\Msa::class, 'sysopCodes'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Msa::class, 'sysopCodes'],
 				'options' => [
-					['GET', '', AjaxLookup::class, 'sysopOptions'],
-					['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'sysopOptions'],
+					['GET', '', AjaxLookup\Msa::class, 'sysopOptions'],
+					['GET', 'page{pagenbr:\d+}/', AjaxLookup\Msa::class, 'sysopOptions'],
 				]
 			],
 			'printers' => [
-				['GET', '', AjaxLookup::class, 'printers'],
-				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'printers'],
+				['GET', '', AjaxLookup\Msa::class, 'printers'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Msa::class, 'printers'],
 			],
 			'lgrp' => [
-				['GET', '', AjaxLookup::class, 'loginGroups'],
-				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'loginGroups'],
+				['GET', '', AjaxLookup\Msa::class, 'loginGroups'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Msa::class, 'loginGroups'],
 			],
 			'lrole' => [
-				['GET', '', AjaxLookup::class, 'loginRoles'],
-				['GET', 'page{pagenbr:\d+}/', AjaxLookup::class, 'loginRoles'],
+				['GET', '', AjaxLookup\Msa::class, 'loginRoles'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Msa::class, 'loginRoles'],
 			]
 		],
 		'mth' => [

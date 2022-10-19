@@ -34,7 +34,9 @@
 
 {% for code in codes %}
 	{% block code_columns %}
-		<td>{{ code.code }}</td>
+		<td>
+			<span class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+		</td>
 		<td>{{ code.description }}</td>
 		<td class="text-right">{{ code.conversion|number_format(manager.fieldAttribute('conversion', 'precision')) }}</td>
 		<td class="text-center">{{ code.pricebyweight }}</td>

@@ -27,7 +27,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->headline = static::TITLE;
@@ -46,7 +46,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	}
 
 	public static function handleCRUD(WireData $data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::url();
 		$codeTable = static::getCodeTable();

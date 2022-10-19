@@ -233,8 +233,10 @@ abstract class Base extends AbstractCodeTable {
 		$saved  = $code->isDeleted() ? $code->isDeleted() : $code->save();
 
 		$response = new Response();
-		$response->setCode($code->id);
+		
+		$response->setCode($code->code);
 		$response->setKey($this->getRecordlockerKey($code));
+		
 
 		if ($saved) {
 			$response->setSuccess(true);
@@ -253,6 +255,7 @@ abstract class Base extends AbstractCodeTable {
 		$response->setFields($invalidfields);
 		$this->addResponseMsgReplacements($code, $response);
 		$response->buildMessage(static::RESPONSE_TEMPLATE);
+		
 		if ($response->hasSuccess()) {
 			$this->updateDplus($code);
 		}

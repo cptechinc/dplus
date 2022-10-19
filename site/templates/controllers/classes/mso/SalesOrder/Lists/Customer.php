@@ -23,7 +23,7 @@ class Customer extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'shiptoID|text'];
+		$fields = ['custID|string', 'shiptoID|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$validate = new Validators\Mar();

@@ -55,7 +55,7 @@ class Stcm extends AbstractCodeTableEditableSingleKey {
 	public function new($id = '') {
 		$code = new InvStockCode();
 		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
 		return $code;

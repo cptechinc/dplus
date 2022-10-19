@@ -13,8 +13,8 @@
 		{% for item in results %}
 			<tr>
 				<td>
-					<a href="#" class="link item-link" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
-						<strong>{{ item.itemid }}</strong>
+					<a href="#" class="link item-link text-monospace" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
+						<strong>{{ item.itemid|replace({' ': '&nbsp;'})|raw }}</strong>
 					</a>
 				</td>
 				<td class="{{ datamatcher.string(item.name, q) ? 'highlight' : '' }}">

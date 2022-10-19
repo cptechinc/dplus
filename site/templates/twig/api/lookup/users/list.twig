@@ -9,8 +9,8 @@
 	{% for user in results %}
 		<tr>
 			<td>
-				<a href="#" class="link user-link" data-userid="{{ user.userid }}">
-					{{ user.userid }}
+				<a href="#" class="link user-link text-monospace" data-userid="{{ user.userid }}">
+					{{ user.userid|replace({' ': '&nbsp;'})|raw }}
 				</a>
 			</td>
 			<td>{{ user.name }}</td>

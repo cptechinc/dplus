@@ -19,7 +19,7 @@ class Documents extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['vendorID|text', 'folder|text', 'document|text'];
+		$fields = ['vendorID|string', 'folder|text', 'document|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateVendorid($data->vendorID) === false) {
@@ -45,7 +45,7 @@ class Documents extends Base {
 
 	private static function documents($data) {
 		self::initHooks();
-		self::sanitizeParametersShort($data, ['vendorID|text', 'folder|text']);
+		self::sanitizeParametersShort($data, ['vendorID|string', 'folder|text']);
 		$list = self::createList($data->vendorID);
 
 		switch ($data->folder) {

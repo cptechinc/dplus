@@ -10,8 +10,8 @@
 	{% for country in results %}
 		<tr>
 			<td>
-				<a href="#" class="link country-link" data-code="{{ country.code }}" data-rate="{{ country.exchange_rate }}" data-description="{{ country.description }}">
-					{{ country.code }}
+				<a href="#" class="link country-link text-monospace" data-code="{{ country.code }}" data-rate="{{ country.exchange_rate }}" data-description="{{ country.description }}">
+					{{ country.code|replace({' ': '&nbsp;'})|raw }}
 				</a>
 			</td>
 			<td>{{ country.alpha2 }}</td>

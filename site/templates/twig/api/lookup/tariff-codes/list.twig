@@ -10,8 +10,8 @@
 	{% for tariff in results %}
 		<tr>
 			<td>
-				<a href="#" class="link tariff-link" data-code="{{ tariff.code }}">
-					{{ tariff.code }}
+				<a href="#" class="link code-link tariff-link text-monospace" data-code="{{ tariff.code }}">
+					{{ tariff.code|replace({' ': '&nbsp;'})|raw }}
 				</a>
 			</td>
 			<td>{{ tariff.number }}</td>

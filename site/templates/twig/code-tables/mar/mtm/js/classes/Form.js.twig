@@ -27,6 +27,7 @@ class CodeForm {
 			this.inputs.gl_account.val(json.gl_account);
 			this.inputs.limit.val(json.limit);
 			this.inputs.tax_type.val(json.tax_type);
+			this.inputs.freight_tax_code.val(json.freight_tax_code);
 			this.inputs.note1.val(json.note1);
 			this.inputs.note2.val(json.note2);
 			this.inputs.note3.val(json.note3);
@@ -56,6 +57,7 @@ class CodeForm {
 		this.inputs.percent.change();
 		this.inputs.gl_account.change();
 		this.inputs.limit.change();
+		this.inputs.freight_tax_code.change();
 	}
 
 	updateDeleteLink(json = null) {

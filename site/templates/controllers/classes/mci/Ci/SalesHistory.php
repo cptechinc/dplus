@@ -14,7 +14,7 @@ class SalesHistory extends Subfunction {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'refresh|bool'];
+		$fields = ['custID|string', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
@@ -43,7 +43,7 @@ class SalesHistory extends Subfunction {
 ============================================================= */
 	private static function getData($data) {
 		self::deleteCustPoJson();
-		$data    = self::sanitizeParametersShort($data, ['custID|text', 'itemID|text']);
+		$data    = self::sanitizeParametersShort($data, ['custID|string', 'itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$session = self::pw('session');
@@ -112,7 +112,7 @@ class SalesHistory extends Subfunction {
 	Data Requests
 ============================================================= */
 	private static function requestJson($vars) {
-		$fields = ['custID|text', 'shiptoID|text', 'sessionID|text', 'date|text'];
+		$fields = ['custID|string', 'shiptoID|text', 'sessionID|text', 'date|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['CISALESHIST', "CUSTID=$vars->custID", "SHIPID=$vars->shiptoID", "SALESORDRNBR=", "ITEMID="];

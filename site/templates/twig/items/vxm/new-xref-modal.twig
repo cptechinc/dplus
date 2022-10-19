@@ -2,7 +2,7 @@
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="new-xref-modal-label">Insert X-Ref</h4>
+				<h4 class="modal-title" id="new-xref-modal-label">Insert X-Ref Vendor</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -39,9 +39,14 @@
 						%}
 					</div>
 					<input type="hidden" name="vendoritemID" value="new">
-					<button type="submit" class="btn btn-success">
-						Insert
-					</button>
+					<div class="d-flex justify-content-between">
+						<button type="submit" class="btn btn-success">
+							Insert
+						</button>
+						<button type="button" class="btn btn-warning" data-dismiss="modal">
+							<i class="fa fa-times" aria-hidden="true"></i> Close
+						</button>
+					</div>
 				</form>
 			</div>
 		</div>

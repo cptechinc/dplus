@@ -11,13 +11,13 @@
 
 	{% if values.offsetExists('vendorID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.vendorListUrl(values.text('vendorID')) }}">
+			<a href="{{ page.vendorListUrl(values.string('vendorID')) }}">
 				<i class="fa fa-microchip" aria-hidden="true"></i> VXM
 			</a>
 		</li>
 		{% if (values.offsetExists('vendoritemID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.text('vendorID') }}</a>
+				<a href="{{ page.xrefExitUrl(xref) }}">{{ values.string('vendorID') }}</a>
 			</li>
 			{% if values.text('vendoritemID') == 'new' %}
 				<li class="breadcrumb-item active" aria-current="page">New X-Ref</li>
@@ -25,7 +25,7 @@
 				<li class="breadcrumb-item active" aria-current="page">{{ values.text('vendoritemID') }}</li>
 			{% endif %}
 		{% else %}
-			<li class="breadcrumb-item active" aria-current="page">{{ values.text('vendorID') }}</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ values.string('vendorID') }}</li>
 		{% endif %}
 	{% elseif values.offsetExists('itemID') %}
 		<li class="breadcrumb-item">

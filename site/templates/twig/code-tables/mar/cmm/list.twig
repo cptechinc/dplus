@@ -19,9 +19,9 @@
 	{% for code in codes %}
 		{# data-code attribute and class code is for the highlight on close #}
 		<div id="code-{{ code.custid|urlencode }}" data-code="{{ code.custid }}" class="list-group-item code pb-1 pt-1 {{ (response.key == code.custid and response.has_success() ) ? 'bg-success text-white' : ''}}">
-			<div class="row align-items-center">
+			<div class="row align-items-center font-monospace">
 				<div class="col-3">
-					{{ code.custid }}
+					{{ code.custid|replace({' ': '&nbsp;'})|raw }}
 				</div>
 				<div class="col-6">
 					{{ code.name }}

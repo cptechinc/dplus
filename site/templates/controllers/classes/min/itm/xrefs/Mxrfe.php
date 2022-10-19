@@ -17,7 +17,7 @@ class Mxrfe extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'mnfrID|text', 'mnfritemID|text', 'action|text'];
+		$fields = ['itemID|text', 'mnfrID|string', 'mnfritemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -40,7 +40,7 @@ class Mxrfe extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'mnfrID|text', 'mnfritemID|text', 'action|text'];
+		$fields = ['itemID|text', 'mnfrID|string', 'mnfritemID|text', 'action|text'];
 		$data  = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 		$mxrfe = BaseMxrfe::mxrfeMaster();

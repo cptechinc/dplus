@@ -12,13 +12,13 @@ class Spgpm extends AbstractCodeTableEditableSingleKey {
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_cust_spgp';
 	const DESCRIPTION        = 'Salesperson Group Code';
-	const DESCRIPTION_RECORD = 'alesperson Group Code';
-	const RESPONSE_TEMPLATE  = 'alesperson Group Code{code} {not} {crud}';
+	const DESCRIPTION_RECORD = 'Salesperson Group Code';
+	const RESPONSE_TEMPLATE  = 'Salesperson Group Code{code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'spgpm';
 	const DPLUS_TABLE           = 'SPGPM';
 	const FIELD_ATTRIBUTES = [
-		'code'        => ['type' => 'text', 'maxlength' => 4],
-		'description' => ['type' => 'text', 'maxlength' => 20],
+		'code'        => ['type' => 'text', 'maxlength' => 6],
+		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
 	protected static $instance;
@@ -46,7 +46,7 @@ class Spgpm extends AbstractCodeTableEditableSingleKey {
 	public function new($id = '') {
 		$code = new SalespersonGroupCode();
 		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
 		return $code;

@@ -23,7 +23,7 @@ class Pty3 extends AbstractController {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'action|text'];
+		$fields = ['custID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->headline = RecordManager::DESCRIPTION;
@@ -45,7 +45,7 @@ class Pty3 extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['custID|text', 'accountnbr|text', 'action|text'];
+		$fields = ['custID|string', 'accountnbr|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::pty3Url($data->custID);
 		$recordsManager = self::getRecordManager();

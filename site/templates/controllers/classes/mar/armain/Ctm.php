@@ -37,7 +37,7 @@ class Ctm extends AbstractCodeTableController {
 		if (self::validateUserPermission() === false) {
 			return self::pw('session')->redirect(self::url(), $http301 = false);
 		}
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::url();
 		$ctm = self::getCodeTable();

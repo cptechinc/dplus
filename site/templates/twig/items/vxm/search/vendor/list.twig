@@ -26,8 +26,8 @@
 			{% for vendor in vendors %}
 				<tr data-vendorid="{{ vendor.id }}">
 					<td scope="row">
-						<a href="{{ page.vendorUrl(vendor.id) }}" class="link">
-							<strong>{{ vendor.id }}</strong>
+						<a href="{{ page.vendorUrl(vendor.id) }}" class="link text-monospace">
+							<strong>{{ vendor.id|replace({' ': '&nbsp;'})|raw }}</strong>
 						</a>
 					</td>
 					<td>{{ vendor.name }}</td>

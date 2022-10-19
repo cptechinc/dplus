@@ -4,6 +4,34 @@ $(function() {
 		// $('html, body').animate({scrollTop: $('[data-vendorid="{{ input.get.text('focus') }}"]').offset().top,},700,'linear');
 	{% endif %}
 
+	$("body").on('change', 'input[name=mnfrID]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('map/validate/mxrfe/vendorid/') }}');
+		ajax.setData({mnfrID: input.val()});
+		ajax.request(function(exists) {
+			if (exists) {
+				swal2.fire({
+					title: "Manufacturer " + input.val() + " exists",
+					text: 'Edit X-Ref Items?',
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.value) {
+						var uri = new URI();
+						uri.addQuery('mnfrID', input.val());
+						window.location.href = uri.toString();
+					} else {
+						input.val('');
+					}
+				});
+			}
+		});
+	});
+
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */
@@ -12,6 +40,10 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
+		if (button.closest('form').length) {
+			button.closest('form').find('input[name=mnfrID]').val('');
+			button.closest('form').validate().resetForm();
+		}
 		var url = button.data('lookupurl');
 		modal.attr('data-input', button.data('input'));
 
@@ -25,7 +57,9 @@ $(function() {
 		var button = $(this);
 		var vendorID = button.data('vendorid');
 		var modal = button.closest('.modal');
-		$(modal.attr('data-input')).val(vendorID);
+		var input = $(modal.attr('data-input'));
+		input.val(vendorID);
+		input.change();
 		modal.modal('hide');
 	});
 
@@ -35,6 +69,7 @@ $(function() {
 		var query = form.serialize();
 		var action = form.attr('action');
 		var search = form.find('input[name=q]').val();
+		search = search.length ? search : 'Manufacturers';
 		var url = action + '?' + query;
 		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
 		form.closest('.modal').find('.modal-body').loadin(url, function() {});
@@ -58,9 +93,16 @@ $(function() {
 ============================================================= */
 	var modal_new = $('#new-xref-modal');
 
+	modal_new.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		modal.find('input[name=vendorID]').val('');
+		modal.find('form').validate().resetForm();
+	});
+
 	modal_new.on('shown.bs.modal', function (event) {
 		var modal = $(this);
 		modal.find('input[name=mnfrID]').focus();
+		modal.find('form').validate().resetForm();
 	});
 
 	var validator = $('#new-xref-form').validate({

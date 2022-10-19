@@ -9,10 +9,10 @@
 	<div class="list-group-item qnote-row">
 		<div class="row">
 			<div class="col-sm-9">
-				{{ note_lines[0] }}
+				<span class="text-monospace">{{ note_lines[0] }}</span>
 				{% include 'util/bootstrap/form/textarea.twig' with {
 					'textarea': {
-						'id': 'iwhs-notes',
+						'id': 'notes-' ~ qnotesSub.type(),
 						'value': note_lines|join('\r'),
 						'inputclass': 'form-control-plaintext',
 						'addclasses': ['qnotes', 'readonly', 'collapse'],
@@ -26,7 +26,7 @@
 				} %}
 			</div>
 			<div class="col-sm-3">	
-				<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#iwhs-notes" aria-expanded="false" aria-controls="iwhs-notes">
+				<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-{{ qnotesSub.type() }}" aria-expanded="false" aria-controls="iwhs-notes">
 					<i class="fa fa-eye" aria-hidden="true"></i> Show
 				</button>
 				&nbsp; &nbsp;

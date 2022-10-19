@@ -23,7 +23,7 @@ class Itmp extends AbstractController {
 			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
@@ -38,7 +38,7 @@ class Itmp extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			return self::pw('session')->redirect(self::url(), $http301 = false);
 		}
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::itmpUrl();
 		$itmp = self::getItmp();

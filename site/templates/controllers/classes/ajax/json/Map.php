@@ -6,7 +6,7 @@ use PurchaseOrderQuery, PurchaseOrder;
 use PhoneBookQuery, PhoneBook;
 use VendorQuery, Vendor;
 // ProcessWire Mlasses, Modules
-use ProcessWire\Module, ProcessWire\ProcessWire;
+use ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Map       as MapValidator;
 use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
@@ -14,16 +14,14 @@ use Dplus\CodeValidators\Map\Mxrfe as MxrfeValidator;
 // Dplus Codes
 use Dplus\Codes;
 use Dplus\Configs;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
 
-class Map extends Controller {
+class Map extends AbstractJsonController {
 	public static function test() {
 		return 'test';
 	}
 
 	public static function validateVendorid($data) {
-		$fields = ['vendorID|text', 'jqv|bool'];
+		$fields = ['vendorID|string', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MapValidator();
 
@@ -34,7 +32,7 @@ class Map extends Controller {
 	}
 
 	public static function validateVendorShipfromid($data) {
-		$fields = ['vendorID|text', 'shipfromID|text', 'jqv|bool'];
+		$fields = ['vendorID|string', 'shipfromID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MapValidator();
 
@@ -46,7 +44,7 @@ class Map extends Controller {
 
 	public static function validateVxm($data) {
 		$exists = false;
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'jqv|bool', 'new|bool'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text', 'jqv|bool', 'new|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 		$exists = $validate->exists($data->vendorID, $data->vendoritemID, $data->itemID);
@@ -67,7 +65,7 @@ class Map extends Controller {
 	}
 
 	public static function validateVxmCanBePrimary($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'jqv|bool'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 		$vxm = self::pw('modules')->get('XrefVxm');
@@ -87,10 +85,17 @@ class Map extends Controller {
 	}
 
 	public static function validateVxmExistsForItemid($data) {
-		$fields = ['vendorID|text', 'itemID|text'];
+		$fields = ['vendorID|string', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 		return $validate->vendor_has_xref_itemid($data->itemID, $data->vendorID);
+	}
+
+	public static function validateVxmVendorExists($data) {
+		$fields = ['vendorID|string'];
+		self::sanitizeParametersShort($data, $fields);
+		$vxm = self::pw('modules')->get('XrefVxm');
+		return $vxm->vendorExists($data->vendorID);
 	}
 
 	public static function validateVendoritemMatchesItemid($data) {
@@ -101,7 +106,7 @@ class Map extends Controller {
 	}
 
 	public static function getVxm($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 
@@ -130,7 +135,7 @@ class Map extends Controller {
 	}
 
 	public static function getVxmByItemid($data) {
-		$fields = ['vendorID|text', 'itemID|text'];
+		$fields = ['vendorID|string', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 
@@ -153,7 +158,7 @@ class Map extends Controller {
 	}
 
 	public static function validateVxmUpdateItmCost($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'ordercode|text'];
+		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text', 'ordercode|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$response = ['allow' => false, 'confirm' => false];
 		$validate = new VxmValidator();
@@ -176,7 +181,7 @@ class Map extends Controller {
 	}
 
 	public static function validateMxrfe($data) {
-		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text'];
+		$fields = ['mnfrID|string', 'mnfritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MxrfeValidator();
 
@@ -186,8 +191,15 @@ class Map extends Controller {
 		return true;
 	}
 
+	public static function validateMxrfeManufacturerExists($data) {
+		$fields = ['mnfrID|string'];
+		self::sanitizeParametersShort($data, $fields);
+		$mxrfe = self::pw('modules')->get('XrefMxrfe');
+		return $mxrfe->mnfrExists($data->mnfrID);
+	}
+
 	public static function validateMxrfeNew($data) {
-		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text'];
+		$fields = ['mnfrID|string', 'mnfritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MxrfeValidator();
 
@@ -198,7 +210,7 @@ class Map extends Controller {
 	}
 
 	public static function getVendor($data) {
-		$fields = ['vendorID|text'];
+		$fields = ['vendorID|string'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$q = new VendorQuery();
 		$q->filterByVendorid($data->vendorID);
@@ -221,7 +233,7 @@ class Map extends Controller {
 	}
 
 	public static function getVendorContact($data) {
-		$fields = ['vendorID|text', 'shipfromID|text', 'contact|text'];
+		$fields = ['vendorID|string', 'shipfromID|text', 'contact|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$q = new PhoneBookQuery();
 		$q->filterByVendorid($data->vendorID);
@@ -280,72 +292,22 @@ class Map extends Controller {
 	}
 
 	public static function validateVtmCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$vtm = Codes\Map\Vtm::getInstance();
-		$exists = $vtm->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "Vendor Type $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "Vendor Type $data->code not found";
-		}
-		return true;
+		$table = Codes\Map\Vtm::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getVtmCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$vtm = Codes\Map\Vtm::getInstance();
-
-		if ($vtm->exists($data->code) === false) {
-			return false;
-		}
-
-		$code = $vtm->code($data->code);
-		return $vtm->codeJson($code);
+		$table = Codes\Map\Vtm::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 
 	public static function validateBumCode($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$bum = Codes\Map\Bum::getInstance();
-		$exists = $bum->exists($data->code);
-
-		if (boolval($data->jqv) === false) {
-			return boolval($data->new) ? $exists === false : $exists;
-		}
-
-		if (boolval($data->new) === true) {
-			return $exists === false ? true : "AP Buyer $data->code already exists";
-		}
-
-		if ($exists === false) {
-			return "AP Buyer $data->code not found";
-		}
-		return true;
+		$table = Codes\Map\Bum::getInstance();
+		return self::validateCodeTableCode($data, $table);
 	}
 
 	public static function getBumCode($data) {
-		$fields = ['code|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$bum = Codes\Map\Bum::getInstance();
-
-		if ($bum->exists($data->code) === false) {
-			return false;
-		}
-
-		$code = $bum->code($data->code);
-		return $bum->codeJson($code);
+		$table = Codes\Map\Bum::getInstance();
+		return self::getCodeTableCode($data, $table);
 	}
 }

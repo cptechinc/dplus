@@ -9,8 +9,8 @@
 	{% for msds in results %}
 		<tr>
 			<td>
-				<a href="#" class="link msds-link" data-code="{{ msds.code }}">
-					{{ msds.code }}
+				<a href="#" class="link msds-link text-monospace" data-code="{{ msds.code }}">
+					{{ msds.code|replace({' ': '&nbsp;'})|raw }}
 				</a>
 			</td>
 			<td>{{ msds.description }}</td>

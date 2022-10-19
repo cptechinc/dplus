@@ -26,8 +26,8 @@
 			{% for vendor in vendors %}
 				<tr data-vendorid="{{ vendor.id }}">
 					<td scope="row">
-						<a href="{{ page.mnfrUrl(vendor.id) }}" class="link vendor-link" data-vendorid="{{ vendor.id }}" data-name="{{ vendor.name }}">
-							<strong>{{ vendor.id }}</strong>
+						<a href="{{ page.mnfrUrl(vendor.id) }}" class="link vendor-link text-monospace" data-vendorid="{{ vendor.id }}" data-name="{{ vendor.name }}">
+							<strong>{{ vendor.id|replace({' ': '&nbsp;'})|raw }}</strong>
 						</a>
 					</td>
 					<td>{{ vendor.name }}</td>

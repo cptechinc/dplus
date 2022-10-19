@@ -10,7 +10,7 @@ class Contacts extends Subfunction {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['custID|text', 'shiptoID|text', 'refresh|bool'];
+		$fields = ['custID|string', 'shiptoID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
@@ -47,7 +47,7 @@ class Contacts extends Subfunction {
 	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['custID|text', 'shiptoID|text']);
+		$data    = self::sanitizeParametersShort($data, ['custID|string', 'shiptoID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$session = self::pw('session');
@@ -109,7 +109,7 @@ class Contacts extends Subfunction {
 	Data Requests
 ============================================================= */
 	private static function requestJson($vars) {
-		$fields = ['custID|text', 'shiptoID|text', 'sessionID|text'];
+		$fields = ['custID|string', 'shiptoID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['CICONTACT', "CUSTID=$vars->custID", "SHIPID=$vars->shiptoID"];

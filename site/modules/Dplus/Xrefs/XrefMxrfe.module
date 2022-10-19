@@ -129,6 +129,17 @@ class XrefMxrfe extends WireData implements Module {
 	}
 
 	/**
+	 * Return if Vendor Exists
+	 * @param  string $mnfrID
+	 * @return bool
+	 */
+	public function mnfrExists($mnfrID) {
+		$q = $this->query();
+		$q->filterByVendorid($mnfrID);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return New Xref with defaults
 	 * @return ItemXrefManufacturer
 	 */
@@ -162,6 +173,8 @@ class XrefMxrfe extends WireData implements Module {
 		}
 		return $record;
 	}
+
+
 
 /* =============================================================
 	CRUD Processing Functions
@@ -204,9 +217,9 @@ class XrefMxrfe extends WireData implements Module {
 	public function input_delete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$mnfrID     = $values->text('mnfrID');
-		$mnfritemID = $values->text('mnfritemID');
-		$itemID     = $values->text('itemID');
+		$mnfrID     = $values->string('mnfrID');
+		$mnfritemID = $values->string('mnfritemID');
+		$itemID     = $values->string('itemID');
 
 		if ($this->xref_exists($mnfrID, $mnfritemID, $itemID)) {
 			$record = $this->xref($mnfrID, $mnfritemID, $itemID);
@@ -238,9 +251,9 @@ class XrefMxrfe extends WireData implements Module {
 	protected function input_update(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$mnfrID     = $values->text('mnfrID');
-		$mnfritemID = $values->text('mnfritemID');
-		$itemID     = $values->text('itemID');
+		$mnfrID     = $values->string('mnfrID');
+		$mnfritemID = $values->string('mnfritemID');
+		$itemID     = $values->string('itemID');
 
 		$record = $this->get_create_xref($mnfrID, $mnfritemID, $itemID);
 
@@ -301,27 +314,27 @@ class XrefMxrfe extends WireData implements Module {
 
 		$umm = Codes\Min\Umm::instance();
 
-		if ($umm->exists($values->text('unitofm')) == false) {
+		if ($umm->exists($values->string('unitofm')) == false) {
 			$invalid['unitofm'] = 'Unit of Measure';
 		} else {
-			$record->setUnitofm($values->text('unitofm'));
+			$record->setUnitofm($values->string('unitofm'));
 		}
 
 		/** @var Itm */
 		$itm = $this->modules->get('Itm');
 
-		if ($itm->exists($values->text('itemID')) === false) {
+		if ($itm->exists($values->string('itemID')) === false) {
 			$invalid['itemID'] = 'Item ID';
 		} else {
-			$record->setItemid($values->text('itemID'));
+			$record->setItemid($values->string('itemID'));
 		}
 
 		$filter = new Filters\Map\Vendor();
 		
-		if ($filter->exists($values->text('vendorID')) === false) {
+		if ($filter->exists($values->string('vendorID')) === false) {
 			$invalid['vendorID'] = 'Vendor ID';
 		} else {
-			$record->setVendorid($values->text('vendorID'));
+			$record->setVendorid($values->string('vendorID'));
 		}
 		return $invalid;
 	}

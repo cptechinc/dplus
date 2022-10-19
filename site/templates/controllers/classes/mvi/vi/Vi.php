@@ -39,7 +39,7 @@ class Vi extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['vendorID|text', 'q|text'];
+		$fields = ['vendorID|string', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->vendorID) === false) {
@@ -69,7 +69,7 @@ class Vi extends Base {
 	}
 
 	private static function vendor($data) {
-		$fields = ['vendorID|text'];
+		$fields = ['vendorID|string'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateVendoridPermission($data) === false) {

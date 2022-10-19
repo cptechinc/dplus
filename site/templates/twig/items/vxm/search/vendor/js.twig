@@ -1,8 +1,36 @@
 $(function() {
-	{% if page.focus and page.focus != 'new' %}
-		$('tr[data-vendorid="{{ page.focus }}"]').addClass('highlight');
-		// $('html, body').animate({scrollTop: $('tr[data-vendorid="{{ page.focus }}"]').offset().top,},700,'linear');
+	{% if input.get.offsetExists('focus') and input.get.string('focus') != 'new' %}
+		$('tr[data-vendorid="{{ input.get.string('focus') }}"]').addClass('highlight');
+		// $('html, body').animate({scrollTop: $('tr[data-vendorid="{{ input.get.string('focus') }}"]').offset().top,},700,'linear');
 	{% endif %}
+
+	$("body").on('change', 'input[name=vendorID]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('map/validate/vxm/vendorid/') }}');
+		ajax.setData({vendorID: input.val()});
+		ajax.request(function(exists) {
+			if (exists) {
+				swal2.fire({
+					title: "Vendor " + input.val() + " exists",
+					text: 'Edit X-Ref Items?',
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.value) {
+						var uri = new URI();
+						uri.addQuery('vendorID', input.val());
+						window.location.href = uri.toString();
+					} else {
+						input.val('');
+					}
+				});
+			}
+		});
+	});
 
 /* =============================================================
 	Lookup Modal Functions
@@ -12,6 +40,10 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
+		if (button.closest('form').length) {
+			button.closest('form').find('input[name=vendorID]').val('');
+			button.closest('form').validate().resetForm();
+		}
 		var url = button.data('lookupurl');
 		modal.attr('data-input', button.data('input'));
 
@@ -25,7 +57,10 @@ $(function() {
 		var button = $(this);
 		var vendorID = button.data('vendorid');
 		var modal = button.closest('.modal');
-		$(modal.attr('data-input')).val(vendorID);
+		var input = $(modal.attr('data-input'));
+		input.val(vendorID);
+		input.change();
+
 		modal.modal('hide');
 	});
 
@@ -35,6 +70,7 @@ $(function() {
 		var query = form.serialize();
 		var action = form.attr('action');
 		var search = form.find('input[name=q]').val();
+		search = search.length ? search : 'Vendors';
 		var url = action + '?' + query;
 		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
 		form.closest('.modal').find('.modal-body').loadin(url, function() {});
@@ -58,9 +94,16 @@ $(function() {
 ============================================================= */
 	var modal_new = $('#new-xref-modal');
 
+	modal_new.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		modal.find('input[name=vendorID]').val('');
+		modal.find('form').validate().resetForm();
+	});
+
 	modal_new.on('shown.bs.modal', function (event) {
 		var modal = $(this);
 		modal.find('input[name=vendorID]').focus();
+		modal.find('form').validate().resetForm();
 	});
 
 	var validator = $('#new-xref-form').validate({

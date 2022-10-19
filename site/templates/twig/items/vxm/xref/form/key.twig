@@ -1,6 +1,6 @@
 {% set values = page.wire('input').get %}
 
-{% if item.isNew() and values.text('vendorID') == '' %}
+{% if item.isNew() and values.string('vendorID') == '' %}
 	<div class="row form-group">
 		<div class="col-sm-3">
 			<label for="vendorID">Vendor ID</label>

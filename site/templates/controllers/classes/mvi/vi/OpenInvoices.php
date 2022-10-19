@@ -16,7 +16,7 @@ class OpenInvoices extends Subfunction {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['vendorID|text', 'refresh|bool'];
+		$fields = ['vendorID|string', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateVendorid($data->vendorID) === false) {
@@ -48,7 +48,7 @@ class OpenInvoices extends Subfunction {
 	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['vendorID|text']);
+		$data    = self::sanitizeParametersShort($data, ['vendorID|string']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$session = self::pw('session');
@@ -108,7 +108,7 @@ class OpenInvoices extends Subfunction {
 	Data Requests
 ============================================================= */
 	private static function requestJson($vars) {
-		$fields = ['vendorID|text', 'shipfromID|text', 'sessionID|text'];
+		$fields = ['vendorID|string', 'shipfromID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['VIOPENINV', "VENDID=$vars->vendorID"];

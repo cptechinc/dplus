@@ -23,7 +23,7 @@ class Ioptm extends AbstractController {
 			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
-		$fields = ['sysop|text', 'code|text', 'action|text'];
+		$fields = ['sysop|string', 'code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
@@ -85,7 +85,7 @@ class Ioptm extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			return self::pw('session')->redirect(self::url(), $http301 = false);
 		}
-		$fields = ['action|text', 'sysop|text', 'code|text'];
+		$fields = ['action|text', 'sysop|string', 'code|string'];
 		self::sanitizeParameters($data, $fields);
 		$url = self::url();
 

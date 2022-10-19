@@ -59,7 +59,7 @@ class Mpm extends Controller {
 	}
 
 	public static function validatePrWorkCenterExists($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		$fields = ['code|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$dcm = Dcm::getInstance();
@@ -80,7 +80,7 @@ class Mpm extends Controller {
 	}
 
 	public static function getPrWorkCenter($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
+		self::sanitizeParametersShort($data, ['code|string']);
 
 		$dcm = Dcm::getInstance();
 		if ($dcm->exists($data->code) === false) {
@@ -95,7 +95,7 @@ class Mpm extends Controller {
 	}
 
 	public static function validatePrResourceExists($data) {
-		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		$fields = ['code|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$rcm = Rcm::getInstance();
@@ -116,7 +116,7 @@ class Mpm extends Controller {
 	}
 
 	public static function getPrResource($data) {
-		self::sanitizeParametersShort($data, ['code|text']);
+		self::sanitizeParametersShort($data, ['code|string']);
 
 		$rcm = Rcm::getInstance();
 		if ($rcm->exists($data->code) === false) {

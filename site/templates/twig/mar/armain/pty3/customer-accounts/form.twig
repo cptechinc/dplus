@@ -8,7 +8,7 @@
 {# data-accountnbr is for verifying edit vs new #}
 <form action="{{ input.paginateUrl(1) }}" method="POST" id="account-form" data-accountnbr="">
 	<input type="hidden" name="action" value="update">
-	<input type="hidden" name="custid" value="{{ input.get.text('custID') }}">
+	<input type="hidden" name="custid" value="{{ input.get.string('custID') }}">
 
 	<div class="form-group">
 		<label for="accountnbr">Account Number</label>

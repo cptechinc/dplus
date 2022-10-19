@@ -32,7 +32,9 @@
 
 {% for code in codes %}
 	{% block code_columns %}
-		<td>{{ code.code }}</td>
+		<td>
+			<span class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+		</td>
 		<td>{{ code.description }}</td>
 		<td>{{ code.workcenterid }}</td>
 		<td>{{ code.workcenter.description }}</td>

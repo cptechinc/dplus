@@ -21,7 +21,7 @@ class Ajax extends Noce {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['code|text', 'action|text'];
+		$fields = ['code|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 		return self::list($data);

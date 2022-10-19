@@ -8,8 +8,8 @@
 	{% for freight in results %}
 		<tr>
 			<td>
-				<a href="#" class="link freight-link" data-code="{{ freight.code }}">
-					{{ freight.code }}
+				<a href="#" class="link freight-link code-link text-monospace" data-code="{{ freight.code }}">
+					{{ freight.code|replace({' ': '&nbsp;'})|raw }}
 				</a>
 			</td>
 			<td>{{ freight.description }}</td>

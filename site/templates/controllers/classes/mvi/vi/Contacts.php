@@ -19,7 +19,7 @@ class Contacts extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['vendorID|text', 'shipfromID|text', 'q|text'];
+		$fields = ['vendorID|string', 'shipfromID|text', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateVendorid($data->vendorID) === false) {

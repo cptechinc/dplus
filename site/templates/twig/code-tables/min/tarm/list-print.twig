@@ -33,7 +33,9 @@
 
 {% for code in codes %}
 	{% block code_columns %}
-		<td>{{ code.code }}</td>
+		<td>
+			<span class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+		</td>
 		<td>{{ code.number }}</td>
 		<td>{{ code.description }}</td>
 		<td class="text-right">{{ code.percent|number_format(manager.fieldAttribute('percent', 'precision')) }}</td>
