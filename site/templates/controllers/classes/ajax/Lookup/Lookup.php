@@ -24,6 +24,7 @@ abstract class Lookup extends Controller {
 		$input = self::pw('input');
 		$page  = self::pw('page');
 		$filter->filter_input(self::pw('input'));
+		header("page-headline: $page->headline");
 
 		if ($data->q) {
 			$filter->search($data->q);
@@ -38,6 +39,7 @@ abstract class Lookup extends Controller {
 		$input = self::pw('input');
 		$page  = self::pw('page');
 		$filter->filterInput(self::pw('input'));
+		header("page-headline: $page->headline");
 
 		if ($data->q) {
 			$filter->search($data->q);
@@ -57,13 +59,6 @@ abstract class Lookup extends Controller {
 		$input = self::pw('input');
 		$results = $query->paginate($input->pageNum, 10);
 		$twigpath = "api/lookup/codes/search.twig";
-
-		
-		if (self::pw('config')->ajax === false) {
-			$query->find();
-			echo self::pw('db-dplus')->getLastExecutedQuery();
-		}
-		
 		
 		if (self::pw('config')->twigloader->exists("api/lookup/$path/search.twig")) {
 			$twigpath = "api/lookup/$path/search.twig";

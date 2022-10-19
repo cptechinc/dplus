@@ -138,6 +138,7 @@ class Lookup extends Controller {
 		$input = self::pw('input');
 		$page  = self::pw('page');
 		$filter->filterInput(self::pw('input'));
+		header("page-headline: $page->headline");
 
 		if ($data->q) {
 			$filter->search($data->q);
@@ -158,7 +159,6 @@ class Lookup extends Controller {
 	private static function filterResultsTwig($path = 'codes', BaseQuery $query, $q = '') {
 		$input = self::pw('input');
 		$results = $query->paginate($input->pageNum, 10);
-		$query->find();
 		$twigpath = "api/lookup/codes/search.twig";
 
 		if (self::pw('config')->twigloader->exists("api/lookup/$path/search.twig")) {

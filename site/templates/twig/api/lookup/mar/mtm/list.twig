@@ -6,7 +6,7 @@
 			<th class="text-right">Percent</th>
 			<th>GL Account</th>
 			<th>Freight</th>
-			<th>Limit</th>
+			<th class="text-right">Limit</th>
 		</tr>
 	</thead>
 	{% for code in results %}
@@ -20,7 +20,7 @@
 			<td class="text-right">{{ code.percent }}</td>
 			<td>{{ code.gl_account }}</td>
 			<td>{{ code.freight_tax_code }}</td>
-			<td>{{ code.limit }}</td>
+			<td class="text-right">{{ code.limit }}</td>
 		</tr>
 	{% endfor %}
 </table>

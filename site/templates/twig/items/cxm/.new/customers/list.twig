@@ -24,6 +24,14 @@
 				</a>
 			</th>
 			<th scope="col">
+				<a href="{{ page.get_sortURL('address1') }}" class="link">
+					Address
+					{% if page.orderby_column == 'address1' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th scope="col">
 				<a href="{{ page.get_sortURL('city') }}" class="link">
 					City
 					{% if page.orderby_column == 'city' %}
@@ -59,6 +67,7 @@
 						</a>
 					</td>
 					<td>{{ customer.name }}</td>
+					<td>{{ customer.address1 }}</td>
 					<td>{{ customer.city }}</td>
 					<td>{{ customer.state }}</td>
 					<td>{{ customer.zip }}</td>
@@ -66,7 +75,7 @@
 			{% endfor %}
 		{% else %}
 			<tr>
-				<td colspan="5" class="bg-secondary text-white text-center">
+				<td colspan="6" class="bg-secondary text-white text-center">
 					No Results found
 				</td>
 			</tr>

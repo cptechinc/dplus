@@ -16,7 +16,7 @@
 			</td>
 			<td>{{ xref.itemid }}</td>
 			<td>{{ item.imitem.description }}</td>
-			<td>$ {{ item.unitcost_base|currency }}</td>
+			<td class="text-right">$ {{ item.unitcost_base|currency }}</td>
 		</tr>
 	{% endfor %}
 </table>

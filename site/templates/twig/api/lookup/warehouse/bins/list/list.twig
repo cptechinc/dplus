@@ -1,4 +1,14 @@
 <div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row">
+			<div class="col-6">
+				Bin ID
+			</div>
+			<div class="col-6">
+				Description
+			</div>
+		</div>
+	</div>
 	{% for bin in results %}
 		<a href="#" class="list-group-item bin-link" data-binid="{{ bin.from }}">
 			<div class="row">

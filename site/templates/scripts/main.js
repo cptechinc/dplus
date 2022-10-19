@@ -299,10 +299,10 @@ $.fn.extend({
 		parent.html('<div></div>');
 
 		var element = parent.find('div');
-		console.log('loading ' + href + " into " +  parent.returnElementDescription());
-		element.load(href, function() {
+		element.load(href, function(response, status, xhr) {
+			var ajaxResponse = new AjaxResponse(xhr, response);
 			init_datepicker();
-			callback();
+			callback(ajaxResponse);
 		});
 	},
 	returnElementDescription: function() {

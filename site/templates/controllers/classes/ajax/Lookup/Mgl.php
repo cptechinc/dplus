@@ -11,7 +11,7 @@ class Mgl extends Lookup {
 	 */
 	public static function generalLedgerCodes($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		self::pw('page')->headline = "General Ledger Codes";
+		self::pw('page')->headline = "General Ledger Accounts";
 		$filter = new Filters\Mgl\GlCode();
 		return self::filterResults($filter, $data);
 	}

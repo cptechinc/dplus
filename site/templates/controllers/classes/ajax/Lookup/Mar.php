@@ -15,10 +15,6 @@ class Mar extends Lookup {
 		$filter = new Filters\Mar\Customer();
 		$filter->user(self::pw('user'));
 		$page->headline = "Customers";
-		if ($data->q) {
-			$filter->search($data->q);
-			$page->headline = "Searching for $data->q";
-		}
 		$data->addSortColumns = [\Customer::aliasproperty('id')];
 		return self::filterResults($filter, $data);
 	}
