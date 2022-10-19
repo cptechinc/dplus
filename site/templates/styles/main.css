@@ -90,6 +90,10 @@ table.table-md td, table.table-md th {
 	font-weight: bold;
 }
 
+.form-group label {
+	margin-bottom: .1rem;
+}
+
 /*==============================================================
 	FUELUX Styles
 ==============================================================*/
