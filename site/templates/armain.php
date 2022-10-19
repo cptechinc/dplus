@@ -32,6 +32,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Crtm::class, 'index'],
 			['POST',  '', Armain\Crtm::class, 'handleCRUD'],
 		],
+		'csv' => [
+			['GET',  '', Armain\Csv::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Csv::class, 'index'],
+			['POST',  '', Armain\Csv::class, 'handleCRUD'],
+		],
 		'ctm' => [
 			['GET',  '', Armain\Ctm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Ctm::class, 'index'],
