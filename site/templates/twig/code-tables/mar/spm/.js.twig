@@ -72,6 +72,18 @@ $(function() {
 	ajax modal events is handled by scripts/code-tables/ajax-modal.js
 ============================================================= */
 
+	$("body").on('click', '.vendor-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('vendorid'));
+		if (input.data('jqv')) {
+			input.change();
+		}
+		modal.modal('hide');
+	});
+
 /* =============================================================
 	Validation Functions
 ============================================================= */

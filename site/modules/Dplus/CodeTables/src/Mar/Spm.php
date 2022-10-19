@@ -50,7 +50,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	];
 
 	public function codeJson(Code $code) {
-		$json = parent::codeJson($code);
+		$json = [];
 		foreach (array_keys(static::FIELD_ATTRIBUTES) as $field) {
 			$json[$field] = $code->$field;
 		}
@@ -144,7 +144,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		}
 
 		if ($values->text('lastsaledate') != '') {
-			$code->setLastsaledate(date($this->fieldAttribute('lastsaledate', 'format'), strtotime($values->text('lastsalesdate'))));
+			$code->setLastsaledate(date($this->fieldAttribute('lastsaledate', 'format'), strtotime($values->text('lastsaledate'))));
 		}
 		return [];
 	}
@@ -171,7 +171,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		$logm = \Dplus\Msa\Logm::getInstance();
 		$code->setUserid($values->text('userid'));
 
-		if ($logm->exists($values->text('userid')) === false) {
+		if ($values->text('userid') != '' && $logm->exists($values->text('userid')) === false) {
 			$code->setUserid($originals['userid']);
 			$invalidfields['userid'] = 'Login ID';
 		}
