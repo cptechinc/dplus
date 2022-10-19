@@ -1,0 +1,111 @@
+class CodeForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CodeInputs.getInstance();
+		this.config = CodeConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		this.updateDeleteLink(json);
+
+		if (json) {
+			console.log(json);
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.name.val(json.name);
+
+			this.inputs.groupid.val(json.groupid);
+			this.inputs.cycle.val(json.cycle);
+			this.inputs.userid.val(json.userid);
+			this.inputs.manager.val(json.manager);
+			this.inputs.lastsaledate.val(moment(json.lastsaledate,'YYYYMMDD').format('MM/DD/YYYY'));
+			this.inputs.salesmtd.val(json.salesmtd);
+			this.inputs.salesytd.val(json.salesytd);
+			this.inputs.salesltd.val(json.salesltd);
+			this.inputs.earnedmtd.val(json.earnedmtd);
+			this.inputs.earnedytd.val(json.earnedytd);
+			this.inputs.earnedltd.val(json.earnedltd);
+			this.inputs.paidmtd.val(json.paidmtd);
+			this.inputs.paidytd.val(json.paidytd);
+			this.inputs.paidltd.val(json.paidltd);
+			this.inputs.vendorid.val(json.vendortid);
+			this.inputs.restricted.val(json.restricted);
+			this.inputs.email.val(json.email);
+			this.inputs.vendorid.val(json.vendorid);
+			this.triggerInputsChange();
+			
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		var blankOutInputs = [
+			'groupid', 'cycle', 'userid', 'lastsaledate', 
+			'salesmtd', 'salesytd', 'salesltd',
+			'earnedmtd', 'earnedytd', 'earnedltd',
+			'paidmtd', 'paidytd', 'paidedltd',
+			'vendorid', 'email'
+		];
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.val('');
+		this.inputs.code.removeAttr('readonly');
+		this.inputs.name.val('');
+
+		blankOutInputs.forEach(field => {
+			this.inputs[field].val('');
+		});
+		this.inputs.restricted(this.config.fields.restricted.default);
+		this.inputs.manager(this.config.fields.manager.default);
+		
+		this.triggerInputsChange();
+	}
+
+	triggerInputsChange() {
+		this.inputs.groupid.change();
+		this.inputs.userid.change();
+		
+		this.inputs.salesmtd.change();
+		this.inputs.salesytd.change();
+		this.inputs.salesltd.change();
+		this.inputs.earnedmtd.change();
+		this.inputs.earnedytd.change();
+		this.inputs.earnedltd.change();
+		this.inputs.paidmtd.change();
+		this.inputs.paidytd.change();
+		this.inputs.paidltd.change();
+
+		this.inputs.vendorid.change();
+	}
+
+	updateDeleteLink(json = null) {
+		var button = this.form.find('a.delete_button');
+		if (button.length == 0) {
+			return false;
+		}
+		var uri = URI(button.attr('href'));
+		var data = uri.query(true);
+
+		if (json) {
+			data.code = json.code;
+			uri.query(data);
+			button.attr('href', uri.toString());
+			button.addClass('show');
+			return true;
+		}
+		data.code = '';
+		uri.query(data);
+		button.attr('href', uri.toString());
+		button.removeClass('show');
+		return true;
+	}
+}
