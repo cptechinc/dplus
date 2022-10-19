@@ -1,0 +1,32 @@
+<div class="row">
+	<div class="col-6">
+		<div class="form-group">
+			<label for="priority">Priority</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'priority',
+						'size': 'sm',
+						'attributes': {
+							'maxlength': manager.fieldAttribute('priority', 'maxlength')
+						}
+					},
+				}
+			%}
+		</div>
+	</div>
+	<div class="col-6">
+		<div class="form-group">
+			<label for="shippingarea">Shipping Area</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'shippingarea',
+						'size': 'sm',
+						'attributes': {
+							'maxlength': manager.fieldAttribute('shippingarea', 'maxlength')
+						}
+					},
+				}
+			%}
+		</div>
+	</div>
+</div>

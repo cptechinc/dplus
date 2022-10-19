@@ -1,0 +1,56 @@
+<legend>UPS</legend>
+<div class="row">
+	<div class="col-sm-5">
+		<div class="form-group">
+			<label for="service">Service</label>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'service',
+						'size': 'sm',
+						'attributes': {
+							'maxlength': manager.fieldAttribute('service', 'maxlength')
+						}
+					},
+				}
+			%}
+		</div>
+	</div>
+	<div class="col-sm-3">
+		<div class="form-group">
+			<label for="billing">Billing</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'billing',
+						'size': 'sm',
+						'value' : manager.fieldAttribute('billing', 'default'),
+						'haskeys': true,
+						'showvalue': true,
+						'options': manager.fieldAttribute('billing', 'options')
+
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="col-sm-3">
+		<div class="form-group">
+			<label for="residential">Residential</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'residential',
+						'size': 'sm',
+						'value' : manager.fieldAttribute('residential', 'default'),
+						'haskeys': true,
+						'showvalue': true,
+						'options': manager.fieldAttribute('residential', 'options')
+
+					}
+				}
+			%}
+		</div>
+	</div>
+</div>
+
+
+
+
