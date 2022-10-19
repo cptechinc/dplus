@@ -1,6 +1,6 @@
 <form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit" id="codes-search-form">
-	<div class="row">
-		<div class="col-sm-4">
+	<div class="form-row">
+		<div class="col-sm-4 text-right">
 			{% if input.get.offsetExists('q') %}
 				<a href="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" class="btn btn-warning clear-search">
 					<i class="fa fa-times" aria-hidden="true"></i> Clear Search

@@ -1,8 +1,8 @@
 <form action="{{ input.paginateUrl(1) }}" method="GET" class="allow-enterkey-submit" id="vendor-contact-form">
 	<input type="hidden" name="vendorID" value="{{ input.get.text('vendorID') }}">
 
-	<div class="row">
-		<div class="col-sm-4">
+	<div class="form-row">
+		<div class="col-sm-4 text-right">
 			{% if input.get.offsetExists('q') %}
 				<a href="{{ input.paginateUrl(1, {'removeFromQueryString': ['q']}) }}" class="btn btn-warning clear-search">
 					<i class="fa fa-times" aria-hidden="true"></i> Clear Search
