@@ -8,7 +8,7 @@ class Min extends Base {
 		'addm'   => ['', Inmain\Menu::class, 'addmUrl'],
 		'csccm'  => ['', Inmain\Menu::class, 'csccmUrl'],
 		'i2i'    => ['', Inmain\Menu::class, 'i2iUrl'],
-		'iarn'   => ['', Inmain\Iarn::class, 'iarnUrl'],
+		'iarn'   => ['', Inmain\Menu::class, 'iarnUrl'],
 		'iasm'   => ['', Inmain\Menu::class, 'iasmUrl'],
 		'igcm'   => ['', Inmain\Menu::class, 'igcmUrl'],
 		'igm'    => ['', Inmain\Menu::class, 'igmUrl'],
