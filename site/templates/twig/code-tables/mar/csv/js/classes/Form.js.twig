@@ -1,0 +1,90 @@
+class CodeForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'code-form';
+		this.form = $('#' + this.id);
+		this.inputs = CodeInputs.getInstance();
+		this.config = CodeConfigs.getInstance();
+	}
+
+	updateInputsFromJson(json = null) {
+		this.updateDeleteLink(json);
+
+		if (json) {
+			this.inputs.form.attr('data-code', json.code);
+			this.inputs.code.val(json.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.description.val(json.description);
+
+			Object.getOwnPropertyNames(json).forEach((name, idx, array) => {
+				if (this.inputs.hasOwnProperty(name)) {
+					this.inputs[name].val(json[name]);
+				}
+			});
+			this.triggerInputsChange();
+			var validator = this.inputs.form.validate();
+			validator.element('#' + this.inputs.code.attr('id'));
+			return true;
+		}
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.removeAttr('readonly');
+		var inputNames = Object.getOwnPropertyNames(this.inputs);
+		inputNames = inputNames.filter(function(item) {
+			return item != 'id' && item != 'form';
+		});
+		inputNames.forEach((name, idx, array) => {
+			if (this.inputs.hasOwnProperty(name)) {
+				this.inputs[name].val('');
+			}
+		});
+		var inputNamesSetToDefaultValues = [
+			'billing', 'residential', 'airshipment', 
+			'commercialflight', 'chargefreight', 'useroute', 'addsurcharge'
+		];
+
+		inputNamesSetToDefaultValues.forEach((name, idx, array) => {
+			if (this.inputs.hasOwnProperty(name)) {
+				console.log(name);
+				this.inputs[name].val(this.config.fields[name].default);
+			}
+		});
+
+		this.triggerInputsChange();
+	}
+
+	triggerInputsChange() {
+		this.inputs.addsurcharge.change();
+		this.inputs.surchargepercent.change();
+		this.inputs.artaxcode.change();
+	}
+
+	updateDeleteLink(json = null) {
+		var button = this.form.find('a.delete_button');
+		if (button.length == 0) {
+			return false;
+		}
+		var uri = URI(button.attr('href'));
+		var data = uri.query(true);
+
+		if (json) {
+			data.code = json.code;
+			uri.query(data);
+			button.attr('href', uri.toString());
+			button.addClass('show');
+			return true;
+		}
+		data.code = '';
+		uri.query(data);
+		button.attr('href', uri.toString());
+		button.removeClass('show');
+		return true;
+	}
+}
