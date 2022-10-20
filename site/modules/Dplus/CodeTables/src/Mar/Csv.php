@@ -197,7 +197,7 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 	 */
 	private function _inputUpdateSurcharge(WireInputData $values, Shipvia $code) {
 		$code->setAddsurcharge($this->fieldAttribute('addsurcharge', 'default'));
-		$code->setSurchagepercent($this->fieldAttribute('surchargepct', 'default'));
+		$code->setSurchargepercent($this->fieldAttribute('surchargepct', 'default'));
 
 		if ($values->ynbool('addsurgcharge') === false) {
 			return [];
@@ -218,8 +218,6 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 	 * @return array
 	 */
 	private function _inputUpdateArtaxcode(WireInputData $values, Shipvia $code) {
-		$original = $code->artaxcode;
-
 		if (Tm::instance()->exists($values->text('artaxcode'))) {
 			$code->setArtaxcode($values->text('artaxcode'));
 		}
