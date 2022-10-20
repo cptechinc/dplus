@@ -1,0 +1,81 @@
+<div class="row">
+	<div class="col-sm-3 mb-2">
+		<label for="scac">SCAC Code</label>
+	</div>
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-2 px-0">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'scac',
+						'size': 'sm',
+						'attributes': {
+							'maxlength': manager.fieldAttribute('scac', 'maxlength')
+						}
+					},
+				}
+			%}
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-3 mb-2">
+		<label for="edimethod">EDI Method</label>
+	</div>
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-2 px-0">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'sedimethod',
+						'size': 'sm',
+						'attributes': {
+							'maxlength': manager.fieldAttribute('edimethod', 'maxlength')
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-3 mb-2">
+		<label for="chargefreight">Charge Freight</label>
+	</div>
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-2 px-0">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'chargefreight',
+						'size': 'sm',
+						'value' : manager.fieldAttribute('chargefreight', 'default'),
+						'haskeys': true,
+						'showvalue': true,
+						'options': manager.fieldAttribute('chargefreight', 'options')
+					}
+				}
+			%}
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-3 mb-2">
+		<label for="useroute">Provide Routing</label>
+	</div>
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-2 px-0">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'useroute',
+						'size': 'sm',
+						'value' : manager.fieldAttribute('useroute', 'default'),
+						'haskeys': true,
+						'showvalue': true,
+						'options': manager.fieldAttribute('useroute', 'options')
+					}
+				}
+			%}
+		</div>
+	</div>
+</div>

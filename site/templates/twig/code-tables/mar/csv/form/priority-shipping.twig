@@ -1,32 +1,73 @@
 <div class="row">
-	<div class="col-6">
-		<div class="form-group">
-			<label for="priority">Priority</label>
-			{% include 'util/bootstrap/form/input.twig' with {
-					'input': {
-						'name': 'priority',
-						'size': 'sm',
-						'attributes': {
-							'maxlength': manager.fieldAttribute('priority', 'maxlength')
-						}
-					},
-				}
-			%}
-		</div>
+	<div class="col-sm-3 mb-2">
+		<label for="priority">Priority</label>
 	</div>
-	<div class="col-6">
-		<div class="form-group">
-			<label for="shippingarea">Shipping Area</label>
-			{% include 'util/bootstrap/form/input.twig' with {
-					'input': {
-						'name': 'shippingarea',
+	<div class="col-sm-2 mb-2">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'priority',
+					'size': 'sm',
+					'attributes': {
+						'maxlength': manager.fieldAttribute('priority', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-3 mb-2">
+		<label for="shippingarea">Shipping Area</label>
+	</div>
+	<div class="col-sm-2 mb-2">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'shippingarea',
+					'size': 'sm',
+					'attributes': {
+						'maxlength': manager.fieldAttribute('shippingarea', 'maxlength')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-3 mb-2">
+		<label for="airshipment">Air Shipment</label>
+	</div>
+	<div class="col-sm-2 mb-2">
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'airshipment',
+					'size': 'sm',
+					'value' : manager.fieldAttribute('airshipment', 'default'),
+					'haskeys': true,
+					'showvalue': true,
+					'options': manager.fieldAttribute('airshipment', 'options')
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-3 mb-2">
+		<label for="commercialflight">Commercial Freight</label>
+	</div>
+	<div class="col-sm-2 mb-2">
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'commercialflight',
 						'size': 'sm',
-						'attributes': {
-							'maxlength': manager.fieldAttribute('shippingarea', 'maxlength')
-						}
-					},
+						'value' : manager.fieldAttribute('commercialflight', 'default'),
+						'haskeys': true,
+						'showvalue': true,
+						'options': manager.fieldAttribute('commercialflight', 'options')
+					}
 				}
 			%}
-		</div>
 	</div>
 </div>
