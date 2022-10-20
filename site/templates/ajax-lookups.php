@@ -60,6 +60,10 @@
 			'mtm' => [
 				['GET', '', AjaxLookup\Mar::class, 'taxCodes'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'taxCodes'],
+			],
+			'tm' => [
+				['GET', '', AjaxLookup\Mar::class, 'arCustTaxCodes'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'arCustTaxCodes'],
 			]
 		],
 		'mgl' => [
