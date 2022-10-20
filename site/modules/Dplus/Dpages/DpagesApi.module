@@ -43,7 +43,7 @@ class DpagesApi extends Dpages implements Module {
 
 	public function lookupUrl($code, $query = []) {
 		$url = new Purl($this->wire('pages')->get("template=ajax-lookups")->httpUrl);
-		$url->path->add($code);
+		$url->path->add(rtrim($code, '/'));
 		if ($query) {
 			$url->query->setData($query);
 		}
