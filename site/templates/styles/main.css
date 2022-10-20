@@ -279,11 +279,11 @@ a.image-link:hover {
 }
 
 .font-monospace {
-	font-family: 'Inconsolata', monospace;
+	font-family: 'Inconsolata', monospace !important;
 }
 
 .text-monospace {
-	font-family: 'Inconsolata', monospace;
+	font-family: 'Inconsolata', monospace !important;
 }
 
 .text-underlined {
@@ -401,7 +401,7 @@ form label {
 	font-weight: bold;
 }
 
-form#code-form input[maxlength] {
+form#code-form input[maxlength], form#code-form input[type=number] {
 	font-family: 'Inconsolata', monospace;
 }
 
