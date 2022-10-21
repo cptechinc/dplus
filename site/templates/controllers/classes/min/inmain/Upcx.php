@@ -108,7 +108,7 @@ class Upcx extends AbstractController {
 	}
 
 /* =============================================================
-	Xref List Retrival Functions
+	X-ref List Retrival Functions
 ============================================================= */
 	private static function getXrefPaginatedList(WireData $data) {
 		$filter = new Filters\Min\Upcx();
@@ -135,21 +135,11 @@ class Upcx extends AbstractController {
 	private static function displayXref($data, ItemXrefUpc $xref) {
 		$html = '';
 		$html .= self::renderBreadcrumbs();
+		$html .= self::renderXrefIsLockedAlert($xref);
 		// $html .= '<div class="mb-3">'.self::displayLocked($data, $xref).'</div>';
 		// $html .= self::pw('config')->twig->render('items/upcx/form/page.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
 		return $html;
 	}
-
-	// private static function displayLocked($data, ItemXrefUpc $xref) {
-	// 	$upcx = self::getUpcx();
-	// 	$key  = $upcx->getRecordlockerKey($xref);
-
-	// 	if ($upcx->recordlocker->isLocked($key) && $upcx->recordlocker->userHasLocked($key) === false) {
-	// 		$msg = "UPC $xref->upc - $xref->itemid is being locked by " . $upcx->recordlocker->getLockingUser($key);
-	// 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-	// 	}
-	// 	return '';
-	// }
 
 /* =============================================================
 	Render HTML
@@ -177,14 +167,29 @@ class Upcx extends AbstractController {
 		return self::pw('config')->twig->render('items/upcx/.new/list/.js.twig');
 	}
 
-
 	private static function renderXrefJs(WireData $data) {
 		$configs = new WireData();
 		$configs->in = Configs\In::config();
 		return self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
 	}
 
-	
+	/** NOTE: Keep public for ITM */
+	public static function renderXrefIsLockedAlert(ItemXrefUpc $xref) {
+		if ($xref->isNew()) {
+			return '';
+		}
+
+		$upcx = self::getUpcx();
+		if ($upcx->lockrecord($xref)) {
+			return '';
+		}
+		$key = $upcx->getRecordlockerKey($xref);
+
+		$msg = "CXM $xref->upc is being locked by " . $upcx->recordlocker->getLockingUser($key);
+		$alert = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "CXM $xref->upc is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		$html  = '<div class="mb-3">' . $alert . '</div>';
+		return $html;
+	}
 
 
 /* =============================================================
@@ -275,24 +280,9 @@ class Upcx extends AbstractController {
 		$url = new Purl(self::url());
 		$url->query->set('action', 'delete-upcx');
 		$url->query->set('upc', $upc);
-		if ($itemID) {
-			$url->query->set('itemID', $itemID);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to List the UPCs associated with the ItemID
-	 * @param  string $itemID Item ID
-	 * @return string
-	 */
-	public static function itemUpcsUrl($itemID) {
-		$url = new Purl(self::url());
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
-
-	
 
 /* =============================================================
 	Supplemental Functions
