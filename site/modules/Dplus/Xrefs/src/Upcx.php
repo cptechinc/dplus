@@ -33,7 +33,7 @@ class Upcx extends AbstractXrefManager {
 		'qty'         => ['type' => 'number', 'default' => 1, 'min' => 1, 'max' => 99999999],
 		'primary'     => ['type' => 'text', 'default' => 'N', 'primary' => 'Y', 'options' => ['Y' => 'Yes', 'N' => 'No']],
 		'mastercase'  => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
-		'needsleabel' => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
+		'needslabel' => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
 	];
 	const FILTERABLE_FIELDS = ['upc', 'itemid'];
 	const RESPONSE_TEMPLATE  = 'X-ref {code} {not} {crud}';
@@ -148,7 +148,6 @@ class Upcx extends AbstractXrefManager {
 	 */
 	public function primaryUpcByItemid($itemID, $excludeUpc = '') {
 		$q = $this->query();
-		$q->select('upcxcode');
 		if ($excludeUpc) {
 			$q->filterByUpc($excludeUpc, Criteria::NOT_IN);
 		}
@@ -230,8 +229,7 @@ class Upcx extends AbstractXrefManager {
 			case 'update':
 			case 'edit':
 				$this->inputUpdate($input);
-				break;
-				
+				break;	
 		}
 	}
 
@@ -251,7 +249,7 @@ class Upcx extends AbstractXrefManager {
 
 		if ($xref->isNew() === false && $this->lockrecord($xref) === false) {
 			$message = self::DESCRIPTION_RECORD . " ($upc-$itemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($xref);
-			$this->setResponse(Response::responseError("$upc-$itemID", $message));
+			$this->setResponse(Response::responseError($upc, $message));
 			return false;
 		}
 
@@ -318,7 +316,7 @@ class Upcx extends AbstractXrefManager {
 		$xref->setQty($values->int('qty', ['max' => $this->fieldAttribute('qty', 'max'), 'blankValue' =>  $this->fieldAttribute('qty', 'default'), 'min' => $this->fieldAttribute('qty', 'min')]));
 		$xref->setPrimary($values->yn('primary'));
 		$xref->setMastercase($values->yn('mastercase'));
-		$xref->setNaedslabel($values->yn('needslabel'));
+		$xref->setNeedslabel($values->yn('needslabel'));
 
 		if ($xref->isPrimary()) {
 			$this->updatePrimaryFor = $xref->itemid;

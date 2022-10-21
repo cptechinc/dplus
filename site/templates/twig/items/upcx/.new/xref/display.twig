@@ -1,0 +1,21 @@
+<div class="card">
+	<div class="card-header">
+		{% block header %}
+			<div class="row">
+				<div class="col-sm-2">
+					<strong>UPC:</strong>
+				</div>
+				<div class="col-sm-6">
+					{{ xref.upc ? xref.upc : 'NEW' }} - {{ xref.itemid }}
+				</div>
+			</div>
+		{% endblock %}
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-8">
+				{% include 'items/upcx/.new/xref/form.twig' %}
+			</div>
+		</div>
+	</div>
+</div>

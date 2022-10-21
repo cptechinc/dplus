@@ -1,0 +1,20 @@
+<form action="{{ input.url() }}" method="POST" id="xref-form">
+	<input type="hidden" name="action" value="update">
+
+	{% include 'items/upcx/.new/xref/form/key.twig' %}
+	{% include 'items/upcx/.new/xref/form/primary.twig' %}
+	{% include 'items/upcx/.new/xref/form/qty.twig' %}
+	{% include 'items/upcx/.new/xref/form/mastercase.twig' %}
+	{% include 'items/upcx/.new/xref/form/needslabel.twig' %}
+	
+
+	<div class="d-flex justify-content-between align-items-center">
+		{% block edit_actions %}
+			{% include 'items/upcx/.new/xref/form/crud-buttons.twig' %}
+		{% endblock %}
+
+		<a href="{{ page.xrefListUrl(upcx.getRecordlockerKey(xref)) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

@@ -1,0 +1,16 @@
+{#
+	Only show Edit Actions if the Item is
+	1. Locked for editing by the User
+	2. Is a new Item
+	NOTE: Only show delete if item already exists.
+#}
+{% if upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(xref)) or xref.isNew() %}
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+	</button>
+	{% if xref.isNew() == false %}
+		<a href="{{ page.xrefDeleteUrl(xref.upc, xref.itemid)}}" class="btn btn-danger delete_button" data-delete="UPC {{ upc.upc }}">
+			<i class="fa fa-trash" aria-hidden="true"></i> Delete
+		</a>
+	{% endif %}
+{% endif %}

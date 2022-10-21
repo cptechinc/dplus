@@ -1,0 +1,34 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="primary">Primary</label>
+	</div>
+	<div class="col-sm-6">
+		<div class="form-row">
+			<div class="col-sm-2">
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+						'select': {
+							'name': 'primary',
+							'size': 'sm',
+							'value' : xref.is_primary() ? 'Y' : 'N',
+							'haskeys': true,
+							'options': {'Y': 'Yes', 'N': 'No'},
+							'attributes': {
+								'data-primary': xref.is_primary() ? 'true' : 'false'
+							}
+						}
+					}
+				%}
+			</div>
+			<div class="col-sm-10">
+				{% if upcx.itemidHasPrimaryUpc(xref.itemid, xref.upc) %}
+					{% set primary = upcx.primaryUpcByItemid(xref.itemid, xref.upc) %}
+					<a href="{{ page.xrefUrl(primary.upc, primary.itemid) }}" class="link">
+						View Primary ({{ primary.upc }})
+					</a>
+				{% endif %}
+			</div>
+		</div>
+		
+		<input type="hidden" name="valid_primary" id="valid_primary" value="false">
+	</div>
+</div>

@@ -44,33 +44,34 @@ class Upcx extends AbstractController {
 		return self::list($data);
 	}
 
-	// public static function handleCRUD($data) {
-	// 	if (self::validateUserPermission() === false) {
-	// 		return self::pw('session')->redirect(self::url(), $http301 = false);
-	// 	}
-	// 	$fields = ['action|text', 'upc|text', 'itemID|text',];
-	// 	self::sanitizeParameters($data, $fields);
+	public static function handleCRUD($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('session')->redirect(self::url(), $http301 = false);
+		}
+		$fields = ['action|text', 'upc|text', 'itemID|text',];
+		self::sanitizeParameters($data, $fields);
 
-	// 	if (empty($data->action) === false) {
-	// 		$upcx = self::getUpcx();
-	// 		$upcx->process_input(self::pw('input'));
+		if (empty($data->action) === false) {
+			$upcx = self::getUpcx();
+			$upcx->processInput(self::pw('input'));
 
-	// 		switch($data->action) {
-	// 			case 'delete-upcx':
-	// 				self::pw('session')->redirect(self::xrefListUrl(), $http301 = false);
-	// 				break;
-	// 			case 'update-upcx':
-	// 				self::pw('session')->redirect(self::xrefListUrl(implode(Locker::glue(), [$data->upc, $data->itemID])), $http301 = false);
-	// 				break;
-	// 			default:
-	// 				self::pw('session')->redirect(self::xrefUrl($data->upc, $data->itemID), $http301 = false);
-	// 				break;
-	// 		}
-	// 	}
-	// 	self::pw('session')->redirect(self::xrefUrl($data->upc, $data->itemID), $http301 = false);
-	// }
+			switch($data->action) {
+				case 'delete':
+					self::pw('session')->redirect(self::xrefListUrl(), $http301 = false);
+					break;
+				case 'update':
+					// self::pw('session')->redirect(self::xrefListUrl(implode(Locker::glue(), [$data->upc, $data->itemID])), $http301 = false);
+					self::pw('session')->redirect(self::xrefUrl($data->upc, $data->itemID), $http301 = false);
+					break;
+				default:
+					self::pw('session')->redirect(self::xrefUrl($data->upc, $data->itemID), $http301 = false);
+					break;
+			}
+		}
+		self::pw('session')->redirect(self::xrefUrl($data->upc, $data->itemID), $http301 = false);
+	}
 
-	private static function xref($data) {
+	private static function xref(WireData $data) {
 		self::sanitizeParametersShort($data, ['upc|text', 'itemID|text', 'action|text']);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -91,7 +92,7 @@ class Upcx extends AbstractController {
 		return $html;
 	}
 
-	private static function list($data) {
+	private static function list(WireData $data) {
 		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
 		self::getUpcx()->recordlocker->deleteLock();
 		self::setupSortfilter($data);
@@ -124,7 +125,7 @@ class Upcx extends AbstractController {
 /* =============================================================
 	Display Functions
 ============================================================= */
-	private static function displayList($data, PropelModelPager $xrefs) {
+	private static function displayList(WireData $data, PropelModelPager $xrefs) {
 		$html = '';
 		$html .= self::renderBreadcrumbs();
 		$html .= self::renderResponse();
@@ -132,12 +133,12 @@ class Upcx extends AbstractController {
 		return $html;
 	}
 
-	private static function displayXref($data, ItemXrefUpc $xref) {
+	private static function displayXref(WireData $data, ItemXrefUpc $xref) {
 		$html = '';
 		$html .= self::renderBreadcrumbs();
 		$html .= self::renderXrefIsLockedAlert($xref);
-		// $html .= '<div class="mb-3">'.self::displayLocked($data, $xref).'</div>';
-		// $html .= self::pw('config')->twig->render('items/upcx/form/page.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
+		$html .= self::renderResponse();
+		$html .= self::renderXref($data, $xref);
 		return $html;
 	}
 
@@ -189,6 +190,10 @@ class Upcx extends AbstractController {
 		$alert = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "CXM $xref->upc is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		$html  = '<div class="mb-3">' . $alert . '</div>';
 		return $html;
+	}
+
+	private static function renderXref(WireData $data, ItemXrefUpc $xref) {
+		return self::pw('config')->twig->render('items/upcx/.new/xref/display.twig', ['upcx' => self::getUpcx(), 'xref' => $xref]);
 	}
 
 
@@ -278,7 +283,7 @@ class Upcx extends AbstractController {
 	 */
 	public static function xrefDeleteUrl($upc, $itemID) {
 		$url = new Purl(self::url());
-		$url->query->set('action', 'delete-upcx');
+		$url->query->set('action', 'delete');
 		$url->query->set('upc', $upc);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();

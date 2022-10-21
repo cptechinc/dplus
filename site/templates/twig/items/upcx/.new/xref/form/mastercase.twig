@@ -1,0 +1,17 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="mastercase">Master Case</label>
+	</div>
+	<div class="col-sm-2">
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'mastercase',
+					'value' : xref.mastercase,
+					'size': 'sm',
+					'haskeys': true,
+					'options': upcx.fieldAttribute('mastercase', 'options'),
+				}
+			}
+		%}
+	</div>
+</div>

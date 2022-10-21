@@ -1,0 +1,17 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="needslabel">Needs Label</label>
+	</div>
+	<div class="col-sm-2">
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'needslabel',
+					'value' : xref.needslabel,
+					'size': 'sm',
+					'haskeys': true,
+					'options': upcx.fieldAttribute('needslabel', 'options'),
+				}
+			}
+		%}
+	</div>
+</div>

@@ -1,0 +1,58 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="upc">UPC Code</label>
+	</div>
+	<div class="col-sm-5">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'upc', 'value': xref.upc,
+					'size': 'sm',
+					'addclasses': ['text-monospace'],
+					'attributes': {
+						'readonly': xref.isNew() == false,
+						'data-new': xref.isNew() ? 'true' : 'false'
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="itemID">Item ID</label>
+	</div>
+	<div class="col-sm-5">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'attributes': {
+						'readonly': xref.itemid ? true : false
+					},
+					'input': {
+						'name': 'itemID',
+						'value': xref.itemid,
+						'addclasses': ['text-monospace'],
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'itemid':  xref.itemid,
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('items'),
+							'data-input': '#itemID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="text-muted help-text item-description">{{ xref.ItemMasterItem.description }}</small>
+	</div>
+</div>

@@ -1,0 +1,18 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="qty">Qty Per UPC</label>
+	</div>
+	<div class="col-sm-2">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'qty', 'value': xref.qty,
+					'size': 'sm',
+					'addclasses': ['text-monospace', 'text-right'],
+					'attributes': {
+						'max': upcx.fieldAttribute('qty', 'max')
+					}
+				}
+			}
+		%}
+	</div>
+</div>
