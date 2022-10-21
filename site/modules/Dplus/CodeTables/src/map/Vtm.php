@@ -1,18 +1,15 @@
 <?php namespace Dplus\Codes\Map;
 // Propel Classes
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ProcessWire\WireInput;
 // Dplus Models
-use ApTypeCodeQuery, ApTypeCode;
-// Dplus Validators
-use Dplus\CodeValidators as Validators;
+use ApTypeCode;
+use ConfigPo;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Codes
 use Dplus\Codes\AbstractCodeTableEditableSingleKey;
-use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the TTM code table
@@ -40,7 +37,7 @@ class Vtm extends AbstractCodeTableEditableSingleKey {
 
 	/**
 	 * Return Array ready for JSON
-	 * @param  Code  $code Code
+	 * @param  ApTypeCode  $code Code
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
@@ -58,6 +55,7 @@ class Vtm extends AbstractCodeTableEditableSingleKey {
 ============================================================= */
 
 	public function initFieldAttributes() {
+		/** @var ConfigPo */
 		$configPo = Configs\Po::config();
 		$attributes = self::FIELD_ATTRIBUTES;
 		$attributes['fabricator']['disabled'] = $configPo->usefabrication() === false;
@@ -114,7 +112,9 @@ class Vtm extends AbstractCodeTableEditableSingleKey {
 			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 			$code->setId($id);
 		}
-		$code->setFabricator($this->fieldAttribute('fabricator', 'default'));
+		if ($this->fieldAttribute('fabricator', 'disabled') === false) {
+			$code->setFabricator($this->fieldAttribute('fabricator', 'default'));
+		}
 		$code->setProduction($this->fieldAttribute('production', 'default'));
 		$code->setCompetitor($this->fieldAttribute('competitor', 'default'));
 		return $code;
@@ -125,8 +125,8 @@ class Vtm extends AbstractCodeTableEditableSingleKey {
 ============================================================= */
 	/**
 	 * Update Record with Input Data
-	 * @param  WireInput $input Input Data
-	 * @param  Code      $code
+	 * @param  WireInput   $input Input Data
+	 * @param  ApTypeCode  $code
 	 * @return array
 	 */
 	protected function _inputUpdate(WireInput $input, Code $code) {
