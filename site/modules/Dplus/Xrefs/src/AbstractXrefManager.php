@@ -51,7 +51,7 @@ abstract class AbstractXrefManager extends WireData {
 	Field Configs
 ============================================================= */
 	public function initFieldAttributes() {
-		$attributes = self::FIELD_ATTRIBUTES;
+		$attributes = static::FIELD_ATTRIBUTES;
 		$this->fieldAttributes = $attributes;
 	}
 

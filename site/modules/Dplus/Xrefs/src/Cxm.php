@@ -43,8 +43,8 @@ class Cxm extends AbstractXrefManager {
 		'qty_pack_tare'     => ['type' => 'number', 'precision' => 0, 'max' => 9999],
 		'rounding'          => ['type' => 'text', 'default' => 'N', 'options' => ['D' => 'down', 'U' => 'up', 'N' => 'normal']]
 	];
-	const FILTERABLE_FIELDS = ['code', 'description'];
-	const RESPONSE_TEMPLATE  = 'Xref {code} {not} {crud}';
+	const FILTERABLE_FIELDS = ['custitemid', 'itemid', 'description'];
+	const RESPONSE_TEMPLATE  = 'X-ref {code} {not} {crud}';
 	/** DPlus Permission Xref */
 	const PERMISSION = '';
 
@@ -74,17 +74,12 @@ class Cxm extends AbstractXrefManager {
 	 * @return array
 	 */
 	public function xrefJson(Xref $xref) {
-		return [];
+		$json = [];
+		foreach (self::FIELD_ATTRIBUTES as $name => $data) {
+			$json[$name] = $xref->$name;
+		}
+		return $json;
 	}
-
-/* =============================================================
-	Field Configs
-============================================================= */
-	public function initFieldAttributes() {
-		$attributes = self::FIELD_ATTRIBUTES;
-		$this->fieldAttributes = $attributes;
-	}
-
 
 /* =============================================================
 	Query Functions
@@ -95,37 +90,11 @@ class Cxm extends AbstractXrefManager {
 	 * @param  string $custitemID Customer's Item ID'
 	 * @return ItemXrefCustomerQuery
 	 */
-	public function queryCustidCustitemid($custID, $custitemID) {
+	public function queryUpc($custID, $custitemID) {
 		$q = $this->query();
 		$q->filterByCustid($custID);
 		$q->filterByCustitemid($custitemID);
 		return $q;
-	}
-
-/* =============================================================
-	CRUD Processing
-============================================================= */
-	/**
-	 * Process Input Data, Update Database
-	 * @param  WireInput $input Input Data
-	 */
-	public function processInput(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		switch ($values->text('action')) {
-			case 'update-cxm-shortitem':
-				$this->inputUpdateShortitem($input);
-				break;
-			case 'delete':
-				$this->inputDelete($input);
-				break;
-			case 'update':
-			case 'edit':
-				$this->inputUpdate($input);
-				break;
-				
-		}
 	}
 
 /* =============================================================
@@ -279,6 +248,29 @@ class Cxm extends AbstractXrefManager {
 /* =============================================================
 	CRUD Processing
 ============================================================= */
+	/**
+	 * Process Input Data, Update Database
+	 * @param  WireInput $input Input Data
+	 */
+	public function processInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update-cxm-shortitem':
+				$this->inputUpdateShortitem($input);
+				break;
+			case 'delete':
+				$this->inputDelete($input);
+				break;
+			case 'update':
+			case 'edit':
+				$this->inputUpdate($input);
+				break;
+				
+		}
+	}
+
 	/**
 	 * Update Xref from Input Data
 	 * @param  WireInput $input Input Data
@@ -557,7 +549,7 @@ class Cxm extends AbstractXrefManager {
 		}
 
 		$xref->delete();
-		$response = $this->saveAndResponsd($xref);
+		$response = $this->saveAndRespond($xref);
 		$$this->setResponse($response);
 		return $response->hasSuccess();
 
