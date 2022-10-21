@@ -52,7 +52,6 @@ class CodeForm {
 
 		inputNamesSetToDefaultValues.forEach((name, idx, array) => {
 			if (this.inputs.hasOwnProperty(name)) {
-				console.log(name);
 				this.inputs[name].val(this.config.fields[name].default);
 			}
 		});
