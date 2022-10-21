@@ -3,13 +3,13 @@
 		<label for="service">UPS Service</label>
 	</div>
 	<div class="col-sm-4 mb-2">
-		{% include 'util/bootstrap/form/input.twig' with {
-				'input': {
+
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
 					'name': 'service',
 					'size': 'sm',
-					'attributes': {
-						'maxlength': manager.fieldAttribute('service', 'maxlength')
-					}
+					'value' : manager.fieldAttribute('service', 'default'),
+					'options': manager.fieldAttribute('service', 'options')
 				}
 			}
 		%}

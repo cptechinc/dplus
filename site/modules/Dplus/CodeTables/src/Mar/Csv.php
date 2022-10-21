@@ -27,7 +27,19 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 8],
 		'description' => ['type' => 'text', 'maxlength' => 20],
-		'service'     => ['type' => 'text', 'maxlength' => 25],
+		'service'     => [
+			'type' => 'text', 
+			'maxlength' => 25,
+			'default' => '',
+			'options' => [
+				'',
+				'Ground', 'Standard', 
+				'Next Day Air', 'Next Day Air Early AM', 'Next Day Air Saver', 
+				'2nd Day Air','2nd Day Air AM', '3 Day Select',
+				'Worldwide Express', 'Worldwide Expedited','Worldwide Express Plus', 'Worldwide Saver',
+				'01', '03', '05', '06', '07', '20', '70', '80', '49', '83', '90','92',
+			]
+		],
 		'billing'     => ['type' => 'text', 'options' => ['' => 'Not Used', 'F' => 'Freight Collect', 'B' => 'Bill to Third Party', 'C' => 'Consignee'], 'default' => ''],
 		'residential' => ['type' => 'text', 'options' => ['' => 'Not Used', 'Y' => 'Yes', 'N' => 'No'], 'default' => ''],
 		'priority'    => ['type' => 'text', 'maxlength' => 3],
@@ -131,9 +143,9 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 	 * @return array
 	 */
 	private function _inputUpdateServicePriorityShipping(WireInputData $values, Shipvia $code) {
-		$code->setService(strtoupper($values->text('service', ['maxLength' => $this->fieldAttribute('service', 'maxlength')])));
-		$code->setPriority(strtoupper($values->text('priority', ['maxLength' => $this->fieldAttribute('priority', 'maxlength')])));
-		$code->setShippingarea(strtoupper($values->text('shippingarea', ['maxLength' => $this->fieldAttribute('shippingarea', 'maxlength')])));
+		$code->setService($values->option('service', $this->fieldAttribute('service', 'options')));
+		$code->setPriority($values->text('priority', ['maxLength' => $this->fieldAttribute('priority', 'maxlength')]));
+		$code->setShippingarea($values->text('shippingarea', ['maxLength' => $this->fieldAttribute('shippingarea', 'maxlength')]));
 		return [];
 	}
 
