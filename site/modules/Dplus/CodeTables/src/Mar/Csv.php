@@ -52,7 +52,7 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 		'useroute'         => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
 		'addsurcharge'     => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
 		'surchargepercent' => ['type' => 'number', 'max' => 99.999, 'precision' => 3, 'default' => 0.000],
-		'artaxcode'        => ['type' => 'text', 'maxlength' => Tm::FIELD_ATTRIBUTES['code']['maxlength']],
+		'artaxcode'        => ['type' => 'text', 'enabled' => false, 'maxlength' => Tm::FIELD_ATTRIBUTES['code']['maxlength']],
 	];
 
 	/** @var self */
@@ -84,6 +84,7 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 		$code->setChargefreight($this->fieldAttribute('chargefreight', 'default'));
 		$code->setUseroute($this->fieldAttribute('useroute', 'default'));
 		$code->setAddsurcharge($this->fieldAttribute('addsurcharge', 'default'));
+		$code->setArtaxcode('');
 	}
 
 /* =============================================================
@@ -230,6 +231,10 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 	 * @return array
 	 */
 	private function _inputUpdateArtaxcode(WireInputData $values, Shipvia $code) {
+		if ($this->fieldAttribute('artaxcdode', 'enabled') === false) {
+			$code->setArtaxcode('');
+			return [];
+		}
 		if (Tm::instance()->exists($values->text('artaxcode'))) {
 			$code->setArtaxcode($values->text('artaxcode'));
 		}

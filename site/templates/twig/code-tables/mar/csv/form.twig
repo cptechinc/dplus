@@ -52,7 +52,12 @@
 	{% include 'code-tables/mar/csv/form/priority-shipping.twig' %}
 	{% include 'code-tables/mar/csv/form/scac-edi-chargefreight.twig' %}
 	{% include 'code-tables/mar/csv/form/surcharge-percent.twig' %}
-	{% include 'code-tables/mar/csv/form/artaxcode.twig' %}
+
+	{% if manager.fieldAttribute('artaxcode', 'enabled') %}
+		{% include 'code-tables/mar/csv/form/artaxcode.twig' %}
+	{% endif %}
+
+	<hr>
 
 	<div class="d-flex justify-content-between align-items-center">
 		<button type="submit" class="btn btn-success form_button">
