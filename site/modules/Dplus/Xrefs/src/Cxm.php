@@ -90,7 +90,7 @@ class Cxm extends AbstractXrefManager {
 	 * @param  string $custitemID Customer's Item ID'
 	 * @return ItemXrefCustomerQuery
 	 */
-	public function queryUpc($custID, $custitemID) {
+	public function queryCustidCustitemid($custID, $custitemID) {
 		$q = $this->query();
 		$q->filterByCustid($custID);
 		$q->filterByCustitemid($custitemID);

@@ -86,7 +86,7 @@ class Upcx extends AbstractXrefManager {
 	 */
 	public function queryUpcItemid($upc, $itemID) {
 		$q = $this->queryUpc($upc);
-		$q->filterByItemid($upc, $itemID);
+		$q->filterByItemid($itemID);
 		return $q;
 	}
 
@@ -102,6 +102,18 @@ class Upcx extends AbstractXrefManager {
 	public function exists($upc, $itemID) {
 		$q = $this->queryUpcItemid($upc, $itemID);
 		return boolval($q->count());
+	}
+
+	/**
+	 * Return if X-Ref exists by key
+	 * @param  string $key
+	 * @return ItemXrefUpc
+	 */
+	public function existsByKey($key) {
+		$keys = explode($this->recordlocker::glue(), $key);
+		$upc = $keys[0];
+		$itemID = $keys[1];
+		return $this->exists($upc, $itemID);
 	}
 
 	/**
@@ -121,7 +133,7 @@ class Upcx extends AbstractXrefManager {
 	 * @param  string $itemID  Item ID
 	 * @return ItemXrefUpc
 	 */
-	public function xrefByRecordlockerKey($key) {
+	public function xrefByKey($key) {
 		$keys = explode($this->recordlocker::glue(), $key);
 		$upc = $keys[0];
 		$itemID = $keys[1];
