@@ -1,15 +1,13 @@
 <?php namespace Dplus\Filters\Mar;
 // Dplus Model
 use SalesPersonQuery, SalesPerson as Model;
-// ProcessWire Classes
-use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter;
+use Dplus\Filters\CodeFilter;
 
 /**
  * Wrapper Class for adding Filters to the SalesPersonQuery class
  */
-class SalesPerson extends AbstractFilter {
+class SalesPerson extends CodeFilter {
 	const MODEL = 'SalesPerson';
 
 /* =============================================================
@@ -17,10 +15,10 @@ class SalesPerson extends AbstractFilter {
 ============================================================= */
 	public function _search($q, $cols = []) {
 		$columns = [
-			Model::get_aliasproperty('contactid'),
-			Model::get_aliasproperty('title'),
+			Model::get_aliasproperty('code'),
+			Model::get_aliasproperty('name'),
 		];
-		$this->query->search_filter($columns, strtoupper($q));
+		$this->query->searchFilter($columns, strtoupper($q));
 	}
 
 /* =============================================================

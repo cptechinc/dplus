@@ -1,0 +1,30 @@
+<div>
+	<label for="vendorid">VendorID</label>
+	{% include 'util/bootstrap/form/input-group.twig' with {
+			'inputgroup': {
+				'type': 'prepend',
+				'size': 'sm',
+				'input': {
+					'name': 'vendorid',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'VendorID',
+						'data-jqv': 'true'
+					}
+				},
+				'button': {
+					'colorclass': 'btn-secondary',
+					'text': 'fa fa-search'|icon,
+					'attributes': {
+						'title': 'Search Salesperson Groups',
+						'data-toggle': 'modal',
+						'data-target': '#ajax-modal',
+						'data-lookupurl': page.searchLookupUrl('vendors'),
+						'data-input': '#vendorid'
+					}
+				}
+			}
+		}
+	%}
+	<small class="text-muted vendor-name"></small>
+</div>

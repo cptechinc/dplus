@@ -1,0 +1,59 @@
+class SpmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SpmRequests();
+		}
+		return this.instance;
+	}
+
+	validateCode(code, callback) {
+		var ajax = new AjaxRequest(this.validateCodeUrl());
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCode(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/spm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getVendor(vendorid, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('map/vendor/') }}');
+
+		ajax.setData({vendorID: vendorid});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getSalesGroup(groupid, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/spgpm/code/') }}');
+
+		ajax.setData({code: groupid});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getUser(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/logm/user/') }}');
+
+		ajax.setData({userID: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateCodeUrl() {
+		return '{{ page.jsonApiUrl('mar/validate/spm/code/') }}';
+	}
+}

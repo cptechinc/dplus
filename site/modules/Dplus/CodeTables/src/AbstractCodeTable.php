@@ -41,7 +41,7 @@ abstract class AbstractCodeTable extends WireData {
 	 * @return array
 	 */
 	public function codeJson(Code $code) {
-		return ['code' => $code->code, 'description' => $code->description];
+		return ['code' => $code->code, 'description' => $code->__isset('description') ? $code->description : ''];
 	}
 
 /* =============================================================

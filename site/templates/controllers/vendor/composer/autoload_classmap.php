@@ -70,6 +70,7 @@ return array(
     'Controllers\\Mar\\Armain\\Roptm' => $baseDir . '/classes/mar/armain/Roptm.php',
     'Controllers\\Mar\\Armain\\Sic' => $baseDir . '/classes/mar/armain/Sic.php',
     'Controllers\\Mar\\Armain\\Spgpm' => $baseDir . '/classes/mar/armain/Spgpm.php',
+    'Controllers\\Mar\\Armain\\Spm' => $baseDir . '/classes/mar/armain/Spm.php',
     'Controllers\\Mar\\Armain\\Suc' => $baseDir . '/classes/mar/armain/Suc.php',
     'Controllers\\Mar\\Armain\\Tm' => $baseDir . '/classes/mar/armain/Tm.php',
     'Controllers\\Mar\\Armain\\Worm' => $baseDir . '/classes/mar/armain/Worm.php',

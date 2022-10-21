@@ -1,0 +1,31 @@
+<div class="form-group">
+	<label for="{{ name }}">GL Account</label>
+	{% include 'util/bootstrap/form/input-group.twig' with {
+			'inputgroup': {
+				'type': 'prepend',
+				'size': 'sm',
+				'input': {
+					'name': name,
+					'addclasses': ['gl-account'],
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'General Ledger Account',
+						'data-jqv': 'true'
+					}
+				},
+				'button': {
+					'colorclass': 'btn-secondary',
+					'text': 'fa fa-search'|icon,
+					'attributes': {
+						'title': 'Search General Ledger Accounts',
+						'data-toggle': 'modal',
+						'data-target': '#ajax-modal',
+						'data-lookupurl': page.searchLookupUrl('mgl/mhm/'),
+						'data-input': '#' ~ name
+					}
+				}
+			}
+		}
+	%}
+	<small class="text-muted gl-acct-name"></small>
+</div>
