@@ -9,7 +9,8 @@
 						'name': 'scac',
 						'size': 'sm',
 						'attributes': {
-							'maxlength': manager.fieldAttribute('scac', 'maxlength')
+							'maxlength': manager.fieldAttribute('scac', 'maxlength'),
+							'oninput': 'this.value = this.value.toUpperCase()',
 						}
 					},
 				}
@@ -29,7 +30,8 @@
 						'name': 'edimethod',
 						'size': 'sm',
 						'attributes': {
-							'maxlength': manager.fieldAttribute('edimethod', 'maxlength')
+							'maxlength': manager.fieldAttribute('edimethod', 'maxlength'),
+							'oninput': 'this.value = this.value.toUpperCase()',
 						}
 					}
 				}
