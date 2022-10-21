@@ -180,6 +180,17 @@ $(function() {
 		modal_ajax.find('.modal-body').load(href);
 	});
 
+	$("body").on('click', '#ajax-modal a.clear-search', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').loadin(button.attr('href'), function(ajaxResponse) {
+			if (ajaxResponse.headers.hasOwnProperty('page-headline')) {
+				modal.find('.modal-title').text('Search ' + ajaxResponse.headers['page-headline']);
+			}
+		});
+	});
+
 /* =============================================================
 	Validation Functions
 ============================================================= */
