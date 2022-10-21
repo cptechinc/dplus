@@ -213,17 +213,17 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 	 */
 	private function _inputUpdateSurcharge(WireInputData $values, Shipvia $code) {
 		$code->setAddsurcharge($this->fieldAttribute('addsurcharge', 'default'));
-		$code->setSurchargepercent($this->fieldAttribute('surchargepct', 'default'));
+		$code->setSurchargepercent($this->fieldAttribute('surchargepercent', 'default'));
 
-		if ($values->ynbool('addsurgcharge') === false) {
+		if ($values->ynbool('addsurcharge') === false) {
 			return [];
 		}
 		$code->setAddsurcharge($values->yn('addsurcharge'));
 		$options = [
-			'precision' => $this->fieldAttribute('surchargepct', 'precision'),
-			'max'       => $this->fieldAttribute('surchargepct', 'max'),
+			'precision' => $this->fieldAttribute('surchargepercent', 'precision'),
+			'max'       => $this->fieldAttribute('surchargepercent', 'max'),
 		];
-		$code->setSurchagepercent($values->float('surchargepct', $options));
+		$code->setSurchargepercent($values->float('surchargepercent', $options));
 		return [];
 	}
 

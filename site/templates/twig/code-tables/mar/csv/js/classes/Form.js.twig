@@ -19,6 +19,7 @@ class CodeForm {
 		this.updateDeleteLink(json);
 
 		if (json) {
+			console.log(json);
 			this.inputs.form.attr('data-code', json.code);
 			this.inputs.code.val(json.code);
 			this.inputs.code.attr('readonly', 'true');
@@ -62,7 +63,7 @@ class CodeForm {
 	triggerInputsChange() {
 		this.inputs.addsurcharge.change();
 		this.inputs.surchargepercent.change();
-		this.inputs.artaxcode.change();
+		// this.inputs.artaxcode.change();
 	}
 
 	updateDeleteLink(json = null) {
