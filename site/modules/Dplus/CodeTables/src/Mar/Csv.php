@@ -40,8 +40,8 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 				'01', '03', '05', '06', '07', '20', '70', '80', '49', '83', '90','92',
 			]
 		],
-		'billing'     => ['type' => 'text', 'options' => ['' => 'Not Used', 'F' => 'Freight Collect', 'B' => 'Bill to Third Party', 'C' => 'Consignee'], 'default' => ''],
-		'residential' => ['type' => 'text', 'options' => ['' => 'Not Used', 'Y' => 'Yes', 'N' => 'No'], 'default' => ''],
+		'billing'     => ['type' => 'text', 'options' => ['' => '', 'F' => 'Freight Collect', 'B' => 'Bill to Third Party', 'C' => 'Consignee'], 'default' => ''],
+		'residential' => ['type' => 'text', 'options' => ['' => '', 'Y' => 'Yes', 'N' => 'No'], 'default' => ''],
 		'priority'    => ['type' => 'text', 'maxlength' => 3],
 		'shippingarea' => ['type' => 'text', 'maxlength' => 1],
 		'airshipment'  => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
@@ -85,6 +85,9 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 		$code->setUseroute($this->fieldAttribute('useroute', 'default'));
 		$code->setAddsurcharge($this->fieldAttribute('addsurcharge', 'default'));
 		$code->setArtaxcode('');
+		$code->setEdimethod('');
+		$code->setScac('');
+		return $code;
 	}
 
 /* =============================================================
