@@ -21,7 +21,6 @@ class Upcx extends AbstractController {
 	const TITLE = 'UPC Item X-Ref';
 	const SUMMARY = 'View / Edit UPC Item X-Refs';
 	const SHOWONPAGE      = 10;
-	private static $upcx;
 
 /* =============================================================
 	Index Functions
@@ -84,7 +83,8 @@ class Upcx extends AbstractController {
 			$upcx->lockrecord($xref);
 			$page->headline = "UPCX: $xref->upc";
 		}
-		
+
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/events/ajax-modal.js'));
 		self::initHooks();
 		$page->js   .= self::renderXrefJs($data);
 		$html = self::displayXref($data, $xref);
@@ -169,9 +169,7 @@ class Upcx extends AbstractController {
 	}
 
 	private static function renderXrefJs(WireData $data) {
-		$configs = new WireData();
-		$configs->in = Configs\In::config();
-		return self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
+		return self::pw('config')->twig->render('items/upcx/.new/xref/.js.twig', ['upcx' => self::getUpcx()]);
 	}
 
 	/** NOTE: Keep public for ITM */
