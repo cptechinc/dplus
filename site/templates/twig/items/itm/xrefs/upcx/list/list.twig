@@ -26,7 +26,7 @@
 			<th class="pt-3 pb-3">Label</th>
 			<th class="pt-3 pb-3 text-center">
 				{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
-					<a href="{{ page.upcCreateUrl() }}" class="btn btn-light btn-sm">
+					<a href="{{ page.xrefCreateUrl() }}" class="btn btn-light btn-sm">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add New
 					</a>
 				{% endif %}
@@ -51,11 +51,11 @@
 				<td class="text-center">
 					{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
 						{% if upcx.recordlocker.isLocked(upcx.getRecordlockerKey(upc)) == false or upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(upc)) %}
-							<a href="{{ page.upcUrl(upc.upc, upc.itemid) }}" class="btn btn-warning btn-sm">
+							<a href="{{ page.xrefUrl(upc.upc, upc.itemid) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 							&nbsp; &nbsp;
-							<a href="{{ page.upcDeleteUrl(upc.upc, upc.itemid)}}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ upc.upc }}">
+							<a href="{{ page.xrefDeleteUrl(upc.upc, upc.itemid)}}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ upc.upc }}">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}

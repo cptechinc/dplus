@@ -36,8 +36,13 @@ abstract class AbstractXrefManager extends WireData {
 	public static function instance() {
 		if (empty(static::$instance)) {
 			static::$instance = new static();
+			static::$instance->init();
 		}
 		return static::$instance;
+	}
+	
+	public function init() {
+
 	}
 
 	/**

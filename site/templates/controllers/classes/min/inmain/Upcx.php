@@ -77,15 +77,15 @@ class Upcx extends AbstractController {
 		$upcx = self::getUpcx();
 		$xref = $upcx->getOrCreateXref($data->upc, $data->itemID);
 		$page = self::pw('page');
-		$page->headline = "UPCX: Create X-Ref";
+		$page->headline = "UPCX: New X-Ref";
 
 		if ($xref->isNew() === false) {
 			$upcx->lockrecord($xref);
 			$page->headline = "UPCX: $xref->upc";
 		}
 
-		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/events/ajax-modal.js'));
 		self::initHooks();
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/events/ajax-modal.js'));
 		$page->js   .= self::renderXrefJs($data);
 		$html = self::displayXref($data, $xref);
 		$upcx->deleteResponse();
@@ -164,11 +164,13 @@ class Upcx extends AbstractController {
 		return self::pw('config')->twig->render('items/upcx/.new/list/display.twig', ['upcx' => $upcx, 'xrefs' => $xrefs]);
 	}
 
-	private static function renderListJs(WireData $data) {
+	/** NOTE: Keep public for ITM */
+	public static function renderListJs(WireData $data) {
 		return self::pw('config')->twig->render('items/upcx/.new/list/.js.twig');
 	}
 
-	private static function renderXrefJs(WireData $data) {
+	/** NOTE: Keep public for ITM */
+	public static function renderXrefJs(WireData $data) {
 		return self::pw('config')->twig->render('items/upcx/.new/xref/.js.twig', ['upcx' => self::getUpcx()]);
 	}
 
@@ -189,7 +191,7 @@ class Upcx extends AbstractController {
 		$html  = '<div class="mb-3">' . $alert . '</div>';
 		return $html;
 	}
-
+	
 	private static function renderXref(WireData $data, ItemXrefUpc $xref) {
 		return self::pw('config')->twig->render('items/upcx/.new/xref/display.twig', ['upcx' => self::getUpcx(), 'xref' => $xref]);
 	}

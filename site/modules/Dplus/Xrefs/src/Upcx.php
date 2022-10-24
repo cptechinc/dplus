@@ -18,7 +18,8 @@ use Dplus\Filters;
  * Upcx
  * Class for handling CRUD of ItemXrefUpc Records
  * 
- * @property string $updatePrimaryFor  Item ID that needs the old primary X-ref to be set to not Primary
+ * @property string      $updatePrimaryFor    Item ID that needs the old primary X-ref to be set to not Primary
+ * @property-read string $allowDuplicateUpcs  Allow Duplicate UPC codes?
  */
 class Upcx extends AbstractXrefManager {
 	const MODEL              = 'ItemXrefUpc';
@@ -42,13 +43,13 @@ class Upcx extends AbstractXrefManager {
 
 	protected static $instance;
 
-	protected $updatePrimaryFor = '';
+	protected $updatePrimaryFor   = '';
+	protected $allowDuplicateUpcs = false;
 
-	public static function instance() {
-		if (empty(static::$instance)) {
-			static::$instance = new static();
-		}
-		return static::$instance;
+	public function init() {
+		/** @var ConfigIn */
+		$configIN = Configs\In::config();
+		$this->allowDuplicateUpcs = $configIN->allowDuplicateUpcs();
 	}
 
 	/**
@@ -62,6 +63,17 @@ class Upcx extends AbstractXrefManager {
 			$json[$name] = $xref->$name;
 		}
 		return $json;
+	}
+
+/* =============================================================
+	Config Values
+============================================================= */
+	/**
+	 * Return if Duplicate UPCs are allowed
+	 * @return 
+	 */
+	public function allowDuplicateUpcs() {
+		return $this->allowDuplicateUpcs;
 	}
 
 /* =============================================================
@@ -185,13 +197,15 @@ class Upcx extends AbstractXrefManager {
 		$xref->setMastercase($this->fieldAttribute('mastercase', 'default'));
 		$xref->setNeedslabel($this->fieldAttribute('needslabel', 'default'));
 		$xref->setDummy('P');
+
 		if ($upc != 'new' && $upc != '') {
-			$upc = $this->sanitizer->string($upc, ['maxlength' => $this->fieldAttributes('upc', 'maxlength')]);
+			$upc = $this->sanitizer->string($upc, ['maxlength' => $this->fieldAttribute('upc', 'maxlength')]);
 			$xref->setUpc($upc);
 		}
+		
 		if ($itemID != 'new' && $itemID  != '') {
-			$upc = $this->sanitizer->string($itemID);
-			$xref->setUpc($upc);
+			$itemID = $this->sanitizer->string($itemID);
+			$xref->setItemid($itemID);
 		}
 		return $xref;
 	}
@@ -214,25 +228,6 @@ class Upcx extends AbstractXrefManager {
 /* =============================================================
 	CRUD Processing
 ============================================================= */
-	/**
-	 * Process Input Data, Update Database
-	 * @param  WireInput $input Input Data
-	 */
-	public function processInput(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		switch ($values->text('action')) {
-			case 'delete':
-				$this->inputDelete($input);
-				break;
-			case 'update':
-			case 'edit':
-				$this->inputUpdate($input);
-				break;	
-		}
-	}
-
 	/**
 	 * Update Xref from Input Data
 	 * @param  WireInput $input Input Data
@@ -284,8 +279,8 @@ class Upcx extends AbstractXrefManager {
 
 	/**
 	 * Update Key Fields
-	 * @param WireInputData    $values
-	 * @param ItemXrefUpc $xref
+	 * @param  WireInputData  $values
+	 * @param  ItemXrefUpc    $xref
 	 * @return array
 	 */
 	private function _inputUpdateKey(WireInputData $values, ItemXrefUpc $xref) {
@@ -307,20 +302,40 @@ class Upcx extends AbstractXrefManager {
 	}
 
 	/**
-	 * Update Qty, Primary, Mastercase, Need Label Fields
-	 * @param WireInputData    $values
-	 * @param ItemXrefUpc $xref
+	 * Update Qty, Mastercase, Need Label Fields
+	 * @param  WireInputData  $values
+	 * @param  ItemXrefUpc    $xref
 	 * @return array
 	 */
 	private function _inputUpdateXref(WireInputData $values, ItemXrefUpc $xref) {
 		$xref->setQty($values->int('qty', ['max' => $this->fieldAttribute('qty', 'max'), 'blankValue' =>  $this->fieldAttribute('qty', 'default'), 'min' => $this->fieldAttribute('qty', 'min')]));
-		$xref->setPrimary($values->yn('primary'));
 		$xref->setMastercase($values->yn('mastercase'));
 		$xref->setNeedslabel($values->yn('needslabel'));
+		$this->_inputUpdatePrimary($values, $xref);
+		return [];
+	}
 
-		if ($xref->isPrimary()) {
-			$this->updatePrimaryFor = $xref->itemid;
+	/**
+	 * Update Primary Fields
+	 * @param  WireInputData  $values
+	 * @param  ItemXrefUpc    $xref
+	 * @return array
+	 */
+	private function _inputUpdatePrimary(WireInputData $values, ItemXrefUpc $xref) {
+		$wasPrimary = $xref->primary === ItemXrefUpc::PRIMARY_FALSE;
+		$xref->setPrimary($values->yn('primary'));
+
+		if ($xref->isPrimary() === false) {
+			return [];
 		}
+
+		// Check if User is determined to update primary, when the X-Ref wasn't originally a primary
+		if ($values->ynbool('updatePrimary') === false && $wasPrimary === false) {
+			$xref->setPrimary(ItemXrefUpc::PRIMARY_FALSE);
+			return [];
+		}
+
+		$this->updatePrimaryFor = $xref->itemid;
 		return [];
 	}
 

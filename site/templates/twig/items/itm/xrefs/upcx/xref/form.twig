@@ -1,7 +1,7 @@
-{% extends 'items/upcx/form/form.twig' %}
+{% extends 'items/upcx/.new/xref/form.twig' %}
 
 {% block edit_actions %}
 	{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
-		{% include 'items/upcx/form/edit-buttons.twig' %}
+		{% include 'items/upcx/.new/xref/form/crud-buttons.twig' %}
 	{% endif %}
 {% endblock %}
