@@ -10,7 +10,8 @@
 					'addclasses': ['text-monospace'],
 					'attributes': {
 						'readonly': xref.isNew() == false,
-						'data-new': xref.isNew() ? 'true' : 'false'
+						'data-new': xref.isNew() ? 'true' : 'false',
+						'maxlength': upcx.fieldAttribute('upc' , 'maxlength')
 					}
 				}
 			}

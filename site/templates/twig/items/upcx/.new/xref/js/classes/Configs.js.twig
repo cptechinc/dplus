@@ -1,0 +1,19 @@
+class UpcxConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new UpcxConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.allowDuplicateUpcs = {{ upcx.allowDuplicateUpcs() ? 'true' : 'false' }};
+		this.fields = {
+			upc: {
+				maxlength: {{ upcx.fieldAttribute('upc', 'maxlength') }}
+			}
+		}
+	}
+}

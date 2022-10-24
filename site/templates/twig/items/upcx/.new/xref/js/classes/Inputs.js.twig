@@ -1,0 +1,19 @@
+class UpcxInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new UpcxInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'xref-form',
+		this.form = $('#' + this.id),
+		this.upc            = this.form.find('input[name=upc]'),
+		this.itemid         = this.form.find('input[name=itemID]'),
+		this.primary        = this.form.find('select[name=primary]'),
+		this.updatePrimary  = this.form.find('input[name=updatePrimary]')
+	}
+}

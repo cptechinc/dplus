@@ -1,0 +1,163 @@
+{% include 'items/upcx/.new/xref/js/classes.js.twig' %}
+
+$(function() {
+	var modalAjax = $('#ajax-modal');
+	var alert    = UpcxAlerts.getInstance();
+	var server   = UpcxRequests.getInstance();
+	var configs  = UpcxConfigs.getInstance();
+	var formUpcx = UpcxForm.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "input[name=upc]", function(e) {
+		var input = $(this);
+
+		// Show error if Duplicates not allowed and upc already exists
+		if (configs.allowDuplicateUpcs === false) {
+			server.validateUpc(input.val(), function(exists) {
+				if (exists) {
+					alert.upcExists(input.val(), function(editXref)  {
+						var url = URI();
+						if (editXref) {
+							url.setQuery('upc', input.val());
+						}
+						window.location.href = url.toString();
+					});
+				}
+			});
+		}
+	});
+
+	$("body").on("change", "input[name=itemID]", function(e) {
+		var input = $(this);
+
+		if (configs.allowDuplicateUpcs === true) {
+			var upc = formUpcx.inputs.upc.val()
+
+			server.validateXref(upc, input.val(), function(exists) {
+				if (exists) {
+					alert.xrefExists(upc, input.val(), function(editXref)  {
+						var url = URI();
+						if (editXref) {
+							url.setQuery('upc', upc);
+							url.setQuery('itemID', input.val());
+						}
+						window.location.href = url.toString();
+					});
+				}
+				if (exists === false) {
+					UpcxForm.getInstance().updateItmDescription();
+				}
+			});
+		}
+	});
+
+	$("body").on("change", "select[name=primary]", function(e) {
+		var input = $(this);
+		formUpcx.inputs.updatePrimary.prop('checked', false);
+
+		if (input.val() == 'N') {
+			return false;
+		}
+		server.validatePrimaryUpc(formUpcx.inputs.itemid.val(), formUpcx.inputs.upc.val(), function(isPrimary) {
+			if (isPrimary === true) {
+				formUpcx.inputs.updatePrimary.prop('checked', true);
+				return true;
+			}
+
+			if (isPrimary === false) {
+				UpcxRequests.getInstance().getPrimaryUpc(formUpcx.inputs.itemid.val(), function(xref) {
+					if (xref) {
+						UpcxAlerts.getInstance().changePrimary(formUpcx.inputs.itemid.val(), xref.upc, function(changePrimary) {
+							if (changePrimary === true) {
+								formUpcx.inputs.updatePrimary.prop('checked', true);
+							}
+							if (changePrimary === false) {
+								formUpcx.inputs.primary.val('N');
+								formUpcx.inputs.updatePrimary.prop('checked', true);
+							}
+						});
+					}
+				});
+			}
+		});
+	});
+
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formUpcx.inputs.form.serialize();
+
+	$("body").on("click", "a:not(#upc-xref-form.form_button, #ajax-modal a)", function(e) {
+		if (formUpcx.inputs.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(save) {
+				if (save === true) {
+					formUpcx.inputs.form.find('button[type=submit]').click();
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formUpcx.inputs.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			qty: {
+				required: true,
+				min: 1,
+			},
+			upc: {
+				required: true,
+				maxlength: UpcxConfigs.getInstance().fields.upc.maxlength,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/upcx/upc/xref/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							var isNew = $('input[name=upc]').data('new');
+							return isNew;
+						},
+						itemID: function() {
+							var configs = UpcxConfigs.getInstance();
+							if (configs.allowDuplicateUpcs) {
+								return $('input[name=itemID]').val() ? $('input[name=itemID]').val() : 'false';
+							}
+							return 'false';
+						}
+					}
+				}
+			},
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+					}
+				}
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+			form.submit();
+		}
+	});
+});
