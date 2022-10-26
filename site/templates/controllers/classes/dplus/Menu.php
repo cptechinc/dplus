@@ -21,6 +21,7 @@ class Menu extends Controller {
 
 		$permission_list = implode("|", self::pw('user')->get_functions());
 		$page->pagetitle = "Menu: $page->title";
+		
 		$items = $page->children("template!=redir|dplus-json, dplus_function=$permission_list");
 		return self::listDisplay($data, $items);
 	}
