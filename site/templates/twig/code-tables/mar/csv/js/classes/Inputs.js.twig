@@ -1,0 +1,31 @@
+class CodeInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id    = 'code-form',
+		this.form  = $('#' + this.id),
+		this.code              = this.form.find('input[name=code]');
+		this.description       = this.form.find('input[name=description]');
+		this.service           = this.form.find('select[name=service]');
+		this.billing           = this.form.find('select[name=billing]');
+		this.residential       = this.form.find('select[name=residential]');
+		this.priority          = this.form.find('input[name=priority]');
+		this.shippingarea      = this.form.find('input[name=shippingarea]');
+		this.airshipment       = this.form.find('select[name=airshipment]');
+		this.commercialflight  = this.form.find('select[name=commercialflight]');
+		this.scac              = this.form.find('input[name=scac]');
+		this.edimethod         = this.form.find('input[name=edimethod]');
+		this.chargefreight     = this.form.find('select[name=chargefreight]');
+		this.useroute          = this.form.find('select[name=useroute]');
+		this.addsurcharge      = this.form.find('select[name=addsurcharge]');
+		this.surchargepercent  = this.form.find('input[name=surchargepercent]');
+		// this.artaxcode         = this.form.find('input[name=artaxcode]');
+	}
+}

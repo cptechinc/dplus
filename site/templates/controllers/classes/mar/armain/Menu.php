@@ -43,6 +43,12 @@ class Menu extends AbstractMenuController  {
 			'title'      => Crtm::TITLE,
 			'summary'    => Crtm::SUMMARY
 		],
+		'csv' => [
+			'name'       => 'csv',
+			'permission' => Csv::DPLUSPERMISSION,
+			'title'      => Csv::TITLE,
+			'summary'    => Csv::SUMMARY
+		],
 		'ctm' => [
 			'name'       => 'ctm',
 			'permission' => Ctm::DPLUSPERMISSION,
@@ -136,6 +142,10 @@ class Menu extends AbstractMenuController  {
 
 	public static function crtmUrl() {
 		return self::subfunctionUrl('crtm');
+	}
+
+	public static function csvUrl() {
+		return self::subfunctionUrl('csv');
 	}
 
 	public static function ctmUrl() {

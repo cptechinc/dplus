@@ -1,0 +1,36 @@
+<div class="row">
+	<div class="col-sm-3 mb-2">
+		<label for="artaxcode">Tax Code</label>
+	</div>
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-4 px-0">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': 'artaxcode',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Tax Codes',
+								'data-jqv': 'true'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Tax Codes',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('mar/tm/'),
+								'data-input': '#artaxcode'
+							}
+						}
+					}
+				}
+			%}
+			<small class="text-muted artaxcode-description"></small>
+		</div>
+	</div>
+</div>

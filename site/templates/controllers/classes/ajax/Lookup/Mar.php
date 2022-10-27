@@ -45,4 +45,17 @@ class Mar extends Lookup {
 		$filter = new Filters\Mar\ArTaxCode();
 		return self::filterResults($filter, $data);
 	}
+
+	/**
+	 * Search Tax Codes
+	 * @param  object $data
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function arCustTaxCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Customer Tax Codes";
+		$filter = new Filters\Mar\ArCustTaxCode();
+		return self::filterResults($filter, $data);
+	}
 }

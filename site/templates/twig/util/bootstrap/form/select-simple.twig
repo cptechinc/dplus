@@ -8,7 +8,8 @@
 	{% for value, label in tinput.options %}
 		{% set value = tinput.haskeys ? value : label %}
 		<option value="{{ value }}" {{ value == tinput.value ? 'selected' : ''}}>
-			{{ tinput.showvalue ? value ~ ' - ' }} {{ tinput.capitalizelabels ? label|capitalize : label }}
+
+			{{ tinput.showvalue ? value }} {{ tinput.showvalue and value|length > 0 ? ' - ' : '' }} {{ tinput.capitalizelabels ? label|capitalize : label }}
 		</option>
 	{% endfor %}
 </select>

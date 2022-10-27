@@ -1,0 +1,75 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
+
+	<div class="row">
+		<div class="col-sm-3 mb-2">
+			<label for="code">Code</label>
+		</div>
+		<div class="col-sm-8 mb-2">
+			<div class="col-sm-2 px-0">
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'code',
+							'size': 'sm',
+							'addclasses': ['text-monospace'],
+							'attributes': {
+								'maxlength': manager.fieldAttribute('code', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-3 mb-2">
+			<label for="description">Description</label>
+		</div>
+		<div class="col-sm-4 mb-2">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'description',
+						'size': 'sm',
+						'attributes': {
+							'maxlength': manager.fieldAttribute('description', 'maxlength')
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	{% include 'code-tables/mar/csv/form/ups-fields.twig' %}
+	{% include 'code-tables/mar/csv/form/priority-shipping.twig' %}
+	{% include 'code-tables/mar/csv/form/scac-edi-chargefreight.twig' %}
+	{% include 'code-tables/mar/csv/form/surcharge-percent.twig' %}
+
+	{% if manager.fieldAttribute('artaxcode', 'enabled') %}
+		{% include 'code-tables/mar/csv/form/artaxcode.twig' %}
+	{% endif %}
+
+	<hr>
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<div>
+			<a href="{{ page.codeDeleteUrl('') }}" class="btn btn-danger delete_button collapse">
+				<i class="fa fa-trash" aria-hidden="true"></i> Delete
+			</a>
+		</div>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

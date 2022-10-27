@@ -189,6 +189,16 @@ class Mar extends AbstractJsonController {
 		return self::getCodeTableCode($data, $table);
 	}
 
+	public static function validateCsvCode($data) {
+		$table = Codes\Mar\Csv::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getCsvCode($data) {
+		$table = Codes\Mar\Csv::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
 	public static function validateCtmCode($data) {
 		$table = Codes\Mar\Ctm::getInstance();
 		return self::validateCodeTableCode($data, $table);
