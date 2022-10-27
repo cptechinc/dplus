@@ -1,0 +1,131 @@
+{% include 'code-tables/mar/csv/js/classes.js.twig' %}
+
+$(function() {
+	var ajaxModal = $('#ajax-modal');
+	var server   = CsvRequests.getInstance();
+	var alert    = CodeAlerts.getInstance();
+	var formCode = CodeForm.getInstance();
+
+/* =============================================================
+	Event Functions
+	hide, unsaved changes events is handled by scripts/code-tables/modal-events.js
+============================================================= */
+	{% include 'code-tables/js/events/show-shown.js.twig' %}
+	{% include 'code-tables/js/events/input-code-change.js.twig' %}
+	{% include 'code-tables/js/events/input-code-force-focus.js.twig' %}
+
+	$("body").on("change", "input[name=artaxcode]", function(e) {
+		var input = $(this);
+		var inputParent = input.closest('.row');
+		var descriptionField = inputParent.find('.artaxcode-description');
+		descriptionField.text('');
+		
+		server.getArCustTaxCode(input.val(), function(taxcode) {
+			if (taxcode) {
+				descriptionField.text(taxcode.description);
+			}
+		});
+	});
+
+	$("body").on("change", "select[name=addsurcharge]", function(e) {
+		var input = $(this);
+		if (input.val() == 'Y') {
+			formCode.inputs.surchargepercent.removeAttr('readonly');
+			return true;
+		}
+		formCode.inputs.surchargepercent.val('');
+		formCode.inputs.surchargepercent.attr('readonly', 'readonly');
+	});
+
+	$("body").on("change", "input[name=surchargepercent]", function(e) {
+		var input = $(this);
+		var percent = parseFloat(input.val());
+		input.val(percent.toFixed(formCode.config.fields.surchargepercent.precision));
+	});
+
+/* =============================================================
+	Lookup Modal Functions
+	ajax modal events is handled by scripts/code-tables/ajax-modal.js
+============================================================= */
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = formCode.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			var parent = element.closest('.input-parent');
+			if (parent.length > 0) {
+				element = parent;
+			}
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: formCode.config.fields.code.maxlength,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/csv/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
+			description: {
+				maxlength: formCode.config.fields.description.maxlength,
+			},
+			artaxcode: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/tm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function( ) {
+							return $('input[name=artaxcode]').val();
+						}
+					}
+				}
+			},
+		},
+		submitHandler: function(form) {
+			var formCode = CodeForm.getInstance();
+			var server   = CsvRequests.getInstance();
+			var code = formCode.inputs.code.val();
+
+			if (formCode.inputs.form.attr('data-code') == code) {
+				form.submit();
+			} else {
+				server.validateCode(code, function(exists) {
+					var alert = CodeAlerts.getInstance();
+					if (exists === false) {
+						form.submit();
+						return true;
+					}
+
+					alert.codeExists(code, function(editCode) {
+						var modal = formCode.form.closest('.modal');
+
+						if (editCode) {
+							server.getCode(code, function(response) {
+								if (response) {
+									modal.find('.modal-title').text('Edit Code');
+									formCode.updateInputsFromJson(response);
+								} else {
+									modal.modal('hide');
+								}
+							});
+						} else {
+							modal.modal('hide');
+						}
+					});
+				});
+			}
+		}
+	});
+})
