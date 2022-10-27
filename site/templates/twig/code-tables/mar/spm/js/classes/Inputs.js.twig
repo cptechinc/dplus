@@ -1,0 +1,34 @@
+class CodeInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id            = 'code-form',
+		this.form          = $('#' + this.id),
+		this.code          = this.form.find('input[name=code]');
+		this.name   = this.form.find('input[name=name]');
+		this.groupid = this.form.find('input[name=groupid]');
+		this.cycle = this.form.find('input[name=cycle]');
+		this.userid = this.form.find('input[name=userid]');
+		this.manager = this.form.find('select[name=manager]');
+		this.lastsaledate = this.form.find('input[name=lastsaledate]');
+		this.salesmtd = this.form.find('input[name=salesmtd]');
+		this.salesytd = this.form.find('input[name=salesytd]');
+		this.salesltd = this.form.find('input[name=salesltd]');
+		this.earnedmtd = this.form.find('input[name=earnedmtd]');
+		this.earnedytd = this.form.find('input[name=earnedytd]');
+		this.earnedltd = this.form.find('input[name=earnedltd]');
+		this.paidmtd = this.form.find('input[name=paidmtd]');
+		this.paidytd = this.form.find('input[name=paidytd]');
+		this.paidltd = this.form.find('input[name=paidltd]');
+		this.vendorid = this.form.find('input[name=vendorid]');
+		this.restricted = this.form.find('select[name=restricted]');
+		this.email = this.form.find('input[name=email]');
+	}
+}

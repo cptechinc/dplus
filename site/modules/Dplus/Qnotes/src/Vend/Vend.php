@@ -108,7 +108,7 @@ abstract class Vend extends Qnotes {
 
 		$note = $class::new();
 		$note->setVendorid($vendorID);
-		$note->setShipfromID($shpfromID);
+		$note->setShipfromID($shipfromID);
 		$note->generateKey2(); // PK
 		$note->setSequence(1); // PK
 		$note->setDummy('P');

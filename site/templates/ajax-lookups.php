@@ -61,6 +61,10 @@
 				['GET', '', AjaxLookup\Mar::class, 'taxCodes'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'taxCodes'],
 			],
+			'spgpm' => [
+				['GET', '', AjaxLookup\Mar::class, 'salesPersonGroups'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'salesPersonGroups'],
+			],
 			'tm' => [
 				['GET', '', AjaxLookup\Mar::class, 'arCustTaxCodes'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'arCustTaxCodes'],

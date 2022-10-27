@@ -1,0 +1,54 @@
+class CodeConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CodeConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			code: {
+				maxlength: {{ manager.fieldAttribute('code', 'maxlength') }}
+			},
+			name: {
+				maxlength: {{ manager.fieldAttribute('name', 'maxlength') }}
+			},
+			salesmtd: {
+				precision: {{ manager.fieldAttribute('salesmtd', 'precision') }}
+			},
+			salesytd: {
+				precision: {{ manager.fieldAttribute('salesytd', 'precision') }}
+			},
+			salesltd: {
+				precision: {{ manager.fieldAttribute('salesltd', 'precision') }}
+			},
+			earnedmtd: {
+				precision: {{ manager.fieldAttribute('earnedmtd', 'precision') }}
+			},
+			earnedytd: {
+				precision: {{ manager.fieldAttribute('earnedytd', 'precision') }}
+			},
+			earnedltd: {
+				precision: {{ manager.fieldAttribute('earnedltd', 'precision') }}
+			},
+			paidmtd: {
+				precision: {{ manager.fieldAttribute('paidmtd', 'precision') }}
+			},
+			paidytd: {
+				precision: {{ manager.fieldAttribute('paidytd', 'precision') }}
+			},
+			paidltd: {
+				precision: {{ manager.fieldAttribute('paidltd', 'precision') }}
+			},
+			restricted: {
+				default: "{{ manager.fieldAttribute('restricted', 'default') }}"
+			},
+			manager: {
+				default: "{{ manager.fieldAttribute('manager', 'default') }}"
+			}
+		};
+	}
+}

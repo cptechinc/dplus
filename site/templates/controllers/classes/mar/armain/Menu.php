@@ -91,6 +91,12 @@ class Menu extends AbstractMenuController  {
 			'title'      => Spgpm::TITLE,
 			'summary'    => Spgpm::SUMMARY
 		],
+		'spm' => [
+			'name'       => 'spm',
+			'permission' => Spm::DPLUSPERMISSION,
+			'title'      => Spm::TITLE,
+			'summary'    => Spm::SUMMARY
+		],
 		'suc' => [
 			'name'       => 'suc',
 			'permission' => Suc::DPLUSPERMISSION,
@@ -168,6 +174,10 @@ class Menu extends AbstractMenuController  {
 
 	public static function spgpmUrl() {
 		return self::subfunctionUrl('spgpm');
+	}
+
+	public static function spmUrl() {
+		return self::subfunctionUrl('spm');
 	}
 
 	public static function sucUrl() {

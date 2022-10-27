@@ -1,0 +1,224 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	input                  ProcessWire\WireInput
+	manager                Dplus\Codes\Base
+#}
+
+{# data-code is for verifying edit vs new #}
+<form action="{{ input.paginateUrl(1) }}" method="POST" id="code-form" data-code="">
+	<input type="hidden" name="action" value="update">
+
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="form-group">
+				<label for="code">ID</label>
+				<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
+			</div>
+		</div>
+		<div class="col-sm-8">
+			<div class="form-group">
+				<label for="name">Name</label>
+				<input type="text" name="name" class="form-control" maxlength="{{ manager.fieldAttribute('name', 'maxlength') }}" id="name">
+			</div>
+		</div>
+	</div>
+	
+	<div class="row mb-3">
+		<div class="col-sm-3">
+			{% include 'code-tables/mar/spm/form/groupid.twig' %}
+		</div>
+
+		<div class="col-sm-2">
+			<div class="form-group">
+				<label for="cycle">Cycle</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'cycle',
+							'size': 'sm',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Cycle',
+								'maxlength': manager.fieldAttribute('cycle', 'maxlength')
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			{% include 'code-tables/mar/spm/form/userid.twig' %}
+		</div>
+
+		<div class="col-sm-3">
+			<label for="manager">Manager</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'size': 'sm',
+						'name': 'manager',
+						'value' : manager.fieldAttribute('manager', 'default'),
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<div class="col-sm-3">
+			<label for="lastsaledate">Last Sales Date</label>
+			{% include 'util/bootstrap/form/date-picker.twig' with {
+					'inputgroup': {
+						'size': 'sm',
+						'input': {
+							'name': 'lastsaledate',
+							'value': '',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Last Sales Dat'
+							}
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+
+	<legend>Sales-To-Date</legend>
+	{% set fields = ['salesmtd', 'salesytd', 'salesltd'] %}
+
+	<div class="row">
+		{% for field in fields %}
+			<div class="col-sm-3 form-group">
+				<label for="{{ field }}">{{ manager.fieldAttribute(field, 'label') }}</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': field,
+							'type': 'number',
+							'size': 'sm',
+							'addclasses': ['text-right', 'to-date'],
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  manager.fieldAttribute(field, 'label'),
+								'max': manager.fieldAttribute(field, 'max')
+							}
+						}
+					}
+				%}
+			</div>
+		{% endfor %}
+	</div>
+
+	<legend>Earned-To-Date</legend>
+	{% set fields = ['earnedmtd', 'earnedytd', 'earnedltd'] %}
+
+	<div class="row">
+		{% for field in fields %}
+			<div class="col-sm-3 form-group">
+				<label for="{{ field }}">{{ manager.fieldAttribute(field, 'label') }}</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': field,
+							'type': 'number',
+							'size': 'sm',
+							'addclasses': ['text-right', 'to-date'],
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  manager.fieldAttribute(field, 'label'),
+								'max': manager.fieldAttribute(field, 'max')
+							}
+						}
+					}
+				%}
+			</div>
+		{% endfor %}
+	</div>
+
+	<legend>Paid-To-Date</legend>
+	{% set fields = ['paidmtd', 'paidytd', 'paidltd'] %}
+
+	<div class="row">
+		{% for field in fields %}
+			<div class="col-sm-3 form-group">
+				<label for="{{ field }}">{{ manager.fieldAttribute(field, 'label') }}</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': field,
+							'type': 'number',
+							'size': 'sm',
+							'addclasses': ['text-right', 'to-date'],
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  manager.fieldAttribute(field, 'label'),
+								'max': manager.fieldAttribute(field, 'max')
+							}
+						}
+					}
+				%}
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="row mb-3">
+		<div class="col-sm-3">
+			{% include 'code-tables/mar/spm/form/vendorid.twig' %}
+		</div>
+
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label for="email">Email</label>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'email',
+							'size': 'sm',
+							'type': 'email',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Email',
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<label for="restricted">Restricted</label>
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'size': 'sm',
+						'name': 'restricted',
+						'value' : manager.fieldAttribute('restricted', 'default'),
+						'haskeys': true,
+						'options': {'Y': 'Yes', 'N': 'No'}
+					}
+				}
+			%}
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success form_button">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<div>
+			<a href="{{ page.codeDeleteUrl('') }}" class="btn btn-danger delete_button collapse">
+				<i class="fa fa-trash" aria-hidden="true"></i> Delete
+			</a>
+		</div>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

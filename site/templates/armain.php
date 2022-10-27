@@ -72,6 +72,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Spgpm::class, 'index'],
 			['POST',  '', Armain\Spgpm::class, 'handleCRUD'],
 		],
+		'spm' => [
+			['GET',  '', Armain\Spm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Spm::class, 'index'],
+			['POST',  '', Armain\Spm::class, 'handleCRUD'],
+		],
 		'suc' => [
 			['GET',  '', Armain\Suc::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Suc::class, 'index'],

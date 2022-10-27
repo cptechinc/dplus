@@ -1,0 +1,30 @@
+<div>
+	<label for="userid">Login ID</label>
+	{% include 'util/bootstrap/form/input-group.twig' with {
+			'inputgroup': {
+				'type': 'prepend',
+				'size': 'sm',
+				'input': {
+					'name': 'userid',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'Login ID',
+						'data-jqv': 'true'
+					}
+				},
+				'button': {
+					'colorclass': 'btn-secondary',
+					'text': 'fa fa-search'|icon,
+					'attributes': {
+						'title': 'Search Users',
+						'data-toggle': 'modal',
+						'data-target': '#ajax-modal',
+						'data-lookupurl': page.searchLookupUrl('users'),
+						'data-input': '#userid'
+					}
+				}
+			}
+		}
+	%}
+	<small class="text-muted user-name"></small>
+</div>
