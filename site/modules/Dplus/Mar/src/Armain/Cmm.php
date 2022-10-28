@@ -147,6 +147,15 @@ class Cmm extends AbstractManager {
 		return $this->query()->filterById($id);
 	}
 
+	/**
+	 * Return Query Filtered by Record Number
+	 * @param  string $rid  Record Number
+	 * @return CustomerQuery
+	 */
+	public function queryRid($id) {
+		return $this->query()->filterByRid($id);
+	}
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
@@ -157,6 +166,15 @@ class Cmm extends AbstractManager {
 	 */
 	public function exists($id) {
 		return boolval($this->queryId($id)->count());
+	}
+
+	/**
+	 * Return if Customer Exists By Record Number
+	 * @param  string $rid  Record Number
+	 * @return bool
+	 */
+	public function existsByRid($id) {
+		return boolval($this->queryRid($id)->count());
 	}
 
 	/**
@@ -177,6 +195,37 @@ class Cmm extends AbstractManager {
 	public function customer($id) {
 		$q = $this->getQueryClass();
 		return $q->findOneById($id);
+	}
+
+	/**
+	 * Return Customer
+	 * @param  string $id Customer ID
+	 * @return Customer
+	 */
+	public function customerByRid($id) {
+		return $this->queryRid($id)->findOne();
+	}
+
+	/**
+	 * Return Record Position for CustID
+	 * @param  string $id Customer ID
+	 * @return int
+	 */
+	public function ridByCustid($id) {
+		$q = $this->queryId($id);
+		$q->select(Customer::aliasproperty('rid'));
+		return $q->count() ? $q->findOne() : 0;
+	}
+
+	/**
+	 * Return CustID by Rid
+	 * @param  string $rid Record ID
+	 * @return int
+	 */
+	public function custidByRid($rid) {
+		$q = $this->queryRid($rid);
+		$q->select(Customer::aliasproperty('custid'));
+		return $q->count() ? $q->findOne() : '';
 	}
 
 	/**
