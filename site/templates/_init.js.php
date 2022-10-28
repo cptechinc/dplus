@@ -16,10 +16,22 @@ $config->js('api', [
 $config->js('config', [
 	'urls' => [
 		'docvwr' => $docView->url('')
+	],
+	'ajax' => [
+		'urls' => [
+			'lookup' => $page->searchLookupUrl(''),
+			'json'   => $page->jsonApiUrl(''),
+		]
 	]
 ]);
 
 $agent = new Jenssegers\Agent\Agent();
 $config->js('agent', [
 	'browser' => strtolower($agent->browser())
+]);
+
+$config->js('user', [
+	'dplus' => [
+		'whseid' => $user->whseid
+	]
 ]);
