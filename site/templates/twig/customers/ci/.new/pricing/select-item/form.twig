@@ -1,0 +1,33 @@
+<form action="{{ input.url() }}" method="GET" id="pricing-itemid-form">
+	<input type="hidden" name="rid" value="{{ input.get.int('rid') }}">
+
+	<div class="form-group">
+		<label for="itemID">Item ID</label>
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {},
+					'input': {
+						'name': 'itemID',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+						'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('items'),
+							'data-input': '#itemID'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+	<button type="submit" class="btn btn-success">Submit</button>
+</form>
