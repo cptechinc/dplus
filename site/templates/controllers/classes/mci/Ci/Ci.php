@@ -1,26 +1,33 @@
 <?php namespace Controllers\Mci\Ci;
+// Purl URI Library
+use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
-// Dplus Model
-use CustomerQuery, Customer;
-// Dpluso Model
-use CustindexQuery, Custindex;
+// Dplus Models
+use Customer;
+// Dpluso Models
+use CustindexQuery;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\CiLoadCustomerShipto;
-// Dplus Validators
-use Dplus\CodeValidators\Mar as MarValidator;
+use ProcessWire\WireData;
+use ProcessWire\Wire404Exception;
 // Dplus Filters
-use Dplus\Filters\Mar\Customer     as CustomerFilter;
-use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
-use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
-use Dplus\Filters\Mqo\Quote        as QuoteFilter;
+use Dplus\Filters;
+// Dplus Mar
+use Dplus\Mar\Armain\Cmm;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Mso\SalesOrder as ControllersSalesOrder;
-use Controllers\Mqo\Quote      as ControllersQuote;
+use Controllers\Mso\SalesOrder as SalesOrderControllers;
+use Controllers\Mqo\Quote      as QuoteControllers;
 use Controllers\Misc\Cart\Cart;
 
-class Ci extends Base {
+/**
+ * Ci
+ * Handles CI Page
+ */
+class Ci extends AbstractController {
+	const TITLE      = 'Customer Information';
+	const SUMMARY    = 'View Customer Information';
+	const SHOWONPAGE = 10;
+
 	const SUBFUNCTIONS = [
 		'pricing'        => [],
 		'shiptos'        => ['title' => 'Ship-tos', 'path' => 'ship-tos'],
@@ -44,130 +51,186 @@ class Ci extends Base {
 /* =============================================================
 	Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'q|text'];
+	public static function index(WireData $data) {
+		if (self::validateUserPermission() === false) {
+			throw new Wire404Exception();
+		}
+		$fields = ['custID|string', 'q|text', 'rid|int'];
 		self::sanitizeParametersShort($data, $fields);
 
-		if (empty($data->custID) === false) {
+		if (empty($data->rid) === false) {
 			return self::customer($data);
 		}
 		return self::list($data);
 	}
 
-	private static function list($data) {
+	/**
+	 * List Customers
+	 * @param  WireData $data
+	 * @return string
+	 */
+	private static function list(WireData $data) {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$filter = new CustomerFilter();
-		$filter->user(self::pw('user'));
-		$filter->sortby(self::pw('page'));
 
 		if ($data->q) {
-			$data->q = strtoupper($data->q);
-
-			if ($filter->exists($data->q)) {
-				self::pw('session')->redirect(self::ciUrl($data->q), $http301 = false);
+			$rID = Cmm::instance()->ridByCustid($data->q);
+			if ($rID) {
+				self::pw('session')->redirect(self::custUrl($rID), $http301 = false);
 			}
-
-			$filter->search($data->q);
 			self::pw('page')->headline = "CI: Searching for '$data->q'";
 		}
-		$customers = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		$customers = self::getCustomerList($data);
 		return self::displayList($data, $customers);
 	}
 
-	private static function customer($data) {
-		$fields = ['custID|string'];
-		self::sanitizeParametersShort($data, $fields);
-
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
+	/**
+	 * Customer Page
+	 * @param  WireData $data
+	 * @return string
+	 */
+	private static function customer(WireData $data) {
+		if (self::validateCustomerByRid($data->rid) === false) {
+			self::pw('session')->redirect(self::url(), $http301=false);
 		}
-		
-		$customer = CustomerQuery::create()->findOneById($data->custID);
-		$page   = self::pw('page');
-		$page->show_breadcrumbs = false;
 
-		$page->headline = "CI: $customer->name";
-		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/customer/ci-customer.js'));
+		$cmm = Cmm::instance();
+		if (self::validateUserHasCustomerPermission(null, $cmm->custidByRid($data->rid)) === false) {
+			throw new Wire404Exception();
+		}
+		$customer = $cmm->customerByRid($data->rid);
+		$customer->salesOrders  = self::getCustomerSalesOrders($customer->id);
+		$customer->salesHistory = self::getCustomerSalesHistory($customer->id);
+		$customer->quotes       = self::getCustomerQuotes($customer->id);
+		$customer->contacts     = self::getCustomerContacts($customer->id);
+		self::pw('page')->headline = "CI: $customer->name";
+		self::pw('page')->custid   = $customer->id;
 		return self::displayCustomer($data, $customer);
+	}
+
+/* =============================================================
+	Data Fetching
+============================================================= */
+	/**
+	 * Return Customer related Sales Orders
+	 * @param  string $custID     Customer ID
+	 * @param  int    $limit      Number of Results to return
+	 * @return PropelModelPager   [SalesOrder]
+	 */
+	private static function getCustomerSalesOrders($custID, $limit = 10) {
+		$filter = new Filters\Mso\SalesOrder();
+		$filter->user(self::pw('user'));
+		$filter->custid($custID);
+		return $filter->query->paginate(1, $limit);
+	}
+
+	/**
+	 * Return Customer related Sales History
+	 * @param  string $custID     Customer ID
+	 * @param  int    $limit      Number of Results to return
+	 * @return PropelModelPager   [Saleshistory]
+	 */
+	private static function getCustomerSalesHistory($custID, $limit = 10) {
+		$filter = new Filters\Mso\SalesHistory();
+		$filter->user(self::pw('user'));
+		$filter->custid($custID);
+		return $filter->query->paginate(1, $limit);
+	}
+
+	/**
+	 * Return Customer related Quotes
+	 * @param  string $custID     Customer ID
+	 * @param  int    $limit      Number of Results to return
+	 * @return PropelModelPager   [Quote]
+	 */
+	private static function getCustomerQuotes($custID, $limit = 10) {
+		$filter = new Filters\Mqo\Quote();
+		$filter->user(self::pw('user'));
+		$filter->custid($custID);
+		return $filter->query->paginate(1, $limit);
+	}
+
+	/**
+	 * Return Customer related Contacts
+	 * @param  string $custID     Customer ID
+	 * @param  int    $limit      Number of Results to return
+	 * @return PropelModelPager   [Custindex]
+	 */
+	private static function getCustomerContacts($custID, $limit = 10) {
+		$q = CustindexQuery::create();
+		$q->filterByCustid($custID);
+		return $q->paginate(1, 10);
+	}
+
+	/**
+	 * Return List of Customers
+	 * @param  WireData $data
+	 * @return PropelModelPager  [Customer]
+	 */
+	private static function getCustomerList(WireData $data) {
+		$filter = new Filters\Mar\Customer();
+		$filter->user(self::pw('user'));
+		$filter->sortby(self::pw('page'));
+		if ($data->q) {
+			$filter->search($data->q);
+		}
+		return $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 	}
 
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayList($data, PropelModelPager $customers) {
-		$config = self::pw('config');
-
+	/**
+	 * Return Customer List Display
+	 * @param  WireData         $data
+	 * @param  PropelModelPager $customers
+	 * @return string
+	 */
+	private static function displayList(WireData $data, PropelModelPager $customers) {
 		$html = '';
-		$html .= $config->twig->render('customers/customer-search.twig', ['customers' => $customers, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
-		$html .= '<div class="mb-3"></div>';
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $customers]);
+		$html .= self::renderList($data, $customers);
 		return $html;
 	}
 
-	private static function displayCustomer($data, Customer $customer) {
-		$config = self::pw('config');
-
+	/**
+	 * Return Customer Page Display
+	 * @param  WireData $data
+	 * @param  Customer $customer
+	 * @return string
+	 */
+	private static function displayCustomer(WireData $data, Customer $customer) {
 		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= $config->twig->render('customers/ci/customer/main.twig', ['customer' => $customer]);
-		$html .= self::displayUserActions($customer);
-		$html .= self::displayContacts($customer);
-		$html .= self::displaySalesOrders($customer);
-		$html .= self::displayInvoices($customer);
-		$html .= self::displayQuotes($customer);
+		$html .= self::renderCustomer($data, $customer);
 		return $html;
 	}
 
-	private static function displayUserActions(Customer $customer) {
-		$filter = self::pw('modules')->get('FilterUserActions');
-		$query = $filter->get_actionsquery(self::pw('input'));
-		$query->filterByStatusIncomplete();
-		$query->filterByCustomerlink($customer->id);
-		$actions = $query->paginate(1, 10);
-		return self::pw('config')->twig->render('customers/ci/customer/panels/actions.twig', ['module_useractions' => $filter, 'actions' => $actions]);
+/* =============================================================
+	HTML Rendering
+============================================================= */
+	/**
+	 * Render Customer List Page HTML
+	 * @param WireData         $data
+	 * @param PropelModelPager $customers
+	 * @return string
+	 */
+	private static function renderList(WireData $data, PropelModelPager $customers) {
+		return self::pw('config')->twig->render('customers/ci/.new/list/display.twig', ['customers' => $customers, 'datamatcher' => self::pw('modules')->get('RegexData')]);
 	}
 
-	private static function displayContacts(Customer $customer) {
-		$config  = self::pw('config');
-		$q = CustindexQuery::create();
-		$q->filterByCustid($customer->id);
-		$contacts = $q->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/panels/contacts.twig', ['contacts' => $contacts]);
+	/**
+	 * Render Customer Page HTML
+	 * @param  WireData $data
+	 * @param  Customer $customer
+	 * @return string
+	 */
+	private static function renderCustomer(WireData $data, Customer $customer) {
+		return self::pw('config')->twig->render('customers/ci/.new/customer/display.twig', ['customer' => $customer]);
 	}
 
-	private static function displaySalesOrders(Customer $customer) {
-		$config  = self::pw('config');
-		$filter = new SalesOrderFilter();
-		$filter->user(self::pw('user'));
-		$filter->custid($customer->id);
-		$filter->query->limit(10);
-		$orders = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/panels/sales-orders.twig', ['orders' => $orders]);
-	}
+/* =============================================================
+	URLs
+============================================================= */
 
-	private static function displayInvoices(Customer $customer) {
-		$config  = self::pw('config');
-		$filter = new SalesHistoryFilter();
-		$filter->user(self::pw('user'));
-		$filter->custid($customer->id);
-		$filter->query->limit(10);
-		$orders = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/panels/invoices.twig', ['orders' => $orders]);
-	}
-
-	private static function displayQuotes(Customer $customer) {
-		if (self::pw('user')->has_function('mqo')  === false) {
-			return '';
-		}
-		$config  = self::pw('config');
-		$filter = new QuoteFilter();
-		$filter->user(self::pw('user'));
-		$filter->custid($customer->id);
-		$filter->query->limit(10);
-		$quotes = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/panels/quotes.twig', ['quotes' => $quotes]);
-	}
 
 /* =============================================================
 	Hooks
@@ -175,8 +238,18 @@ class Ci extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMci');
 
-		$m->addHook('Page(pw_template=ci)::ciUrl', function($event) {
-			$event->return = self::ciUrl($event->arguments(0));
+		$m->addHookProperty('Page(pw_template=ci)::custid', function($event) {
+			$page = $event->object;
+			if ($page->aCustid) {
+				$event->return = $page->aCustid;
+				return true;
+			}
+			$page->aCustid = Cmm::instance()->custidByRid($page->wire('input')->get->int('rid'));
+			$event->return = $page->aCustid;
+		});
+
+		$m->addHook('Page(pw_template=ci)::custUrl', function($event) {
+			$event->return = self::custUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=ci)::ciShiptoUrl', function($event) {
@@ -222,15 +295,15 @@ class Ci extends Base {
 		});
 
 		$m->addHook('Page(pw_template=ci)::orderUrl', function($event) {
-			$event->return = ControllersSalesOrder\SalesOrder::orderUrl($event->arguments(0));
+			$event->return = SalesOrderControllers\SalesOrder::orderUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=ci)::orderListUrl', function($event) {
-			$event->return = ControllersSalesOrder\SalesOrder::orderListCustomerUrl($event->arguments(0));
+			$event->return = SalesOrderControllers\SalesOrder::orderListCustomerUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=ci)::invoiceListUrl', function($event) {
-			$event->return = ControllersSalesOrder\Lists\Invoices\Customer::listUrl($event->arguments(0));
+			$event->return = SalesOrderControllers\Lists\Invoices\Customer::listUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=ci)::cartCustomerUrl', function($event) {
@@ -238,11 +311,11 @@ class Ci extends Base {
 		});
 
 		$m->addHook('Page(pw_template=ci)::quoteUrl', function($event) {
-			$event->return = ControllersQuote\Quote::quoteUrl($event->arguments(0));
+			$event->return = QuoteControllers\Quote::quoteUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=ci)::quoteListUrl', function($event) {
-			$event->return = ControllersQuote\Lists\Customer::listUrl($event->arguments(0), $event->arguments(1));
+			$event->return = QuoteControllers\Lists\Customer::listUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
 }
