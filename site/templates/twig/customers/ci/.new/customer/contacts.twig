@@ -12,7 +12,7 @@
 		<span class="badge badge-pill badge-light">{{ contacts.getNbResults() }}</span>
 	</div>
 	<div class="collapse" id="customer-contacts">
-		<div class="list-group-item bg-light font-weight-bold">
+		<div class="list-group-item py-1 bg-light font-weight-bold">
 			<div class="row">
 				<div class="col">Name</div>
 				<div class="col">Shipto</div>
@@ -22,17 +22,17 @@
 				<div class="col text-right">Edit</div>
 			</div>
 		</div>
-		{% if contacts.count > 0 %}
-			{% for contact in contacts %}
-				<div class="list-group-item">
+		{% if customer.contacts.count > 0 %}
+			{% for contact in customer.contacts %}
+				<div class="list-group-item py-1 px-2">
 					<div class="row">
-						<div class="col"><a href="{{ page.ciContactUrl(contact.custid, contact.shiptoid, contact.contact) }}" class="link">{{ contact.contact }}</a></div>
+						<div class="col"><a href="{{ page.ciContactUrl(input.get.int('rid'), contact.shiptoid, contact.contact) }}" class="link">{{ contact.contact }}</a></div>
 						<div class="col">{{ contact.shiptoid }}</div>
 						<div class="col">{{ contact.title }}</div>
 						<div class="col">{{ contact.phone }}</div>
 						<div class="col">{{ contact.email }}</div>
 						<div class="col text-right">
-							<a href="{{ page.ciContactEditUrl(contact.custid, contact.shiptoid, contact.contact) }}" class="btn btn-warning btn-sm">
+							<a href="{{ page.ciContactEditUrl(input.get.int('rid'), contact.shiptoid, contact.contact) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i>
 							</a>
 						</div>
@@ -40,14 +40,16 @@
 				</div>
 			{% endfor %}
 		{% else %}
-			<div class="list-group-item">
+			<div class="list-group-item py-1 px-2">
 				<div class="row">
 					<div class="col text-center">There are no results to display.</div>
 				</div>
 			</div>
 		{% endif %}
-		<div class="card-footer bg-secondary">
-			<a href="{{ page.ciContactsUrl(input.get.string('custID'), input.get.text('shiptoID'))}}" class="text-white">View More Contacts <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+		<div class="card-footer">
+			<a href="{{ page.ciContactsUrl(input.get.int('rid'))}}" class="link">
+				View More Contacts <i class="fa fa-sign-in" aria-hidden="true"></i>
+			</a>
 		</div>
 	</div>
 </div>

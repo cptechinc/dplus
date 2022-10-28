@@ -1,0 +1,10 @@
+<div>
+	{% include 'customers/ci/.new/bread-crumbs.twig' %}
+</div>
+<div>
+	{% include 'customers/ci/.new/list/form.twig' %}
+</div>
+<div>
+	{% include 'customers/ci/.new/list/list.twig' %}
+	{% include 'util/paginator/propel.twig' with {'pager': customers } %}
+</div>

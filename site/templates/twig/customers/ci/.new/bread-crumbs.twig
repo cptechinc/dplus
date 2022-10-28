@@ -1,0 +1,66 @@
+{#
+	var / var property      Description / Instance of
+	-------------------------------------------------
+	user                    ProcessWire\User
+	input                   ProcessWire\WireInput
+	page                    ProcessWire\Page
+	page.custid             Customer ID
+#}
+
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values = input.get %}
+
+{% block current_page %}
+	{% if values.offsetExists('rid') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				{{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+			</a>
+		</li>
+
+		{% if input.countSegments() %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.ciUrl(values.int('rid')) }}">
+					{{ page.custid }}
+				</a>
+			</li>
+			{% if values.offsetExists('shiptoID') and values.text('shiptoID') != '' %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.ciShiptoUrl(values.int('rid')) }}">
+						Ship-tos
+					</a>
+				</li>
+				{% if input.lastSegment() != 'ship-tos' %}
+					<li class="breadcrumb-item">
+						<a href="{{ page.ciShiptoUrl(values.int('rid'), values.text('shiptoID')) }}">
+							{{ values.text('shiptoID') }}
+						</a>
+					</li>
+					<li class="breadcrumb-item active" aria-current="page">
+						{{ input.lastSegment() == 'ship-tos' ? 'Ship-tos' : input.lastSegment()|replace({'-':' '})|title }}
+					</li>
+				{% else %}
+					<li class="breadcrumb-item active" aria-current="page">{{ values.text('shiptoID') }}</li>
+				{% endif %}
+			{% elseif (input.lastSegment == 'contact') %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.ciContactsUrl(values.int('rid')) }}">
+						Contacts
+					</a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ values.text('contactID') }}
+				</li>
+			{% else %}
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ input.lastSegment() == 'ship-tos' ? 'Ship-tos' : input.lastSegment()|replace({'-':' '})|title }}
+				</li>
+			{% endif %}
+		{% else %}
+			<li class="breadcrumb-item active" aria-current="page">{{ page.custid }}</li>
+		{% endif %}
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+	{% endif %}
+{% endblock %}

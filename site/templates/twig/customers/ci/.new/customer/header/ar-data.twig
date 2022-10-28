@@ -1,11 +1,25 @@
+{#
+	var / var property      Description / Instance of
+	-------------------------------------------------
+	user                    ProcessWire\User
+	input                   ProcessWire\WireInput
+	page                    ProcessWire\Page
+	page.custid             Customer ID
+	customer                Customer
+	customer.contacts       Propel\Runtime\Util\PropelModelPager of Custinde
+	customer.salesOrders    Propel\Runtime\Util\PropelModelPager of SalesOrder
+	customer.salesHistory   Propel\Runtime\Util\PropelModelPager of Sales History
+	customer.quotes         Propel\Runtime\Util\PropelModelPager of Quote
+#}
+
 <div class="card">
 	<div class="card-header">
 		<span class="h5">AR</span>
 	</div>
 	<ul class="list-group list-group-flush">
-		<li class="list-group-item">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Warehouse:
 				</div>
 				<div class="col-sm-5">
@@ -13,9 +27,9 @@
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Ship Via:
 				</div>
 				<div class="col-sm-5">
@@ -23,9 +37,9 @@
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Current Finance Charge:
 				</div>
 				<div class="col-sm-5">
@@ -33,9 +47,9 @@
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Type:
 				</div>
 				<div class="col-sm-5">
@@ -43,9 +57,9 @@
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Terms Code:
 				</div>
 				<div class="col-sm-5">
@@ -53,9 +67,9 @@
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Price Code:
 				</div>
 				<div class="col-sm-5">
@@ -65,7 +79,7 @@
 		</li>
 		<li class="list-group-item {{customer.credithold == 'Y' ? 'bg-warning' : ''}}">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Credit Hold:
 				</div>
 				<div class="col-sm-5">
@@ -73,9 +87,9 @@
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Credit Limit:
 				</div>
 				<div class="col-sm-5">
@@ -83,9 +97,9 @@
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-7 text-bold">
 					Tax Exempt:
 				</div>
 				<div class="col-sm-5">
