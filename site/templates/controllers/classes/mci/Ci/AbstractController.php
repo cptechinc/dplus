@@ -29,6 +29,15 @@ abstract class AbstractController extends Controller {
 	 * @param  int     $rID   Customer Record ID  
 	 * @return string
 	 */
+	public static function ciUrl(int $rID) {
+		return static::url()."?rid=$rID";
+	}
+
+	/**
+	 * Return URL to Customer Page
+	 * @param  int     $rID   Customer Record ID  
+	 * @return string
+	 */
 	public static function custUrl(int $rID) {
 		return static::url()."?rid=$rID";
 	}
@@ -164,12 +173,31 @@ abstract class AbstractController extends Controller {
 ============================================================= */
 	/**
 	 * Return Customer By Record ID
-	 * @param  string $rID
+	 * @param  int      $rID  Customer Record ID
 	 * @return Customer
 	 */
 	public static function getCustomerByRid($rID) {
 		return Cmm::instance()->customerByRid($rID);;
 	}
+
+	/**
+	 * Return Customer ID By Record ID
+	 * @param  int      $rID  Customer Record ID
+	 * @return string
+	 */
+	public static function getCustidByRid($rID) {
+		return Cmm::instance()->custidByRid($rID);;
+	}
+
+/* =============================================================
+	JS
+============================================================= */
+	protected static function jsPath() {
+		$scriptPath = 'scripts/pages/';
+		$scriptPath .= str_replace('\\', '/', ltrim(strtolower(static::class), 'controllers\\')) . '/';
+		return $scriptPath;
+	}
+
 
 /* =============================================================
 	Supplemental
