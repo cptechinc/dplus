@@ -252,6 +252,10 @@ class Ci extends AbstractController {
 			$event->return = self::custUrl($event->arguments(0));
 		});
 
+		$m->addHook('Page(pw_template=ci)::ciUrl', function($event) {
+			$event->return = self::custUrl($event->arguments(0));
+		});
+
 		$m->addHook('Page(pw_template=ci)::ciShiptoUrl', function($event) {
 			$event->return = self::ciShiptoUrl($event->arguments(0), $event->arguments(1));
 		});
