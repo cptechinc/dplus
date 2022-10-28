@@ -1,0 +1,29 @@
+{% include 'customers/ci/.new/bread-crumbs.twig' %}
+
+<div class="row">
+	<div class="col-sm-2">
+		{% include 'customers/ci/.new/ship-tos/ship-to/toolbar.twig' %}
+	</div>
+	<div class="col-sm-10">
+		{% include 'customers/ci/.new/ship-tos/ship-to/header.twig' %}
+	</div>
+</div>
+
+<div class="mb-3">
+	{% include 'customers/ci/.new/customer/contacts.twig' with {'contacts': shipto.contacts} %}
+</div>
+
+<div class="mb-3">
+	{% include 'customers/ci/.new/customer/sales-orders.twig' with {'orders': shipto.salesOrders} %}
+</div>
+
+<div class="mb-3">
+	{% include 'customers/ci/.new/customer/sales-history.twig' with {'orders': shipto.salesHistory} %}
+</div>
+
+{% if user.has_function('mqo') %}
+	<div class="mb-3">
+		{% include 'customers/ci/.new/customer/quotes.twig' with {'quotes': shipto.quotes} %}
+	</div>
+{% endif %}
+

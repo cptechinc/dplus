@@ -89,7 +89,6 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mci\\Ci\\OpenInvoices' => __DIR__ . '/../..' . '/classes/mci/Ci/OpenInvoices.php',
         'Controllers\\Mci\\Ci\\Payments' => __DIR__ . '/../..' . '/classes/mci/Ci/Payments.php',
         'Controllers\\Mci\\Ci\\Pricing' => __DIR__ . '/../..' . '/classes/mci/Ci/Pricing.php',
-        'Controllers\\Mci\\Ci\\Pricing2' => __DIR__ . '/../..' . '/classes/mci/Ci/Pricing2.php',
         'Controllers\\Mci\\Ci\\PurchaseOrders' => __DIR__ . '/../..' . '/classes/mci/Ci/PurchaseOrders.php',
         'Controllers\\Mci\\Ci\\Quotes' => __DIR__ . '/../..' . '/classes/mci/Ci/Quotes.php',
         'Controllers\\Mci\\Ci\\SalesHistory' => __DIR__ . '/../..' . '/classes/mci/Ci/SalesHistory.php',

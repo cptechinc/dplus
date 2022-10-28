@@ -88,7 +88,6 @@ return array(
     'Controllers\\Mci\\Ci\\OpenInvoices' => $baseDir . '/classes/mci/Ci/OpenInvoices.php',
     'Controllers\\Mci\\Ci\\Payments' => $baseDir . '/classes/mci/Ci/Payments.php',
     'Controllers\\Mci\\Ci\\Pricing' => $baseDir . '/classes/mci/Ci/Pricing.php',
-    'Controllers\\Mci\\Ci\\Pricing2' => $baseDir . '/classes/mci/Ci/Pricing2.php',
     'Controllers\\Mci\\Ci\\PurchaseOrders' => $baseDir . '/classes/mci/Ci/PurchaseOrders.php',
     'Controllers\\Mci\\Ci\\Quotes' => $baseDir . '/classes/mci/Ci/Quotes.php',
     'Controllers\\Mci\\Ci\\SalesHistory' => $baseDir . '/classes/mci/Ci/SalesHistory.php',

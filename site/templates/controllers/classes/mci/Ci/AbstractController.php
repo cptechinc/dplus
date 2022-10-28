@@ -48,7 +48,7 @@ abstract class AbstractController extends Controller {
 	 * @return string
 	 */
 	public static function ciSubfunctionUrl(int $rID, $sub) {
-		$url = new Purl(self::custUrl($rID));
+		$url = new Purl(self::ciUrl($rID));
 		$url->path->add($sub);
 		return $url->getUrl();
 	}
@@ -58,9 +58,12 @@ abstract class AbstractController extends Controller {
 	 * @param  int     $rID   Customer Record ID  
 	 * @return string
 	 */
-	public static function ciContactsUrl(int $rID) {
-		$url = new Purl(self::custUrl($rID));
+	public static function ciContactsUrl(int $rID, $shiptoID = '') {
+		$url = new Purl(self::ciUrl($rID));
 		$url->path->add('contacts');
+		if ($shiptoID) {
+			$url->query->set('shiptoID', $shiptoID);
+		}
 		return $url->getUrl();
 	}
 
@@ -98,6 +101,16 @@ abstract class AbstractController extends Controller {
 	 */
 	public static function ciPricingUrl($rID) {
 		return self::ciSubfunctionUrl($rID, 'pricing');
+	}
+
+
+	public static function ciShiptoUrl($rID, $shiptoID = '') {
+		$url = new Purl(self::ciUrl($rID));
+		$url->path->add('ship-tos');
+		if ($shiptoID) {
+			$url->query->set('shiptoID', $shiptoID);
+		}
+		return $url->getUrl();
 	}
 
 /* =============================================================

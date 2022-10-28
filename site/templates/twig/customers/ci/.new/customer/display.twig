@@ -6,7 +6,7 @@
 	page                    ProcessWire\Page
 	page.custid             Customer ID
 	customer                Customer
-	customer.contacts       Propel\Runtime\Util\PropelModelPager of Custinde
+	customer.contacts       Propel\Runtime\Util\PropelModelPager of Custindex
 	customer.salesOrders    Propel\Runtime\Util\PropelModelPager of SalesOrder
 	customer.salesHistory   Propel\Runtime\Util\PropelModelPager of Sales History
 	customer.quotes         Propel\Runtime\Util\PropelModelPager of Quote
@@ -36,20 +36,20 @@
 </div>
 
 <div class="mb-3">
-	{% include 'customers/ci/.new/customer/contacts.twig' with {'customer': customer} %}
+	{% include 'customers/ci/.new/customer/contacts.twig' with {'contacts': customer.contacts} %}
 </div>
 
 <div class="mb-3">
-	{% include 'customers/ci/.new/customer/sales-orders.twig' with {'customer': customer} %}
+	{% include 'customers/ci/.new/customer/sales-orders.twig' with {'orders': customer.salesOrders} %}
 </div>
 
 <div class="mb-3">
-	{% include 'customers/ci/.new/customer/sales-history.twig' with {'customer': customer} %}
+	{% include 'customers/ci/.new/customer/sales-history.twig' with {'orders': customer.salesHistory} %}
 </div>
 
 {% if user.has_function('mqo') %}
 	<div class="mb-3">
-		{% include 'customers/ci/.new/customer/quotes.twig' with {'customer': customer} %}
+		{% include 'customers/ci/.new/customer/quotes.twig' with {'quotes': customer.quotes} %}
 	</div>
 {% endif %}
 

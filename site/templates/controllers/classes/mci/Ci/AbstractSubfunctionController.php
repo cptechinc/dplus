@@ -26,6 +26,14 @@ abstract class AbstractSubfunctionController extends AbstractController {
 /* =============================================================
 	Validation
 ============================================================= */
+	/**
+	 * Throw 404 Error if 
+	 * 1. Customer is Invalid
+	 * 2. User is Not Permitted
+	 * @throws Wire404Exception
+	 * @param  WireData $data
+	 * @return void
+	 */
 	protected static function throw404IfInvalidCustomerOrPermission(WireData $data) {
 		if (self::validateUserPermission() === false) {
 			throw new Wire404Exception();
@@ -39,7 +47,9 @@ abstract class AbstractSubfunctionController extends AbstractController {
 /* =============================================================
 	Data Requests
 ============================================================= */
-	abstract protected static function prepareJsonRequest(WireData $data);
+	protected static function prepareJsonRequest(WireData $data) {
+		return [];
+	}
 	
 	protected static function requestJson($data = [], $sessionID = '') {
 		if (empty($data)) {
@@ -92,7 +102,9 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 * @param  WireData $data
 	 * @return string
 	 */
-	abstract protected static function fetchDataRedirectUrl(WireData $data);
+	protected static function fetchDataRedirectUrl(WireData $data) {
+		return '';
+	}
 
 	/**
 	 * Return if JSON Data matches for this Customer ID
