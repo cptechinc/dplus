@@ -80,7 +80,7 @@ return array(
     'Controllers\\Mci\\Ci\\AbstractSubfunctionController' => $baseDir . '/classes/mci/Ci/AbstractSubfunctionController.php',
     'Controllers\\Mci\\Ci\\Base' => $baseDir . '/classes/mci/Ci/Base.php',
     'Controllers\\Mci\\Ci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
-    'Controllers\\Mci\\Ci\\Contacts' => $baseDir . '/classes/mci/Ci/Contacts/Contacts.php',
+    'Controllers\\Mci\\Ci\\Contacts' => $baseDir . '/classes/mci/Ci/Contacts.php',
     'Controllers\\Mci\\Ci\\Contacts\\Contact' => $baseDir . '/classes/mci/Ci/Contacts/Contact.php',
     'Controllers\\Mci\\Ci\\Contacts\\Edit' => $baseDir . '/classes/mci/Ci/Contacts/Edit.php',
     'Controllers\\Mci\\Ci\\Credit' => $baseDir . '/classes/mci/Ci/Credit.php',

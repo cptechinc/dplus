@@ -4,7 +4,7 @@
 	<thead>
 		<tr>
 			{% for column in json['columns']['contact'] %}
-				<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+				<th class="{{ jsonm.get_justifyclass(column['headingjustify']) }}">
 					{{ column['heading']}}
 				</th>
 			{% endfor %}
@@ -13,17 +13,17 @@
 	<tbody>
 		{% for contact in json['data']['contact'] %}
 			<tr>
-				<td class="border-top border-dark {{ module_json.get_justifyclass(contactcolumns['contactshipto']['datajustify']) }}">
+				<td class="border-top border-dark {{ jsonm.get_justifyclass(contactcolumns['contactshipto']['datajustify']) }}">
 					{{ contact['contactshipto'] }}
 				</td>
-				<td class="border-top border-dark {{ module_json.get_justifyclass(contactcolumns['contactname']['datajustify']) }}">
+				<td class="border-top border-dark {{ jsonm.get_justifyclass(contactcolumns['contactname']['datajustify']) }}">
 					{{ contact['contactname'] }}
 				</td>
-				<td class="border-top border-dark {{ module_json.get_justifyclass(contactcolumns['contactemail']['datajustify']) }}">
+				<td class="border-top border-dark {{ jsonm.get_justifyclass(contactcolumns['contactemail']['datajustify']) }}">
 					{{ contact['contactemail'] }}
 				</td>
 				{% if contact['contactnumbers']["1"] %}
-					<td class="border-top border-dark {{ module_json.get_justifyclass(contactcolumns['contactnbr']['datajustify']) }}">
+					<td class="border-top border-dark {{ jsonm.get_justifyclass(contactcolumns['contactnbr']['datajustify']) }}">
 						{{ contact['contactnumbers']["1"]['contactnbr'] }}
 					</td>
 				{% else %}
@@ -37,7 +37,7 @@
 					<td></td>
 					<td></td>
 					<td></td>
-					<td class="{{ module_json.get_justifyclass(contactcolumns['contactnbr']['datajustify']) }}">
+					<td class="{{ jsonm.get_justifyclass(contactcolumns['contactnbr']['datajustify']) }}">
 						{{ contact['contactnumbers'][i]['contactnbr'] }}
 					</td>
 				</tr>

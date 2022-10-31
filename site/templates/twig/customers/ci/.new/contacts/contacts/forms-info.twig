@@ -4,7 +4,7 @@
 	<thead>
 		<tr>
 			{% for column in json['columns']['forms'] %}
-				<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+				<th class="{{ jsonm.get_justifyclass(column['headingjustify']) }}">
 					{{ column['heading']}}
 				</th>
 			{% endfor %}
@@ -14,7 +14,7 @@
 		{% for form in json['data']['forms'] %}
 			<tr>
 				{% for key, column in json['columns']['forms'] %}
-					<td class="{{ module_json.get_justifyclass(column['datajustify']) }}">
+					<td class="{{ jsonm.get_justifyclass(column['datajustify']) }}">
 						{{ form[key]}}
 					</td>
 				{% endfor %}

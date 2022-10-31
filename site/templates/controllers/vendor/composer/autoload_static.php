@@ -81,7 +81,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mci\\Ci\\AbstractSubfunctionController' => __DIR__ . '/../..' . '/classes/mci/Ci/AbstractSubfunctionController.php',
         'Controllers\\Mci\\Ci\\Base' => __DIR__ . '/../..' . '/classes/mci/Ci/Base.php',
         'Controllers\\Mci\\Ci\\Ci' => __DIR__ . '/../..' . '/classes/mci/Ci/Ci.php',
-        'Controllers\\Mci\\Ci\\Contacts' => __DIR__ . '/../..' . '/classes/mci/Ci/Contacts/Contacts.php',
+        'Controllers\\Mci\\Ci\\Contacts' => __DIR__ . '/../..' . '/classes/mci/Ci/Contacts.php',
         'Controllers\\Mci\\Ci\\Contacts\\Contact' => __DIR__ . '/../..' . '/classes/mci/Ci/Contacts/Contact.php',
         'Controllers\\Mci\\Ci\\Contacts\\Edit' => __DIR__ . '/../..' . '/classes/mci/Ci/Contacts/Edit.php',
         'Controllers\\Mci\\Ci\\Credit' => __DIR__ . '/../..' . '/classes/mci/Ci/Credit.php',
