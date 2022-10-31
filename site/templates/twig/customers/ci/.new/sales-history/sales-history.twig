@@ -1,7 +1,4 @@
-{% if json['data'] is empty %}
-	{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Attention!', 'message': 'No Sales History Found'} %}
-{% endif %}
-
+{% set module_formatter = formatter %}
 
 {% for index, whse in json['data'] %}
 	<div class="card-body">
@@ -32,12 +29,12 @@
 								{% if blueprint['header']['rows'][x]['columns'][i] %}
 									{% set column = blueprint['header']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
-									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-										<span class="font-weight-bold">{{ column['label'] }}</span> {{ module_formatter.format_celldata(invoice, column) }}
+									<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+										<span class="font-weight-bold">{{ column['label'] }}</span> {{ formatter.format_celldata(invoice, column) }}
 										{% if column['id'] == 'Invoice Number' %}
 											{% set ordn = invoice['Ordn'] %}
 											{% if docm.countDocuments(ordn) %}
-												<a href="{{ page.documentListUrl(json['custid'], ordn)}}" class="text-success" title="View Documents for Invoice # {{ invoice['Invoice Number'] }}">
+												<a href="{{ page.documentListUrl(input.get.int('rid'), ordn)}}" class="text-success" title="View Documents for Invoice # {{ invoice['Invoice Number'] }}">
 													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Invoice # {{ invoice['Invoice Number'] }}</span>
 												</a>
 											{% endif %}
@@ -54,11 +51,11 @@
 						</tr>
 					{% endfor %}
 
-					{% include 'customers/ci/sales-history/table/tr-details.twig' %}
+					{% include 'customers/ci/.new/sales-history/table/tr-details.twig' %}
 
-					{% include 'customers/ci/sales-history/table/tr-totals.twig' %}
+					{% include 'customers/ci/.new/sales-history/table/tr-totals.twig' %}
 
-					{% include 'customers/ci/sales-history/table/tr-shipments.twig' %}
+					{% include 'customers/ci/.new/sales-history/table/tr-shipments.twig' %}
 				{% endfor %}
 			</tbody>
 		</table>

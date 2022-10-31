@@ -49,7 +49,7 @@ class SalesOrders extends AbstractSubfunctionController {
 	URLs
 ============================================================= */
 	public static function ordersUrl($rID, $refreshdata = false) {
-		$url = new Purl(self::ciSalesordersUrl($rID));
+		$url = new Purl(self::ciSalesOrdersUrl($rID));
 
 		if ($refreshdata) {
 			$url->query->set('refresh', 'true');
