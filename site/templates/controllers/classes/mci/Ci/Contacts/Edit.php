@@ -6,8 +6,9 @@ use CustomerQuery, Customer;
 use CustomerShiptoQuery, CustomerShipto;
 // Dpluso Model
 use CustindexQuery, Custindex;
-// ProcessWire Classes, Modules
-use ProcessWire\Page;
+// ProcessWire
+use ProcessWire\WireData;
+use ProcessWire\Wire404Exception;
 // Dplus Validators
 use Dplus\CodeValidators\Mar as MarValidator;
 // Dplus Filters
@@ -15,83 +16,40 @@ use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Mci\Ci\Contact\Edit as ContactCRUD;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Mci\Ci\Base;
 use Controllers\Mci\Ci\Shipto;
 
-class Edit extends Base {
+class Edit extends Contact {
+	const TITLE      = 'CI: Edit Contact';
+	const SUMMARY    = 'Edit Customer Contact';
 
 /* =============================================================
 	Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'shiptoID|text', 'q|text'];
+	public static function handleCRUD(WireData $data) {
+		$fields = ['rid|int', 'custID|string', 'shiptoID|text', 'contactID|text', 'name|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
-		}
-
-		if (empty($data->shiptoID) === false) {
-			if (Shipto::validateShiptoAccess($data) === false) {
-				return Shipto::displayInvalidShiptoOrPermissions($data);
-			}
-		}
-		return self::contact($data);
-	}
-
-	public static function handleCRUD($data) {
-		$fields = ['custID|string', 'shiptoID|text', 'contactID|text', 'name|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-		$url = self::ciContactEditUrl($data->custID, $data->shiptoID, $data->contactID);
+		$data->custID = self::getCustidByRid($data->rid);
+		$url = self::ciContactEditUrl($data->rid, $data->shiptoID, $data->contactID);
 
 		if (empty($data->action) === false) {
 			$crud = new ContactCRUD();
 			$crud->processInput(self::pw('input'));
-
-			switch ($data->action) {
-				case 'update-contact':
-					if ($data->name != '' && $data->contactID != $data->name) {
-						$url = self::ciContactEditUrl($data->custID, $data->shiptoID, $data->name);
-					}
-					break;
+			if ($data->name != '' && $data->contactID != $data->name) {
+				$url = self::ciContactEditUrl($data->rid, $data->shiptoID, $data->name);
 			}
 		}
-		self::pw('session')->redirect($url, $http301 = false);
-	}
-
-	private static function contact($data) {
-		self::pw('page')->headline = "CI: Contact";
-		if (self::exists($data->custID, $data->shiptoID, $data->contactID) === false) {
-			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Contact Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "$data->custID $data->shiptID $data->contactID not found"]);
-		}
-		$contact = self::getContact($data->custID, $data->shiptoID, $data->contactID);
-		self::pw('page')->headline = "CI: $data->custID Contact $data->contactID";
-		return self::displayContact($data, $contact);
+		self::pw('session')->redirect($url, $http301=false);
 	}
 
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayContact($data, Custindex $contact) {
-		$config = self::pw('config');
-
-		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= $config->twig->render('customers/ci/contact/edit/display.twig', ['contact' => $contact, 'customer' => self::getCustomer($data->custID)]);
-		return $html;
-	}
 
 /* =============================================================
-	Supplemental
+	HTML Rendering
 ============================================================= */
-	public static function getContact($custID, $shiptoID, $contactID) {
-		$m = new ContactCRUD();
-		return $m->contact($custID, $shiptoID, $contactID);
-	}
-
-	public static function exists($custID, $shiptoID, $contactID) {
-		$m = new ContactCRUD();
-		return $m->exists($custID, $shiptoID, $contactID);
+	protected static function renderContact(WireData $data, Custindex $contact) {
+		$customer = self::getCustomerByRid($data->rid);
+		return self::pw('config')->twig->render('customers/ci/.new/contact-edit/display.twig', ['contact' => $contact, 'customer' => $customer]);
 	}
 }

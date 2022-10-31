@@ -16,8 +16,8 @@ use Controllers\Mci\Ci\AbstractSubfunctionController;
  * Handles Ci Contact Page
  */
 class Contact extends AbstractSubfunctionController {
-	const TITLE      = 'CI: Contacts';
-	const SUMMARY    = 'View Customer Contacts';
+	const TITLE      = 'CI: Contact';
+	const SUMMARY    = 'View Customer Contact';
 
 /* =============================================================
 	Indexes
@@ -33,17 +33,17 @@ class Contact extends AbstractSubfunctionController {
 		if (empty($data->shiptoID) === false && Shipto::validateShiptoAccess($data->custID, $data->shiptoID) === false) {
 			throw new Wire404Exception();
 		}
-		return self::contact($data);
+		return static::contact($data);
 	}
 
-	private static function contact(WireData $data) {
+	protected static function contact(WireData $data) {
 		self::pw('page')->headline = "CI: Contact";
 		if (self::exists($data->custID, $data->shiptoID, $data->contactID) === false) {
 			throw new Wire404Exception();
 		}
 		$contact = self::getContact($data->custID, $data->shiptoID, $data->contactID);
 		self::pw('page')->headline = "CI: $data->custID Contact $data->contactID";
-		return self::displayContact($data, $contact);
+		return static::displayContact($data, $contact);
 	}
 
 /* =============================================================
@@ -78,16 +78,16 @@ class Contact extends AbstractSubfunctionController {
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayContact(WireData $data, Custindex $contact) {
+	protected static function displayContact(WireData $data, Custindex $contact) {
 		$html = '';
-		$html .= self::renderContact($data, $contact);
+		$html .= static::renderContact($data, $contact);
 		return $html;
 	}
 
 /* =============================================================
 	HTML Rendering
 ============================================================= */
-	private static function renderContact(WireData $data, Custindex $contact) {
+	protected static function renderContact(WireData $data, Custindex $contact) {
 		$customer = self::getCustomerByRid($data->rid);
 		return self::pw('config')->twig->render('customers/ci/.new/contact/display.twig', ['contact' => $contact, 'customer' => $customer]);
 	}

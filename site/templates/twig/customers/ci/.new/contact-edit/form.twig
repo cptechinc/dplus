@@ -1,0 +1,132 @@
+<div class="card">
+	<div class="card-header">
+		<h5 class="panel-title mb-0">Edit Contact Details</h5>
+	</div>
+	<form action="{{ input.url() }}" method="POST">
+		<input type="hidden" name="action" value="update-contact">
+		<input type="hidden" name="rid" value="{{ input.get.int('rid') }}">
+		<input type="hidden" name="custID" value="{{ contact.custid }}">
+		<input type="hidden" name="shiptoID" value="{{ contact.shiptoid }}">
+		<input type="hidden" name="contactID" value="{{ contact.contact }}">
+
+		<table class="table table-sm table-striped">
+			<tr>
+				<td>Customer:</td>
+				<td><strong>{{ contact.custid ~ ' - ' ~ contact.name }}</strong></td>
+			</tr>
+			{% if (contact.has_shipto()) %}
+				<tr>
+					<td>Shipto ID:</td>
+					<td>{{ contact.shiptoid }}</td>
+				</tr>
+			{% endif %}
+			<tr>
+				<td>Address:</td>
+				<td>
+					{{ contact.addr1 }}<br>
+					{{ contact.addr2|length > 0 ? contact.addr2 ~ '<br>' : '' }}
+					{{ contact.city ~ ', ' ~ contact.state ~ ' ' ~ contact.zip }}
+				</td>
+			</tr>
+			<tr>
+				<td><label for="name">Name</label></td>
+				<td>
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {'name': 'name', 'value': contact.contact, 'size': 'sm'}
+						}
+					%}
+				</td>
+			</tr>
+			<tr>
+				<td><label for="title">Title</label></td>
+				<td>
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {'name': 'title', 'value': contact.title, 'size': 'sm'}
+						}
+					%}
+				</td>
+			</tr>
+			<tr>
+				<td><label for="email">Email</label></td>
+				<td>
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {'type': 'email', 'name': 'email', 'value': contact.email, 'size': 'sm'}
+						}
+					%}
+				</td>
+			</tr>
+			<tr>
+				<td><label for="officephone">Office Phone</label></td>
+				<td>
+					<div class="row">
+						<div class="col-sm-8">
+							{% include 'util/bootstrap/form/input.twig' with {
+									'input': {'type': 'text', 'name': 'officephone', 'value': contact.phone, 'size': 'sm', 'addclasses': ['phone-input']}
+								}
+							%}
+						</div>
+						<div class="col-sm-4">
+							<input class="form-control form-control-sm" name="extension" value="{{ contact.extension }}" placeholder="Ext.">
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="cellphone">Cell Phone</label></td>
+				<td>
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {'type': 'text', 'name': 'cellphone', 'value': contact.cellphone, 'size': 'sm', 'addclasses': ['phone-input']}
+						}
+					%}
+				</td>
+			</tr>
+			<tr>
+				<td><label for="fax">Fax</label></td>
+				<td>
+					{% include 'util/bootstrap/form/input.twig' with {
+							'input': {'type': 'text', 'name': 'fax', 'value': contact.faxnbr, 'size': 'sm', 'addclasses': ['phone-input']}
+						}
+					%}
+				</td>
+			</tr>
+			<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+				<td><label for="arcontact">AR Contact</label></td>
+				<td>
+					{% include 'util/select.twig' with {'name': 'arcontact', 'id': 'arcontact', 'selectedvalue': contact.arcontact, 'options': {'Y': 'Yes', 'N': 'No'}, hideblankoption: true} %}
+				</td>
+			</tr>
+			<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+				<td><label for="duncontact">Dunning Contact</label></td>
+				<td>
+					{% include 'util/select.twig' with {'name': 'duncontact', 'id': 'duncontact', 'selectedvalue': contact.duncontact, 'options': {'Y': 'Yes', 'N': 'No'}, hideblankoption: true} %}
+				</td>
+			</tr>
+			<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+				<td><label for="ackcontact">Acknowledgement Contact</label></td>
+				<td>
+					{% include 'util/select.twig' with {'name': 'ackcontact', 'id': 'ackcontact', 'selectedvalue': contact.ackcontact, 'options': {'Y': 'Yes', 'N': 'No'}, hideblankoption: true} %}
+				</td>
+			</tr>
+			<tr>
+				<td><label for="buycontact">Buying Contact</label></td>
+				<td>
+					{% include 'util/select.twig' with {'name': 'buycontact', 'id': 'buycontact', 'selectedvalue': contact.buycontact, 'options': {'Y': 'Yes', 'N': 'No'}, hideblankoption: true} %}
+				</td>
+			</tr>
+			<tr>
+				<td><label for="certcontact">Certificate Contact</label></td>
+				<td>
+					{% include 'util/select.twig' with {'name': 'certcontact', 'id': 'certcontact', 'selectedvalue': contact.certcontact, 'options': {'Y': 'Yes', 'N': 'No'}, hideblankoption: true} %}
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<button type="submit" class="btn btn-success pull-right">
+						<i class="fa fa-save"></i> Save Changes
+					</button>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div> <!-- end panel round -->

@@ -31,19 +31,19 @@
 						Ship-tos
 					</a>
 				</li>
-				{% if input.lastSegment() != 'ship-tos' %}
+				{% if input.urlSegmentLast() != 'ship-tos' %}
 					<li class="breadcrumb-item">
 						<a href="{{ page.ciShiptoUrl(values.int('rid'), values.text('shiptoID')) }}">
 							{{ values.text('shiptoID') }}
 						</a>
 					</li>
 					<li class="breadcrumb-item active" aria-current="page">
-						{{ input.lastSegment() == 'ship-tos' ? 'Ship-tos' : input.lastSegment()|replace({'-':' '})|title }}
+						{{ input.urlSegmentLast() == 'ship-tos' ? 'Ship-tos' : input.urlSegmentLast()|replace({'-':' '})|title }}
 					</li>
 				{% else %}
 					<li class="breadcrumb-item active" aria-current="page">{{ values.text('shiptoID') }}</li>
 				{% endif %}
-			{% elseif (input.lastSegment == 'contact') %}
+			{% elseif (input.urlSegmentLast() == 'contact' or (input.urlSegment(-2) == 'contact' and input.urlSegmentLast() == 'edit')) %}
 				<li class="breadcrumb-item">
 					<a href="{{ page.ciContactsUrl(values.int('rid')) }}">
 						Contacts
@@ -54,7 +54,7 @@
 				</li>
 			{% else %}
 				<li class="breadcrumb-item active" aria-current="page">
-					{{ input.lastSegment() == 'ship-tos' ? 'Ship-tos' : input.lastSegment()|replace({'-':' '})|title }}
+					{{ input.urlSegmentLast() == 'ship-tos' ? 'Ship-tos' : input.urlSegmentLast()|replace({'-':' '})|title }}
 				</li>
 			{% endif %}
 		{% else %}
