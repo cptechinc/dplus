@@ -7,6 +7,11 @@ use Customer;
 use ProcessWire\WireData;
 use ProcessWire\Wire404Exception;
 
+/**
+ * Ci\Contacts\Contact
+ * 
+ * Handles Ci Contacts Page
+ */
 class Contacts extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'contacts';
 	const TITLE      = 'CI: Contacts';
@@ -23,7 +28,7 @@ class Contacts extends AbstractSubfunctionController {
 		self::throw404IfInvalidCustomerOrPermission($data);
 
 		$data->custID = self::getCustidByRid($data->rid);
-		self::pw('page')->custid = $data->custid;
+		self::pw('page')->custid = $data->custID;
 
 		if (empty($data->shiptoID) === false && Shipto::validateShiptoAccess($data->custID, $data->shiptoID) === false) {
 			throw new Wire404Exception();
