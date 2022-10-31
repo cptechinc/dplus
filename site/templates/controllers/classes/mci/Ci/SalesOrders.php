@@ -1,107 +1,55 @@
 <?php namespace Controllers\Mci\Ci;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Dplus Models
+use Customer;
+// ProcessWire
+use ProcessWire\WireData;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ci\SalesOrders as Formatter;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
 
-class SalesOrders extends Subfunction {
+class SalesOrders extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'salesorders';
 	const JSONCODE       = 'ci-sales-orders';
+	const TITLE          = 'CI: Sales Orders';
+	const SUMMARY        = 'View Sales Orders';
+	const SUBFUNCTIONKEY = 'sales-orders';
 
 /* =============================================================
 	Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'refresh|bool'];
+	public static function index(WireData $data) {
+		$fields = ['rid|int', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
-
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
-		}
+		self::throw404IfInvalidCustomerOrPermission($data);
+		$data->custID = self::getCustidByRid($data->rid);
 
 		if ($data->refresh) {
-			self::requestJson($data);
-			self::pw('session')->redirect(self::ordersUrl($data->custID), $http301 = false);
+			self::requestJson(self::prepareJsonRequest($data));
+			self::pw('session')->redirect(self::ciSalesOrdersUrl($data->rid), $http301 = false);
 		}
-
 		return self::orders($data);
 	}
 
-	private static function orders($data) {
-		self::getData($data);
-		self::pw('page')->headline = "CI: $data->custID Sales Orders";
-		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= self::displayOrders($data);
-		return $html;
-	}
+	private static function orders(WireData $data) {
+		$json = self::fetchData($data);
+		$customer = self::getCustomerByRid($data->rid);
 
-/* =============================================================
-	Data Retrieval
-============================================================= */
-	private static function getData($data) {
-		self::deleteCustPoJson();
-		$data    = self::sanitizeParametersShort($data, ['custID|string', 'itemID|text']);
-		$jsonm   = self::getJsonModule();
-		$json    = $jsonm->getFile(self::JSONCODE);
-		$session = self::pw('session');
-
-
-		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['custid'] != $data->custID) {
-				$jsonm->delete(self::JSONCODE);
-				$session->redirect(self::ordersUrl($data->custID, $refresh = true), $http301 = false);
-			}
-			return true;
-		}
-
-		if ($session->getFor('ci', 'sales-orders') > 3) {
-			return false;
-		}
-		$session->setFor('ci', 'sales-orders', ($session->getFor('ci', 'sales-orders') + 1));
-		$session->redirect(self::ordersUrl($data->custID, $refresh = true), $http301 = false);
-	}
-
-	private static function deleteCustPoJson() {
-		$jsonm = self::getJsonModule();
-		if ($jsonm->exists(self::JSONCODE) && empty(PurchaseOrders::getSessionPo()) === false) {
-			$jsonm->delete(self::JSONCODE);
-			PurchaseOrders::deleteSessionPo();
-		}
-	}
-	
-/* =============================================================
-	Display
-============================================================= */
-	protected static function displayOrders($data) {
-		$jsonm  = self::getJsonModule();
-		$json   = $jsonm->getFile(self::JSONCODE);
-		$config = self::pw('config');
-
-		if ($jsonm->exists(self::JSONCODE) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Sales Orders File Not Found']);
-		}
-
-		if ($json['error']) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
-		}
-		$page = self::pw('page');
-		$page->refreshurl = self::ordersUrl($data->custID, $refresh = true);
-		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		$customer  = self::getCustomer($data->custID);
-		$formatter = self::getFormatter();
-		$docm      = self::getDocFinder();
 		self::initHooks();
-		return $config->twig->render('customers/ci/sales-orders/display.twig', ['customer' => $customer, 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
+		self::pw('page')->headline = "CI: $customer->name Sales Orders";
+
+		$html = '';
+		$html .= self::displayOrders($data, $customer, $json);
+		return $html;
 	}
 
 /* =============================================================
 	URLs
 ============================================================= */
-	public static function ordersUrl($custID, $refreshdata = false) {
-		$url = new Purl(self::ciSalesordersUrl($custID));
+	public static function ordersUrl($rID, $refreshdata = false) {
+		$url = new Purl(self::ciSalesordersUrl($rID));
 
 		if ($refreshdata) {
 			$url->query->set('refresh', 'true');
@@ -110,14 +58,71 @@ class SalesOrders extends Subfunction {
 	}
 
 /* =============================================================
-	Data Requests
+	Data Retrieval
 ============================================================= */
-	private static function requestJson($vars) {
-		$fields = ['custID|string', 'shiptoID|text', 'sessionID|text'];
-		self::sanitizeParametersShort($vars, $fields);
-		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$data = ['CISALESORDR', "CUSTID=$vars->custID", "SHIPID=$vars->shiptoID", "SALESORDRNBR=", "ITEMID="];
-		self::sendRequest($data, $vars->sessionID);
+	/**
+	 * Return URL to Fetch Data
+	 * @param  WireData $data
+	 * @return string
+	 */
+	protected static function fetchDataRedirectUrl(WireData $data) {
+		return self::ordersUrl($data->rid, $refresh=true);
+	}
+
+	/**
+	 * Return if JSON Data matches for this Customer ID
+	 * @param  WireData $data
+	 * @param  array    $json
+	 * @return bool
+	 */
+	protected static function validateJsonFileMatches(WireData $data, array $json) {
+		return $json['custid'] == self::getCustidByRid($data->rid);
+	}
+
+	protected static function fetchData(WireData $data) {
+		$jsonFetcher = self::getJsonFileFetcher();
+		if ($jsonFetcher->exists(self::JSONCODE) && empty(PurchaseOrders::getSessionPo()) === false) {
+			$jsonFetcher->delete(self::JSONCODE);
+			PurchaseOrders::deleteSessionPo();
+		}
+		return parent::fetchData($data);
+	}
+
+	protected static function prepareJsonRequest(WireData $data) {
+		$fields = ['rid|int', 'itemID|text', 'custID|string', 'sessionID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->custID)) {
+			$data->custID = self::getCustidByRid($data->rid);
+		}
+		return ['CISALESORDR', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "SALESORDRNBR=", "ITEMID="];
+	}
+
+/* =============================================================
+	Display
+============================================================= */
+	protected static function displayOrders(WireData $data, Customer $customer, $json = []) {
+		$jsonFetcher  = self::getJsonFileFetcher();
+
+		if (empty($json)) {
+			return self::renderJsonNotFoundAlert($data, 'Sales Orders');
+		}
+
+		if ($json['error']) {
+			return self::renderJsonError($data, $json);
+		}
+		$page = self::pw('page');
+		$page->refreshurl = self::ordersUrl($data->rid, $refresh=true);
+		$page->lastmodified = $jsonFetcher->lastModified(self::JSONCODE);
+		return self::renderOrders($data, $customer, $json);
+	}
+
+/* =============================================================
+	HTML Rendering
+============================================================= */
+	protected static function renderOrders(WireData $data, Customer $customer, array $json) {
+		$formatter = self::getFormatter();
+		$docm      = self::getDocFinder();
+		return self::pw('config')->twig->render('customers/ci/.new/sales-orders/display.twig', ['customer' => $customer, 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
 	}
 
 /* =============================================================

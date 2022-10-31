@@ -23,6 +23,7 @@ class Pricing extends AbstractSubfunctionController {
 		$fields = ['rid|int', 'itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
+		$data->custID = self::getCustidByRid($data->rid);
 
 		if (empty($data->itemID)) {
 			return self::selectItem($data);
@@ -32,14 +33,13 @@ class Pricing extends AbstractSubfunctionController {
 			self::requestJson(self::prepareJsonRequest($data));
 			self::pw('session')->redirect(self::pricingUrl($data->rid, $data->itemID), $http301 = false);
 		}
-
 		return self::pricing($data);
 	}
 
 	private static function selectItem(WireData $data) {
 		$customer = self::getCustomerByRid($data->rid);
 
-		self::pw('page')->custid   = $customer->id;
+		self::pw('page')->custid   = $data->custID;
 		self::pw('page')->headline = "CI: $customer->name Pricing";
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/ajax-modal.js'));
@@ -80,6 +80,31 @@ class Pricing extends AbstractSubfunctionController {
 		return $json['itemid'] == $data->itemID && $json['custid'] == self::getCustidByRid($data->rid);
 	}
 
+	protected static function prepareJsonRequest(WireData $data) {
+		$fields = ['rid|int', 'itemID|text', 'custID|string', 'sessionID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->custID)) {
+			$data->custID = self::getCustidByRid($data->rid);
+		}
+		return ['CIPRICE', "ITEMID=$data->itemID", "CUSTID=$data->custID"];
+	}
+
+/* =============================================================
+	URLs
+============================================================= */
+	public static function pricingUrl($custID, $itemID = '', $refreshdata = false) {
+		$url = new Purl(self::ciPricingUrl($custID));
+
+		if ($itemID) {
+			$url->query->set('itemID', $itemID);
+
+			if ($refreshdata) {
+				$url->query->set('refresh', 'true');
+			}
+		}
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Display
 ============================================================= */
@@ -112,34 +137,5 @@ class Pricing extends AbstractSubfunctionController {
 
 	private static function renderPricing(WireData $data, Customer $customer, ItemMasterItem $item, array $json) {
 		return self::pw('config')->twig->render('customers/ci/.new/pricing/display.twig', ['item' => $item, 'customer' => $customer, 'json' => $json]);
-	}
-	
-
-/* =============================================================
-	URLs
-============================================================= */
-	public static function pricingUrl($custID, $itemID = '', $refreshdata = false) {
-		$url = new Purl(self::ciPricingUrl($custID));
-
-		if ($itemID) {
-			$url->query->set('itemID', $itemID);
-
-			if ($refreshdata) {
-				$url->query->set('refresh', 'true');
-			}
-		}
-		return $url->getUrl();
-	}
-
-/* =============================================================
-	Data Requests
-============================================================= */
-	protected static function prepareJsonRequest(WireData $data) {
-		$fields = ['rid|int', 'itemID|text', 'custID|string', 'sessionID|text'];
-		self::sanitizeParametersShort($data, $fields);
-		if (empty($data->custID)) {
-			$data->custID = self::getCustidByRid($data->rid);
-		}
-		return ['CIPRICE', "ITEMID=$data->itemID", "CUSTID=$data->custID"];
 	}
 }

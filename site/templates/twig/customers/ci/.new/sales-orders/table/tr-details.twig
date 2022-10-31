@@ -13,7 +13,7 @@
 	{% for detail in order['details'] %}
 		{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'detail', 'record': detail} %}
 
-		{% include 'customers/ci/sales-orders/table/tr-detail-itemstatus.twig' %}
-		{% include 'customers/ci/sales-orders/table/tr-detail-purchase-orders.twig' %}
+		{% include 'customers/ci/.new/sales-orders/table/tr-detail-itemstatus.twig' %}
+		{% include 'customers/ci/.new/sales-orders/table/tr-detail-purchase-orders.twig' %}
 	{% endfor %}
 {% endif %}

@@ -1,7 +1,3 @@
-{% if json['data'] is empty %}
-	{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Attention!', 'message': 'No Sales Orders Found'} %}
-{% endif %}
-
 {% for index, whse in json['data'] %}
 	<div class="card-body">
 		<h4>
@@ -20,13 +16,13 @@
 							{% if blueprint['header']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['header']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-									<span class="font-weight-bold">{{ column['label'] }}:</span> {{ module_formatter.format_celldata(order, column) }}
+								<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+									<span class="font-weight-bold">{{ column['label'] }}:</span> {{ formatter.format_celldata(order, column) }}
 									{% if column['id'] == 'Order Number' %}
 										{% set ordn = order['Ordn'] %}
 										{% set custID = json['custid'] %}
 										{% if docm.countDocuments(ordn) %}
-											<a href="{{ page.documentListUrl(custID, ordn) }}" class="text-success" title="View Documents for Order # {{ order['Order Number'] }}">
+											<a href="{{ page.documentListUrl(input.get.int('rid'), ordn) }}" class="text-success" title="View Documents for Order # {{ order['Order Number'] }}">
 												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ order['Order Number'] }}</span>
 											</a>
 										{% endif %}
@@ -43,8 +39,8 @@
 					</tr>
 				{% endfor %}
 
-				{% include 'customers/ci/sales-orders/table/tr-details.twig' %}
-				{% include 'customers/ci/sales-orders/table/tr-totals.twig' %}
+				{% include 'customers/ci/.new/sales-orders/table/tr-details.twig' %}
+				{% include 'customers/ci/.new/sales-orders/table/tr-totals.twig' %}
 
 				{% if order['shipments']|length > 0 %}
 					{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'shipments'} %}

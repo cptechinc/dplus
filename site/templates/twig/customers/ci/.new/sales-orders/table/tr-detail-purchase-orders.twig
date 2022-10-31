@@ -8,8 +8,8 @@
 					{% if blueprint['purchaseorder']['rows'][x]['columns'][i] %}
 						{% set column = blueprint['purchaseorder']['rows'][x]['columns'][i] %}
 						{% set colspan = column['col-length'] %}
-						<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-							<span class="font-weight-bold">{{ column['label'] }}:</span> {{ module_formatter.format_celldata(purchaseorder, column) }}
+						<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+							<span class="font-weight-bold">{{ column['label'] }}:</span> {{ formatter.format_celldata(purchaseorder, column) }}
 						</td>
 					{% else %}
 						{% if columncount < blueprint['cols'] %}
