@@ -187,6 +187,9 @@ class JsonDataFiles extends WireData implements Module {
 	 * @return bool              Was File Removed
 	 */
 	public function remove_file($sessionID, $jsoncode) {
+		if ($this->file_exists($sessionID, $jsoncode) === false) {
+			return true;
+		}
 		$jsonfile = $this->get_fullfilepath($sessionID, $jsoncode);
 		return unlink($jsonfile);
 	}

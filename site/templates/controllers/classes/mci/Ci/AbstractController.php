@@ -131,6 +131,10 @@ abstract class AbstractController extends Controller {
 		return self::ciSubfunctionUrl($rID, 'sales-history');
 	}
 
+	public static function ciPurchaseOrdersUrl($rID) {
+		return self::ciSubfunctionUrl($rID, 'purchase-orders');
+	}
+
 
 /* =============================================================
 	HTML Rendering
