@@ -109,14 +109,14 @@ abstract class AbstractSubfunctionController extends AbstractController {
 				$jsonFetcher->delete(static::JSONCODE);
 				$session->redirect(static::fetchDataRedirectUrl($data), $http301=false);
 			}
-			$session->removeFor('ci', static::SUBFUNCTIONKEY);
+			static::deleteSessionVar();
 			return $json;
 		}
 
-		if ($session->getFor('ci', static::SUBFUNCTIONKEY) > 3) {
+		if (static::getSessionVar() > 3) {
 			return [];
 		}
-		$session->setFor('ci', static::SUBFUNCTIONKEY, ($session->getFor('ci', static::SUBFUNCTIONKEY) + 1));
+		static::setSessionVar((static::getSessionVar() + 1));
 		$session->redirect(static::fetchDataRedirectUrl($data), $http301=false);
 	}
 
@@ -201,5 +201,40 @@ abstract class AbstractSubfunctionController extends AbstractController {
 		$page = $page ? $page : self::pw('page');
 		$page->refreshurl   = static::fetchDataRedirectUrl($data);
 		$page->lastmodified = self::getJsonFileFetcher()->lastModified(static::JSONCODE);
+	}
+
+/* =============================================================
+	10. Sessions
+============================================================= */
+	/**
+	 * Set Session Variable
+	 * @param  string $value
+	 * @param  string $key
+	 * @return bool
+	 */
+	public static function setSessionVar($value, $key = '') {
+		$key = $key ? $key : static::SUBFUNCTIONKEY;
+		return self::pw('session')->setFor('ci', $key, $value);
+	}
+
+	/**
+	 * Return Session Variable
+	 * @param  string $value
+	 * @param  string $key
+	 * @return mixed
+	 */
+	public static function getSessionVar($key = '') {
+		$key = $key ? $key : static::SUBFUNCTIONKEY;
+		return self::pw('session')->getFor('ci', 'ci-custpo');
+	}
+
+	/**
+	 * Delete Session Variable
+	 * @param  string $key
+	 * @return bool
+	 */
+	public static function deleteSessionVar($key = '') {
+		$key = $key ? $key : static::SUBFUNCTIONKEY;
+		return self::pw('session')->removeFor('ci', 'ci-custpo');
 	}
 }

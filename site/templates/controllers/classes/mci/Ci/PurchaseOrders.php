@@ -45,6 +45,7 @@ class PurchaseOrders extends AbstractSubfunctionController {
 		self::fetchData($data);
 		self::pw('page')->headline = "CI: $data->custID Orders that match '$data->custpo'";
 		$customer  = self::getCustomerByRid($data->rid);
+		self::setSessionVar($data->custpo, 'custpo');
 
 		self::initHooks();
 		$html = '';
@@ -156,21 +157,6 @@ class PurchaseOrders extends AbstractSubfunctionController {
 /* =============================================================
 	8. Supplemental
 ============================================================= */
-
-/* =============================================================
-	Data Requests
-============================================================= */
-	public static function setSessionPo($custpo) {
-		self::pw('session')->setFor('ci', 'ci-custpo', $custpo);
-	}
-
-	public static function getSessionPo() {
-		return self::pw('session')->getFor('ci', 'ci-custpo');
-	}
-
-	public static function deleteSessionPo() {
-		return self::pw('session')->removeFor('ci', 'ci-custpo');
-	}
 
 /* =============================================================
 	9. Hooks / Object Decorating

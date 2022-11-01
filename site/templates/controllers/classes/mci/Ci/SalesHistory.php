@@ -78,9 +78,9 @@ class SalesHistory extends AbstractSubfunctionController {
 
 	protected static function fetchData(WireData $data) {
 		$jsonFetcher = self::getJsonFileFetcher();
-		if ($jsonFetcher->exists(self::JSONCODE) && empty(PurchaseOrders::getSessionPo()) === false) {
+		if ($jsonFetcher->exists(self::JSONCODE) && empty(self::deleteSessionVar('custpo')) === false) {
 			$jsonFetcher->delete(self::JSONCODE);
-			PurchaseOrders::deleteSessionPo();
+			self::deleteSessionVar('custpo');
 		}
 		return parent::fetchData($data);
 	}
