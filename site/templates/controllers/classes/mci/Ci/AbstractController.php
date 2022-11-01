@@ -302,7 +302,7 @@ abstract class AbstractController extends Controller {
 		$page = $page ? $page : self::pw('page');
 
 		if ($data->has('custID') === false) {
-			self::decorateInputWireDataWithCustid($data);
+			self::decorateInputDataWithCustid($data);
 		}
 		if (empty($data->custID)) {
 			return false;

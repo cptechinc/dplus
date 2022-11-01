@@ -4,6 +4,7 @@ use Purl\Url as Purl;
 // Dplus Models
 use Customer;
 // ProcessWire
+use ProcessWire\Page;
 use ProcessWire\WireData;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ci\SalesHistory as Formatter;
@@ -21,12 +22,14 @@ class SalesHistory extends AbstractSubfunctionController {
 	const TITLE          = 'CI: Sales History';
 	const SUMMARY        = 'View Sales History';
 	const SUBFUNCTIONKEY = 'sales-history';
+	const DATE_FORMAT_DISPLAY = 'm/d/Y';
+	const DATE_FORMAT_REQUEST = 'Ymd';
 
 /* =============================================================
 	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['rid|int', 'refresh|bool'];
+		$fields = ['rid|int', 'date|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
 		self::decorateInputDataWithCustid($data);
@@ -34,9 +37,18 @@ class SalesHistory extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::ciSalesHistoryUrl($data->rid), $http301 = false);
+			self::pw('session')->redirect(self::historyUrl($data->rid, $data->date), $http301 = false);
+		}
+
+		if (empty($data->date)) {
+			return self::selectDate($data);
 		}
 		return self::orders($data);
+	}
+
+	private static function selectDate(WireData $data) {
+		self::addCioStartDate();
+		return self::displayDateForm($data);
 	}
 
 	private static function orders(WireData $data) {
@@ -64,7 +76,7 @@ class SalesHistory extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::ordersUrl($data->rid, $refresh=true);
+		return self::historyUrl($data->rid, $data->date, $refresh=true);
 	}
 
 	protected static function fetchData(WireData $data) {
@@ -92,8 +104,12 @@ class SalesHistory extends AbstractSubfunctionController {
 /* =============================================================
 	4. URLs
 ============================================================= */
-	public static function ordersUrl($rID, $refreshdata = false) {
+	public static function historyUrl($rID, $date = '', $refreshdata = false) {
 		$url = new Purl(self::ciSalesHistoryUrl($rID));
+
+		if ($date) {
+			$url->query->set('date', $date);
+		}
 
 		if ($refreshdata) {
 			$url->query->set('refresh', 'true');
@@ -104,6 +120,10 @@ class SalesHistory extends AbstractSubfunctionController {
 /* =============================================================
 	5. Displays
 ============================================================= */
+	protected static function displayDateForm(WireData $data) {
+		return self::renderDateForm($data);
+	}
+
 	protected static function displayHistory(WireData $data, Customer $customer, $json = []) {
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Sales History');
@@ -119,10 +139,14 @@ class SalesHistory extends AbstractSubfunctionController {
 /* =============================================================
 	6. HTML Rendering
 ============================================================= */
+	protected static function renderDateForm(WireData $data) {
+		return self::pw('config')->twig->render('customers/ci/.new/sales-history/select-date/display.twig', []);
+	}
+
 	protected static function renderHistory(WireData $data, Customer $customer, array $json) {
 		$formatter = self::getFormatter();
 		$docm      = self::getDocFinder();
-		return self::pw('config')->twig->render('customers/ci/.new/sales-orders/display.twig', ['customer' => $customer, 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
+		return self::pw('config')->twig->render('customers/ci/.new/sales-history/display.twig', ['customer' => $customer, 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
 	}
 
 /* =============================================================
@@ -153,5 +177,28 @@ class SalesHistory extends AbstractSubfunctionController {
 		$m->addHook('Page(pw_template=ci)::documentListUrl', function($event) {
 			$event->return = Documents::documentsUrlSalesorder($event->arguments(0), $event->arguments(1));
 		});
+	}
+
+	/**
+	 * Add CIO Configured Start Date for Date Form
+	 * @param  Page|null $page
+	 * @return bool
+	 */
+	private static function addCioStartDate(Page $page = null) {
+		$page = $page ? $page : self::pw('page');
+		$cio = self::getCio();
+		$cioUser = $cio->usercio(self::pw('user')->loginid);
+		
+		if ($cioUser->dayssaleshistory > 0) {
+			$page->cioStartDate = date(self::DATE_FORMAT_DISPLAY, strtotime("-$cioUser->dayssaleshistory days"));
+			return true;
+		}
+
+		if ($cioUser->datesaleshistory) {
+			$page->cioStartDate = date(self::DATE_FORMAT_DISPLAY, strtotime($cioUser->datesaleshistory));
+			return true;
+		}
+		$page->cioStartDate = '';
+		return true;
 	}
 }
