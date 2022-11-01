@@ -77,7 +77,7 @@ class SalesOrders extends AbstractSubfunctionController {
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
-		$fields = ['rid|int', 'itemID|text', 'custID|string', 'sessionID|text'];
+		$fields = ['rid|int'];
 		self::sanitizeParametersShort($data, $fields);
 		self::decorateInputDataWithCustid($data);
 		return ['CISALESORDR', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "SALESORDRNBR=", "ITEMID="];

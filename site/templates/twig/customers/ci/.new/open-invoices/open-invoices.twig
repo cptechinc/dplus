@@ -1,5 +1,6 @@
-{{ dump(docm) }}
-<table class="table table-striped table-bordered table-condensed table-excel" id="invoices">
+{% set module_formatter = formatter %}
+
+<table class="table table-sm table-striped table-bordered table-condensed table-excel" id="invoices">
 	<thead>
 		{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'detail'} %}
 	</thead>
@@ -13,12 +14,12 @@
 							{% if blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-									{{ module_formatter.format_celldata(invoice, column) }}
+								<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+									{{ formatter.format_celldata(invoice, column) }}
 
 									{% if i == 1 and invoice['Invoice Number'] %}
 										{% if docm.countDocuments(invoice['Invoice Number']) %}
-											<a href="{{ page.documentListUrl(json['custid'], invoice['Invoice Number'])}}" class="text-success" title="View Documents for Invoice # {{ invoice['Invoice Number'] }}">
+											<a href="{{ page.documentListUrl(input.get.int('rid'), invoice['Invoice Number'])}}" class="text-success" title="View Documents for Invoice # {{ invoice['Invoice Number'] }}">
 												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Invoice # {{ invoice['Invoice Number'] }}</span>
 											</a>
 										{% endif %}
