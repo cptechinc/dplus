@@ -80,7 +80,7 @@ class SalesHistory extends AbstractSubfunctionController {
 		$fields = ['rid|int', 'date|text', 'sessionID|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::decorateInputDataWithCustid($data);
-		$rqst = ['CISALESHIST', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "SALESORDRNBR=", "ITEMID="];
+		$rqst = ['CISALESHIST', "CUSTID=$data->custID", "SHIPID=$data->shiptoID"];
 		
 		if (empty($data->date) === false) {
 			$date = date('Ymd', strtotime($data->date));

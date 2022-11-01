@@ -158,7 +158,10 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 * @return string
 	 */
 	protected static function renderJsonNotFoundAlert(WireData $data, $filedesc) {
-		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' =>  $filedesc.' File Not Found']);
+		self::addPageData($data);
+		$message = $filedesc.' File Not Found';
+		
+		return self::pw('config')->twig->render('customers/ci/.new/errors/json-not-found.twig', ['message' => $message]);
 	}
 
 	/**
