@@ -11,11 +11,11 @@
 							{% if blueprint['header']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['header']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }} text-white">
-									<span class="font-weight-bold">{{ column['label'] }}</span>: {{ module_formatter.format_celldata(quote, column) }} &nbsp;
+								<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }} text-white">
+									<span class="font-weight-bold">{{ column['label'] }}</span>: {{ formatter.format_celldata(quote, column) }} &nbsp;
 									{% if i == 1 and quote['Quote ID'] %}
 										{% if docm.countDocuments(quote['Quote ID']) %}
-											<a href="{{ page.documentListUrl(json['custid'], quote['Quote ID'])}}" class="text-success" title="View Documents for Quote # {{ quote['Quote ID'] }}">
+											<a href="{{ page.documentListUrl(input.get.int('rid'), quote['Quote ID'])}}" class="text-success" title="View Documents for Quote # {{ quote['Quote ID'] }}">
 												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Quote # {{ quote['Quote ID'] }}</span>
 											</a>
 										{% endif %}
@@ -39,7 +39,7 @@
 							{% if blueprint['details']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['details']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['headingjustify']) }}">
+								<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['headingjustify']) }}">
 									{{ column['label'] }}
 								</th>
 							{% else %}
@@ -61,8 +61,8 @@
 								{% if blueprint['details']['rows'][x]['columns'][i] %}
 									{% set column = blueprint['details']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
-									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-										{{ module_formatter.format_celldata(line, column) }} &nbsp;
+									<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+										{{ formatter.format_celldata(line, column) }} &nbsp;
 									</td>
 								{% else %}
 									{% if columncount < blueprint['cols'] %}
@@ -85,8 +85,8 @@
 								{% if blueprint['totals']['rows'][x]['columns'][i] %}
 									{% set column = blueprint['totals']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
-									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-										<span class="font-weight-bold">{{ column['label'] }}</span>: {{ module_formatter.format_celldata(quote['totals'], column) }} &nbsp;
+									<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+										<span class="font-weight-bold">{{ column['label'] }}</span>: {{ formatter.format_celldata(quote['totals'], column) }} &nbsp;
 									</td>
 								{% else %}
 									{% if columncount < blueprint['cols'] %}

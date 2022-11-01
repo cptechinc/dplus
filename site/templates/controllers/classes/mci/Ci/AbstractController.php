@@ -233,6 +233,15 @@ abstract class AbstractController extends Controller {
 		return self::ciSubfunctionUrl($rID, 'purchase-orders');
 	}
 
+	/**
+	 * Return URL to CI Quotes Page
+	 * @param  int     $rID        Customer Record ID  
+	 * @return string
+	 */
+	public static function ciQuotesUrl($rID) {
+		return self::ciSubfunctionUrl($rID, 'quotes');
+	}
+
 /* =============================================================
 	5. Displays
 ============================================================= */
