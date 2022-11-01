@@ -6,7 +6,7 @@
 			<a data-toggle="collapse" href="#orders-{{ index|attrJS }}" class="link" role="button" aria-expanded="false" aria-controls="{{ index|attrJS }}">{{ whse['Whse Name'] }}</a>
 		</h4>
 	</div>
-	<table class="table table-striped table-bordered table-sm table-excel collapse show" id="orders-{{ index|attrJS }}">
+	<table class="table table-striped table-bordered table-sm collapse show" id="orders-{{ index|attrJS }}">
 		<tbody>
 			{% for order in whse['orders'] %}
 				{% for x in 1..blueprint['header']['rowcount'] %}

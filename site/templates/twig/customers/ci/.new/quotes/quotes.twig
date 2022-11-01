@@ -1,5 +1,5 @@
 {% for id, warehouse in json['data'] %}
-	<table class="table table-striped table-bordered table-sm table-excel" id="{{ whse['Whse Name'] }}">
+	<table class="table table-striped table-bordered table-sm" id="{{ whse['Whse Name'] }}">
 		<thead></thead>
 		<tbody>
 			{% for id, quote in warehouse['quotes'] %}
