@@ -225,7 +225,7 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 */
 	public static function getSessionVar($key = '') {
 		$key = $key ? $key : static::SUBFUNCTIONKEY;
-		return self::pw('session')->getFor('ci', 'ci-custpo');
+		return self::pw('session')->getFor('ci', $key);
 	}
 
 	/**
@@ -235,6 +235,6 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 */
 	public static function deleteSessionVar($key = '') {
 		$key = $key ? $key : static::SUBFUNCTIONKEY;
-		return self::pw('session')->removeFor('ci', 'ci-custpo');
+		return self::pw('session')->removeFor('ci', $key);
 	}
 }
