@@ -269,6 +269,15 @@ abstract class AbstractController extends Controller {
 		return self::ciSubfunctionUrl($rID, 'credit');
 	}
 
+	/**
+	 * Return URL to CI Standing Orders Page
+	 * @param  int     $rID        Customer Record ID  
+	 * @return string
+	 */
+	public static function ciStandingOrdersUrl($rID) {
+		return self::ciSubfunctionUrl($rID, 'standing-orders');
+	}
+
 /* =============================================================
 	5. Displays
 ============================================================= */

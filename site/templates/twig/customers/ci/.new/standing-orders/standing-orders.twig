@@ -2,7 +2,7 @@
 {% set itemcolumns = json['columns']['iteminfo'] %}
 
 {% for order in json['data'] %}
-	<table class="table table-striped table-bordered table-sm table-excel">
+	<table class="table table-striped table-bordered table-sm">
 		<tbody>
 			{% for custinfo in order['custinfo'] %}
 				<tr>
@@ -14,7 +14,9 @@
 				</tr>
 			{% endfor %}
 			<tr>
-				<td colspan="6" class="text-center">------ STANDING ORDER DETAILS ------</td>
+				<td colspan="6" class="text-center">
+					<h5>------ STANDING ORDER DETAILS ------</h5>
+				</td>
 			</tr>
 			{% for iteminfo in order['iteminfo'] %}
 				{% for iteminfo in order['iteminfo'] %}
