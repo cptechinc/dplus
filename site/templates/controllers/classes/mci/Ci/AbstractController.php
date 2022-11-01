@@ -5,6 +5,7 @@ use Purl\Url as Purl;
 use Customer;
 // ProcessWire
 Use ProcessWire\Cio;
+Use ProcessWire\Page;
 Use ProcessWire\User;
 Use ProcessWire\WireData;
 // Dplus
@@ -272,5 +273,41 @@ abstract class AbstractController extends Controller {
 /* =============================================================
 	9. Hooks / Object Decorating
 ============================================================= */
+	/**
+	 * Add CustID to Data
+	 * @param  WireData $data
+	 * @return true
+	 */
+	protected static function decorateInputDataWithCustid(WireData $data) {
+		self::sanitizeParametersShort($data, ['rid|int']);
 
+		if ($data->custID) {
+			return true;
+		}
+
+		if ($data->rid > 0) {
+			$data->custID = self::getCustidByRid($data->rid);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Add CustID to page object
+	 * @param  WireData  $data
+	 * @param  Page|null $page
+	 * @return bool
+	 */
+	protected static function decoratePageWithCustid(WireData $data, Page $page = null) {
+		$page = $page ? $page : self::pw('page');
+
+		if ($data->has('custID') === false) {
+			self::decorateInputWireDataWithCustid($data);
+		}
+		if (empty($data->custID)) {
+			return false;
+		}
+		$page->custid = $data->custID;
+		return true;
+	}
 }

@@ -29,7 +29,8 @@ class SalesHistory extends AbstractSubfunctionController {
 		$fields = ['rid|int', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
-		$data->custID = self::getCustidByRid($data->rid);
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
@@ -66,16 +67,6 @@ class SalesHistory extends AbstractSubfunctionController {
 		return self::ordersUrl($data->rid, $refresh=true);
 	}
 
-	/**
-	 * Return if JSON Data matches for this Customer ID
-	 * @param  WireData $data
-	 * @param  array    $json
-	 * @return bool
-	 */
-	protected static function validateJsonFileMatches(WireData $data, array $json) {
-		return $json['custid'] == self::getCustidByRid($data->rid);
-	}
-
 	protected static function fetchData(WireData $data) {
 		$jsonFetcher = self::getJsonFileFetcher();
 		if ($jsonFetcher->exists(self::JSONCODE) && empty(self::deleteSessionVar('custpo')) === false) {
@@ -86,11 +77,9 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
-		$fields = ['rid|int', 'custID|string', 'date|text', 'sessionID|text'];
+		$fields = ['rid|int', 'date|text', 'sessionID|text'];
 		self::sanitizeParametersShort($data, $fields);
-		if (empty($data->custID)) {
-			$data->custID = self::getCustidByRid($data->rid);
-		}
+		self::decorateInputDataWithCustid($data);
 		$rqst = ['CISALESHIST', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "SALESORDRNBR=", "ITEMID="];
 		
 		if (empty($data->date) === false) {
@@ -116,8 +105,6 @@ class SalesHistory extends AbstractSubfunctionController {
 	5. Displays
 ============================================================= */
 	protected static function displayHistory(WireData $data, Customer $customer, $json = []) {
-		$jsonFetcher  = self::getJsonFileFetcher();
-
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Sales History');
 		}

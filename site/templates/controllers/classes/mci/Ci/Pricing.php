@@ -28,7 +28,8 @@ class Pricing extends AbstractSubfunctionController {
 		$fields = ['rid|int', 'itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
-		$data->custID = self::getCustidByRid($data->rid);
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if (empty($data->itemID)) {
 			return self::selectItem($data);
@@ -90,11 +91,9 @@ class Pricing extends AbstractSubfunctionController {
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
-		$fields = ['rid|int', 'itemID|text', 'custID|string', 'sessionID|text'];
+		$fields = ['rid|int', 'itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($data, $fields);
-		if (empty($data->custID)) {
-			$data->custID = self::getCustidByRid($data->rid);
-		}
+		self::decorateInputDataWithCustid($data);
 		return ['CIPRICE', "ITEMID=$data->itemID", "CUSTID=$data->custID"];
 	}
 

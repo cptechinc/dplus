@@ -27,8 +27,8 @@ class Contacts extends AbstractSubfunctionController {
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
 
-		$data->custID = self::getCustidByRid($data->rid);
-		self::pw('page')->custid = $data->custID;
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if (empty($data->shiptoID) === false && Shipto::validateShiptoAccess($data->custID, $data->shiptoID) === false) {
 			throw new Wire404Exception();
@@ -44,7 +44,6 @@ class Contacts extends AbstractSubfunctionController {
 	private static function contacts(WireData $data) {
 		$json = self::fetchData($data);
 		$customer = self::getCustomerByRid($data->rid);
-		self::pw('page')->custid   = $customer->id;
 		self::pw('page')->headline = "CI: $customer->name Contacts";
 
 		if (empty($data->shiptoID) === false) {
@@ -91,9 +90,7 @@ class Contacts extends AbstractSubfunctionController {
 	protected static function prepareJsonRequest(WireData $data) {
 		$fields = ['rid|int', 'shiptoID|text', 'custID|string', 'sessionID|text'];
 		self::sanitizeParametersShort($data, $fields);
-		if (empty($data->custID)) {
-			$data->custID = self::getCustidByRid($data->rid);
-		}
+		self::decorateInputDataWithCustid($data);
 		return ['CICONTACT', "CUSTID=$data->custID", "SHIPID=$data->shiptoID"];
 	}
 
@@ -141,4 +138,5 @@ class Contacts extends AbstractSubfunctionController {
 /* =============================================================
 	9. Hooks / Object Decorating
 ============================================================= */
+	
 }

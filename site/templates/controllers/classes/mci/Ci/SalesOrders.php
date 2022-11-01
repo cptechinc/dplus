@@ -29,7 +29,8 @@ class SalesOrders extends AbstractSubfunctionController {
 		$fields = ['rid|int', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
-		$data->custID = self::getCustidByRid($data->rid);
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
@@ -66,15 +67,6 @@ class SalesOrders extends AbstractSubfunctionController {
 		return self::ordersUrl($data->rid, $refresh=true);
 	}
 
-	/**
-	 * Return if JSON Data matches for this Customer ID
-	 * @param  WireData $data
-	 * @param  array    $json
-	 * @return bool
-	 */
-	protected static function validateJsonFileMatches(WireData $data, array $json) {
-		return $json['custid'] == self::getCustidByRid($data->rid);
-	}
 
 	protected static function fetchData(WireData $data) {
 		$jsonFetcher = self::getJsonFileFetcher();
@@ -88,9 +80,7 @@ class SalesOrders extends AbstractSubfunctionController {
 	protected static function prepareJsonRequest(WireData $data) {
 		$fields = ['rid|int', 'itemID|text', 'custID|string', 'sessionID|text'];
 		self::sanitizeParametersShort($data, $fields);
-		if (empty($data->custID)) {
-			$data->custID = self::getCustidByRid($data->rid);
-		}
+		self::decorateInputDataWithCustid($data);
 		return ['CISALESORDR', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "SALESORDRNBR=", "ITEMID="];
 	}
 

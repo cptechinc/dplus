@@ -26,6 +26,8 @@ class Shipto extends AbstractSubfunctionController {
 		$fields = ['rid|int', 'shiptoID|text', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if (empty($data->shiptoID) === false) {
 			return self::shipto($data);
@@ -43,13 +45,15 @@ class Shipto extends AbstractSubfunctionController {
 	}
 
 	private static function shipto(WireData $data) {
-		self::pw('page')->custid = self::getCustidByRid($data->rid);
-
-		if (self::validateShiptoAccess(self::pw('page')->custid, $data->shiptoID) === false) {
+		if (self::shiptoExists($data->custID, $data->shiptoID) === false) {
 			throw new Wire404Exception();
 		}
 		
-		$shipto = self::getShipto(self::pw('page')->custid, $data->shiptoID);
+		if (self::validateShiptoAccess($data->custID, $data->shiptoID) === false) {
+			throw new Wire404Exception();
+		}
+		
+		$shipto = self::getShipto($data->custID, $data->shiptoID);
 		$shipto->customer     = self::getCustomerByRid($data->rid);
 		$shipto->salesOrders  = self::getShiptoSalesOrders($shipto->custid, $shipto->shiptoid);
 		$shipto->salesHistory = self::getShiptoSalesHistory($shipto->custid, $shipto->shiptoid);

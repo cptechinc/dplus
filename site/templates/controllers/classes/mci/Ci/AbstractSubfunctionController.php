@@ -136,7 +136,8 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 * @return bool
 	 */
 	protected static function validateJsonFileMatches(WireData $data, array $json) {
-		return $json['custid'] == self::getCustidByRid($data->rid);
+		self::decorateInputDataWithCustid($data);
+		return $json['custid'] == $data->custID;
 	}
 
 /* =============================================================

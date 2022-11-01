@@ -55,7 +55,7 @@ class Ci extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			throw new Wire404Exception();
 		}
-		$fields = ['custID|string', 'q|text', 'rid|int'];
+		$fields = ['q|text', 'rid|int'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->rid) === false) {
@@ -93,9 +93,11 @@ class Ci extends AbstractController {
 		if (self::validateCustomerByRid($data->rid) === false) {
 			self::pw('session')->redirect(self::url(), $http301=false);
 		}
-
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
+		
 		$cmm = Cmm::instance();
-		if (self::validateUserHasCustomerPermission(null, $cmm->custidByRid($data->rid)) === false) {
+		if (self::validateUserHasCustomerPermission(null, $data->custID) === false) {
 			throw new Wire404Exception();
 		}
 		$customer = $cmm->customerByRid($data->rid);
@@ -104,7 +106,6 @@ class Ci extends AbstractController {
 		$customer->quotes       = self::getCustomerQuotes($customer->id);
 		$customer->contacts     = self::getCustomerContacts($customer->id);
 		self::pw('page')->headline = "CI: $customer->name";
-		self::pw('page')->custid   = $customer->id;
 		return self::displayCustomer($data, $customer);
 	}
 
