@@ -10,6 +10,11 @@ use Dplus\ScreenFormatters\Ci\SalesHistory as Formatter;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
 
+/**
+ * Ci\Sales History
+ * 
+ * Handles the CI Sales History Page
+ */
 class SalesHistory extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'saleshistory';
 	const JSONCODE       = 'ci-sales-history';
@@ -18,7 +23,7 @@ class SalesHistory extends AbstractSubfunctionController {
 	const SUBFUNCTIONKEY = 'sales-history';
 
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
 		$fields = ['rid|int', 'refresh|bool'];
@@ -46,19 +51,11 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	URLs
+	2. Validations
 ============================================================= */
-	public static function ordersUrl($rID, $refreshdata = false) {
-		$url = new Purl(self::ciSalesHistoryUrl($rID));
-
-		if ($refreshdata) {
-			$url->query->set('refresh', 'true');
-		}
-		return $url->getUrl();
-	}
 
 /* =============================================================
-	Data Retrieval
+	3. Data Fetching / Requests / Retrieval
 ============================================================= */
 	/**
 	 * Return URL to Fetch Data
@@ -104,7 +101,19 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Display
+	4. URLs
+============================================================= */
+	public static function ordersUrl($rID, $refreshdata = false) {
+		$url = new Purl(self::ciSalesHistoryUrl($rID));
+
+		if ($refreshdata) {
+			$url->query->set('refresh', 'true');
+		}
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	5. Displays
 ============================================================= */
 	protected static function displayHistory(WireData $data, Customer $customer, $json = []) {
 		$jsonFetcher  = self::getJsonFileFetcher();
@@ -121,7 +130,7 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	HTML Rendering
+	6. HTML Rendering
 ============================================================= */
 	protected static function renderHistory(WireData $data, Customer $customer, array $json) {
 		$formatter = self::getFormatter();
@@ -130,7 +139,7 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Supplemental
+	7. Class / Module Getting
 ============================================================= */
 	// NOTE: Keep public, it's used in Ci\PurchaseHistory
 	public static function getFormatter() {
@@ -145,7 +154,11 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Hooks
+	8. Supplemental
+============================================================= */
+
+/* =============================================================
+	9. Hooks / Object Decorating
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMci');

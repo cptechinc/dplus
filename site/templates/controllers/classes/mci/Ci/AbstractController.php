@@ -4,6 +4,7 @@ use Purl\Url as Purl;
 // Dplus Model
 use Customer;
 // ProcessWire
+Use ProcessWire\Cio;
 Use ProcessWire\User;
 Use ProcessWire\WireData;
 // Dplus
@@ -18,8 +19,93 @@ abstract class AbstractController extends Controller {
 	const SUMMARY    = 'View Customer Information';
 
 /* =============================================================
-	URLs
+	1. Indexes
 ============================================================= */
+
+/* =============================================================
+	2. Validations
+============================================================= */
+	/**
+	 * Validate User's Permission to this Function
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserPermission(User $user = null) {
+		if (parent::validateUserPermission($user) === false) {
+			return false;
+		}
+		if (empty(static::PERMISSION_CIO)) {
+			return true;
+		}
+		$cio  = self::getCio();
+		if (empty($user)) {
+			$user = self::pw('user');
+		}
+		return $cio->allowUser($user, static::PERMISSION_CIO);
+	}
+
+	/**
+	 * Validate Customer By Record Position
+	 * @param  int  $rID
+	 * @return bool
+	 */
+	public static function validateCustomerByRid($rID) {
+		if (is_numeric($rID) === false) {
+			return false;
+		}
+		return Cmm::instance()->existsByRid($rID);
+	}
+
+	/**
+	 * Validate Customer By ID
+	 * @param  string  $id
+	 * @return bool
+	 */
+	public static function validateCustomerById($id) {
+		return Cmm::instance()->exists($id);
+	}
+
+	/**
+	 * Return If User Has Customer
+	 * @param  User|null $user
+	 * @param  string   $custID
+	 * @return bool
+	 */
+	public static function validateUserHasCustomerPermission(User $user = null, $custID) {
+		if (empty($user)) {
+			$user = self::pw('user');
+		}
+		return $user->has_customer($custID);
+	}
+
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
+============================================================= */
+	/**
+	 * Return Customer By Record ID
+	 * @param  int      $rID  Customer Record ID
+	 * @return Customer
+	 */
+	public static function getCustomerByRid($rID) {
+		return Cmm::instance()->customerByRid($rID);;
+	}
+
+	/**
+	 * Return Customer ID By Record ID
+	 * @param  int      $rID  Customer Record ID
+	 * @return string
+	 */
+	public static function getCustidByRid($rID) {
+		return Cmm::instance()->custidByRid($rID);;
+	}
+
+/* =============================================================
+	4. URLs
+============================================================= */
+	/**
+	 * Return URL to CI Page
+	 * @return string
+	 */
 	public static function url() {
 		return self::pw('pages')->get('pw_template=ci')->url;
 	}
@@ -104,6 +190,12 @@ abstract class AbstractController extends Controller {
 	}
 
 
+	/**
+	 * Return to Customer Ship-to Page
+	 * @param  int    $rID        Customer Record ID  
+	 * @param  string $shiptoID    Customer Ship-to ID
+	 * @return string
+	 */
 	public static function ciShiptoUrl($rID, $shiptoID = '') {
 		$url = new Purl(self::ciUrl($rID));
 		$url->path->add('ship-tos');
@@ -131,13 +223,21 @@ abstract class AbstractController extends Controller {
 		return self::ciSubfunctionUrl($rID, 'sales-history');
 	}
 
+	/**
+	 * Return URL to CI Purchase Orders Page
+	 * @param  int     $rID        Customer Record ID  
+	 * @return string
+	 */
 	public static function ciPurchaseOrdersUrl($rID) {
 		return self::ciSubfunctionUrl($rID, 'purchase-orders');
 	}
 
+/* =============================================================
+	5. Displays
+============================================================= */
 
 /* =============================================================
-	HTML Rendering
+	6. HTML Rendering
 ============================================================= */
 	/**
 	 * Render Invalid Customer Alert
@@ -149,96 +249,28 @@ abstract class AbstractController extends Controller {
 	}
 
 /* =============================================================
-	Validation Functions
+	7. Class / Module Getters
 ============================================================= */
-	/**
-	 * Validate User's Permission to this Function
-	 * @param  User|null $user
-	 * @return bool
-	 */
-	public static function validateUserPermission(User $user = null) {
-		if (parent::validateUserPermission($user) === false) {
-			return false;
-		}
-		if (empty(static::PERMISSION_CIO)) {
-			return true;
-		}
-		$cio  = self::getCio();
-		if (empty($user)) {
-			$user = self::pw('user');
-		}
-		return $cio->allowUser($user, static::PERMISSION_CIO);
-	}
-
-	/**
-	 * Validate Customer By Record Position
-	 * @param  int  $rID
-	 * @return bool
-	 */
-	public static function validateCustomerByRid($rID) {
-		if (is_numeric($rID) === false) {
-			return false;
-		}
-		return Cmm::instance()->existsByRid($rID);
-	}
-
-	/**
-	 * Validate Customer By ID
-	 * @param  string  $id
-	 * @return bool
-	 */
-	public static function validateCustomerById($id) {
-		return Cmm::instance()->exists($id);
-	}
-
-	/**
-	 * Return If User Has Customer
-	 * @param  User|null $user
-	 * @param  string   $custID
-	 * @return bool
-	 */
-	public static function validateUserHasCustomerPermission(User $user = null, $custID) {
-		if (empty($user)) {
-			$user = self::pw('user');
-		}
-		return $user->has_customer($custID);
+	/** @return Cio */
+	public static function getCio() {
+		return self::pw('modules')->get('Cio');
 	}
 
 /* =============================================================
-	Data Fetching
+	8. Supplemental
 ============================================================= */
 	/**
-	 * Return Customer By Record ID
-	 * @param  int      $rID  Customer Record ID
-	 * @return Customer
-	 */
-	public static function getCustomerByRid($rID) {
-		return Cmm::instance()->customerByRid($rID);;
-	}
-
-	/**
-	 * Return Customer ID By Record ID
-	 * @param  int      $rID  Customer Record ID
+	 * Return Path to JS directory for this class
 	 * @return string
 	 */
-	public static function getCustidByRid($rID) {
-		return Cmm::instance()->custidByRid($rID);;
-	}
-
-/* =============================================================
-	JS
-============================================================= */
 	protected static function jsPath() {
 		$scriptPath = 'scripts/pages/';
 		$scriptPath .= str_replace('\\', '/', ltrim(strtolower(static::class), 'controllers\\')) . '/';
 		return $scriptPath;
 	}
 
-
 /* =============================================================
-	Supplemental
+	9. Hooks / Object Decorating
 ============================================================= */
-	public static function getCio() {
-		return self::pw('modules')->get('Cio');
-	}
+
 }

@@ -19,7 +19,7 @@ class PurchaseOrders extends AbstractSubfunctionController {
 	const SUBFUNCTIONKEY = 'purchase-orders';
 
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
 		$fields = ['rid|int', 'custpo|text', 'refresh|bool'];
@@ -53,7 +53,11 @@ class PurchaseOrders extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Data Retrieval
+	2. Validations
+============================================================= */
+
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
 ============================================================= */
 	/**
 	 * Return URL to Fetch Data
@@ -74,7 +78,7 @@ class PurchaseOrders extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	URLs
+	4. URLs
 ============================================================= */
 	public static function ordersUrl($ridID, $custpo = '', $refreshdata = false) {
 		$url = new Purl(self::ciPurchaseOrdersUrl($ridID));
@@ -90,19 +94,11 @@ class PurchaseOrders extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Displays
+	5. Displays
 ============================================================= */
 	private static function displayInit(WireData $data) {
 		return self::renderInit($data);
 	}
-
-/* =============================================================
-	HTML Rendering
-============================================================= */
-	private static function renderInit(WireData $data) {
-		return self::pw('config')->twig->render('customers/ci/.new/purchase-orders/init/display.twig');
-	}
-
 
 	protected static function displayCustpo(WireData $data, Customer $customer) {
 		$html = new WireData();
@@ -110,6 +106,13 @@ class PurchaseOrders extends AbstractSubfunctionController {
 		$html->orders  = self::renderSalesOrders($data);
 		self::addPageData($data);
 		return self::pw('config')->twig->render('customers/ci/.new/purchase-orders/display.twig', ['customer' => $customer, 'html' => $html]);
+	}
+
+/* =============================================================
+	6. HTML Rendering
+============================================================= */
+	private static function renderInit(WireData $data) {
+		return self::pw('config')->twig->render('customers/ci/.new/purchase-orders/init/display.twig');
 	}
 
 	private static function renderSalesHistory(WireData $data) {
@@ -146,6 +149,17 @@ class PurchaseOrders extends AbstractSubfunctionController {
 		return self::pw('config')->twig->render('customers/ci/.new/sales-orders/sales-orders.twig', ['json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
 	}
 
+/* =============================================================
+	7. Class / Module Getting
+============================================================= */
+
+/* =============================================================
+	8. Supplemental
+============================================================= */
+
+/* =============================================================
+	7. Class / Module Getting
+============================================================= */
 
 /* =============================================================
 	Data Requests
@@ -163,7 +177,7 @@ class PurchaseOrders extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Hooks
+	9. Hooks / Object Decorating
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMci');

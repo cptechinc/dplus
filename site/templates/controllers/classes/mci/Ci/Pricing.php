@@ -9,6 +9,11 @@ use ProcessWire\WireData;
 use Controllers\Mii\Ii;
 use ItemMasterItem;
 
+/**
+ * Ci\Pricing
+ * 
+ * Handles the CI Pricing Page
+ */
 class Pricing extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'pricing';
 	const TITLE      = 'CI: Pricing';
@@ -17,7 +22,7 @@ class Pricing extends AbstractSubfunctionController {
 	const SUBFUNCTIONKEY = 'pricing';
 	
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
 		$fields = ['rid|int', 'itemID|text', 'refresh|bool'];
@@ -59,7 +64,11 @@ class Pricing extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Data Retrieval
+	2. Validations
+============================================================= */
+
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
 ============================================================= */
 	/**
 	 * Return URL to Fetch Data
@@ -90,7 +99,7 @@ class Pricing extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	URLs
+	4. URLs
 ============================================================= */
 	public static function pricingUrl($custID, $itemID = '', $refreshdata = false) {
 		$url = new Purl(self::ciPricingUrl($custID));
@@ -106,13 +115,13 @@ class Pricing extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Display
+	5. Displays
 ============================================================= */
 	private static function displaySelectItem(WireData $data) {
 		return self::renderSelectItem($data);
 	}
 
-	protected static function displayPricing(WireData $data, Customer $customer, $json = []) {
+	private static function displayPricing(WireData $data, Customer $customer, $json = []) {
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Pricing');
 		}
@@ -126,7 +135,7 @@ class Pricing extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Render HTML
+	6. HTML Rendering
 ============================================================= */
 	private static function renderSelectItem(WireData $data) {
 		return self::pw('config')->twig->render('customers/ci/.new/pricing/select-item/display.twig');
@@ -135,4 +144,16 @@ class Pricing extends AbstractSubfunctionController {
 	private static function renderPricing(WireData $data, Customer $customer, ItemMasterItem $item, array $json) {
 		return self::pw('config')->twig->render('customers/ci/.new/pricing/display.twig', ['item' => $item, 'customer' => $customer, 'json' => $json]);
 	}
+
+/* =============================================================
+	7. Class / Module Getting
+============================================================= */
+
+/* =============================================================
+	8. Supplemental
+============================================================= */
+
+/* =============================================================
+	9. Hooks / Object Decorating
+============================================================= */
 }

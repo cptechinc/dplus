@@ -17,8 +17,12 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	const JSONCODE = '';
 	const SUBFUNCTIONKEY = '';
 
+	/** @var JsonDataFilesSession */
 	private static $jsonm;
 
+/* =============================================================
+	1. Indexes
+============================================================= */
 	public static function index(WireData $data) {
 		$fields = ['rid|int'];
 		self::sanitizeParametersShort($data, $fields);
@@ -26,7 +30,7 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	} 
 
 /* =============================================================
-	Validation
+	2. Validations
 ============================================================= */
 	/**
 	 * Throw 404 Error if 
@@ -47,7 +51,7 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	}
 
 /* =============================================================
-	Data Requests
+	3.b.  Data Requests
 ============================================================= */
 	/**
 	 * Return Request Array
@@ -87,7 +91,7 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	}
 
 /* =============================================================
-	Data Retrieval
+	3.c. Data Retrieval
 ============================================================= */
 	/**
 	 * Retreive JSON
@@ -135,34 +139,16 @@ abstract class AbstractSubfunctionController extends AbstractController {
 		return $json['custid'] == self::getCustidByRid($data->rid);
 	}
 
-	/**
-	 * Decorate Page with extra Properties
-	 * @param  WireData  $data
-	 * @param  Page|null $page
-	 * @return void
-	 */
-	protected static function addPageData(WireData $data, Page $page = null) {
-		$page = $page ? $page : self::pw('page');
-		$page->refreshurl   = static::fetchDataRedirectUrl($data);
-		$page->lastmodified = self::getJsonFileFetcher()->lastModified(static::JSONCODE);
-	}
-
 /* =============================================================
-	Classes, Module Getters
+	4. URLs
 ============================================================= */
-	/**
-	 * Return JSON File Fetcher
-	 * @return JsonDataFilesSession
-	 */
-	public static function getJsonFileFetcher() {
-		if (empty(self::$jsonm)) {
-			self::$jsonm = self::pw('modules')->get('JsonDataFilesSession');
-		}
-		return self::$jsonm;
-	}
 
 /* =============================================================
-	Render HTML
+	5. Displays
+============================================================= */
+
+/* =============================================================
+	6. HTML Rendering
 ============================================================= */
 	/**
 	 * Return JSON not found alert
@@ -182,5 +168,38 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 */
 	protected static function renderJsonError(WireData $data, array $json) {
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+	}
+
+/* =============================================================
+	7. Class / Module Getters
+============================================================= */
+	/**
+	 * Return JSON File Fetcher
+	 * @return JsonDataFilesSession
+	 */
+	public static function getJsonFileFetcher() {
+		if (empty(self::$jsonm)) {
+			self::$jsonm = self::pw('modules')->get('JsonDataFilesSession');
+		}
+		return self::$jsonm;
+	}
+
+/* =============================================================
+	8. Supplemental
+============================================================= */
+
+/* =============================================================
+	9. Hooks / Object Decorating
+============================================================= */
+	/**
+	 * Decorate Page with extra Properties
+	 * @param  WireData  $data
+	 * @param  Page|null $page
+	 * @return void
+	 */
+	protected static function addPageData(WireData $data, Page $page = null) {
+		$page = $page ? $page : self::pw('page');
+		$page->refreshurl   = static::fetchDataRedirectUrl($data);
+		$page->lastmodified = self::getJsonFileFetcher()->lastModified(static::JSONCODE);
 	}
 }

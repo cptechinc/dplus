@@ -20,7 +20,7 @@ class Contacts extends AbstractSubfunctionController {
 	const SUBFUNCTIONKEY = 'contacts';
 	
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
 		$fields = ['rid|int', 'shiptoID|text', 'refresh|bool'];
@@ -57,7 +57,11 @@ class Contacts extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Data Retrieval
+	2. Validations
+============================================================= */
+
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
 ============================================================= */
 	/**
 	 * Return URL to Fetch Data
@@ -94,7 +98,18 @@ class Contacts extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Display
+	4. URLs
+============================================================= */
+	public static function contactsUrl($rID, $shiptoID = '', $refreshdata = false) {
+		$url = new Purl(self::ciContactsUrl($rID, $shiptoID));
+		if ($refreshdata) {
+			$url->query->set('refresh', 'true');
+		}
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	5. Displays
 ============================================================= */
 	protected static function displayContacts(WireData $data, Customer $customer, $json = []) {
 		if (empty($json)) {
@@ -109,20 +124,21 @@ class Contacts extends AbstractSubfunctionController {
 	}
 
 /* =============================================================
-	Render HTML
+	6. HTML Rendering
 ============================================================= */
 	private static function renderContacts(WireData $data, Customer $customer, array $json) {
 		return self::pw('config')->twig->render('customers/ci/.new/contacts/display.twig', ['customer' => $customer, 'json' => $json]);
 	}
-	
+
 /* =============================================================
-	URLs
+	7. Class / Module Getting
 ============================================================= */
-	public static function contactsUrl($rID, $shiptoID = '', $refreshdata = false) {
-		$url = new Purl(self::ciContactsUrl($rID, $shiptoID));
-		if ($refreshdata) {
-			$url->query->set('refresh', 'true');
-		}
-		return $url->getUrl();
-	}
+
+/* =============================================================
+	8. Supplemental
+============================================================= */
+
+/* =============================================================
+	9. Hooks / Object Decorating
+============================================================= */
 }

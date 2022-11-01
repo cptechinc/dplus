@@ -14,7 +14,7 @@ use Dplus\Filters;
 use ProcessWire\Wire404Exception;
 
 /**
- * Shipto
+ * Ci\Shipto
  * Handles Ci Shiptos / Shipto Page
  */
 class Shipto extends AbstractSubfunctionController {
