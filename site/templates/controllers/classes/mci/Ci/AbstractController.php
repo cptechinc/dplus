@@ -251,6 +251,15 @@ abstract class AbstractController extends Controller {
 		return self::ciSubfunctionUrl($rID, 'open-invoices');
 	}
 
+	/**
+	 * Return URL to CI Payments Page
+	 * @param  int     $rID        Customer Record ID  
+	 * @return string
+	 */
+	public static function ciPaymentsUrl($rID) {
+		return self::ciSubfunctionUrl($rID, 'payments');
+	}
+
 /* =============================================================
 	5. Displays
 ============================================================= */
