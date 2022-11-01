@@ -260,6 +260,15 @@ abstract class AbstractController extends Controller {
 		return self::ciSubfunctionUrl($rID, 'payments');
 	}
 
+	/**
+	 * Return URL to CI Credit Page
+	 * @param  int     $rID        Customer Record ID  
+	 * @return string
+	 */
+	public static function ciCreditUrl($rID) {
+		return self::ciSubfunctionUrl($rID, 'credit');
+	}
+
 /* =============================================================
 	5. Displays
 ============================================================= */
@@ -300,6 +309,10 @@ abstract class AbstractController extends Controller {
 /* =============================================================
 	9. Hooks / Object Decorating
 ============================================================= */
+	public static function initHooks() {
+
+	}
+	
 	/**
 	 * Add CustID to Data
 	 * @param  WireData $data
