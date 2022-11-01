@@ -67,7 +67,6 @@ class SalesOrders extends AbstractSubfunctionController {
 		return self::ordersUrl($data->rid, $refresh=true);
 	}
 
-
 	protected static function fetchData(WireData $data) {
 		$jsonFetcher = self::getJsonFileFetcher();
 		if ($jsonFetcher->exists(self::JSONCODE) && empty(self::getSessionVar('custpo')) === false) {
