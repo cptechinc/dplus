@@ -116,9 +116,7 @@ class SalesHistory extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		$page = self::pw('page');
-		$page->refreshurl = self::ordersUrl($data->rid, $refresh=true);
-		$page->lastmodified = $jsonFetcher->lastModified(self::JSONCODE);
+		self::addPageData($data);
 		return self::renderHistory($data, $customer, $json);
 	}
 

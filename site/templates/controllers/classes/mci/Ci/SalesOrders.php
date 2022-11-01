@@ -101,8 +101,6 @@ class SalesOrders extends AbstractSubfunctionController {
 	Display
 ============================================================= */
 	protected static function displayOrders(WireData $data, Customer $customer, $json = []) {
-		$jsonFetcher  = self::getJsonFileFetcher();
-
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Sales Orders');
 		}
@@ -110,9 +108,7 @@ class SalesOrders extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		$page = self::pw('page');
-		$page->refreshurl = self::ordersUrl($data->rid, $refresh=true);
-		$page->lastmodified = $jsonFetcher->lastModified(self::JSONCODE);
+		self::addPageData($data);
 		return self::renderOrders($data, $customer, $json);
 	}
 

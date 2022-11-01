@@ -84,11 +84,19 @@ class Contacts extends AbstractSubfunctionController {
 		return true;
 	}
 
+	protected static function prepareJsonRequest(WireData $data) {
+		$fields = ['rid|int', 'shiptoID|text', 'custID|string', 'sessionID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->custID)) {
+			$data->custID = self::getCustidByRid($data->rid);
+		}
+		return ['CICONTACT', "CUSTID=$data->custID", "SHIPID=$data->shiptoID"];
+	}
+
 /* =============================================================
 	Display
 ============================================================= */
 	protected static function displayContacts(WireData $data, Customer $customer, $json = []) {
-		$jsonFetcher   = self::getJsonFileFetcher();
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Contacts');
 		}
@@ -96,9 +104,7 @@ class Contacts extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		$page = self::pw('page');
-		$page->refreshurl   = self::contactsUrl($data->rid, $data->shiptoID, $refresh=true);
-		$page->lastmodified = $jsonFetcher->lastModified(self::JSONCODE);
+		self::addPageData($data);
 		return self::renderContacts($data, $customer, $json);
 	}
 
@@ -109,7 +115,6 @@ class Contacts extends AbstractSubfunctionController {
 		return self::pw('config')->twig->render('customers/ci/.new/contacts/display.twig', ['customer' => $customer, 'json' => $json]);
 	}
 	
-
 /* =============================================================
 	URLs
 ============================================================= */
@@ -119,17 +124,5 @@ class Contacts extends AbstractSubfunctionController {
 			$url->query->set('refresh', 'true');
 		}
 		return $url->getUrl();
-	}
-
-/* =============================================================
-	Data Requests
-============================================================= */
-	protected static function prepareJsonRequest(WireData $data) {
-		$fields = ['rid|int', 'shiptoID|text', 'custID|string', 'sessionID|text'];
-		self::sanitizeParametersShort($data, $fields);
-		if (empty($data->custID)) {
-			$data->custID = self::getCustidByRid($data->rid);
-		}
-		return ['CICONTACT', "CUSTID=$data->custID", "SHIPID=$data->shiptoID"];
 	}
 }

@@ -13,7 +13,7 @@ use ProcessWire\WireData;
  */
 class PurchaseOrders extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'customerpo';
-	const JSONCODE       = 'ci-sales-history';
+	const JSONCODE       = SalesHistory::JSONCODE;
 	const TITLE          = 'CI: Purchase Orders';
 	const SUMMARY        = 'View Purchase Orders';
 	const SUBFUNCTIONKEY = 'purchase-orders';
@@ -105,15 +105,10 @@ class PurchaseOrders extends AbstractSubfunctionController {
 
 
 	protected static function displayCustpo(WireData $data, Customer $customer) {
-		$jsonm  = self::getJsonFileFetcher();
-		$page = self::pw('page');
-		$page->refreshurl   = self::ordersUrl($data->rid, $data->custpo, $refresh = true);
-		$page->lastmodified = $jsonm->lastModified(SalesHistory::JSONCODE);
-		
-
 		$html = new WireData();
 		$html->history = self::renderSalesHistory($data);
 		$html->orders  = self::renderSalesOrders($data);
+		self::addPageData($data);
 		return self::pw('config')->twig->render('customers/ci/.new/purchase-orders/display.twig', ['customer' => $customer, 'html' => $html]);
 	}
 

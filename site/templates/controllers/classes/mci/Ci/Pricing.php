@@ -113,7 +113,6 @@ class Pricing extends AbstractSubfunctionController {
 	}
 
 	protected static function displayPricing(WireData $data, Customer $customer, $json = []) {
-		$jsonFetcher   = self::getJsonFileFetcher();
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Pricing');
 		}
@@ -121,9 +120,7 @@ class Pricing extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		$page = self::pw('page');
-		$page->refreshurl   = self::pricingUrl($data->rid, $data->itemID, $refresh=true);
-		$page->lastmodified = $jsonFetcher->lastModified(self::JSONCODE);
+		self::addPageData($data);
 		$item = Ii\Pricing::getItmItem($data->itemID);
 		return self::renderPricing($data, $customer, $item, $json);
 	}

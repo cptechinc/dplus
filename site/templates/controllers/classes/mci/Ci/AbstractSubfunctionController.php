@@ -1,5 +1,7 @@
 <?php namespace Controllers\Mci\Ci;
 // ProcessWire
+use ProcessWire\JsonDataFilesSession;
+use ProcessWire\Page;
 use ProcessWire\Wire404Exception;
 use ProcessWire\WireData;
 // Dplus Databases
@@ -47,24 +49,41 @@ abstract class AbstractSubfunctionController extends AbstractController {
 /* =============================================================
 	Data Requests
 ============================================================= */
+	/**
+	 * Return Request Array
+	 * @param  WireData $data
+	 * @return array           [CISALESORDER, 'CUSTID=$CUSTID']
+	 */
 	protected static function prepareJsonRequest(WireData $data) {
 		return [];
 	}
 	
+	/**
+	 * Send Request Array
+	 * @param  array  $data
+	 * @param  string $sessionID
+	 * @return bool
+	 */
 	protected static function requestJson($data = [], $sessionID = '') {
 		if (empty($data)) {
 			return false;
 		}
-		self::sendRequest($data, $sessionID);
+		return self::sendRequest($data, $sessionID);
 	}
 
+	/**
+	 * Write Request File, Send Request
+	 * @param  array  $data
+	 * @param  string $sessionID
+	 * @return bool
+	 */
 	protected static function sendRequest(array $data, $sessionID = '') {
 		$sessionID = $sessionID ? $sessionID : session_id();
 		$db = DbDpluso::instance()->dbconfig->dbName;
 		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
+		return $requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
 	}
 
 /* =============================================================
@@ -116,9 +135,25 @@ abstract class AbstractSubfunctionController extends AbstractController {
 		return $json['custid'] == self::getCustidByRid($data->rid);
 	}
 
+	/**
+	 * Decorate Page with extra Properties
+	 * @param  WireData  $data
+	 * @param  Page|null $page
+	 * @return void
+	 */
+	protected static function addPageData(WireData $data, Page $page = null) {
+		$page = $page ? $page : self::pw('page');
+		$page->refreshurl   = static::fetchDataRedirectUrl($data);
+		$page->lastmodified = self::getJsonFileFetcher()->lastModified(static::JSONCODE);
+	}
+
 /* =============================================================
 	Classes, Module Getters
 ============================================================= */
+	/**
+	 * Return JSON File Fetcher
+	 * @return JsonDataFilesSession
+	 */
 	public static function getJsonFileFetcher() {
 		if (empty(self::$jsonm)) {
 			self::$jsonm = self::pw('modules')->get('JsonDataFilesSession');
@@ -129,12 +164,23 @@ abstract class AbstractSubfunctionController extends AbstractController {
 /* =============================================================
 	Render HTML
 ============================================================= */
+	/**
+	 * Return JSON not found alert
+	 * @param  WireData $data
+	 * @param  string   $filedesc
+	 * @return string
+	 */
 	protected static function renderJsonNotFoundAlert(WireData $data, $filedesc) {
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' =>  $filedesc.' File Not Found']);
 	}
 
+	/**
+	 * Return JSON Error Alert
+	 * @param  WireData $data
+	 * @param  array    $json
+	 * @return string
+	 */
 	protected static function renderJsonError(WireData $data, array $json) {
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 	}
-
 }
