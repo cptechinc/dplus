@@ -11,7 +11,7 @@
 			<tr id="doc-{{ document.filename }}">
 				<td>{{ document.title }}</td>
 				<td>
-					<a href="{{ page.documentUrl(list.custid, document.folder, document.filename) }}" class="link" target="_blank">
+					<a href="{{ page.documentUrl(input.get.int('rid'), document.folder, document.filename) }}" class="link" target="_blank">
 						{{ document.filename }}
 					</a>
 				</td>

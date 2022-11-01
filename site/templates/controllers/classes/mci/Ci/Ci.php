@@ -43,7 +43,6 @@ class Ci extends AbstractController {
 		// 'stock'          => [],
 		// 'notes'          => [],
 		'documents'      => [],
-		'phonebook'      => [],
 		// 'activity'       => [],
 		'corebank'       => ['title' => 'Core'],
 	];
