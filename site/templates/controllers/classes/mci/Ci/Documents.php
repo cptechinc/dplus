@@ -1,30 +1,31 @@
 <?php namespace Controllers\Mci\Ci;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Dplus Models
+use Customer;
 // ProcessWire
 use ProcessWire\WireData;
-// Dplus Validators
-use Dplus\CodeValidators\Mso as MsoValidator;
+// Dplus Mso
+use Dplus\Mso\So as Mso;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
 use Dplus\DocManagement\Copier;
 
-class Documents extends Base {
-	const JSONCODE       = '';
-	const PERMISSION_CIO = '';
-
-	private static $docfinder;
+/**
+ * Ci\Documents
+ * Handles Sales Order Documents
+ */
+class Documents extends AbstractSubfunctionController {
 
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'folder|text', 'document|text'];
+	public static function index(WireData $data) {
+		$fields = ['rid|int', 'folder|text', 'document|text'];
 		self::sanitizeParametersShort($data, $fields);
-
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
-		}
+		self::throw404IfInvalidCustomerOrPermission($data);
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if ($data->folder && $data->document) {
 			$docm = self::getDocFinder();
@@ -39,64 +40,92 @@ class Documents extends Base {
 		return self::documents($data);
 	}
 
-	private static function documents($data) {
+	private static function documents(WireData $data) {
 		self::initHooks();
-		self::sanitizeParametersShort($data, ['custID|string', 'folder|text']);
 		$list = self::createList($data->custID);
+		$customer = self::getCustomerByRid($data->rid);
 
 		switch ($data->folder) {
 			case 'SO':
 			case 'AR':
-				self::sanitizeParametersShort($data, ['ordn|ordn', 'date|text']);
-				$docm = new DocFinders\SalesOrder();
-				$list->title = "Sales Order #$data->ordn Documents";
-
-				$validate = new MsoValidator();
-				if ($validate->order($data->ordn)) {
-					$list->returnTitle = "Sales Orders";
-					$list->returnUrl = SalesOrders::ordersUrl($data->custID);
-				}
-
-				if ($validate->invoice($data->ordn)) {
-					$list->returnTitle = "Sales History";
-					$list->returnUrl = SalesHistory::historyUrl($data->custID, $data->date);
-				}
-
-				$list->documents = $docm->countDocuments($data->ordn) ? $docm->getDocuments($data->ordn) : [];
+				self::pw('page')->headline = "CI: Documents for Order #$data->ordn";
+				return self::documentsSales($data, $customer, $list);
 				break;
 			case 'QT':
-				self::sanitizeParametersShort($data, ['qnbr|qnbr']);
-				$docm = new DocFinders\Qt();
-				$list->title = "Quote #$data->qnbr Documents";
-				$list->returnTitle = "Quotes";
-				$list->documents = $docm->getDocuments($data->qnbr);
-				$list->returnUrl = Quotes::quotesUrl($data->custID);
+				self::pw('page')->headline = "CI: Documents for Quote #$data->qnbr";
+				return self::documentsQuotes($data, $customer, $list);
 				break;
 			case 'PAY':
-				self::sanitizeParametersShort($data, ['invnbr|text', 'checknbr|text']);
-				$docm = new DocFinders\Ar();
-				$list->title = "Payments on Invoice #$data->invnbr Documents";
-				$list->returnTitle = "Payments";
-				$list->documents = $docm->getDocumentsPayment($data->invnbr, $data->checknbr);
-				$list->returnUrl = Payments::paymentsUrl($data->custID);
+				self::pw('page')->headline = "CI: Documents for Invoice #$data->Invnbr";
+				return self::documentsPayments($data, $customer, $list);
 				break;
 			default:
-				$docm = new DocFinders\Cu();
-				$list->returnTitle = "Customer";
-				$list->documents = $docm->getDocuments($data->custID);
-				$list->returnUrl = self::ciUrl($data->custID);
+				self::pw('page')->headline = "CI: $data->custID Documents";
+				return self::documentsCustomer($data, $customer, $list);
 				break;
 		}
-		self::pw('page')->headline = "CI: $data->custID Documents";
-		return self::displayDocuments($data, $list);
 	}
 
+	private static function documentsSales(WireData $data, Customer $customer, WireData $list) {
+		self::sanitizeParametersShort($data, ['ordn|ordn', 'date|text']);
+		$docm = new DocFinders\SalesOrder();
+		$list->title = "Sales Order #$data->ordn Documents";
+		
+		if (Mso\SalesOrder::instance()->exists($data->ordn)) {
+			$list->returnTitle = "Sales Orders";
+			$list->returnUrl = SalesOrders::ordersUrl($data->rid);
+		}
+
+		if (Mso\SalesHistory::instance()->exists($data->ordn)) {
+			$list->returnTitle = "Sales History";
+			$list->returnUrl = SalesHistory::historyUrl($data->rid, $data->date);
+		}
+		$list->documents = $docm->countDocuments($data->ordn) ? $docm->getDocuments($data->ordn) : [];
+		return self::displayDocuments($data, $customer, $list);
+	} 
+
+	private static function documentsQuotes(WireData $data, Customer $customer, WireData $list) {
+		self::sanitizeParametersShort($data, ['qnbr|qnbr']);
+		$docm = new DocFinders\Qt();
+		$list->title = "Quote #$data->qnbr Documents";
+		$list->returnTitle = "Quotes";
+		$list->documents = $docm->getDocuments($data->qnbr);
+		$list->returnUrl = Quotes::quotesUrl($data->rid);
+		return self::displayDocuments($data, $customer, $list);
+	} 
+
+	private static function documentsPayments(WireData $data, Customer $customer, WireData $list) {
+		self::sanitizeParametersShort($data, ['invnbr|text', 'checknbr|text']);
+		$docm = new DocFinders\Ar();
+		$list->title = "Payments on Invoice #$data->invnbr Documents";
+		$list->returnTitle = "Payments";
+		$list->documents = $docm->getDocumentsPayment($data->invnbr, $data->checknbr);
+		$list->returnUrl = Payments::paymentsUrl($data->rid);
+		return self::displayDocuments($data, $customer, $list);
+	} 
+
+	private static function documentsCustomer(WireData $data, Customer $customer, WireData $list) {
+		$docm = new DocFinders\Cu();
+		$list->returnTitle = "Customer";
+		$list->documents = $docm->getDocuments($data->custID);
+		$list->returnUrl = self::ciUrl($data->rid);
+		return self::displayDocuments($data, $customer, $list);
+	} 
 
 /* =============================================================
-	URLs
+	2. Validations
 ============================================================= */
-	public static function documentsUrl($custID, $folder = '', $document = '') {
-		$url = new Purl(self::ciDocumentsUrl($custID));
+	
+
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
+============================================================= */
+
+/* =============================================================
+	4. URLs
+============================================================= */
+	public static function documentsUrl($rID, $folder = '', $document = '') {
+		$url = new Purl(self::ciDocumentsUrl($rID));
 
 		if ($folder) {
 			$url->query->set('folder', $folder);
@@ -107,8 +136,8 @@ class Documents extends Base {
 		return $url->getUrl();
 	}
 
-	public static function documentsUrlSalesorder($custID, $ordn, $date = '') {
-		$url = new Purl(self::documentsUrl($custID, 'AR'));
+	public static function documentsUrlSalesorder($rID, $ordn, $date = '') {
+		$url = new Purl(self::documentsUrl($rID, 'AR'));
 		$url->query->set('ordn', $ordn);
 		if ($date) {
 			$url->query->set('date', $date);
@@ -122,45 +151,46 @@ class Documents extends Base {
 		return $url->getUrl();
 	}
 
-	public static function documentsUrlPurchaseorder($itemID, $ponbr) {
-		$url = new Purl(self::documentsUrl($custID, 'PO'));
+	public static function documentsUrlPurchaseorder($rID, $ponbr) {
+		$url = new Purl(self::documentsUrl($rID, 'PO'));
 		$url->query->set('ponbr', $ponbr);
 		return $url->getUrl();
 	}
 
 
-	public static function documentsUrlPayment($custID, $invnbr, $checknbr) {
-		$url = new Purl(self::documentsUrl($custID, 'PAY'));
+	public static function documentsUrlPayment($rID, $invnbr, $checknbr) {
+		$url = new Purl(self::documentsUrl($rID, 'PAY'));
 		$url->query->set('invnbr', $invnbr);
 		$url->query->set('checknbr', $checknbr);
 		return $url->getUrl();
 	}
 
 /* =============================================================
-	Displays
+	5. Displays
 ============================================================= */
-	private static function displayDocuments($data, WireData $list) {
+	private static function displayDocuments(WireData $data, Customer $customer, WireData $list) {
 		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= self::pw('config')->twig->render('customers/ci/documents/display.twig', ['customer' => self::getCustomer($data->custID), 'list' => $list]);
+		$html .= self::renderDocuments($data, $customer, $list);
 		return $html;
 	}
 
 /* =============================================================
-	Supplemental
+	6. HTML Rendering
 ============================================================= */
-	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMci');
-
-		$m->addHook('Page(pw_template=ci)::documentUrl', function($event) {
-			$page     = $event->object;
-			$custID   = $event->arguments(0);
-			$folder   = $event->arguments(1);
-			$document = $event->arguments(2);
-			$event->return = self::documentsUrl($custID, $folder, $document);
-		});
+	private static function renderDocuments(WireData $data, Customer $customer, WireData $list) {
+		return self::pw('config')->twig->render('customers/ci/.new/documents/display.twig', ['customer' => $customer, 'list' => $list]);
 	}
 
+/* =============================================================
+	7. Class / Module Getting
+============================================================= */
+	public static function getDocFinder() {
+		return new DocFinders\Finder();
+	}
+	
+/* =============================================================
+	8. Supplemental
+============================================================= */
 	private static function createList($custID) {
 		$list = new WireData();
 		$list->custid = $custID;
@@ -171,7 +201,17 @@ class Documents extends Base {
 		return $list;
 	}
 
-	public static function getDocFinder() {
-		return new DocFinders\Finder();
+/* =============================================================
+	9. Hooks / Object Decorating
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('DpagesMci');
+
+		$m->addHook('Page(pw_template=ci)::documentUrl', function($event) {
+			$rID      = $event->arguments(0);
+			$folder   = $event->arguments(1);
+			$document = $event->arguments(2);
+			$event->return = self::documentsUrl($rID, $folder, $document);
+		});
 	}
 }

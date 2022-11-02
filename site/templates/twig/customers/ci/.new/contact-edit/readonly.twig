@@ -1,0 +1,106 @@
+<div class="card">
+	<div class="card-header">
+		<h5 class="panel-title mb-0">Contact Details</h5>
+	</div>
+	<table class="table table-sm table-striped">
+		<tr>
+			<td>Customer:</td>
+			<td><strong>{{ contact.custid }} - {{ contact.name }}</strong></td>
+		</tr>
+		{% if contact.has_shipto() %}
+			<tr>
+				<td>Shipto ID:</td>
+				<td>{{ contact.shiptoid }}</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td>Address:</td>
+			<td>
+				{{ contact.addr1 }}<br>
+				{{ contact.addr2|length > 0 ? contact.addr2 ~ '<br>' : '' }}
+				{{ contact.city ~ ', ' ~ contact.state ~ ' ' ~ contact.zip }}
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Name:</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">{{ contact.contact }}</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Title:</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">{{ contact.title }}</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Email</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">
+					<a href="mailto:{{ contact.email }}" class="link">{{ contact.email ? contact.email ? ' ' }}</a>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Office Phone</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">
+					<a href="tel:{{ contact.phone }}" class="link">{{ contact.phone }}</a> &nbsp;
+					<b> {{ contact.extension ? 'Ext. ' ~ contact.extension : '' }}</b>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Cell Phone</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm"><a href="tel:{{ contact.cellphone }}" class="link">{{ contact.cellphone }}</a></p>
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Fax</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm"><a href="tel:{{ contact.cellphone }}" class="link"> {{ contact.cellphone }}</a></p>
+			</td>
+		</tr>
+		<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+			<td class="control-label">AR Contact</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">
+					{{ contact.arcontact|yesorno|capitalize }}
+				</p>
+			</td>
+		</tr>
+		<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+			<td class="control-label">Dunning Contact</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">
+					{{ contact.dunningcontact|yesorno|capitalize }}
+				</p>
+			</td>
+		</tr>
+		<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+			<td class="control-label">Acknowledgement Contact</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">
+					{{ contact.ackcontact|yesorno|capitalize }}
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Buying Contact</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">
+					{{ contact.buyingcontact|yesorno|capitalize }}
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Certificate Contact</td>
+			<td>
+				<p class="form-control-plaintext form-control-sm">
+					{{ contact.certcontact|yesorno|capitalize }}
+				</p>
+			</td>
+		</tr>
+	</table>
+</div>

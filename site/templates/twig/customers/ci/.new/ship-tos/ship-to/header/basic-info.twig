@@ -1,0 +1,40 @@
+<div class="card border-light">
+	<div class="card-header bg-light">
+		<span class="h5">{{ shipto.name }} Information</span>
+	</div>
+	<table class="table table-sm">
+		<tr>
+			<td class="font-weight-bold">Customer:</td>
+			<td>
+				{{ customer.id }} <br>
+				{{ customer.name }}
+			</td>
+		</tr>
+		<tr>
+			<td class="font-weight-bold">Shipto:</td>
+			<td>
+				{{ shipto.id }} <br>
+				{{ shipto.name }}
+			</td>
+		</tr>
+		<tr>
+			<td class="font-weight-bold">Address:</td>
+			<td>
+				{{ shipto.address1 }} <br>
+				{% if (shipto.address2 is not empty) %}
+					{{ shipto.address2 }} <br>
+				{% endif %}
+
+				{% if (shipto.address3 is not empty) %}
+					{{ shipto.address3 }} <br>
+				{% endif %}
+
+				{{ shipto.city ~ ', ' ~ shipto.state ~ ' ' ~ shipto.zip }}
+			</td>
+		</tr>
+		<tr>
+			<td class="font-weight-bold">Salesperson:</td>
+			<td>{{ shipto.salesperson1 }}</td>
+		</tr>
+	</table>
+</div>

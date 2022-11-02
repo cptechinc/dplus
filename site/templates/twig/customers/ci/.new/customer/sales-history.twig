@@ -1,0 +1,26 @@
+{#
+	var / var property      Description / Instance of
+	-------------------------------------------------
+	user                    ProcessWire\User
+	input                   ProcessWire\WireInput
+	page                    ProcessWire\Page
+	page.custid             Customer ID
+	orders                  Propel\Runtime\Util\PropelModelPager of Sales History
+#}
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#customer-shipped-orders" role="button" aria-expanded="false" aria-controls="customer-shipped-orders">
+			Sales History &ensp;<i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ orders.getNbResults() }}</span>
+	</div>
+	<div class="collapse" id="customer-shipped-orders">
+		{% include 'sales-orders/sales-history/customer/sales-history-list.twig' %}
+
+		<div class="card-footer">
+			<a href="{{ page.invoiceListUrl(page.custid, input.get.text('shiptoID')) }}" class="link">
+				View More Shipped Orders <i class="fa fa-sign-in" aria-hidden="true"></i>
+			</a>
+		</div>
+	</div>
+</div>

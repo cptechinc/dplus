@@ -1,137 +1,91 @@
 <?php namespace Controllers\Mci\Ci;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Dplus Models
+use Customer;
 // ProcessWire
 use ProcessWire\WireData;
-// Dplus Screen Formatters
-use Dplus\ScreenFormatters\Ci\SalesOrders as Formatter;
-// Alias Document Finders
-use Dplus\DocManagement\Finders as DocFinders;
 
-class PurchaseOrders extends Subfunction {
+/**
+ * Ci\PurchaseOrders
+ * 
+ * Handles CI Purchase Orders Page
+ */
+class PurchaseOrders extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'customerpo';
-	const JSONCODE       = 'ci-purchase-orders';
+	const JSONCODE       = SalesHistory::JSONCODE;
+	const TITLE          = 'Purchase Orders';
+	const SUMMARY        = 'View Purchase Orders';
+	const SUBFUNCTIONKEY = 'purchase-orders';
 
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'custpo|text', 'refresh|bool'];
+	public static function index(WireData $data) {
+		$fields = ['rid|int', 'custpo|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
-
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
-		}
+		self::throw404IfInvalidCustomerOrPermission($data);
+		$data->custID = self::getCustidByRid($data->rid);
 
 		if ($data->refresh) {
-			self::requestJson($data);
-			self::pw('session')->redirect(self::ordersUrl($data->custID, $data->custpo), $http301 = false);
+			self::requestJson(self::prepareJsonRequest($data));
+			self::pw('session')->redirect(self::ordersUrl($data->rid, $data->custpo), $http301 = false);
 		}
 
 		if (empty($data->custpo)) {
-			$jsonm  = self::getJsonModule();
+			$jsonm  = self::getJsonFileFetcher();
 			$jsonm->delete(SalesHistory::JSONCODE);
 			$jsonm->delete(SalesOrders::JSONCODE);
-			return self::displayPoForm($data);
+			$customer  = self::getCustomerByRid($data->rid);
+			self::pw('page')->headline = "CI: $customer->name Purchase Orders";
+			return self::displayInit($data);
 		}
-		return self::orders($data);
+		return self::custpo($data);
 	}
 
-	private static function orders($data) {
-		self::getData($data);
-		self::pw('page')->headline = "CI: $data->custID Orders that match '$data->custpo'";
+	private static function custpo(WireData $data) {
+		self::fetchData($data);
+		
+		$customer  = self::getCustomerByRid($data->rid);
+		self::pw('page')->headline = "CI: $customer->name Orders that match '$data->custpo'";
+		self::setSessionVar($data->custpo, 'custpo');
+
+		self::initHooks();
 		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= self::displayCustpo($data);
+		$html .= self::displayCustpo($data, $customer);
 		return $html;
 	}
 
 /* =============================================================
-	Data Retrieval
+	2. Validations
 ============================================================= */
-	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['custID|string', 'custpo|text']);
-		$jsonm   = self::getJsonModule();
-		$json    = $jsonm->getFile(SalesHistory::JSONCODE);
-		$session = self::pw('session');
 
-		if ($jsonm->exists(SalesHistory::JSONCODE)) {
-			if ($json['custid'] != $data->custID) {
-				$jsonm->delete(SalesHistory::JSONCODE);
-				$session->redirect(self::ordersUrl($data->custID, $data->custpo, $refresh = true), $http301 = false);
-			}
-			return true;
-		}
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
+============================================================= */
+	/**
+	 * Return URL to Fetch Data
+	 * @param  WireData $data
+	 * @return string
+	 */
+	protected static function fetchDataRedirectUrl(WireData $data) {
+		return self::ordersUrl($data->rid, $data->custpo, $refresh=true);
+	}
 
-		if ($session->getFor('ci', 'purchase-orders') > 3) {
-			return false;
+	protected static function prepareJsonRequest(WireData $data) {
+		$fields = ['rid|int', 'custID|string', 'custpo|text', 'sessionID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->custID)) {
+			$data->custID = self::getCustidByRid($data->rid);
 		}
-		$session->setFor('ci', 'purchase-orders', ($session->getFor('ci', 'purchase-orders') + 1));
-		$session->redirect(self::ordersUrl($data->custID, $data->custpo, $refresh = true), $http301 = false);
+		return ['CICUSTPO', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "CUSTPO=$data->custpo"];
 	}
 
 /* =============================================================
-	Display
+	4. URLs
 ============================================================= */
-	protected static function displayCustpo($data) {
-		$jsonm  = self::getJsonModule();
-		$page = self::pw('page');
-		$page->refreshurl   = self::ordersUrl($data->custID, $data->custpo, $refresh = true);
-		$page->lastmodified = $jsonm->lastModified(SalesHistory::JSONCODE);
-		$customer  = self::getCustomer($data->custID);
-		self::initHooks();
-
-		$html = new WireData();
-		$html->history = self::displaySaleshistory($data);
-		$html->orders= self::displaySalesorders($data);
-		return self::pw('config')->twig->render('customers/ci/purchase-orders/display.twig', ['customer' => $customer, 'html' => $html]);
-	}
-
-	private static function displaySaleshistory($data) {
-		$jsonm  = self::getJsonModule();
-		$json   = $jsonm->getFile(SalesHistory::JSONCODE);
-		$config = self::pw('config');
-
-		if ($jsonm->exists(SalesHistory::JSONCODE) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Sales History File Not Found']);
-		}
-
-		if ($json['error']) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
-		}
-
-		$formatter = SalesHistory::getFormatter();
-		$docm      = SalesHistory::getDocFinder();
-		return $config->twig->render('customers/ci/sales-history/sales-history.twig', ['json' => $json, 'module_formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
-	}
-
-	private static function displaySalesorders($data) {
-		$jsonm  = self::getJsonModule();
-		$json   = $jsonm->getFile(SalesOrders::JSONCODE);
-		$config = self::pw('config');
-
-		if ($jsonm->exists(SalesOrders::JSONCODE) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Sales Orders File Not Found']);
-		}
-
-		if ($json['error']) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
-		}
-
-		$formatter = SalesOrders::getFormatter();
-		$docm      = SalesOrders::getDocFinder();
-		return $config->twig->render('customers/ci/sales-orders/sales-orders.twig', ['json' => $json, 'module_formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
-	}
-
-	private static function displayPoForm($data) {
-		return self::pw('config')->twig->render('customers/ci/purchase-orders/po-form.twig');
-	}
-
-/* =============================================================
-	URLs
-============================================================= */
-	public static function ordersUrl($custID, $custpo = '', $refreshdata = false) {
-		$url = new Purl(self::ciPurchaseordersUrl($custID));
+	public static function ordersUrl($ridID, $custpo = '', $refreshdata = false) {
+		$url = new Purl(self::ciPurchaseOrdersUrl($ridID));
 
 		if ($custpo) {
 			$url->query->set('custpo', $custpo);
@@ -144,44 +98,71 @@ class PurchaseOrders extends Subfunction {
 	}
 
 /* =============================================================
-	Data Requests
+	5. Displays
 ============================================================= */
-	private static function requestJson($vars) {
-		$fields = ['custID|string', 'shiptoID|text', 'custpo|text', 'sessionID|text'];
-		self::sanitizeParametersShort($vars, $fields);
-		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$data = ['CICUSTPO', "CUSTID=$vars->custID", "SHIPID=$vars->shiptoID", "CUSTPO=$vars->custpo"];
-		self::setSessionPo($vars->custpo);
-		self::sendRequest($data, $vars->sessionID);
+	private static function displayInit(WireData $data) {
+		return self::renderInit($data);
 	}
 
-	public static function setSessionPo($custpo) {
-		self::pw('session')->setFor('ci', 'ci-custpo', $custpo);
-	}
-
-	public static function getSessionPo() {
-		return self::pw('session')->getFor('ci', 'ci-custpo');
-	}
-
-	public static function deleteSessionPo() {
-		return self::pw('session')->removeFor('ci', 'ci-custpo');
+	protected static function displayCustpo(WireData $data, Customer $customer) {
+		$html = new WireData();
+		$html->history = self::renderSalesHistory($data);
+		$html->orders  = self::renderSalesOrders($data);
+		self::addPageData($data);
+		return self::pw('config')->twig->render('customers/ci/.new/purchase-orders/display.twig', ['customer' => $customer, 'html' => $html]);
 	}
 
 /* =============================================================
-	Supplemental
+	6. HTML Rendering
 ============================================================= */
-	protected static function getFormatter() {
-		$f = new Formatter();
-		$f->init_formatter();
-		return $f;
+	private static function renderInit(WireData $data) {
+		return self::pw('config')->twig->render('customers/ci/.new/purchase-orders/init/display.twig');
 	}
 
-	protected static function getDocFinder() {
-		return new DocFinders\SalesOrder();
+	private static function renderSalesHistory(WireData $data) {
+		$jsonm  = self::getJsonFileFetcher();
+		$json   = $jsonm->getFile(SalesHistory::JSONCODE);
+
+		if ($jsonm->exists(SalesHistory::JSONCODE) === false) {
+			return self::renderJsonNotFoundAlert($data, 'Sales History');
+		}
+
+		if ($json['error']) {
+			return self::renderJsonError($data, $json);
+		}
+
+		$formatter = SalesHistory::getFormatter();
+		$docm      = SalesHistory::getDocFinder();
+		return self::pw('config')->twig->render('customers/ci/.new/sales-history/sales-history.twig', ['json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
+	}
+
+	private static function renderSalesOrders(WireData $data) {
+		$jsonm  = self::getJsonFileFetcher();
+		$json   = $jsonm->getFile(SalesOrders::JSONCODE);
+
+		if ($jsonm->exists(SalesOrders::JSONCODE) === false) {
+			return self::renderJsonNotFoundAlert($data, 'Sales Orders');
+		}
+
+		if ($json['error']) {
+			return self::renderJsonError($data, $json);
+		}
+
+		$formatter = SalesOrders::getFormatter();
+		$docm      = SalesOrders::getDocFinder();
+		return self::pw('config')->twig->render('customers/ci/.new/sales-orders/sales-orders.twig', ['json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
 	}
 
 /* =============================================================
-	Hooks
+	7. Class / Module Getting
+============================================================= */
+
+/* =============================================================
+	8. Supplemental
+============================================================= */
+
+/* =============================================================
+	9. Hooks / Object Decorating
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMci');

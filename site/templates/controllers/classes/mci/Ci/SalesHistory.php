@@ -1,106 +1,117 @@
 <?php namespace Controllers\Mci\Ci;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Dplus Models
+use Customer;
+// ProcessWire
+use ProcessWire\Page;
+use ProcessWire\WireData;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ci\SalesHistory as Formatter;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
 
-class SalesHistory extends Subfunction {
+/**
+ * Ci\Sales History
+ * 
+ * Handles the CI Sales History Page
+ */
+class SalesHistory extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'saleshistory';
 	const JSONCODE       = 'ci-sales-history';
+	const TITLE          = 'Sales History';
+	const SUMMARY        = 'View Sales History';
+	const SUBFUNCTIONKEY = 'sales-history';
+	const DATE_FORMAT_DISPLAY = 'm/d/Y';
+	const DATE_FORMAT_REQUEST = 'Ymd';
 
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'refresh|bool'];
+	public static function index(WireData $data) {
+		$fields = ['rid|int', 'date|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
-
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
-		}
+		self::throw404IfInvalidCustomerOrPermission($data);
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if ($data->refresh) {
-			self::requestJson($data);
-			self::pw('session')->redirect(self::historyUrl($data->custID), $http301 = false);
+			self::requestJson(self::prepareJsonRequest($data));
+			self::pw('session')->redirect(self::historyUrl($data->rid, $data->date), $http301 = false);
 		}
 
+		if (empty($data->date)) {
+			return self::selectDate($data);
+		}
 		return self::orders($data);
 	}
 
-	private static function orders($data) {
-		self::getData($data);
-		self::pw('page')->headline = "CI: $data->custID Sales History";
+	private static function selectDate(WireData $data) {
+		$customer = self::getCustomerByRid($data->rid);
+		self::pw('page')->headline = "CI: $customer->name Sales History";
+		self::addCioStartDate();
+		return self::displayDateForm($data);
+	}
+
+	private static function orders(WireData $data) {
+		$json = self::fetchData($data);
+		$customer = self::getCustomerByRid($data->rid);
+
+		self::initHooks();
+		self::pw('page')->headline = "CI: $customer->name Sales History";
+
 		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= self::displayOrders($data);
+		$html .= self::displayHistory($data, $customer, $json);
 		return $html;
 	}
 
 /* =============================================================
-	Data Retrieval
+	2. Validations
 ============================================================= */
-	private static function getData($data) {
-		self::deleteCustPoJson();
-		$data    = self::sanitizeParametersShort($data, ['custID|string', 'itemID|text']);
-		$jsonm   = self::getJsonModule();
-		$json    = $jsonm->getFile(self::JSONCODE);
-		$session = self::pw('session');
 
-		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['custid'] != $data->custID) {
-				$jsonm->delete(self::JSONCODE);
-				$session->redirect(self::historyUrl($data->custID, $refresh = true), $http301 = false);
-			}
-			return true;
-		}
-
-		if ($session->getFor('ci', 'sales-history') > 3) {
-			return false;
-		}
-		$session->setFor('ci', 'sales-history', ($session->getFor('ci', 'sales-history') + 1));
-		$session->redirect(self::historyUrl($data->custID, $refresh = true), $http301 = false);
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
+============================================================= */
+	/**
+	 * Return URL to Fetch Data
+	 * @param  WireData $data
+	 * @return string
+	 */
+	protected static function fetchDataRedirectUrl(WireData $data) {
+		return self::historyUrl($data->rid, $data->date, $refresh=true);
 	}
 
-	private static function deleteCustPoJson() {
-		$jsonm = self::getJsonModule();
-		if ($jsonm->exists(self::JSONCODE) && empty(PurchaseOrders::getSessionPo()) === false) {
-			$jsonm->delete(self::JSONCODE);
-			PurchaseOrders::deleteSessionPo();
+	protected static function fetchData(WireData $data) {
+		$jsonFetcher = self::getJsonFileFetcher();
+		if ($jsonFetcher->exists(self::JSONCODE) && empty(self::getSessionVar('custpo')) === false) {
+			$jsonFetcher->delete(self::JSONCODE);
+			self::deleteSessionVar('custpo');
 		}
+		return parent::fetchData($data);
+	}
+
+	protected static function prepareJsonRequest(WireData $data) {
+		$fields = ['rid|int', 'date|text', 'sessionID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		self::decorateInputDataWithCustid($data);
+		$rqst = ['CISALESHIST', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "SALESORDRNBR=", "ITEMID="];
+		
+		if (empty($data->date) === false) {
+			$date = date('Ymd', strtotime($data->date));
+			$rqst[] = "DATE=$date";
+		}
+		return $rqst;
 	}
 
 /* =============================================================
-	Display
+	4. URLs
 ============================================================= */
-	protected static function displayOrders($data) {
-		$jsonm  = self::getJsonModule();
-		$json   = $jsonm->getFile(self::JSONCODE);
-		$config = self::pw('config');
+	public static function historyUrl($rID, $date = '', $refreshdata = false) {
+		$url = new Purl(self::ciSalesHistoryUrl($rID));
 
-		if ($jsonm->exists(self::JSONCODE) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Sales History File Not Found']);
+		if ($date) {
+			$url->query->set('date', $date);
 		}
-
-		if ($json['error']) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
-		}
-		$page = self::pw('page');
-		$page->refreshurl = self::historyUrl($data->custID, $refresh = true);
-		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		$customer  = self::getCustomer($data->custID);
-		$formatter = self::getFormatter();
-		$docm      = self::getDocFinder();
-		self::initHooks();
-		return $config->twig->render('customers/ci/sales-history/display.twig', ['customer' => $customer, 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
-	}
-
-/* =============================================================
-	URLs
-============================================================= */
-	public static function historyUrl($custID, $refreshdata = false) {
-		$url = new Purl(self::ciSaleshistoryUrl($custID));
 
 		if ($refreshdata) {
 			$url->query->set('refresh', 'true');
@@ -109,37 +120,58 @@ class SalesHistory extends Subfunction {
 	}
 
 /* =============================================================
-	Data Requests
+	5. Displays
 ============================================================= */
-	private static function requestJson($vars) {
-		$fields = ['custID|string', 'shiptoID|text', 'sessionID|text', 'date|text'];
-		self::sanitizeParametersShort($vars, $fields);
-		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$data = ['CISALESHIST', "CUSTID=$vars->custID", "SHIPID=$vars->shiptoID", "SALESORDRNBR=", "ITEMID="];
-		if (empty($vars->date) === false) {
-			$date = date('Ymd', strtotime($vars->date));
-			$data[] = "DATE=$date";
+	protected static function displayDateForm(WireData $data) {
+		return self::renderDateForm($data);
+	}
+
+	protected static function displayHistory(WireData $data, Customer $customer, $json = []) {
+		if (empty($json)) {
+			return self::renderJsonNotFoundAlert($data, 'Sales History');
 		}
-		self::sendRequest($data, $vars->sessionID);
+
+		if ($json['error']) {
+			return self::renderJsonError($data, $json);
+		}
+		self::addPageData($data);
+		return self::renderHistory($data, $customer, $json);
 	}
 
 /* =============================================================
-	Supplemental
+	6. HTML Rendering
 ============================================================= */
-	// NOTE: Keep public, it's used in Ci\PurchaseOrders
+	protected static function renderDateForm(WireData $data) {
+		return self::pw('config')->twig->render('customers/ci/.new/sales-history/select-date/display.twig', []);
+	}
+
+	protected static function renderHistory(WireData $data, Customer $customer, array $json) {
+		$formatter = self::getFormatter();
+		$docm      = self::getDocFinder();
+		return self::pw('config')->twig->render('customers/ci/.new/sales-history/display.twig', ['customer' => $customer, 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'docm' => $docm]);
+	}
+
+/* =============================================================
+	7. Class / Module Getting
+============================================================= */
+	// NOTE: Keep public, it's used in Ci\PurchaseHistory
 	public static function getFormatter() {
 		$f = new Formatter();
 		$f->init_formatter();
 		return $f;
 	}
 
-	// NOTE: Keep public, it's used in Ci\PurchaseOrders
+	// NOTE: Keep public, it's used in Ci\PurchaseHistory
 	public static function getDocFinder() {
 		return new DocFinders\SalesOrder();
 	}
 
 /* =============================================================
-	Hooks
+	8. Supplemental
+============================================================= */
+
+/* =============================================================
+	9. Hooks / Object Decorating
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMci');
@@ -147,5 +179,32 @@ class SalesHistory extends Subfunction {
 		$m->addHook('Page(pw_template=ci)::documentListUrl', function($event) {
 			$event->return = Documents::documentsUrlSalesorder($event->arguments(0), $event->arguments(1));
 		});
+
+		$m->addHook('Page(pw_template=ci)::ciSalesHistoryUrl', function($event) {
+			$event->return = self::historyUrl($event->arguments(0));
+		});
+	}
+
+	/**
+	 * Add CIO Configured Start Date for Date Form
+	 * @param  Page|null $page
+	 * @return bool
+	 */
+	private static function addCioStartDate(Page $page = null) {
+		$page = $page ? $page : self::pw('page');
+		$cio = self::getCio();
+		$cioUser = $cio->usercio(self::pw('user')->loginid);
+		
+		if ($cioUser->dayssaleshistory > 0) {
+			$page->cioStartDate = date(self::DATE_FORMAT_DISPLAY, strtotime("-$cioUser->dayssaleshistory days"));
+			return true;
+		}
+
+		if ($cioUser->datesaleshistory) {
+			$page->cioStartDate = date(self::DATE_FORMAT_DISPLAY, strtotime($cioUser->datesaleshistory));
+			return true;
+		}
+		$page->cioStartDate = '';
+		return true;
 	}
 }

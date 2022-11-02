@@ -1,0 +1,25 @@
+{% extends 'customers/ci/.new/display.twig' %}
+
+{% block body %}
+	<div class="card-body">
+		{% if json['data'] == false %}
+			{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-exclamation-triangle fa-2x', 'title': 'No Contacts', 'message': 'No Contacts were found for ' ~ json['custid'] } %}
+		{% endif %}
+		
+		{% if json['data']%}
+			{% include 'customers/ci/.new/contacts/contacts.twig' %}
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<a href="{{ page.ciUrl(customer.rid) }}" class="btn btn-warning btn-sm">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% include 'customers/ci/.new/bread-crumbs.twig' %}
+
+<div class="mb-3">
+	{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Error!', 'message': message} %}
+</div>
+
+<a href="{{ page.refreshurl }}" class="btn btn-primary">
+	<i class="fa fa-refresh" aria-hidden="true"></i> Refresh
+</a>

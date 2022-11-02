@@ -1,0 +1,64 @@
+{% extends 'customers/ci/.new/display.twig' %}
+
+{% block header %}
+	<div class="card-header bg-light">
+		<div class="row">
+			<div class="col-4">
+				<strong>{{ customer.id|replace({' ': '&nbsp;'})|raw  }}</strong> -- {{ customer.name }}
+			</div>
+			<div class="col-4 text-center">
+				{{ page.subfunctionDesc }}
+			</div>
+			<div class="col-4 text-right">
+				{{ input.get.text('date') }}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block links %}
+	<div class="p-2 px-3 card-toolbar">
+		<div class="row">
+			<div class="col-4 col-sm-3">
+				{% if page.is_print() == false %}
+					<a href="{{ page.get_printURL() }}" class="btn btn-primary">
+						<i class="fa fa-print" aria-hidden="true"></i> Print
+					</a>
+				{% endif %}
+			</div>
+			<div class="col-4 col-sm-3">
+				{% if page.is_print() == false and page.has('refreshurl') %}
+					<a href="{{ page.refreshurl }}" class="btn btn-primary">
+						<i class="fa fa-refresh" aria-hidden="true"></i> Refresh
+					</a>
+				{% endif %}
+			</div>
+			<div class="col-4 col-sm-3">
+				<a href="{{ page.ciSalesHistoryUrl(customer.rid) }}" class="btn btn-primary">
+					<i class="fa fa-calendar" aria-hidden="true"></i> New
+				</a>
+			</div>
+			<div class="col-sm-3 text-center pt-2">
+				{% if page.has('lastmodified') %}
+					Data Timestamp: {{ page.lastmodified|date('m/d/Y h:i A') }}
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block body %}
+	{% include 'customers/ci/.new/sales-history/sales-history.twig' %}
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<a href="{{ page.ciUrl(customer.rid) }}" class="btn btn-warning btn-sm">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
+	</div>
+{% endblock %}

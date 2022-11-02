@@ -1,100 +1,104 @@
 <?php namespace Controllers\Mci\Ci;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Dplus Models
+use Customer;
+// ProcessWire
+use ProcessWire\WireData;
 // Controllers
 use Controllers\Mii\Ii;
+use ItemMasterItem;
 
-class Pricing extends Subfunction {
+/**
+ * Ci\Pricing
+ * 
+ * Handles the CI Pricing Page
+ */
+class Pricing extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'pricing';
-	const JSONCODE       = 'ii-pricing';
-
+	const TITLE      = 'Pricing';
+	const SUMMARY    = 'View Customer Pricing';
+	const JSONCODE   = 'ii-pricing';
+	const SUBFUNCTIONKEY = 'pricing';
+	
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'itemID|text', 'refresh|bool'];
+	public static function index(WireData $data) {
+		$fields = ['rid|int', 'itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
-
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
-		}
+		self::throw404IfInvalidCustomerOrPermission($data);
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if (empty($data->itemID)) {
-			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
-			return self::displayItemidForm($data);
+			return self::selectItem($data);
 		}
 
 		if ($data->refresh) {
-			self::requestJson($data);
-			self::pw('session')->redirect(self::pricingUrl($data->custID, $data->itemID), $http301 = false);
+			self::requestJson(self::prepareJsonRequest($data));
+			self::pw('session')->redirect(self::pricingUrl($data->rid, $data->itemID), $http301 = false);
 		}
-
 		return self::pricing($data);
 	}
 
-	private static function pricing($data) {
-		self::getData($data);
-		self::pw('page')->headline = "CI: $data->custID Pricing";
+	private static function selectItem(WireData $data) {
+		$customer = self::getCustomerByRid($data->rid);
+
+		self::pw('page')->custid   = $data->custID;
+		self::pw('page')->headline = "CI: $customer->name Pricing";
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/ajax-modal.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl(self::jsPath() . 'select-item.js'));
+		return self::displaySelectItem($data);
+	}
+
+	private static function pricing(WireData $data) {
+		$json = self::fetchData($data);
+		$customer = self::getCustomerByRid($data->rid);
+		self::pw('page')->custid   = $customer->id;
+		self::pw('page')->headline = "CI: $customer->name Pricing for $data->itemID";
+
 		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= self::displayPricing($data);
+		$html .= self::displayPricing($data, $customer, $json);
 		return $html;
 	}
 
 /* =============================================================
-	Data Retrieval
+	2. Validations
 ============================================================= */
-	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['custID|string', 'itemID|text']);
-		$jsonm   = self::getJsonModule();
-		$json    = $jsonm->getFile(self::JSONCODE);
-		$session = self::pw('session');
 
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
+============================================================= */
+	/**
+	 * Return URL to Fetch Data
+	 * @param  WireData $data
+	 * @return string
+	 */
+	protected static function fetchDataRedirectUrl(WireData $data) {
+		return self::pricingUrl($data->rid, $data->itemID, $refresh=true);
+	}
 
-		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['itemid'] != $data->itemID || $json['custid'] != $data->custID) {
-				$jsonm->delete(self::JSONCODE);
-				$session->redirect(self::pricingUrl($data->custID, $data->itemID, $refresh = true), $http301 = false);
-			}
-			return true;
-		}
+	/**
+	 * Return if JSON Data matches for this Customer ID
+	 * @param  WireData $data
+	 * @param  array    $json
+	 * @return bool
+	 */
+	protected static function validateJsonFileMatches(WireData $data, array $json) {
+		return $json['itemid'] == $data->itemID && $json['custid'] == self::getCustidByRid($data->rid);
+	}
 
-		if ($session->getFor('ci', 'pricing') > 3) {
-			return false;
-		}
-		$session->setFor('ci', 'pricing', ($session->getFor('ci', 'pricing') + 1));
-		$session->redirect(self::pricingUrl($data->custID, $data->itemID, $refresh = true), $http301 = false);
+	protected static function prepareJsonRequest(WireData $data) {
+		$fields = ['rid|int', 'itemID|text', 'sessionID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		self::decorateInputDataWithCustid($data);
+		return ['CIPRICE', "ITEMID=$data->itemID", "CUSTID=$data->custID"];
 	}
 
 /* =============================================================
-	Display
-============================================================= */
-	private static function displayItemidForm($data) {
-		self::pw('page')->js .= self::pw('config')->twig->render('customers/ci/pricing/item-form.js.twig');
-		return self::pw('config')->twig->render('customers/ci/pricing/item-form.twig');
-	}
-
-	protected static function displayPricing($data) {
-		$jsonm  = self::getJsonModule();
-		$json   = $jsonm->getFile(self::JSONCODE);
-		$config = self::pw('config');
-
-		if ($jsonm->exists(self::JSONCODE) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Pricing File Not Found']);
-		}
-
-		if ($json['error']) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
-		}
-		$page = self::pw('page');
-		$page->refreshurl = self::pricingUrl($data->custID, $data->itemID, $refresh = true);
-		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		$customer = self::getCustomer($data->custID);
-		return $config->twig->render('customers/ci/pricing/display.twig', ['item' => Ii\Pricing::getItmItem($data->itemID), 'customer' => $customer, 'json' => $json]);
-	}
-
-/* =============================================================
-	URLs
+	4. URLs
 ============================================================= */
 	public static function pricingUrl($custID, $itemID = '', $refreshdata = false) {
 		$url = new Purl(self::ciPricingUrl($custID));
@@ -110,13 +114,45 @@ class Pricing extends Subfunction {
 	}
 
 /* =============================================================
-	Data Requests
+	5. Displays
 ============================================================= */
-	private static function requestJson($vars) {
-		$fields = ['itemID|text', 'custID|string', 'sessionID|text'];
-		self::sanitizeParametersShort($vars, $fields);
-		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$data = ['CIPRICE', "ITEMID=$vars->itemID", "CUSTID=$vars->custID"];
-		self::sendRequest($data, $vars->sessionID);
+	private static function displaySelectItem(WireData $data) {
+		return self::renderSelectItem($data);
 	}
+
+	private static function displayPricing(WireData $data, Customer $customer, $json = []) {
+		if (empty($json)) {
+			return self::renderJsonNotFoundAlert($data, 'Pricing');
+		}
+
+		if ($json['error']) {
+			return self::renderJsonError($data, $json);
+		}
+		self::addPageData($data);
+		$item = Ii\Pricing::getItmItem($data->itemID);
+		return self::renderPricing($data, $customer, $item, $json);
+	}
+
+/* =============================================================
+	6. HTML Rendering
+============================================================= */
+	private static function renderSelectItem(WireData $data) {
+		return self::pw('config')->twig->render('customers/ci/.new/pricing/select-item/display.twig');
+	}
+
+	private static function renderPricing(WireData $data, Customer $customer, ItemMasterItem $item, array $json) {
+		return self::pw('config')->twig->render('customers/ci/.new/pricing/display.twig', ['item' => $item, 'customer' => $customer, 'json' => $json]);
+	}
+
+/* =============================================================
+	7. Class / Module Getting
+============================================================= */
+
+/* =============================================================
+	8. Supplemental
+============================================================= */
+
+/* =============================================================
+	9. Hooks / Object Decorating
+============================================================= */
 }

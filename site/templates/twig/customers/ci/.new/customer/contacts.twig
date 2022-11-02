@@ -1,0 +1,58 @@
+{#
+	var / var property      Description / Instance of
+	-------------------------------------------------
+	user                    ProcessWire\User
+	input                   ProcessWire\WireInput
+	page                    ProcessWire\Page
+	page.custid             Customer ID
+	customer.contacts       Propel\Runtime\Util\PropelModelPager of Custindex
+#}
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#customer-contacts" role="button" aria-expanded="false" aria-controls="customer-contacts">
+			Contacts <i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ contacts.getNbResults() }}</span>
+	</div>
+	<div class="collapse" id="customer-contacts">
+		<div class="list-group-item py-1 bg-light font-weight-bold">
+			<div class="row">
+				<div class="col">Name</div>
+				<div class="col">Shipto</div>
+				<div class="col">Title</div>
+				<div class="col">Phone</div>
+				<div class="col">Email</div>
+				<div class="col text-right">Edit</div>
+			</div>
+		</div>
+		{% if contacts.count > 0 %}
+			{% for contact in contacts %}
+				<div class="list-group-item py-1 px-2">
+					<div class="row">
+						<div class="col"><a href="{{ page.ciContactUrl(input.get.int('rid'), contact.shiptoid, contact.contact) }}" class="link">{{ contact.contact }}</a></div>
+						<div class="col">{{ contact.shiptoid }}</div>
+						<div class="col">{{ contact.title }}</div>
+						<div class="col">{{ contact.phone }}</div>
+						<div class="col">{{ contact.email }}</div>
+						<div class="col text-right">
+							<a href="{{ page.ciContactEditUrl(input.get.int('rid'), contact.shiptoid, contact.contact) }}" class="btn btn-warning btn-sm">
+								<i class="fa fa-pencil" aria-hidden="true"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			<div class="list-group-item py-1 px-2">
+				<div class="row">
+					<div class="col text-center">There are no results to display.</div>
+				</div>
+			</div>
+		{% endif %}
+		<div class="card-footer">
+			<a href="{{ page.ciContactsUrl(input.get.int('rid'), input.get.text('shiptoID'))}}" class="link">
+				View More Contacts <i class="fa fa-sign-in" aria-hidden="true"></i>
+			</a>
+		</div>
+	</div>
+</div>

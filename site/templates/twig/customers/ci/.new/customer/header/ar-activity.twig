@@ -1,0 +1,123 @@
+{#
+	var / var property      Description / Instance of
+	-------------------------------------------------
+	user                    ProcessWire\User
+	input                   ProcessWire\WireInput
+	page                    ProcessWire\Page
+	page.custid             Customer ID
+	customer                Customer
+	customer.contacts       Propel\Runtime\Util\PropelModelPager of Custinde
+	customer.salesOrders    Propel\Runtime\Util\PropelModelPager of SalesOrder
+	customer.salesHistory   Propel\Runtime\Util\PropelModelPager of Sales History
+	customer.quotes         Propel\Runtime\Util\PropelModelPager of Quote
+#}
+<div class="card">
+	<div class="card-header">
+		<span class="h5">Customer Activity</span>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item py-1 px-1 bg-success text-white">
+			<div class="row">
+				<div class="col-sm-6">
+					Last Sale Date
+				</div>
+				<div class="col-sm-6 text-right">
+					{{ customer.lastsaledate|convertdate }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6">
+					Sales Orders
+				</div>
+				<div class="col-sm-6 text-right">
+					{{ customer.countSalesOrders() }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6">
+					Amount
+				</div>
+				<div class="col-sm-6 text-right">
+					$ {{ customer.get_orders_amount()|currency }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6">
+					Highest Balance
+				</div>
+				<div class="col-sm-6 text-right">
+					$ {{ customer.highestbalance|currency }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6">
+					Current Finance Charge
+				</div>
+				<div class="col-sm-6 text-right">
+					{{ customer.financecharge }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1 bg-light text-center"><span class="h5 font-weight-bold">Invoices</span></li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row font-weight-bold">
+				<div class="col-sm-6">
+					Period
+				</div>
+				<div class="col-sm-3 text-right">
+					Amount
+				</div>
+				<div class="col-sm-3 text-right">
+					Invoices
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
+				</div>
+				<div class="col-sm-3 text-right">
+					$ {{ customer.mtd_sales|currency }}
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ customer.mtd_invoices }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr>
+				</div>
+				<div class="col-sm-3 text-right">
+					$ {{ customer.ytd_sales|currency }}
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ customer.ytd_invoices }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-5">
+					Last 12 Months
+				</div>
+				<div class="col-sm-4 text-right">
+					$ {{ customer.get_lastxmonthsamount(12)|currency }}
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ customer.get_lastxmonthscount(12) }}
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>

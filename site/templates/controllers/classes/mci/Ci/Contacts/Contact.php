@@ -1,77 +1,94 @@
 <?php namespace Controllers\Mci\Ci\Contacts;
-// Propel ORM Ljbrary
-use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
-use CustomerQuery, Customer;
-use CustomerShiptoQuery, CustomerShipto;
+use Customer;
 // Dpluso Model
 use CustindexQuery, Custindex;
-// ProcessWire Classes, Modules
-use ProcessWire\Page;
-// Dplus Validators
-use Dplus\CodeValidators\Mar as MarValidator;
-// Dplus Filters
-use Dplus\Filters;
+// ProcessWire
+use ProcessWire\WireData;
+use ProcessWire\Wire404Exception;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Mci\Ci\Base;
 use Controllers\Mci\Ci\Shipto;
+use Controllers\Mci\Ci\AbstractSubfunctionController;
 
-class Contact extends Base {
+/**
+ * Ci\Contacts\Contact
+ * 
+ * Handles Ci Contact Page
+ */
+class Contact extends AbstractSubfunctionController {
+	const TITLE      = 'Contact';
+	const SUMMARY    = 'View Customer Contact';
 
 /* =============================================================
 	Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'shiptoID|text', 'q|text'];
+	public static function index(WireData $data) {
+		$fields = ['rid|int', 'shiptoID|text', 'contactID|string', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
+		self::throw404IfInvalidCustomerOrPermission($data);
 
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
-		}
+		$data->custID = self::getCustidByRid($data->rid);
+		self::pw('page')->custid = $data->custID;
 
-		if (empty($data->shiptoID) === false) {
-			if (Shipto::validateShiptoAccess($data) === false) {
-				return Shipto::displayInvalidShiptoOrPermissions($data);
-			}
+		if (empty($data->shiptoID) === false && Shipto::validateShiptoAccess($data->custID, $data->shiptoID) === false) {
+			throw new Wire404Exception();
 		}
-		return self::contact($data);
+		return static::contact($data);
 	}
 
-	private static function contact($data) {
+	protected static function contact(WireData $data) {
 		self::pw('page')->headline = "CI: Contact";
 		if (self::exists($data->custID, $data->shiptoID, $data->contactID) === false) {
-			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Contact Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "$data->custID $data->shiptID $data->contactID not found"]);
+			throw new Wire404Exception();
 		}
 		$contact = self::getContact($data->custID, $data->shiptoID, $data->contactID);
 		self::pw('page')->headline = "CI: $data->custID Contact $data->contactID";
-		return self::displayContact($data, $contact);
+		return static::displayContact($data, $contact);
+	}
+
+/* =============================================================
+	Data Fetching
+============================================================= */
+	/**
+	 * Return Contact
+	 * @param  string $custID
+	 * @param  string $shiptoID
+	 * @param  string $contactID
+	 * @return Custindex
+	 */
+	public static function getContact($custID, $shiptoID, $contactID) {
+		$q = CustindexQuery::create();
+		$q->filterByCustid($custID)->filterByShiptoid($shiptoID)->filterByContact($contactID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return if Contact exists
+	 * @param  string $custID
+	 * @param  string $shiptoID
+	 * @param  string $contactID
+	 * @return bool
+	 */
+	public static function exists($custID, $shiptoID, $contactID) {
+		$q = CustindexQuery::create();
+		$q->filterByCustid($custID)->filterByShiptoid($shiptoID)->filterByContact($contactID);
+		return boolval($q->count());
 	}
 
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayContact($data, Custindex $contact) {
-		$config = self::pw('config');
-
+	protected static function displayContact(WireData $data, Custindex $contact) {
 		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= $config->twig->render('customers/ci/contact/display.twig', ['contact' => $contact, 'customer' => self::getCustomer($data->custID)]);
+		$html .= static::renderContact($data, $contact);
 		return $html;
 	}
 
 /* =============================================================
-	Supplemental
+	HTML Rendering
 ============================================================= */
-	public static function getContact($custID, $shiptoID, $contactID) {
-		$q = CustIndexQuery::create();
-		$q->filterByCustid($custID)->filterByShiptoid($shiptoID)->filterByContact($contactID);
-		return $q->findOne();
-	}
-
-	public static function exists($custID, $shiptoID, $contactID) {
-		$q = CustIndexQuery::create();
-		$q->filterByCustid($custID)->filterByShiptoid($shiptoID)->filterByContact($contactID);
-		return boolval($q->count());
+	protected static function renderContact(WireData $data, Custindex $contact) {
+		$customer = self::getCustomerByRid($data->rid);
+		return self::pw('config')->twig->render('customers/ci/.new/contact/display.twig', ['contact' => $contact, 'customer' => $customer]);
 	}
 }

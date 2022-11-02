@@ -1,0 +1,19 @@
+{#
+	var / var property      Description / Instance of
+	-------------------------------------------------
+	user                    ProcessWire\User
+	input                   ProcessWire\WireInput
+	page                    ProcessWire\Page
+	page.custid             Customer ID
+#}
+<nav class="toolbar-sidebar">
+	<ul class="nav">
+		{% for key, data in page.ciPermittedSubfunctions() %}
+			<li>
+				<a href="{{ page.ciSubfunctionUrl(rid, key) }}">
+					{{ data.title ? data.title : key|capitalize }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+</nav>

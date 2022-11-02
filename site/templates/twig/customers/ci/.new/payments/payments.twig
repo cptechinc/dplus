@@ -1,0 +1,40 @@
+{% set module_formatter = formatter %}
+
+<table class='table table-striped table-bordered table-sm' id='payments'>
+	<thead>
+		{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'detail'} %}
+	</thead>
+	<tbody>
+		{% for id, payment in json['data']['payments'] %}
+			{% for x in 1..blueprint['detail']['rowcount']  %}
+				<tr>
+					{% set columncount = 0 %}
+					{% for i in 1..blueprint['cols'] + 1 %}
+						{% set colspan = 0 %}
+						{% if blueprint['detail']['rows'][x]['columns'][i] %}
+							{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+							{% set colspan = column['col-length'] %}
+							<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+								{{ formatter.format_celldata(payment, column) }}
+
+								{% if i == 1 and payment['Invoice Number'] %}
+									{% if docm.countDocumentsPayment(payment['Invoice Number'], payment['Check Number']) %}
+										<a href="{{ page.documentListUrl(input.get.int('rid'), payment['Invoice Number'], payment['Check Number'])}}" class="text-success" title="View Documents for Payments on Invoice # {{ payment['Invoice Number'] }}">
+											<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Payments on Invoice # {{ payment['Invoice Number'] }}</span>
+										</a>
+									{% endif %}
+								{% endif %}
+							</td>
+						{% else %}
+							{% if columncount < blueprint['cols'] %}
+								{% set colspan = 1 %}
+								<td></td>
+							{% endif %}
+						{% endif %}
+						{% set columncount = columncount + colspan %}
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		{% endfor %}
+	</tbody>
+</table>

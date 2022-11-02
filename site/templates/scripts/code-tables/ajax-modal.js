@@ -23,6 +23,19 @@ $(function() {
 		modal.modal('hide');
 	});
 
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(itemID);
+		if (input.data('jqv')) {
+			input.change();
+		}
+		modal.modal('hide');
+	});
+
 	$("body").on('click', '.customer-link', function(e) {
 		e.preventDefault();
 		var button = $(this);

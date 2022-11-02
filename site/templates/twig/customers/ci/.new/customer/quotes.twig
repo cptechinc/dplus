@@ -1,0 +1,27 @@
+{#
+	var / var property      Description / Instance of
+	-------------------------------------------------
+	user                    ProcessWire\User
+	input                   ProcessWire\WireInput
+	page                    ProcessWire\Page
+	page.custid             Customer ID
+	quotes         Propel\Runtime\Util\PropelModelPager of Quote
+#}
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#customer-quotes" role="button" aria-expanded="false" aria-controls="customer-quotes">
+			Quotes <i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ quotes.getNbResults() }}</span>
+	</div>
+	<div class="collapse" id="customer-quotes">
+		{% include 'quotes/customer/quotes-list.twig' %}
+
+		<div class="card-footer">
+			<a href="{{ page.quoteListUrl(page.custid, input.get.text('shiptoID')) }}" class="link">
+				View More Quotes
+				<i class="fa fa-sign-in" aria-hidden="true"></i>
+			</a>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,21 @@
+<form action="{{ input.url() }}" method="GET">
+	<input type="hidden" name="rid" value="{{ input.get.int('rid') }}">
+
+	<div class="form-group">
+		<label for="date">Start Date</label>
+		{% include 'util/bootstrap/form/date-picker.twig' with {
+				'inputgroup': {
+					'input': {
+						'name': 'date',
+						'size': 'sm',
+						'value': page.cioStartDate,
+						'addclasses': [
+							'text-right',
+						]
+					}
+				}
+			}
+		%}
+	</div>
+	<button type="submit" class="btn btn-success">Submit</button>
+</form>

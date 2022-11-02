@@ -1,91 +1,80 @@
 <?php namespace Controllers\Mci\Ci;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// Dplus Models
+use Customer;
+// ProcessWire
+use ProcessWire\WireData;
 
-
-class Credit extends Subfunction {
+/**
+ * Ci\Credit
+ * 
+ * Handles the CI Credit Page
+ */
+class Credit extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'credit';
 	const JSONCODE       = 'ci-credit';
+	const TITLE          = 'Credit';
+	const SUMMARY        = 'View Credit';
+	const SUBFUNCTIONKEY = 'credit';
 
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
-	public static function index($data) {
-		$fields = ['custID|string', 'refresh|bool'];
+	public static function index(WireData $data) {
+		$fields = ['rid|int', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
-
-		if (self::validateCustidPermission($data) === false) {
-			return self::displayInvalidCustomerOrPermissions($data);
-		}
+		self::throw404IfInvalidCustomerOrPermission($data);
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if ($data->refresh) {
-			self::requestJson($data);
-			self::pw('session')->redirect(self::creditUrl($data->custID), $http301 = false);
+			self::requestJson(self::prepareJsonRequest($data));
+			self::pw('session')->redirect(self::ciCreditUrl($data->rid), $http301 = false);
 		}
 		return self::credit($data);
 	}
 
-	private static function credit($data) {
-		self::getData($data);
-		self::pw('page')->headline = "CI: $data->custID Credit";
+	private static function credit(WireData $data) {
+		$json = self::fetchData($data);
+		$customer = self::getCustomerByRid($data->rid);
+
+		self::initHooks();
+		self::pw('page')->headline = "CI: $customer->name Credit";
+
 		$html = '';
-		$html .= self::displayBreadCrumbs($data);
-		$html .= self::displayCredit($data);
+		$html .= self::displayCredit($data, $customer, $json);
 		return $html;
 	}
 
 /* =============================================================
-	Data Retrieval
+	2. Validations
 ============================================================= */
-	private static function getData($data) {
-		$data    = self::sanitizeParametersShort($data, ['custID|string']);
-		$jsonm   = self::getJsonModule();
-		$json    = $jsonm->getFile(self::JSONCODE);
-		$session = self::pw('session');
 
+/* =============================================================
+	3. Data Fetching / Requests / Retrieval
+============================================================= */
+	/**
+	 * Return URL to Fetch Data
+	 * @param  WireData $data
+	 * @return string
+	 */
+	protected static function fetchDataRedirectUrl(WireData $data) {
+		return self::creditUrl($data->rid, $refresh=true);
+	}
 
-		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['custid'] != $data->custID) {
-				$jsonm->delete(self::JSONCODE);
-				$session->redirect(self::creditUrl($data->custID, $refresh = true), $http301 = false);
-			}
-			return true;
-		}
-
-		if ($session->getFor('ci', 'credit') > 3) {
-			return false;
-		}
-		$session->setFor('ci', 'credit', ($session->getFor('ci', 'credit') + 1));
-		$session->redirect(self::creditUrl($data->custID, $refresh = true), $http301 = false);
+	protected static function prepareJsonRequest(WireData $data) {
+		$fields = ['rid|int', 'sessionID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		self::decorateInputDataWithCustid($data);
+		return ['CICREDIT', "CUSTID=$data->custID"];
 	}
 
 /* =============================================================
-	Display
+	4. URLs
 ============================================================= */
-	protected static function displayCredit($data) {
-		$jsonm  = self::getJsonModule();
-		$json   = $jsonm->getFile(self::JSONCODE);
-		$config = self::pw('config');
-
-		if ($jsonm->exists(self::JSONCODE) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Quotes File Not Found']);
-		}
-
-		if ($json['error']) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
-		}
-		$page = self::pw('page');
-		$page->refreshurl   = self::creditUrl($data->custID, $refresh = true);
-		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		$customer  = self::getCustomer($data->custID);
-		return $config->twig->render('customers/ci/credit/display.twig', ['customer' => $customer, 'json' => $json]);
-	}
-
-/* =============================================================
-	URLs
-============================================================= */
-	public static function creditUrl($custID, $refreshdata = false) {
-		$url = new Purl(self::ciCreditUrl($custID));
+	public static function creditUrl($rID, $refreshdata = false) {
+		$url = new Purl(self::ciCreditUrl($rID));
 
 		if ($refreshdata) {
 			$url->query->set('refresh', 'true');
@@ -94,24 +83,37 @@ class Credit extends Subfunction {
 	}
 
 /* =============================================================
-	Data Requests
+	5. Displays
 ============================================================= */
-	private static function requestJson($vars) {
-		$fields = ['custID|string', 'sessionID|text'];
-		self::sanitizeParametersShort($vars, $fields);
-		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$data = ['CICREDIT', "CUSTID=$vars->custID"];
-		self::sendRequest($data, $vars->sessionID);
+	protected static function displayCredit(WireData $data, Customer $customer, $json = []) {
+		if (empty($json)) {
+			return self::renderJsonNotFoundAlert($data, 'Credit');
+		}
+
+		if ($json['error']) {
+			return self::renderJsonError($data, $json);
+		}
+		self::addPageData($data);
+		return self::renderCredit($data, $customer, $json);
 	}
 
 /* =============================================================
-	Supplemental
+	6. HTML Rendering
+============================================================= */
+	protected static function renderCredit(WireData $data, Customer $customer, array $json) {
+		return self::pw('config')->twig->render('customers/ci/.new/credit/display.twig', ['customer' => $customer, 'json' => $json]);
+	}
+
+/* =============================================================
+	7. Class / Module Getting
 ============================================================= */
 
 /* =============================================================
-	Hooks
+	8. Supplemental
 ============================================================= */
-	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMci');
-	}
+
+/* =============================================================
+	9. Hooks / Object Decorating
+============================================================= */
+	
 }
