@@ -34,6 +34,7 @@ class SalesOrders extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
+			sleep(2);
 			self::pw('session')->redirect(self::ciSalesOrdersUrl($data->rid), $http301 = false);
 		}
 		return self::orders($data);
@@ -99,6 +100,7 @@ class SalesOrders extends AbstractSubfunctionController {
 	5. Displays
 ============================================================= */
 	protected static function displayOrders(WireData $data, Customer $customer, $json = []) {
+		self::addPageData($data);
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Sales Orders');
 		}
@@ -106,7 +108,6 @@ class SalesOrders extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		self::addPageData($data);
 		return self::renderOrders($data, $customer, $json);
 	}
 
