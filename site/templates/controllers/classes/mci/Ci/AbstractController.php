@@ -113,10 +113,17 @@ abstract class AbstractController extends Controller {
 
 	/**
 	 * Return URL to Customer Page
-	 * @param  int     $rID   Customer Record ID  
+	 * @param  int|string     $id   Customer Record ID  / Cust ID
 	 * @return string
 	 */
-	public static function ciUrl(int $rID) {
+	public static function ciUrl($id) {
+		if (is_int($id)) {
+			return self::ciRidUrl($id);
+		}
+		return self::ciRidUrl(Cmm::instance()->ridByCustid($id));
+	}
+
+	public static function ciRidUrl(int $rID) {
 		return static::url()."?rid=$rID";
 	}
 
