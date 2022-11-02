@@ -1,23 +1,20 @@
 <?php namespace Controllers\Mci\Ci\Contacts;
-// Propel ORM Ljbrary
-use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
-use CustomerQuery, Customer;
-use CustomerShiptoQuery, CustomerShipto;
+use Customer;
 // Dpluso Model
-use CustindexQuery, Custindex;
+use Custindex;
 // ProcessWire
 use ProcessWire\WireData;
-use ProcessWire\Wire404Exception;
-// Dplus Validators
-use Dplus\CodeValidators\Mar as MarValidator;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Mci\Ci\Contact\Edit as ContactCRUD;
-// Mvc Controllers
-use Controllers\Mci\Ci\Shipto;
 
+/**
+ * Ci\Contacts\Edit
+ * 
+ * Handles Edit Contact Page
+ */
 class Edit extends Contact {
 	const TITLE      = 'CI: Edit Contact';
 	const SUMMARY    = 'Edit Customer Contact';
