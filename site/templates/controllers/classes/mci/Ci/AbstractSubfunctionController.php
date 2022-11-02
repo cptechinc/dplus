@@ -99,24 +99,23 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 * @return array
 	 */
 	protected static function fetchData(WireData $data) {
-		$data    = self::sanitizeParametersShort($data, ['rid|int', 'itemID|text']);
-		$jsonFetcher   = self::getJsonFileFetcher();
+		self::sanitizeParametersShort($data, ['rid|int']);
+		$jsonFetcher = self::getJsonFileFetcher();
 		$json    = $jsonFetcher->getFile(static::JSONCODE);
 		$session = self::pw('session');
 
 		if ($jsonFetcher->exists(static::JSONCODE)) {
-			if (static::validateJsonFileMatches($data, $json) === false) {
+			if (static::validateJsonFileMatches($data, $json) === false && $json['error'] === false) {
 				$jsonFetcher->delete(static::JSONCODE);
 				$session->redirect(static::fetchDataRedirectUrl($data), $http301=false);
 			}
 			static::deleteSessionVar();
 			return $json;
 		}
-
 		if (static::getSessionVar() > 3) {
 			return [];
 		}
-		static::setSessionVar((static::getSessionVar() + 1));
+		static::setSessionVar(intval(static::getSessionVar()) + 1);
 		$session->redirect(static::fetchDataRedirectUrl($data), $http301=false);
 	}
 
@@ -137,6 +136,9 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 */
 	protected static function validateJsonFileMatches(WireData $data, array $json) {
 		self::decorateInputDataWithCustid($data);
+		if (array_key_exists('custid', $json) === false) {
+			return false;
+		} 
 		return $json['custid'] == $data->custID;
 	}
 
@@ -171,7 +173,7 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 * @return string
 	 */
 	protected static function renderJsonError(WireData $data, array $json) {
-		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+		return self::pw('config')->twig->render('customers/ci/.new/errors/json-not-found.twig', ['message' => $json['errormsg']]);
 	}
 
 /* =============================================================
