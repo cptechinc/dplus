@@ -18,7 +18,7 @@ use Dplus\DocManagement\Finders as DocFinders;
 class OpenInvoices extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'openinvoices';
 	const JSONCODE       = 'ci-openinvoices';
-	const TITLE          = 'CI: Open Invoices';
+	const TITLE          = 'Open Invoices';
 	const SUMMARY        = 'View Open Invoices';
 	const SUBFUNCTIONKEY = 'open-invoices';
 

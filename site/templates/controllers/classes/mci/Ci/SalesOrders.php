@@ -18,7 +18,7 @@ use Dplus\DocManagement\Finders as DocFinders;
 class SalesOrders extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'salesorders';
 	const JSONCODE       = 'ci-sales-orders';
-	const TITLE          = 'CI: Sales Orders';
+	const TITLE          = 'Sales Orders';
 	const SUMMARY        = 'View Sales Orders';
 	const SUBFUNCTIONKEY = 'sales-orders';
 

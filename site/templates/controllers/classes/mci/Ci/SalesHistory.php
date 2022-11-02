@@ -19,7 +19,7 @@ use Dplus\DocManagement\Finders as DocFinders;
 class SalesHistory extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'saleshistory';
 	const JSONCODE       = 'ci-sales-history';
-	const TITLE          = 'CI: Sales History';
+	const TITLE          = 'Sales History';
 	const SUMMARY        = 'View Sales History';
 	const SUBFUNCTIONKEY = 'sales-history';
 	const DATE_FORMAT_DISPLAY = 'm/d/Y';
@@ -47,6 +47,8 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 	private static function selectDate(WireData $data) {
+		$customer = self::getCustomerByRid($data->rid);
+		self::pw('page')->headline = "CI: $customer->name Sales History";
 		self::addCioStartDate();
 		return self::displayDateForm($data);
 	}
@@ -81,7 +83,7 @@ class SalesHistory extends AbstractSubfunctionController {
 
 	protected static function fetchData(WireData $data) {
 		$jsonFetcher = self::getJsonFileFetcher();
-		if ($jsonFetcher->exists(self::JSONCODE) && empty(self::deleteSessionVar('custpo')) === false) {
+		if ($jsonFetcher->exists(self::JSONCODE) && empty(self::getSessionVar('custpo')) === false) {
 			$jsonFetcher->delete(self::JSONCODE);
 			self::deleteSessionVar('custpo');
 		}
@@ -92,7 +94,7 @@ class SalesHistory extends AbstractSubfunctionController {
 		$fields = ['rid|int', 'date|text', 'sessionID|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::decorateInputDataWithCustid($data);
-		$rqst = ['CISALESHIST', "CUSTID=$data->custID", "SHIPID=$data->shiptoID"];
+		$rqst = ['CISALESHIST', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "SALESORDRNBR=", "ITEMID="];
 		
 		if (empty($data->date) === false) {
 			$date = date('Ymd', strtotime($data->date));
@@ -176,6 +178,10 @@ class SalesHistory extends AbstractSubfunctionController {
 
 		$m->addHook('Page(pw_template=ci)::documentListUrl', function($event) {
 			$event->return = Documents::documentsUrlSalesorder($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciSalesHistoryUrl', function($event) {
+			$event->return = self::historyUrl($event->arguments(0));
 		});
 	}
 

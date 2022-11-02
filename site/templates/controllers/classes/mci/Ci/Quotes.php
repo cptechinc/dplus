@@ -18,7 +18,7 @@ use Dplus\DocManagement\Finders as DocFinders;
 class Quotes extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'quotes';
 	const JSONCODE       = 'ci-quotes';
-	const TITLE          = 'CI: Quotes';
+	const TITLE          = 'Quotes';
 	const SUMMARY        = 'View Quotes';
 	const SUBFUNCTIONKEY = 'quotes';
 

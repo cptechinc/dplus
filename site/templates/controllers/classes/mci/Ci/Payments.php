@@ -18,7 +18,7 @@ use Dplus\DocManagement\Finders as DocFinders;
 class Payments extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'payments';
 	const JSONCODE       = 'ci-payments';
-	const TITLE          = 'CI: Payments';
+	const TITLE          = 'Payments';
 	const SUMMARY        = 'View Payments';
 	const SUBFUNCTIONKEY = 'payments';
 

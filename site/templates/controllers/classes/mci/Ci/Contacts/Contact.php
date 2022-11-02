@@ -16,7 +16,7 @@ use Controllers\Mci\Ci\AbstractSubfunctionController;
  * Handles Ci Contact Page
  */
 class Contact extends AbstractSubfunctionController {
-	const TITLE      = 'CI: Contact';
+	const TITLE      = 'Contact';
 	const SUMMARY    = 'View Customer Contact';
 
 /* =============================================================

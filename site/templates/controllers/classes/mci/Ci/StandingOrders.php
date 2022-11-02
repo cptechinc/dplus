@@ -14,7 +14,7 @@ use ProcessWire\WireData;
 class StandingOrders extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'standingorders';
 	const JSONCODE       = 'ci-standingorders';
-	const TITLE          = 'CI: Standing Orders';
+	const TITLE          = 'Standing Orders';
 	const SUMMARY        = 'View Standing Orders';
 	const SUBFUNCTIONKEY = 'credit';
 

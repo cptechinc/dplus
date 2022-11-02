@@ -203,8 +203,9 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	 */
 	protected static function addPageData(WireData $data, Page $page = null) {
 		$page = $page ? $page : self::pw('page');
-		$page->refreshurl   = static::fetchDataRedirectUrl($data);
-		$page->lastmodified = self::getJsonFileFetcher()->lastModified(static::JSONCODE);
+		$page->refreshurl      = static::fetchDataRedirectUrl($data);
+		$page->lastmodified    = self::getJsonFileFetcher()->lastModified(static::JSONCODE);
+		$page->subfunctionDesc = static::TITLE;
 	}
 
 /* =============================================================

@@ -14,7 +14,7 @@ use ProcessWire\Wire404Exception;
  */
 class Contacts extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'contacts';
-	const TITLE      = 'CI: Contacts';
+	const TITLE      = 'Contacts';
 	const SUMMARY    = 'View Customer Contacts';
 	const JSONCODE   = 'ci-contacts';
 	const SUBFUNCTIONKEY = 'contacts';

@@ -14,7 +14,7 @@ use ProcessWire\WireData;
 class Credit extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'credit';
 	const JSONCODE       = 'ci-credit';
-	const TITLE          = 'CI: Credit';
+	const TITLE          = 'Credit';
 	const SUMMARY        = 'View Credit';
 	const SUBFUNCTIONKEY = 'credit';
 

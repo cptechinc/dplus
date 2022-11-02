@@ -16,7 +16,7 @@ use Dplus\Mci\Ci\Contact\Edit as ContactCRUD;
  * Handles Edit Contact Page
  */
 class Edit extends Contact {
-	const TITLE      = 'CI: Edit Contact';
+	const TITLE      = 'Edit Contact';
 	const SUMMARY    = 'Edit Customer Contact';
 
 /* =============================================================

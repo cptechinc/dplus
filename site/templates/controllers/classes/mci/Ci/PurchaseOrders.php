@@ -14,7 +14,7 @@ use ProcessWire\WireData;
 class PurchaseOrders extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'customerpo';
 	const JSONCODE       = SalesHistory::JSONCODE;
-	const TITLE          = 'CI: Purchase Orders';
+	const TITLE          = 'Purchase Orders';
 	const SUMMARY        = 'View Purchase Orders';
 	const SUBFUNCTIONKEY = 'purchase-orders';
 
@@ -36,6 +36,8 @@ class PurchaseOrders extends AbstractSubfunctionController {
 			$jsonm  = self::getJsonFileFetcher();
 			$jsonm->delete(SalesHistory::JSONCODE);
 			$jsonm->delete(SalesOrders::JSONCODE);
+			$customer  = self::getCustomerByRid($data->rid);
+			self::pw('page')->headline = "CI: $customer->name Purchase Orders";
 			return self::displayInit($data);
 		}
 		return self::custpo($data);
@@ -43,8 +45,9 @@ class PurchaseOrders extends AbstractSubfunctionController {
 
 	private static function custpo(WireData $data) {
 		self::fetchData($data);
-		self::pw('page')->headline = "CI: $data->custID Orders that match '$data->custpo'";
+		
 		$customer  = self::getCustomerByRid($data->rid);
+		self::pw('page')->headline = "CI: $customer->name Orders that match '$data->custpo'";
 		self::setSessionVar($data->custpo, 'custpo');
 
 		self::initHooks();

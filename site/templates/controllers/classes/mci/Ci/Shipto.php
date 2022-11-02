@@ -18,6 +18,8 @@ use ProcessWire\Wire404Exception;
  * Handles Ci Shiptos / Shipto Page
  */
 class Shipto extends AbstractSubfunctionController {
+	const TITLE          = 'Ship-tos';
+	const SUMMARY        = 'View Ship-tos';
 
 /* =============================================================
 	Indexes

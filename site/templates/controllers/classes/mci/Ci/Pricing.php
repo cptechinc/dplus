@@ -16,7 +16,7 @@ use ItemMasterItem;
  */
 class Pricing extends AbstractSubfunctionController {
 	const PERMISSION_CIO = 'pricing';
-	const TITLE      = 'CI: Pricing';
+	const TITLE      = 'Pricing';
 	const SUMMARY    = 'View Customer Pricing';
 	const JSONCODE   = 'ii-pricing';
 	const SUBFUNCTIONKEY = 'pricing';
