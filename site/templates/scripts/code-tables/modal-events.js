@@ -58,6 +58,12 @@ $(function() {
 		form.find('.valid-feedback').remove();
 
 		if (form.attr('data-code')) {
+			if ($('.code[data-code="'+form.attr('data-code')+'"]').length == 0) {
+				var url = URI();
+				url.setQuery('action', 'focus');
+				url.setQuery('code', form.attr('data-code'));
+				window.location.href = url.toString();
+			}
 			$('.code-table-alert').remove();
 			$('.bg-success').removeClass('bg-success text-white');
 			$('.highlight').removeClass('highlight');

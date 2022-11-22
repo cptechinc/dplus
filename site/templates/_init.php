@@ -103,6 +103,7 @@ if ($values->offsetExists('action') === false|| $page->template == 'dplus-screen
 	$config->scripts->append($hasher->getHashUrl('scripts/uri.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/sweetalert2.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/classes.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/ajax-modal.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/main.js'));
 
 	$mtwig = $modules->get('Twig');

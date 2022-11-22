@@ -28,7 +28,7 @@ class Mar extends Lookup {
 	 */
 	public static function salesPersonGroups($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		self::pw('page')->headline = "SalesPerson Groups";
+		self::pw('page')->headline = "Salesperson Groups";
 		$filter = new Filters\Mar\SalespersonGroupCode();
 		return self::filterResults($filter, $data);
 	}

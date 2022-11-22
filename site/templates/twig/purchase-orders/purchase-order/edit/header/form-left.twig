@@ -39,7 +39,7 @@
 								'title': 'Search Vendors',
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
-								'data-lookupurl': page.search_lookupURL('vendors/'),
+								'data-lookupurl': page.searchLookupUrl('vendors/'),
 								'data-search': 'vendors'
 							}
 						}
@@ -74,7 +74,7 @@
 							'colorclass': 'btn-secondary',
 							'text': 'fa fa-search'|icon,
 							'attributes': {
-								'title': 'Search / Select Vendor Ship-From',
+								'title': 'Search Ship-Froms',
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
 								'data-lookupurl': page.searchLookupUrl('vendor/ship-from/', {'vendorID': po.vendorid}),
