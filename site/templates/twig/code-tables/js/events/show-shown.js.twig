@@ -16,6 +16,8 @@ $('#edit-code-modal').on('shown.bs.modal', function (event) {
 	var modal  = $(this);
 	var code   = button.data('code');
 
+	formCode.form.attr('data-serialized', formCode.form.serialize());
+
 	if (code) {
 		if (formCode.form.find('input[name=description]').length) {
 			formCode.inputs.description.focus();
@@ -28,5 +30,5 @@ $('#edit-code-modal').on('shown.bs.modal', function (event) {
 	} else {
 		formCode.inputs.code.focus();
 	}
-	formCode.form.attr('data-serialized', formCode.form.serialize());
+	
 });

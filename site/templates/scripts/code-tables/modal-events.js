@@ -7,6 +7,8 @@ $(function() {
 		var form   = modal.find('form');
 		var code   = button.data('code');
 
+		form.attr('data-serialized', form.serialize());
+
 		if (code) {
 			if (form.find('input[name=description]').length) {
 				form.find('input[name=description]').focus();
@@ -18,7 +20,6 @@ $(function() {
 		} else {
 			form.find('input[name=code]').focus();
 		}
-		form.attr('data-serialized', form.serialize());
 	});
 
 	$("#edit-code-modal").on('hide.bs.modal', function (e) {

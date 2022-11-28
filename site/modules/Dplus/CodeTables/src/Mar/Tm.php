@@ -41,7 +41,7 @@ class Tm extends AbstractCodeTableEditableSingleKey {
 	 */
 	public function codeJson(Code $code) {
 		$json = parent::codeJson($code);
-		for ($i = 1; $i < self::NUMBER_TAXCODES; $i++) {
+		for ($i = 1; $i < self::NUMBER_TAXCODES + 1; $i++) {
 			$json["taxcode$i"] = $code->taxcode($i);
 		}
 		return $json;

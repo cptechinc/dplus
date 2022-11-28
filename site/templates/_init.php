@@ -9,7 +9,6 @@
  * we are using it just to include another file with shared functions.
  *
  */
-
 $connected = Dplus\Databases\Connectors\Dplus::instance()->connect();
 Dplus\Databases\Connectors\Dpluso::instance()->connect();
 

@@ -16,11 +16,13 @@ $(function() {
 
 	$("body").on("change", "input.taxcode", function(e) {
 		var input = $(this);
-		var code = input.val();
+		var code  = input.val();
+		var index = parseInt(input.data('index'));
 		var formgroup = input.closest('.form-group');
 		var descriptionSpan = formgroup.find('.description');
 
 		descriptionSpan.text('');
+
 		if (code == '') {
 			return true;
 		}
@@ -29,6 +31,8 @@ $(function() {
 			if (code) {
 				descriptionSpan.text(code.description);
 			}
+			formCode.inputs.taxcode(index + 1).parent('.input-group').find('button[data-lookupurl]').removeAttr('disabled');
+			formCode.inputs.taxcode(index + 1).removeAttr('readonly');
 		});
 	});
 
