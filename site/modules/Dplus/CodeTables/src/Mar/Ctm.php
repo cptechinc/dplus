@@ -128,6 +128,7 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 		$code->glcash    = $configAR->defaultGlCodeCash;
 		$code->glfinance   = $configAR->defaultGlCodeFinance;
 		$code->gldiscounts = $configAR->defaultGlCodeDiscounts;
+		$code->maillist = $this->fieldAttribute('maillist', 'default');
 		return $code;
 	}
 

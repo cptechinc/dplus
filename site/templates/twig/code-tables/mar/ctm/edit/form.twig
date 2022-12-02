@@ -14,8 +14,7 @@
 			</div>
 
 			<div class="form-group">
-				<label for="mail_list">Mail List</label>
-				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'hideblankoption' : 'true', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'code-tables/mar/ctm/edit/form/mail-list.twig' %}
 			</div>
 			
 			{% if manager.updateGlAccts() == false %}
@@ -24,13 +23,27 @@
 					<input type="email" name="email" class="form-control email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
 				</div>
 			{% endif %}
+
+			<table class="table table-sm">
+				<thead>
+					<tr><th colspan="2">Notes</th></tr>
+				</thead>
+				<tbody>
+					{% for qnotes in manager.qnotes.getQnotes() %}
+						<tr>
+							<td>{{ qnotes.getNotetypeDescription()|title }}</td>
+							<td>{{ qnotes.notesExist(code.code)|yesorno|capitalize }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 		<div class="col-sm-6">
 			{% if manager.updateGlAccts() %}
 				<legend>GL Accounts</legend>
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glsales', 'label': 'Sales', 'value': code.glsales, 'description': manager.glAcctDescription(code.glsales)} %}
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcredits', 'label': 'Credits', 'value': code.glcredits, 'description': manager.glAcctDescription(code.glcredits)} %}
-				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcogs', 'label': 'Cost of Gods Sold', 'value': code.glcogs, 'description': manager.glAcctDescription(code.glcogs)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcogs', 'label': 'Cost of Goods Sold', 'value': code.glcogs, 'description': manager.glAcctDescription(code.glcogs)} %}
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glfreight', 'label': 'Freight (To Customer)', 'value': code.glfreight, 'description': manager.glAcctDescription(code.glfreight)} %}
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glmisc', 'label': 'Miscellaneous Amounts', 'value': code.glmisc, 'description': manager.glAcctDescription(code.glmisc)} %}
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glar', 'label': 'Accounts Receivable', 'value': code.glar, 'description': manager.glAcctDescription(code.glar)} %}
