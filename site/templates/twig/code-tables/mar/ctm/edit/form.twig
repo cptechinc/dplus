@@ -3,40 +3,73 @@
 
 	<div class="row">
 		<div class="col-sm-6">
-			<div class="form-group">
-				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="code">Code</label>
+				</div>
+				<div class="col-sm-3">
+					<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
+				</div>
 			</div>
 
-			<div class="form-group">
-				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('code', 'description') }}">
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="description">Description</label>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('code', 'description') }}">
+				</div>
 			</div>
 
-			<div class="form-group">
-				{% include 'code-tables/mar/ctm/edit/form/mail-list.twig' %}
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="maillist">Mail List</label>
+				</div>
+				<div class="col-sm-2">
+					{% include 'util/bootstrap/form/select-simple.twig' with {
+							'select': {
+								'name': 'maillist',
+								'value': code.maillist,
+								'size': 'sm',
+								'haskeys': true,
+								'options': {'Y': 'yes', 'N': 'no'},
+								'capitalizelabels': true,
+							}
+						}
+					%}
+				</div>
 			</div>
 			
 			{% if manager.updateGlAccts() == false %}
-				<div class="form-group">
-					<label for="email">Order Approval Email</label>
-					<input type="email" name="email" class="form-control email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
+				<div class="row mb-3">
+					<div class="col-sm-4">
+						<label for="email">Order Approval Email</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="email" name="email" class="form-control email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
+					</div>
 				</div>
 			{% endif %}
 
-			<table class="table table-sm">
-				<thead>
-					<tr><th colspan="2">Notes</th></tr>
-				</thead>
-				<tbody>
-					{% for qnotes in manager.qnotes.getQnotes() %}
-						<tr>
-							<td>{{ qnotes.getNotetypeDescription()|title }}</td>
-							<td>{{ qnotes.notesExist(code.code)|yesorno|capitalize }}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+			<div class="row">
+				<div class="col-sm-4">
+					<b>Notes -  {{ manager.qnotes.getQnotes()[0].getNotetypeDescription()|title }}</b>
+				</div>
+				<div class="col-sm-6">
+					<p class="form-control-plaintext form-control-sm">{{ manager.qnotes.getQnotes()[0].notesExist(code.code)|yesorno|capitalize }}</p>
+				</div>
+			</div>
+			{% for key, qnotes in manager.qnotes.getQnotes() if key > 0 %}
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-3">
+						<b>{{ qnotes.getNotetypeDescription()|title }}</b>
+					</div>
+					<div class="col-sm-6">
+						<p class="form-control-plaintext form-control-sm">{{ qnotes.notesExist(code.code)|yesorno|capitalize }}</p>
+					</div>
+				</div>
+			{% endfor %}
 		</div>
 		<div class="col-sm-6">
 			{% if manager.updateGlAccts() %}
@@ -62,7 +95,7 @@
 			NOTE: Only show delete if code already exists.
 		#}
 		{% if manager.recordlocker.userHasLocked(code.code) or code.isNew() %}
-			<button type="sumbit" class="btn btn-success form_button"=>
+			<button type="submit" class="btn btn-success form_button"=>
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if code.isNew() == false %}

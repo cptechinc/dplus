@@ -51,8 +51,10 @@ class Ctm extends AbstractCodeTableController {
 					break;
 				default:
 					$ctm->processInput(self::pw('input'));
+					
 					if ($data->action != 'delete') {
-						$url = self::codeEditUrl($data->code);
+						// $url = self::codeEditUrl($data->code);
+						$url  = self::url($data->code);
 					}
 					break;
 			}
