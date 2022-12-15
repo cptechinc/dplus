@@ -324,6 +324,13 @@
 				]
 			]
 		],
+		'util' => [
+			'recordlocker' => [
+				['GET', 'check', Json\Util::class, 'recordLockerUserCanLock'],
+				['GET', 'lock', Json\Util::class, 'recordLockerLock'],
+				['GET', 'delete', Json\Util::class, 'recordLockerDelete'],
+			]
+		],
 		'wm' => [
 			'receiving' => [
 				'validate' => [
