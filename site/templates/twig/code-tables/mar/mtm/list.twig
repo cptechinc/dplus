@@ -33,22 +33,22 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-1 font-monospace">
+			<div class="col-sm-1 text-monospace">
 				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-3 text-monospace">
 				{{ code.description }}
 			</div>
-			<div class="col-sm-2 text-right">
+			<div class="col-sm-2 text-monospace text-right">
 				{{ code.percent }}
 			</div>
-			<div class="col-sm-2 text-center">
+			<div class="col-sm-2 text-monospace text-center">
 				{{ code.gl_account }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.freight_tax_code }}
 			</div>
-			<div class="col-sm-1 text-right">
+			<div class="col-sm-1 text-monospace text-right">
 				{{ code.limit ? code.limit : '' }}
 			</div>
 			<div class="col-sm-2 text-center">

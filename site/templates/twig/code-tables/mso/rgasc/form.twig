@@ -4,12 +4,12 @@
 
 	<div class="form-group">
 		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
+		<input type="text" name="code" class="form-control form-control-sm text-monospace" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
+		<input type="text" name="description" class="form-control form-control-sm text-monospace" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
 	</div>
 
 	<div class="form-group">
@@ -20,6 +20,7 @@
 					'size': 'sm',
 					'input': {
 						'name': 'whseid',
+						'addclasses': ['text-monospace'],
 						'attributes': {
 							'placeholder': '',
 							'aria-label':  'Warehouse ID',
@@ -45,7 +46,7 @@
 
 	<div class="form-group">
 		<label for="acctnbr">Shipping Account Number</label>
-		<input type="text" name="acctnbr" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('acctnbr', 'maxlength') }}" id="acctnbr">
+		<input type="text" name="acctnbr" class="form-control form-control-sm text-monospace" maxlength="{{ manager.fieldAttribute('acctnbr', 'maxlength') }}" id="acctnbr">
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">

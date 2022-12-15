@@ -38,19 +38,19 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-2 font-monospace">
+			<div class="col-sm-2 text-monospace">
 				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
-			<div class="col-sm-4">
+			<div class="col-sm-4 text-monospace">
 				{{ code.description }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.fabricator|capitalize }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.production|capitalize }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.competitor|capitalize }}
 			</div>
 			<div class="col-sm-3 text-center">

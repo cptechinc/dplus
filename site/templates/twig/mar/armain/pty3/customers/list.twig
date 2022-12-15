@@ -93,7 +93,7 @@
 			{% for customer in customers %}
 				<tr class="customer" data-custid="{{ customer.id }}">
 					<td>
-						<a href="{{ page.pty3CustUrl(customer.id) }}" class="link">{{ customer.id }}</a>
+						<a href="{{ page.pty3CustUrl(customer.id) }}" class="link text-monospace">{{ customer.id }}</a>
 					</td>
 					<td>{{ customer.name }}</td>
 					<td>{{ customer.city }}</td>

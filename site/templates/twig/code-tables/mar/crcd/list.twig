@@ -50,28 +50,28 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-1 font-monospace">
+			<div class="col-sm-1 text-monospace">
 				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-3 text-monospace">
 				{{ code.description }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.gl_account }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.custid }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.gl_account_charge }}
 			</div>
-			<div class="col-sm-1 text-right">
+			<div class="col-sm-1 text-monospace text-right">
 				{{ code.servicerate|number_format(manager.fieldAttribute('servicerate', 'precision')) }}
 			</div>
-			<div class="col-sm-1 text-right">
+			<div class="col-sm-1 text-monospace text-right">
 				{{ code.transactioncost|number_format(manager.fieldAttribute('transactioncost', 'precision')) }}
 			</div>
-			<div class="col-sm-1 text-right">
+			<div class="col-sm-1 text-monospace text-right">
 				{{ code.cc_surcharge_percent|number_format(manager.fieldAttribute('cc_surcharge_percent', 'precision')) }}
 			</div>
 			<div class="col-sm-2 text-center">

@@ -40,28 +40,28 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-1 font-monospace">
+			<div class="col-sm-1 text-monospace">
 				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
-			<div class="col-sm-2">
+			<div class="col-sm-2 text-monospace">
 				{{ code.description }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.priority }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.scac }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.edimethod }}
 			</div>
-			<div class="col-sm-2">
+			<div class="col-sm-2 text-monospace">
 				{{ code.service }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.billing }}
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-1 text-monospace">
 				{{ code.residential }}
 			</div>
 			<div class="col-sm-2 text-center">

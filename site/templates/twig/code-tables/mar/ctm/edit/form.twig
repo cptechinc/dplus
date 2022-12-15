@@ -8,7 +8,7 @@
 					<label for="code">Code</label>
 				</div>
 				<div class="col-sm-3">
-					<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
+					<input type="text" name="code" class="form-control form-control-sm text-monospace" value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
 				</div>
 			</div>
 
@@ -17,7 +17,7 @@
 					<label for="description">Description</label>
 				</div>
 				<div class="col-sm-5">
-					<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('code', 'description') }}">
+					<input type="text" name="description" class="form-control form-control-sm text-monospace" maxlength="20" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('code', 'description') }}">
 				</div>
 			</div>
 
@@ -46,7 +46,7 @@
 						<label for="email">Order Approval Email</label>
 					</div>
 					<div class="col-sm-6">
-						<input type="email" name="email" class="form-control email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
+						<input type="email" name="email" class="form-control form-control-sm text-monospace email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
 					</div>
 				</div>
 			{% endif %}

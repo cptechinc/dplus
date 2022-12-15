@@ -19,12 +19,14 @@
 			</select>
 		</div>
 	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-6 form-group">
 		<label for="code">Code</label>
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
 					'name': 'code',
 					'value': code.code,
+					'size': 'sm',
+					'addclasses': ['text-monospace'],
 					'attributes': {
 						'maxlength': sysop.fieldAttribute('code', 'maxlength'),
 						'readonly': code.id != '',

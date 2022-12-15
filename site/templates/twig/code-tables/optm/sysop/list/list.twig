@@ -37,7 +37,7 @@
 
 			<tr data-id="{{ code.id }}" class="code {{ class }}">
 				<td class="text-monospace">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
-				<td>{{ code.description }}</td>
+				<td class="text-monospace">{{ code.description }}</td>
 				<td class="text-right">
 					{% if input.get.offsetExists('print') == false %}
 						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ optm.codeJson(code)|json_encode }}">

@@ -12,25 +12,25 @@
 
 	<div class="form-group">
 		<label for="accountnbr">Account Number</label>
-		<input type="text" name="accountnbr" class="form-control" maxlength="{{ manager.fieldAttribute('accountnbr', 'maxlength') }}" id="accountnbr">
+		<input type="text" name="accountnbr" class="form-control form-control-sm text-monospace" maxlength="{{ manager.fieldAttribute('accountnbr', 'maxlength') }}" id="accountnbr">
 	</div>
 
 	<div class="form-group">
 		<label for="name">3rd Party Name</label>
-		<input type="text" name="name" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('name', 'maxlength') }}" id="name">
+		<input type="text" name="name" class="form-control form-control-sm text-monospace" maxlength="{{ manager.fieldAttribute('name', 'maxlength') }}" id="name">
 	</div>
 
 	{% for i in 1..3 %}
 		<div class="form-group">
 			<label for="address{{ i }}}">Address {{ i }}</label>
-			<input type="text" name="address{{ i }}" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('address' ~ i, 'maxlength') }}" id="address{{ i }}}">
+			<input type="text" name="address{{ i }}" class="form-control form-control-sm text-monospace" maxlength="{{ manager.fieldAttribute('address' ~ i, 'maxlength') }}" id="address{{ i }}}">
 		</div>
 	{% endfor %}
 
 	<div class="form-row">
 		<div class="col-sm-5 form-group">
 			<label for="city">City</label>
-			<input type="text" name="city" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('city', 'maxlength') }}" id="city">
+			<input type="text" name="city" class="form-control form-control-sm text-monospace" maxlength="{{ manager.fieldAttribute('city', 'maxlength') }}" id="city">
 		</div>
 		<div class="col-sm-3 form-group">
 			<label for="state">State</label>
@@ -40,6 +40,7 @@
 						'size': 'sm',
 						'input': {
 							'name': 'state',
+							'addclasses': ['text-monospace'],
 							'attributes': {
 								'placeholder': '',
 								'aria-label':  'State',
@@ -64,7 +65,7 @@
 		</div>
 		<div class="col-sm-4 form-group">
 			<label for="zip">Zip</label>
-			<input type="text" name="zip" class="form-control form-control-sm" maxlength="{{ manager.fieldAttribute('zip', 'maxlength') }}" id="zip">
+			<input type="text" name="zip" class="form-control form-control-sm text-monospace" maxlength="{{ manager.fieldAttribute('zip', 'maxlength') }}" id="zip">
 		</div>
 	</div>
 
@@ -77,6 +78,7 @@
 						'size': 'sm',
 						'input': {
 							'name': 'country',
+							'addclasses':['text-monospace'],
 							'attributes': {
 								'placeholder': '',
 								'aria-label':  'Country',

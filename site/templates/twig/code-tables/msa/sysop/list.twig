@@ -29,13 +29,13 @@
 		{% for code in codes %}
 			{# data-code attribute and class code is for the highlight on close #}
 			<tr data-code="{{ sysop.getRecordlockerKey(code) }}" class="code {{ (response.key == (sysop.getRecordlockerKey(code)) and response.hasSuccess() ) ? 'bg-success text-white' : ''}}">
-				<td>{{ code.system }}</td>
-				<td>{{ code.code|replace({' ': '&nbsp;'})|raw }}</td>
-				<td>{{ code.description }}</td>
-				<td>{{ code.validate|yesorno|capitalize }}</td>
-				<td>{{ code.force|yesorno|capitalize }}</td>
-				<td>{{ code.note_code }}</td>
-				<td>{{ code.list_seq == 0 ? '' : code.list_seq }}</td>
+				<td class="text-monospace">{{ code.system }}</td>
+				<td class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</td>
+				<td class="text-monospace">{{ code.description }}</td>
+				<td class="text-monospace">{{ code.validate|yesorno|capitalize }}</td>
+				<td class="text-monospace">{{ code.force|yesorno|capitalize }}</td>
+				<td class="text-monospace">{{ code.note_code }}</td>
+				<td class="text-monospace">{{ code.list_seq == 0 ? '' : code.list_seq }}</td>
 				<td>
 					{% if page.is_print() == false %}
 						{% if sysop.recordlocker.isLocked(sysop.getRecordlockerKey(code)) == false or sysop.recordlocker.userHasLocked(sysop.getRecordlockerKey(code)) %}

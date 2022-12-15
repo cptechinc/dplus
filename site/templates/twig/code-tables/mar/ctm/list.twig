@@ -40,34 +40,34 @@
 
 {% for code in codes %}
 	{% block code_div %}
-		<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item px-2 code pb-1 pt-1 {{ (response.key is same as(code.code) and response.hasSuccess()) ? 'bg-success text-white' : ''}}">
+		<div data-code="{{ code.code }}" class="list-group-item px-2 code pb-1 pt-1 {{ (response.key is same as(code.code) and response.hasSuccess()) ? 'bg-success text-white' : ''}}">
 			<div class="form-row align-items-center">
-				<div class="col-1 font-monospace">
+				<div class="col-1 text-monospace">
 					{{ code.code|replace({' ': '&nbsp;'})|raw }}
 				</div>
-				<div class="col-3">
+				<div class="col-3 text-monospace">
 					{{ code.description }}
 				</div>
-				<div class="col-1 text-right">
+				<div class="col-1 text-monospace text-right">
 					{{ code.mail_list }}
 				</div>
 				<div class="col-1">
 
 				</div>
-				<div class="col-1">
+				<div class="col-1 text-monospace">
 					{{ code.count_notetype('SCTP') ? 'Y' : 'N' }}
 				</div>
-				<div class="col-1">
+				<div class="col-1 text-monospace">
 					{{ code.count_notetype('ICTP') ? 'Y' : 'N' }}
 				</div>
-				<div class="col-1">
+				<div class="col-1 text-monospace">
 					{{ code.count_notetype('PCTP') ? 'Y' : 'N' }}
 				</div>
-				<div class="col-1">
+				<div class="col-1 text-monospace">
 					{{ code.count_notetype('KCTP') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-2 text-center">
-					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}
+					{% if manager.recordlocker.isLocked(code.code) == false or manager.recordlocker.isLockedByUser(code.code) %}
 						{% if page.is_print() == false %}
 							<a href="{{ page.codeEditUrl(code.code) }}" class="btn btn-warning btn-sm" title="Edit" aria-label="Edit">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
@@ -79,7 +79,7 @@
 						{% endif %}
 					{% else %}
 						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ recordlocker.get_locked_user(page.name, code.code) }}
+							<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ manager.recordlocker.getLockingUser(code.code) }}
 						</span>
 					{% endif %}
 				</div>
