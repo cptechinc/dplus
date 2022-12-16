@@ -18,6 +18,31 @@ class Util extends AbstractJsonController {
 		return $locker->isLockedByUser($data->key);
 	}
 
+	public static function recordLockerLock(WireData $data) {
+		$fields = ['function|text', 'key|string'];
+		self::sanitizeParametersShort($data, $fields);
+		$locker = new Locker();
+		$locker->setFunction($data->function);
+		if ($locker->isLocked($data->key) && $locker->isLockedByUser($data->key) === false) {
+			return false;
+		}
+		return $locker->lock($data->key);
+	}
+
+	public static function recordLockerDelete(WireData $data) {
+		$fields = ['function|text', 'key|string'];
+		self::sanitizeParametersShort($data, $fields);
+		$locker = new Locker();
+		$locker->setFunction($data->function);
+		if ($locker->isLocked($data->key) === false) {
+			return true;
+		}
+		if ($data->key) {
+			return $locker->deleteLock($data->key);
+		}
+		return $locker->deleteLock();
+	}
+
 	
 
 }
