@@ -9,6 +9,10 @@
 			var config = <?= json_encode($config->js('config')); ?>;
 			var agent  = <?= json_encode($config->js('agent')); ?>;
 			var user   = <?= json_encode($config->js('user')); ?>;
+
+			<?php foreach ($config->js('vars') as $var => $data) : ?>
+				let <?= $var; ?> = <?= json_encode($data); ?>;
+			<?php endforeach; ?>
 		</script>
 		<?php if ($page->js) : ?>
 			<script>
