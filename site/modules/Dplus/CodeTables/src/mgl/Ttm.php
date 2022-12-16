@@ -19,7 +19,7 @@ class Ttm extends AbstractCodeTableEditableSingleKey {
 	const DESCRIPTION        = 'Statement Text Code';
 	const DESCRIPTION_RECORD = 'Statement Text Code';
 	const RESPONSE_TEMPLATE  = 'Statement Text Code {code} {not} {crud}';
-	const RECORDLOCKER_FUNCTION = 'text';
+	const RECORDLOCKER_FUNCTION = 'ttm';
 	const DPLUS_TABLE           = 'TTM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 6],
