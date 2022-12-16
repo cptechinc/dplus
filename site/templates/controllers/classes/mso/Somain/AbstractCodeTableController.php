@@ -61,9 +61,25 @@ abstract class AbstractCodeTableController extends AbstractController {
 		self::sanitizeParametersShort($data, $fields);
 		$page	= self::pw('page');
 		$page->headline = static::TITLE;
+		static::getCodeTable()->recordlocker->deleteLock();
 
-		static::getClassName();
+		$codes = static::getCodeList($data);
 
+		self::initHooks();
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-table.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/ajax-modal.js'));
+		self::addVarsToJsVars($data);
+		$page->js .= static::renderJs($data);
+		$html = self::displayList($data, $codes);
+		static::getCodeTable()->deleteResponse();
+		return $html;
+	}
+
+/* =============================================================
+	Data fetching
+============================================================= */
+	protected static function getCodeList(WireData $data) {
 		$filter = static::getCodeFilter();
 
 		if (strlen($data->q) > 0) {
@@ -72,18 +88,9 @@ abstract class AbstractCodeTableController extends AbstractController {
 			$filter->search($data->q, $cols);
 		}
 
-		$filter->sortby($page);
+		$filter->sortby(self::pw('page'));
 		$input = self::pw('input');
-		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : static::SHOWONPAGE);
-
-		self::initHooks();
-		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-table.js'));
-		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
-		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/ajax-modal.js'));
-		$page->js .= static::renderJs($data);
-		$html = self::displayList($data, $codes);
-		static::getCodeTable()->deleteResponse();
-		return $html;
+		return $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : static::SHOWONPAGE);
 	}
 
 /* =============================================================
@@ -218,5 +225,18 @@ abstract class AbstractCodeTableController extends AbstractController {
 	protected static function getClassName() {
 		$reflector = new ReflectionClass(static::class);
 		return $reflector->getShortName();
+	}
+
+	/**
+	 * Add Variables to JS Vars Array
+	 * @param  WireData $data
+	 * @return void
+	 */
+	protected static function addVarsToJsVars(WireData $data) {
+		$jsVars = self::pw('config')->js('vars');
+		$jsVars['codetable'] = [
+			'table' => strtolower(static::getClassName()),
+		];
+		self::pw('config')->js('vars', $jsVars);
 	}
 }

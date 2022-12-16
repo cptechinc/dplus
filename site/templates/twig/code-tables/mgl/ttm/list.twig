@@ -30,13 +30,13 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-2 font-monospace">
+			<div class="col-sm-2 text-monospace">
 				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-3 text-monospace">
 				{{ input.get.offsetExists('print') ? '' : code.text1 }}
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-3 text-monospace">
 				{{ input.get.offsetExists('print') ? '' : code.text2 }}
 			</div>
 			<div class="col-sm-4 text-center">
@@ -45,13 +45,19 @@
 						<i class="fa fa-list" aria-hidden="true"></i> Show Lines
 					</button>
 					&nbsp;
-					<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
-						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-					</button>
-					&nbsp;
-					<a href="{{ page.codeDeleteUrl(code.code) }}" class="btn btn-danger btn-sm delete_button">
-						<i class="fa fa-trash" aria-hidden="true"></i> Delete
-					</a>
+					{% if manager.recordlocker.isLocked(code.code) == false or manager.recordlocker.isLockedByUser(code.code) %}
+						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+						&nbsp;
+						<a href="{{ page.codeDeleteUrl(code.code) }}" class="btn btn-danger btn-sm delete_button">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% else %}
+						<span class="badge badge-secondary">
+							<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ manager.recordlocker.getLockingUser(code.code) }}
+						</span>
+					{% endif %}
 				{% endif %}
 			</div>
 		</div>

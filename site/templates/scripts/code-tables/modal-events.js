@@ -70,6 +70,14 @@ $(function() {
 			$('.highlight').removeClass('highlight');
 			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
 			// $('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
+			var unlockUrl = URI(config.ajax.urls.locker.delete);
+			unlockUrl.setQuery('function', codetable.table);
+			unlockUrl.setQuery('key', form.attr('data-code'));
+
+			var ajax = new AjaxRequest(unlockUrl.toString());
+			ajax.request(function(isUnlocked) {
+
+			});
 		}
 	});
 });
