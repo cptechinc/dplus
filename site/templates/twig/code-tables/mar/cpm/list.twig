@@ -27,19 +27,19 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-1 text-monospace">
+			<div class="col-sm-1 ">
 				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
-			<div class="col-sm-4 text-monospace">
+			<div class="col-sm-4 ">
 				{{ code.description }}
 			</div>
-			<div class="col-sm-1 text-monospace">
+			<div class="col-sm-1 ">
 				{{ code.surcharge }}
 			</div>
-			<div class="col-sm-2 text-monospace text-right">
+			<div class="col-sm-2  text-right">
 				{{ code.surcharge == 'Y' ? code.percent ~ '%' : '' }}
 			</div>
-			<div class="col-sm-4 text-monospace text-center">
+			<div class="col-sm-4  text-center">
 				{% if manager.recordlocker.isLocked(code.code) == false or manager.recordlocker.isLockedByUser(code.code) %}
 					<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit

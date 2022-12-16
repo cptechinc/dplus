@@ -29,16 +29,16 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-2 text-monospace">
+			<div class="col-sm-2 ">
 				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
-			<div class="col-sm-4 text-monospace">
+			<div class="col-sm-4 ">
 				{{ code.description }}
 			</div>
-			<div class="col-sm-2 text-monospace">
+			<div class="col-sm-2 ">
 				{{ code.whseid }}
 			</div>
-			<div class="col-sm-2 text-monospace">
+			<div class="col-sm-2 ">
 				{{ code.acctnbr }}
 			</div>
 			<div class="col-sm-2 text-center">

@@ -36,8 +36,8 @@
 			{% set class = optm.getRecordlockerKey(code) is same as(response.key) ? 'bg-success text-white' : class %}
 
 			<tr data-id="{{ code.id }}" class="code {{ class }}">
-				<td class="text-monospace">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
-				<td class="text-monospace">{{ code.description }}</td>
+				<td class="">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
+				<td class="">{{ code.description }}</td>
 				<td class="text-right">
 					{% if input.get.offsetExists('print') == false %}
 						{% if optm.recordlocker.isLocked(code.code) == false or optm.recordlocker.isLockedByUser(code.code) %}

@@ -40,7 +40,7 @@
 {% for code in codes %}
 	{% block code_columns %}
 		<td>
-			<span class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+			<span class="">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
 		</td>
 		<td>{{ code.description }}</td>
 		<td>{{ code.sales }}</td>

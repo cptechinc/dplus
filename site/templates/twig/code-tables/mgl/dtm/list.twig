@@ -27,10 +27,10 @@
 {% for code in codes %}
 	{% block code_row %}
 		<div class="row align-items-center">
-			<div class="col-sm-2 text-monospace">
+			<div class="col-sm-2 ">
 				{{ code.code|replace({' ': '&nbsp;'})|raw }}
 			</div>
-			<div class="col-sm-7 text-monospace">
+			<div class="col-sm-7 ">
 				{{ code.description }}
 			</div>
 			<div class="col-sm-3 text-center">
@@ -58,7 +58,7 @@
 		<div class="row collapse gl-accounts {{ input.get.offsetExists('print') ? 'show' : ''}}" data-code="{{ code.code }}">
 			<div class="col-sm-1"></div>
 			<div class="col-sm-8">
-				<table class="table table-sm text-monospace">
+				<table class="table table-sm ">
 					<thead>
 						<tr>
 							<th>Account #</th>

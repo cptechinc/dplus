@@ -42,28 +42,28 @@
 	{% block code_div %}
 		<div data-code="{{ code.code }}" class="list-group-item px-2 code pb-1 pt-1 {{ (response.key is same as(code.code) and response.hasSuccess()) ? 'bg-success text-white' : ''}}">
 			<div class="form-row align-items-center">
-				<div class="col-1 text-monospace">
+				<div class="col-1 ">
 					{{ code.code|replace({' ': '&nbsp;'})|raw }}
 				</div>
-				<div class="col-3 text-monospace">
+				<div class="col-3 ">
 					{{ code.description }}
 				</div>
-				<div class="col-1 text-monospace text-right">
+				<div class="col-1  text-right">
 					{{ code.mail_list }}
 				</div>
 				<div class="col-1">
 
 				</div>
-				<div class="col-1 text-monospace">
+				<div class="col-1 ">
 					{{ code.count_notetype('SCTP') ? 'Y' : 'N' }}
 				</div>
-				<div class="col-1 text-monospace">
+				<div class="col-1 ">
 					{{ code.count_notetype('ICTP') ? 'Y' : 'N' }}
 				</div>
-				<div class="col-1 text-monospace">
+				<div class="col-1 ">
 					{{ code.count_notetype('PCTP') ? 'Y' : 'N' }}
 				</div>
-				<div class="col-1 text-monospace">
+				<div class="col-1 ">
 					{{ code.count_notetype('KCTP') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-2 text-center">
