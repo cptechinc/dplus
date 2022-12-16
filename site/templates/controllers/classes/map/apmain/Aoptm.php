@@ -4,8 +4,9 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use MsaSysopCode;
-// ProcessWire Classes, Modules
+// ProcessWire
 use ProcessWire\Page;
+use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\Filters;
 // Dplus Codes
@@ -56,6 +57,7 @@ class Aoptm extends AbstractController {
 
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getAoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
+		self::addVarsToJsVars($data);
 		self::getAoptm()->deleteResponse();
 		return $html;
 	}
@@ -235,5 +237,22 @@ class Aoptm extends AbstractController {
 		$m->addHook('Page(pw_template=apmain)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Add Variables to JS Vars Array
+	 * @param  WireData $data
+	 * @return void
+	 */
+	protected static function addVarsToJsVars(WireData $data) {
+		$table = 'aoptm';
+		$jsVars = self::pw('config')->js('vars');
+		$jsVars['codetable'] = [
+			'table' => strtolower($table),
+		];
+		self::pw('config')->js('vars', $jsVars);
 	}
 }

@@ -6,6 +6,7 @@ use Propel\Runtime\Util\PropelModelPager;
 use MsaSysopCode;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
+use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\Filters;
 // Dplus Codes
@@ -74,6 +75,7 @@ class Ioptm extends AbstractController {
 		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
+		self::addVarsToJsVars($data);
 		self::getIoptm()->deleteResponse();
 		return $html;
 	}
@@ -233,5 +235,22 @@ class Ioptm extends AbstractController {
 		$m->addHook('Page(pw_template=inmain)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Add Variables to JS Vars Array
+	 * @param  WireData $data
+	 * @return void
+	 */
+	protected static function addVarsToJsVars(WireData $data) {
+		$table = 'ioptm';
+		$jsVars = self::pw('config')->js('vars');
+		$jsVars['codetable'] = [
+			'table' => strtolower($table),
+		];
+		self::pw('config')->js('vars', $jsVars);
 	}
 }
