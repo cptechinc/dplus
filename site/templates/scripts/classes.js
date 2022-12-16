@@ -103,6 +103,18 @@ class Alerts {
 		return this.instance;
 	}
 
+	recordIsLocked(callback) {
+		swal2.fire({
+			title: 'Record is Locked',
+			text: 'Another user is locking this record',
+			icon: 'warning',
+			confirmButtonText: 'Ok',
+		}).then((result) => {
+			callback(result.value);
+		});
+	}
+
+
 	unsavedChanges(callback) {
 		swal2.fire({
 			title: 'Changes have occurred!',
