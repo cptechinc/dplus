@@ -32,15 +32,16 @@
 		{% endif %}
 
 		{% for code in codes %}
+			{% set key = [code.sysop, code.id]|join('|') %}
 			{% set class = code.id == input.get.string('focus') ? 'highlight' : '' %}
-			{% set class = optm.getRecordlockerKey(code) is same as(response.key) ? 'bg-success text-white' : class %}
+			{% set class = optm.getRecordlockerkey(code) is same as(response.key) ? 'bg-success text-white' : class %}
 
 			<tr data-id="{{ code.id }}" class="code {{ class }}">
 				<td class="">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
 				<td class="">{{ code.description }}</td>
 				<td class="text-right">
 					{% if input.get.offsetExists('print') == false %}
-						{% if optm.recordlocker.isLocked(code.code) == false or optm.recordlocker.isLockedByUser(code.code) %}
+						{% if optm.recordlocker.isLocked(key) == false or optm.recordlocker.isLockedByUser(key) %}
 							<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ optm.codeJson(code)|json_encode }}">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</button>
@@ -50,7 +51,7 @@
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ optm.recordlocker.getLockingUser(code.code) }}
+								<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ optm.recordlocker.getLockingUser(key) }}
 							</span>
 						{% endif %}
 					{% endif %}

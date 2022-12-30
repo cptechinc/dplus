@@ -18,7 +18,6 @@ $(function() {
 	var query = uri.query(true);
 
 	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
-		console.log(query.focus);
 		$('.code[data-id="'+query.focus+'"]').addClass('highlight');
 		// $('html, body').animate({scrollTop: $('.code[data-id="'+query.focus+'"]').offset().top,},700,'linear');
 	}
@@ -85,18 +84,21 @@ $(function() {
 		}
 		formCode.updateInputsFromJson(json);
 
-		var lockUrl = URI(config.ajax.urls.locker.lock);
-		lockUrl.setQuery('function', codetable.table);
-		lockUrl.setQuery('key', [query.sysop, code].join('|'));
+		if (code) {
+			var lockUrl = URI(config.ajax.urls.locker.lock);
+			lockUrl.setQuery('function', codetable.table);
+			lockUrl.setQuery('key', [query.sysop, code].join('|'));
+			
+			var ajax = new AjaxRequest(lockUrl.toString());
+			ajax.request(function(canEdit) {
+				if (canEdit === false) {
+					alert.recordIsLocked(function() {
+						modal.modal('hide');
+					});
+				}
+			});
+		}
 		
-		var ajax = new AjaxRequest(lockUrl.toString());
-		ajax.request(function(canEdit) {
-			if (canEdit === false) {
-				alert.recordIsLocked(function() {
-					modal.modal('hide');
-				});
-			}
-		});
 	});
 
 	$('#edit-code-modal').on('shown.bs.modal', function (event) {
@@ -142,6 +144,15 @@ $(function() {
 		formCode.form.validate().resetForm();
 		modal.find('form').find('.is-valid').removeClass('is-valid');
 		modal.find('form').find('.is-invalid').removeClass('is-invalid');
+
+		if (code) {
+			if (row.length == 0) {
+				var url = URI();
+				url.setQuery('action', 'focus');
+				url.setQuery('code', code);
+				window.location.href = url.toString();
+			}
+		}
 
 		var unlockUrl = URI(config.ajax.urls.locker.delete);
 		unlockUrl.setQuery('function', codetable.table);

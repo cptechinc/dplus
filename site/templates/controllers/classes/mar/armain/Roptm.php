@@ -98,6 +98,7 @@ class Roptm extends AbstractController {
 
 			switch ($data->action) {
 				case 'update':
+				case 'focus':
 					$url = self::sysopFocusUrl($data->sysop, $data->code);
 					break;
 				default:
