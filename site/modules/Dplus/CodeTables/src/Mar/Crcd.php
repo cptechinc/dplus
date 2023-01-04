@@ -134,10 +134,10 @@ class Crcd extends AbstractCodeTableEditableSingleKey {
 	private function _inputUpdateCustid(WireInputData $values, ArCreditCardCode $code) {
 		$customers = Cmm::getInstance();
 
-		if ($customers->exists($values->text('custid')) === false) {
+		if ($customers->exists($values->string('custid')) === false) {
 			return ['custid' => 'Customer ID'];
 		}
-		$code->setCustid($values->text('custid'));
+		$code->setCustid($values->string('custid'));
 		return [];
 	}
 
@@ -151,16 +151,16 @@ class Crcd extends AbstractCodeTableEditableSingleKey {
 		$glAccounts = Codes\Mgl\Mhm::getInstance();
 		$invalidfields = [];
 
-		$code->setGl_account($values->text('gl_account'));
+		$code->setGl_account($values->string('gl_account'));
 
-		if ($glAccounts->exists($values->text('gl_account')) === false) {
+		if ($glAccounts->exists($values->string('gl_account')) === false) {
 			$code->setGl_account('');
 			$invalidfields['gl_account'] = 'GL Account';
 		}
 
-		$code->setGl_account_charge($values->text('gl_account_charge'));
+		$code->setGl_account_charge($values->string('gl_account_charge'));
 
-		if ($glAccounts->exists($values->text('gl_account_charge')) === false) {
+		if ($glAccounts->exists($values->string('gl_account_charge')) === false) {
 			$code->setGl_account_charge('');
 			$invalidfields['gl_account_charge'] = 'GL Account Charge';
 		}
