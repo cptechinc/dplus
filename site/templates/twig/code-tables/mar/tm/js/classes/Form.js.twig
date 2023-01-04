@@ -29,10 +29,10 @@ class CodeForm {
 				this.inputs.taxcode(i).change();
 
 				if (i > 1) {
-					if (json['taxcode' + i] == '' && json['taxcode' + (i - 1)] == '') {
-						this.inputs.taxcode(i).parent('.input-group').find('button[data-lookupurl]').attr('disabled', 'disabled');
-						this.inputs.taxcode(i).attr('readonly', 'readonly');
-					}
+					// if (json['taxcode' + i] == '' && json['taxcode' + (i - 1)] == '') {
+					// 	this.inputs.taxcode(i).parent('.input-group').find('button[data-lookupurl]').attr('disabled', 'disabled');
+					// 	this.inputs.taxcode(i).attr('readonly', 'readonly');
+					// }
 				}
 			}
 
@@ -48,6 +48,33 @@ class CodeForm {
 		for (var i = 1; i < 11; i++) {
 			this.inputs.taxcode(i).val('');
 			this.inputs.taxcode(i).change();
+		}
+	}
+
+	shiftTaxCodesUp(index = 1) {
+		if (index == 1) {
+			return true;
+		}
+
+		for (var i = index; i <= 9; i++) {
+			var input = this.form.find("input.taxcode[data-index="+i+"]");
+			var nextInput = this.form.find("input.taxcode[data-index="+(i + 1)+"]");
+			if (input.length == 0 || nextInput.length == 0) {
+				continue;
+			}
+
+			if (input.val()) {
+				continue;
+			}
+			var taxcode = nextInput.val();
+			nextInput.val('');
+			nextInput.change();
+
+			if (taxcode) {
+				input.val(taxcode);
+				input.change();
+				nextInput.change();
+			}
 		}
 	}
 

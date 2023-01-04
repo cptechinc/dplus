@@ -24,15 +24,22 @@ $(function() {
 		descriptionSpan.text('');
 
 		if (code == '') {
+			formCode.shiftTaxCodesUp(index);
+			return true;
+		}
+
+		var previousTaxCode = formCode.inputs.taxcode(index - 1);
+		
+		if (previousTaxCode.length && previousTaxCode.val() == '') {
+			formCode.shiftTaxCodesUp(index - 1);
 			return true;
 		}
 
 		server.getArTaxCode(code, function(code) {
 			if (code) {
 				descriptionSpan.text(code.description);
+				return true;
 			}
-			formCode.inputs.taxcode(index + 1).parent('.input-group').find('button[data-lookupurl]').removeAttr('disabled');
-			formCode.inputs.taxcode(index + 1).removeAttr('readonly');
 		});
 	});
 
