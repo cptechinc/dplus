@@ -40,7 +40,10 @@ class CodeForm {
 
 		for (var i = 1; i <= 9; i++) {
 			this.inputs.taxcode(i).val('');
-			this.inputs.taxcode(i).change();
+		}
+
+		for (var i = 1; i <= 9; i++) {
+			this.inputs.taxcode(i).change()
 		}
 	}
 
