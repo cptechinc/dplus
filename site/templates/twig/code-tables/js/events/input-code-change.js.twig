@@ -11,7 +11,6 @@ $("body").on("change", "input[name=code]", function(e) {
 	lockUrl.setQuery('function', codetable.table);
 	lockUrl.setQuery('key', code);
 
-
 	server.getCode(code, function(json) {
 		if (json) {
 			alert.codeExists(code, function(editCode) {
@@ -44,9 +43,10 @@ $("body").on("change", "input[name=code]", function(e) {
 				}
 			});
 		}  else {
-			formCode.form.attr('data-serialized', '');
-
+			// formCode.form.attr('data-serialized', formCode.form.serialize());
+			
 			if (code == '') {
+				formCode.form.attr('data-serialized', '');
 				formCode.inputs.code.focus();
 				return true;
 			}
