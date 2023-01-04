@@ -221,7 +221,7 @@ class AbstractCustType extends Qnotes {
 		$success = $this->deleteNotes($note->customertype);
 
 		$response = new Response();
-		$response->setKey($note->id);
+		$response->setKey($note->customertype);
 		$response->setAction(Response::CRUD_DELETE);
 		$response->setSuccess($success);
 		$response->setError($success === false);
