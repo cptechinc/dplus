@@ -6,25 +6,29 @@ $('#edit-code-modal').on('show.bs.modal', function (event) {
 	var code   = button.data('code');
 	modal.find('.modal-title').text('Add Code');
 
+	formCode.updateInputsFromJson(button.data('json'));
+
 	if (code) {
 		// modal.find('.modal-title').text('Edit Code ' + code);
 		modal.find('.modal-title').text('Edit Code');
+
+		var lockUrl = URI(config.ajax.urls.locker.lock);
+		lockUrl.setQuery('function', codetable.table);
+		lockUrl.setQuery('key', code);
+
+		var ajax = new AjaxRequest(lockUrl.toString());
+		ajax.request(function(canEdit) {
+			if (canEdit === false) {
+				alert.recordIsLocked(function() {
+					modal.modal('hide');
+				});
+			}
+		});
 	}
 
-	formCode.updateInputsFromJson(button.data('json'));
 	
-	var lockUrl = URI(config.ajax.urls.locker.lock);
-	lockUrl.setQuery('function', codetable.table);
-	lockUrl.setQuery('key', code);
-
-	var ajax = new AjaxRequest(lockUrl.toString());
-	ajax.request(function(canEdit) {
-		if (canEdit === false) {
-			alert.recordIsLocked(function() {
-				modal.modal('hide');
-			});
-		}
-	});
+	
+	
 });
 
 $('#edit-code-modal').on('shown.bs.modal', function (event) {
