@@ -30,7 +30,7 @@ $(function() {
 
 		var previousTaxCode = formCode.inputs.taxcode(index - 1);
 		
-		if (previousTaxCode.length && previousTaxCode.val() == '') {
+		if (previousTaxCode.length && (previousTaxCode.val() == '' || previousTaxCode.val() == input.val())) {
 			formCode.shiftTaxCodesUp(index - 1);
 			return true;
 		}
