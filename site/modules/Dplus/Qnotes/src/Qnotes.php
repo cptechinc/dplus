@@ -211,7 +211,7 @@ abstract class Qnotes extends WireData {
 	 * @param Response $response
 	 */
 	public function setResponse(Response $response) {
-		$this->wire('session')->setFor('response', static::TYPE, $response);
+		$this->wire('session')->setFor('response', 'qnotes', $response);
 	}
 
 	/**
@@ -219,14 +219,14 @@ abstract class Qnotes extends WireData {
 	 * @return Response
 	 */
 	public function getResponse() {
-		return $this->wire('session')->getFor('response', static::TYPE);
+		return $this->wire('session')->getFor('response', 'qnotes');
 	}
 
 	/**
 	 * Delete Session Response
 	 */
 	public function deleteResponse() {
-		$this->wire('session')->removeFor('response', static::TYPE);
+		$this->wire('session')->removeFor('response', 'qnotes');
 	}
 
 /* =============================================================

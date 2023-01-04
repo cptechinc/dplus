@@ -126,7 +126,7 @@ class QnotesItemInspection extends WireData implements Module {
 	 */
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID  = $input->$rm->text('itemID');
+		$itemID  = $input->$rm->string('itemID');
 		$notedate = $input->$rm->text('notedate');
 		$notetime = $input->$rm->text('notetime');
 		$userID   = $input->$rm->text('user');
@@ -165,7 +165,7 @@ class QnotesItemInspection extends WireData implements Module {
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID  = $values->text('itemID');
+		$itemID  = $values->string('itemID');
 		$notedate = $values->text('notedate');
 		$notetime = $values->text('notetime');
 		$user     = $values->text('user');

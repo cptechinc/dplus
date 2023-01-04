@@ -224,7 +224,7 @@ class QnotesItemRevision extends WireData implements Module {
 	 */
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID   = $input->$rm->text('itemID');
+		$itemID   = $input->$rm->string('itemID');
 		$date = date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($input->$rm->text('notedate')));
 		$time = date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($date.$input->$rm->text('notetime')));
 		$userID   = $input->$rm->text('user');
@@ -255,7 +255,7 @@ class QnotesItemRevision extends WireData implements Module {
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID     = $values->text('itemID');
+		$itemID     = $values->string('itemID');
 		$date       = date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
 		$time       = date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($date.$values->text('notetime')));
 		$revision   = $values->text('revision');

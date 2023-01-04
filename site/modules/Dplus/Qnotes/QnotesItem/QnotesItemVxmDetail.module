@@ -126,8 +126,8 @@ class QnotesItemVxmDetail extends WireData implements Module {
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
 		$values    = $input->$rm;
-		$itemID    = $values->text('itemID');
-		$vendorID  = $values->text('vendorID');
+		$itemID    = $values->string('itemID');
+		$vendorID  = $values->string('vendorID');
 		$userID    = $values->text('userID');
 
 		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
@@ -154,8 +154,8 @@ class QnotesItemVxmDetail extends WireData implements Module {
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID    = $values->text('itemID');
-		$vendorID  = $values->text('vendorID');
+		$itemID    = $values->string('itemID');
+		$vendorID  = $values->string('vendorID');
 
 		$this->delete_notes($itemID, $vendorID);
 
