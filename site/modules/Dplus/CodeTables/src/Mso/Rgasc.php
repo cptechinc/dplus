@@ -77,11 +77,11 @@ class Rgasc extends AbstractCodeTableEditableSingleKey {
 		$invalidfields = parent::_inputUpdate($input, $code);
 		$iwhm = Codes\Min\Iwhm::getInstance();
 
-		if ($iwhm->exists($values->text('whseid')) === false) {
+		if ($iwhm->exists($values->string('whseid')) === false) {
 			$invalidfields['whseid'] = "Warehouse ID";
 			return $invalidfields;
 		}
-		$code->setWhseid($values->text('whseid'));
+		$code->setWhseid($values->string('whseid'));
 		return $invalidfields;
 	}
 }

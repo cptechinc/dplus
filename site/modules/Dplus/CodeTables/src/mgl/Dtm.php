@@ -125,11 +125,11 @@ class Dtm extends AbstractCodeTableEditableSingleKey {
 		$invalidfields = [];
 
 		for ($i = 1; $i <= $this->getNbrOfGlAccts(); $i++) {
-			if ($values->text("glacct$i") != '' && $validate->glCode($values->text("glacct$i")) === false) {
+			if ($values->text("glacct$i") != '' && $validate->glCode($values->string("glacct$i")) === false) {
 				$invalidfields["glacct$i"] = "GL Account $i";
 				continue;
 			}
-			$code->setAccountNbr($i, $values->text("glacct$i"));
+			$code->setAccountNbr($i, $values->string("glacct$i"));
 			$subtotal += $values->float("glpct$i");
 
 			if ($subtotal <= 100) {

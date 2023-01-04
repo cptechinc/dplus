@@ -92,11 +92,11 @@ class Rcm extends AbstractCodeTableEditableSingleKey {
 		$invalidfields = parent::_inputUpdate($input, $code);
 		$dcm = Dcm::getInstance();
 
-		if ($values->text('workcenterid') != '' && $dcm->exists($values->text('workcenterid')) === false) {
+		if ($values->text('workcenterid') != '' && $dcm->exists($values->string('workcenterid')) === false) {
 			$invalidfields['workcenterid'] = "Work Center";
 			return $invalidfields;
 		}
-		$code->setWorkcenterid($values->text('workcenterid'));
+		$code->setWorkcenterid($values->string('workcenterid'));
 		return $invalidfields;
 	}
 }

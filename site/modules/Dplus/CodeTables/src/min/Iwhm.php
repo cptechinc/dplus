@@ -190,9 +190,10 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 		$invalidfields = [
 			'address' => $this->_inputUpdateWhseAddress($input, $warehouse),
 			'contact' => $this->_inputUpdateWhseContact($input, $warehouse),
-			'setup'   => $this->_inputUpdateWhseSetup($input, $warehouse)
+			'setup'   => $this->_inputUpdateWhseSetup($input, $warehouse),
+			'whses'   => $this->_inputUpdateWhseWarehouses($input, $warehouse),
 		];
-		return array_merge($invalidfields['address'], $invalidfields['contact'], $invalidfields['setup']);
+		return array_merge($invalidfields['address'], $invalidfields['contact'], $invalidfields['setup'], $invalidfields['whses']);
 	}
 
 	/**
@@ -265,13 +266,45 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 			$warehouse->setProductionbin('');
 		}
 
-		if (Codes\Mar\Cmm::getInstance()->exists($values->text('custid')) === false) {
+		if (Codes\Mar\Cmm::getInstance()->exists($values->string('custid')) === false) {
 			$invalidfields['custid'] = 'Cash Customer';
 		} else {
-			$warehouse->setCustid($values->text('custid'));
+			$warehouse->setCustid($values->string('custid'));
 		}
 
 		return $invalidfields;
+	}
+
+	/**
+	 * Set Warehouses Fields
+	 * @param  WireInputData $input
+	 * @param  Warehouse     $warehouse
+	 * @return array
+	 */
+	private function _inputUpdateWhseWarehouses(WireInput $input, Warehouse $warehouse) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$warehouse->setWhseprofit($warehouse->id);
+		$warehouse->setWhseasset($warehouse->id);
+		$warehouse->setWhsesupply($warehouse->id);
+
+		$fields = ['whseprofit', 'whseasset', 'whsesupply'];
+
+		foreach ($fields as $field) {
+			$setField = 'set'.ucfirst($field);
+			$warehouse->$setField($warehouse->id);
+
+			$id = $values->string($field);
+
+			if ($id == $warehouse->id) {
+				continue;
+			}
+
+			if ($this->exists($id)) {
+				$warehouse->$setField($id);
+			}
+		}
+		return [];
 	}
 
 /* =============================================================

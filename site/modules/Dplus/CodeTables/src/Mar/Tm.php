@@ -90,7 +90,7 @@ class Tm extends AbstractCodeTableEditableSingleKey {
 		
 		for ($i = 1; $i <= ArCustTaxCode::NUMBER_TAXCODES; $i++) {
 			$code->setTaxcode($i, '');
-			$taxcode = $values->text('taxcode' . $i);
+			$taxcode = $values->string('taxcode' . $i);
 
 			if (empty($taxcode)) {
 				continue;

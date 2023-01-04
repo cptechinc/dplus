@@ -157,9 +157,9 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		$originals = ['groupid' => $code->groupid, 'userid' => $code->userid, 'vendorid' => $code->vendorid];
 
 		$spgpm = Spgpm::instance();
-		$code->setGroupid($values->text('groupid'));
+		$code->setGroupid($values->string('groupid'));
 
-		if ($spgpm->exists($values->text('groupid')) === false) {
+		if ($spgpm->exists($values->string('groupid')) === false) {
 			$code->setGroupid($originals['groupid']);
 			$invalidfields['groupid'] = 'Group ID';
 		}
@@ -173,9 +173,9 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		}
 
 		$vendors = \VendorQuery::create();
-		$code->setVendorid($values->text('vendorid'));
+		$code->setVendorid($values->string('vendorid'));
 
-		if (boolval($vendors->filterByVendorid($values->text('vendorid'))->count()) === false) {
+		if (boolval($vendors->filterByVendorid($values->string('vendorid'))->count()) === false) {
 			$code->setVendorid($originals['vendorid']);
 			$invalidfields['vendorid'] = 'Vendor ID';
 		}

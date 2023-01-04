@@ -238,8 +238,8 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 			$code->setArtaxcode('');
 			return [];
 		}
-		if (Tm::instance()->exists($values->text('artaxcode'))) {
-			$code->setArtaxcode($values->text('artaxcode'));
+		if (Tm::instance()->exists($values->string('artaxcode'))) {
+			$code->setArtaxcode($values->string('artaxcode'));
 		}
 		return [];
 	}

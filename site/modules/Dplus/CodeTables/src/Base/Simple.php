@@ -122,7 +122,8 @@ abstract class Simple extends AbstractCodeTable {
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id = $values->string('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id = substr($id, 0, $this->fieldAttribute('code', 'maxlength'));
 		$invalidfields = [];
 
 		$code          = $this->getOrCreate($id);
@@ -140,7 +141,8 @@ abstract class Simple extends AbstractCodeTable {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id = $values->string('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id = substr($id, 0, $this->fieldAttribute('code', 'maxlength'));
 
 		if ($this->exists($id) === false) {
 			$response = Response::responseSuccess("Code $id was deleted");
