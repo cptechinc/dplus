@@ -45,7 +45,11 @@ $("body").on("change", "input[name=code]", function(e) {
 			});
 		}  else {
 			formCode.form.attr('data-serialized', '');
-			formCode.inputs.code.focus();
+
+			if (code == '') {
+				formCode.inputs.code.focus();
+				return true;
+			}
 		}
 	});
 });
