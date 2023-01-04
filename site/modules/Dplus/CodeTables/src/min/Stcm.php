@@ -44,20 +44,4 @@ class Stcm extends AbstractCodeTableEditableSingleKey {
 		$q->select(InvStockCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return InvStockCode
-	 */
-	public function new($id = '') {
-		$code = new InvStockCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

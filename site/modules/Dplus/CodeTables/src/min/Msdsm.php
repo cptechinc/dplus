@@ -101,11 +101,8 @@ class Msdsm extends AbstractCodeTableEditableSingleKey {
 	 * @return MsdsCode
 	 */
 	public function new($id = '') {
-		$code = new MsdsCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var MsdsCode */
+		$code = parent::new($id);
 		$code->setEffectivedate(date($this->fieldAttribute('effectivedate', 'dateformat')));
 		return $code;
 	}

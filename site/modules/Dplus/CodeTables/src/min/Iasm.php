@@ -45,20 +45,4 @@ class Iasm extends AbstractCodeTableEditableSingleKey {
 		$q->select(InvAssortmentCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return InvAssortmentCode
-	 */
-	public function new($id = '') {
-		$code = new InvAssortmentCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

@@ -150,11 +150,8 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 	 * @return Warehouse
 	 */
 	public function new($id = '') {
-		$code = new Warehouse();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var Warehouse */
+		$code = parent::new($id);
 		$code->setPickdetail($this->fieldAttribute('pickdetail', 'default'));
 		$code->setConsignment($this->fieldAttribute('consignment', 'default'));
 		$code->setBinarrangement($this->fieldAttribute('binarrangement', 'default'));

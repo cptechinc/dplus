@@ -47,20 +47,4 @@ class Dcm extends AbstractCodeTableEditableSingleKey {
 		$q = $this->getQueryClass();
 		return $q->find();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return PrWorkCenter
-	 */
-	public function new($id = '') {
-		$code = new PrWorkCenter();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

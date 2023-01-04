@@ -90,12 +90,8 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	 * @return Salesperson
 	 */
 	public function new($id = '') {
-		$code = new Salesperson();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var Salesperson */
+		$code = parent::new($id);
 		$code->setManager($this->fieldAttribute('manager', 'default'));
 		$code->setRestricted($this->fieldAttribute('restricted', 'default'));
 		return $code;

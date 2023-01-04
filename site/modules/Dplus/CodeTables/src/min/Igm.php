@@ -106,12 +106,8 @@ class Igm extends AbstractCodeTableEditableSingleKey {
 	 */
 	public function new($id = '') {
 		$this->initFieldAttributes();
-		$code = new InvGroupCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var InvGroupCode */
+		$code = parent::new($id);
 		$code->setSurchargetype($this->fieldAttribute('surchargetype', 'default'));
 		$code->setWebgroup($this->fieldAttribute('webgroup', 'default'));
 		$code->setSalesprogram($this->fieldAttribute('salesprogram', 'default'));

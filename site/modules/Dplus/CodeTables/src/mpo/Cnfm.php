@@ -43,20 +43,4 @@ class Cnfm extends AbstractCodeTableEditableSingleKey {
 		$q->select(PoConfirmCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return PoConfirmCode
-	 */
-	public function new($id = '') {
-		$code = new PoConfirmCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

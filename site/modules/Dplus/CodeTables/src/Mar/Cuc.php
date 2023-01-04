@@ -40,22 +40,4 @@ class Cuc extends AbstractCodeTableEditableSingleKey {
 		$q->select(ArCustUserCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return new ArCustUserCode
-	 * @param  string $id Code
-	 * @return ArCustUserCode
-	 */
-	public function new($id = '') {
-		$code = new ArCustUserCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

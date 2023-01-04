@@ -47,20 +47,4 @@ class Lgrp extends AbstractCodeTableEditableSingleKey {
 		$q = $this->getQueryClass();
 		return $q->find();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return SysLoginGroup
-	 */
-	public function new($id = '') {
-		$code = new SysLoginGroup();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

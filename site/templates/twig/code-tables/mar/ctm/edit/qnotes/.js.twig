@@ -18,12 +18,40 @@ $(function() {
 		modal.find('textarea[name=note]').val('');
 		modal.find('textarea[name=note]').val(ele_notes.text()).attr('cols', ele_notes.attr('cols'));
 		modal.find('input[name=type]').val(notetype);
+
+		var deleteLink = modal.find('a.delete_button');
+		var deleteUrl = URI(deleteLink.attr('href'));
+		deleteUrl.setQuery('type', notetype);
+		deleteLink.attr('href', deleteUrl.toString());
 	});
 
 	notesModal.on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var modal = $(this);
+		var form = modal.find('form');
+		form.attr('data-serialized', form.serialize());
 		modal.find('textarea[name=note]').focus();
+	});
+
+	notesModal.on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				alert.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.submit();
+						return true;
+					}
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
+		}
 	});
 
 	formNotes.validate({

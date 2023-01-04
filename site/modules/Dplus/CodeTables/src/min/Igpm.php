@@ -45,20 +45,4 @@ class Igpm extends AbstractCodeTableEditableSingleKey {
 		$q->select(InvPriceCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return InvPriceCode
-	 */
-	public function new($id = '') {
-		$code = new InvPriceCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

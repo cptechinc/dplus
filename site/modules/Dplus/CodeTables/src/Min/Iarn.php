@@ -56,12 +56,8 @@ class Iarn extends AbstractCodeTableEditableSingleKey {
 	 * @return InvAdjustmentReason
 	 */
 	public function new($id = '') {
-		$code = new InvAdjustmentReason();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var InvAdjustmentReason */
+		$code = parent::new($id);
 		$code->setSysdefined('N');
 		return $code;
 	}

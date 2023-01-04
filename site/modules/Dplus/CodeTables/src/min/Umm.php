@@ -182,11 +182,8 @@ class Umm extends AbstractCodeTableEditableSingleKey {
 	 * @return UnitofMeasureSale
 	 */
 	public function new($id = '') {
-		$code = new UnitofMeasureSale();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var UnitofMeasureSale */
+		$code = parent::new($id);
 		$code->setConversion(1.00000);
 		$code->setPricebyweight($this->fieldAttribute('pricebyweight', 'default'));
 		$code->setStockbycase($this->fieldAttribute('stockbycase', 'default'));

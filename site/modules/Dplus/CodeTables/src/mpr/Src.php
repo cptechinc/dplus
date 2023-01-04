@@ -47,20 +47,4 @@ class Src extends AbstractCodeTableEditableSingleKey {
 		$q = $this->getQueryClass();
 		return $q->find();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return ProspectSource
-	 */
-	public function new($id = '') {
-		$code = new ProspectSource();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

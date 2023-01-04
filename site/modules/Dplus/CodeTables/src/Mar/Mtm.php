@@ -72,12 +72,8 @@ class Mtm extends AbstractCodeTableEditableSingleKey {
 	 */
 	public function new($id = '') {
 		$this->initFieldAttributes();
-		$code = new ArTaxCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var ArTaxCode */
+		$code = parent::new($id);
 		$code->setPercent($this->fieldAttribute('percent', 'default'));
 		$code->setLimit($this->fieldAttribute('limit', 'default'));
 		return $code;

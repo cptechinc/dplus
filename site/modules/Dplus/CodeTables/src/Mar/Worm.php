@@ -42,22 +42,4 @@ class Worm extends AbstractCodeTableEditableSingleKey {
 		$q->select(ArWriteOffCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return new ArWriteOffCode
-	 * @param  string $id Code
-	 * @return ArWriteOffCode
-	 */
-	public function new($id = '') {
-		$code = new ArWriteOffCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

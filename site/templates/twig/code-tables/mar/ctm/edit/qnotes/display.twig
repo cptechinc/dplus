@@ -1,17 +1,30 @@
+{% set lastUpdatedType = manager.qnotes.ictp.getResponse().type %}
+
 <ul class="nav nav-tabs mb-2" id="qnotes-tabs" role="tablist">
 	{% for qnotes in manager.qnotes.getQnotes() %}
+		{% set type = constant('TYPE', qnotes) %}
+		{% set activeClass = '' %}
+		{% set activeClass = loop.first and lastUpdatedType == '' ? 'active' : '' %}
+		{% set activeClass = lastUpdatedType == type ? 'active' : activeClass %}
+
 		<li class="nav-item" role="presentation">
-			<a class="nav-link {{ loop.first ? 'active' : '' }}" id="{{ constant('TYPE', qnotes) }}-tab" data-toggle="tab" href="#{{ constant('TYPE', qnotes) }}" role="tab" aria-controls="{{ constant('TYPE', qnotes) }}" aria-selected="true">
+			<a class="nav-link {{ activeClass }}" id="{{ type }}-tab" data-toggle="tab" href="#{{ type }}" role="tab" aria-controls="{{ type }}" aria-selected="true">
 				{{ qnotes.getNotetypeDescription()|title }}
 			</a>
 		</li>
 	{% endfor %}
 </ul>
+
 <div class="tab-content" id="qnotes-notes">
 	{% for qnotes in manager.qnotes.getQnotes() %}
+		{% set type = constant('TYPE', qnotes) %}
+		{% set activeClass = '' %}
+		{% set activeClass = loop.first and lastUpdatedType == '' ? 'active' : '' %}
+		{% set activeClass = lastUpdatedType == type ? 'active' : activeClass %}
+
 		{% set note_lines = qnotes.getNotesArray(code.code) %}
 
-		<div class="tab-pane fade show {{ loop.first ? 'active' : '' }}" id="{{ constant('TYPE', qnotes) }}" role="tabpanel" aria-labelledby="{{ constant('TYPE', qnotes) }}-tab">
+		<div class="tab-pane fade show {{ activeClass }}" id="{{ type }}" role="tabpanel" aria-labelledby="{{ type }}-tab">
 			<div class="list-group">
 				<div class="list-group-item list-group-item-action bg-dark text-white">
 					<div class="row">

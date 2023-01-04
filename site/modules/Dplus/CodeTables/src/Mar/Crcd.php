@@ -71,12 +71,8 @@ class Crcd extends AbstractCodeTableEditableSingleKey {
 	 */
 	public function new($id = '') {
 		$this->initFieldAttributes();
-		$code = new ArCreditCardCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var ArCreditCardCode */
+		$code = parent::new($id);
 		$code->setServicerate($this->fieldAttribute('servicerate', 'default'));
 		$code->setTransactioncost($this->fieldAttribute('transactioncost', 'default'));
 		$code->setCc_surcharge_percent($this->fieldAttribute('cc_surcharge_percent', 'default'));

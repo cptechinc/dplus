@@ -38,22 +38,4 @@ class Suc extends AbstractCodeTableEditableSingleKey {
 		$q->select(ArShiptoUserCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return new ArShiptoUserCode
-	 * @param  string $id Code
-	 * @return ArShiptoUserCode
-	 */
-	public function new($id = '') {
-		$code = new ArShiptoUserCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

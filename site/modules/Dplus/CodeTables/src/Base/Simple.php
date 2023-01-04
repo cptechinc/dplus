@@ -102,6 +102,7 @@ abstract class Simple extends AbstractCodeTable {
 
 		if ($maxlength) {
 			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $maxlength]);
+			$id = substr($id, 0, $maxlength);
 		}
 		if (empty($id) === false) {
 			$code->setId($id);

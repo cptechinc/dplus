@@ -44,20 +44,4 @@ class Spit extends AbstractCodeTableEditableSingleKey {
 		$q->select(InvSpecialCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return InvSpecialCode
-	 */
-	public function new($id = '') {
-		$code = new InvSpecialCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

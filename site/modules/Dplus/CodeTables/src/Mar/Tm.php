@@ -61,25 +61,6 @@ class Tm extends AbstractCodeTableEditableSingleKey {
 	}
 
 /* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return new ArCustTaxCode
-	 * @param  string $id Code
-	 * @return ArCustTaxCode
-	 */
-	public function new($id = '') {
-		$this->initFieldAttributes();
-		$code = new ArCustTaxCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
-
-/* =============================================================
 	CRUD Processing
 ============================================================= */
 	/**
