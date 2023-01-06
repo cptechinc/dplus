@@ -36,6 +36,11 @@ class CodeForm {
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
 		}
+		this.clearInputs();
+		this.triggerInputsChange();
+	}
+
+	clearInputs() {
 		this.inputs.form.attr('data-code', '');
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');
@@ -46,7 +51,6 @@ class CodeForm {
 		this.inputs.servicerate.val('');
 		this.inputs.transactioncost.val('');
 		this.inputs.cc_surcharge_percent.val('');
-		this.triggerInputsChange();
 	}
 
 	triggerInputsChange() {

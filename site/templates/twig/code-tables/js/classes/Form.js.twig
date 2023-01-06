@@ -27,6 +27,10 @@ class CodeForm {
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
 		}
+		this.clearInputs();
+	}
+
+	clearInputs() {
 		this.inputs.form.attr('data-code', '');
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');

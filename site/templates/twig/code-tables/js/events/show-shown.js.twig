@@ -5,7 +5,11 @@ $('#edit-code-modal').on('show.bs.modal', function (event) {
 	var modal  = $(this);
 	var code   = button.data('code');
 	modal.find('.modal-title').text('Add Code');
-
+	
+	if (typeof formCode.clearInputs === 'function') {
+		formCode.clearInputs();
+	}
+	
 	formCode.updateInputsFromJson(button.data('json'));
 
 	if (code) {

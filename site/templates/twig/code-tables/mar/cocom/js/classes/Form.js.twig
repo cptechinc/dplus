@@ -39,6 +39,11 @@ class CodeForm {
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
 		}
+		this.clearInputs();
+		this.inputs.exchange_rate.val(this.config.fields.exchange_rate.min);
+	}
+
+	clearInputs() {
 		this.inputs.form.attr('data-code', '');
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');
@@ -47,7 +52,6 @@ class CodeForm {
 		this.inputs.iso2.removeAttr('readonly');
 		this.inputs.numeric.val('');
 		this.inputs.numeric.removeAttr('readonly');
-		this.inputs.exchange_rate.val(this.config.fields.exchange_rate.min);
 		this.inputs.country_date.text('');
 	}
 
