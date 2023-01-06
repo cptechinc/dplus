@@ -33,6 +33,10 @@ class CodeForm {
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
 		}
+		this.clearInputs();
+	}
+
+	clearInputs() {
 		this.inputs.form.attr('data-code', '');
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');
@@ -43,9 +47,10 @@ class CodeForm {
 		}
 
 		for (var i = 1; i <= 9; i++) {
-			this.inputs.taxcode(i).change()
+			this.inputs.taxcode(i).change();
 		}
 	}
+	
 
 	shiftTaxCodesUp(index = 1) {
 
@@ -73,7 +78,6 @@ class CodeForm {
 			}
 		}
 
-		console.log('starting from ' + taxcodes.length);
 		for (var i = taxcodes.length; i <= 9; i++) {
 			var input = this.inputs.taxcode(i + 1);
 			if (input.length == 0) {

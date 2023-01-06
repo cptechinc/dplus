@@ -37,7 +37,9 @@ $(function() {
 
 		server.getArTaxCode(code, function(code) {
 			if (code) {
-				descriptionSpan.text(code.description);
+				if (input.val() == code.code) {
+					descriptionSpan.text(code.description);
+				}
 				return true;
 			}
 		});
