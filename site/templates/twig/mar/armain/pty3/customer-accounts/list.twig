@@ -1,3 +1,5 @@
+{% set response = manager.getResponse() %}
+
 <div class="list-group mb-3">
 	<div class="list-group-item px-2 bg-dark text-white fw-bold">
 		<div class="row">
@@ -16,7 +18,8 @@
 		</div>
 	</div>
 	{% for account in accounts %}
-		<div class="list-group-item px-2 account" data-accountnbr="{{ account.accountnbr }}">
+		{% set key = manager.getRecordlockerKey(account) %}
+		<div class="list-group-item px-2 py-2 account {{ response.key == key ? 'bg-success text-white' : '' }}" data-accountnbr="{{ account.accountnbr }}">
 			<div class="row">
 				<div class="col-sm-2 text-monospace">{{ account.accountnbr }}</div>
 				<div class="col-sm-3 text-monospace">{{ account.name }}</div>

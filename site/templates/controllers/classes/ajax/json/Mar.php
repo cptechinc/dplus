@@ -230,7 +230,7 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function validatePty3Account($data) {
-		$fields = ['custid|text', 'accountnbr|text', 'jqv|bool', 'new|bool'];
+		$fields = ['custid|string', 'accountnbr|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$table = Armain\Pty3::instance();
@@ -252,7 +252,7 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function getPty3Account($data) {
-		$fields = ['custid|text', 'accountnbr|text'];
+		$fields = ['custid|string', 'accountnbr|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$table = Armain\Pty3::instance();
 

@@ -61,14 +61,14 @@ $(function() {
 
 		server.validateAccount(custid, accountnbr, function(exists) {
 			if (exists === true) {
-				alert.accountExists(account, function(editAccount) {
+				alert.accountExists(accountnbr, function(editAccount) {
 					if (editAccount) {
 						var modal = input.closest('.modal');
 
 						if (editAccount) {
 							server.getAccount(custid, accountnbr, function(response) {
 								if (response) {
-									modal.find('.modal-title').text('Edit Account ' + account);
+									modal.find('.modal-title').text('Edit Account');
 									formAccount.updateInputsFromJson(response);
 								}
 							});
