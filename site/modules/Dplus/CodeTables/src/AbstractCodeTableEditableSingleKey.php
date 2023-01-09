@@ -56,7 +56,7 @@ abstract class AbstractCodeTableEditableSingleKey extends AbstractCodeTableEdita
 			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $maxlength]);
 			$id = substr($id, 0, $maxlength);
 		}
-		if (empty($id) === false && $id != 'new') {
+		if (strlen($id) > 0 && $id != 'new') {
 			$code->setId($id);
 		}
 		$code->setDummy('P');

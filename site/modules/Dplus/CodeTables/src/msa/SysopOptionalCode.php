@@ -108,8 +108,9 @@ abstract class SysopOptionalCode extends Base {
 		$code->setSystem(static::SYSTEM);
 		$code->setSysop($sysop);
 
-		if (empty($id) === false && strtolower($id) != 'new') {
+		if (strlen($id) > 0 && strtolower($id) != 'new') {
 			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$id = substr($id, 0, $this->fieldAttribute('code', 'maxlength'));
 			$code->setId($id);
 		}
 		return $code;
