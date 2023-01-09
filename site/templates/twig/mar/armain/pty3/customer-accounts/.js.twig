@@ -28,6 +28,24 @@ $(function() {
 			modal.find('.modal-title').text('Edit Account ' + accountnbr);
 		}
 		formAccount.updateInputsFromJson(button.data('json'));
+
+		if (accountnbr) {
+			var code = ['{{ input.get.string('custID') }}', accountnbr].join('|');
+
+			var lockUrl = URI(config.ajax.urls.locker.lock);
+			lockUrl.setQuery('function', 'pty3');
+			lockUrl.setQuery('key', code);
+
+			var ajax = new AjaxRequest(lockUrl.toString());
+			ajax.request(function(canEdit) {
+				if (canEdit === false) {
+					alert.recordIsLocked(function() {
+						modal.modal('hide');
+					});
+				}
+			});
+		}
+		
 	});
 
 	$('#edit-account-modal').on('shown.bs.modal', function (event) {
@@ -47,11 +65,21 @@ $(function() {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var accountnbr = modal.find('input[name=accountnbr]').val().toString();
+		var custid = formAccount.inputs.custid.val();
 
 		$('#code-table-alert').hide();
 		$('.bg-success').removeClass('bg-success text-white');
 		$('.highlight').removeClass('highlight');
 		$('.account[data-accountnbr="'+accountnbr+'"]').addClass('highlight');
+		
+		var unlockUrl = URI(config.ajax.urls.locker.delete);
+		unlockUrl.setQuery('function', 'pty3');
+		unlockUrl.setQuery('key', [custid, accountnbr].join('|'));
+
+		var ajax = new AjaxRequest(unlockUrl.toString());
+		ajax.request(function(isUnlocked) {
+
+		});
 	});
 
 	$("body").on("change", "input[name=accountnbr]", function(e) {
@@ -59,17 +87,28 @@ $(function() {
 		var accountnbr = input.val();
 		var custid = formAccount.inputs.custid.val();
 
-		server.validateAccount(custid, accountnbr, function(exists) {
-			if (exists === true) {
+
+		server.getAccount(custid, accountnbr, function(pty3Account) {
+			if (pty3Account) {
 				alert.accountExists(accountnbr, function(editAccount) {
 					if (editAccount) {
 						var modal = input.closest('.modal');
 
 						if (editAccount) {
-							server.getAccount(custid, accountnbr, function(response) {
-								if (response) {
+							var code = [pty3Account.custid, accountnbr].join('|');
+							var lockUrl = URI(config.ajax.urls.locker.lock);
+							lockUrl.setQuery('function', 'pty3');
+							lockUrl.setQuery('key', code);
+
+							var ajax = new AjaxRequest(lockUrl.toString());
+							ajax.request(function(canEdit) {
+								if (canEdit === false) {
+									alert.recordIsLocked(function() {
+										modal.modal('hide');
+									});
+								} else {
 									modal.find('.modal-title').text('Edit Account');
-									formAccount.updateInputsFromJson(response);
+									formAccount.updateInputsFromJson(pty3Account);
 								}
 							});
 						} else {
@@ -187,34 +226,7 @@ $(function() {
 			var accountnbr = formAccount.inputs.accountnbr.val();
 			var custid      = formAccount.inputs.custid.val();
 
-			if (formAccount.inputs.form.attr('data-accountnbr') == accountnbr) {
-				form.submit();
-			} else {
-				server.validateAccount(custid, accountnbr, function(exists) {
-					var alert = AccountAlerts.getInstance();
-					if (exists === false) {
-						form.submit();
-						return true;
-					}
-
-					alert.accountExists(accountnbr, function(editAccount) {
-						var modal = formAccount.form.closest('.modal');
-
-						if (editAccount) {
-							server.getAccount(custid, accountnbr, function(response) {
-								if (response) {
-									modal.find('.modal-title').text('Edit Account ' + account);
-									formAccount.updateInputsFromJson(response);
-								} else {
-									modal.modal('hide');
-								}
-							});
-						} else {
-							modal.modal('hide');
-						}
-					});
-				});
-			}
+			form.submit();
 		}
 	});
 })
