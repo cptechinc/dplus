@@ -93,6 +93,7 @@ class Pty3 extends AbstractController {
 		self::sanitizeParametersShort($data, $fields);
 		$input = self::pw('input');
 		self::pw('page')->headline = "PTY3: CustID $data->custID";
+		self::getRecordManager()->recordlocker->deleteLock();
 
 		$filter = new Filters\Mar\ArCust3partyFreight();
 		$filter->custid($data->custID);
