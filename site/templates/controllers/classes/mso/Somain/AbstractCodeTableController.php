@@ -154,7 +154,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	URLs
 ============================================================= */
 	public static function url($code = '') {
-		if (empty($code)) {
+		if (strlen($code) === 0) {
 			return static::_url();
 		}
 		return self::codeFocusUrl($code);

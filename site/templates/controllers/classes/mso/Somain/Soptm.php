@@ -56,6 +56,7 @@ class Soptm extends AbstractController {
 
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getSoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
+		self::addVarsToJsVars($data);
 		self::getSoptm()->deleteResponse();
 		return $html;
 	}
@@ -177,7 +178,7 @@ class Soptm extends AbstractController {
 	public static function urlFocus($focus = '') {
 		$sysopM = self::getSysop();
 
-		if (empty($focus) || $sysopM->exists(self::SYSTEM, $focus) === false) {
+		if (strlen($focus) == 0 || $sysopM->exists(self::SYSTEM, $focus) === false) {
 			return self::url();
 		}
 		$sysop = $sysopM->code(self::SYSTEM, $focus);
@@ -196,7 +197,7 @@ class Soptm extends AbstractController {
 	}
 
 	public function sysopFocusUrl($sysop, $focus) {
-		if (empty($focus) || self::getSoptm()->exists($sysop, $focus) === false) {
+		if (strlen($focus) == 0 || self::getSoptm()->exists($sysop, $focus) === false) {
 			return self::sysopUrl($sysop);
 		}
 		$filter   = self::getFilterSysopOptions($sysop);

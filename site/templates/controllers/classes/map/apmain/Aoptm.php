@@ -179,7 +179,7 @@ class Aoptm extends AbstractController {
 	}
 
 	public function sysopFocusUrl($sysop, $focus) {
-		if (empty($focus) || self::getAoptm()->exists($sysop, $focus) === false) {
+		if (strlen($focus) == 0 || self::getAoptm()->exists($sysop, $focus) === false) {
 			return self::sysopUrl($sysop);
 		}
 		$filter   = self::getFilterSysopOptions($sysop);
@@ -205,7 +205,7 @@ class Aoptm extends AbstractController {
 	public static function urlFocus($focus = '') {
 		$sysopM = self::getSysop();
 
-		if (empty($focus) || $sysopM->exists(self::SYSTEM, $focus) === false) {
+		if (strlen($focus) == 0 || $sysopM->exists(self::SYSTEM, $focus) === false) {
 			return self::url();
 		}
 		$sysop = $sysopM->code(self::SYSTEM, $focus);
