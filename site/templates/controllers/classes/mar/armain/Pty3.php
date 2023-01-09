@@ -59,6 +59,9 @@ class Pty3 extends AbstractController {
 			if ($recordsManager->exists($data->custID, $data->accountnbr)) {
 				$url = self::pty3CustUrl($data->custID, $data->accountnbr);
 			}
+			if ($data->action == 'delete') {
+				$url = self::pty3CustUrl($data->custid);
+			}
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
@@ -166,10 +169,11 @@ class Pty3 extends AbstractController {
 		return $url->getUrl();
 	}
 
-	public static function codeDeleteUrl($code) {
-		$url = new Purl(Menu::pty3Url());
-		$url->query->set('code', $code);
-		$url->query->set('action', 'delete-code');
+	public static function accountDeleteUrl($custID, $accountnbr) {
+		$url = new Purl(self::_pty3CustUrl($custID));
+		$url->query->set('action', 'delete');
+		$url->query->set('custid', $custID);
+		$url->query->set('accountnbr', $accountnbr);
 		return $url->getUrl();
 	}
 
@@ -238,8 +242,8 @@ class Pty3 extends AbstractController {
 			$event->return = self::pty3CustUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=armain)::codeDeleteUrl', function($event) {
-			$event->return = self::codeDeleteUrl($event->arguments(0));
+		$m->addHook('Page(pw_template=armain)::accountDeleteUrl', function($event) {
+			$event->return = self::accountDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
 
