@@ -501,7 +501,6 @@ function format_phone_us(input) {
 	} else {
 		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
 	}
-	console.log(input);
 	return input;
 }
 
