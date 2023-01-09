@@ -23,15 +23,12 @@ $(function() {
 		var modal  = $(this);
 		var accountnbr = button.data('accountnbr');
 		modal.find('.modal-title').text('Add Account');
-
+		formAccount.updateInputsFromJson(button.data('json'));
+		modal.find('a.delete_button').removeClass('show');
+		
 		if (accountnbr) {
 			modal.find('.modal-title').text('Edit Account ' + accountnbr);
-		}
-		formAccount.updateInputsFromJson(button.data('json'));
-
-		if (accountnbr) {
 			var code = ['{{ input.get.string('custID') }}', accountnbr].join('|');
-
 			var lockUrl = URI(config.ajax.urls.locker.lock);
 			lockUrl.setQuery('function', 'pty3');
 			lockUrl.setQuery('key', code);
@@ -42,7 +39,13 @@ $(function() {
 					alert.recordIsLocked(function() {
 						modal.modal('hide');
 					});
+					return false;
 				}
+				var deleteLink = modal.find('a.delete_button');
+				var deleteUrl  = URI(deleteLink.attr('href'));
+				deleteUrl.setQuery('accountnbr', accountnbr);
+				deleteLink.attr('href', deleteUrl.toString());
+				deleteLink.addClass('show');
 			});
 		}
 		
@@ -59,6 +62,27 @@ $(function() {
 			formAccount.inputs.accountnbr.focus();
 		}
 		formAccount.form.attr('data-serialized', formAccount.form.serialize());
+	});
+
+	$("#edit-account-modal").on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				alert.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.submit();
+						return true;
+					}
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
+		}
 	});
 
 	$('#edit-account-modal').on('hidden.bs.modal', function (event) {
