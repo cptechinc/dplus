@@ -153,7 +153,10 @@
 				['GET', 'ctm/code/', Json\Mar::class, 'validateCtmCode'],
 				['GET', 'cuc/code/', Json\Mar::class, 'validateCucCode'],
 				['GET', 'mtm/code/', Json\Mar::class, 'validateMtmCode'],
-				['GET', 'pty3/account/', Json\Mar::class, 'validatePty3Account'],
+				'pty3' => [
+					['GET', 'account/', Json\Mar::class, 'validatePty3Account'],
+					['GET', 'custid/', Json\Mar::class, 'validatePty3CustidExists'],
+				],
 				['GET', 'sic/code/', Json\Mar::class, 'validateSicCode'],
 				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
 				['GET', 'spm/code/', Json\Mar::class, 'validateSpmCode'],

@@ -1,4 +1,5 @@
 {% set values = input.get %}
+
 {% block header %}
 	<div class="row">
 		<div class="col-sm-6 mb-3">
@@ -57,12 +58,10 @@
 		{% include 'util/bootstrap/html/button.twig' with {
 			'button': {
 				'colorclass': 'btn-secondary',
-				'text': 'fa fa-search'|icon ~ ' Customers',
+				'text': 'fa fa-plus'|icon ~ ' Add PTY3 Customer',
 				'attributes': {
-					'title': 'Search Customers',
 					'data-toggle': 'modal',
-					'data-target': '#ajax-modal',
-					'data-lookupurl': page.searchLookupUrl('customers/')
+					'data-target': '#new-cust-modal',
 				}
 			}
 		} %}
@@ -141,3 +140,6 @@
 		</tbody>
 	</table>
 </div>
+
+{% include 'mar/armain/pty3/customers/insert-customer-modal.twig' %}
+{% include 'mar/armain/pty3/customer-accounts/edit-modal.twig' %}

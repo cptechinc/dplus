@@ -27,7 +27,7 @@ $(function() {
 		modal.find('a.delete_button').removeClass('show');
 		
 		if (accountnbr) {
-			modal.find('.modal-title').text('Edit Account ' + accountnbr);
+			modal.find('.modal-title').text('Edit Account');
 			var code = ['{{ input.get.string('custID') }}', accountnbr].join('|');
 			var lockUrl = URI(config.ajax.urls.locker.lock);
 			lockUrl.setQuery('function', 'pty3');
@@ -111,7 +111,6 @@ $(function() {
 		var accountnbr = input.val();
 		var custid = formAccount.inputs.custid.val();
 
-
 		server.getAccount(custid, accountnbr, function(pty3Account) {
 			if (pty3Account) {
 				alert.accountExists(accountnbr, function(editAccount) {
@@ -186,6 +185,18 @@ $(function() {
 		}
 	});
 
+	$("body").on("change", "input[name=custid]", function(e) {
+		var input = $(this);
+		var descriptionElement = input.closest('.input-parent').find('.ajax-description');
+		descriptionElement.text('');
+
+		server.getCustomer(input.val(), function(customer) {
+			if (customer) {
+				descriptionElement.text(customer.name);
+			}
+		});
+	});
+
 
 /* =============================================================
 	Validation Functions
@@ -197,6 +208,18 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
+			custid: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/custid/') }}',
+					type: "get",
+					data: {
+						custID: function() {
+							return formAccount.inputs.custid.val();
+						},
+					}
+				}
+			},
 			accountnbr: {
 				required: true,
 				maxlength: formAccount.config.fields.accountnbr.maxlength,

@@ -251,6 +251,28 @@ class Mar extends AbstractJsonController {
 		return true;
 	}
 
+	public static function validatePty3CustidExists($data) {
+		$fields = ['custid|string', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$table = Armain\Pty3::instance();
+		$desc = $table::DESCRIPTION_RECORD;
+		$exists = $table->custidExists($data->custid);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "3rd Party Freight Customer $data->custid already exists";
+		}
+
+		if ($exists === false) {
+			return "3rd Party Freight Customer $data->custid not found";
+		}
+		return true;
+	}
+
 	public static function getPty3Account($data) {
 		$fields = ['custid|string', 'accountnbr|string'];
 		self::sanitizeParametersShort($data, $fields);

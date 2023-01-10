@@ -8,7 +8,12 @@
 {# data-accountnbr is for verifying edit vs new #}
 <form action="{{ input.paginateUrl(1) }}" method="POST" id="account-form" data-accountnbr="">
 	<input type="hidden" name="action" value="update">
-	<input type="hidden" name="custid" value="{{ input.get.string('custID') }}">
+
+	<div class="form-group input-parent">
+		<label for="custid">Customer ID</label>
+		<input type="text" name="custid" value="{{ input.get.string('custID') }}" class="form-control form-control-sm text-monospace" id="custid" readonly>
+		<small class="text-muted ajax-description description">{{ manager.customerName(input.get.string('custID')) }}</small>
+	</div>
 
 	<div class="form-group">
 		<label for="accountnbr">Account Number</label>

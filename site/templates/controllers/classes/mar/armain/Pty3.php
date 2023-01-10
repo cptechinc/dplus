@@ -45,7 +45,10 @@ class Pty3 extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['custID|string', 'accountnbr|text', 'action|text'];
+		$fields = ['custID|string', 'custid|string', 'accountnbr|text', 'action|text'];
+		if (trim($data->custID) == '') {
+			$data->custID = $data->custid;
+		}
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::pty3Url($data->custID);
 		$recordsManager = self::getRecordManager();
@@ -56,11 +59,17 @@ class Pty3 extends AbstractController {
 
 		if ($data->action) {
 			$recordsManager->processInput(self::pw('input'));
+
 			if ($recordsManager->exists($data->custID, $data->accountnbr)) {
 				$url = self::pty3CustUrl($data->custID, $data->accountnbr);
 			}
+
 			if ($data->action == 'delete') {
 				$url = self::pty3CustUrl($data->custid);
+
+				if ($recordsManager->custidExists($data->custid) === false) {
+					$url = self::pty3Url();
+				}
 			}
 		}
 		self::pw('session')->redirect($url, $http301 = false);
@@ -86,6 +95,7 @@ class Pty3 extends AbstractController {
 
 		self::initHooks();
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/mar/armain/pty3/customer-list.js'));
+		self::pw('page')->js .= self::pw('config')->twig->render('mar/armain/pty3/customer-accounts/.js.twig', ['manager' => self::getRecordManager()]);
 		$html = self::displayCustomersList($data, $customers);
 		self::getRecordManager()->deleteResponse();
 		return $html;

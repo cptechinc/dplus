@@ -63,7 +63,7 @@ class Pty3 extends AbstractManager {
 	 * @return ArCust3partyFreightQuery
 	 */
 	public function queryCustId($custID) {
-		return $this->query()->filterByCustId($custID);
+		return $this->query()->filterByCustid($custID);
 	}
 
 	/**
@@ -99,6 +99,16 @@ class Pty3 extends AbstractManager {
 	public function exists($custID, $acctnbr) {
 		return boolval($this->queryCustAccount($custID, $acctnbr)->count());
 	}
+
+	/**
+	 * Return if ArCust3partyFreight Customer Exists
+	 * @param  string $custID  Customer ID
+	 * @return bool
+	 */
+	public function custidExists($custID) {
+		return boolval($this->queryCustid($custID)->count());
+	}
+
 
 	/**
 	 * Return ArCust3partyFreight
@@ -323,5 +333,12 @@ class Pty3 extends AbstractManager {
 /* =============================================================
 	Supplemental
 ============================================================= */
-	
+	/**
+	 * Return Customer Name
+	 * @param  string $custID
+	 * @return string
+	 */
+	public function customerName($custID) {
+		return Cmm::instance()->name($custID);
+	}
 }
