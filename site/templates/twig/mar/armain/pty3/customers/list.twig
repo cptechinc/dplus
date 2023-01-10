@@ -2,51 +2,44 @@
 
 {% block header %}
 	<div class="row">
-		<div class="col-sm-6 mb-3">
+		<div class="col-sm-3 mb-3">
 			<a href="{{ page.menuUrl() }}" class="btn btn-primary">
 				<i class="fa fa-undo" aria-hidden="true"></i> Back <span class="d-none d-sm-inline">to {{ page.menuTitle() }}</span>
 			</a>
 		</div>
+		<div class="col-sm-3 text-right mb-3">
+			{% if input.get.text('q') != '' %}
+				<a href="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" class="btn btn-warning">
+					<i class="fa fa-times" aria-hidden="true"></i> Clear Search
+				</a>
+			{% endif %}
+		</div>
 		<div class="col-sm-6 mb-3">
-			{% block search %}
-				<div>
-					<div class="d-flex justify-content-between flex-wrap">
-						{% if input.get.text('q') != '' %}
-							<div class="order-2 order-sm-1 flex-grow-1 mt-1">
-								<a href="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" class="btn btn-warning">
-									<i class="fa fa-times" aria-hidden="true"></i> Clear Search
-								</a>
+			<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 order-1 order-sm-2">
+				<div class="input-group">
+					<div class="input-group-btn search-panel collapse">
+						<div class="dropdown">
+							<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+								Search By <span class="searchby">{{ values.offsetExists('col') ? values.text('col')|capitalize : 'All' }}</span> <span class="caret"></span>
+							</button>
+							<div class="dropdown-menu column-options">
+								<a class="dropdown-item" href="#" value="">All</a>
+								<a class="dropdown-item" href="#" value="custid">Custid</a>
+								<a class="dropdown-item" href="#" value="name">Name</a>
 							</div>
-						{% endif %}
-
-						<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 order-1 order-sm-2">
-							<div class="input-group">
-								<div class="input-group-btn search-panel collapse">
-									<div class="dropdown">
-										<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-											Search By <span class="searchby">{{ values.offsetExists('col') ? values.text('col')|capitalize : 'All' }}</span> <span class="caret"></span>
-										</button>
-										<div class="dropdown-menu column-options">
-											<a class="dropdown-item" href="#" value="">All</a>
-											<a class="dropdown-item" href="#" value="custid">Custid</a>
-											<a class="dropdown-item" href="#" value="name">Name</a>
-										</div>
-									</div>
-								</div>
-				
-								<input class="form-control form-group inline" type="text" name="q" value="{{ values.text('q') }}" placeholder="Search By Cust ID, Name, Address City, State, Zip">
-								<input type="hidden" name="col" value="all">
-								
-								<span class="input-group-btn">
-									<button class="btn btn-light" type="submit">
-										<i class="fa fa-search"></i> <span class="sr-only">Search</span>
-									</button>
-								</span>
-							</div>
-						</form>
+						</div>
 					</div>
+	
+					<input class="form-control form-group inline" type="text" name="q" value="{{ values.text('q') }}" placeholder="Search By Cust ID, Name, Address City, State, Zip" autofocus>
+					<input type="hidden" name="col" value="all">
+					
+					<span class="input-group-btn">
+						<button class="btn btn-light" type="submit">
+							<i class="fa fa-search"></i> <span class="sr-only">Search</span>
+						</button>
+					</span>
 				</div>
-			{% endblock %}
+			</form>
 		</div>
 	</div>
 {% endblock %}
@@ -58,7 +51,7 @@
 		{% include 'util/bootstrap/html/button.twig' with {
 			'button': {
 				'colorclass': 'btn-secondary',
-				'text': 'fa fa-plus'|icon ~ ' Add PTY3 Customer',
+				'text': 'fa fa-plus'|icon ~ ' Add 3rd Party Customer',
 				'attributes': {
 					'data-toggle': 'modal',
 					'data-target': '#new-cust-modal',
