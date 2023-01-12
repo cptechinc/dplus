@@ -9,10 +9,16 @@
 <form action="{{ input.paginateUrl(1) }}" method="POST" id="account-form" data-accountnbr="">
 	<input type="hidden" name="action" value="update">
 
-	<div class="form-group input-parent">
-		<label for="custid">Customer ID</label>
-		<input type="text" name="custid" value="{{ input.get.string('custID') }}" class="form-control form-control-sm text-monospace" id="custid" readonly>
-		<small class="text-muted ajax-description description">{{ manager.customerName(input.get.string('custID')) }}</small>
+	<div class="form-row mb-2 input-parent">
+		<div class="col-sm-3">
+			<label for="custid">Cust ID</label>
+		</div>
+		<div class="col-sm-2">
+			<input type="text" name="custid" value="{{ input.get.string('custID') }}" class="form-control-plaintext form-control-sm text-monospace" id="custid" readonly>
+		</div>
+		<div class="col-sm-7">
+			<small class="form-control-plaintext form-control-sm text-muted ajax-description description">{{ manager.customerName(input.get.string('custID')) }}</small>
+		</div>	
 	</div>
 
 	<div class="form-group">
@@ -114,6 +120,7 @@
 			{% include 'util/bootstrap/form/select-simple.twig' with {
 					'select': {
 						'name': 'international',
+						'size': 'sm',
 						'value' : 'N',
 						'haskeys': true,
 						'showvalues': true,
