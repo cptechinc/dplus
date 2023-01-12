@@ -1,0 +1,134 @@
+<div class="row">
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-4">
+				<label for="code">Code</label>
+			</div>
+			<div class="col-sm-3">
+				<input type="text" name="code" class="form-control form-control-sm " value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-4">
+				<label for="description">Description</label>
+			</div>
+			<div class="col-sm-7">
+				<input type="text" name="description" class="form-control form-control-sm" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}">
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-4">
+				<label for="method">Method</label>
+			</div>
+			<div class="col-sm-6">
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'method',
+						'value' : code.method,
+						'size': 'sm',
+						'haskeys': true,
+						'options': manager.fieldAttribute('method', 'options'),
+						'showvalue': true,
+					}
+				} %}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-4">
+				<label for="type">Type</label>
+			</div>
+			<div class="col-sm-6">
+
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'typeS',
+						'value' : code.type,
+						'size': 'sm',
+						'addclasses': [
+							'type-input',
+							'collapse',
+							code.method == constant('METHOD_STD', manager) ? 'show' : ''
+						],
+						'haskeys': true,
+						'options': manager.fieldAttribute('type', 'optionsS'),
+						'showvalue': true,
+					}
+				} %}
+
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'typeE',
+						'value' : code.type,
+						'size': 'sm',
+						'addclasses': [
+							'type-input',
+							'collapse',
+							code.method == constant('METHOD_EOM', manager) ? 'show' : ''
+						],
+						'haskeys': true,
+						'options': manager.fieldAttribute('type', 'optionsE'),
+						'showvalue': true,
+					}
+				} %}
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-4">
+				<label for="ccprefix">CC Prefix</label>
+			</div>
+			<div class="col-sm-2">
+				<input type="text" name="ccprefix" class="form-control form-control-sm" value="{{ code.ccprefix }}" id="ccprefix" maxlength="{{ manager.fieldAttribute('ccprefix', 'maxlength') }}">
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-4">
+				<label for="hold">Hold</label>
+			</div>
+			<div class="col-sm-6">
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'type',
+						'value' : code.hold,
+						'size': 'sm',
+						'haskeys': true,
+						'options': manager.fieldAttribute('hold', 'options'),
+					}
+				} %}
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-4">
+				<label for="freightallow">Freight Allow</label>
+			</div>
+			<div class="col-sm-2">
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'type',
+						'value' : code.freightallow,
+						'size': 'sm',
+						'haskeys': true,
+						'options': manager.fieldAttribute('freightallow', 'options'),
+					}
+				} %}
+			</div>
+		</div>
+	</div>
+</div>

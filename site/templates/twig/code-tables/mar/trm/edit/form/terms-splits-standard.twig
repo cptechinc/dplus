@@ -1,0 +1,102 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	code                   CustomerTermsCode
+	m_trm                  module CodeTablesTrm
+#}
+<div class="row align-items-center text-center">
+	<div class="col-2">
+		<h5>&nbsp;</h5>
+	</div>
+	<div class="col">
+		<h5 class="text-center">Discount</h5>
+	</div>
+	<div class="col">
+		<h5 class="text-center">Due</h5>
+	</div>
+</div>
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center text-center text-sm">
+			<div class="col-2 border-right border-light">
+				<div class="row align-items-center">
+					<div class="col-3">Split</div>
+					<div class="col-9">Order %</div>
+				</div>
+			</div>
+			<div class="col-5 border-right border-light">
+				<div class="row align-items-center text-center">
+					<div class="col">Percent</div>
+					<div class="col">Days</div>
+					<div class="col">Day</div>
+					<div class="col">Date MMDD</div>
+				</div>
+			</div>
+			<div class="col-5">
+				<div class="row align-items-center text-center">
+					<div class="col">Days</div>
+					<div class="col">Day</div>
+					<div class="col-2">+Months</div>
+					<div class="col-3">Date MMDD</div>
+					<div class="col">+Year</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% for x in 1..constant('NBR_SPLITS_METHOD_S', manager) %}
+		<div class="list-group-item standard-split" data-index="{{ x }}">
+			<div class="row align-items-center text-center">
+				<div class="col-2 border-right border-dark">
+					<div class="row align-items-center standard-percent">
+						<div class="col-3">
+							{{ x }}
+						</div>
+						<div class="col-9">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/order_percent-x.twig' %}
+						</div>
+					</div>
+				</div>
+				<div class="col border-right border-dark">
+					<div class="row align-items-center standard-discount">
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_disc_percent-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_disc_days-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_disc_day-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_disc_date-x.twig' %}
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="row align-items-center standard-due">
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_due_days-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_due_day-x.twig' %}
+						</div>
+						<div class="col-2">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_plus_months-x.twig' %}
+						</div>
+						<div class="col-3">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_due_date-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_plus_years-x.twig' %}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="error text-center">
+
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
+

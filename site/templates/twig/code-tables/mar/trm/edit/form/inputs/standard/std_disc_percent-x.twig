@@ -1,0 +1,18 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'std_disc_percent' ~ x,
+		'type': 'number',
+		'value': code.std_disc_percent(x),
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'standard-discount-percent'
+		],
+		'attributes': {
+			'tabindex': x ~ '1',
+			'data-error': '.error',
+			'readonly': code.order_percent(x) == 0,
+			'max': manager.fieldAttribute('std_disc_percent', 'max')
+		}
+	}
+} %}

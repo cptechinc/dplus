@@ -1,0 +1,18 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'std_plus_months' ~ x,
+		'type': 'number',
+		'value': code.std_plus_months(x) ? code.std_plus_months(x) : 0,
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'standard_plus_months'
+		],
+		'attributes': {
+			'tabindex': x ~ '7',
+			'data-error': '.error',
+			'readonly': code.std_due_day(x) == 0,
+			'max': manager.fieldAttribute('std_plus_months', 'max')
+		}
+	}
+} %}

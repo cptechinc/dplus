@@ -1,0 +1,18 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'eom_plus_months' ~ x,
+		'type': 'number',
+		'value': code.eom_plus_months(x),
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'eom_plus_months'
+		],
+		'attributes': {
+			'tabindex': x ~ '17',
+			'data-error': '.error',
+			'readonly': code.eom_thru_day(x) == 0,
+			'max': manager.fieldAttribute('eom_plus_months', 'max'),
+		}
+	}
+} %}

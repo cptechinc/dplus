@@ -1,0 +1,19 @@
+{% set readonly = code.eom_thru_day(x) == 0 %}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'eom_disc_percent' ~ x,
+		'type': 'number',
+		'value': code.eom_disc_percent(x),
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'eom_disc_percent'
+		],
+		'attributes': {
+			'tabindex': x ~ '13',
+			'readonly': readonly,
+			'max': manager.fieldAttribute('eom_disc_percent', 'max')
+		}
+	}
+} %}

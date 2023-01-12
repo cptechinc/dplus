@@ -1,0 +1,18 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'std_plus_years' ~ x,
+		'type': 'number',
+		'value': code.std_plus_years(x),
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'standard_due_years'
+		],
+		'attributes': {
+			'tabindex': x ~ '9',
+			'data-error': '.error',
+			'readonly': code.std_due_date(x) == 0,
+			'max':  manager.fieldAttribute('std_plus_years', 'max')
+		}
+	}
+} %}
