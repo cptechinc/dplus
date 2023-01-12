@@ -109,6 +109,12 @@ class Menu extends AbstractMenuController  {
 			'title'      => Tm::TITLE,
 			'summary'    => Tm::SUMMARY
 		],
+		'trm' => [
+			'name'       => 'trm',
+			'permission' => Trm::DPLUSPERMISSION,
+			'title'      => Trm::TITLE,
+			'summary'    => Trm::SUMMARY
+		],
 		'worm' => [
 			'name'       => 'worm',
 			'permission' => Worm::DPLUSPERMISSION,
@@ -186,6 +192,10 @@ class Menu extends AbstractMenuController  {
 
 	public static function tmUrl() {
 		return self::subfunctionUrl('tm');
+	}
+
+	public static function trmUrl() {
+		return self::subfunctionUrl('trm');
 	}
 	
 	public static function wormUrl() {
