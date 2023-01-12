@@ -54,9 +54,9 @@ $(function() {
 	$('#edit-account-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal  = $(this);
-		var account   = button.data('account');
+		var accountnbr   = button.data('accountnbr');
 
-		if (account) {
+		if (accountnbr) {
 			formAccount.inputs.name.focus();
 		} else {
 			formAccount.inputs.accountnbr.focus();
