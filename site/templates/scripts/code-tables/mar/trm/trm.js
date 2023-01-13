@@ -163,6 +163,24 @@ $(function() {
 		ccprefixParent.find('button[data-toggle]').removeAttr('disabled');
 	});
 
+	$("body").on("change", "#code-form input[name=country]", function(e) {
+		var input = $(this);
+		var parent = input.closest('.input-parent');
+		var descriptionField = parent.find('.description');
+
+		descriptionField.text('');
+
+		if (input.val() == '') {
+			return true;
+		}
+
+		server.getCountryCode(input.val(), function(country) {
+			if (country) {
+				descriptionField.text(country.description);
+			}
+		});
+	});
+
 
 /* =============================================================
 	Method EOM Events

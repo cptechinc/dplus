@@ -8,6 +8,15 @@ class TrmRequests extends CodeRequestsBase {
 		return this.instance;
 	}
 
+	getCountryCode(code, callback) {
+		var ajax = new AjaxRequest(config.ajax.urls.json + 'mar/cocom/code/');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	getCreditCardCode(code, callback) {
 		var ajax = new AjaxRequest(config.ajax.urls.json + 'mar/crcd/code/');
 
