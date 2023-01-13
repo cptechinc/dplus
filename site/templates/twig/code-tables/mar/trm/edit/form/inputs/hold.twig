@@ -1,0 +1,9 @@
+{% include 'util/bootstrap/form/select-simple.twig' with {
+	'select': {
+		'name': 'type',
+		'value' : code.hold,
+		'size': 'sm',
+		'haskeys': true,
+		'options': manager.fieldAttribute('hold', 'options'),
+	}
+} %}

@@ -1,0 +1,15 @@
+{% include 'util/bootstrap/form/select-simple.twig' with {
+	'select': {
+		'name': 'typeE',
+		'value' : code.type,
+		'size': 'sm',
+		'addclasses': [
+			'type-input',
+			'collapse',
+			code.method == constant('METHOD_EOM', manager) ? 'show' : ''
+		],
+		'haskeys': true,
+		'options': manager.fieldAttribute('type', 'optionsE'),
+		'showvalue': true,
+	}
+} %}

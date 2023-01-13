@@ -5,7 +5,7 @@
 				<label for="code">Code</label>
 			</div>
 			<div class="col-sm-3">
-				<input type="text" name="code" class="form-control form-control-sm " value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
+				{% include 'code-tables/mar/trm/edit/form/inputs/code.twig' %}
 			</div>
 		</div>
 	</div>
@@ -15,7 +15,7 @@
 				<label for="description">Description</label>
 			</div>
 			<div class="col-sm-7">
-				<input type="text" name="description" class="form-control form-control-sm" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}">
+				{% include 'code-tables/mar/trm/edit/form/inputs/description.twig' %}
 			</div>
 		</div>
 	</div>
@@ -27,16 +27,7 @@
 				<label for="method">Method</label>
 			</div>
 			<div class="col-sm-4">
-				{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'name': 'method',
-						'value' : code.method,
-						'size': 'sm',
-						'haskeys': true,
-						'options': manager.fieldAttribute('method', 'options'),
-						'showvalue': true,
-					}
-				} %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/method.twig' %}
 			</div>
 		</div>
 	</div>
@@ -48,37 +39,8 @@
 				<label for="type">Type</label>
 			</div>
 			<div class="col-sm-4">
-				{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'name': 'typeS',
-						'value' : code.type,
-						'size': 'sm',
-						'addclasses': [
-							'type-input',
-							'collapse',
-							code.method == constant('METHOD_STD', manager) ? 'show' : ''
-						],
-						'haskeys': true,
-						'options': manager.fieldAttribute('type', 'optionsS'),
-						'showvalue': true,
-					}
-				} %}
-
-				{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'name': 'typeE',
-						'value' : code.type,
-						'size': 'sm',
-						'addclasses': [
-							'type-input',
-							'collapse',
-							code.method == constant('METHOD_EOM', manager) ? 'show' : ''
-						],
-						'haskeys': true,
-						'options': manager.fieldAttribute('type', 'optionsE'),
-						'showvalue': true,
-					}
-				} %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/type-s.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/type-e.twig' %}
 			</div>
 		</div>
 	</div>
@@ -89,34 +51,7 @@
 			</div>
 			<div class="col-sm-6 input-parent">
 				<div class="col-sm-4 px-0">
-					{% include 'util/bootstrap/form/input-group.twig' with {
-						'inputgroup': {
-							'type': 'prepend',
-							'size': 'sm',
-							'input': {
-								'name': 'ccprefix',
-								'value': code.ccprefix,
-								'addclasses': [''],
-								'attributes': {
-									'placeholder': '',
-									'aria-label':  'Credit Card Prefix',
-									'data-jqv': 'true',
-									'maxlength': manager.fieldAttribute('ccprefix', 'maxlength'),
-								}
-							},
-							'button': {
-								'colorclass': 'btn-secondary',
-								'text': 'fa fa-search'|icon,
-								'attributes': {
-									'title': 'Search Credit Cards',
-									'data-toggle': 'modal',
-									'data-target': '#ajax-modal',
-									'data-lookupurl': page.searchLookupUrl('mar/crcd/'),
-									'data-input': '#ccprefix'
-								}
-							}
-						}
-					} %}
+					{% include 'code-tables/mar/trm/edit/form/inputs/ccprefix.twig' %}
 				</div>
 				<small class="text-muted ajax-description description"></small>
 			</div>
@@ -130,15 +65,7 @@
 				<label for="hold">Hold</label>
 			</div>
 			<div class="col-sm-2">
-				{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'name': 'type',
-						'value' : code.hold,
-						'size': 'sm',
-						'haskeys': true,
-						'options': manager.fieldAttribute('hold', 'options'),
-					}
-				} %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/hold.twig' %}
 			</div>
 		</div>
 	</div>
@@ -148,15 +75,7 @@
 				<label for="freightallow">Freight Allow</label>
 			</div>
 			<div class="col-sm-2">
-				{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'name': 'type',
-						'value' : code.freightallow,
-						'size': 'sm',
-						'haskeys': true,
-						'options': manager.fieldAttribute('freightallow', 'options'),
-					}
-				} %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/freightallow.twig' %}
 			</div>
 		</div>
 	</div>

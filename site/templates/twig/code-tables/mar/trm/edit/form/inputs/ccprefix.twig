@@ -1,0 +1,28 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+	'inputgroup': {
+		'type': 'prepend',
+		'size': 'sm',
+		'input': {
+			'name': 'ccprefix',
+			'value': code.ccprefix,
+			'addclasses': [''],
+			'attributes': {
+				'placeholder': '',
+				'aria-label':  'Credit Card Prefix',
+				'data-jqv': 'true',
+				'maxlength': manager.fieldAttribute('ccprefix', 'maxlength'),
+			}
+		},
+		'button': {
+			'colorclass': 'btn-secondary',
+			'text': 'fa fa-search'|icon,
+			'attributes': {
+				'title': 'Search Credit Cards',
+				'data-toggle': 'modal',
+				'data-target': '#ajax-modal',
+				'data-lookupurl': page.searchLookupUrl('mar/crcd/'),
+				'data-input': '#ccprefix'
+			}
+		}
+	}
+} %}
