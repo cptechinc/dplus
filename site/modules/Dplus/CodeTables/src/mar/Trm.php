@@ -91,8 +91,8 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$code->set_eom_thru_day(1, 99);
 
 		// DEBUG:
-		$code->method = self::METHOD_EOM;
-		$code->code = 'test';
+		// $code->method = self::METHOD_EOM;
+		// $code->code = 'test';
 
 		return $code;
 	}
