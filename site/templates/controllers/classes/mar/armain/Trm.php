@@ -161,6 +161,11 @@ class Trm extends AbstractCodeTableController {
 				'typeInputName' => 'typeE'
 			],
 		];
+		$js['config']['types'] = [
+			'creditcard' => [
+				'value' => $table::TYPE_CREDITCARD,
+			],
+		];
 		return $js;
 	}
 
