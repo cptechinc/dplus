@@ -25,7 +25,7 @@ class Igcm extends AbstractCodeTableEditableSingleKey {
 	const DESCRIPTION_RECORD = 'Inventory Commission Code';
 	const RESPONSE_TEMPLATE  = 'Inventory Commission Code {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'iasm';
-	const DPLUS_TABLE           = 'IASM';
+	const DPLUS_TABLE           = 'IGCM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => InvCommissionCode::MAX_LENGTH_CODE],
 		'description' => ['type' => 'text', 'maxlength' => 20],
