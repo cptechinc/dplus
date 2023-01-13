@@ -1,10 +1,11 @@
+{% set value = code.eom_disc_percent(x) %}
 {% set readonly = code.eom_thru_day(x) == 0 %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
 		'name': 'eom_disc_percent' ~ x,
 		'type': 'number',
-		'value': code.eom_disc_percent(x),
+		'value': value != 0 ? value : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',

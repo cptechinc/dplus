@@ -1,9 +1,10 @@
+{% set value = code.eom_from_day(x) %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
 		'name': 'eom_from_day' ~ x,
 		'type': 'number',
-		'value': code.eom_from_day(x),
+		'value': value ? value : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',
