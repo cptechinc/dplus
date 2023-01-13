@@ -251,32 +251,7 @@ $(function() {
 			}
 		},
 		submitHandler: function(form) {
-		// 	var formCode = CodeFormBase.getInstance();
-		// 	var server   = CodeRequestsBase.getInstance();
-		// 	var code     = formCode.inputs.fields.code.val();
-
-		// 	if (formCode.inputs.form.attr('data-code') == code) {
-		// 		form.submit();
-		// 	} else {
-		// 		server.validateCode(code, function(exists) {
-		// 			var alert = CodeAlertsBase.getInstance();
-
-		// 			if (exists === false) {
-		// 				form.submit();
-		// 				return true;
-		// 			}
-
-		// 			alert.codeExists(code, function(editCode) {
-		// 				if (editCode) {
-		// 					var uri = URI();
-		// 					uri.setQuery('code', code);
-		// 					window.location.href = uri.toString();
-		// 				} else {
-		// 					location.reload();
-		// 				}
-		// 			});
-		// 		});
-		// 	}
+			form.submit();
 		}
 	});
 
