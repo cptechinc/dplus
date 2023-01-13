@@ -9,6 +9,23 @@ class TrmForm extends CodeFormBase {
 	}
 
 	/**
+	 * Return if the Terms Method is End of Month
+	 * @returns bool
+	 */
+	isMethodEom() {
+		return this.inputs.fields.method.val() == codetable.config.methods.eom.value;
+	}
+
+	/**
+	 * Return if Input is EOM thru day
+	 * @param {Object} input 
+	 * @returns bool
+	 */
+	isInputEomThruDay(input) {
+		return input.hasClass('eom_thru_day');
+	}
+
+	/**
 	 * Enable Discount / Day Month fields based off Discount Percent Value
 	 * @param {Object} input 
 	 * @returns 
@@ -28,16 +45,6 @@ class TrmForm extends CodeFormBase {
 		parent.find('.eom_disc_day').removeAttr('readonly');
 		parent.find('.eom_disc_months').removeAttr('readonly');
 	}
-
-	isMethodEom() {
-		return this.inputs.fields.method.val() == codetable.config.methods.eom.value;
-	}
-
-	isInputEomThruDay(input) {
-		return input.hasClass('eom_thru_day');
-	}
-
-
 
 	/**
 	 * Update EOM Thru Day Input value
@@ -70,10 +77,14 @@ class TrmForm extends CodeFormBase {
 			return false;
 		}
 
+		var validator = this.form.validate();
+		var isValid = validator.element('#' + input.attr('id'));
+
 		var value = input.val() == '' ? 0 : parseInt(input.val());
 		var nextSplit = $('.eom-split[data-index='+ (index + 1) +']');
 
-		if (value === this.config.fields.eom_thru_day.max) {
+		// Disable next split's fields if Thru Day value is max or if it's invalid
+		if (value === this.config.fields.eom_thru_day.max || isValid === false) {
 			nextSplit.find('.eom-day-range input.eom_thru_day').attr('readonly', 'readonly');
 			nextSplit.find('.eom-discount input').attr('readonly', 'readonly');
 			nextSplit.find('.eom-due input').attr('readonly', 'readonly');
