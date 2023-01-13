@@ -51,6 +51,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	const NBR_SPLITS_METHOD_E = 3;
 	const METHOD_STD = 'S';
 	const METHOD_EOM = 'E';
+	const TYPE_CREDITCARD = 'CC';
 
 	protected static $instance;
 
