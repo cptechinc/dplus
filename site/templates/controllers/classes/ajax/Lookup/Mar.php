@@ -4,6 +4,19 @@ use Dplus\Filters;
 
 class Mar extends Lookup {
 	/**
+	 * Search Credit Card Codes
+	 * @param  object $data
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function creditCardCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Tax Codes";
+		$filter = new Filters\Mar\ArCreditCardCode();
+		return self::filterResults($filter, $data);
+	}
+
+	/**
 	 * Search Customers
 	 * @param  object $data
 	 *                     q   Search Term
