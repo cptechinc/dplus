@@ -38,13 +38,33 @@ $(function() {
 		}
 	});
 
-	// $("body").on("focusin", "#code-form .eom-split input", function(e) {
-	// 	var input = $(this);
-	// 	var index = parseFloat(input.closest('.eom-split').data('index'));
-	// 	if (index >= codetable.config.methods.splitCount) {
-	// 		return false;
-	// 	}
-	// });
+	$("body").on("focusin", "#code-form .eom-split input", function(e) {
+		var input = $(this);
+		if (input.attr('tabindex') <= 116) {
+			return true;
+		}
+		var form  = input.closest('form');
+		var formEom = form.find('#eom-splits');
+
+		var validator = form.validate();
+
+		if (formEom.find('.is-invalid').length) {
+			var invalidInput = formEom.find('.is-invalid');
+			if (validator.element('#' + invalidInput.attr('id')) === false) {
+				invalidInput.focus();
+			}
+			return true;
+		}
+
+		formEom.find('input').each(function() {
+			var otherInput = $(this);
+
+			if (validator.element('#' + otherInput.attr('id')) === false) {
+				otherInput.focus();
+				return true;
+			}
+		});
+	});
 
 	$("body").on("change", "#code-form select[name=method]", function(e) {
 		var input = $(this);
@@ -95,7 +115,6 @@ $(function() {
 		var input  = $(this);
 		var percent = input.val() == '' ? 0 : parseFloat(input.val());
 		
-		
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscDayMonthFromPercent(input);
 			return true;
@@ -105,7 +124,7 @@ $(function() {
 	});
 
 	$("body").on("change", ".eom_thru_day", function(e) {
-		if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value){
+		if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value) {
 			return false;
 		}
 
@@ -125,7 +144,7 @@ $(function() {
 ============================================================= */
 	var validator = formCode.form.validate({
 		errorClass: "is-invalid",
-		validClass: "is-valid",
+		validClass: "",
 		errorPlacement: function(error, element) {
 			error.addClass('invalid-feedback');
 
@@ -151,7 +170,7 @@ $(function() {
 			// 	}
 			// },
 			eom_due_day1: {
-				required: true
+				required: true,
 			}
 		},
 		submitHandler: function(form) {
@@ -182,5 +201,35 @@ $(function() {
 		// 		});
 		// 	}
 		}
+	});
+
+	$('.eom_due_day').each(function() {
+		var input = $(this);
+		var parentEomSplit = input.closest('.eom-split');
+
+		input.rules( "add", {
+			required: function() {
+				if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value) {
+					return false;
+				}
+				return parentEomSplit.find('.eom_thru_day').val() != '';
+			},
+		});
+	});
+
+	$('.eom_thru_day').each(function() {
+		var input = $(this);
+		var parent = input.closest('.eom-day-range');
+		var parentEomSplit = input.closest('.eom-split');
+		var min = 2;
+
+		input.rules( "add", {
+			min: function() {
+				if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value) {
+					return 0;
+				}
+				return parseInt(parent.find('.eom_from_day').val()) + 1;
+			}
+		});
 	});
 });
