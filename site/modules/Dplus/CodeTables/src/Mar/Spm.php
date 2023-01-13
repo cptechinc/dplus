@@ -27,9 +27,9 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	const RECORDLOCKER_FUNCTION = 'spm';
 	const DPLUS_TABLE			= 'SPM';
 	const FIELD_ATTRIBUTES = [
-		'id'     => ['type' => 'text', 'maxlength' => 6],
-		'code'     => ['type' => 'text', 'maxlength' => 6],
-		'name'   => ['type' => 'text', 'maxlength' => 30],
+		'id'     => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
+		'code'     => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
+		'name'   => ['type' => 'text', 'maxlength' => 30, 'label' => 'Name'],
 		'cycle'  => ['type' => 'text', 'maxlength' => 2],
 		'groupid' => ['type' => 'text', 'maxlength' => Spgpm::FIELD_ATTRIBUTES['code']['maxlength']],
 		'salesmtd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Sales MTD'],
@@ -56,6 +56,8 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		}
 		return $json;
 	}
+
+	const FILTERABLE_FIELDS = ['id', 'name'];
 
 /* =============================================================
 	CRUD Read, Validate Functions
