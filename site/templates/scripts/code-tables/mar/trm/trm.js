@@ -67,6 +67,28 @@ $(function() {
 		});
 	});
 
+	$("body").on("change", "#code-form input[name=code]", function(e) {
+		var input = $(this);
+
+		if (input.val() == '') {
+			return false;
+		}
+
+		server.validateCode(input.val(), function(exists) {
+			if (exists === true) {
+				alert.codeExists(input.val(), function(editCode) {
+					if (editCode) {
+						var uri = URI();
+						uri.setQuery('code', input.val());
+						window.location.href = uri.toString();
+					} else {
+						location.reload();
+					}
+				});
+			}
+		});
+	});
+
 	$("body").on("change", "#code-form select[name=method]", function(e) {
 		var input = $(this);
 		
@@ -193,20 +215,19 @@ $(function() {
 			error.appendTo(element.closest('.input-parent'));
 		},
 		rules: {
-			// code: {
-			// 	required: true,
-			// 	maxlength: formCode.config.fields.code.maxlength,
-			// 	remote: {
-			// 		url: codetable.config.urls.api.validate,
-			// 		type: "get",
-			// 		data: {
-			// 			jqv: 'true',
-			// 			new: function() {
-			// 				return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
-			// 			},
-			// 		}
-			// 	}
-			// },
+			code: {
+				required: true,
+				remote: {
+					url: codetable.config.urls.api.validate,
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+						},
+					}
+				}
+			},
 			eom_due_day1: {
 				required: true,
 			}
