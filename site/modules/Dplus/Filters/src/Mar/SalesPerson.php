@@ -18,6 +18,15 @@ class SalesPerson extends CodeFilter {
 			Model::get_aliasproperty('code'),
 			Model::get_aliasproperty('name'),
 		];
+		if ($cols) {
+			$columns = [];
+			
+			foreach ($cols as $col) {
+				if (Model::aliasproperty_exists($col)) {
+					$columns[] = Model::aliasproperty($col);
+				}
+			}
+		}
 		$this->query->searchFilter($columns, strtoupper($q));
 	}
 
