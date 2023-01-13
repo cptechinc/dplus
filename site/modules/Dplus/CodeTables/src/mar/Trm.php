@@ -1,6 +1,11 @@
 <?php namespace Dplus\Codes\Mar;
+// Propel ORM Library
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // Dplus Models
 use ArTermsCode;
+// ProcessWire
+use ProcessWire\WireInput;
+use ProcessWire\WireInputData;
 // Dplus Codes
 use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 
@@ -34,7 +39,10 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		'eom_due_day'     => ['type' => 'number', 'max' => 31, 'min' => 1],
 		'eom_plus_months'  => ['type' => 'number', 'max' => 99],
 		'eom_from_day'     => ['type' => 'number', 'max' => 98],
-		'eom_thru_day'     => ['type' => 'number', 'max' => 99],
+		'eom_thru_day'     => ['type' => 'number', 'max' => 99, 'defaultToMaxAt' => 28],
+
+		'eom_from_day1'     => ['type' => 'number',  'default' => 1],
+		'eom_thru_day1'     => ['type' => 'number', 'max' => 99, 'default' => 99],
 
 		'std_disc_date'    => ['type' => 'text', 'regex' => "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])", 'dateformat' => 'm/d', 'placeholder' => 'mm/dd'],
 		'std_disc_percent' => ['type' => 'number', 'max' => 100],
@@ -56,6 +64,54 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	protected static $instance;
 
 /* =============================================================
+	Field Configs
+============================================================= */
+	/**
+	 * Return EOM (End-of-Month) Field Attributes
+	 * @return string
+	 */
+	private function getEomFieldAttributes() {
+		$attr = [];
+		$attr['eom_thru_day'] = [
+			'max' => $this->fieldAttribute('eom_thru_day', 'max'),
+			'defaultToMaxAt' => $this->fieldAttribute('eom_thru_day', 'defaultToMaxAt'),
+		];
+		$attr['eom_due_day'] = [
+			'max' => $this->fieldAttribute('eom_due_day', 'max'),
+			'min' => $this->fieldAttribute('eom_due_day', 'min'),
+		];
+		return $attr;
+	}
+
+	/**
+	 * Return EOM (End-of-Month) Input Opitons,
+	 * NOTE: options format is used for ProcessWire\Sanitizer's float, int functions
+	 * @return string
+	 */
+	private function getEomFieldInputOptions() {
+		$opts = [];
+
+		$opts['eom_due_day'] = [
+			'max' => $this->fieldAttribute('eom_due_day', 'max'),
+			'min' => $this->fieldAttribute('eom_due_day', 'min'),
+		];
+		$opts['eom_disc_percent'] = [
+			'max'        => $this->fieldAttribute('eom_disc_percent', 'max'),
+			'precision'  => $this->fieldAttribute('eom_disc_percent', 'precision'),
+			'blankValue' => ''
+		];
+		$opts['eom_disc_day'] = [
+			'max'        => $this->fieldAttribute('eom_disc_percent', 'max'),
+			'blankValue' => ''
+		];
+		$opts['eom_disc_months'] = [
+			'max'        => $this->fieldAttribute('eom_disc_months', 'max'),
+			'blankValue' => ''
+		];
+		return $opts;
+	}
+
+/* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
@@ -68,32 +124,254 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		return $q->find()->toArray();
 	}
 
+	/**
+	 * Return Code as JSON Array
+	 * @param  ArTermsCode $code
+	 * @return array
+	 */
+	public function codeJson(Code $code) {
+		$json = [];
+		foreach (array_keys(static::FIELD_ATTRIBUTES) as $field) {
+			if (isset($code->$field)) {
+				$json[$field] = $code->$field;
+			}
+		}
+		for ($i = 1; $i < self::NBR_SPLITS_METHOD_E; $i++) {
+			$json["eom_from_day$i"]     = $code->eom_from_day($i);
+			$json["eom_thru_day$i"]     = $code->eom_thru_day($i);
+			$json["eom_disc_percent$i"] = $code->eom_disc_percent($i);
+			$json["eom_disc_day$i"]     = $code->eom_disc_day($i);
+			$json["eom_disc_months$i"]  = $code->eom_disc_months($i);
+			$json["eom_due_day$i"]      = $code->eom_due_day($i);
+			$json["eom_plus_months$i"]  = $code->eom_plus_months($i);
+		}
+		return $json;
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */
 	/**
 	 * Return New Code
 	 * @param  string $id
-	 * @return Code
+	 * @return ArTermsCode
 	 */
 	public function new($id = '') {
+		/** @var ArTermsCode */
 		$code = parent::new($id);
-		$code->method       = $this->fieldAttribute('method', 'default');
-		$code->type         = $this->fieldAttribute('type', 'default');
-		$code->hold         = $this->fieldAttribute('hold', 'default');
-		$code->expiredate   = $this->fieldAttribute('expiredate', 'default');
-		$code->country      = $this->fieldAttribute('country', 'default');
-		$code->ccprefix     = $this->fieldAttribute('ccprefix', 'default');
-		$code->freightallow = $this->fieldAttribute('freightallow', 'default');
+		$code->setMethod($this->fieldAttribute('method', 'default'));
+		$code->setType($this->fieldAttribute('type', 'default'));
+		$code->setArtmhold($this->fieldAttribute('hold', 'default'));
+		$code->setExpiredate($this->fieldAttribute('expiredate', 'default'));
+		$code->setCountry($this->fieldAttribute('country', 'default'));
+		$code->setCcprefix($this->fieldAttribute('ccprefix', 'default'));
+		$code->setFreightallow($this->fieldAttribute('freightallow', 'default'));
 		$code->set_order_percent(1, 100.00);
 
 		$code->set_eom_from_day(1, 1);
 		$code->set_eom_thru_day(1, 99);
 
 		// DEBUG:
-		// $code->method = self::METHOD_EOM;
-		// $code->code = 'test';
+		$code->setMethod(self::METHOD_EOM);
+		// $code->setCode('paul');
 
 		return $code;
+	}
+
+/* =============================================================
+	CRUD Processing
+============================================================= */
+	/**
+	 * Update Record with Input Data
+	 * @param  WireInput       $input Input Data
+	 * @param  ArTermsCode  $code
+	 * @return array
+	 */
+	protected function _inputUpdate(WireInput $input, Code $code) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$invalidfields  = parent::_inputUpdate($input, $code);
+		$invalidfieldsBasic = $this->_inputUpdateBasic($values, $code);
+		$invalidfieldsMethods = $this->_inputUpdateMethodTerms($values, $code);
+		// header('Content-Type: application/json; charset=utf-8');
+		// echo json_encode($this->codeJson($code));
+		// exit;	
+		return array_merge($invalidfields, $invalidfieldsBasic);
+	}
+
+	/**
+	 * Update Terms Code Basic fields
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return array
+	 */
+	private function _inputUpdateBasic(WireInputData $values, ArTermsCode $code) {
+		$this->_inputUpdateMethod($values, $code);
+		$this->_inputUpdateType($values, $code);
+		$this->_inputUpdateCcprefix($values, $code);
+		$this->_inputUpdateCountry($values, $code);
+		$this->_inputUpdateExpiredate($values, $code);
+
+		$code->setArtmhold($values->yn('hold'));
+		$code->setFreightallow($values->yn('freightallow'));
+		return [];
+	}
+
+	/**
+	 * Update Terms Code Method
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return bool
+	 */
+	private function _inputUpdateMethod(WireInputData $values, ArTermsCode $code) {
+		$method = $this->fieldAttribute('method', 'default');
+		$methodOptions = $this->fieldAttribute('method', 'options');
+		if ($values->option('method', array_keys($methodOptions))) {
+			$method = $values->text('method');
+		}
+		$code->setMethod($method);
+		return true;
+	}
+
+	/**
+	 * Update Terms Code Type
+	 * NOTE: Code's Method should be updated first
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return bool
+	 */
+	private function _inputUpdateType(WireInputData $values, ArTermsCode $code) {
+		$type = $this->fieldAttribute('type', 'default');
+		$typeOptions = $this->fieldAttribute('type', 'optionsS');
+		$inputName = 'typeS';
+
+		if ($code->method == self::METHOD_EOM) {
+			$inputName = 'typeE';
+			$typeOptions = $this->fieldAttribute('type', 'optionsE');
+		}
+
+		if ($values->option($inputName, array_keys($typeOptions))) {
+			$type = $values->text($inputName);
+		}
+		$code->setType($type);
+		return true;
+	}
+
+	/**
+	 * Update Terms Code's ccprefix
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return bool
+	 */
+	private function _inputUpdateCcprefix(WireInputData $values, ArTermsCode $code) {
+		$code->setCcprefix('');
+
+		if ($code->type != self::TYPE_CREDITCARD) {
+			return true;
+		}
+		$CRCD = Crcd::instance();
+
+		if ($CRCD->exists($values->string('ccprefix'))) {
+			$code->setCcprefix($values->string('ccprefix'));
+		}
+		return true;
+	}
+
+	/**
+	 * Update Terms Code's country
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return bool
+	 */
+	private function _inputUpdateCountry(WireInputData $values, ArTermsCode $code) {
+		$code->setCountry('');
+
+		$COCOM = Cocom::instance();
+
+		if ($COCOM->exists($values->string('country'))) {
+			$code->setCountry($values->string('country'));
+		}
+		return true;
+	}
+
+	/**
+	 * Update Terms Code's expiredate
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return bool
+	 */
+	private function _inputUpdateExpiredate(WireInputData $values, ArTermsCode $code) {
+		$code->setExpiredate('');
+		$inputFormat = $this->fieldAttribute('expiredate', 'inputFormat');
+
+		$opts = ['default' => '', 'returnFormat' => $this->fieldAttribute('expiredate', 'recordFormat')];
+		$code->setExpiredate($values->date('expiredate', $inputFormat, $opts));
+		return true;
+	}
+
+	/**
+	 * Update Terms Code's Terms Splits dependign on Method Type
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return array
+	 */
+	private function _inputUpdateMethodTerms(WireInputData $values, ArTermsCode $code) {
+		if ($code->method === self::METHOD_EOM) {
+			return $this->_inputUpdateTermsEom($values, $code);
+		}
+
+		// Empty out EOM splits fields
+		for ($i = 1; $i < self::NBR_SPLITS_METHOD_E; $i++) {
+			$code->empty_eom_split($i);
+		}
+	}
+
+	/**
+	 * Update EOM Splits fields
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return void
+	 */
+	private function _inputUpdateTermsEom(WireInputData $values, ArTermsCode $code) {
+		if ($code->method !== self::METHOD_EOM) {
+			return [];
+		}
+
+		$code->set_eom_from_day(1, $this->fieldAttribute('eom_from_day1', 'default'));
+		$code->set_eom_thru_day(1, $this->fieldAttribute('eom_thru_day1', 'default'));
+		$nextFromDay = $code->eom_thru_day(1) + 1;
+
+		$fieldAttr = $this->getEomFieldAttributes();
+		$fieldOpts = $this->getEomFieldInputOptions();
+
+		for ($i = 1; $i < self::NBR_SPLITS_METHOD_E; $i++) {
+			if ($nextFromDay > $fieldAttr['eom_thru_day']['max'] && $i > 1) {
+				$code->empty_eom_split($i);
+				continue;
+			}
+			if ($i > 1) {
+				$code->set_eom_from_day($i, $nextFromDay);
+			}
+			$thruDay = $values->int("eom_thru_day$i", ['max' => $fieldAttr['eom_thru_day']['max']]);
+
+			if ($thruDay > $fieldAttr['eom_thru_day']['defaultToMaxAt']) {
+				$thruDay = $fieldAttr['eom_thru_day']['max'];
+			}
+			if ($thruDay <= $code->eom_from_day($i) && $i > 1) {
+				$code->empty_eom_split($i);
+				continue;
+			}
+			$code->set_eom_thru_day($i, $thruDay);
+			$code->set_eom_due_day($i, $values->int("eom_due_day$i", $fieldOpts['eom_due_day']));
+			$code->set_eom_disc_percent($i, $values->float("eom_disc_percent$i", $fieldOpts['eom_disc_percent']));
+
+			if ($code->eom_disc_percent($i) > 0) {
+				$code->set_eom_disc_day($i, $values->int("eom_disc_day$i", $fieldOpts['eom_disc_day']));
+				$code->set_eom_disc_months($i, $values->int("eom_disc_months$i", $fieldOpts['eom_disc_months']));
+			}
+			$nextFromDay = $code->eom_thru_day($i) + 1;
+		}
+		return [];
 	}
 }
