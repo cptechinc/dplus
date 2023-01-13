@@ -21,6 +21,7 @@ class DplusUser extends CodeFilter {
 			$model::aliasproperty('id'),
 			$model::aliasproperty('name'),
 			$model::aliasproperty('email'),
+			$model::aliasproperty('whseid'),
 		];
 		$this->query->searchFilter($columns, strtoupper($q));
 	}
