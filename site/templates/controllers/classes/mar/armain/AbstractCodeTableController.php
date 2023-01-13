@@ -22,6 +22,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	const SHOWONPAGE      = 10;
 	const USE_EDIT_MODAL  = true;
 	const USE_EDIT_PAGE   = false;
+	const LIST_SEARCH_COLS = ['code', 'description'];
 
 
 /* =============================================================
@@ -95,7 +96,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 		if (strlen($data->q) > 0) {
 			$cols = self::pw('sanitizer')->array($data->col, ['delimiter' => ',']);
-			$cols = empty(array_filter($cols)) ? ['code', 'description'] : $cols;
+			$cols = empty(array_filter($cols)) ? static::LIST_SEARCH_COLS : $cols;
 			$filter->search($data->q, $cols);
 		}
 
