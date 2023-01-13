@@ -22,7 +22,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		'method'       => ['type' => 'text', 'default' => 'S', 'options' => ['S' => 'Standard Terms', 'E' => 'End of Menth Terms']],
 		'type'         => ['type' => 'text', 'default' => 'STD', 'optionsS' => ['STD' => 'Standard', 'CC' => 'Credit Card', 'CA' => 'Cash', 'COD' => 'COD', 'CDC' => 'COD Cash'], 'optionsE' => ['STD' => 'Standard', 'CA' => 'Cash', 'COD' => 'COD', 'CDC' => 'COD Cash' ]],
 		'hold'         => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
-		'expiredate'   => ['type' => 'text', 'default' => ''],
+		'expiredate'   => ['type' => 'text', 'default' => '', 'inputFormat' => 'm/d/Y', 'recordFormat' => 'Ymd'],
 		'country'      => ['type' => 'text', 'default' => ''],
 		'ccprefix'     => ['type' => 'text', 'default' => ''],
 		'freightallow' => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
