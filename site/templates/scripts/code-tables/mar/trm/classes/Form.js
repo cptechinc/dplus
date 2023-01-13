@@ -57,8 +57,7 @@ class TrmForm extends CodeFormBase {
 		}
 
 		var value = input.val() == '' ? 0 : parseInt(input.val());
-
-		if (value > 28) {
+		if (value > this.config.fields.eom_thru_day.defaultToMaxAt) {
 			input.val(input.attr('max'));
 		}
 	}
@@ -73,6 +72,7 @@ class TrmForm extends CodeFormBase {
 			return false;
 		}
 		var index = parseFloat(input.closest('.eom-split').data('index'));
+
 		if (index >= codetable.config.methods.splitCount) {
 			return false;
 		}
