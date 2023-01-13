@@ -2,6 +2,7 @@ $(function() {
 	let formCode = CodeFormBase.getInstance();
 	let formTrm  = TrmForm.getInstance();
 	let alert    = CodeAlertsBase.getInstance();
+	let server   = TrmRequests.getInstance();
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -103,6 +104,25 @@ $(function() {
 			return true;
 		}
 	});
+
+	$("body").on("change", "#code-form input[name=ccprefix]", function(e) {
+		var input = $(this);
+		var parent = input.closest('.input-parent');
+		var descriptionField = parent.find('.description');
+
+		descriptionField.text('');
+
+		if (input.val() == '') {
+			return true;
+		}
+		
+		server.getCreditCardCode(input.val(), function(crcdCode) {
+			if (crcdCode) {
+				descriptionField.text(crcdCode.description);
+			}
+		});
+	});
+
 
 /* =============================================================
 	Method EOM Events
