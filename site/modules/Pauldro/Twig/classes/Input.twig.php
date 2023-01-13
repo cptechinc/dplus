@@ -19,7 +19,8 @@ class TwigInput extends TwigBaseHtml {
 		'readonly',
 		'disabled',
 		'autofocus',
-		'checked'
+		'checked',
+		'required'
 	];
 
 	public function __construct() {
