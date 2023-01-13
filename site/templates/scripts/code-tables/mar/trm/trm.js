@@ -79,7 +79,10 @@ $(function() {
 			return true;
 		}
 
-		if (input.val() == codetable.config.methods.eom.value){
+		if (input.val() == codetable.config.methods.eom.value) {
+			var inputTypeS = formTrm.form.find('[name=typeS]');
+			inputTypeS.val(formTrm.config.fields.type.default);
+			inputTypeS.change();
 			$('[name="' + codetable.config.methods.eom.typeInputName + '"]').addClass('show');
 			$('#eom-splits').addClass('show');
 			return true;
@@ -115,12 +118,27 @@ $(function() {
 		if (input.val() == '') {
 			return true;
 		}
-		
+
 		server.getCreditCardCode(input.val(), function(crcdCode) {
 			if (crcdCode) {
 				descriptionField.text(crcdCode.description);
 			}
 		});
+	});
+
+	$("body").on("change", "#code-form select[name=typeS]", function(e) {
+		var input = $(this);
+		var ccprefixParent = formCode.inputs.fields.ccprefix.closest('.input-parent');
+		
+		if (input.val() != codetable.config.types.creditcard.value) {
+			formCode.inputs.fields.ccprefix.val('');
+			formCode.inputs.fields.ccprefix.change();
+			formCode.inputs.fields.ccprefix.attr('readonly', 'readonly');
+			ccprefixParent.find('button[data-toggle]').attr('disabled', 'disabled');
+			return true;
+		}
+		formCode.inputs.fields.ccprefix.removeAttr('readonly');
+		ccprefixParent.find('button[data-toggle]').removeAttr('disabled');
 	});
 
 
