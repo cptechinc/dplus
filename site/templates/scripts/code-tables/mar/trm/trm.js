@@ -229,8 +229,8 @@ $(function() {
 	function validateExpiredate() {
 		var input = formTrm.inputs.fields.expiredate;
 		var expiredate = moment(input.val(), 'DD/MM/YYYY');
-		var minDate    = moment(formTrm.inputs.fields.expiredate.attr('min'), 'DD/MM/YYYY');
-		return expiredate.format('X') > minDate.format('X')
+		var minDate    = moment();
+		return expiredate.format('X') > minDate.format('X');
 	}
 
 	jQuery.validator.addMethod("expiredate", function(value, element) {
