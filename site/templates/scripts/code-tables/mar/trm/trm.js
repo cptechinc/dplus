@@ -4,6 +4,13 @@ $(function() {
 	let alert    = CodeAlertsBase.getInstance();
 	let server   = TrmRequests.getInstance();
 
+	if (formTrm.inputs.fields.code.val() == '') {
+		formTrm.inputs.fields.code.focus();
+	} else {
+		formTrm.inputs.fields.description.focus();
+	}
+
+
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
@@ -49,22 +56,31 @@ $(function() {
 
 		var validator = form.validate();
 
-		if (formEom.find('.is-invalid').length) {
-			var invalidInput = formEom.find('.is-invalid');
-			if (validator.element('#' + invalidInput.attr('id')) === false) {
-				invalidInput.focus();
-			}
-			return true;
-		}
-
 		formEom.find('input').each(function() {
 			var otherInput = $(this);
 
 			if (validator.element('#' + otherInput.attr('id')) === false) {
-				otherInput.focus();
 				return true;
 			}
 		});
+
+		if (formEom.find('input.is-invalid').length) {
+			// checking invalid inputs
+			var invalidInput = formEom.find('input.is-invalid').first();
+
+			if (input.attr('name') == invalidInput.attr('name')) {
+				return true;
+			}
+			
+			if (validator.element('#' + invalidInput.attr('id')) === false) {
+				if (input.attr('tabindex') > invalidInput.attr('tabindex')) {
+
+					invalidInput.focus();
+					return true;
+				}
+			}
+			return true;
+		}
 	});
 
 	$("body").on("change", "#code-form input[name=code]", function(e) {
