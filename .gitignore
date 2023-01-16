@@ -8,7 +8,7 @@ site/modules/ProcessExportProfile
 
 # Project Configurations
 .env
-site/config.php
+site/config*.php
 /vendor
 test.php
 site/modules/Dplus/Configs/configs
