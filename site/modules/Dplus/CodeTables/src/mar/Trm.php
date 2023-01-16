@@ -24,7 +24,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	const FIELD_ATTRIBUTES = [
 		'code'         => ['type' => 'text', 'maxlength' => 4],
 		'description'  => ['type' => 'text', 'maxlength' => 20],
-		'method'       => ['type' => 'text', 'default' => 'S', 'options' => ['S' => 'Standard Terms', 'E' => 'End of Menth Terms']],
+		'method'       => ['type' => 'text', 'default' => 'S', 'options' => ['S' => 'Standard Terms', 'E' => 'End of Month Terms']],
 		'type'         => ['type' => 'text', 'default' => 'STD', 'optionsS' => ['STD' => 'Standard', 'CC' => 'Credit Card', 'CA' => 'Cash', 'COD' => 'COD', 'CDC' => 'COD Cash'], 'optionsE' => ['STD' => 'Standard', 'CA' => 'Cash', 'COD' => 'COD', 'CDC' => 'COD Cash' ]],
 		'hold'         => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
 		'expiredate'   => ['type' => 'text', 'default' => '', 'inputFormat' => 'm/d/Y', 'recordFormat' => 'Ymd'],
