@@ -368,7 +368,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$fieldAttr = $this->getEomFieldAttributes();
 		$fieldOpts = $this->getEomFieldInputOptions();
 
-		for ($i = 1; $i < self::NBR_SPLITS_METHOD_E; $i++) {
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_E; $i++) {
 			if ($nextFromDay > $fieldAttr['eom_thru_day']['max'] && $i > 1) {
 				$code->empty_eom_split($i);
 				continue;
