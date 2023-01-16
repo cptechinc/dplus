@@ -19,7 +19,6 @@ class CodeForm {
 		this.updateDeleteLink(json);
 
 		if (json) {
-			console.log(json);
 			this.inputs.form.attr('data-code', json.code);
 			this.inputs.code.val(json.code);
 			this.inputs.code.attr('readonly', 'true');
@@ -35,17 +34,7 @@ class CodeForm {
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
 		}
-		this.inputs.form.attr('data-code', '');
-		this.inputs.code.removeAttr('readonly');
-		var inputNames = Object.getOwnPropertyNames(this.inputs);
-		inputNames = inputNames.filter(function(item) {
-			return item != 'id' && item != 'form';
-		});
-		inputNames.forEach((name, idx, array) => {
-			if (this.inputs.hasOwnProperty(name)) {
-				this.inputs[name].val('');
-			}
-		});
+		this.clearInputs();
 		var inputNamesSetToDefaultValues = [
 			'billing', 'residential', 'airshipment', 
 			'commercialflight', 'chargefreight', 'useroute', 'addsurcharge'
@@ -58,6 +47,21 @@ class CodeForm {
 		});
 
 		this.triggerInputsChange();
+	}
+
+	clearInputs() {
+		this.inputs.code.val('');
+		this.inputs.form.attr('data-code', '');
+		this.inputs.code.removeAttr('readonly');
+		var inputNames = Object.getOwnPropertyNames(this.inputs);
+		inputNames = inputNames.filter(function(item) {
+			return item != 'id' && item != 'form';
+		});
+		inputNames.forEach((name, idx, array) => {
+			if (this.inputs.hasOwnProperty(name)) {
+				this.inputs[name].val('');
+			}
+		});
 	}
 
 	triggerInputsChange() {

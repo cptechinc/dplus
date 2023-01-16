@@ -1,4 +1,6 @@
 <?php namespace Controllers\Mar\Armain;
+// Purl URI manipulation Library
+use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
@@ -51,8 +53,10 @@ class Ctm extends AbstractCodeTableController {
 					break;
 				default:
 					$ctm->processInput(self::pw('input'));
+					
 					if ($data->action != 'delete') {
-						$url = self::codeEditUrl($data->code);
+						// $url = self::codeEditUrl($data->code);
+						$url  = self::url($data->code);
 					}
 					break;
 			}
@@ -79,6 +83,7 @@ class Ctm extends AbstractCodeTableController {
 		}
 		$html = self::displayCode($data, $code);
 		self::getCodeTable()->deleteResponse();
+		self::getCodeTable()->qnotes->ictp->deleteResponse();
 		return $html;
 	}
 
@@ -100,6 +105,17 @@ class Ctm extends AbstractCodeTableController {
 		$html .= static::renderLockedAlert($data);
 		$html .= static::renderCode($data, $code);
 		return $html;
+	}
+
+/* =============================================================
+	URLS
+============================================================= */
+	public static function ctmNotesDeleteUrl($code, $noteType = 'notetype') {
+		$url = new Purl(self::codeEditUrl($code));
+		$url->query->set('artypecode', $code);
+		$url->query->set('action', 'delete-notes');
+		$url->query->set('type', $noteType);
+		return $url->getUrl();
 	}
 
 /* =============================================================
@@ -126,5 +142,18 @@ class Ctm extends AbstractCodeTableController {
 	protected static function renderCode(WireData $data, Code $code) {
 		$codeTable = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/mar/ctm/edit/display.twig', ['manager' => $codeTable, 'code' => $code]);
+	}
+
+/* =============================================================
+	Hooks
+============================================================= */
+	public static function initHooks() {
+		parent::initHooks();
+
+		$m = self::pw('modules')->get('Dpages');
+
+		$m->addHook('Page(pw_template=armain)::ctmNotesDeleteUrl', function($event) {
+			$event->return = self::ctmNotesDeleteUrl($event->arguments(0));
+		});
 	}
 }

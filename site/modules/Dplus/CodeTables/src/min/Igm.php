@@ -106,12 +106,8 @@ class Igm extends AbstractCodeTableEditableSingleKey {
 	 */
 	public function new($id = '') {
 		$this->initFieldAttributes();
-		$code = new InvGroupCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var InvGroupCode */
+		$code = parent::new($id);
 		$code->setSurchargetype($this->fieldAttribute('surchargetype', 'default'));
 		$code->setWebgroup($this->fieldAttribute('webgroup', 'default'));
 		$code->setSalesprogram($this->fieldAttribute('salesprogram', 'default'));
@@ -161,14 +157,14 @@ class Igm extends AbstractCodeTableEditableSingleKey {
 		$mhm = Codes\Mgl\Mhm::getInstance();
 
 		foreach ($fields as $name => $description) {
-			$exists = $mhm->exists($values->text($name));
+			$exists = $mhm->exists($values->string($name));
 
 			if ($exists === false) {
 				$invalidfields[$name] = $description;
 				continue;
 			}
 			$setField = 'set'.ucfirst($name);
-			$code->$setField($values->text($name));
+			$code->$setField($values->string($name));
 		}
 		return $invalidfields;
 	}
@@ -229,18 +225,18 @@ class Igm extends AbstractCodeTableEditableSingleKey {
 		}
 
 		if ($values->text('productline') == '') {
-			$code->setProductline($values->text('productline'));
+			$code->setProductline($values->string('productline'));
 			return $invalidfields;
 		}
 
 		$iplm = Codes\Min\Iplm::getInstance();
 
-		if ($iplm->exists($values->text('productline')) === false) {
+		if ($iplm->exists($values->string('productline')) === false) {
 			$invalidfields['productline'] = 'Product Line';
 			return $invalidfields;
 		}
 
-		$code->setProductline($values->text('productline'));
+		$code->setProductline($values->string('productline'));
 		return $invalidfields;
 	}
 

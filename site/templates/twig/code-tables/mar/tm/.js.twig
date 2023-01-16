@@ -16,18 +16,31 @@ $(function() {
 
 	$("body").on("change", "input.taxcode", function(e) {
 		var input = $(this);
-		var code = input.val();
+		var code  = input.val();
+		var index = parseInt(input.data('index'));
 		var formgroup = input.closest('.form-group');
 		var descriptionSpan = formgroup.find('.description');
 
 		descriptionSpan.text('');
+
 		if (code == '') {
+			formCode.shiftTaxCodesUp(index);
+			return true;
+		}
+
+		var previousTaxCode = formCode.inputs.taxcode(index - 1);
+		
+		if (previousTaxCode.length && (previousTaxCode.val() == '' || previousTaxCode.val() == input.val())) {
+			formCode.shiftTaxCodesUp(index - 1);
 			return true;
 		}
 
 		server.getArTaxCode(code, function(code) {
 			if (code) {
-				descriptionSpan.text(code.description);
+				if (input.val() == code.code) {
+					descriptionSpan.text(code.description);
+				}
+				return true;
 			}
 		});
 	});

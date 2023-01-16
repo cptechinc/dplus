@@ -31,13 +31,17 @@ class CodeForm {
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
 		}
+		this.clearInputs();
+		this.inputs.surcharge.val('N');
+		this.inputs.percent.val(0);
+		this.inputs.surcharge.change();
+	}
+
+	clearInputs() {
 		this.inputs.form.attr('data-code', '');
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');
 		this.inputs.description.val('');
-		this.inputs.surcharge.val('N');
-		this.inputs.percent.val(0);
-		this.inputs.surcharge.change();
 	}
 
 	updateDeleteLink(json = null) {

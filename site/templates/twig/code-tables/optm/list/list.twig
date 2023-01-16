@@ -28,11 +28,11 @@
 
 		{% for code in codes %}
 			<tr data-id="{{ code.id }}">
-				<td class="text-monospace">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
-				<td>{{ code.description }}</td>
-				<td>{{ code.validate|yesorno|capitalize }}</td>
-				<td>{{ code.force|yesorno|capitalize }}</td>
-				<td>{{ code.notecode }}</td>
+				<td class="">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
+				<td class="">{{ code.description }}</td>
+				<td class="">{{ code.validate|yesorno|capitalize }}</td>
+				<td class="">{{ code.force|yesorno|capitalize }}</td>
+				<td class="">{{ code.notecode }}</td>
 				<td class="text-center d-print-none">
 					<div class="d-print-none">
 							{% if code.isNote() %}

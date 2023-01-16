@@ -16,7 +16,6 @@ class StateCode extends AbstractFilter {
 	public function _search($q, $cols = []) {
 		$columns = [
 			Model::aliasproperty('code'),
-			Model::aliasproperty('abbreviation'),
 			Model::aliasproperty('name'),
 		];
 		$this->query->searchFilter($columns, strtoupper($q));

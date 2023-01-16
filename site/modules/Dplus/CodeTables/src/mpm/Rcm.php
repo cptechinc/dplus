@@ -78,22 +78,6 @@ class Rcm extends AbstractCodeTableEditableSingleKey {
 	}
 
 /* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return PrResource
-	 */
-	public function new($id = '') {
-		$code = new PrResource();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
-
-/* =============================================================
 	CRUD Processing
 ============================================================= */
 	/**
@@ -108,11 +92,11 @@ class Rcm extends AbstractCodeTableEditableSingleKey {
 		$invalidfields = parent::_inputUpdate($input, $code);
 		$dcm = Dcm::getInstance();
 
-		if ($values->text('workcenterid') != '' && $dcm->exists($values->text('workcenterid')) === false) {
+		if ($values->text('workcenterid') != '' && $dcm->exists($values->string('workcenterid')) === false) {
 			$invalidfields['workcenterid'] = "Work Center";
 			return $invalidfields;
 		}
-		$code->setWorkcenterid($values->text('workcenterid'));
+		$code->setWorkcenterid($values->string('workcenterid'));
 		return $invalidfields;
 	}
 }

@@ -11,9 +11,9 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			<th class="p-3">Code</th>
-			<th class="p-3">Description</th>
-			<th class="p-3 text-right">
+			<th class="py-3">Code</th>
+			<th class="py-3">Description</th>
+			<th class="py-3 text-right">
 				{% if input.get.offsetExists('print') == false %}
 					<button class="btn btn-light btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-json="">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add
@@ -32,21 +32,28 @@
 		{% endif %}
 
 		{% for code in codes %}
+			{% set key = [code.sysop, code.id]|join('|') %}
 			{% set class = code.id == input.get.string('focus') ? 'highlight' : '' %}
-			{% set class = optm.getRecordlockerKey(code) is same as(response.key) ? 'bg-success text-white' : class %}
+			{% set class = optm.getRecordlockerkey(code) is same as(response.key) ? 'bg-success text-white' : class %}
 
 			<tr data-id="{{ code.id }}" class="code {{ class }}">
-				<td class="text-monospace">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
-				<td>{{ code.description }}</td>
+				<td class="">{{ code.id|replace({' ': '&nbsp;'})|raw }}</td>
+				<td class="">{{ code.description }}</td>
 				<td class="text-right">
 					{% if input.get.offsetExists('print') == false %}
-						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ optm.codeJson(code)|json_encode }}">
-							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-						</button>
-						&nbsp; &nbsp;
-						<a href="{{ page.codeDeleteUrl(code.sysop, code.id) }}" class="btn btn-danger btn-sm delete_button">
-							<i class="fa fa-trash" aria-hidden="true"></i> Delete
-						</a>
+						{% if optm.recordlocker.isLocked(key) == false or optm.recordlocker.isLockedByUser(key) %}
+							<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ optm.codeJson(code)|json_encode }}">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</button>
+							&nbsp; &nbsp;
+							<a href="{{ page.codeDeleteUrl(code.sysop, code.id) }}" class="btn btn-danger btn-sm delete_button">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							</a>
+						{% else %}
+							<span class="badge badge-secondary">
+								<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ optm.recordlocker.getLockingUser(key) }}
+							</span>
+						{% endif %}
 					{% endif %}
 				</td>
 			</tr>

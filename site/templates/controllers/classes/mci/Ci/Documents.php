@@ -4,6 +4,7 @@ use Purl\Url as Purl;
 // Dplus Models
 use Customer;
 // ProcessWire
+use ProcessWire\Page;
 use ProcessWire\WireData;
 // Dplus Mso
 use Dplus\Mso\So as Mso;
@@ -42,6 +43,7 @@ class Documents extends AbstractSubfunctionController {
 
 	private static function documents(WireData $data) {
 		self::initHooks();
+		self::addPageData($data);
 		$list = self::createList($data->custID);
 		$customer = self::getCustomerByRid($data->rid);
 
@@ -213,5 +215,16 @@ class Documents extends AbstractSubfunctionController {
 			$document = $event->arguments(2);
 			$event->return = self::documentsUrl($rID, $folder, $document);
 		});
+	}
+
+	/**
+	 * Decorate Page with extra Properties
+	 * @param  WireData  $data
+	 * @param  Page|null $page
+	 * @return void
+	 */
+	protected static function addPageData(WireData $data, Page $page = null) {
+		$page = $page ? $page : self::pw('page');
+		$page->subfunctionDesc = static::TITLE;
 	}
 }

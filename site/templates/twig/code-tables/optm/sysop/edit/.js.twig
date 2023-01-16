@@ -18,7 +18,6 @@ $(function() {
 	var query = uri.query(true);
 
 	if (query.hasOwnProperty('focus') && query.focus != '' && query.focus != 'new') {
-		console.log(query.focus);
 		$('.code[data-id="'+query.focus+'"]').addClass('highlight');
 		// $('html, body').animate({scrollTop: $('.code[data-id="'+query.focus+'"]').offset().top,},700,'linear');
 	}
@@ -31,8 +30,12 @@ $(function() {
 	$("body").on('change', 'input[name=code]', function(e) {
 		var input = $(this);
 
-		server.validateCode(formCode.inputs.sysop.val(), input.val(), function(exists) {
-			if (exists) {
+		var lockUrl = URI(config.ajax.urls.locker.lock);
+		lockUrl.setQuery('function', codetable.table);
+		lockUrl.setQuery('key', [query.sysop, input.val()].join('|'));
+
+		server.getCode(formCode.inputs.sysop.val(), input.val(), function(json) {
+			if (json) {
 				alert.codeExists(input.val(), function(editCode) {
 					var modal = input.closest('.modal');
 
@@ -44,10 +47,16 @@ $(function() {
 						return false;
 					}
 
-					server.getCode(formCode.inputs.sysop.val(), input.val(), function(response) {
-						if (response) {
+					var ajax = new AjaxRequest(lockUrl.toString());
+					ajax.request(function(canEdit) {
+						if (canEdit === false) {
+							alert.recordIsLocked(function() {
+								formCode.form.attr('data-serialized', '');
+								modal.modal('hide');
+							});
+						} else {
 							modal.find('.modal-title').text('Edit Code');
-							formCode.updateInputsFromJson(response);
+							formCode.updateInputsFromJson(json);
 							formCode.form.attr('data-serialized', formCode.form.serialize());
 						}
 					});
@@ -63,6 +72,7 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal  = $(this);
 		var code   = button.data('code');
+		var json   = button.data('json');
 
 		$('.code-table-alert').remove();
 		$('.codes-list .highlight').removeClass('highlight')
@@ -72,7 +82,23 @@ $(function() {
 		if (code) {
 			modal.find('.modal-title').text('Edit Code');
 		}
-		formCode.updateInputsFromJson(button.data('json'));
+		formCode.updateInputsFromJson(json);
+
+		if (code) {
+			var lockUrl = URI(config.ajax.urls.locker.lock);
+			lockUrl.setQuery('function', codetable.table);
+			lockUrl.setQuery('key', [query.sysop, code].join('|'));
+			
+			var ajax = new AjaxRequest(lockUrl.toString());
+			ajax.request(function(canEdit) {
+				if (canEdit === false) {
+					alert.recordIsLocked(function() {
+						modal.modal('hide');
+					});
+				}
+			});
+		}
+		
 	});
 
 	$('#edit-code-modal').on('shown.bs.modal', function (event) {
@@ -118,6 +144,24 @@ $(function() {
 		formCode.form.validate().resetForm();
 		modal.find('form').find('.is-valid').removeClass('is-valid');
 		modal.find('form').find('.is-invalid').removeClass('is-invalid');
+
+		if (code) {
+			if (row.length == 0) {
+				var url = URI();
+				url.setQuery('action', 'focus');
+				url.setQuery('code', code);
+				window.location.href = url.toString();
+			}
+		}
+
+		var unlockUrl = URI(config.ajax.urls.locker.delete);
+		unlockUrl.setQuery('function', codetable.table);
+		unlockUrl.setQuery('key', [query.sysop, code].join('|'));
+
+		var ajax = new AjaxRequest(unlockUrl.toString());
+		ajax.request(function(isUnlocked) {
+
+		});
 	});
 
 /* =============================================================

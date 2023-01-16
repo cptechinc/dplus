@@ -291,6 +291,12 @@ $(function() {
 		modal.updateTitle(button.data('type'), button.data('id'));
 		modal.updateImage(button.data('folder'), button.data('file'));
 	});
+
+	$('body').on('hidden.bs.modal', function () {
+		if ($('.modal.show').length > 0) {
+			$('body').addClass('modal-open');
+		}
+	});
 });
 
 $.fn.extend({
@@ -501,7 +507,6 @@ function format_phone_us(input) {
 	} else {
 		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
 	}
-	console.log(input);
 	return input;
 }
 

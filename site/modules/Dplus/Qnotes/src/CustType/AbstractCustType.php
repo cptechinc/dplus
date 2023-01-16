@@ -100,7 +100,7 @@ class AbstractCustType extends Qnotes {
 	public function new($code = '') {
 		$note = NoteArCustType::new();
 		if ($code && $code != 'new') {
-			$code = $this->wire('sanitizer')->text($code, ['maxLength' => $this->fieldAttribute('artypecode', 'maxlength')]);
+			$code = $this->wire('sanitizer')->string($code);
 			$note->setCustomertype($code);
 			$note->setKey2($code);
 		}
@@ -141,7 +141,7 @@ class AbstractCustType extends Qnotes {
 	protected function _inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$code     = $values->text('artypecode', ['maxLength' => $this->fieldAttribute('artypecode', 'maxlength')]);
+		$code     = $values->string('artypecode');
 		$this->deleteNotes($code);
 		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
 		$savedLines = [];
@@ -170,6 +170,7 @@ class AbstractCustType extends Qnotes {
 		$response = new Response();
 		$response->setKey($note->customertype);
 		$response->setAction(Response::CRUD_UPDATE);
+		$response->setType(static::TYPE);
 
 		if (in_array(false, $savedLines)) {
 			$errorLines =
@@ -203,7 +204,7 @@ class AbstractCustType extends Qnotes {
 	protected function _inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$code   = $values->text('artypecode', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$code   = $values->string('artypecode');
 
 		$note = $this->new($code);
 		$response = $this->deleteAndRespond($note);
@@ -221,10 +222,11 @@ class AbstractCustType extends Qnotes {
 		$success = $this->deleteNotes($note->customertype);
 
 		$response = new Response();
-		$response->setKey($note->id);
+		$response->setKey($note->customertype);
 		$response->setAction(Response::CRUD_DELETE);
 		$response->setSuccess($success);
 		$response->setError($success === false);
+		$response->setType(static::TYPE);
 		$response->addMsgReplacement('{lines}', '');
 		$response->addMsgReplacement('{artypecode}', $note->customertype);
 		$response->buildMessage(static::RESPONSE_TEMPLATE);

@@ -112,4 +112,8 @@ class UserFunction extends WireData {
 	public function deleteLock($key = false) {
 		return self::locker()->deleteLock($this->user->loginid, $this->function, $key);
 	}
+
+	public function userHasLocks() {
+		return self::locker()->userHasLocks($this->function, $this->user->loginid);
+	}
 }

@@ -45,16 +45,6 @@ $(function() {
 /* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
-	modal_ajax.on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal = $(this);
-		var url = button.data('lookupurl');
-		modal.attr('data-input', button.data('input'));
-		modal.find('.modal-title').text(button.attr('title'));
-		modal.resizeModal('xl');
-		modal.find('.modal-body').loadin(url, function() {});
-	});
-
 	$("body").on('click', '.user-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
@@ -69,23 +59,6 @@ $(function() {
 		var id = button.data('vendorid');
 		$(modal_ajax.attr('data-input')).val(id);
 		modal_ajax.modal('hide');
-	});
-
-	$("body").on('submit', '#ajax-modal form', function(e) {
-		e.preventDefault();
-		var form = $(this);
-		var query = form.serialize();
-		var action = form.attr('action');
-		var search = form.find('input[name=q]').val();
-		var url = action + '?' + query;
-		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
-		form.closest('.modal').find('.modal-body').loadin(url, function() {});
-	});
-
-	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
-		e.preventDefault();
-		var href = $(this).attr('href');
-		modal_ajax.find('.modal-body').load(href);
 	});
 
 /* =============================================================

@@ -130,8 +130,8 @@ class QnotesItemWhseOrder extends WireData implements Module {
 	 */
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID  = $input->$rm->text('itemID');
-		$whseID  = $input->$rm->text('whseID');
+		$itemID  = $input->$rm->string('itemID');
+		$whseID  = $input->$rm->string('whseID');
 		$form    = $input->$rm->text('form');
 
 		$q = $this->get_query();
@@ -162,8 +162,8 @@ class QnotesItemWhseOrder extends WireData implements Module {
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID  = $values->text('itemID');
-		$whseID  = $input->$rm->text('whseID');
+		$itemID  = $values->string('itemID');
+		$whseID  = $input->$rm->string('whseID');
 		$form = $this->get_form_input($input);
 		$note = $values->textarea('note');
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
@@ -200,8 +200,8 @@ class QnotesItemWhseOrder extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$note = ItemWhseOrderNote::new();
-		$note->setItemid($values->text('itemID'));
-		$note->setWarehouseid($values->text('whseID'));
+		$note->setItemid($values->string('itemID'));
+		$note->setWarehouseid($values->string('whseID'));
 
 		foreach (array_keys(ItemWhseOrderNote::FORMS_LABELS) as $formfield) {
 			$func = 'set'.ucfirst($formfield);

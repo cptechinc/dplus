@@ -1,0 +1,13 @@
+{% include 'util/bootstrap/form/date-picker.twig' with {
+	'inputgroup': {
+		'size': 'sm',
+		'input': {
+			'name': 'expiredate',
+			'value': code.expiredate ? code.expiredate|convertdate : '',
+			'attributes': {
+				'placeholder': '',
+				'aria-label':  'Terms Code Expiration Date'
+			}
+		}
+	}
+} %}

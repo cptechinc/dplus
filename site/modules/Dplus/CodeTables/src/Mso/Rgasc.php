@@ -63,22 +63,6 @@ class Rgasc extends AbstractCodeTableEditableSingleKey {
 	}
 
 /* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return SoRgaCode
-	 */
-	public function new($id = '') {
-		$code = new SoRgaCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
-
-/* =============================================================
 	CRUD Processing
 ============================================================= */
 	/**
@@ -93,11 +77,11 @@ class Rgasc extends AbstractCodeTableEditableSingleKey {
 		$invalidfields = parent::_inputUpdate($input, $code);
 		$iwhm = Codes\Min\Iwhm::getInstance();
 
-		if ($iwhm->exists($values->text('whseid')) === false) {
+		if ($iwhm->exists($values->string('whseid')) === false) {
 			$invalidfields['whseid'] = "Warehouse ID";
 			return $invalidfields;
 		}
-		$code->setWhseid($values->text('whseid'));
+		$code->setWhseid($values->string('whseid'));
 		return $invalidfields;
 	}
 }

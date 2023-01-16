@@ -203,8 +203,8 @@ class Icxm extends Qnotes {
 	protected function _inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
-		$custID = $values->text('custID');
+		$itemID = $values->string('itemID');
+		$custID = $values->string('custID');
 		$this->deleteNotes($itemID, $custID);
 
 		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
@@ -273,8 +273,8 @@ class Icxm extends Qnotes {
 	protected function _inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
-		$custID = $values->text('custID');
+		$itemID = $values->string('itemID');
+		$custID = $values->string('custID');
 
 		$note = $this->new($itemID, $custID);
 		$response = $this->deleteAndRespond($note);

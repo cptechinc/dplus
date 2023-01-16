@@ -248,17 +248,6 @@ $(function () {
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */
-	$("body").on('click', '.item-link', function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var itemID = button.data('itemid');
-		var description = button.data('description');
-		var modal = button.closest('.modal');
-		var input = $(modal.attr('data-input'));
-		input.val(itemID).change();
-		modal_ajax.modal('hide');
-	});
-
 	$("body").on('click', '.vxm-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
@@ -266,16 +255,6 @@ $(function () {
 		var itemID = button.data('itemid');
 		form_edit.find('input[name=vendoritemID]').val(vendoritemID);
 		form_edit.find('input[name=itemID]').val(itemID).change();
-		modal_ajax.modal('hide');
-	});
-
-	$("body").on('click', '.code-link', function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var code = button.data('code');
-		var modal = button.closest('.modal');
-		var input = $(modal.attr('data-input'));
-		input.val(code).change();
 		modal_ajax.modal('hide');
 	});
 

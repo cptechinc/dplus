@@ -87,15 +87,6 @@ $(function() {
 /* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
-	$("body").on('click', '.country-link', function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var code   = button.data('code');
-		var modal  = button.closest('.modal');
-		$(modal.attr('data-input')).val(code).change();
-		modal.modal('hide');
-	});
-
 	$("body").on('click', '.tariff-link', function(e) {
 		e.preventDefault();
 		var button = $(this);

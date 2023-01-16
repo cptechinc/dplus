@@ -44,20 +44,4 @@ class Iplm extends AbstractCodeTableEditableSingleKey {
 		$q->select(InvProductLineCode::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return InvProductLineCode
-	 */
-	public function new($id = '') {
-		$code = new InvProductLineCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

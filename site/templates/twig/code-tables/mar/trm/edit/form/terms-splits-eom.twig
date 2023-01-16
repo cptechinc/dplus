@@ -1,0 +1,79 @@
+<div class="row align-items-center text-center">
+	<div class="col-3">
+		<h5 class="text-center">Day</h5>
+	</div>
+	<div class="col-6">
+		<h5 class="text-center">Discount</h5>
+	</div>
+	<div class="col-3">
+		<h5 class="text-center">Due</h5>
+	</div>
+</div>
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white text-bold">
+		<div class="row align-items-center text-center text-sm">
+			<div class="col-3 border-right border-light">
+				<div class="row align-items-center text-center">
+					<div class="col">From</div>
+					<div class="col">Thru</div>
+				</div>
+			</div>
+			<div class="col-6 border-right border-light">
+				<div class="row align-items-center text-center">
+					<div class="col">Percent</div>
+					<div class="col">Day</div>
+					<div class="col">+Months</div>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="row align-items-center text-center">
+					<div class="col">Day</div>
+					<div class="col">+Months</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% for x in 1..constant('NBR_SPLITS_METHOD_E', manager) %}
+		<div class="list-group-item eom-split" data-index="{{ x }}">
+			<div class="row align-items-center text-center">
+				<div class="col-3 border-right border-dark">
+					<div class="row align-items-center eom-day-range">
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/eom/eom_from_day-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/eom/eom_thru_day-x.twig' %}
+						</div>
+					</div>
+				</div>
+				<div class="col-6 border-right border-dark">
+					<div class="row align-items-center eom-discount">
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/eom/eom_disc_percent-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/eom/eom_disc_day-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/eom/eom_disc_months-x.twig' %}
+						</div>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="row align-items-center eom-due">
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/eom/eom_due_day-x.twig' %}
+						</div>
+						<div class="col">
+							{% include 'code-tables/mar/trm/edit/form/inputs/eom/eom_plus_months-x.twig' %}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="error text-center">
+
+			</div>
+		</div>
+	{% endfor %}
+</div>

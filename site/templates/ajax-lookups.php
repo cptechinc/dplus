@@ -57,6 +57,10 @@
 		['GET', 'country-codes/', AjaxLookup\Misc::class, 'countryCodes'],
 		['GET', 'country-codes/page{pagenbr:\d+}/', AjaxLookup\Misc::class, 'countryCodes'],
 		'mar' => [
+			'crcd' => [
+				['GET', '', AjaxLookup\Mar::class, 'creditCardCodes'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'creditCardCodes'],
+			],
 			'mtm' => [
 				['GET', '', AjaxLookup\Mar::class, 'taxCodes'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'taxCodes'],

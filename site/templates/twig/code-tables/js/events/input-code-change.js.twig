@@ -1,25 +1,34 @@
 // Display Alert if Code already exists
-// NOTE: this if for single key codes
+// NOTE: this is for single key codes
+
+var uri = URI();
 
 $("body").on("change", "input[name=code]", function(e) {
 	var input = $(this);
 	var code = input.val();
 
-	server.validateCode(code, function(exists) {
-		if (exists === true) {
+	var lockUrl = URI(config.ajax.urls.locker.lock);
+	lockUrl.setQuery('function', codetable.table);
+	lockUrl.setQuery('key', code);
+
+	server.getCode(code, function(json) {
+		if (json) {
 			alert.codeExists(code, function(editCode) {
 				var modal = input.closest('.modal');
 
 				if (editCode) {
-					server.getCode(code, function(response) {
-						if (response) {
-							modal.find('.modal-title').text('Edit Code');
-							formCode.updateInputsFromJson(response);
-							formCode.form.attr('data-serialized', formCode.form.serialize());
+
+					var ajax = new AjaxRequest(lockUrl.toString());
+					ajax.request(function(canEdit) {
+						if (canEdit === false) {
+							alert.recordIsLocked(function() {
+								formCode.form.attr('data-serialized', '');
+								modal.modal('hide');
+							});
 						} else {
-							formCode.form.attr('data-serialized', '');
-							formCode.updateInputsFromJson(response);
-							formCode.inputs.code.focus();
+							modal.find('.modal-title').text('Edit Code');
+							formCode.updateInputsFromJson(json);
+							formCode.form.attr('data-serialized', formCode.form.serialize());
 						}
 					});
 				} else {
@@ -33,6 +42,14 @@ $("body").on("change", "input[name=code]", function(e) {
 					formCode.inputs.code.focus();
 				}
 			});
+		}  else {
+			// formCode.form.attr('data-serialized', formCode.form.serialize());
+			
+			if (code == '') {
+				formCode.form.attr('data-serialized', '');
+				formCode.inputs.code.focus();
+				return true;
+			}
 		}
 	});
 });

@@ -17,7 +17,6 @@ class AccountForm {
 
 	updateInputsFromJson(json = null) {
 		if (json) {
-			console.log(json);
 			this.inputs.form.attr('data-accountnbr', json.accountnbr);
 			this.inputs.accountnbr.val(json.accountnbr);
 			this.inputs.accountnbr.attr('readonly', 'true');

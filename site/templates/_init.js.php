@@ -21,6 +21,11 @@ $config->js('config', [
 		'urls' => [
 			'lookup' => $page->searchLookupUrl(''),
 			'json'   => $page->jsonApiUrl(''),
+			'locker' => [
+				'check' => $page->jsonApiUrl('util/recordlocker/check/', ['function' => '', 'key' => '']),
+				'lock' => $page->jsonApiUrl('util/recordlocker/lock/', ['function' => '', 'key' => '']),
+				'delete' => $page->jsonApiUrl('util/recordlocker/delete/', ['function' => '', 'key' => '']),
+			]
 		]
 	]
 ]);
@@ -35,3 +40,5 @@ $config->js('user', [
 		'whseid' => $user->whseid
 	]
 ]);
+
+$config->js('vars', []);

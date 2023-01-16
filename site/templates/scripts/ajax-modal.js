@@ -23,6 +23,18 @@ $(function() {
 		modal.modal('hide');
 	});
 
+	$("body").on('click', '.country-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('code'));
+		if (input.data('jqv')) {
+			input.change();
+		}
+		modal.modal('hide');
+	});
+
 	$("body").on('click', '.customer-link', function(e) {
 		e.preventDefault();
 		var button = $(this);

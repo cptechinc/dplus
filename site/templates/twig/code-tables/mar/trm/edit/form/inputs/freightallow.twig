@@ -1,0 +1,9 @@
+{% include 'util/bootstrap/form/select-simple.twig' with {
+	'select': {
+		'name': 'freightallow',
+		'value' : code.freightallow,
+		'size': 'sm',
+		'haskeys': true,
+		'options': manager.fieldAttribute('freightallow', 'options'),
+	}
+} %}

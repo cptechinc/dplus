@@ -230,7 +230,7 @@ class Mar extends AbstractJsonController {
 	}
 
 	public static function validatePty3Account($data) {
-		$fields = ['custid|text', 'accountnbr|text', 'jqv|bool', 'new|bool'];
+		$fields = ['custid|string', 'accountnbr|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$table = Armain\Pty3::instance();
@@ -251,8 +251,30 @@ class Mar extends AbstractJsonController {
 		return true;
 	}
 
+	public static function validatePty3CustidExists($data) {
+		$fields = ['custid|string', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+
+		$table = Armain\Pty3::instance();
+		$desc = $table::DESCRIPTION_RECORD;
+		$exists = $table->custidExists($data->custid);
+
+		if (boolval($data->jqv) === false) {
+			return boolval($data->new) ? $exists === false : $exists;
+		}
+
+		if (boolval($data->new) === true) {
+			return $exists === false ? true : "3rd Party Freight Customer $data->custid already exists";
+		}
+
+		if ($exists === false) {
+			return "3rd Party Freight Customer $data->custid not found";
+		}
+		return true;
+	}
+
 	public static function getPty3Account($data) {
-		$fields = ['custid|text', 'accountnbr|text'];
+		$fields = ['custid|string', 'accountnbr|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$table = Armain\Pty3::instance();
 
@@ -309,6 +331,16 @@ class Mar extends AbstractJsonController {
 
 	public static function getTmCode($data) {
 		$table = Codes\Mar\Tm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
+	public static function validateTrmCode($data) {
+		$table = Codes\Mar\Trm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getTrmCode($data) {
+		$table = Codes\Mar\Trm::getInstance();
 		return self::getCodeTableCode($data, $table);
 	}
 

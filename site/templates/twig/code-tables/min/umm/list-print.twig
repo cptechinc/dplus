@@ -35,7 +35,7 @@
 {% for code in codes %}
 	{% block code_columns %}
 		<td>
-			<span class="text-monospace">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+			<span class="">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
 		</td>
 		<td>{{ code.description }}</td>
 		<td class="text-right">{{ code.conversion|number_format(manager.fieldAttribute('conversion', 'precision')) }}</td>

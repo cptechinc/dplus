@@ -1,20 +1,42 @@
+var uri = URI();
+
 $('#edit-code-modal').on('show.bs.modal', function (event) {
 	var button = $(event.relatedTarget); // Button that triggered the modal
 	var modal  = $(this);
 	var code   = button.data('code');
 	modal.find('.modal-title').text('Add Code');
+	
+	if (typeof formCode.clearInputs === 'function') {
+		formCode.clearInputs();
+	}
+	
+	formCode.updateInputsFromJson(button.data('json'));
 
 	if (code) {
 		// modal.find('.modal-title').text('Edit Code ' + code);
 		modal.find('.modal-title').text('Edit Code');
+
+		var lockUrl = URI(config.ajax.urls.locker.lock);
+		lockUrl.setQuery('function', codetable.table);
+		lockUrl.setQuery('key', code);
+
+		var ajax = new AjaxRequest(lockUrl.toString());
+		ajax.request(function(canEdit) {
+			if (canEdit === false) {
+				alert.recordIsLocked(function() {
+					modal.modal('hide');
+				});
+			}
+		});
 	}
-	formCode.updateInputsFromJson(button.data('json'));
 });
 
 $('#edit-code-modal').on('shown.bs.modal', function (event) {
 	var button = $(event.relatedTarget); // Button that triggered the modal
 	var modal  = $(this);
 	var code   = button.data('code');
+
+	formCode.form.attr('data-serialized', formCode.form.serialize());
 
 	if (code) {
 		if (formCode.form.find('input[name=description]').length) {
@@ -28,5 +50,4 @@ $('#edit-code-modal').on('shown.bs.modal', function (event) {
 	} else {
 		formCode.inputs.code.focus();
 	}
-	formCode.form.attr('data-serialized', formCode.form.serialize());
 });

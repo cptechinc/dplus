@@ -47,6 +47,7 @@ if(!$config->dbName) {
 $process = null;
 $wire = null;
 
+
 try { 
 	// Bootstrap ProcessWire's core and make the API available with $wire
 	$wire = new ProcessWire($config);

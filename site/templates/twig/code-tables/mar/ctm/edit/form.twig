@@ -3,34 +3,80 @@
 
 	<div class="row">
 		<div class="col-sm-6">
-			<div class="form-group">
-				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="code">Code</label>
+				</div>
+				<div class="col-sm-3">
+					<input type="text" name="code" class="form-control form-control-sm " value="{{ code.code }}" id="code" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" {{ code.isNew() ? 'autofocus' : 'readonly' }}>
+				</div>
 			</div>
 
-			<div class="form-group">
-				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('code', 'description') }}">
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="description">Description</label>
+				</div>
+				<div class="col-sm-7">
+					<input type="text" name="description" class="form-control form-control-sm " maxlength="20" value="{{ code.description }}" id="description" maxlength="{{ manager.fieldAttribute('code', 'description') }}">
+				</div>
 			</div>
 
-			<div class="form-group">
-				<label for="mail_list">Mail List</label>
-				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'hideblankoption' : 'true', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="maillist">Mail List</label>
+				</div>
+				<div class="col-sm-2">
+					{% include 'util/bootstrap/form/select-simple.twig' with {
+							'select': {
+								'name': 'maillist',
+								'value': code.maillist,
+								'size': 'sm',
+								'haskeys': true,
+								'options': {'Y': 'yes', 'N': 'no'},
+								'capitalizelabels': true,
+							}
+						}
+					%}
+				</div>
 			</div>
 			
 			{% if manager.updateGlAccts() == false %}
-				<div class="form-group">
-					<label for="email">Order Approval Email</label>
-					<input type="email" name="email" class="form-control email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
+				<div class="row mb-3">
+					<div class="col-sm-4">
+						<label for="email">Order Approval Email</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="email" name="email" class="form-control form-control-sm  email" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
+					</div>
 				</div>
 			{% endif %}
+
+			<div class="row">
+				<div class="col-sm-4">
+					<b>Notes -  {{ manager.qnotes.getQnotes()[0].getNotetypeDescription()|title }}</b>
+				</div>
+				<div class="col-sm-6">
+					<p class="form-control-plaintext form-control-sm">{{ manager.qnotes.getQnotes()[0].notesExist(code.code)|yesorno|capitalize }}</p>
+				</div>
+			</div>
+			{% for key, qnotes in manager.qnotes.getQnotes() if key > 0 %}
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-3">
+						<b>{{ qnotes.getNotetypeDescription()|title }}</b>
+					</div>
+					<div class="col-sm-6">
+						<p class="form-control-plaintext form-control-sm">{{ qnotes.notesExist(code.code)|yesorno|capitalize }}</p>
+					</div>
+				</div>
+			{% endfor %}
 		</div>
 		<div class="col-sm-6">
 			{% if manager.updateGlAccts() %}
 				<legend>GL Accounts</legend>
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glsales', 'label': 'Sales', 'value': code.glsales, 'description': manager.glAcctDescription(code.glsales)} %}
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcredits', 'label': 'Credits', 'value': code.glcredits, 'description': manager.glAcctDescription(code.glcredits)} %}
-				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcogs', 'label': 'Cost of Gods Sold', 'value': code.glcogs, 'description': manager.glAcctDescription(code.glcogs)} %}
+				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glcogs', 'label': 'Cost of Goods Sold', 'value': code.glcogs, 'description': manager.glAcctDescription(code.glcogs)} %}
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glfreight', 'label': 'Freight (To Customer)', 'value': code.glfreight, 'description': manager.glAcctDescription(code.glfreight)} %}
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glmisc', 'label': 'Miscellaneous Amounts', 'value': code.glmisc, 'description': manager.glAcctDescription(code.glmisc)} %}
 				{% include 'code-tables/mar/ctm/edit/form/gl-account.twig' with {'name' : 'glar', 'label': 'Accounts Receivable', 'value': code.glar, 'description': manager.glAcctDescription(code.glar)} %}
@@ -49,7 +95,7 @@
 			NOTE: Only show delete if code already exists.
 		#}
 		{% if manager.recordlocker.userHasLocked(code.code) or code.isNew() %}
-			<button type="sumbit" class="btn btn-success form_button"=>
+			<button type="submit" class="btn btn-success form_button"=>
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if code.isNew() == false %}

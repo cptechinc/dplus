@@ -143,7 +143,7 @@ class Iwhs extends Qnotes {
 	protected function _inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$whseID = $values->text('whseID');
+		$whseID = $values->string('whseID');
 		$this->deleteNotes($whseID);
 
 		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
@@ -206,7 +206,7 @@ class Iwhs extends Qnotes {
 	protected function _inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$whseID = $values->text('whseID');
+		$whseID = $values->string('whseID');
 
 		$note = $this->new($whseID);
 		$response = $this->deleteAndRespond($note);

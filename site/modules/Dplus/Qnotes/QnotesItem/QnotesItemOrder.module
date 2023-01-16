@@ -151,7 +151,7 @@ class QnotesItemOrder extends WireData implements Module {
 	 */
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID  = $input->$rm->text('itemID');
+		$itemID  = $input->$rm->string('itemID');
 		$form    = $input->$rm->text('form');
 
 		$q = $this->get_query();
@@ -180,7 +180,7 @@ class QnotesItemOrder extends WireData implements Module {
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID  = $values->text('itemID');
+		$itemID  = $values->string('itemID');
 		$form = $this->get_form_input($input);
 		$note = $values->textarea('note');
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
@@ -211,7 +211,7 @@ class QnotesItemOrder extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$note = ItemOrderNote::new();
-		$note->setItemid($values->text('itemID'));
+		$note->setItemid($values->string('itemID'));
 
 		foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
 			$func = 'set'.ucfirst($formfield);

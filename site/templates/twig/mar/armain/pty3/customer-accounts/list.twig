@@ -1,5 +1,7 @@
+{% set response = manager.getResponse() %}
+
 <div class="list-group mb-3">
-	<div class="list-group-item bg-dark text-white fw-bold">
+	<div class="list-group-item px-2 bg-dark text-white fw-bold">
 		<div class="row">
 			<div class="col-sm-2">Account #</div>
 			<div class="col-sm-3">Name</div>
@@ -7,7 +9,7 @@
 			<div class="col-sm-1">State</div>
 			<div class="col-sm-1">Zip</div>
 			<div class="col-sm-3 text-center">
-				{% if page.is_print() == false %}
+				{% if input.get.offsetExists('print') == false %}
 					<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#edit-account-modal" data-accountnbr="" data-description="">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add <span class="d-none d-sm-inline">Account</span>
 					</button>
@@ -16,22 +18,29 @@
 		</div>
 	</div>
 	{% for account in accounts %}
-		<div class="list-group-item account" data-accountnbr="{{ account.accountnbr }}">
+		{% set key = manager.getRecordlockerKey(account) %}
+		<div class="list-group-item px-2 py-2 account {{ response.key == key ? 'bg-success text-white' : '' }}" data-accountnbr="{{ account.accountnbr }}">
 			<div class="row">
-				<div class="col-sm-2">{{ account.accountnbr }}</div>
-				<div class="col-sm-3">{{ account.name }}</div>
-				<div class="col-sm-2">{{ account.city }}</div>
-				<div class="col-sm-1">{{ account.state }}</div>
-				<div class="col-sm-1">{{ account.zip }}</div>
+				<div class="col-sm-2 text-monospace">{{ account.accountnbr }}</div>
+				<div class="col-sm-3 text-monospace">{{ account.name }}</div>
+				<div class="col-sm-2 text-monospace">{{ account.city }}</div>
+				<div class="col-sm-1 text-monospace">{{ account.state }}</div>
+				<div class="col-sm-1 text-monospace">{{ account.zip }}</div>
 				<div class="col-sm-3 text-center">
-					{% if page.is_print() == false %}
-						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-account-modal" data-accountnbr="{{ account.accountnbr }}" data-description="{{ account.description }}" data-json="{{ manager.recordJson(account)|json_encode }}">
-							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-						</button>
-						&nbsp;
-						<a href="{# page.accountDeleteUrl(account.account) #}" class="btn btn-danger btn-sm delete_button">
-							<i class="fa fa-trash" aria-hidden="true"></i> Delete
-						</a>
+					{% if input.get.offsetExists('print') == false %}
+						{% if manager.recordlocker.isLocked(key) == false or manager.recordlocker.isLockedByUser(key) %}
+							<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-account-modal" data-accountnbr="{{ account.accountnbr }}" data-description="{{ account.description }}" data-json="{{ manager.recordJson(account)|json_encode }}">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</button>
+							&nbsp;
+							<a href="{{ page.accountDeleteUrl(account.custid, account.accountnbr) }}" class="btn btn-danger btn-sm delete_button">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							</a>
+						{% else %}
+							<span class="badge badge-secondary">
+								<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ manager.recordlocker.getLockingUser(key) }}
+							</span>
+						{% endif %}
 					{% endif %}
 				</div>
 			</div>

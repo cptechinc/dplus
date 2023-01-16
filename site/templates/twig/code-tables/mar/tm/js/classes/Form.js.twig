@@ -24,7 +24,7 @@ class CodeForm {
 			this.inputs.code.attr('readonly', 'true');
 			this.inputs.description.val(json.description);
 
-			for (var i = 1; i < 11; i++) {
+			for (var i = 1; i <= 9; i++) {
 				this.inputs.taxcode(i).val(json['taxcode' + i]);
 				this.inputs.taxcode(i).change();
 			}
@@ -33,14 +33,61 @@ class CodeForm {
 			validator.element('#' + this.inputs.code.attr('id'));
 			return true;
 		}
+		this.clearInputs();
+	}
+
+	clearInputs() {
 		this.inputs.form.attr('data-code', '');
 		this.inputs.code.val('');
 		this.inputs.code.removeAttr('readonly');
 		this.inputs.description.val('');
 
-		for (var i = 1; i < 11; i++) {
+		for (var i = 1; i <= 9; i++) {
 			this.inputs.taxcode(i).val('');
+		}
+
+		for (var i = 1; i <= 9; i++) {
 			this.inputs.taxcode(i).change();
+		}
+	}
+	
+
+	shiftTaxCodesUp(index = 1) {
+
+		var taxcodes = [];
+		// Get all the Tax Codes at their current Index
+
+		var currentInput = this.inputs.taxcode(index);
+
+		for (var i = 1; i <= 9; i++) {
+			var input = this.inputs.taxcode(i);
+
+			if (input.length && input.val() && taxcodes.includes(input.val()) === false) {
+				taxcodes.push(input.val());
+			}
+		}
+
+
+		for (var i = 0; i <= taxcodes.length; i++) {
+			var input = this.inputs.taxcode(i + 1);
+			var oldValue = input.val();
+			input.val(taxcodes[i]);
+
+			if (oldValue != input.val()) {
+				input.change();
+			}
+		}
+
+		for (var i = taxcodes.length; i <= 9; i++) {
+			var input = this.inputs.taxcode(i + 1);
+			if (input.length == 0) {
+				continue;
+			}
+			console.log('emptying ' + input.attr('name'));
+			console.log(input);
+			console.log(input.val());
+			input.val('');
+
 		}
 	}
 

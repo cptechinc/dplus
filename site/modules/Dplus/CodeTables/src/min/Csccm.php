@@ -42,20 +42,4 @@ class Csccm extends AbstractCodeTableEditableSingleKey {
 		$q->select(CustomerStockingCell::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return CustomerStockingCell
-	 */
-	public function new($id = '') {
-		$code = new CustomerStockingCell();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

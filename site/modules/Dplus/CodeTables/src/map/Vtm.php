@@ -109,11 +109,8 @@ class Vtm extends AbstractCodeTableEditableSingleKey {
 	 * @return ApTypeCode
 	 */
 	public function new($id = '') {
-		$code = new ApTypeCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var ApTypeCode */
+		$code = parent::new($id);
 		$code->setFabricator($this->fieldAttribute('fabricator', 'default'));
 		$code->setProduction($this->fieldAttribute('production', 'default'));
 		$code->setCompetitor($this->fieldAttribute('competitor', 'default'));

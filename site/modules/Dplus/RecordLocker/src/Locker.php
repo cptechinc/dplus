@@ -24,6 +24,19 @@ class Locker extends WireData {
 	}
 
 	/**
+	 * Returns if User has Locks in this function
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $userID    User Login ID
+	 * @return bool
+	 */
+	public function userHasLocks($function, $userID) {
+		$q = $this->query();
+		$q->filterByUserid($userID);
+		$q->filterByFunction($function);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Returns if Function is being locked by User ID
 	 * @param  string $function  Function e.g IWHM
 	 * @param  mixed $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
@@ -100,7 +113,7 @@ class Locker extends WireData {
 		if ($key) {
 			$q->filterByKey($key);
 		}
-		return $q->delete();
+		return boolval($q->delete());
 	}
 
 	/**

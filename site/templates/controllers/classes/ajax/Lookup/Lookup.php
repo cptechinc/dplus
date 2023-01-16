@@ -69,7 +69,7 @@ abstract class Lookup extends Controller {
 
 	protected static function displayResults($path, PropelModelPager $results, $q = '') {
 		$html  = '';
-		$html .= self::pw('config')->twig->render("$path", ['results' => $results, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $q]);
+		$html .= self::pw('config')->twig->render("$path", ['results' => $results, 'q' => $q]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::pw('config')->twig->render('util/paginator/propel.twig', ['pager'=> $results]);
 		return $html;

@@ -9,7 +9,6 @@
  * we are using it just to include another file with shared functions.
  *
  */
-
 $connected = Dplus\Databases\Connectors\Dplus::instance()->connect();
 Dplus\Databases\Connectors\Dpluso::instance()->connect();
 
@@ -103,6 +102,7 @@ if ($values->offsetExists('action') === false|| $page->template == 'dplus-screen
 	$config->scripts->append($hasher->getHashUrl('scripts/uri.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/sweetalert2.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/classes.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/ajax-modal.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/main.js'));
 
 	$mtwig = $modules->get('Twig');

@@ -134,8 +134,8 @@ class QnotesItemVxmInternal extends WireData implements Module {
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
 		$values    = $input->$rm;
-		$itemID    = $values->text('itemID');
-		$vendorID  = $values->text('vendorID');
+		$itemID    = $values->string('itemID');
+		$vendorID  = $values->string('vendorID');
 		$userID    = $values->text('userID');
 		$date      = date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
 		$time      = $values->text('rawnotetime');
@@ -169,8 +169,8 @@ class QnotesItemVxmInternal extends WireData implements Module {
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID    = $values->text('itemID');
-		$vendorID  = $values->text('vendorID');
+		$itemID    = $values->string('itemID');
+		$vendorID  = $values->string('vendorID');
 		$userID    = $values->text('userID');
 		$notedate      = $values->text('notedate');
 		$notetimeraw   = $values->text('rawnotetime');

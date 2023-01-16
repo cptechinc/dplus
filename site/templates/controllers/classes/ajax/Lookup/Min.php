@@ -26,7 +26,7 @@ class Min extends Lookup {
 	 */
 	public static function itmItems($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		self::pw('page')->headline = "Item Master";
+		self::pw('page')->headline = "Items";
 		$filter = new Filters\Min\ItemMaster();
 		return self::filterResults($filter, $data);
 	}

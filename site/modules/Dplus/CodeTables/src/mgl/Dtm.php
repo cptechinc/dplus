@@ -95,22 +95,6 @@ class Dtm extends AbstractCodeTableEditableSingleKey {
 	}
 
 /* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return GlDistCode
-	 */
-	public function new($id = '') {
-		$code = new GlDistCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
-
-/* =============================================================
 	CRUD Processing
 ============================================================= */
 	/**
@@ -141,11 +125,11 @@ class Dtm extends AbstractCodeTableEditableSingleKey {
 		$invalidfields = [];
 
 		for ($i = 1; $i <= $this->getNbrOfGlAccts(); $i++) {
-			if ($values->text("glacct$i") != '' && $validate->glCode($values->text("glacct$i")) === false) {
+			if ($values->text("glacct$i") != '' && $validate->glCode($values->string("glacct$i")) === false) {
 				$invalidfields["glacct$i"] = "GL Account $i";
 				continue;
 			}
-			$code->setAccountNbr($i, $values->text("glacct$i"));
+			$code->setAccountNbr($i, $values->string("glacct$i"));
 			$subtotal += $values->float("glpct$i");
 
 			if ($subtotal <= 100) {

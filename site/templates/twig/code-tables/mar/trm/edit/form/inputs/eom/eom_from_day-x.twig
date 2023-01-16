@@ -1,0 +1,21 @@
+{% set value = code.eom_from_day(x) %}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'eom_from_day' ~ x,
+		'type': 'number',
+		'value': value ? value : '',
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'eom_from_day'
+		],
+		'attributes': {
+			'tabindex': x ~ '11',
+			'readonly': true,
+			'max': manager.fieldAttribute('eom_from_day', 'max')
+		}
+	}
+} %}
+
+

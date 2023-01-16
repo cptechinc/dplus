@@ -35,7 +35,7 @@ class Qnotes extends WireData {
 	 * @return array
 	 */
 	public function getQnotes() {
-		return [$this->ictp, $this->kctp, $this->pctp, $this->sctp];
+		return [$this->sctp, $this->ictp, $this->pctp, $this->kctp];
 	}
 
 /* =============================================================

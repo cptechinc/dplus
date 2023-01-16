@@ -17,8 +17,12 @@ abstract class TwigBaseHtml extends WireData {
 	 */
 	public function attributes() {
 		$attr = [];
+
 		foreach ($this->attributes as $key => $value) {
-			if (in_array($key, $this::ATTRIBUTES_NOVALUE)) {
+			if (in_array($key, static::ATTRIBUTES_NOVALUE)) {
+				if ($value === false) {
+					continue;
+				}
 				$attr[] = $value === true ? $key : '';
 			} else {
 				$attr[] = "$key=\"$value\"";

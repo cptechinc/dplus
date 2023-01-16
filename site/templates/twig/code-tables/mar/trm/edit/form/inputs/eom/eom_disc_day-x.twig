@@ -1,0 +1,20 @@
+{% set value = code.eom_disc_day(x) %}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'eom_disc_day' ~ x,
+		'type': 'number',
+		'value': value > 0 ? value : '',
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'eom_disc_day'
+		],
+		'attributes': {
+			'tabindex': x ~ '14',
+			'data-error': '.error',
+			'readonly': code.eom_percent(x) == 0,
+			'max': 31
+		}
+	}
+} %}

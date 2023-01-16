@@ -1,0 +1,55 @@
+<div class="modal fade" id="new-cust-modal" tabindex="-1" role="dialog" aria-labelledby="new-cust-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="new-cust-modal-label">Insert 3rd Party Freight Customer</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ input.url() }}" method="GET" id="new-cust-form">
+					<div class="form-group">
+						<label for="newcustID">Customer ID</label>
+						{% include 'util/bootstrap/form/input-group.twig' with {
+							'inputgroup': {
+								'type': 'prepend',
+								'input': {
+									'name': 'custID',
+									'id': 'newcustID',
+									'value': '',
+									'attributes': {
+										'placeholder': '',
+										'aria-label':  'Customer ID'
+									}
+								},
+								'button': {
+									'colorclass': 'btn-secondary',
+									'text': 'fa fa-search'|icon,
+									'attributes': {
+										'title': 'Search Customers',
+										'data-toggle': 'modal',
+										'data-target': '#ajax-modal',
+										'data-lookupurl': page.search_lookupURL('customers'),
+										'data-input': '#newcustID'
+									}
+								}
+							}
+						} %}
+					</div>
+					<div class="d-flex justify-content-between">
+						<button type="submit" class="btn btn-success">
+							Insert
+						</button>
+						<button type="button" class="btn btn-light btn-sm collapse" data-toggle="modal" data-target="#edit-account-modal" data-accountnbr="">
+							<i class="fa fa-plus" aria-hidden="true"></i> Add <span class="d-none d-sm-inline">Account</span>
+						</button>
+						<button type="button" class="btn btn-warning" data-dismiss="modal">
+							<i class="fa fa-times" aria-hidden="true"></i> Close
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

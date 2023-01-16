@@ -72,7 +72,7 @@ $(function() {
 	ajax modal events is handled by scripts/code-tables/ajax-modal.js
 ============================================================= */
 
-	$("body").on('click', '.vendor-link', function(e) {
+	$("body").on('click', '#ajax-modal .vendor-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var modal  = button.closest('.modal');

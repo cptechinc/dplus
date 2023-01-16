@@ -38,22 +38,4 @@ class Sic extends AbstractCodeTableEditableSingleKey {
 		$q->select(ArStandardIndustrialClass::aliasproperty('id'));
 		return $q->find()->toArray();
 	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return new ArStandardIndustrialClass
-	 * @param  string $id Code
-	 * @return ArStandardIndustrialClass
-	 */
-	public function new($id = '') {
-		$code = new ArStandardIndustrialClass();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
 }

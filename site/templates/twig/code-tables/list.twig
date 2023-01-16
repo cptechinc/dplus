@@ -106,29 +106,35 @@
 		</div>
 	{% endblock %}
 	{% for code in codes %}
-		{# data-code attribute and class code is for the highlight on close #}
-		<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key is same as(code.code) and response.hasSuccess()) ? 'bg-success text-white' : ''}}">
-			{% block code_row %}
-				<div class="row align-items-center">
-					<div class="col-3 col-sm-3 font-monospace">
-						{{ code.code|replace({' ': '&nbsp;'})|raw }}
+		{% block code_div %}
+			{# data-code attribuisLockedByUserte and class code is for the highlight on close #}
+			<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key is same as(code.code) and response.hasSuccess()) ? 'bg-success text-white' : ''}}">
+				{% block code_row %}
+					<div class="row align-items-center">
+						<div class="col-3 col-sm-3 ">
+							{{ code.code|replace({' ': '&nbsp;'})|raw }}
+						</div>
+						<div class="col-5 col-sm-6 ">
+							{{ code.description }}
+						</div>
+						<div class="col-4 col-sm-3 text-center d-print-none">
+							{% if manager.recordlocker.isLocked(code.code) == false or manager.recordlocker.isLockedByUser(code.code) %}
+								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
+									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+								</button>
+								&nbsp;
+								<a href="{{ page.codeDeleteUrl(code.code) }}" class="btn btn-danger btn-sm delete_button">
+									<i class="fa fa-trash" aria-hidden="true"></i> Delete
+								</a>
+							{% else %}
+								<span class="badge badge-secondary">
+									<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ manager.recordlocker.getLockingUser(code.code) }}
+								</span>
+							{% endif %}
+						</div>
 					</div>
-					<div class="col-5 col-sm-6">
-						{{ code.description }}
-					</div>
-					<div class="col-4 col-sm-3 text-center d-print-none">
-						{% if input.get.offsetExists('print') == false %}
-							<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-json="{{ manager.codeJson(code)|json_encode }}">
-								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-							</button>
-							&nbsp;
-							<a href="{{ page.codeDeleteUrl(code.code) }}" class="btn btn-danger btn-sm delete_button">
-								<i class="fa fa-trash" aria-hidden="true"></i> Delete
-							</a>
-						{% endif %}
-					</div>
-				</div>
-			{% endblock %}
-		</div>
+				{% endblock %}
+			</div>
+		{% endblock %}
 	{% endfor %}
 </div>

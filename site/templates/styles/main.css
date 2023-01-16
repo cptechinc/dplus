@@ -406,7 +406,7 @@ form label {
 }
 
 form#code-form input[maxlength], form#code-form input[type=number] {
-	font-family: 'Inconsolata', monospace;
+	/* font-family: 'Inconsolata', monospace; */
 }
 
 /*==============================================================
@@ -462,6 +462,14 @@ form#code-form input[maxlength], form#code-form input[type=number] {
 
 	.print-page-number::before {
 		counter-increment: page;
-        content: "Page " counter(page);
+		content: "Page " counter(page);
 	}
+}
+
+.codes-list .text-monospace {
+	font-size: 1.15rem;
+}
+
+#code-form .form-control-sm.text-monospace {
+	font-size: 1rem;
 }

@@ -153,12 +153,16 @@
 				['GET', 'ctm/code/', Json\Mar::class, 'validateCtmCode'],
 				['GET', 'cuc/code/', Json\Mar::class, 'validateCucCode'],
 				['GET', 'mtm/code/', Json\Mar::class, 'validateMtmCode'],
-				['GET', 'pty3/account/', Json\Mar::class, 'validatePty3Account'],
+				'pty3' => [
+					['GET', 'account/', Json\Mar::class, 'validatePty3Account'],
+					['GET', 'custid/', Json\Mar::class, 'validatePty3CustidExists'],
+				],
 				['GET', 'sic/code/', Json\Mar::class, 'validateSicCode'],
 				['GET', 'spgpm/code/', Json\Mar::class, 'validateSpgpmCode'],
 				['GET', 'spm/code/', Json\Mar::class, 'validateSpmCode'],
 				['GET', 'suc/code/', Json\Mar::class, 'validateSucCode'],
 				['GET', 'tm/code/', Json\Mar::class, 'validateTmCode'],
+				['GET', 'trm/code/', Json\Mar::class, 'validateTrmCode'],
 				['GET', 'worm/code/', Json\Mar::class, 'validateWormCode'],
 				['GET', 'salespersonid/', Json\Mar::class, 'validateSalesPersonId'],
 				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
@@ -179,6 +183,7 @@
 			['GET', 'spm/code/', Json\Mar::class, 'getSpmCode'],
 			['GET', 'suc/code/', Json\Mar::class, 'getSucCode'],
 			['GET', 'tm/code/', Json\Mar::class, 'getTmCode'],
+			['GET', 'trm/code/', Json\Mar::class, 'getTrmCode'],
 			['GET', 'worm/code/', Json\Mar::class, 'getWormCode'],
 			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
 			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
@@ -322,6 +327,13 @@
 				'edit' => [
 					['POST', '', Json\Mqo::class, 'editQuote'],
 				]
+			]
+		],
+		'util' => [
+			'recordlocker' => [
+				['GET', 'check', Json\Util::class, 'recordLockerUserCanLock'],
+				['GET', 'lock', Json\Util::class, 'recordLockerLock'],
+				['GET', 'delete', Json\Util::class, 'recordLockerDelete'],
 			]
 		],
 		'wm' => [

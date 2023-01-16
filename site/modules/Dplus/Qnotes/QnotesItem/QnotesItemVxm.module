@@ -35,7 +35,7 @@ class QnotesItemVxm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 
 		if ($input->$rm->text('action') == 'update-notes' || $input->$rm->text('action') == 'delete-notes') {
-			$itemID = $input->$rm->text('itemID');
+			$itemID = $input->$rm->string('itemID');
 			$itm = $this->wire('modules')->get('Itm');
 
 			if ($itm->item_exists($itemID)) {

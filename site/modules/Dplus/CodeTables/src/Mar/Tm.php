@@ -61,25 +61,6 @@ class Tm extends AbstractCodeTableEditableSingleKey {
 	}
 
 /* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return new ArCustTaxCode
-	 * @param  string $id Code
-	 * @return ArCustTaxCode
-	 */
-	public function new($id = '') {
-		$this->initFieldAttributes();
-		$code = new ArCustTaxCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
-
-/* =============================================================
 	CRUD Processing
 ============================================================= */
 	/**
@@ -109,7 +90,7 @@ class Tm extends AbstractCodeTableEditableSingleKey {
 		
 		for ($i = 1; $i <= ArCustTaxCode::NUMBER_TAXCODES; $i++) {
 			$code->setTaxcode($i, '');
-			$taxcode = $values->text('taxcode' . $i);
+			$taxcode = $values->string('taxcode' . $i);
 
 			if (empty($taxcode)) {
 				continue;

@@ -72,12 +72,8 @@ class Mtm extends AbstractCodeTableEditableSingleKey {
 	 */
 	public function new($id = '') {
 		$this->initFieldAttributes();
-		$code = new ArTaxCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
+		/** @var ArTaxCode */
+		$code = parent::new($id);
 		$code->setPercent($this->fieldAttribute('percent', 'default'));
 		$code->setLimit($this->fieldAttribute('limit', 'default'));
 		return $code;
@@ -148,9 +144,9 @@ class Mtm extends AbstractCodeTableEditableSingleKey {
 		$glAccounts = Codes\Mgl\Mhm::getInstance();
 		$invalidfields = [];
 
-		$code->setGl_account($values->text('gl_account'));
+		$code->setGl_account($values->string('gl_account'));
 
-		if ($glAccounts->exists($values->text('gl_account')) === false) {
+		if ($glAccounts->exists($values->string('gl_account')) === false) {
 			$code->setGl_account('');
 			$invalidfields['gl_account'] = 'GL Account';
 		}
@@ -166,13 +162,13 @@ class Mtm extends AbstractCodeTableEditableSingleKey {
 	private function _inputUpdateFreightTaxCode(WireInputData $values, ArTaxCode $code) {
 		$invalidfields = [];
 
-		if ($values->text('freight_tax_code') == $code->code) {
+		if ($values->string('freight_tax_code') == $code->code) {
 			return $invalidfields;
 		}
 
-		$code->setFreight_tax_code($values->text('freight_tax_code'));
+		$code->setFreight_tax_code($values->string('freight_tax_code'));
 
-		if ($this->exists($values->text('freight_tax_code')) === false) {
+		if ($this->exists($values->string('freight_tax_code')) === false) {
 			$code->setFreight_tax_code('');
 			$invalidfields['freight_tax_code'] = 'Freight Tax Code';
 		}

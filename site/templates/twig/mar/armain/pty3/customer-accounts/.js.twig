@@ -23,19 +23,40 @@ $(function() {
 		var modal  = $(this);
 		var accountnbr = button.data('accountnbr');
 		modal.find('.modal-title').text('Add Account');
-
-		if (accountnbr) {
-			modal.find('.modal-title').text('Edit Account ' + accountnbr);
-		}
 		formAccount.updateInputsFromJson(button.data('json'));
+		modal.find('a.delete_button').removeClass('show');
+		
+		if (accountnbr) {
+			modal.find('.modal-title').text('Edit Account');
+			var code = ['{{ input.get.string('custID') }}', accountnbr].join('|');
+			var lockUrl = URI(config.ajax.urls.locker.lock);
+			lockUrl.setQuery('function', 'pty3');
+			lockUrl.setQuery('key', code);
+
+			var ajax = new AjaxRequest(lockUrl.toString());
+			ajax.request(function(canEdit) {
+				if (canEdit === false) {
+					alert.recordIsLocked(function() {
+						modal.modal('hide');
+					});
+					return false;
+				}
+				var deleteLink = modal.find('a.delete_button');
+				var deleteUrl  = URI(deleteLink.attr('href'));
+				deleteUrl.setQuery('accountnbr', accountnbr);
+				deleteLink.attr('href', deleteUrl.toString());
+				deleteLink.addClass('show');
+			});
+		}
+		
 	});
 
 	$('#edit-account-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal  = $(this);
-		var account   = button.data('account');
+		var accountnbr   = button.data('accountnbr');
 
-		if (account) {
+		if (accountnbr) {
 			formAccount.inputs.name.focus();
 		} else {
 			formAccount.inputs.accountnbr.focus();
@@ -43,15 +64,46 @@ $(function() {
 		formAccount.form.attr('data-serialized', formAccount.form.serialize());
 	});
 
+	$("#edit-account-modal").on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				alert.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.submit();
+						return true;
+					}
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
+		}
+	});
+
 	$('#edit-account-modal').on('hidden.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var accountnbr = modal.find('input[name=accountnbr]').val().toString();
+		var custid = formAccount.inputs.custid.val();
 
 		$('#code-table-alert').hide();
 		$('.bg-success').removeClass('bg-success text-white');
 		$('.highlight').removeClass('highlight');
 		$('.account[data-accountnbr="'+accountnbr+'"]').addClass('highlight');
+		
+		var unlockUrl = URI(config.ajax.urls.locker.delete);
+		unlockUrl.setQuery('function', 'pty3');
+		unlockUrl.setQuery('key', [custid, accountnbr].join('|'));
+
+		var ajax = new AjaxRequest(unlockUrl.toString());
+		ajax.request(function(isUnlocked) {
+
+		});
 	});
 
 	$("body").on("change", "input[name=accountnbr]", function(e) {
@@ -59,17 +111,27 @@ $(function() {
 		var accountnbr = input.val();
 		var custid = formAccount.inputs.custid.val();
 
-		server.validateAccount(custid, accountnbr, function(exists) {
-			if (exists === true) {
-				alert.accountExists(account, function(editAccount) {
+		server.getAccount(custid, accountnbr, function(pty3Account) {
+			if (pty3Account) {
+				alert.accountExists(accountnbr, function(editAccount) {
 					if (editAccount) {
 						var modal = input.closest('.modal');
 
 						if (editAccount) {
-							server.getAccount(custid, accountnbr, function(response) {
-								if (response) {
-									modal.find('.modal-title').text('Edit Account ' + account);
-									formAccount.updateInputsFromJson(response);
+							var code = [pty3Account.custid, accountnbr].join('|');
+							var lockUrl = URI(config.ajax.urls.locker.lock);
+							lockUrl.setQuery('function', 'pty3');
+							lockUrl.setQuery('key', code);
+
+							var ajax = new AjaxRequest(lockUrl.toString());
+							ajax.request(function(canEdit) {
+								if (canEdit === false) {
+									alert.recordIsLocked(function() {
+										modal.modal('hide');
+									});
+								} else {
+									modal.find('.modal-title').text('Edit Account');
+									formAccount.updateInputsFromJson(pty3Account);
 								}
 							});
 						} else {
@@ -102,11 +164,11 @@ $(function() {
 		var input = $(this);
 		var code = input.val();
 
-		server.getStateCode(code, function(state) {
-			if (state) {
-				input.closest('.form-group').find('.description').text(state.name);
-			}
-		});
+		// server.getStateCode(code, function(state) {
+		// 	if (state) {
+		// 		input.closest('.form-group').find('.description').text(state.name);
+		// 	}
+		// });
 	});
 
 	$("body").on("change", "select[name=international]", function(e) {
@@ -123,48 +185,18 @@ $(function() {
 		}
 	});
 
-/* =============================================================
-	Lookup Modal Functions
-============================================================= */
-	ajaxModal.on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal = $(this);
-		modal.attr('data-input', button.data('input'));
+	$("body").on("change", "input[name=custid]", function(e) {
+		var input = $(this);
+		var descriptionElement = input.closest('.input-parent').find('.ajax-description');
+		descriptionElement.text('');
 
-		modal.find('.modal-title').text(button.attr('title'));
-		modal.resizeModal('xl');
-		modal.find('.modal-body').loadin(button.data('lookupurl'), function() {});
+		server.getCustomer(input.val(), function(customer) {
+			if (customer) {
+				descriptionElement.text(customer.name);
+			}
+		});
 	});
 
-	$("body").on('click', '.code-link', function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var modal  = button.closest('.modal');
-		var input  = $(modal.attr('data-input'));
-		input.val(button.data('code'));
-		if (input.data('jqv')) {
-			input.change();
-		}
-		modal.modal('hide');
-	});
-
-	$("body").on('submit', '#ajax-modal form', function(e) {
-		e.preventDefault();
-		var form = $(this);
-		var query = form.serialize();
-		var action = form.attr('action');
-		var search = form.find('input[name=q]').val();
-		var url = action + '?' + query;
-		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
-		form.closest('.modal').find('.modal-body').loadin(url, function() {});
-	});
-
-	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var modal  = button.closest('.modal');
-		modal.find('.modal-body').load(button.attr('href'));
-	});
 
 /* =============================================================
 	Validation Functions
@@ -176,6 +208,18 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
+			custid: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/custid/') }}',
+					type: "get",
+					data: {
+						custID: function() {
+							return formAccount.inputs.custid.val();
+						},
+					}
+				}
+			},
 			accountnbr: {
 				required: true,
 				maxlength: formAccount.config.fields.accountnbr.maxlength,
@@ -229,34 +273,7 @@ $(function() {
 			var accountnbr = formAccount.inputs.accountnbr.val();
 			var custid      = formAccount.inputs.custid.val();
 
-			if (formAccount.inputs.form.attr('data-accountnbr') == accountnbr) {
-				form.submit();
-			} else {
-				server.validateAccount(custid, accountnbr, function(exists) {
-					var alert = AccountAlerts.getInstance();
-					if (exists === false) {
-						form.submit();
-						return true;
-					}
-
-					alert.accountExists(accountnbr, function(editAccount) {
-						var modal = formAccount.form.closest('.modal');
-
-						if (editAccount) {
-							server.getAccount(custid, accountnbr, function(response) {
-								if (response) {
-									modal.find('.modal-title').text('Edit Account ' + account);
-									formAccount.updateInputsFromJson(response);
-								} else {
-									modal.modal('hide');
-								}
-							});
-						} else {
-							modal.modal('hide');
-						}
-					});
-				});
-			}
+			form.submit();
 		}
 	});
 })

@@ -7,6 +7,8 @@ $(function() {
 		var form   = modal.find('form');
 		var code   = button.data('code');
 
+		form.attr('data-serialized', form.serialize());
+
 		if (code) {
 			if (form.find('input[name=description]').length) {
 				form.find('input[name=description]').focus();
@@ -18,7 +20,6 @@ $(function() {
 		} else {
 			form.find('input[name=code]').focus();
 		}
-		form.attr('data-serialized', form.serialize());
 	});
 
 	$("#edit-code-modal").on('hide.bs.modal', function (e) {
@@ -58,11 +59,25 @@ $(function() {
 		form.find('.valid-feedback').remove();
 
 		if (form.attr('data-code')) {
+			if ($('.code[data-code="'+form.attr('data-code')+'"]').length == 0) {
+				var url = URI();
+				url.setQuery('action', 'focus');
+				url.setQuery('code', form.attr('data-code'));
+				window.location.href = url.toString();
+			}
 			$('.code-table-alert').remove();
 			$('.bg-success').removeClass('bg-success text-white');
 			$('.highlight').removeClass('highlight');
 			$('.code[data-code="'+form.attr('data-code')+'"]').addClass('highlight');
 			// $('html, body').animate({scrollTop: $('.code[data-code="'+form.attr('data-code')+'"]').offset().top,},700,'linear');
+			var unlockUrl = URI(config.ajax.urls.locker.delete);
+			unlockUrl.setQuery('function', codetable.table);
+			unlockUrl.setQuery('key', form.attr('data-code'));
+
+			var ajax = new AjaxRequest(unlockUrl.toString());
+			ajax.request(function(isUnlocked) {
+
+			});
 		}
 	});
 });

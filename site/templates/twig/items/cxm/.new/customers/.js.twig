@@ -78,7 +78,7 @@ $(function() {
 		var search = form.find('input[name=q]').val();
 		search = search.length ? search : 'Customers';
 		var url = action + '?' + query;
-		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		// form.closest('.modal').find('.modal-title').text('Searching for ' + search);
 		form.closest('.modal').find('.modal-body').loadin(url, function() {});
 	});
 
@@ -94,6 +94,18 @@ $(function() {
 		var modal  = button.closest('.modal');
 		modal.find('.modal-body').load(button.attr('href'));
 	});
+
+	$("body").on('click', '#ajax-modal a.clear-search', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').loadin(button.attr('href'), function(ajaxResponse) {
+			if (ajaxResponse.headers.hasOwnProperty('page-headline')) {
+				modal.find('.modal-title').text('Search ' + ajaxResponse.headers['page-headline']);
+			}
+		});
+	});
+
 
 /* =============================================================
 	New CXM Modal Functions

@@ -1,0 +1,23 @@
+{% set readonly = code.order_percent(x) == 0 %}
+{% set readonly = code.std_due_days(x) > 0 ? true : readonly %}
+{% set readonly = code.std_due_day(x) > 0 ? true : readonly %}
+
+{# x >= 1 #}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'due_date' ~ x,
+		'value': code.std_due_date(x),
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'standard_due_date'
+		],
+		'attributes': {
+			'tabindex': x ~ '8',
+			'placeholder': manager.fieldAttribute('std_disc_date', 'placeholder'),
+			'readonly': readonly,
+			'regex': manager.fieldAttribute('std_disc_date', 'regex')
+		}
+	}
+} %}

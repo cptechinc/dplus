@@ -73,24 +73,6 @@ class Tarm extends AbstractCodeTableEditableSingleKey {
 	}
 
 /* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return new TariffCode
-	 * @param  string $id Code
-	 * @return TariffCode
-	 */
-	public function new($id = '') {
-		$code = new TariffCode();
-
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
-	}
-
-/* =============================================================
 	CRUD Processing
 ============================================================= */
 	/**
@@ -102,7 +84,9 @@ class Tarm extends AbstractCodeTableEditableSingleKey {
 		$rm = strtolower($input->requestMethod());
 		$values  = $input->$rm;
 		$success = parent::inputUpdate($input);
-		$id      = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id = $values->string('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id = substr($id, 0, $this->fieldAttribute('code', 'maxlength'));
+
 		$code    = $this->code($id);
 
 		if ($success === false) {
@@ -122,7 +106,7 @@ class Tarm extends AbstractCodeTableEditableSingleKey {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values  = $input->$rm;
-		$id      = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+		$id      = $values->string('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 		$success = parent::inputDelete($input);
 
 		if ($success === false) {

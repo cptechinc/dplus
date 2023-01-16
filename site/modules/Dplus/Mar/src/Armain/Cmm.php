@@ -262,6 +262,12 @@ class Cmm extends AbstractManager {
 		return $this->customer($id);
 	}
 
+	public function name($id) {
+		$q = $this->queryId($id);
+		$q->select(Customer::aliasproperty('name'));
+		return $q->findOne();
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */

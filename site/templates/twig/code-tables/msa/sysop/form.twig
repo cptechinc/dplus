@@ -17,6 +17,8 @@
 				{% include 'util/bootstrap/form/input.twig' with {
 						'input': {
 							'name': 'description',
+							'size': 'sm',
+							'addclasses': [''],
 							'value': code.description,
 							'attributes': {
 								'maxlength': sysop.fieldAttribute('description', 'maxlength'),
@@ -41,11 +43,12 @@
 									'name': 'notecode',
 									'value': code.notecode,
 									'lowercase': true,
+									'size': 'sm',
+									'addclasses': [''],
 									'attributes': {
 										'maxlength': sysop.fieldAttribute('notecode', 'maxlength'),
 										'data-notecode': code.notecode
-									},
-									'addclasses': []
+									}
 								}
 							}
 						%}
@@ -59,10 +62,11 @@
 									'name': 'sequence',
 									'type': 'number',
 									'value': code.sequence,
+									'size': 'sm',
 									'attributes': {
 										'max': sysop.fieldAttribute('sequence', 'max'),
 									},
-									'addclasses': ['text-right']
+									'addclasses': ['text-right', '']
 								}
 							}
 						%}

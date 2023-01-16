@@ -34,7 +34,9 @@
 	
 	<div class="row mb-3">
 		<div class="col-sm-3">
-			{% include 'code-tables/mar/spm/form/groupid.twig' %}
+			<div class="form-group">
+				{% include 'code-tables/mar/spm/form/groupid.twig' %}
+			</div>
 		</div>
 
 		<div class="col-sm-2">
@@ -56,41 +58,47 @@
 		</div>
 
 		<div class="col-sm-3">
-			{% include 'code-tables/mar/spm/form/userid.twig' %}
+			<div class="form-group">
+				{% include 'code-tables/mar/spm/form/userid.twig' %}
+			</div>
 		</div>
 
 		<div class="col-sm-3">
-			<label for="manager">Manager</label>
-			{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'size': 'sm',
-						'name': 'manager',
-						'value' : manager.fieldAttribute('manager', 'default'),
-						'haskeys': true,
-						'options': {'Y': 'Yes', 'N': 'No'}
+			<div class="form-group">
+				<label for="manager">Manager</label>
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+						'select': {
+							'size': 'sm',
+							'name': 'manager',
+							'value' : manager.fieldAttribute('manager', 'default'),
+							'haskeys': true,
+							'options': {'Y': 'Yes', 'N': 'No'}
+						}
 					}
-				}
-			%}
+				%}
+			</div>
 		</div>
 	</div>
 
 	<div class="row mb-3">
 		<div class="col-sm-3">
-			<label for="lastsaledate">Last Sales Date</label>
-			{% include 'util/bootstrap/form/date-picker.twig' with {
-					'inputgroup': {
-						'size': 'sm',
-						'input': {
-							'name': 'lastsaledate',
-							'value': '',
-							'attributes': {
-								'placeholder': '',
-								'aria-label':  'Last Sales Dat'
+			<div class="form-group">
+				<label for="lastsaledate">Last Sales Date</label>
+				{% include 'util/bootstrap/form/date-picker.twig' with {
+						'inputgroup': {
+							'size': 'sm',
+							'input': {
+								'name': 'lastsaledate',
+								'value': '',
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Last Sales Dat'
+								}
 							}
 						}
 					}
-				}
-			%}
+				%}
+			</div>
 		</div>
 	</div>
 
@@ -172,7 +180,9 @@
 
 	<div class="row mb-3">
 		<div class="col-sm-3">
-			{% include 'code-tables/mar/spm/form/vendorid.twig' %}
+			<div class="form-group">
+				{% include 'code-tables/mar/spm/form/vendorid.twig' %}
+			</div>
 		</div>
 
 		<div class="col-sm-4">
@@ -194,17 +204,19 @@
 		</div>
 
 		<div class="col-sm-3">
-			<label for="restricted">Restricted</label>
-			{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'size': 'sm',
-						'name': 'restricted',
-						'value' : manager.fieldAttribute('restricted', 'default'),
-						'haskeys': true,
-						'options': {'Y': 'Yes', 'N': 'No'}
+			<div class="form-group">
+				<label for="restricted">Restricted</label>
+				{% include 'util/bootstrap/form/select-simple.twig' with {
+						'select': {
+							'size': 'sm',
+							'name': 'restricted',
+							'value' : manager.fieldAttribute('restricted', 'default'),
+							'haskeys': true,
+							'options': {'Y': 'Yes', 'N': 'No'}
+						}
 					}
-				}
-			%}
+				%}
+			</div>
 		</div>
 	</div>
 

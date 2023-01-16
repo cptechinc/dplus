@@ -29,11 +29,12 @@
 						'name': 'beforedecimal',
 						'type': 'number',
 						'value': code.beforedecimal,
+						'size': 'sm',
 						'attributes': {
 							'max': sysop.fieldAttribute('beforedecimal', 'max'),
 							'readonly': code.isNumeric() == false
 						},
-						'addclasses': ['text-right']
+						'addclasses': ['text-right', '']
 					}
 				}
 			%}
@@ -47,11 +48,12 @@
 						'name': 'afterdecimal',
 						'type': 'number',
 						'value': code.afterdecimal,
+						'size': 'sm',
 						'attributes': {
 							'max': sysop.fieldAttribute('afterdecimal', 'max'),
 							'readonly': code.isNumeric() == false
 						},
-						'addclasses': ['text-right']
+						'addclasses': ['text-right', '']
 					}
 				}
 			%}

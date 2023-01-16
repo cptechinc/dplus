@@ -50,10 +50,13 @@ class DpagesApi extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	public function jsonapiURL($api) {
+	public function jsonapiURL($api, $query = []) {
 		$url = $this->wire('pages')->get("template=ajax-json")->httpUrl;
 		if ($api) {
 			$url .= rtrim($api,'/').'/';
+		}
+		if ($query) {
+			$url .= '?' . http_build_query($query);
 		}
 		return $url;
 	}
@@ -86,7 +89,7 @@ class DpagesApi extends Dpages implements Module {
 
 		$this->addHook("Page::jsonApiUrl", function($event) {
 			$api = $event->arguments(0);
-			$event->return = $this->jsonapiURL($api);
+			$event->return = $this->jsonapiURL($api, $event->arguments(1));
 		});
 	}
 }

@@ -63,7 +63,7 @@ class Pty3 extends AbstractManager {
 	 * @return ArCust3partyFreightQuery
 	 */
 	public function queryCustId($custID) {
-		return $this->query()->filterByCustId($custID);
+		return $this->query()->filterByCustid($custID);
 	}
 
 	/**
@@ -99,6 +99,16 @@ class Pty3 extends AbstractManager {
 	public function exists($custID, $acctnbr) {
 		return boolval($this->queryCustAccount($custID, $acctnbr)->count());
 	}
+
+	/**
+	 * Return if ArCust3partyFreight Customer Exists
+	 * @param  string $custID  Customer ID
+	 * @return bool
+	 */
+	public function custidExists($custID) {
+		return boolval($this->queryCustid($custID)->count());
+	}
+
 
 	/**
 	 * Return ArCust3partyFreight
@@ -154,7 +164,7 @@ class Pty3 extends AbstractManager {
 		}
 
 		if (empty($acctnbr) === false && strtolower($acctnbr) != 'new') {
-			$acctnbr = $this->wire('sanitizer')->text($acctnbr, ['maxLength' => $this->fieldAttribute('accountnbr', 'maxlength')]);
+			$acctnbr = $this->wire('sanitizer')->string($acctnbr, ['maxLength' => $this->fieldAttribute('accountnbr', 'maxlength')]);
 			$account->setAccountnbr($acctnbr);
 		}
 
@@ -180,10 +190,12 @@ class Pty3 extends AbstractManager {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = [];
-		$custID = $values->text('custid');
-		$acctnbr = $values->text('accountnbr', ['maxLength' => $this->fieldAttribute('accountnbr', 'maxlength')]);
+		$custID = $values->string('custid');
+		$acctnbr = $values->string('accountnbr', ['maxLength' => $this->fieldAttribute('accountnbr', 'maxlength')]);
 
 		$record        = $this->getOrCreate($custID, $acctnbr);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
 		$invalidfields = $this->_inputUpdate($input, $record);
 		$response      = $this->saveAndRespond($record, $invalidfields);
 		$this->setResponse($response);
@@ -261,6 +273,7 @@ class Pty3 extends AbstractManager {
 		}
 		$account->setPhone($sanitizer->text(implode('', $values->array('phone', ['delimiter' => '-'])), ['maxLength' => $this->fieldAttribute('phone', 'maxlength')]));
 		$account->setFax($sanitizer->text(implode('', $values->array('fax', ['delimiter' => '-'])), ['maxLength' => $this->fieldAttribute('fax', 'maxlength')]));
+		$account->setExtension($values->text('extension', ['maxLength' => $this->fieldAttribute('extension', 'maxlength')]));
 		return [];
 	}
 
@@ -276,8 +289,8 @@ class Pty3 extends AbstractManager {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$custID = $values->text('custid');
-		$acctnbr = $values->text('accountnbr');
+		$custID = $values->string('custid');
+		$acctnbr = $values->string('accountnbr');
 
 		if ($this->exists($custID, $acctnbr) === false) {
 			$response = Response::responseSuccess("Customer $custID Freight Account $acctnbr was deleted");
@@ -320,5 +333,12 @@ class Pty3 extends AbstractManager {
 /* =============================================================
 	Supplemental
 ============================================================= */
-	
+	/**
+	 * Return Customer Name
+	 * @param  string $custID
+	 * @return string
+	 */
+	public function customerName($custID) {
+		return Cmm::instance()->name($custID);
+	}
 }

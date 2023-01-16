@@ -6,6 +6,7 @@ use Propel\Runtime\Util\PropelModelPager;
 use MsaSysopCode;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
+use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\Filters;
 // Dplus Codes
@@ -54,6 +55,7 @@ class Ioptm extends AbstractController {
 		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getIoptm()]);
 		$html = self::displaySysop($data, $sysop, $codes);
+		self::addVarsToJsVars($data);
 		self::getIoptm()->deleteResponse();
 		return $html;
 	}
@@ -74,6 +76,7 @@ class Ioptm extends AbstractController {
 		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
+		self::addVarsToJsVars($data);
 		self::getIoptm()->deleteResponse();
 		return $html;
 	}
@@ -94,6 +97,7 @@ class Ioptm extends AbstractController {
 
 			switch ($data->action) {
 				case 'update':
+				case 'focus':
 					$url = self::sysopFocusUrl($data->sysop, $data->code);
 					break;
 				default:
@@ -178,7 +182,7 @@ class Ioptm extends AbstractController {
 	}
 
 	public function sysopFocusUrl($sysop, $focus) {
-		if (empty($focus) || self::getIoptm()->exists($sysop, $focus) === false) {
+		if (strlen($focus) == 0 || self::getIoptm()->exists($sysop, $focus) === false) {
 			return self::sysopUrl($sysop);
 		}
 		$filter   = self::getFilterSysopOptions($sysop);
@@ -200,7 +204,7 @@ class Ioptm extends AbstractController {
 	public static function urlFocus($focus = '') {
 		$sysopM = self::getSysop();
 
-		if (empty($focus) || $sysopM->exists(self::SYSTEM, $focus) === false) {
+		if (strlen($focus) == 0 || $sysopM->exists(self::SYSTEM, $focus) === false) {
 			return self::url();
 		}
 		$sysop = $sysopM->code(self::SYSTEM, $focus);
@@ -233,5 +237,22 @@ class Ioptm extends AbstractController {
 		$m->addHook('Page(pw_template=inmain)::optmUrl', function($event) {
 			$event->return = self::urlFocus($event->arguments(0));
 		});
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Add Variables to JS Vars Array
+	 * @param  WireData $data
+	 * @return void
+	 */
+	protected static function addVarsToJsVars(WireData $data) {
+		$table = 'ioptm';
+		$jsVars = self::pw('config')->js('vars');
+		$jsVars['codetable'] = [
+			'table' => strtolower($table),
+		];
+		self::pw('config')->js('vars', $jsVars);
 	}
 }

@@ -19,7 +19,7 @@ class Ttm extends AbstractCodeTableEditableSingleKey {
 	const DESCRIPTION        = 'Statement Text Code';
 	const DESCRIPTION_RECORD = 'Statement Text Code';
 	const RESPONSE_TEMPLATE  = 'Statement Text Code {code} {not} {crud}';
-	const RECORDLOCKER_FUNCTION = 'text';
+	const RECORDLOCKER_FUNCTION = 'ttm';
 	const DPLUS_TABLE           = 'TTM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 6],
@@ -63,22 +63,6 @@ class Ttm extends AbstractCodeTableEditableSingleKey {
 	public function codes() {
 		$q = $this->getQueryClass();
 		return $q->find();
-	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return GlTextCode
-	 */
-	public function new($id = '') {
-		$code = new GlTextCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
 	}
 
 /* =============================================================

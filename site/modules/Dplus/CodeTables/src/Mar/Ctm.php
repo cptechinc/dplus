@@ -128,6 +128,7 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 		$code->glcash    = $configAR->defaultGlCodeCash;
 		$code->glfinance   = $configAR->defaultGlCodeFinance;
 		$code->gldiscounts = $configAR->defaultGlCodeDiscounts;
+		$code->maillist = $this->fieldAttribute('maillist', 'default');
 		return $code;
 	}
 
@@ -185,11 +186,11 @@ class Ctm extends AbstractCodeTableEditableSingleKey {
 		$mhm = Codes\Mgl\Mhm::getInstance();
 
 		foreach ($this->glaccounts() as $field) {
-			if ($mhm->exists($values->text($field)) === false) {
+			if ($mhm->exists($values->string($field)) === false) {
 				$invalidfields[$field] = $this->fieldAttribute($field, 'label');
 			} else {
 				$setAcct = 'set' . ucfirst($field);
-				$code->$setAcct($values->text($field));
+				$code->$setAcct($values->string($field));
 			}
 		}
 		return $invalidfields;

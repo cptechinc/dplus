@@ -1,0 +1,20 @@
+{% set value = code.eom_disc_months(x) %}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'eom_disc_months' ~ x,
+		'type': 'number',
+		'value': value > 0 ? value : '',
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'eom_disc_months'
+		],
+		'attributes': {
+			'tabindex': x ~ '15',
+			'data-error': '.error',
+			'readonly': code.eom_percent(x) == 0,
+			'max': 99
+		}
+	}
+} %}

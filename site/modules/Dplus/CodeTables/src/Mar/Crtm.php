@@ -7,7 +7,7 @@ use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 /**
  * Class that handles the CRUD of the TRM code table
  */
-class Crtm extends AbstractCodeTableEditableSingleKey{
+class Crtm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArRouteCode';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_cust_rout';
@@ -34,21 +34,5 @@ class Crtm extends AbstractCodeTableEditableSingleKey{
 		$q = $this->query();
 		$q->select(ArRouteCode::aliasproperty('id'));
 		return $q->find()->toArray();
-	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return ArRouteCode
-	 */
-	public function new($id = '') {
-		$code = new ArRouteCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
 	}
 }

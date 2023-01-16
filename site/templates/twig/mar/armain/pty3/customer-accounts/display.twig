@@ -38,7 +38,16 @@
 								<div class="input-group-btn search-panel">
 									<div class="dropdown">
 										<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-											Search By <span class="searchby">{{ values.offsetExists('col') ? values.text('col')|capitalize : 'All' }}</span> <span class="caret"></span>
+											Search By&nbsp;
+											<span class="searchby">
+												{% if values.offsetExists('col') %}
+													{% set col = values.text('col') == 'accountnbr' ? 'Account #' : values.text('col')|capitalize %}
+													{{ col }}
+												{% else %}
+													All
+												{% endif %}
+											</span>
+											<span class="caret"></span>
 										</button>
 										<div class="dropdown-menu column-options">
 											<a class="dropdown-item" href="#" value="">All</a>

@@ -25,7 +25,7 @@ class Igcm extends AbstractCodeTableEditableSingleKey {
 	const DESCRIPTION_RECORD = 'Inventory Commission Code';
 	const RESPONSE_TEMPLATE  = 'Inventory Commission Code {code} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'iasm';
-	const DPLUS_TABLE           = 'IASM';
+	const DPLUS_TABLE           = 'IGCM';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => InvCommissionCode::MAX_LENGTH_CODE],
 		'description' => ['type' => 'text', 'maxlength' => 20],
@@ -43,21 +43,5 @@ class Igcm extends AbstractCodeTableEditableSingleKey {
 		$q = $this->query();
 		$q->select(InvCommissionCode::aliasproperty('id'));
 		return $q->find()->toArray();
-	}
-
-/* =============================================================
-	CRUD Creates
-============================================================= */
-	/**
-	 * Return New Code
-	 * @return InvCommissionCode
-	 */
-	public function new($id = '') {
-		$code = new InvCommissionCode();
-		if (empty($id) === false && strtolower($id) != 'new') {
-			$id = $this->wire('sanitizer')->string($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
-			$code->setId($id);
-		}
-		return $code;
 	}
 }

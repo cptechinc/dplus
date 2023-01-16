@@ -35,6 +35,15 @@ class Pty3Requests {
 		});
 	}
 
+	getCustomer(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/customer') }}');
+
+		ajax.setData({custID: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	validateAccountUrl() {
 		return '{{ page.jsonApiUrl('mar/validate/pty3/account/') }}';
 	}

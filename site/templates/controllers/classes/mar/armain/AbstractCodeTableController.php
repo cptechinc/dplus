@@ -22,6 +22,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	const SHOWONPAGE      = 10;
 	const USE_EDIT_MODAL  = true;
 	const USE_EDIT_PAGE   = false;
+	const LIST_SEARCH_COLS = ['code', 'description'];
 
 
 /* =============================================================
@@ -72,29 +73,36 @@ abstract class AbstractCodeTableController extends AbstractController {
 		self::sanitizeParametersShort($data, $fields);
 		$page	= self::pw('page');
 		$page->headline = static::TITLE;
+		static::getCodeTable()->recordlocker->deleteLock();
 
-		static::getClassName();
-
-		$filter = static::getCodeFilter();
-
-		if (strlen($data->q) > 0) {
-			$cols = self::pw('sanitizer')->array($data->col, ['delimiter' => ',']);
-			$cols = empty(array_filter($cols)) ? ['code', 'description'] : $cols;
-			$filter->search($data->q, $cols);
-		}
-
-		$filter->sortby($page);
-		$input = self::pw('input');
-		$codes = $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : static::SHOWONPAGE);
-
+		$codes = static::getCodeList($data);
+		
 		static::initHooks();
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-table.js'));
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-events.js'));
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/ajax-modal.js'));
+		self::addVarsToJsVars($data);
 		$page->js .= static::renderJs($data);
 		$html = self::displayList($data, $codes);
 		static::getCodeTable()->deleteResponse();
 		return $html;
+	}
+
+/* =============================================================
+	Data fetching
+============================================================= */
+	protected static function getCodeList(WireData $data) {
+		$filter = static::getCodeFilter();
+
+		if (strlen($data->q) > 0) {
+			$cols = self::pw('sanitizer')->array($data->col, ['delimiter' => ',']);
+			$cols = empty(array_filter($cols)) ? static::LIST_SEARCH_COLS : $cols;
+			$filter->search($data->q, $cols);
+		}
+
+		$filter->sortby(self::pw('page'));
+		$input = self::pw('input');
+		return $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : static::SHOWONPAGE);
 	}
 
 /* =============================================================
@@ -185,7 +193,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	URLs
 ============================================================= */
 	public static function url($code = '') {
-		if (empty($code)) {
+		if (strlen($code) == 0) {
 			return static::_url();
 		}
 		return self::codeFocusUrl($code);
@@ -276,5 +284,154 @@ abstract class AbstractCodeTableController extends AbstractController {
 	protected static function getClassName() {
 		$reflector = new ReflectionClass(static::class);
 		return $reflector->getShortName();
+	}
+
+	protected static function codeTableJsVarsArray(WireData $data) {
+		return [
+			'table' => strtolower(static::getClassName()),
+			'config' => [
+				'fields' => static::getCodeTableFieldConfigData($data),
+				'urls' => [
+					'api' => static::getCodeTableApiUrls($data)
+				],
+			],
+			'fields' => static::getCodeTableFields()
+		];
+	}
+
+	/**
+	 * Add Variables to JS Vars Array
+	 * @param  WireData $data
+	 * @return void
+	 */
+	protected static function addVarsToJsVars(WireData $data) {
+		$jsVars = self::pw('config')->js('vars');
+		$jsVars['codetable'] = static::codeTableJsVarsArray($data);
+		self::pw('config')->js('vars', $jsVars);
+	}
+
+	/**
+	 * Return CodeTable field Config Data
+	 * NOTE: Keep public for classes that are a copy of another, in a different menu
+	 * @param  WireData $data
+	 * @return array
+	 */
+	public static function getCodeTableFieldConfigData(WireData $data) {
+		$table = static::getCodeTable();
+		return [
+			'code'		  => ['maxlength' => $table->fieldAttribute('code', 'maxlength')],
+			'description' => ['maxlength' => $table->fieldAttribute('description', 'maxlength')],
+		];
+	}
+
+
+	/**
+	 * Return Fields
+	 * @return array
+	 */
+	protected static function getCodeTableFields() {
+		return array_keys(static::getCodeTable()::FIELD_ATTRIBUTES);
+	}
+
+	/**
+	 * Return URLs to JSON API
+	 * NOTE: Keep public for classes that are a copy of another, in a different menu
+	 * @return array
+	 */
+	public static function getCodeTableApiUrls() {
+		$class = strtolower(static::getClassName());
+		
+		return [
+			'validate' => self::pw('page')->jsonApiUrl("mar/validate/$class/code/"),
+			'code'	   => self::pw('page')->jsonApiUrl("mar/$class/code/"),
+		];
+	}
+	
+	/**
+	 * Return Relative Path to JS directory for this CodeTable
+	 * @return string
+	 */
+	protected static function getRelativeJsPath() {
+		$class = strtolower(static::getClassName());
+		return "scripts/code-tables/mar/$class/";
+	}
+
+	/**
+	 * Return relative Path to Request JS class File
+	 * @return string
+	 */
+	protected static function requestClassJsPath() {
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . 'classes/Requests.js';
+	}
+
+	/**
+	 * Return relative Path to Request JS class File
+	 * @return string
+	 */
+	protected static function formClassJsPath() {
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . 'classes/Form.js';
+	}
+
+	/**
+	 * Return JS filepath to custom JS file
+	 * @return string
+	 */
+	protected static function codeTableCustomJsPath() {
+		$class  = strtolower($class = static::getClassName());
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . "$class.js";
+	}
+
+	/**
+	 * Append JS class files
+	 * @param  WireData|null $data
+	 * @return void
+	 */
+	protected static function appendJsClasses(WireData $data = null) {
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Requests.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Config.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Inputs.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Form.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Alerts.js'));
+
+		
+		$requestsJsPath = static::requestClassJsPath();
+
+		if (file_exists(self::pw('config')->paths->templates . $requestsJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($requestsJsPath));
+		}
+
+		$formJsPath = static::formClassJsPath();
+
+		if (file_exists(self::pw('config')->paths->templates . $formJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($formJsPath));
+		}
+	}
+
+
+	/**
+	 * Append JS files to loaded
+	 * @param  WireData|null $data
+	 * @return void
+	 */
+	protected static function appendJs(WireData $data = null) {
+		static::appendJsClasses($data);
+
+		if (static::USE_EDIT_MODAL) {
+			// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-form.js'));
+			// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/edit-modal-events.js'));
+		}
+		
+		if (static::USE_EDIT_MODAL === false) { 
+			// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-form.js'));
+			// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/edit-code-events.js'));
+		}
+
+		$customJsPath = static::codeTableCustomJsPath();
+		if (file_exists(self::pw('config')->paths->templates . $customJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($customJsPath));
+		}
 	}
 }
