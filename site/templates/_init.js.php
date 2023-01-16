@@ -36,6 +36,7 @@ $config->js('agent', [
 ]);
 
 $config->js('user', [
+	'id' => $user->loginid,
 	'dplus' => [
 		'whseid' => $user->whseid
 	]
