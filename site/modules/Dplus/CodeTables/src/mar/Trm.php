@@ -114,6 +114,28 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
+	public function code($id) {
+		/** @var ArTermsCode */
+		$code = parent::code($id);
+
+		if ($code->method == self::METHOD_EOM) {
+			for ($i = 2; $i <= self::NBR_SPLITS_METHOD_E; $i++) {
+				$lastI = $i - 1;
+	
+				if (empty($code->eom_from_day($i)) && empty($code->eom_thru_day($lastI)) === false) {
+					$nextFromDay = $code->eom_thru_day($lastI) + 1;
+					if ($nextFromDay < $this->fieldAttribute('eom_thru_day', 'max')) {
+						$code->set_eom_from_day($i, $nextFromDay);
+						$code->set_eom_thru_day($i, $this->fieldAttribute('eom_thru_day', 'max'));
+					}
+					
+				}
+			}
+		}
+		
+		return $code;
+	}
+
 	/**
 	 * Return the IDs for the Purchase Order Confirm Code
 	 * @return array
@@ -136,7 +158,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 				$json[$field] = $code->$field;
 			}
 		}
-		for ($i = 1; $i < self::NBR_SPLITS_METHOD_E; $i++) {
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_E; $i++) {
 			$json["eom_from_day$i"]     = $code->eom_from_day($i);
 			$json["eom_thru_day$i"]     = $code->eom_thru_day($i);
 			$json["eom_disc_percent$i"] = $code->eom_disc_percent($i);
@@ -160,6 +182,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		/** @var ArTermsCode */
 		$code = parent::new($id);
 		$code->setMethod($this->fieldAttribute('method', 'default'));
+
 		$code->setType($this->fieldAttribute('type', 'default'));
 		$code->setArtmhold($this->fieldAttribute('hold', 'default'));
 		$code->setExpiredate($this->fieldAttribute('expiredate', 'default'));
@@ -172,7 +195,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$code->set_eom_thru_day(1, 99);
 
 		// DEBUG:
-		$code->setMethod(self::METHOD_EOM);
+		// $code->setMethod(self::METHOD_EOM);
 		// $code->setCode('paul');
 
 		return $code;
