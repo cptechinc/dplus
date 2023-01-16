@@ -322,7 +322,14 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$inputFormat = $this->fieldAttribute('expiredate', 'inputFormat');
 
 		$opts = ['default' => '', 'returnFormat' => $this->fieldAttribute('expiredate', 'recordFormat')];
-		$code->setExpiredate($values->date('expiredate', $inputFormat, $opts));
+		$expireDate = $values->date('expiredate', $inputFormat, $opts);
+		$minDate = date('m/d/Y');
+
+		if (strtotime($expireDate) <= strtotime($minDate)) {
+			$expireDate = '';
+		}
+
+		$code->setExpiredate($expireDate);
 		return true;
 	}
 

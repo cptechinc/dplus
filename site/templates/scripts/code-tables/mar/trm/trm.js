@@ -226,6 +226,18 @@ $(function() {
 /* =============================================================
 	Form Validation
 ============================================================= */
+	function validateExpiredate() {
+		var input = formTrm.inputs.fields.expiredate;
+		var expiredate = moment(input.val(), 'DD/MM/YYYY');
+		var minDate    = moment(formTrm.inputs.fields.expiredate.attr('min'), 'DD/MM/YYYY');
+		return expiredate.format('X') > minDate.format('X')
+	}
+
+	jQuery.validator.addMethod("expiredate", function(value, element) {
+		return this.optional(element) || validateExpiredate();
+	}, "Expire Date must be in the future");
+
+
 	var validator = formCode.form.validate({
 		errorClass: "is-invalid",
 		validClass: "",
@@ -251,6 +263,9 @@ $(function() {
 						},
 					}
 				}
+			},
+			expiredate: {
+				expiredate: true,
 			},
 			eom_due_day1: {
 				required: true,
