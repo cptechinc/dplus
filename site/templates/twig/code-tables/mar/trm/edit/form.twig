@@ -23,7 +23,7 @@
 			NOTE: Only show delete if code already exists.
 		#}
 		{% if manager.recordlocker.userHasLocked(code.code) or code.isNew() %}
-			<button type="submit" class="btn btn-success form_button"=>
+			<button type="submit" class="btn btn-success form_button">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if code.isNew() == false %}
