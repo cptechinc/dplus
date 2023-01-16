@@ -208,13 +208,14 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	 */
 	private function _inputUpdateBasic(WireInputData $values, ArTermsCode $code) {
 		$this->_inputUpdateMethod($values, $code);
+		$this->_inputUpdateFreightallow($values, $code);
 		$this->_inputUpdateType($values, $code);
 		$this->_inputUpdateCcprefix($values, $code);
 		$this->_inputUpdateCountry($values, $code);
 		$this->_inputUpdateExpiredate($values, $code);
 
 		$code->setArtmhold($values->yn('hold'));
-		$code->setFreightallow($values->yn('freightallow'));
+		
 		return [];
 	}
 
@@ -231,6 +232,21 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 			$method = $values->text('method');
 		}
 		$code->setMethod($method);
+		return true;
+	}
+
+	/**
+	 * Update Terms Code Method
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return bool
+	 */
+	private function _inputUpdateFreightallow(WireInputData $values, ArTermsCode $code) {
+		$code->setFreightallow($values->yn('freightallow'));
+		
+		if ($code->method === self::METHOD_EOM) {
+			$code->setFreightallow('N');
+		}
 		return true;
 	}
 

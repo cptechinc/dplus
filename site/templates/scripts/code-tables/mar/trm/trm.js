@@ -119,12 +119,18 @@ $(function() {
 
 		if (input.val() == codetable.config.methods.std.value){
 			$('[name="' + codetable.config.methods.std.typeInputName + '"]').addClass('show');
+
+			formTrm.inputs.fields.freightallow.removeAttr('readonly');
+			formTrm.inputs.fields.freightallow.removeAttr('disabled');
 			$('#std-splits').addClass('show');
 			return true;
 		}
 
 		if (input.val() == codetable.config.methods.eom.value){
 			$('[name="' + codetable.config.methods.eom.typeInputName + '"]').addClass('show');
+			formTrm.inputs.fields.freightallow.val('N');
+			formTrm.inputs.fields.freightallow.attr('readonly', 'readonly');
+			formTrm.inputs.fields.freightallow.attr('disabled', 'disabled');
 			$('#eom-splits').addClass('show');
 			return true;
 		}
