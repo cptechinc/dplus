@@ -57,6 +57,7 @@ class TrmForm extends CodeFormBase {
 		}
 
 		var value = input.val() == '' ? 0 : parseInt(input.val());
+
 		if (value > this.config.fields.eom_thru_day.defaultToMaxAt) {
 			input.val(input.attr('max'));
 		}
@@ -73,7 +74,7 @@ class TrmForm extends CodeFormBase {
 		}
 		var index = parseFloat(input.closest('.eom-split').data('index'));
 
-		if (index >= codetable.config.methods.splitCount) {
+		if (index >= codetable.config.methods.eom.splitCount) {
 			return false;
 		}
 
@@ -81,8 +82,9 @@ class TrmForm extends CodeFormBase {
 		var isValid = validator.element('#' + input.attr('id'));
 
 		var value = input.val() == '' ? 0 : parseInt(input.val());
-		var nextSplit = $('.eom-split[data-index='+ (index + 1) +']');
-
+		var nextIndex  = index + 1;
+		var nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
+		
 		// Disable next split's fields if Thru Day value is max or if it's invalid
 		if (value === this.config.fields.eom_thru_day.max || isValid === false) {
 			nextSplit.find('.eom-day-range input.eom_thru_day').attr('readonly', 'readonly');
@@ -93,6 +95,10 @@ class TrmForm extends CodeFormBase {
 		nextSplit.find('.eom-day-range input.eom_thru_day').removeAttr('readonly');
 		nextSplit.find('input.eom_disc_percent').removeAttr('readonly');
 		nextSplit.find('.eom-due input').removeAttr('readonly');
+
+		if (nextIndex == codetable.config.methods.eom.splitCount) {
+			nextSplit.find('.eom-day-range input.eom_thru_day').attr('readonly', 'readonly');
+		}
 	}
 
 	/**
