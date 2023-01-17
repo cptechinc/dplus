@@ -136,6 +136,8 @@ $(function() {
 		if (input.val() == codetable.config.methods.std.value){
 			$('[name="' + codetable.config.methods.std.typeInputName + '"]').addClass('show');
 
+			formTrm.inputs.fields.freightallow.attr('tabindex', '');
+			formTrm.inputs.fields.freightallow.removeAttr('readonly');
 			formTrm.inputs.fields.freightallow.removeAttr('readonly');
 			formTrm.inputs.fields.freightallow.removeAttr('disabled');
 			$('#std-splits').addClass('show');
@@ -145,6 +147,7 @@ $(function() {
 		if (input.val() == codetable.config.methods.eom.value){
 			$('[name="' + codetable.config.methods.eom.typeInputName + '"]').addClass('show');
 			formTrm.inputs.fields.freightallow.val('N');
+			formTrm.inputs.fields.freightallow.attr('tabindex', '-1');
 			formTrm.inputs.fields.freightallow.attr('readonly', 'readonly');
 			formTrm.inputs.fields.freightallow.attr('disabled', 'disabled');
 			$('#eom-splits').addClass('show');
@@ -178,10 +181,12 @@ $(function() {
 			formCode.inputs.fields.ccprefix.val('');
 			formCode.inputs.fields.ccprefix.change();
 			formCode.inputs.fields.ccprefix.attr('readonly', 'readonly');
+			formCode.inputs.fields.ccprefix.attr('tabindex', '-1');
 			ccprefixParent.find('button[data-toggle]').attr('disabled', 'disabled');
 			return true;
 		}
 		formCode.inputs.fields.ccprefix.removeAttr('readonly');
+		formCode.inputs.fields.ccprefix.attr('tabindex', '');
 		ccprefixParent.find('button[data-toggle]').removeAttr('disabled');
 	});
 
