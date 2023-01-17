@@ -15,11 +15,11 @@ class Trmg extends AbstractCodeTableEditableSingleKey{
 	const DESCRIPTION        = 'Terms Group Code';
 	const DESCRIPTION_RECORD = 'Terms Group Code';
 	const RESPONSE_TEMPLATE  = 'Terms Group Code {code} {not} {crud}';
-	const RECORDLOCKER_FUNCTION = 'ccm';
-	const DPLUS_TABLE           = 'CCM';
+	const RECORDLOCKER_FUNCTION = 'trmg';
+	const DPLUS_TABLE           = 'TRMG';
 	const FIELD_ATTRIBUTES = [
 		'code'        => ['type' => 'text', 'maxlength' => 4],
-		'description' => ['type' => 'text', 'maxlength' => 230],
+		'description' => ['type' => 'text', 'maxlength' => 30],
 	];
 
 	protected static $instance;
