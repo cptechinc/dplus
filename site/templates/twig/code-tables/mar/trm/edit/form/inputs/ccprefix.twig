@@ -12,7 +12,7 @@
 				'data-jqv': 'true',
 				'maxlength': 1,
 				'readonly': code.type != constant('TYPE_CREDITCARD', manager),
-				'tabindex': code.type != constant('TYPE_CREDITCARD', manager) ? '-1' : ''
+				'tabindex': code.type != constant('TYPE_CREDITCARD', manager) ? '-' ~ tabindex : tabindex,
 			}
 		},
 		'button': {

@@ -11,7 +11,7 @@
 			</div>
 			<div class="col-sm-6 input-parent">
 				<div class="col-sm-4 px-0">
-					{% include 'code-tables/mar/trm/edit/form/inputs/code.twig' %}
+					{% include 'code-tables/mar/trm/edit/form/inputs/code.twig' with {tabindex: 1} %}
 				</div>
 			</div>
 		</div>
@@ -22,7 +22,7 @@
 				<label for="description">Description</label>
 			</div>
 			<div class="col-sm-7">
-				{% include 'code-tables/mar/trm/edit/form/inputs/description.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/description.twig' with {tabindex: 2} %}
 			</div>
 		</div>
 	</div>
@@ -34,7 +34,7 @@
 				<label for="method">Method</label>
 			</div>
 			<div class="col-sm-4">
-				{% include 'code-tables/mar/trm/edit/form/inputs/method.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/method.twig' with {tabindex: 3} %}
 			</div>
 		</div>
 	</div>
@@ -46,8 +46,8 @@
 				<label for="type">Type</label>
 			</div>
 			<div class="col-sm-4">
-				{% include 'code-tables/mar/trm/edit/form/inputs/type-s.twig' %}
-				{% include 'code-tables/mar/trm/edit/form/inputs/type-e.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/type-s.twig' with {tabindex: 4} %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/type-e.twig' with {tabindex: 5} %}
 			</div>
 		</div>
 	</div>
@@ -58,7 +58,7 @@
 			</div>
 			<div class="col-sm-6 input-parent">
 				<div class="col-sm-4 px-0">
-					{% include 'code-tables/mar/trm/edit/form/inputs/ccprefix.twig' %}
+					{% include 'code-tables/mar/trm/edit/form/inputs/ccprefix.twig' with {tabindex: 6} %}
 				</div>
 				<small class="text-muted ajax-description description"></small>
 			</div>
@@ -72,7 +72,7 @@
 				<label for="hold">Hold</label>
 			</div>
 			<div class="col-sm-2">
-				{% include 'code-tables/mar/trm/edit/form/inputs/hold.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/hold.twig' with {tabindex: 7} %}
 			</div>
 		</div>
 	</div>
@@ -82,7 +82,7 @@
 				<label for="freightallow">Freight Allow</label>
 			</div>
 			<div class="col-sm-2">
-				{% include 'code-tables/mar/trm/edit/form/inputs/freightallow.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/freightallow.twig' with {tabindex: 8} %}
 			</div>
 		</div>
 	</div>
@@ -94,7 +94,7 @@
 				<label for="expiredate">Expire Date</label>
 			</div>
 			<div class="col-sm-4">
-				{% include 'code-tables/mar/trm/edit/form/inputs/expiredate.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/expiredate.twig' with {tabindex: 9} %}
 			</div>
 		</div>
 	</div>
@@ -107,7 +107,7 @@
 			</div>
 			<div class="col-sm-6 input-parent">
 				<div class="col-sm-4 px-0">
-					{% include 'code-tables/mar/trm/edit/form/inputs/country.twig' %}
+					{% include 'code-tables/mar/trm/edit/form/inputs/country.twig' with {tabindex: 10} %}
 				</div>
 				<small class="text-muted ajax-description description">
 					{{ cocom.description(code.country) }}
@@ -124,7 +124,7 @@
 			</div>
 			<div class="col-sm-6 input-parent">
 				<div class="col-sm-4 px-0">
-					{% include 'code-tables/mar/trm/edit/form/inputs/termsgroup.twig' %}
+					{% include 'code-tables/mar/trm/edit/form/inputs/termsgroup.twig' with {tabindex: 11} %}
 				</div>
 				<small class="text-muted ajax-description description">
 					{{ trmg.description(code.termsgroup) }}
