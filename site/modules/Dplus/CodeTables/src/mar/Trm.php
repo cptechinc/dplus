@@ -31,7 +31,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		'expiredate'   => ['type' => 'text', 'default' => '', 'inputFormat' => 'm/d/Y', 'recordFormat' => 'Ymd'],
 		'country'      => ['type' => 'text', 'default' => ''],
 		'ccprefix'     => ['type' => 'text', 'default' => ''],
-		'freightallow' => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
+		'freightallow' => ['type' => 'text', 'enabled' => false, 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
 		'termsgroup'   => ['type' => 'text', 'enabled' => true, 'maxlength' => Trmg::FIELD_ATTRIBUTES['code']['maxlength']],
 
 		// THESE ARE FOR THE SPLITS, USE BASE NAME
@@ -80,6 +80,10 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$fields = $this->fieldAttributes;
 		$fields['termsgroup']['enabled'] = in_array(Configs\Sys::custid(), self::DISABLED_TERMSGROUP_DPLUSCUSTIDS);
 		$fields['termsgroup']['enabled'] = true;
+
+		$configSo = Configs\So::config();
+		$fields['freightallow']['enabled'] = $configSo->freightAllowAmt == 0;
+
 		$this->fieldAttributes = $fields;
 	}
 
@@ -282,6 +286,11 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	 * @return bool
 	 */
 	private function _inputUpdateFreightallow(WireInputData $values, ArTermsCode $code) {
+		if ($this->fieldAttribute('freightallow', 'enabled') === false) {
+			$code->setFreightallow('N');
+			return true;
+		}
+
 		$code->setFreightallow($values->yn('freightallow'));
 		
 		if ($code->method === self::METHOD_EOM) {
