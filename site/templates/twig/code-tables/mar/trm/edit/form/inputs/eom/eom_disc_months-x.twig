@@ -1,4 +1,5 @@
 {% set value = code.eom_disc_months(x) %}
+{% set tabindex = startindex + (x * 10) + 4 %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
@@ -11,7 +12,7 @@
 			'eom_disc_months'
 		],
 		'attributes': {
-			'tabindex': x ~ '15',
+			'tabindex': tabindex,
 			'data-error': '.error',
 			'readonly': code.eom_disc_percent(x) == 0,
 			'max': 99

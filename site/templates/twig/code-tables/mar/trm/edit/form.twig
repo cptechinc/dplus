@@ -12,7 +12,7 @@
 	</div>
 
 	<div class="mb-3 type-splits collapse {{ code.method == constant('METHOD_EOM', manager) ? 'show' : '' }}" id="eom-splits">
-		{% include 'code-tables/mar/trm/edit/form/terms-splits-eom.twig' %}
+		{% include 'code-tables/mar/trm/edit/form/terms-splits-eom.twig' with {'startindex': 120} %}
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">

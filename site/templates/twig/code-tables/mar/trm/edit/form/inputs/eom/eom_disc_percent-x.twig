@@ -1,5 +1,6 @@
 {% set value = code.eom_disc_percent(x) %}
 {% set readonly = code.eom_thru_day(x) == 0 %}
+{% set tabindex = startindex + (x * 10) + 2 %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
@@ -12,7 +13,7 @@
 			'eom_disc_percent'
 		],
 		'attributes': {
-			'tabindex': x ~ '13',
+			'tabindex': tabindex,
 			'readonly': readonly,
 			'max': manager.fieldAttribute('eom_disc_percent', 'max')
 		}

@@ -1,4 +1,5 @@
 {% set value = code.eom_due_day(x) %}
+{% set tabindex = startindex + (x * 10) + 5 %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
@@ -11,7 +12,7 @@
 			'eom_due_day'
 		],
 		'attributes': {
-			'tabindex': x ~ '16',
+			'tabindex': tabindex,
 			'data-error': '.error',
 			'readonly': code.eom_thru_day(x) == 0,
 			'min': manager.fieldAttribute('eom_due_day', 'min'),
