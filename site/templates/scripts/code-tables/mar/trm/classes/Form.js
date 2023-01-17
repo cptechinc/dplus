@@ -37,13 +37,20 @@ class TrmForm extends CodeFormBase {
 		var parent = input.closest('.eom-discount');
 		var percent = input.val() == '' ? 0 : parseFloat(input.val());
 
+		var inputDiscDay	= parent.find('.eom_disc_day');
+		var inputDiscMonths = parent.find('.eom_disc_months');
+
 		if (percent == 0) {
-			parent.find('.eom_disc_day').attr('readonly', 'readonly');
-			parent.find('.eom_disc_months').attr('readonly', 'readonly');
+			this.setReadonly(inputDiscDay, true);
+			this.disableTabindex(inputDiscDay);
+			this.setReadonly(inputDiscMonths, true);
+			this.disableTabindex(inputDiscMonths);
 			return true;
 		}
-		parent.find('.eom_disc_day').removeAttr('readonly');
-		parent.find('.eom_disc_months').removeAttr('readonly');
+		this.setReadonly(inputDiscDay, false);
+		this.enableTabindex(inputDiscDay);
+		this.setReadonly(inputDiscMonths, false);
+		this.enableTabindex(inputDiscMonths);
 	}
 
 	/**
@@ -84,20 +91,41 @@ class TrmForm extends CodeFormBase {
 		var value = input.val() == '' ? 0 : parseInt(input.val());
 		var nextIndex  = index + 1;
 		var nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
+		var form = this;
+
 		
 		// Disable next split's fields if Thru Day value is max or if it's invalid
 		if (value === this.config.fields.eom_thru_day.max || isValid === false) {
-			nextSplit.find('.eom-day-range input.eom_thru_day').attr('readonly', 'readonly');
-			nextSplit.find('.eom-discount input').attr('readonly', 'readonly');
-			nextSplit.find('.eom-due input').attr('readonly', 'readonly');
+			this.disableTabindex(nextSplit.find('input.eom_thru_day'));
+			this.setReadonly(nextSplit.find('input.eom_thru_day'), true);
+			nextSplit.find('.eom-discount input').each(function() {
+				var eomInput = $(this);
+				form.setReadonly(eomInput, true);
+				form.disableTabindex(eomInput);
+			});
+			nextSplit.find('.eom-due input').each(function() {
+				var eomInput = $(this);
+				form.setReadonly(eomInput, true);
+				form.disableTabindex(eomInput);
+			});
 			return true;
 		}
-		nextSplit.find('.eom-day-range input.eom_thru_day').removeAttr('readonly');
-		nextSplit.find('input.eom_disc_percent').removeAttr('readonly');
-		nextSplit.find('.eom-due input').removeAttr('readonly');
+		this.setReadonly(nextSplit.find('input.eom_thru_day'), false);
+		this.enableTabindex(nextSplit.find('input.eom_thru_day'));
+		this.setReadonly(nextSplit.find('input.eom_disc_percent'), false);
+		this.enableTabindex(nextSplit.find('input.eom_disc_percent'));
+
+		
+
+		nextSplit.find('.eom-due input').each(function() {
+			var eomInput = $(this);
+			form.setReadonly(eomInput, false);
+			form.enableTabindex(eomInput);
+		});
 
 		if (nextIndex == codetable.config.methods.eom.splitCount) {
-			nextSplit.find('.eom-day-range input.eom_thru_day').attr('readonly', 'readonly');
+			this.disableTabindex(nextSplit.find('.eom_thru_day'));
+			this.setReadonly(nextSplit.find('input.eom_thru_day'), true);
 		}
 	}
 
@@ -118,7 +146,9 @@ class TrmForm extends CodeFormBase {
 		}
 
 		var value = input.val() == '' ? 0 : parseInt(input.val());
-		var nextSplit = $('.eom-split[data-index='+ (index + 1) +']');
+		console.log(input.val());
+		var nextIndex = index + 1;
+		var nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
 
 		if (value === this.config.fields.eom_thru_day.max) {
 			nextSplit.find('input').val('');
@@ -130,8 +160,8 @@ class TrmForm extends CodeFormBase {
 
 	/**
 	 * Set / remove Readonly attribute on input
-	 * @param   {Object} input 
-	 * @param   {bool}   readonly 
+	 * @param	{Object} input 
+	 * @param	{bool}	 readonly 
 	 * @returns {bool}
 	 */
 	setReadonly(input, readonly = true) {
@@ -147,8 +177,8 @@ class TrmForm extends CodeFormBase {
 
 	/**
 	 * Set / remove disabled attribute on input
-	 * @param   {Object} input 
-	 * @param   {bool}   disable
+	 * @param	{Object} input 
+	 * @param	{bool}	 disable
 	 * @returns {bool}
 	 */
 	setDisabled(input, disable = true) {
@@ -164,7 +194,7 @@ class TrmForm extends CodeFormBase {
 
 	/**
 	 * Enable tabindex attribute on input
-	 * @param   {Object} input 
+	 * @param	{Object} input 
 	 * @returns {bool}
 	 */
 	enableTabindex(input) {
@@ -177,7 +207,7 @@ class TrmForm extends CodeFormBase {
 
 	/**
 	 * Disable tabindex attribute on input
-	 * @param   {Object} input 
+	 * @param	{Object} input 
 	 * @returns {bool}
 	 */
 	disableTabindex(input) {
