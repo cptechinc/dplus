@@ -1,5 +1,7 @@
 {% set value = code.eom_disc_day(x) %}
+{% set readonly = code.eom_disc_percent(x) == 0 %}
 {% set tabindex = startindex + (x * 10) + 3 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
@@ -14,7 +16,7 @@
 		'attributes': {
 			'tabindex': tabindex,
 			'data-error': '.error',
-			'readonly': code.eom_disc_percent(x) == 0,
+			'readonly': readonly,
 			'max': 31
 		}
 	}
