@@ -17,6 +17,19 @@ class Mar extends Lookup {
 	}
 
 	/**
+	 * Search Tax Codes
+	 * @param  object $data
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function arCustTaxCodes($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Customer Tax Codes";
+		$filter = new Filters\Mar\ArCustTaxCode();
+		return self::filterResults($filter, $data);
+	}
+
+	/**
 	 * Search Customers
 	 * @param  object $data
 	 *                     q   Search Term
@@ -58,17 +71,17 @@ class Mar extends Lookup {
 		$filter = new Filters\Mar\ArTaxCode();
 		return self::filterResults($filter, $data);
 	}
-
+	
 	/**
-	 * Search Tax Codes
+	 * Search Terms Groups
 	 * @param  object $data
 	 *                     q        Search Term
 	 * @return void
 	 */
-	public static function arCustTaxCodes($data) {
+	public static function termsGroups($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		self::pw('page')->headline = "Customer Tax Codes";
-		$filter = new Filters\Mar\ArCustTaxCode();
+		self::pw('page')->headline = "Terms Group Codes";
+		$filter = new Filters\Mar\ArTermsGroup();
 		return self::filterResults($filter, $data);
 	}
 }

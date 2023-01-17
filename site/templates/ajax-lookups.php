@@ -72,7 +72,11 @@
 			'tm' => [
 				['GET', '', AjaxLookup\Mar::class, 'arCustTaxCodes'],
 				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'arCustTaxCodes'],
-			]
+			],
+			'trmg' => [
+				['GET', '', AjaxLookup\Mar::class, 'termsGroups'],
+				['GET', 'page{pagenbr:\d+}/', AjaxLookup\Mar::class, 'termsGroups'],
+			],
 		],
 		'mgl' => [
 			// General Ledger Codes
