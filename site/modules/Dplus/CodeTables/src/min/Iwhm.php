@@ -49,7 +49,7 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 	const FILTERABLE_FIELDS = ['code', 'name'];
 
 	protected static $instance;
-	private $fieldAttributes;
+	protected $fieldAttributes;
 
 	public function __construct() {
 		parent::__construct();
