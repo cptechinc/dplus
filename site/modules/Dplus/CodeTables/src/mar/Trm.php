@@ -77,7 +77,6 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	public function initFieldAttributes() {
 		parent::initFieldAttributes();
 		
-
 		$fields = $this->fieldAttributes;
 		$fields['termsgroup']['enabled'] = in_array(Configs\Sys::custid(), self::DISABLED_TERMSGROUP_DPLUSCUSTIDS);
 		$fields['termsgroup']['enabled'] = true;
@@ -113,6 +112,10 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$opts['eom_due_day'] = [
 			'max' => $this->fieldAttribute('eom_due_day', 'max'),
 			'min' => $this->fieldAttribute('eom_due_day', 'min'),
+		];
+		$opts['eom_plus_months'] = [
+			'max' => $this->fieldAttribute('eom_plus_months', 'max'),
+			'blankValue' => ''
 		];
 		$opts['eom_disc_percent'] = [
 			'max'        => $this->fieldAttribute('eom_disc_percent', 'max'),
@@ -445,6 +448,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 			}
 			$code->set_eom_thru_day($i, $thruDay);
 			$code->set_eom_due_day($i, $values->int("eom_due_day$i", $fieldOpts['eom_due_day']));
+			$code->set_eom_plus_months($i, $values->int("eom_plus_months$i", $fieldOpts['eom_plus_months']));
 			$code->set_eom_disc_percent($i, $values->float("eom_disc_percent$i", $fieldOpts['eom_disc_percent']));
 
 			if ($code->eom_disc_percent($i) > 0) {
