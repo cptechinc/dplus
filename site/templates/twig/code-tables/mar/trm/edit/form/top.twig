@@ -1,3 +1,6 @@
+{% set mCodeTables = page.wire('modules').get('CodeTables') %}
+
+{% set cocom = mCodeTables.getCodeTable('mar', 'cocom') %}
 <div class="row">
 	<div class="col-sm-6">
 		<div class="row mb-3">
@@ -104,7 +107,13 @@
 				<div class="col-sm-4 px-0">
 					{% include 'code-tables/mar/trm/edit/form/inputs/country.twig' %}
 				</div>
-				<small class="text-muted ajax-description description"></small>
+				<small class="text-muted ajax-description description">
+					{{ cocom.description(code.country) }}
+				</small>
+			</div>
+		</div>
+	</div>
+</div>
 			</div>
 		</div>
 	</div>
