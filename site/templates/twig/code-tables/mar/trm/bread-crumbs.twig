@@ -11,17 +11,17 @@
 {% block current_page %}
 	<li class="breadcrumb-item">
 		<a href="{{ page.menuUrl() }}">
-			<i class="fa fa-list" aria-hidden="true"></i> INMAIN
+			<i class="fa fa-list" aria-hidden="true"></i> ARMAIN
 		</a>
 	</li>
 	{% if values.offsetExists('code') == false %}
 		<li class="breadcrumb-item active" aria-current="page">
-			<i class="fa fa-microchip" aria-hidden="true"></i> IWHM
+			<i class="fa fa-microchip" aria-hidden="true"></i> TRM
 		</li>
 	{% else %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.codeListUrl(values.text('code')) }}">
-				<i class="fa fa-microchip" aria-hidden="true"></i> IWHM
+				<i class="fa fa-microchip" aria-hidden="true"></i> TRM
 			</a>
 		</li>
 		<li class="breadcrumb-item active" aria-current="page">
@@ -34,6 +34,6 @@
 	{% if values.offsetExists('code') == false %}
 		{{ page.get('pagetitle|headline|title')|raw }}
 	{% else %}
-		Warehouse Edit
+		Customer Terms Edit
 	{% endif %}
 {% endblock %}
