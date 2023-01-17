@@ -244,6 +244,22 @@ $(function() {
 		formTrm.enableDisableEomDiscDayMonthFromPercent(input);
 	});
 
+	$("body").on("keyup", ".eom_disc_percent", function(e) {
+		if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value){
+			return false;
+		}
+
+		var input  = $(this);
+		var percent = input.val() == '' ? 0 : parseFloat(input.val());
+		
+		if (percent == 0) {
+			formTrm.enableDisableEomDiscDayMonthFromPercent(input);
+			return true;
+		}
+		input.val(percent.toFixed(formCode.config.fields.eom_disc_percent.precision));
+		formTrm.enableDisableEomDiscDayMonthFromPercent(input);
+	});
+
 	$("body").on("change", ".eom_thru_day", function(e) {
 		if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value) {
 			return false;
