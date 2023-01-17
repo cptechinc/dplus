@@ -61,7 +61,7 @@ class Trm extends AbstractCodeTableController {
 		self::pw('page')->show_breadcrumbs = false;
 
 		if ($code->isNew() === false) {
-			self::pw('page')->headline = "CTM: Editing $data->code";
+			self::pw('page')->headline = "TRM: Editing $data->code";
 			$trm->lockrecord($code);
 		}
 		self::initHooks();
