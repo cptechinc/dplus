@@ -127,4 +127,71 @@ class TrmForm extends CodeFormBase {
 		nextSplit.find('.eom_from_day').val(value+1);
 		nextSplit.find('.eom_thru_day').val(this.config.fields.eom_thru_day.max);
 	}
+
+	/**
+	 * Set / remove Readonly attribute on input
+	 * @param   {Object} input 
+	 * @param   {bool}   readonly 
+	 * @returns {bool}
+	 */
+	setReadonly(input, readonly = true) {
+		if (input.attr('name') == undefined || input.attr('name') == '') {
+			return false;
+		}
+		if (readonly === false) {
+			input.removeAttr('readonly');
+			return true;
+		}
+		input.attr('readonly', 'readonly');
+	}
+
+	/**
+	 * Set / remove disabled attribute on input
+	 * @param   {Object} input 
+	 * @param   {bool}   disable
+	 * @returns {bool}
+	 */
+	setDisabled(input, disable = true) {
+		if (input.attr('name') == undefined || input.attr('name') == '') {
+			return false;
+		}
+		if (disable === false) {
+			input.removeAttr('disabled');
+			return true;
+		}
+		input.attr('disabled', 'disabled');
+	}
+
+	/**
+	 * Enable tabindex attribute on input
+	 * @param   {Object} input 
+	 * @returns {bool}
+	 */
+	enableTabindex(input) {
+		if (input.attr('name') == undefined || input.attr('name') == '') {
+			return false;
+		}
+		var tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
+		nput.attr('tabindex', tabindex);
+	}
+
+	/**
+	 * Disable tabindex attribute on input
+	 * @param   {Object} input 
+	 * @returns {bool}
+	 */
+	disableTabindex(input) {
+		if (input.attr('name') == undefined || input.attr('name') == '') {
+			return false;
+		}
+		var tabindex = '';
+		var disablePrefix = '-';
+
+		var tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
+
+		if (tabindex == '') {
+			tabindex = 1;
+		}
+		input.attr('tabindex', disablePrefix + tabindex);
+	}
 }

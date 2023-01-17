@@ -135,11 +135,9 @@ $(function() {
 
 		if (input.val() == codetable.config.methods.std.value){
 			$('[name="' + codetable.config.methods.std.typeInputName + '"]').addClass('show');
-
-			formTrm.inputs.fields.freightallow.attr('tabindex', '');
-			formTrm.inputs.fields.freightallow.removeAttr('readonly');
-			formTrm.inputs.fields.freightallow.removeAttr('readonly');
-			formTrm.inputs.fields.freightallow.removeAttr('disabled');
+			formTrm.setReadonly(formTrm.inputs.fields.freightallow, false);
+			formTrm.enableTabindex(formTrm.inputs.fields.freightallow);
+			formTrm.setDisabled(formTrm.inputs.fields.freightallow, false);
 			$('#std-splits').addClass('show');
 			return true;
 		}
@@ -147,9 +145,9 @@ $(function() {
 		if (input.val() == codetable.config.methods.eom.value){
 			$('[name="' + codetable.config.methods.eom.typeInputName + '"]').addClass('show');
 			formTrm.inputs.fields.freightallow.val('N');
-			formTrm.inputs.fields.freightallow.attr('tabindex', '-1');
-			formTrm.inputs.fields.freightallow.attr('readonly', 'readonly');
-			formTrm.inputs.fields.freightallow.attr('disabled', 'disabled');
+			formTrm.disableTabindex(formTrm.inputs.fields.freightallow);
+			formTrm.setReadonly(formTrm.inputs.fields.freightallow, true);
+			formTrm.setDisabled(formTrm.inputs.fields.freightallow, true);
 			$('#eom-splits').addClass('show');
 			return true;
 		}
@@ -180,13 +178,13 @@ $(function() {
 		if (input.val() != codetable.config.types.creditcard.value) {
 			formCode.inputs.fields.ccprefix.val('');
 			formCode.inputs.fields.ccprefix.change();
-			formCode.inputs.fields.ccprefix.attr('readonly', 'readonly');
-			formCode.inputs.fields.ccprefix.attr('tabindex', '-1');
+			formTrm.setReadonly(formCode.inputs.fields.ccprefix, true);
+			formTrm.disableTabindex(formCode.inputs.fields.ccprefix);
 			ccprefixParent.find('button[data-toggle]').attr('disabled', 'disabled');
 			return true;
 		}
-		formCode.inputs.fields.ccprefix.removeAttr('readonly');
-		formCode.inputs.fields.ccprefix.attr('tabindex', '');
+		formTrm.setReadonly(formCode.inputs.fields.ccprefix, false);
+		formTrm.enableTabindex(formCode.inputs.fields.ccprefix);
 		ccprefixParent.find('button[data-toggle]').removeAttr('disabled');
 	});
 
@@ -279,7 +277,7 @@ $(function() {
 
 	var validator = formCode.form.validate({
 		errorClass: "is-invalid",
-		validClass: "is-valid",
+		validClass: "",
 		errorPlacement: function(error, element) {
 			error.addClass('invalid-feedback');
 
