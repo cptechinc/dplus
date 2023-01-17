@@ -17,6 +17,15 @@ class TrmRequests extends CodeRequestsBase {
 		});
 	}
 
+	getTermsGroup(code, callback) {
+		var ajax = new AjaxRequest(config.ajax.urls.json + 'mar/trmg/code/');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	getCreditCardCode(code, callback) {
 		var ajax = new AjaxRequest(config.ajax.urls.json + 'mar/crcd/code/');
 

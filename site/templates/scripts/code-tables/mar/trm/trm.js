@@ -208,6 +208,24 @@ $(function() {
 		});
 	});
 
+	$("body").on("change", "#code-form input[name=termsgroup]", function(e) {
+		var input = $(this);
+		var parent = input.closest('.input-parent');
+		var descriptionField = parent.find('.description');
+
+		descriptionField.text('');
+
+		if (input.val() == '') {
+			return true;
+		}
+
+		server.getTermsGroup(input.val(), function(termsgroup) {
+			if (termsgroup) {
+				descriptionField.text(termsgroup.description);
+			}
+		});
+	});
+
 
 /* =============================================================
 	Method EOM Events
@@ -261,7 +279,7 @@ $(function() {
 
 	var validator = formCode.form.validate({
 		errorClass: "is-invalid",
-		validClass: "",
+		validClass: "is-valid",
 		errorPlacement: function(error, element) {
 			error.addClass('invalid-feedback');
 
@@ -287,6 +305,19 @@ $(function() {
 			},
 			expiredate: {
 				expiredate: true,
+			},
+			termsgroup: {
+				required: false,
+				remote: {
+					url: config.ajax.urls.json + 'mar/validate/trmg/code/',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.inputs.fields.termsgroup.val();
+						}
+					}
+				}
 			},
 			eom_due_day1: {
 				required: true,

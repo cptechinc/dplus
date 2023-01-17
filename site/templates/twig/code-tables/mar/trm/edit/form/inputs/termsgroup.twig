@@ -1,0 +1,27 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+	'inputgroup': {
+		'type': 'prepend',
+		'size': 'sm',
+		'input': {
+			'name': 'termsgroup',
+			'value': code.termsgroup,
+			'addclasses':[],
+			'attributes': {
+				'placeholder': '',
+				'aria-label':  'AR Terms Group',
+				'data-jqv': 'true'
+			}
+		},
+		'button': {
+			'colorclass': 'btn-secondary',
+			'text': 'fa fa-search'|icon,
+			'attributes': {
+				'title': 'Search AR Terms Group Codes',
+				'data-toggle': 'modal',
+				'data-target': '#ajax-modal',
+				'data-lookupurl': page.searchLookupUrl('mar/trmg/'),
+				'data-input': '#termsgroup'
+			}
+		}
+	}
+} %}

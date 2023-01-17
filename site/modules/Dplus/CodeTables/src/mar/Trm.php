@@ -31,6 +31,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		'country'      => ['type' => 'text', 'default' => ''],
 		'ccprefix'     => ['type' => 'text', 'default' => ''],
 		'freightallow' => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
+		'termsgroup'   => ['type' => 'text', 'maxlength' => Trmg::FIELD_ATTRIBUTES['code']['maxlength']],
 
 		// THESE ARE FOR THE SPLITS, USE BASE NAME
 		'eom_disc_percent' => ['type' => 'number', 'max' => 99.99, 'precision' => 2],
@@ -127,8 +128,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 					if ($nextFromDay < $this->fieldAttribute('eom_thru_day', 'max')) {
 						$code->set_eom_from_day($i, $nextFromDay);
 						$code->set_eom_thru_day($i, $this->fieldAttribute('eom_thru_day', 'max'));
-					}
-					
+					}	
 				}
 			}
 		}
@@ -217,10 +217,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$invalidfields  = parent::_inputUpdate($input, $code);
 		$invalidfieldsBasic = $this->_inputUpdateBasic($values, $code);
 		$invalidfieldsMethods = $this->_inputUpdateMethodTerms($values, $code);
-		// header('Content-Type: application/json; charset=utf-8');
-		// echo json_encode($this->codeJson($code));
-		// exit;	
-		return array_merge($invalidfields, $invalidfieldsBasic);
+		return array_merge($invalidfields, $invalidfieldsBasic, $invalidfieldsMethods);
 	}
 
 	/**
@@ -235,8 +232,8 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$this->_inputUpdateType($values, $code);
 		$this->_inputUpdateCcprefix($values, $code);
 		$this->_inputUpdateCountry($values, $code);
+		$this->_inputUpdateTermsgroup($values, $code);
 		$this->_inputUpdateExpiredate($values, $code);
-
 		$code->setArtmhold($values->yn('hold'));
 		
 		return [];
@@ -330,6 +327,23 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 
 		if ($COCOM->exists($values->string('country'))) {
 			$code->setCountry($values->string('country'));
+		}
+		return true;
+	}
+
+	/**
+	 * Update Terms Code's Terms Group
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return bool
+	 */
+	private function _inputUpdateTermsgroup(WireInputData $values, ArTermsCode $code) {
+		$code->setTermsgroup('');
+
+		$TRMG = Trmg::instance();
+
+		if ($TRMG->exists($values->string('termsgroup'))) {
+			$code->setTermsgroup($values->string('termsgroup'));
 		}
 		return true;
 	}
