@@ -8,6 +8,7 @@ use ProcessWire\WireInput;
 use ProcessWire\WireInputData;
 // Dplus Codes
 use Dplus\Codes\AbstractCodeTableEditableSingleKey;
+use Dplus\Configs;
 
 /**
  * Class that handles the CRUD of the TRM code table
@@ -31,13 +32,13 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		'country'      => ['type' => 'text', 'default' => ''],
 		'ccprefix'     => ['type' => 'text', 'default' => ''],
 		'freightallow' => ['type' => 'text', 'default' => 'N', 'options' => ['Y' => 'Yes', 'N' => 'No']],
-		'termsgroup'   => ['type' => 'text', 'maxlength' => Trmg::FIELD_ATTRIBUTES['code']['maxlength']],
+		'termsgroup'   => ['type' => 'text', 'enabled' => true, 'maxlength' => Trmg::FIELD_ATTRIBUTES['code']['maxlength']],
 
 		// THESE ARE FOR THE SPLITS, USE BASE NAME
 		'eom_disc_percent' => ['type' => 'number', 'max' => 99.99, 'precision' => 2],
-		'eom_disc_day'    => ['type' => 'number', 'max' => 31],
-		'eom_disc_months' => ['type' => 'number', 'max' => 99],
-		'eom_due_day'     => ['type' => 'number', 'max' => 31, 'min' => 1],
+		'eom_disc_day'     => ['type' => 'number', 'max' => 31],
+		'eom_disc_months'  => ['type' => 'number', 'max' => 99],
+		'eom_due_day'      => ['type' => 'number', 'max' => 31, 'min' => 1],
 		'eom_plus_months'  => ['type' => 'number', 'max' => 99],
 		'eom_from_day'     => ['type' => 'number', 'max' => 98],
 		'eom_thru_day'     => ['type' => 'number', 'max' => 99, 'defaultToMaxAt' => 28],
@@ -61,12 +62,29 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	const METHOD_STD = 'S';
 	const METHOD_EOM = 'E';
 	const TYPE_CREDITCARD = 'CC';
+	const DISABLED_TERMSGROUP_DPLUSCUSTIDS = ['ALUMAC'];
 
 	protected static $instance;
+	protected $fieldAttributes;
 
 /* =============================================================
 	Field Configs
 ============================================================= */
+	/**
+	 * Intialize Field Attributes that need values set from Configs
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		parent::initFieldAttributes();
+		
+
+		$fields = $this->fieldAttributes;
+		$fields['termsgroup']['enabled'] = in_array(Configs\Sys::custid(), self::DISABLED_TERMSGROUP_DPLUSCUSTIDS);
+		$fields['termsgroup']['enabled'] = true;
+		$this->fieldAttributes = $fields;
+	}
+
+
 	/**
 	 * Return EOM (End-of-Month) Field Attributes
 	 * @return string
@@ -132,7 +150,6 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 				}
 			}
 		}
-		
 		return $code;
 	}
 
@@ -339,6 +356,10 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	 */
 	private function _inputUpdateTermsgroup(WireInputData $values, ArTermsCode $code) {
 		$code->setTermsgroup('');
+
+		if ($this->fieldAttribute('termsgroup', 'enabled') === false) {
+			return true;
+		}
 
 		$TRMG = Trmg::instance();
 

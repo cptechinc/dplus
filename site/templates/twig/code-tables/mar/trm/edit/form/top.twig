@@ -116,20 +116,22 @@
 		</div>
 	</div>
 </div>
-<div class="row">
-	<div class="col-sm-6">
-		<div class="row mb-3">
-			<div class="col-sm-4">
-				<label for="termsgroup">Terms Group</label>
-			</div>
-			<div class="col-sm-6 input-parent">
-				<div class="col-sm-4 px-0">
-					{% include 'code-tables/mar/trm/edit/form/inputs/termsgroup.twig' with {tabindex: 11} %}
+{% if manager.fieldAttribute('termsgroup', 'enabled') %}
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="termsgroup">Terms Group</label>
 				</div>
-				<small class="text-muted ajax-description description">
-					{{ trmg.description(code.termsgroup) }}
-				</small>
+				<div class="col-sm-6 input-parent">
+					<div class="col-sm-4 px-0">
+						{% include 'code-tables/mar/trm/edit/form/inputs/termsgroup.twig' with {tabindex: 11} %}
+					</div>
+					<small class="text-muted ajax-description description">
+						{{ trmg.description(code.termsgroup) }}
+					</small>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+{% endif %}
