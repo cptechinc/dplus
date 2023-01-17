@@ -172,7 +172,7 @@ class TrmForm extends CodeFormBase {
 			return false;
 		}
 		var tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
-		nput.attr('tabindex', tabindex);
+		input.attr('tabindex', tabindex);
 	}
 
 	/**
