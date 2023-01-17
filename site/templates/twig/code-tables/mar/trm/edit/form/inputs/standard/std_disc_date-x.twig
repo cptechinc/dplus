@@ -1,6 +1,7 @@
 {% set readonly = code.std_disc_percent(x) == 0 %}
 {% set readonly = code.std_disc_days(x) > 0 ? true : readonly %}
 {% set readonly = code.std_disc_day(x) > 0 ? true : readonly %}
+{% set tabindex = startindex + (x * 10) + 4 %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
@@ -12,7 +13,7 @@
 			'standard_discount_date'
 		],
 		'attributes': {
-			'tabindex': x ~ '4',
+			'tabindex': tabindex,
 			'placeholder': manager.fieldAttribute('std_disc_date', 'placeholder'),
 			'readonly': readonly,
 			'regex': manager.fieldAttribute('std_disc_date', 'regex')

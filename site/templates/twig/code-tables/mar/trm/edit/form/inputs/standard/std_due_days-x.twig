@@ -2,7 +2,7 @@
 {% set readonly = code.order_percent(x) == 0 ? true : readonly %}
 {% set readonly = code.std_due_day(x) > 0 ? true : readonly %}
 {% set readonly = code.std_due_date(x) > 0 ? true : readonly %}
-
+{% set tabindex = startindex + (x * 10) + 5 %}
 {# x > 1 #}
 
 {% include 'util/bootstrap/form/input.twig' with {
@@ -16,7 +16,7 @@
 			'standard_due_day'
 		],
 		'attributes': {
-			'tabindex': x ~ '5',
+			'tabindex': tabindex,
 			'data-error': '.error',
 			'readonly': readonly,
 			'max': manager.fieldAttribute('std_due_days', 'max')

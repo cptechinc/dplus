@@ -1,3 +1,5 @@
+{% set tabindex = startindex + (x * 10) + 1 %}
+
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
 		'name': 'std_disc_percent' ~ x,
@@ -9,7 +11,7 @@
 			'standard-discount-percent'
 		],
 		'attributes': {
-			'tabindex': x ~ '1',
+			'tabindex': tabindex,
 			'data-error': '.error',
 			'readonly': code.order_percent(x) == 0,
 			'max': manager.fieldAttribute('std_disc_percent', 'max')

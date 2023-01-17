@@ -1,6 +1,8 @@
 {% set readonly = x != 1 %}
 {% set readonly = code.order_percent(x) == 0 ? true : readonly %}
 
+{% set tabindex = startindex + (x * 10) + 0 %}
+
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
 		'name': 'order_percent' ~ x,
@@ -12,7 +14,7 @@
 			'order_percent'
 		],
 		'attributes': {
-			'tabindex': x ~ '0',
+			'tabindex': tabindex,
 			'data-error': '.error',
 			'max': 100.00,
 			'readonly': code.order_percent(x) == 0
