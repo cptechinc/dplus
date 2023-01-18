@@ -255,8 +255,7 @@ $(function() {
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscDayMonthFromPercent(input);
 			return true;
-		}
-		input.val(percent.toFixed(formCode.config.fields.eom_disc_percent.precision));
+		}		
 		formTrm.enableDisableEomDiscDayMonthFromPercent(input);
 	});
 
