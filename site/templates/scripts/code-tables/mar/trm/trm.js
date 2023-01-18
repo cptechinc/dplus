@@ -219,6 +219,41 @@ $(function() {
 		});
 	});
 
+	$("body").on("change", "#code-form input[name=expiredate]", function(e) {
+		var input = $(this);
+		var regexMdy4 = '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])((20)\d{2})';
+		var regexMdy2 = '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])(\d{2})';
+
+		var momentFormat4Year = 'MMDDYYYY';
+		var momentFormat2Year = 'MMDDYY';
+
+		if (input.val().length < 8) {
+			return true;
+		}
+
+		if (isNaN(input.val())) {
+			return true;
+		}
+		var regex4Year = new RegExp(regexMdy4);
+		var regex2Year = new RegExp(regexMdy2);
+
+		if (regex4Year.test(input.val()) === false && regex2Year.test(input.val()) === false){
+			return true;
+		}
+
+		var momentParseFormat = momentFormat4Year;
+
+		if (regex2Year.test(input.val())) {
+			momentParseFormat = momentFormat2Year;
+		}
+
+		var date = moment(input.val(), momentParseFormat);
+		if (date.isValid() === false) {
+			return false;
+		}
+		input.val(date.format('MM/DD/YYYY'))
+	});
+
 
 /* =============================================================
 	Method EOM Events
