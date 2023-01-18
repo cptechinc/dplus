@@ -1,7 +1,9 @@
 {% set readonly = code.std_disc_percent(x) == 0 %}
 {% set readonly = code.std_disc_days(x) > 0 ? true : readonly %}
 {% set readonly = code.std_disc_date(x) > 0 ? true : readonly %}
+
 {% set tabindex = startindex + (x * 10) + 3 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {

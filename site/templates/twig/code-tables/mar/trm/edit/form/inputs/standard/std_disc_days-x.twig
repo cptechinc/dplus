@@ -3,6 +3,7 @@
 {% set readonly = code.std_disc_date(x) ? true : readonly %}
 
 {% set tabindex = startindex + (x * 10) + 2 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {

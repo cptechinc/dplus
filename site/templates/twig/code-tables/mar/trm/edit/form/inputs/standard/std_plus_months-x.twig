@@ -1,4 +1,7 @@
+{% set readonly = code.std_due_day(x) == 0 %}
+
 {% set tabindex = startindex + (x * 10) + 7 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
@@ -8,12 +11,12 @@
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',
-			'standard_plus_months'
+			'std_plus_months'
 		],
 		'attributes': {
 			'tabindex': tabindex,
 			'data-error': '.error',
-			'readonly': code.std_due_day(x) == 0,
+			'readonly': readonly,
 			'max': manager.fieldAttribute('std_plus_months', 'max')
 		}
 	}
