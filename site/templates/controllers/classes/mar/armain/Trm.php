@@ -141,7 +141,7 @@ class Trm extends AbstractCodeTableController {
 		$config['std_disc_date'] = ['regex' => $table->fieldAttribute('std_disc_date', 'regex')];
 		$config['std_due_date']  = ['regex' => $table->fieldAttribute('std_due_date', 'regex')];
 		$config['eom_disc_percent']  = ['precision' => $table->fieldAttribute('eom_disc_percent', 'precision')];
-		$config['eom_thru_day']  = ['max' => $table->fieldAttribute('eom_thru_day', 'max'), 'defaultToMaxAt' => $table->fieldAttribute('eom_thru_day', 'defaultToMaxAt')];
+		$config['eom_thru_day']     = ['max' => $table->fieldAttribute('eom_thru_day', 'max'), 'defaultToMaxAt' => $table->fieldAttribute('eom_thru_day', 'defaultToMaxAt')];
 		return $config;
 	}
 
