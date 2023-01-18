@@ -105,7 +105,7 @@ class Receiving extends Base {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$scan   = $values->text('scan');
-		$ponbr  = $values->text('ponbr');
+		$ponbr  = $values->int('ponbr');
 		$date   = $values->text('productiondate');
 		$date   = $date ? date('Ymd', strtotime($date)) : 0;
 		$q = $this->getInventoryQuery($values->text('scan'));
@@ -132,7 +132,7 @@ class Receiving extends Base {
 	protected function deleteLotserial(WireInput $input) {
 		$rm        = strtolower($input->requestMethod());
 		$values    = $input->$rm;
-		$ponbr     = $values->text('ponbr');
+		$ponbr     = $values->int('ponbr');
 		$linenbr   = $values->int('linenbr');
 		$lotserial = $values->text('lotserial');
 		$binID     = $values->binID('binID');
@@ -149,7 +149,7 @@ class Receiving extends Base {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$ponbr      = $values->text('ponbr');
+		$ponbr      = $values->int('ponbr');
 		$linenbr    = $values->int('linenbr');
 		$lotserial  = $values->text('lotserial');
 		$binID      = $values->binID('originalbinID');
@@ -172,7 +172,7 @@ class Receiving extends Base {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$ponbr      = $values->text('ponbr');
+		$ponbr      = $values->int('ponbr');
 		$scan       = $values->text('scan');
 		$ref        = $values->text('reference');
 		$itemID     = $values->text('itemID');
