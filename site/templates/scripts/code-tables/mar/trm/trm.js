@@ -51,38 +51,30 @@ $(function() {
 
 	$("body").on("focusin", "#code-form .eom-split input", function(e) {
 		var input = $(this);
-		if (input.attr('tabindex') <= 116) {
+
+		var form       = input.closest('form');
+		var validator  = form.validate();
+		var formEom    = form.find('#eom-splits');
+		var firstInput = formEom.find('input[name=eom_thru_day1]');
+
+		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
 			return true;
 		}
-		var form  = input.closest('form');
-		var formEom = form.find('#eom-splits');
 
-		var validator = form.validate();
+		var start = parseInt(firstInput.attr('tabindex'));
+		
+		// Only loop up to $(this) input
+		for (var i = start; i < parseInt(input.attr('tabindex')); i++) {
+			var otherInput = formEom.find('input[tabindex='+i+']');
 
-		formEom.find('input').each(function() {
-			var otherInput = $(this);
+			if (otherInput.length == 0) {
+				continue;
+			}
 
 			if (validator.element('#' + otherInput.attr('id')) === false) {
+				otherInput.focus();
 				return true;
 			}
-		});
-
-		if (formEom.find('input.is-invalid').length) {
-			// checking invalid inputs
-			var invalidInput = formEom.find('input.is-invalid').first();
-
-			if (input.attr('name') == invalidInput.attr('name')) {
-				return true;
-			}
-			
-			if (validator.element('#' + invalidInput.attr('id')) === false) {
-				if (input.attr('tabindex') > invalidInput.attr('tabindex')) {
-
-					invalidInput.focus();
-					return true;
-				}
-			}
-			return true;
 		}
 	});
 
