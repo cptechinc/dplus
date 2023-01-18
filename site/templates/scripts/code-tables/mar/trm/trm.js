@@ -402,14 +402,20 @@ $(function() {
 			return false;
 		}
 		var minDate    = moment();
-		console.log('past ' + parseInt(expiredate.format('X')));
-		console.log('today' + parseInt(minDate.format('X')));
 		return parseInt(expiredate.format('X')) > parseInt(minDate.format('X'));
+	}
+
+	function validateDateMMYYSlash(value) {
+		return regexes['mm/dd'].test(value);
 	}
 
 	jQuery.validator.addMethod("expiredate", function(value, element) {
 		return this.optional(element) || validateExpiredate();
-	}, "Expire Date must be a valid, future date MM/DD/YYYY");
+	}, "Date must be a valid, future date MM/DD/YYYY");
+
+	jQuery.validator.addMethod("dateMMYYSlash", function(value, element) {
+		return this.optional(element) || validateDateMMYYSlash(value);
+	}, "Date must be a valid, date MM/YY");
 
 	var validator = formCode.form.validate({
 		errorClass: "is-invalid",
@@ -489,6 +495,15 @@ $(function() {
 				}
 				return parseInt(parent.find('.eom_from_day').val()) + 1;
 			}
+		});
+	});
+
+	$('.std_disc_date').each(function() {
+		var input = $(this);
+
+		input.rules("add", {
+			required: false,
+			dateMMYYSlash: true,
 		});
 	});
 });
