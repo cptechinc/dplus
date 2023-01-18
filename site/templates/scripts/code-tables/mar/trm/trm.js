@@ -267,6 +267,80 @@ $(function() {
 		input.val(date.format('MM/DD/YYYY'))
 	});
 
+/* =============================================================
+	Method STD Events
+============================================================= */
+	$("body").on("change", ".std_disc_days", function(e) {
+		if (formCode.inputs.fields.method.val() != codetable.config.methods.std.value){
+			return false;
+		}
+
+		let input  = $(this);
+		let days = input.val() == '' ? 0 : parseFloat(input.val());
+		let parentGroup = input.closest('.std-discount');
+
+		if (days > 0) {
+			let inputDate = parentGroup.find('input.std_disc_date');
+			let inputDay = parentGroup.find('input.std_disc_day');
+		
+			formTrm.setReadonly(inputDate, true);
+			formTrm.disableTabindex(inputDate);
+			formTrm.setReadonly(inputDay);
+			formTrm.disableTabindex(inputDay);
+			return true;
+		}
+		formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
+	});
+
+	$("body").on("change", ".std_disc_day", function(e) {
+		if (formCode.inputs.fields.method.val() != codetable.config.methods.std.value){
+			return false;
+		}
+
+		let input  = $(this);
+		let day = input.val() == '' ? 0 : parseFloat(input.val());
+		let parentGroup = input.closest('.std-discount');
+
+		if (day == 0) {
+			formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
+		}
+
+		let inputDays = parentGroup.find('input.std_disc_days');
+		let inputDate = parentGroup.find('input.std_disc_date');
+		formTrm.setReadonly(inputDays);
+		formTrm.disableTabindex(inputDays);
+		formTrm.setReadonly(inputDate);
+		formTrm.disableTabindex(inputDate);
+	});
+
+	$("body").on("change", ".std_disc_date", function(e) {
+		if (formCode.inputs.fields.method.val() != codetable.config.methods.std.value){
+			return false;
+		}
+
+		let input  = $(this);
+		let parentGroup = input.closest('.std-discount');
+
+		if (input.val() == '') {
+			formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
+		}
+
+		if (regexes['mmdd'].test(input.val())) {
+			let date = moment(input.val(), momentJsFormats['mmdd']);
+			input.val(date.format(momentJsFormats['mm/dd']));
+		}
+		
+		if (regexes['mm/dd'].test(input.val()) === false) {
+			return false;
+		}
+		
+		let inputDays = parentGroup.find('input.std_disc_days');
+		let inputDay = parentGroup.find('input.std_disc_day');
+		formTrm.setReadonly(inputDays);
+		formTrm.disableTabindex(inputDays);
+		formTrm.setReadonly(inputDay);
+		formTrm.disableTabindex(inputDay);
+	});
 
 /* =============================================================
 	Method EOM Events
