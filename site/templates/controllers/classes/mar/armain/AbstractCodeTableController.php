@@ -172,7 +172,8 @@ abstract class AbstractCodeTableController extends AbstractController {
 		}
 
 		$msg = "Code $data->code is being locked by " . $codeTable->recordlocker->getLockingUser($data->code);
-		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Code $data->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		$div = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Code $data->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		return '<div class="mb-3">' . $div . '</div>';
 	}
 
 	protected static function renderBreadcrumbs(WireData $data) {
