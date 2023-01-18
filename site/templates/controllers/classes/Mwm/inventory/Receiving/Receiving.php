@@ -38,7 +38,7 @@ class Receiving extends Base {
 	Indexes
 ============================================================= */
 	static public function index($data) {
-		$fields = ['scan|text', 'action|text', 'ponbr|ponbr'];
+		$fields = ['scan|text', 'action|text', 'ponbr|int'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
@@ -61,7 +61,7 @@ class Receiving extends Base {
 	}
 
 	static public function handleCRUD($data) {
-		self::sanitizeParametersShort($data, ['action|text', 'ponbr|ponbr', 'scan|text']);
+		self::sanitizeParametersShort($data, ['action|text', 'ponbr|int', 'scan|text']);
 
 		$validate = self::getValidatorMpo();
 		if (empty($data->ponbr) === false && $validate->po($data->ponbr) === false) {
@@ -108,7 +108,7 @@ class Receiving extends Base {
 	}
 
 	static public function receiving($data) {
-		$fields = ['action|text', 'ponbr|ponbr'];
+		$fields = ['action|text', 'ponbr|int'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->ponbr)) {
@@ -127,11 +127,13 @@ class Receiving extends Base {
 		self::pw('page')->headline = "Receiving: PO # $data->ponbr";
 		$receiving = self::getReceiving();
 		$receiving->setPonbr($data->ponbr);
+
 		$po = $receiving->getPurchaseorder();
 
 		if ($po->count_receivingitems() === 0) {
 			$receiving->requestPoInit();
 		}
+		echo self::pw('db-dplus')->getLastExecutedQuery();
 
 		if ($po->count_receivingitems() === 0) {
 			$allowAdd = $receiving->getEnforceItemidsStrategy();
