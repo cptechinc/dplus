@@ -275,15 +275,19 @@ $(function() {
 ============================================================= */
 	function validateExpiredate() {
 		var input = formTrm.inputs.fields.expiredate;
-		var expiredate = moment(input.val(), 'DD/MM/YYYY');
+		var expiredate = moment(input.val(), 'MM/DD/YYYY');
+		if (expiredate.isValid() == false) {
+			return false;
+		}
 		var minDate    = moment();
-		return expiredate.format('X') > minDate.format('X');
+		console.log('past ' + parseInt(expiredate.format('X')));
+		console.log('today' + parseInt(minDate.format('X')));
+		return parseInt(expiredate.format('X')) > parseInt(minDate.format('X'));
 	}
 
 	jQuery.validator.addMethod("expiredate", function(value, element) {
 		return this.optional(element) || validateExpiredate();
-	}, "Expire Date must be in the future");
-
+	}, "Expire Date must be a valid, future date MM/DD/YYYY");
 
 	var validator = formCode.form.validate({
 		errorClass: "is-invalid",
