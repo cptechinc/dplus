@@ -46,8 +46,8 @@ class Edit extends Base {
 	}
 
 	private static function po($data) {
-		$data = self::sanitizeParametersShort($data, ['ponbr|text', 'load|int']);
-		$data->ponbr = PurchaseOrder::get_paddedponumber($data->ponbr);
+		self::sanitizeParametersShort($data, ['ponbr|int', 'load|int']);
+		$data->ponbrPadded = PurchaseOrder::get_paddedponumber($data->ponbr);
 		$page = self::pw('page');
 		$config = self::pw('config');
 		$validate = new MpoValidator();
@@ -55,6 +55,7 @@ class Edit extends Base {
 		if ($validate->po($data->ponbr) === false) {
 			return self::invalidPo($data);
 		}
+		
 		$epo = self::pw('modules')->get('PurchaseOrderEdit');
 
 		if ($epo->exists_editable($data->ponbr) === false) {
