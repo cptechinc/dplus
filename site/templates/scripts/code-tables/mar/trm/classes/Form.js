@@ -17,6 +17,14 @@ class TrmForm extends CodeFormBase {
 	}
 
 	/**
+	 * Return if the Terms Method is Standard
+	 * @returns bool
+	 */
+	isMethodStd() {
+		return this.inputs.fields.method.val() == codetable.config.methods.std.value;
+	}
+
+	/**
 	 * Return if Input is EOM thru day
 	 * @param {Object} input 
 	 * @returns bool
@@ -25,13 +33,58 @@ class TrmForm extends CodeFormBase {
 		return input.hasClass('eom_thru_day');
 	}
 
+/* =============================================================
+	Method STD Events
+============================================================= */
 	/**
 	 * Enable Discount / Day Month fields based off Discount Percent Value
 	 * @param {Object} input 
 	 * @returns 
 	 */
-	enableDisableEomDiscDayMonthFromPercent(input) {
-		if (this.inputs.fields.method.val() != codetable.config.methods.eom.value){
+	enableDisableStdDiscFieldsFromDiscPercent(input) {
+		if (this.isMethodStd() === false) {
+			return false;
+		}
+		if (input.hasClass('std_disc_percent') === false) {
+			return false;
+		}
+		var parent  = input.closest('.std-discount');
+		var percent = input.val() == '' ? 0 : parseFloat(input.val());
+
+		var inputDiscDays	= parent.find('.std_disc_days');
+		var inputDiscDay	= parent.find('.std_disc_day');
+		var inputDiscDate   = parent.find('.std_disc_date');
+
+		if (percent == 0) {
+			this.setReadonly(inputDiscDays, true);
+			this.disableTabindex(inputDiscDays);
+			this.setReadonly(inputDiscDay, true);
+			this.disableTabindex(inputDiscDay);
+			this.setReadonly(inputDiscDate, true);
+			this.disableTabindex(inputDiscDate);
+			return true;
+		}
+		this.setReadonly(inputDiscDays, false);
+		this.enableTabindex(inputDiscDays);
+		this.setReadonly(inputDiscDay, false);
+		this.enableTabindex(inputDiscDay);
+		this.setReadonly(inputDiscDate, false);
+		this.enableTabindex(inputDiscDate);
+	}
+
+/* =============================================================
+	Method EOM Events
+============================================================= */
+	/**
+	 * Enable Discount / Day Month fields based off Discount Percent Value
+	 * @param {Object} input 
+	 * @returns 
+	 */
+	enableDisableEomDiscFieldsFromPercent(input) {
+		if (this.isMethodEom()) {
+			return false;
+		}
+		if (input.hasClass('eom_disc_percent') === false) {
 			return false;
 		}
 		var parent = input.closest('.eom-discount');
@@ -115,8 +168,6 @@ class TrmForm extends CodeFormBase {
 		this.setReadonly(nextSplit.find('input.eom_disc_percent'), false);
 		this.enableTabindex(nextSplit.find('input.eom_disc_percent'));
 
-		
-
 		nextSplit.find('.eom-due input').each(function() {
 			var eomInput = $(this);
 			form.setReadonly(eomInput, false);
@@ -135,7 +186,7 @@ class TrmForm extends CodeFormBase {
 	 * @returns 
 	 */
 	setupNextEomSplit(input) {
-		if (this.isMethodEom === false || this.isInputEomThruDay(input) === false) {
+		if (this.isMethodEom() === false || this.isInputEomThruDay(input) === false) {
 			return false;
 		}
 
@@ -146,7 +197,6 @@ class TrmForm extends CodeFormBase {
 		}
 
 		var value = input.val() == '' ? 0 : parseInt(input.val());
-		console.log(input.val());
 		var nextIndex = index + 1;
 		var nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
 
@@ -158,6 +208,9 @@ class TrmForm extends CodeFormBase {
 		nextSplit.find('.eom_thru_day').val(this.config.fields.eom_thru_day.max);
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	/**
 	 * Set / remove Readonly attribute on input
 	 * @param	{Object} input 
