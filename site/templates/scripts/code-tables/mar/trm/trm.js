@@ -10,6 +10,27 @@ $(function() {
 		formTrm.inputs.fields.description.focus();
 	}
 
+	let regexPatterns = {
+		'mmddyyyy': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])((20)\d{2})',
+		'mmddyy': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])(\d{2})',
+		'mmdd': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])',
+		'mm/dd': '(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])',
+	};
+
+	let momentJsFormats = {
+		'mmdd': 'MMYY',
+		'mm/dd': 'MM/YY',
+		'mmddyyyy': 'MMDDYYYY',
+		'mmddyy': 'MMDDYY',
+	}
+
+	let regexes = {
+		'mmddyyyy': new RegExp(regexPatterns['mmddyyyy']),
+		'mmddyyyy': new RegExp(regexPatterns['mmddyy']),
+		'mmdd': new RegExp(regexPatterns['mmdd']),
+		'mm/dd': new RegExp(regexPatterns['mm/dd']),
+	};
+
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -221,12 +242,6 @@ $(function() {
 
 	$("body").on("change", "#code-form input[name=expiredate]", function(e) {
 		var input = $(this);
-		var regexMdy4 = '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])((20)\d{2})';
-		var regexMdy2 = '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])(\d{2})';
-
-		var momentFormat4Year = 'MMDDYYYY';
-		var momentFormat2Year = 'MMDDYY';
-
 		if (input.val().length < 8) {
 			return true;
 		}
@@ -234,17 +249,15 @@ $(function() {
 		if (isNaN(input.val())) {
 			return true;
 		}
-		var regex4Year = new RegExp(regexMdy4);
-		var regex2Year = new RegExp(regexMdy2);
 
-		if (regex4Year.test(input.val()) === false && regex2Year.test(input.val()) === false){
+		if (regexes['mmddyyyy'].test(input.val()) === false && regexes['mmddyy'].test(input.val()) === false){
 			return true;
 		}
 
-		var momentParseFormat = momentFormat4Year;
+		var momentParseFormat = momentJsFormats['mmddyyyy'];
 
-		if (regex2Year.test(input.val())) {
-			momentParseFormat = momentFormat2Year;
+		if (regexes['mmddyy'].test(input.val())) {
+			momentParseFormat = momentJsFormats['mmddyy'];
 		}
 
 		var date = moment(input.val(), momentParseFormat);
