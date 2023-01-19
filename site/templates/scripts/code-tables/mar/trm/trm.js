@@ -11,13 +11,6 @@ $(function() {
 		formTrm.inputs.fields.description.focus();
 	}
 
-	// let regexPatterns = {
-	// 	'mmddyyyy': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])((20)\d{2})',
-	// 	'mmddyy': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])(\d{2})',
-	// 	'mmdd': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])',
-	// 	'mm/dd': '(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])',
-	// };
-
 	let momentJsFormats = {
 		'mmdd': 'MMYY',
 		'mm/dd': 'MM/YY',
@@ -26,13 +19,6 @@ $(function() {
 		'mm/dd/yyyy': 'MM/DD/YYYY',
 		'timestamp': 'X'
 	}
-
-	// let regexes = {
-	// 	'mmddyyyy': new RegExp(regexPatterns['mmddyyyy']),
-	// 	'mmddyyyy': new RegExp(regexPatterns['mmddyy']),
-	// 	'mmdd': new RegExp(regexPatterns['mmdd']),
-	// 	'mm/dd': new RegExp(regexPatterns['mm/dd']),
-	// };
 
 /* =============================================================
 	Unsaved Fields Alert
