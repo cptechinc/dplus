@@ -18,7 +18,8 @@
 		'attributes': {
 			'tabindex': tabindex,
 			'max': manager.fieldAttribute('order_percent', 'max'),
-			'readonly': readonly
+			'readonly': readonly,
+			'data-lastvalue': value|number_format(manager.fieldAttribute('order_percent', 'precision')) 
 		}
 	}
 } %}
