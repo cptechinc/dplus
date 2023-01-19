@@ -33,7 +33,6 @@ $(function() {
 		'mm/dd': new RegExp(regexPatterns['mm/dd']),
 	};
 
-
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
@@ -273,7 +272,7 @@ $(function() {
 	Method STD Events
 ============================================================= */
 	$("body").on("change", ".std_disc_days", function(e) {
-		if (formCode.inputs.fields.method.val() != codetable.config.methods.std.value){
+		if (formTrm.isMethodStd() === false) {
 			return false;
 		}
 
@@ -294,7 +293,7 @@ $(function() {
 	});
 
 	$("body").on("change", ".std_disc_day", function(e) {
-		if (formCode.inputs.fields.method.val() != codetable.config.methods.std.value){
+		if (formTrm.isMethodStd() === false) {
 			return false;
 		}
 
@@ -314,7 +313,7 @@ $(function() {
 	});
 
 	$("body").on("change", ".std_disc_date", function(e) {
-		if (formCode.inputs.fields.method.val() != codetable.config.methods.std.value){
+		if (formTrm.isMethodStd() === false) {
 			return false;
 		}
 
@@ -345,7 +344,7 @@ $(function() {
 	Method EOM Events
 ============================================================= */
 	$("body").on("change", ".eom_disc_percent", function(e) {
-		if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value){
+		if (formTrm.isMethodEom() === false) {
 			return false;
 		}
 
@@ -361,7 +360,7 @@ $(function() {
 	});
 
 	$("body").on("keyup", ".eom_disc_percent", function(e) {
-		if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value){
+		if (formTrm.isMethodEom() === false) {
 			return false;
 		}
 
@@ -376,7 +375,7 @@ $(function() {
 	});
 
 	$("body").on("change", ".eom_thru_day", function(e) {
-		if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value) {
+		if (formTrm.isMethodEom() === false) {
 			return false;
 		}
 
