@@ -40,17 +40,17 @@ $(function() {
 	$("body").on("click", "a:not(#code-form .crud-submit, #ajax-modal a, .swal2-modal a, .bootstrap-select a)", function(e) {
 		if (formCode.form.serialize() !== origForm) {
 			e.preventDefault();
-			var a = $(this);
-			var href = a.attr('href');
+			let a = $(this);
+			let href = a.attr('href');
 
 			alert.unsavedChanges(function(save) {
 				if (save) {
-					var validator = formCode.form.validate();
+					let validator = formCode.form.validate();
 					if (validator.valid()) {
 						formCode.form.find('button[type=submit]').click();
 					}
 				} else {
-					var uri = URI();
+					let uri = URI();
 					uri.setQuery('code', '');
 
 					$.get(uri.toString(), function() {
@@ -71,22 +71,22 @@ $(function() {
 	});
 
 	$("body").on("focusin", "#code-form .eom-split input", function(e) {
-		var input = $(this);
+		let input = $(this);
 
-		var form       = input.closest('form');
-		var validator  = form.validate();
-		var formEom    = form.find('#eom-splits');
-		var firstInput = formEom.find('input[name=eom_thru_day1]');
+		let form       = input.closest('form');
+		let validator  = form.validate();
+		let formEom    = form.find('#eom-splits');
+		let firstInput = formEom.find('input[name=eom_thru_day1]');
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
 			return true;
 		}
 
-		var start = parseInt(firstInput.attr('tabindex'));
+		let start = parseInt(firstInput.attr('tabindex'));
 		
 		// Only loop up to $(this) input
-		for (var i = start; i < parseInt(input.attr('tabindex')); i++) {
-			var otherInput = formEom.find('input[tabindex='+i+']');
+		for (let i = start; i < parseInt(input.attr('tabindex')); i++) {
+			let otherInput = formEom.find('input[tabindex='+i+']');
 
 			if (otherInput.length == 0) {
 				continue;
@@ -100,7 +100,7 @@ $(function() {
 	});
 
 	$("body").on("change", "#code-form input[name=code]", function(e) {
-		var input = $(this);
+		let input = $(this);
 
 		if (input.val() == '') {
 			return false;
@@ -110,7 +110,7 @@ $(function() {
 			if (exists === true) {
 				alert.codeExists(input.val(), function(editCode) {
 					if (editCode) {
-						var uri = URI();
+						let uri = URI();
 						uri.setQuery('code', input.val());
 						window.location.href = uri.toString();
 					} else {
@@ -122,7 +122,7 @@ $(function() {
 	});
 
 	$("body").on("change", "#code-form select[name=method]", function(e) {
-		var input = $(this);
+		let input = $(this);
 		
 		$('.type-input').removeClass('show');
 		$('.type-splits').removeClass('show');
@@ -134,7 +134,7 @@ $(function() {
 		}
 
 		if (input.val() == codetable.config.methods.eom.value) {
-			var inputTypeS = formTrm.form.find('[name=typeS]');
+			let inputTypeS = formTrm.form.find('[name=typeS]');
 			inputTypeS.val(formTrm.config.fields.type.default);
 			inputTypeS.change();
 			$('[name="' + codetable.config.methods.eom.typeInputName + '"]').addClass('show');
@@ -144,7 +144,7 @@ $(function() {
 	});
 
 	$("body").on("change", "#code-form select[name=method]", function(e) {
-		var input = $(this);
+		let input = $(this);
 		
 		$('.type-input').removeClass('show');
 		$('.type-splits').removeClass('show');
@@ -170,9 +170,9 @@ $(function() {
 	});
 
 	$("body").on("change", "#code-form input[name=ccprefix]", function(e) {
-		var input = $(this);
-		var parent = input.closest('.input-parent');
-		var descriptionField = parent.find('.description');
+		let input = $(this);
+		let parent = input.closest('.input-parent');
+		let descriptionField = parent.find('.description');
 
 		descriptionField.text('');
 
@@ -188,8 +188,8 @@ $(function() {
 	});
 
 	$("body").on("change", "#code-form select[name=typeS]", function(e) {
-		var input = $(this);
-		var ccprefixParent = formCode.inputs.fields.ccprefix.closest('.input-parent');
+		let input = $(this);
+		let ccprefixParent = formCode.inputs.fields.ccprefix.closest('.input-parent');
 		
 		if (input.val() != codetable.config.types.creditcard.value) {
 			formCode.inputs.fields.ccprefix.val('');
@@ -205,9 +205,9 @@ $(function() {
 	});
 
 	$("body").on("change", "#code-form input[name=country]", function(e) {
-		var input = $(this);
-		var parent = input.closest('.input-parent');
-		var descriptionField = parent.find('.description');
+		let input = $(this);
+		let parent = input.closest('.input-parent');
+		let descriptionField = parent.find('.description');
 
 		descriptionField.text('');
 
@@ -223,9 +223,9 @@ $(function() {
 	});
 
 	$("body").on("change", "#code-form input[name=termsgroup]", function(e) {
-		var input = $(this);
-		var parent = input.closest('.input-parent');
-		var descriptionField = parent.find('.description');
+		let input = $(this);
+		let parent = input.closest('.input-parent');
+		let descriptionField = parent.find('.description');
 
 		descriptionField.text('');
 
@@ -241,7 +241,7 @@ $(function() {
 	});
 
 	$("body").on("change", "#code-form input[name=expiredate]", function(e) {
-		var input = $(this);
+		let input = $(this);
 		if (input.val().length < 8) {
 			return true;
 		}
@@ -254,13 +254,13 @@ $(function() {
 			return true;
 		}
 
-		var momentParseFormat = momentJsFormats['mmddyyyy'];
+		let momentParseFormat = momentJsFormats['mmddyyyy'];
 
 		if (regexes['mmddyy'].test(input.val())) {
 			momentParseFormat = momentJsFormats['mmddyy'];
 		}
 
-		var date = moment(input.val(), momentParseFormat);
+		let date = moment(input.val(), momentParseFormat);
 		if (date.isValid() === false) {
 			return false;
 		}
@@ -350,8 +350,8 @@ $(function() {
 			return false;
 		}
 
-		var input  = $(this);
-		var percent = input.val() == '' ? 0 : parseFloat(input.val());
+		let input  = $(this);
+		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscDayMonthFromPercent(input);
@@ -366,8 +366,8 @@ $(function() {
 			return false;
 		}
 
-		var input  = $(this);
-		var percent = input.val() == '' ? 0 : parseFloat(input.val());
+		let input  = $(this);
+		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscDayMonthFromPercent(input);
@@ -381,7 +381,7 @@ $(function() {
 			return false;
 		}
 
-		var input  = $(this);
+		let input  = $(this);
 		
 		if (input.val() == '') {
 			return true;
@@ -396,12 +396,12 @@ $(function() {
 	Form Validation
 ============================================================= */
 	function validateExpiredate() {
-		var input = formTrm.inputs.fields.expiredate;
-		var expiredate = moment(input.val(), 'MM/DD/YYYY');
+		let input = formTrm.inputs.fields.expiredate;
+		let expiredate = moment(input.val(), 'MM/DD/YYYY');
 		if (expiredate.isValid() == false) {
 			return false;
 		}
-		var minDate    = moment();
+		let minDate    = moment();
 		return parseInt(expiredate.format('X')) > parseInt(minDate.format('X'));
 	}
 
@@ -417,7 +417,7 @@ $(function() {
 		return this.optional(element) || validateDateMMYYSlash(value);
 	}, "Date must be a valid, date MM/YY");
 
-	var validator = formCode.form.validate({
+	let validator = formCode.form.validate({
 		errorClass: "is-invalid",
 		validClass: "",
 		errorPlacement: function(error, element) {
@@ -469,8 +469,8 @@ $(function() {
 	});
 
 	$('.eom_due_day').each(function() {
-		var input = $(this);
-		var parentEomSplit = input.closest('.eom-split');
+		let input = $(this);
+		let parentEomSplit = input.closest('.eom-split');
 
 		input.rules( "add", {
 			required: function() {
@@ -483,10 +483,10 @@ $(function() {
 	});
 
 	$('.eom_thru_day').each(function() {
-		var input = $(this);
-		var parent = input.closest('.eom-day-range');
-		var parentEomSplit = input.closest('.eom-split');
-		var min = 2;
+		let input = $(this);
+		let parent = input.closest('.eom-day-range');
+		let parentEomSplit = input.closest('.eom-split');
+		let min = 2;
 
 		input.rules( "add", {
 			min: function() {
@@ -499,7 +499,7 @@ $(function() {
 	});
 
 	$('.std_disc_date').each(function() {
-		var input = $(this);
+		let input = $(this);
 
 		input.rules("add", {
 			required: false,
