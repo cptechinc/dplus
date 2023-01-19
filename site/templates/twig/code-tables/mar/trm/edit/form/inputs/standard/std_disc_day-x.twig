@@ -1,3 +1,5 @@
+{% set value = code.std_disc_day(x) %}
+
 {% set readonly = code.std_disc_percent(x) == 0 %}
 {% set readonly = code.std_disc_days(x) > 0 ? true : readonly %}
 {% set readonly = code.std_disc_date(x) > 0 ? true : readonly %}
@@ -9,7 +11,7 @@
 	'input': {
 		'name': 'std_disc_day' ~ x,
 		'type': 'number',
-		'value': code.percent(x) == 0 ? 0 : code.day(x),
+		'value': value != 0 ? value : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',

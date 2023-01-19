@@ -1,3 +1,5 @@
+{% set value = code.std_plus_months(x) %}
+
 {% set readonly = code.std_due_day(x) == 0 %}
 
 {% set tabindex = startindex + (x * 10) + 7 %}
@@ -7,7 +9,7 @@
 	'input': {
 		'name': 'std_plus_months' ~ x,
 		'type': 'number',
-		'value': code.std_plus_months(x) ? code.std_plus_months(x) : 0,
+		'value': value != 0 ? value : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',

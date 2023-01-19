@@ -1,3 +1,4 @@
+{% set value = code.std_plus_years(x) %}
 {% set readonly = code.std_due_date(x) == 0 %}
 
 {% set tabindex = startindex + (x * 10) + 9 %}
@@ -7,7 +8,7 @@
 	'input': {
 		'name': 'std_plus_years' ~ x,
 		'type': 'number',
-		'value': code.std_plus_years(x),
+		'value': value != 0 ? value : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',

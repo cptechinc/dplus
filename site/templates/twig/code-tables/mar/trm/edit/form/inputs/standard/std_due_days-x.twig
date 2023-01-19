@@ -1,3 +1,5 @@
+{% set value = code.std_due_days(x) %}
+
 {% set readonly = x > 1 %}
 {% set readonly = code.order_percent(x) == 0 ? true : false %}
 {% set readonly = code.std_due_day(x) > 0 ? true : readonly %}
@@ -12,7 +14,7 @@
 	'input': {
 		'name': 'std_due_days' ~ x,
 		'type': 'number',
-		'value': code.std_due_days(x) ? code.std_due_days(x) : 0,
+		'value': value != 0 ? value : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',

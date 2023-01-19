@@ -1,5 +1,5 @@
 
-{% set value = code.std_due_day(x) ? code.std_due_day(x) : 0 %}
+{% set value = code.std_due_day(x)%}
 {# 1. If Order Percent = 0 #}
 {% set readonly = code.order_percent(x) == 0 ? true : false %}
 {# 2. If Due Days > 0 #}
@@ -15,7 +15,7 @@
 	'input': {
 		'name': 'std_due_day' ~ x,
 		'type': 'number',
-		'value': value,
+		'value': value != 0 ? value : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',
@@ -25,7 +25,7 @@
 			'tabindex': tabindex,
 			'data-error': '.error',
 			'readonly': readonly,
-			'max': 31
+			'max': manager.fieldAttribute('std_due_day', 'max')
 		}
 	}
 } %}
