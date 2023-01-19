@@ -34,7 +34,7 @@ class TrmForm extends CodeFormBase {
 	}
 
 /* =============================================================
-	Method STD Events
+	Method STD
 ============================================================= */
 	/**
 	 * Enable Discount / Day Month fields based off Discount Percent Value
@@ -48,12 +48,12 @@ class TrmForm extends CodeFormBase {
 		if (input.hasClass('std_disc_percent') === false) {
 			return false;
 		}
-		var parent  = input.closest('.std-discount');
-		var percent = input.val() == '' ? 0 : parseFloat(input.val());
+		let parent  = input.closest('.std-discount');
+		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 
-		var inputDiscDays	= parent.find('.std_disc_days');
-		var inputDiscDay	= parent.find('.std_disc_day');
-		var inputDiscDate   = parent.find('.std_disc_date');
+		let inputDiscDays	= parent.find('.std_disc_days');
+		let inputDiscDay	= parent.find('.std_disc_day');
+		let inputDiscDate   = parent.find('.std_disc_date');
 
 		if (percent == 0) {
 			this.setReadonly(inputDiscDays, true);
@@ -192,11 +192,11 @@ class TrmForm extends CodeFormBase {
 		if (input.hasClass('eom_disc_percent') === false) {
 			return false;
 		}
-		var parent = input.closest('.eom-discount');
-		var percent = input.val() == '' ? 0 : parseFloat(input.val());
+		let parent = input.closest('.eom-discount');
+		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 
-		var inputDiscDay	= parent.find('.eom_disc_day');
-		var inputDiscMonths = parent.find('.eom_disc_months');
+		let inputDiscDay	= parent.find('.eom_disc_day');
+		let inputDiscMonths = parent.find('.eom_disc_months');
 
 		if (percent == 0) {
 			this.setReadonly(inputDiscDay, true);
@@ -221,7 +221,7 @@ class TrmForm extends CodeFormBase {
 			return false;
 		}
 
-		var value = input.val() == '' ? 0 : parseInt(input.val());
+		let value = input.val() == '' ? 0 : parseInt(input.val());
 
 		if (value > this.config.fields.eom_thru_day.defaultToMaxAt) {
 			input.val(input.attr('max'));
@@ -237,19 +237,19 @@ class TrmForm extends CodeFormBase {
 		if (this.isMethodEom === false || this.isInputEomThruDay(input) === false) {
 			return false;
 		}
-		var index = parseFloat(input.closest('.eom-split').data('index'));
+		let index = parseFloat(input.closest('.eom-split').data('index'));
 
 		if (index >= codetable.config.methods.eom.splitCount) {
 			return false;
 		}
 
-		var validator = this.form.validate();
-		var isValid = validator.element('#' + input.attr('id'));
+		let validator = this.form.validate();
+		let isValid = validator.element('#' + input.attr('id'));
 
-		var value = input.val() == '' ? 0 : parseInt(input.val());
-		var nextIndex  = index + 1;
-		var nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
-		var form = this;
+		let value = input.val() == '' ? 0 : parseInt(input.val());
+		let nextIndex  = index + 1;
+		let nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
+		let form = this;
 
 		
 		// Disable next split's fields if Thru Day value is max or if it's invalid
@@ -257,12 +257,12 @@ class TrmForm extends CodeFormBase {
 			this.disableTabindex(nextSplit.find('input.eom_thru_day'));
 			this.setReadonly(nextSplit.find('input.eom_thru_day'), true);
 			nextSplit.find('.eom-discount input').each(function() {
-				var eomInput = $(this);
+				let eomInput = $(this);
 				form.setReadonly(eomInput, true);
 				form.disableTabindex(eomInput);
 			});
 			nextSplit.find('.eom-due input').each(function() {
-				var eomInput = $(this);
+				let eomInput = $(this);
 				form.setReadonly(eomInput, true);
 				form.disableTabindex(eomInput);
 			});
@@ -274,7 +274,7 @@ class TrmForm extends CodeFormBase {
 		this.enableTabindex(nextSplit.find('input.eom_disc_percent'));
 
 		nextSplit.find('.eom-due input').each(function() {
-			var eomInput = $(this);
+			let eomInput = $(this);
 			form.setReadonly(eomInput, false);
 			form.enableTabindex(eomInput);
 		});
@@ -295,15 +295,15 @@ class TrmForm extends CodeFormBase {
 			return false;
 		}
 
-		var index = parseFloat(input.closest('.eom-split').data('index'));
+		let index = parseFloat(input.closest('.eom-split').data('index'));
 
 		if (index >= codetable.config.methods.splitCount) {
 			return false;
 		}
 
-		var value = input.val() == '' ? 0 : parseInt(input.val());
-		var nextIndex = index + 1;
-		var nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
+		let value = input.val() == '' ? 0 : parseInt(input.val());
+		let nextIndex = index + 1;
+		let nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
 
 		if (value === this.config.fields.eom_thru_day.max) {
 			nextSplit.find('input').val('');
@@ -359,7 +359,7 @@ class TrmForm extends CodeFormBase {
 		if (input.attr('name') == undefined || input.attr('name') == '') {
 			return false;
 		}
-		var tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
+		let tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
 		input.attr('tabindex', tabindex);
 	}
 
@@ -372,10 +372,10 @@ class TrmForm extends CodeFormBase {
 		if (input.attr('name') == undefined || input.attr('name') == '') {
 			return false;
 		}
-		var tabindex = '';
-		var disablePrefix = '-';
+		let tabindex = '';
+		let disablePrefix = '-';
 
-		var tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
+		let tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
 
 		if (tabindex == '') {
 			tabindex = 1;
