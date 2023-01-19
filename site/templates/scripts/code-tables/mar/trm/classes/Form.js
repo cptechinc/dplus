@@ -8,6 +8,15 @@ class TrmForm extends CodeFormBase {
 		return this.instance;
 	}
 
+	constructor() {
+		super();
+
+		this.stdInputs = {
+			'lastindex': 1,
+			'splits': []
+		};
+	}
+
 	/**
 	 * Return if the Terms Method is End of Month
 	 * @returns bool
@@ -36,7 +45,10 @@ class TrmForm extends CodeFormBase {
 /* =============================================================
 	Method STD
 ============================================================= */
-
+	/**
+	 * Return a total of all input.order_percent values 
+	 * @returns {float}
+	 */
 	sumUpStdOrderPercents() {
 		let formStd = this.form.find('#std-splits');
 		let total = 0.00;
@@ -54,6 +66,11 @@ class TrmForm extends CodeFormBase {
 		return total.toFixed(form.config.fields.order_percent.precision);
 	}
 
+	/**
+	 * Enable / disable next STD Split inputs based of input.order_percent
+	 * @param {HTMLElement} input 
+	 * @returns 
+	 */
 	enableDisableNextStdSplit(input) {
 		if (this.isMethodStd() === false || input.hasClass('order_percent') === false) {
 			return false;
@@ -115,8 +132,8 @@ class TrmForm extends CodeFormBase {
 	}
 
 	/**
-	 * Setup values for Next Eom Split's Day Range
-	 * @param {Object} input 
+	 * Setup values for Next STD Split
+	 * @param {HTMLElement} input 
 	 * @returns 
 	 */
 	setupNextStdSplit(input) {
@@ -126,7 +143,7 @@ class TrmForm extends CodeFormBase {
 		let thisSplit = input.closest('.std-split');
 		let index = parseFloat(thisSplit.data('index'));
 
-		if (index >= codetable.config.methods.splitCount) {
+		if (index >= codetable.config.methods.std.splitCount) {
 			return false;
 		}
 
@@ -140,7 +157,7 @@ class TrmForm extends CodeFormBase {
 			return true;
 		}
 
-		if (totalPercent < 100) {
+		if (totalPercent < 100 && input.val() != '') {
 			let nextPercent = parseFloat(100 - totalPercent);
 			let nextInputPercent = nextSplit.find('input.order_percent');
 			if (nextInputPercent.val()) {
@@ -151,10 +168,127 @@ class TrmForm extends CodeFormBase {
 		}
 	}
 
+	/**
+	 * Return Object of All Inputs for STD method
+	 * @returns {Object}
+	 */
+	getAllStdInputs(force = false) {
+		if (this.stdInputs.splits.length > 0 && force === false) {
+			return this.stdInputs;
+		}
+
+		let stdInputs = {
+			'lastindex': 1,
+			'splits': []
+		};
+
+		let inputClasses = [
+			'order_percent',
+			'std_disc_percent', 'std_disc_days', 'std_disc_day', 'std_disc_date',
+			'std_due_days', 'std_due_day', 'std_plus_months', 'std_due_date', 'std_plus_years'
+		];
+		let formStd = this.form.find('#std-splits');
+
+		for (var i = 1; i <= codetable.config.methods.std.splitCount; i++) {
+			let inputs = [];
+			
+			inputClasses.forEach(name => {
+				let input = formStd.find('input[name=' + name + i + ']'); 
+				inputs[name] = input;
+			});
+			if (inputs.order_percent.val() != '') {
+				stdInputs.lastindex = i;
+			}
+			stdInputs.splits[i] = {
+				'inputs': inputs
+			}
+		}
+		this.stdInputs = stdInputs;
+		return this.stdInputs;
+	}
+
+	/**
+	 * Move the values of split inputs one index 1 up
+	 * @param   {HTMLElement} input 
+	 * @returns {Object}
+	 */
+	shiftSplitValuesUp(input) {
+		if (this.isMethodStd() === false || input.hasClass('order_percent') === false) {
+			return false;
+		}
+		
+		let thisSplit = input.closest('.std-split');
+		let index = parseFloat(thisSplit.data('index'));
+		let thisOrderPercentLast  = input.attr('data-lastvalue');
+
+		if (index == codetable.config.methods.std.splitCount) {
+			return false;
+		}
+
+		let allInputs = this.getAllStdInputs();
+		let keys = Object.keys(allInputs.splits[1].inputs);
+		let formTrm = this;
+
+
+		if (index >= allInputs.lastindex) {
+			return false;
+		}
+
+		for (let i = index; i < codetable.config.methods.std.splitCount; i++) {
+			let splitCurr = allInputs.splits[i];
+			let splitNext = allInputs.splits[i + 1];
+
+			keys.forEach(name => {
+				let inputCurr = splitCurr.inputs[name];
+				let inputNext = splitNext.inputs[name];
+
+				inputCurr.val(inputNext.val());
+
+				if (inputNext.attr('readonly') !== undefined) {
+					formTrm.setReadonly(inputCurr, true);
+					formTrm.disableTabindex(inputCurr);
+				}
+
+				if (inputNext.attr('readonly') === undefined) {
+					formTrm.setReadonly(inputCurr, false);
+					formTrm.enableTabindex(inputCurr);
+				}
+			});
+		}
+
+		if (index > 1) {
+			let splitPrev = allInputs.splits[index - 1];
+			let percent = parseFloat(splitPrev.inputs.order_percent.val()) + parseFloat(thisOrderPercentLast);
+			splitPrev.inputs.order_percent.val(percent.toFixed(this.config.fields.order_percent.precision));
+
+			if (index + 1 <= codetable.config.methods.std.splitCount) {
+				allInputs.splits[index + 1].inputs.order_percent.val('');
+			}
+		}
+		input.change();
+	}
+
+	/**
+	 * Enable / Disable all split inputs based off input.order_percent
+	 * @param   {HTMLElement} input 
+	 * @returns {bool}
+	 */
+	clearSplitInputs(input) {
+		console.log(input);
+		if (this.isMethodStd() === false || input.hasClass('order_percent') === false) {
+			return false;
+		}
+		let split = input.closest('.std-split');
+		
+		split.find('input').each(function() {
+			let input = $(this);
+			input.val('');
+		});
+	}
 
 	/**
 	 * Enable Discount / Day Month fields based off Discount Percent Value
-	 * @param {Object} input 
+	 * @param   {Object} input 
 	 * @returns 
 	 */
 	enableDisableStdDiscFieldsFromDiscPercent(input) {
@@ -190,7 +324,7 @@ class TrmForm extends CodeFormBase {
 
 	/**
 	 * Enable / Disable input.std_due_day, input.std_due_date based off input.std_due_days
-	 * @param {HTMLElement} input 
+	 * @param   {HTMLElement} input 
 	 * @returns {bool}
 	 */
 	enableDisableStdPrimaryDueFieldsFromDueDays(input) {
@@ -211,7 +345,7 @@ class TrmForm extends CodeFormBase {
 
 	/**
 	 * Enable / Disable input.std_plus_months based off input.std_due_day
-	 * @param {HTMLElement} input 
+	 * @param   {HTMLElement} input 
 	 * @returns {bool}
 	 */
 	enableDisableStdDependentFieldsFromDueDay(input) {
@@ -250,7 +384,7 @@ class TrmForm extends CodeFormBase {
 
 	/**
 	 * Enable / Disable input.std_due_days, input.std_due_day based off input.std_due_day
-	 * @param {HTMLElement} input 
+	 * @param   {HTMLElement} input 
 	 * @returns {bool}
 	 */
 	enableDisableStdPrimaryDueFieldsFromDueDate(input) {
@@ -275,7 +409,7 @@ class TrmForm extends CodeFormBase {
 
 	/**
 	 * Enable / Disable input.std_plus_years based off input.std_due_date
-	 * @param {HTMLElement} input 
+	 * @param   {HTMLElement} input 
 	 * @returns {bool}
 	 */
 	enableDisableStdDependentFieldsFromDueDate(input) {
@@ -413,7 +547,7 @@ class TrmForm extends CodeFormBase {
 
 		let index = parseFloat(input.closest('.eom-split').data('index'));
 
-		if (index >= codetable.config.methods.splitCount) {
+		if (index >= codetable.config.methods.eom.splitCount) {
 			return false;
 		}
 
