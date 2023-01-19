@@ -45,6 +45,7 @@
 		</div>
 	</div>
 	{% for x in 1..constant('NBR_SPLITS_METHOD_S', manager) %}
+		<div class="list-group-item text-center text-danger" id="std-error"></div>
 		<div class="list-group-item std-split" data-index="{{ x }}">
 			<div class="row align-items-center text-center">
 				<div class="col-2 border-right border-dark">
@@ -93,11 +94,22 @@
 					</div>
 				</div>
 			</div>
-			<div class="error text-center">
-
-			</div>
 		</div>
 	{% endfor %}
+	<div class="list-group-item py-1">
+		<div class="row align-items-center text-center">
+			<div class="col-2 border-right border-dark">
+				<div class="row align-items-center">
+					<div class="col-3">
+						
+					</div>
+					<div class="col-9">
+						<p class="form-control-sm mb-0 order-percent-total text-right"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
