@@ -3,6 +3,7 @@ $(function() {
 	let formTrm  = TrmForm.getInstance();
 	let alert    = CodeAlertsBase.getInstance();
 	let server   = TrmRequests.getInstance();
+	let dateRegexes = DateRegexes.getInstance();
 
 	if (formTrm.inputs.fields.code.val() == '') {
 		formTrm.inputs.fields.code.focus();
@@ -271,6 +272,25 @@ $(function() {
 /* =============================================================
 	Method STD Events
 ============================================================= */
+	// $("body").on("change", ".order_percent", function(e) {
+	// 	if (formTrm.isMethodStd() === false) {
+	// 		return false;
+	// 	}
+
+	// 	let input  = $(this);
+	// 	let percent = input.val() == '' ? 0 : parseFloat(input.val());
+	// 	let parentSplit = input.closest('.std-split');
+
+		
+	// 	if (percent == 0) {
+	// 		input.val('');
+	// 		formTrm.enableDisableStdDiscFieldsFromPercent(input);
+	// 		return true;
+	// 	}
+	// 	input.val(percent.toFixed(formCode.config.fields.order_percent.precision));
+	// 	formTrm.enableDisableStdDiscFieldsFromPercent(input);
+	// });
+
 	$("body").on("change", ".std_disc_days", function(e) {
 		if (formTrm.isMethodStd() === false) {
 			return false;
@@ -338,6 +358,91 @@ $(function() {
 			formTrm.setReadonly(input, true);
 			formTrm.disableTabindex(input);
 		});
+	});
+
+	$("body").on("keyup", ".std_due_days", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		formTrm.enableDisableStdPrimaryDueFieldsFromDueDays(input);
+	});
+	
+	$("body").on("change", ".std_due_days", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		let days = input.val() == '' ? 0 : parseInt(input.val());
+		formTrm.enableDisableStdPrimaryDueFieldsFromDueDays(input);
+
+		if (days == 0) {
+			input.val('');
+		}
+	});
+
+	$("body").on("keyup", ".std_due_day", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		formTrm.enableDisableStdDependentFieldsFromDueDay(input);
+		formTrm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
+	});
+
+	$("body").on("change", ".std_due_day", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		let day = input.val() == '' ? 0 : parseInt(input.val());
+
+		formTrm.enableDisableStdDependentFieldsFromDueDay(input);
+		formTrm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
+
+		if (day == 0) {
+			input.val('');
+		}
+	});
+
+	$("body").on("keyup", ".std_due_date", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+
+		if (regexes['mmdd'].test(input.val())) {
+			let date = moment(input.val(), momentJsFormats['mmdd']);
+			input.val(date.format(momentJsFormats['mm/dd']));
+		}
+		formTrm.enableDisableStdDependentFieldsFromDueDate(input);
+		formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
+	});
+
+	$("body").on("change", ".std_due_date", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+
+		if (input.val() == '') {
+			formTrm.enableDisableStdDependentFieldsFromDueDate(input);
+			formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
+		}
+
+		if (regexes['mmdd'].test(input.val())) {
+			let date = moment(input.val(), momentJsFormats['mmdd']);
+			input.val(date.format(momentJsFormats['mm/dd']));
+		}
+
+		formTrm.enableDisableStdDependentFieldsFromDueDate(input);
+		formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
 	});
 
 /* =============================================================
@@ -498,6 +603,15 @@ $(function() {
 	});
 
 	$('.std_disc_date').each(function() {
+		let input = $(this);
+
+		input.rules("add", {
+			required: false,
+			dateMMYYSlash: true,
+		});
+	});
+
+	$('.std_due_date').each(function() {
 		let input = $(this);
 
 		input.rules("add", {
