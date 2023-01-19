@@ -271,8 +271,21 @@ $(function() {
 		let formStd = input.closest('#std-splits');
 		formStd.find('.order-percent-total').text(formTrm.sumUpStdOrderPercents());
 		
+
+		if (input.val() == 0) {
+
+			input.val('');
+			formTrm.shiftSplitValuesUp(input);
+			let allInputs = formTrm.getAllStdInputs();
+
+			if (input.closest('.std-split').data('index') > allInputs.lastindex) {
+				formTrm.clearSplitInputs(input);
+			}
+		}
+		
 		formTrm.enableDisableNextStdSplit(input);
 		formTrm.setupNextStdSplit(input);
+		input.attr('data-lastvalue', percent.toFixed(formTrm.config.fields.order_percent.precision));
 	});
 
 	$("body").on("keyup", ".std_disc_percent", function(e) {
@@ -579,6 +592,10 @@ $(function() {
 			},
 		},
 		submitHandler: function(form) {
+			if (formTrm.sumUpStdOrderPercents() != 100) {
+				formTrm.find('#std-error').text('Order Perents Must add up to 100');
+				return false;
+			}
 			form.submit();
 		}
 	});
