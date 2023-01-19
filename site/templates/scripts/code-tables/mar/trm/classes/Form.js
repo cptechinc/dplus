@@ -72,6 +72,111 @@ class TrmForm extends CodeFormBase {
 		this.enableTabindex(inputDiscDate);
 	}
 
+	/**
+	 * Enable / Disable input.std_due_day, input.std_due_date based off input.std_due_days
+	 * @param {HTMLElement} input 
+	 * @returns {bool}
+	 */
+	enableDisableStdPrimaryDueFieldsFromDueDays(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_due_days') === false) {
+			return false;
+		}
+		let days = input.val() == '' ? 0 : parseInt(input.val());
+		let parentGroup = input.closest('.std-due');
+
+		let inputs = [
+			parentGroup.find('input.std_due_day'),
+			parentGroup.find('input.std_due_date'),
+		];
+
+		let enableInputs = days == 0;
+		this.enableDisableInputs(inputs, enableInputs);
+	}
+
+	/**
+	 * Enable / Disable input.std_plus_months based off input.std_due_day
+	 * @param {HTMLElement} input 
+	 * @returns {bool}
+	 */
+	enableDisableStdDependentFieldsFromDueDay(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_due_day') === false) {
+			return false;
+		}
+		let day = input.val() == '' ? 0 : parseInt(input.val());
+		let parentGroup = input.closest('.std-due');
+		let inputs = [
+			parentGroup.find('input.std_plus_months')
+		];
+
+		let enableInputs = day > 0;
+		this.enableDisableInputs(inputs, enableInputs);
+	}
+
+	/**
+	 * Enable / Disable input.std_due_days, input.std_due_date based off input.std_due_day
+	 * @param {HTMLElement} input 
+	 * @returns {bool}
+	 */
+	enableDisableStdPrimaryDueFieldsFromDueDay(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_due_day') === false) {
+			return false;
+		}
+		let day = input.val() == '' ? 0 : parseInt(input.val());
+		let parentGroup = input.closest('.std-due');
+		let inputs = [
+			parentGroup.find('input.std_due_days'),
+			parentGroup.find('input.std_due_date'),
+		];
+
+		let enableInputs = day == 0;
+		this.enableDisableInputs(inputs, enableInputs);
+	}
+
+	/**
+	 * Enable / Disable input.std_due_days, input.std_due_day based off input.std_due_day
+	 * @param {HTMLElement} input 
+	 * @returns {bool}
+	 */
+	enableDisableStdPrimaryDueFieldsFromDueDate(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_due_date') === false) {
+			return false;
+		}
+		let parentGroup = input.closest('.std-due');
+
+		let inputs = [
+			parentGroup.find('input.std_due_days'),
+			parentGroup.find('input.std_due_day'),
+		];
+
+		if (input.val() == '') {
+			this.enableDisableInputs(inputs, true);
+		}
+
+		let dateRegexes  = DateRegexes.getInstance();
+		let enableInputs = dateRegexes.regexes['mm/dd'].test(input.val()) === false;
+		this.enableDisableInputs(inputs, enableInputs);
+	}
+
+	/**
+	 * Enable / Disable input.std_due_years based off input.std_due_date
+	 * @param {HTMLElement} input 
+	 * @returns {bool}
+	 */
+	enableDisableStdDependentFieldsFromDueDate(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_due_date') === false) {
+			return false;
+		}
+		let parentGroup = input.closest('.std-due');
+		
+		let inputs = [
+			parentGroup.find('input.std_due_years'),
+		];
+
+		let dateRegexes = DateRegexes.getInstance();
+		let enableInputs = dateRegexes.regexes['mm/dd'].test(input.val());
+		this.enableDisableInputs(inputs, enableInputs);
+	}
+
 /* =============================================================
 	Method EOM Events
 ============================================================= */
@@ -276,5 +381,29 @@ class TrmForm extends CodeFormBase {
 			tabindex = 1;
 		}
 		input.attr('tabindex', disablePrefix + tabindex);
+	}
+
+	/**
+	 * Enable / Disable multiple Inputs
+	 * @param   {array} inputs 
+	 * @param   {bool}  enable 
+	 * @returns {bool}
+	 */
+	enableDisableInputs(inputs, enable = true) {
+		let formTrm = this;
+
+		if (enable === false) {
+			inputs.forEach(input => {
+				formTrm.setReadonly(input, true);
+				formTrm.disableTabindex(input);
+			});
+			return true;
+		}
+		
+		inputs.forEach(input => {
+			formTrm.setReadonly(input, false);
+			formTrm.enableTabindex(input);
+		});
+		return true;
 	}
 }
