@@ -277,6 +277,31 @@ $(function() {
 	// 	formTrm.enableDisableStdDiscFieldsFromPercent(input);
 	// });
 
+	$("body").on("keyup", ".std_disc_percent", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		formTrm.enableDisableStdDiscFieldsFromDiscPercent(input);
+	});
+
+	$("body").on("change", ".std_disc_percent", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		let percent = input.val() == '' ? 0.00 : parseFloat(input.val());
+		formTrm.enableDisableStdDiscFieldsFromDiscPercent(input);
+		
+		if (percent > 0) {
+			input.val(percent.toFixed(formTrm.config.fields.std_disc_percent.precision));
+			return true;
+		}
+		input.val('');
+	});
+
 	$("body").on("change", ".std_disc_days", function(e) {
 		if (formTrm.isMethodStd() === false) {
 			return false;
