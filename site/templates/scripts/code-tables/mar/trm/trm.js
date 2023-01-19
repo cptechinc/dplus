@@ -11,12 +11,12 @@ $(function() {
 		formTrm.inputs.fields.description.focus();
 	}
 
-	let regexPatterns = {
-		'mmddyyyy': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])((20)\d{2})',
-		'mmddyy': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])(\d{2})',
-		'mmdd': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])',
-		'mm/dd': '(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])',
-	};
+	// let regexPatterns = {
+	// 	'mmddyyyy': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])((20)\d{2})',
+	// 	'mmddyy': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])(\d{2})',
+	// 	'mmdd': '(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])',
+	// 	'mm/dd': '(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])',
+	// };
 
 	let momentJsFormats = {
 		'mmdd': 'MMYY',
@@ -27,12 +27,12 @@ $(function() {
 		'timestamp': 'X'
 	}
 
-	let regexes = {
-		'mmddyyyy': new RegExp(regexPatterns['mmddyyyy']),
-		'mmddyyyy': new RegExp(regexPatterns['mmddyy']),
-		'mmdd': new RegExp(regexPatterns['mmdd']),
-		'mm/dd': new RegExp(regexPatterns['mm/dd']),
-	};
+	// let regexes = {
+	// 	'mmddyyyy': new RegExp(regexPatterns['mmddyyyy']),
+	// 	'mmddyyyy': new RegExp(regexPatterns['mmddyy']),
+	// 	'mmdd': new RegExp(regexPatterns['mmdd']),
+	// 	'mm/dd': new RegExp(regexPatterns['mm/dd']),
+	// };
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -252,13 +252,13 @@ $(function() {
 			return true;
 		}
 
-		if (regexes['mmddyyyy'].test(input.val()) === false && regexes['mmddyy'].test(input.val()) === false){
+		if (dateRegexes.regexes['mmddyyyy'].test(input.val()) === false && dateRegexes.regexes['mmddyy'].test(input.val()) === false){
 			return true;
 		}
 
 		let momentParseFormat = momentJsFormats['mmddyyyy'];
 
-		if (regexes['mmddyy'].test(input.val())) {
+		if (dateRegexes.regexes['mmddyy'].test(input.val())) {
 			momentParseFormat = momentJsFormats['mmddyy'];
 		}
 
@@ -344,12 +344,12 @@ $(function() {
 			formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
 		}
 
-		if (regexes['mmdd'].test(input.val())) {
+		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
 		}
 		
-		if (regexes['mm/dd'].test(input.val()) === false) {
+		if (dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
 			return false;
 		}
 
@@ -416,7 +416,7 @@ $(function() {
 
 		let input  = $(this);
 
-		if (regexes['mmdd'].test(input.val())) {
+		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
 		}
@@ -436,7 +436,7 @@ $(function() {
 			formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
 		}
 
-		if (regexes['mmdd'].test(input.val())) {
+		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
 		}
@@ -509,7 +509,7 @@ $(function() {
 	}
 
 	function validateDateMMYYSlash(value) {
-		return regexes['mm/dd'].test(value);
+		return dateRegexes.regexes['mm/dd'].test(value);
 	}
 
 	jQuery.validator.addMethod("expiredate", function(value, element) {
