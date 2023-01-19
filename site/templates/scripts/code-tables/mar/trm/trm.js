@@ -280,13 +280,12 @@ $(function() {
 		let parentGroup = input.closest('.std-discount');
 
 		if (days > 0) {
-			let inputDate = parentGroup.find('input.std_disc_date');
-			let inputDay = parentGroup.find('input.std_disc_day');
-		
-			formTrm.setReadonly(inputDate, true);
-			formTrm.disableTabindex(inputDate);
-			formTrm.setReadonly(inputDay);
-			formTrm.disableTabindex(inputDay);
+			let inputs = [parentGroup.find('input.std_disc_day'), parentGroup.find('input.std_disc_date')];
+
+			inputs.forEach(input => {
+				formTrm.setReadonly(input, true);
+				formTrm.disableTabindex(input);
+			});
 			return true;
 		}
 		formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
@@ -305,12 +304,11 @@ $(function() {
 			formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
 		}
 
-		let inputDays = parentGroup.find('input.std_disc_days');
-		let inputDate = parentGroup.find('input.std_disc_date');
-		formTrm.setReadonly(inputDays);
-		formTrm.disableTabindex(inputDays);
-		formTrm.setReadonly(inputDate);
-		formTrm.disableTabindex(inputDate);
+		let inputs = [parentGroup.find('input.std_disc_days'), parentGroup.find('input.std_disc_date')];
+		inputs.forEach(input => {
+			formTrm.setReadonly(input, true);
+			formTrm.disableTabindex(input);
+		});
 	});
 
 	$("body").on("change", ".std_disc_date", function(e) {
@@ -333,13 +331,19 @@ $(function() {
 		if (regexes['mm/dd'].test(input.val()) === false) {
 			return false;
 		}
+
+		let inputs = [parentGroup.find('input.std_disc_days'), parentGroup.find('input.std_disc_day')];
+		inputs.forEach(input => {
+			formTrm.setReadonly(input, true);
+			formTrm.disableTabindex(input);
+		});
 		
-		let inputDays = parentGroup.find('input.std_disc_days');
-		let inputDay = parentGroup.find('input.std_disc_day');
-		formTrm.setReadonly(inputDays);
-		formTrm.disableTabindex(inputDays);
-		formTrm.setReadonly(inputDay);
-		formTrm.disableTabindex(inputDay);
+		// let inputDays = parentGroup.find('input.std_disc_days');
+		// let inputDay = parentGroup.find('input.std_disc_day');
+		// formTrm.setReadonly(inputDays);
+		// formTrm.disableTabindex(inputDays);
+		// formTrm.setReadonly(inputDay);
+		// formTrm.disableTabindex(inputDay);
 	});
 
 /* =============================================================
