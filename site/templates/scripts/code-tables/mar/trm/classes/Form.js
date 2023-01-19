@@ -36,6 +36,122 @@ class TrmForm extends CodeFormBase {
 /* =============================================================
 	Method STD
 ============================================================= */
+
+	sumUpStdOrderPercents() {
+		let formStd = this.form.find('#std-splits');
+		let total = 0.00;
+		let form = this;
+
+		formStd.find('input.order_percent').each(function() {
+			let input = $(this);
+			let percent = parseFloat(input.val());
+			if (isNaN(percent)) {
+				percent = 0.0;
+			}
+			percent = percent.toFixed(form.config.fields.order_percent.precision);
+			total = parseFloat(total) + parseFloat(percent);
+		});
+		return total.toFixed(form.config.fields.order_percent.precision);
+	}
+
+	enableDisableNextStdSplit(input) {
+		if (this.isMethodStd() === false || input.hasClass('order_percent') === false) {
+			return false;
+		}
+		let thisSplit = input.closest('.std-split');
+		let index = parseFloat(thisSplit.data('index'));
+
+		if (index >= codetable.config.methods.std.splitCount) {
+			return false;
+		}
+		let formStd = this.form.find('#std-splits');
+		
+		let totalPercent = this.sumUpStdOrderPercents();
+
+		if (totalPercent > 100) {
+			formStd.find('#std-error').text("Order Percent total is more than 100");
+		}
+
+		// let validator = this.form.validate();
+		// let isValid = validator.element('#' + input.attr('id'));
+		let value = input.val() == '' ? 0.0 : parseFloat(input.val());
+
+		let nextIndex  = index + 1;
+		let nextSplit = $('.std-split[data-index='+ (nextIndex) +']');
+		// let form = this;
+
+		let nextInputs = [
+			nextSplit.find('input.order_percent'),
+			nextSplit.find('input.std_disc_percent'),
+			nextSplit.find('input.std_due_days'),
+			nextSplit.find('input.std_due_day'),
+			nextSplit.find('input.std_plus_months'),
+			nextSplit.find('input.std_due_date'),
+			nextSplit.find('input.std_plus_years'),
+		]
+
+		if (value == 0) {
+			this.enableDisableInputs(nextInputs, false);
+			let splitInputs = [
+				thisSplit.find('input.order_percent'),
+				thisSplit.find('input.std_disc_percent'),
+				thisSplit.find('input.std_due_days'),
+				thisSplit.find('input.std_due_day'),
+				thisSplit.find('input.std_plus_months'),
+				thisSplit.find('input.std_due_date'),
+				thisSplit.find('input.std_plus_years'),
+			]
+			this.enableDisableInputs(splitInputs, false);
+			return true;
+		}
+
+		if (totalPercent < 100) {
+			this.enableDisableInputs(nextInputs, true);
+		}
+
+		if (totalPercent == 100) {
+			this.enableDisableInputs(nextInputs, false);
+		}
+	}
+
+	/**
+	 * Setup values for Next Eom Split's Day Range
+	 * @param {Object} input 
+	 * @returns 
+	 */
+	setupNextStdSplit(input) {
+		if (this.isMethodStd() === false || input.hasClass('order_percent') === false) {
+			return false;
+		}
+		let thisSplit = input.closest('.std-split');
+		let index = parseFloat(thisSplit.data('index'));
+
+		if (index >= codetable.config.methods.splitCount) {
+			return false;
+		}
+
+		let value = input.val() == '' ? 0 : parseFloat(input.val());
+		let totalPercent = this.sumUpStdOrderPercents();
+		let nextIndex = index + 1;
+		let nextSplit = $('.std-split[data-index='+ (nextIndex) +']');
+
+
+		if (totalPercent == 100) {
+			return true;
+		}
+
+		if (totalPercent < 100) {
+			let nextPercent = parseFloat(100 - totalPercent);
+			let nextInputPercent = nextSplit.find('input.order_percent');
+			if (nextInputPercent.val()) {
+				nextPercent += parseFloat(nextInputPercent.val());
+			}
+			nextInputPercent.val(nextPercent.toFixed(this.config.fields.order_percent.precision))
+			nextInputPercent.change();
+		}
+	}
+
+
 	/**
 	 * Enable Discount / Day Month fields based off Discount Percent Value
 	 * @param {Object} input 
@@ -158,7 +274,7 @@ class TrmForm extends CodeFormBase {
 	}
 
 	/**
-	 * Enable / Disable input.std_due_years based off input.std_due_date
+	 * Enable / Disable input.std_plus_years based off input.std_due_date
 	 * @param {HTMLElement} input 
 	 * @returns {bool}
 	 */
@@ -169,7 +285,7 @@ class TrmForm extends CodeFormBase {
 		let parentGroup = input.closest('.std-due');
 		
 		let inputs = [
-			parentGroup.find('input.std_due_years'),
+			parentGroup.find('input.std_plus_years'),
 		];
 
 		let dateRegexes = DateRegexes.getInstance();
@@ -234,7 +350,7 @@ class TrmForm extends CodeFormBase {
 	 * @returns 
 	 */
 	enableDisableNextEomSplit(input) {
-		if (this.isMethodEom === false || this.isInputEomThruDay(input) === false) {
+		if (this.isMethodEom() === false || this.isInputEomThruDay(input) === false) {
 			return false;
 		}
 		let index = parseFloat(input.closest('.eom-split').data('index'));
@@ -372,7 +488,6 @@ class TrmForm extends CodeFormBase {
 		if (input.attr('name') == undefined || input.attr('name') == '') {
 			return false;
 		}
-		let tabindex = '';
 		let disablePrefix = '-';
 
 		let tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));

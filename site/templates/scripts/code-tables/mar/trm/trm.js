@@ -258,24 +258,22 @@ $(function() {
 /* =============================================================
 	Method STD Events
 ============================================================= */
-	// $("body").on("change", ".order_percent", function(e) {
-	// 	if (formTrm.isMethodStd() === false) {
-	// 		return false;
-	// 	}
+	$("body").on("change", ".order_percent", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
 
-	// 	let input  = $(this);
-	// 	let percent = input.val() == '' ? 0 : parseFloat(input.val());
-	// 	let parentSplit = input.closest('.std-split');
+		let input  = $(this);
+		let percent = input.val() == '' ? 0 : parseFloat(input.val());
+		input.val(percent.toFixed(formTrm.config.fields.order_percent.precision));
 
+		// DEBUG:
+		let formStd = input.closest('#std-splits');
+		formStd.find('.order-percent-total').text(formTrm.sumUpStdOrderPercents());
 		
-	// 	if (percent == 0) {
-	// 		input.val('');
-	// 		formTrm.enableDisableStdDiscFieldsFromPercent(input);
-	// 		return true;
-	// 	}
-	// 	input.val(percent.toFixed(formCode.config.fields.order_percent.precision));
-	// 	formTrm.enableDisableStdDiscFieldsFromPercent(input);
-	// });
+		formTrm.enableDisableNextStdSplit(input);
+		formTrm.setupNextStdSplit(input);
+	});
 
 	$("body").on("keyup", ".std_disc_percent", function(e) {
 		if (formTrm.isMethodStd() === false) {
