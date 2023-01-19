@@ -22,6 +22,8 @@ $(function() {
 		'mm/dd': 'MM/YY',
 		'mmddyyyy': 'MMDDYYYY',
 		'mmddyy': 'MMDDYY',
+		'mm/dd/yyyy': 'MM/DD/YYYY',
+		'timestamp': 'X'
 	}
 
 	let regexes = {
@@ -264,7 +266,7 @@ $(function() {
 		if (date.isValid() === false) {
 			return false;
 		}
-		input.val(date.format('MM/DD/YYYY'))
+		input.val(date.format(momentJsFormats['mm/dd/yyyy']))
 	});
 
 /* =============================================================
@@ -337,13 +339,6 @@ $(function() {
 			formTrm.setReadonly(input, true);
 			formTrm.disableTabindex(input);
 		});
-		
-		// let inputDays = parentGroup.find('input.std_disc_days');
-		// let inputDay = parentGroup.find('input.std_disc_day');
-		// formTrm.setReadonly(inputDays);
-		// formTrm.disableTabindex(inputDays);
-		// formTrm.setReadonly(inputDay);
-		// formTrm.disableTabindex(inputDay);
 	});
 
 /* =============================================================
@@ -401,12 +396,12 @@ $(function() {
 ============================================================= */
 	function validateExpiredate() {
 		let input = formTrm.inputs.fields.expiredate;
-		let expiredate = moment(input.val(), 'MM/DD/YYYY');
+		let expiredate = moment(input.val(), momentJsFormats['mm/dd/yyyy']);
 		if (expiredate.isValid() == false) {
 			return false;
 		}
 		let minDate    = moment();
-		return parseInt(expiredate.format('X')) > parseInt(minDate.format('X'));
+		return parseInt(expiredate.format(momentJsFormats['timestamp'])) > parseInt(minDate.format(momentJsFormats['timestamp']));
 	}
 
 	function validateDateMMYYSlash(value) {
@@ -465,7 +460,10 @@ $(function() {
 			},
 			eom_due_day1: {
 				required: true,
-			}
+			},
+			order_percent1: {
+				required: true,
+			},
 		},
 		submitHandler: function(form) {
 			form.submit();
@@ -489,8 +487,6 @@ $(function() {
 	$('.eom_thru_day').each(function() {
 		let input = $(this);
 		let parent = input.closest('.eom-day-range');
-		let parentEomSplit = input.closest('.eom-split');
-		let min = 2;
 
 		input.rules( "add", {
 			min: function() {
