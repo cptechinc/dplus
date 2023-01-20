@@ -218,7 +218,7 @@ class TrmForm extends CodeFormBase {
 		}
 		
 		let thisSplit = input.closest('.std-split');
-		let index = parseFloat(thisSplit.data('index'));
+		let index = parseInt(thisSplit.data('index'));
 		let thisOrderPercentLast  = input.attr('data-lastvalue');
 
 		if (index == codetable.config.methods.std.splitCount) {
@@ -231,6 +231,9 @@ class TrmForm extends CodeFormBase {
 
 
 		if (index >= allInputs.lastindex) {
+			let lastInputOrderPercent = allInputs.splits[index - 1].inputs.order_percent;
+			let percent = parseFloat(lastInputOrderPercent.val()) + parseFloat(thisOrderPercentLast);
+			lastInputOrderPercent.val(percent.toFixed(this.config.fields.order_percent.precision))
 			return false;
 		}
 
