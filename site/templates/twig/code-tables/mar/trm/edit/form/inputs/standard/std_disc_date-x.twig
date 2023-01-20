@@ -9,10 +9,12 @@
 {% set tabindex = startindex + (x * 10) + 4 %}
 {% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
 
+{# prepend ""now"|date('Y') to value so it can be parsed and formatted #}
+
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
 		'name': 'std_disc_date' ~ x,
-		'value': value ? value|convertdate(manager.fieldAttribute('std_disc_date', 'dateformat')) : '',
+		'value': value ? ("now"|date('Y') ~ value)|convertdate(manager.fieldAttribute('std_disc_date', 'dateformat')) : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',
