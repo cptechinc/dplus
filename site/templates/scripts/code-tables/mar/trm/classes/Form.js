@@ -67,6 +67,45 @@ class TrmForm extends CodeFormBase {
 	}
 
 	/**
+	 * Return Object of All Inputs for STD method
+	 * @returns {Object}
+	 */
+	getAllStdInputs(force = false) {
+		if (this.stdInputs.splits.length > 0 && force === false) {
+			return this.stdInputs;
+		}
+
+		let stdInputs = {
+			'lastindex': 1,
+			'splits': []
+		};
+
+		let inputClasses = [
+			'order_percent',
+			'std_disc_percent', 'std_disc_days', 'std_disc_day', 'std_disc_date',
+			'std_due_days', 'std_due_day', 'std_plus_months', 'std_due_date', 'std_plus_years'
+		];
+		let formStd = this.form.find('#std-splits');
+
+		for (var i = 1; i <= codetable.config.methods.std.splitCount; i++) {
+			let inputs = [];
+			
+			inputClasses.forEach(name => {
+				let input = formStd.find('input[name=' + name + i + ']'); 
+				inputs[name] = input;
+			});
+			if (inputs.order_percent.val() != '') {
+				stdInputs.lastindex = i;
+			}
+			stdInputs.splits[i] = {
+				'inputs': inputs
+			}
+		}
+		this.stdInputs = stdInputs;
+		return this.stdInputs;
+	}
+
+	/**
 	 * Enable / disable next STD Split inputs based of input.order_percent
 	 * @param {HTMLElement} input 
 	 * @returns 
@@ -75,8 +114,7 @@ class TrmForm extends CodeFormBase {
 		if (this.isMethodStd() === false || input.hasClass('order_percent') === false) {
 			return false;
 		}
-		let thisSplit = input.closest('.std-split');
-		let index = parseFloat(thisSplit.data('index'));
+		let index = parseInt(input.closest('.std-split').data('index'));
 
 		if (index >= codetable.config.methods.std.splitCount) {
 			return false;
@@ -89,34 +127,33 @@ class TrmForm extends CodeFormBase {
 			formStd.find('#std-error').text("Order Percent total is more than 100");
 		}
 
-		// let validator = this.form.validate();
-		// let isValid = validator.element('#' + input.attr('id'));
 		let value = input.val() == '' ? 0.0 : parseFloat(input.val());
 
-		let nextIndex  = index + 1;
-		let nextSplit = $('.std-split[data-index='+ (nextIndex) +']');
-		// let form = this;
+		let allInputs = this.getAllStdInputs();
+		let thisSplit = allInputs.splits[index];
+		let nextSplit = allInputs.splits[index + 1];
 
+	
 		let nextInputs = [
-			nextSplit.find('input.order_percent'),
-			nextSplit.find('input.std_disc_percent'),
-			nextSplit.find('input.std_due_days'),
-			nextSplit.find('input.std_due_day'),
-			nextSplit.find('input.std_plus_months'),
-			nextSplit.find('input.std_due_date'),
-			nextSplit.find('input.std_plus_years'),
+			nextSplit.inputs.order_percent,
+			nextSplit.inputs.std_disc_percent,
+			nextSplit.inputs.std_due_days,
+			nextSplit.inputs.std_due_day,
+			nextSplit.inputs.std_plus_months,
+			nextSplit.inputs.std_due_date,
+			nextSplit.inputs.std_plus_years,
 		]
 
 		if (value == 0) {
 			this.enableDisableInputs(nextInputs, false);
 			let splitInputs = [
-				thisSplit.find('input.order_percent'),
-				thisSplit.find('input.std_disc_percent'),
-				thisSplit.find('input.std_due_days'),
-				thisSplit.find('input.std_due_day'),
-				thisSplit.find('input.std_plus_months'),
-				thisSplit.find('input.std_due_date'),
-				thisSplit.find('input.std_plus_years'),
+				thisSplit.inputs.order_percent,
+				thisSplit.inputs.std_disc_percent,
+				thisSplit.inputs.std_due_days,
+				thisSplit.inputs.std_due_day,
+				thisSplit.inputs.std_plus_months,
+				thisSplit.inputs.std_due_date,
+				thisSplit.inputs.std_plus_years,
 			]
 			this.enableDisableInputs(splitInputs, false);
 			return true;
@@ -126,7 +163,7 @@ class TrmForm extends CodeFormBase {
 			this.enableDisableInputs(nextInputs, true);
 		}
 
-		if (totalPercent == 100) {
+		if (totalPercent == 100 && nextSplit.order_percent.val() != '') {
 			this.enableDisableInputs(nextInputs, false);
 		}
 	}
@@ -166,45 +203,6 @@ class TrmForm extends CodeFormBase {
 			nextInputPercent.val(nextPercent.toFixed(this.config.fields.order_percent.precision))
 			nextInputPercent.change();
 		}
-	}
-
-	/**
-	 * Return Object of All Inputs for STD method
-	 * @returns {Object}
-	 */
-	getAllStdInputs(force = false) {
-		if (this.stdInputs.splits.length > 0 && force === false) {
-			return this.stdInputs;
-		}
-
-		let stdInputs = {
-			'lastindex': 1,
-			'splits': []
-		};
-
-		let inputClasses = [
-			'order_percent',
-			'std_disc_percent', 'std_disc_days', 'std_disc_day', 'std_disc_date',
-			'std_due_days', 'std_due_day', 'std_plus_months', 'std_due_date', 'std_plus_years'
-		];
-		let formStd = this.form.find('#std-splits');
-
-		for (var i = 1; i <= codetable.config.methods.std.splitCount; i++) {
-			let inputs = [];
-			
-			inputClasses.forEach(name => {
-				let input = formStd.find('input[name=' + name + i + ']'); 
-				inputs[name] = input;
-			});
-			if (inputs.order_percent.val() != '') {
-				stdInputs.lastindex = i;
-			}
-			stdInputs.splits[i] = {
-				'inputs': inputs
-			}
-		}
-		this.stdInputs = stdInputs;
-		return this.stdInputs;
 	}
 
 	/**
