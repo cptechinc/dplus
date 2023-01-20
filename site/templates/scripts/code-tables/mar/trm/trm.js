@@ -271,8 +271,6 @@ $(function() {
 		let formStd = input.closest('#std-splits');
 		formStd.find('.order-percent-total').text(totalPercent);
 
-		
-		
 		if (input.val() == 0) {
 			input.val('');
 			formTrm.shiftSplitValuesUp(input);
@@ -312,25 +310,30 @@ $(function() {
 		input.val('');
 	});
 
+	$("body").on("keyup", ".std_disc_days", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+		formTrm.enableDisableStdDiscFieldsFromDays($(this));
+	});
+
 	$("body").on("change", ".std_disc_days", function(e) {
 		if (formTrm.isMethodStd() === false) {
 			return false;
 		}
 
 		let input  = $(this);
-		let days = input.val() == '' ? 0 : parseFloat(input.val());
-		let parentGroup = input.closest('.std-discount');
-
-		if (days > 0) {
-			let inputs = [parentGroup.find('input.std_disc_day'), parentGroup.find('input.std_disc_date')];
-
-			inputs.forEach(input => {
-				formTrm.setReadonly(input, true);
-				formTrm.disableTabindex(input);
-			});
-			return true;
+		if (input.val() == '0') {
+			input.val('');
 		}
-		formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
+		formTrm.enableDisableStdDiscFieldsFromDays(input);
+	});
+
+	$("body").on("keyup", ".std_disc_day", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+		formTrm.enableDisableStdDiscFieldsFromDay($(this));
 	});
 
 	$("body").on("change", ".std_disc_day", function(e) {
@@ -339,18 +342,10 @@ $(function() {
 		}
 
 		let input  = $(this);
-		let day = input.val() == '' ? 0 : parseFloat(input.val());
-		let parentGroup = input.closest('.std-discount');
-
-		if (day == 0) {
-			formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
+		if (input.val() == '0') {
+			input.val('');
 		}
-
-		let inputs = [parentGroup.find('input.std_disc_days'), parentGroup.find('input.std_disc_date')];
-		inputs.forEach(input => {
-			formTrm.setReadonly(input, true);
-			formTrm.disableTabindex(input);
-		});
+		formTrm.enableDisableStdDiscFieldsFromDay(input);
 	});
 
 	$("body").on("change", ".std_disc_date", function(e) {
@@ -378,12 +373,7 @@ $(function() {
 		if (dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
 			return false;
 		}
-
-		let inputs = [parentGroup.find('input.std_disc_days'), parentGroup.find('input.std_disc_day')];
-		inputs.forEach(input => {
-			formTrm.setReadonly(input, true);
-			formTrm.disableTabindex(input);
-		});
+		formTrm.enableDisableStdDiscFieldsFromDate(input);
 	});
 
 	$("body").on("keyup", ".std_due_days", function(e) {
@@ -543,6 +533,36 @@ $(function() {
 		return formTrm.sumUpStdOrderPercents() == 100;
 	}
 
+	function validateStdDiscountFieldGroup(element, value) {
+		let parent = $(element).closest('.std-discount');
+
+		if (parent.find('.std_disc_percent').val() == '') {
+			return true;
+		}
+		let valid = false;
+		let inputs = [parent.find('.std_disc_days'), parent.find('.std_disc_day'), parent.find('.std_disc_date')];
+
+		inputs.forEach(input => {
+			if (input.val() != '') {
+				valid = true;
+			}
+		});
+		return valid;
+	}
+
+	function validateStdDueFieldGroup(element) {
+		let parent = $(element).closest('.std-due');
+		let inputs = [parent.find('.std_due_days'), parent.find('.std_due_day'), parent.find('.std_due_date')];
+
+		let valid = false;
+		inputs.forEach(input => {
+			if (input.val() != '') {
+				valid = true;
+			}
+		});
+		return valid;
+	}
+
 	jQuery.validator.addMethod("expiredate", function(value, element) {
 		return this.optional(element) || validateExpiredate();
 	}, "Date must be a valid, future date MM/DD/YYYY");
@@ -555,14 +575,27 @@ $(function() {
 		return this.optional(element) || validatestdOrderPercentTotal();
 	}, "Order Percent Must add up to 100");
 
+	jQuery.validator.addMethod("stdDiscFieldGroup", function(value, element) {
+		return validateStdDiscountFieldGroup(element, value);
+	}, "Enter Discount Days, Day, or Date");
+
+	jQuery.validator.addMethod("stdDueFieldGroup", function(value, element) {
+		return validateStdDueFieldGroup(element, value);
+	}, "Enter Due Days, Day, or Date");
+
 	let validator = formCode.form.validate({
 		errorClass: "is-invalid",
 		validClass: "",
 		errorPlacement: function(error, element) {
 			error.addClass('invalid-feedback');
 
-			if (element.closest('.input-parent').length == 0) {
+			if (element.closest('.input-parent').length == 0 && element.closest('.input-group-parent').length == 0) {
 				error.insertAfter(element);
+				return true;
+			}
+			if (element.closest('.input--group-parent').length) {
+				console.log(error);
+				error.appendTo(element.closest('.input-group-parent'));
 				return true;
 			}
 			error.appendTo(element.closest('.input-parent'));
@@ -647,6 +680,7 @@ $(function() {
 		input.rules("add", {
 			required: false,
 			dateMMYYSlash: true,
+			stdDiscFieldGroup: true,
 		});
 	});
 
@@ -656,6 +690,7 @@ $(function() {
 		input.rules("add", {
 			required: false,
 			dateMMYYSlash: true,
+			stdDueFieldGroup: true,
 		});
 	});
 
