@@ -44,8 +44,8 @@
 			</div>
 		</div>
 	</div>
+	<div class="list-group-item text-center text-danger	py-1" id="std-error"></div>
 	{% for x in 1..constant('NBR_SPLITS_METHOD_S', manager) %}
-		<div class="list-group-item text-center text-danger" id="std-error"></div>
 		<div class="list-group-item std-split" data-index="{{ x }}">
 			<div class="row align-items-center text-center">
 				<div class="col-2 border-right border-dark">
@@ -58,8 +58,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="col border-right border-dark">
-					<div class="row align-items-center std-discount">
+				<div class="col border-right border-dark std-discount input-parent">
+					<div class="row align-items-center">
 						<div class="col">
 							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_disc_percent-x.twig' %}
 						</div>
@@ -75,7 +75,7 @@
 					</div>
 				</div>
 				<div class="col">
-					<div class="row align-items-center std-due">
+					<div class="row align-items-center std-due input-parent">
 						<div class="col">
 							{% include 'code-tables/mar/trm/edit/form/inputs/standard/std_due_days-x.twig' %}
 						</div>
