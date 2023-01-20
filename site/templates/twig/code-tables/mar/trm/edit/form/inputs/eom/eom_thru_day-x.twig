@@ -1,5 +1,9 @@
 {% set value = code.eom_thru_day(x) %}
+
+{% set readonly = value == 0 %}
+
 {% set tabindex = startindex + (x * 10) + 1 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
@@ -13,7 +17,7 @@
 		],
 		'attributes': {
 			'tabindex': tabindex,
-			'readonly': value == 0,
+			'readonly': readonly,
 			'min': x == 1,
 			'max': manager.fieldAttribute('eom_thru_day', 'max'),
 			'required': x == 1,
