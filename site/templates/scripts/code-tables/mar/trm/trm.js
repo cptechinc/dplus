@@ -528,11 +528,10 @@ $(function() {
 
 		let input  = $(this);
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
-		
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
 			return true;
-		}		
+		}
 		formTrm.enableDisableEomDiscFieldsFromPercent(input);
 	});
 
@@ -542,6 +541,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		let parent = input.closest('.eom-split');
 		
 		if (input.val() == '') {
 			return true;
@@ -550,6 +550,24 @@ $(function() {
 		formTrm.updateEomThruDayInput(input);
 		formTrm.enableDisableNextEomSplit(input);
 		formTrm.setupNextEomSplit(input);
+
+		if (input.val() != '99' && parent.data('index') != 1) {
+			return true;
+		}
+
+		let validator = input.closest('form').validate();
+
+		for (let i = (parent.data('index') + 1); i <= codetable.config.methods.eom.splitCount; i++) {
+			let split = $('.eom-split[data-index=' + i + ']');
+
+			split.find('input').each(function() {
+				let sinput = $(this);
+				sinput.val('');
+				validator.element('#' + sinput.attr('name'));
+				formTrm.disableTabindex(sinput);
+				formTrm.setReadonly(sinput, true);
+			});
+		}
 	});
 
 /* =============================================================
