@@ -497,12 +497,10 @@ class TrmForm extends CodeFormBase {
 	 * @returns 
 	 */
 	enableDisableEomDiscFieldsFromPercent(input) {
-		if (this.isMethodEom()) {
+		if (this.isMethodEom() === false || input.hasClass('eom_disc_percent') === false) {
 			return false;
 		}
-		if (input.hasClass('eom_disc_percent') === false) {
-			return false;
-		}
+
 		let parent = input.closest('.eom-discount');
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 
