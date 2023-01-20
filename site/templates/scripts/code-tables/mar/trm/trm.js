@@ -265,6 +265,7 @@ $(function() {
 
 	$("body").on("change", "#code-form input[name=expiredate]", function(e) {
 		let input = $(this);
+
 		if (input.val().length < 8) {
 			return true;
 		}
@@ -287,7 +288,8 @@ $(function() {
 		if (date.isValid() === false) {
 			return false;
 		}
-		input.val(date.format(momentJsFormats['mm/dd/yyyy']))
+		input.val(date.format(momentJsFormats['mm/dd/yyyy']));
+		input.change();
 	});
 
 /* =============================================================
@@ -512,11 +514,11 @@ $(function() {
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		
 		if (percent == 0) {
-			formTrm.enableDisableEomDiscDayMonthFromPercent(input);
+			formTrm.enableDisableEomDiscFieldsFromPercent(input);
 			return true;
 		}
 		input.val(percent.toFixed(formCode.config.fields.eom_disc_percent.precision));
-		formTrm.enableDisableEomDiscDayMonthFromPercent(input);
+		formTrm.enableDisableEomDiscFieldsFromPercent(input);
 	});
 
 	$("body").on("keyup", ".eom_disc_percent", function(e) {
@@ -528,10 +530,10 @@ $(function() {
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		
 		if (percent == 0) {
-			formTrm.enableDisableEomDiscDayMonthFromPercent(input);
+			formTrm.enableDisableEomDiscFieldsFromPercent(input);
 			return true;
 		}		
-		formTrm.enableDisableEomDiscDayMonthFromPercent(input);
+		formTrm.enableDisableEomDiscFieldsFromPercent(input);
 	});
 
 	$("body").on("change", ".eom_thru_day", function(e) {
@@ -556,6 +558,9 @@ $(function() {
 	function validateExpiredate() {
 		let input = formTrm.inputs.fields.expiredate;
 		let expiredate = moment(input.val(), momentJsFormats['mm/dd/yyyy']);
+		if (input.val().length < 8) {
+			return true;
+		}
 		if (expiredate.isValid() == false) {
 			return false;
 		}
@@ -676,8 +681,12 @@ $(function() {
 			},
 		},
 		submitHandler: function(form) {
+			if (formTrm.isMethodEom()) {
+				form.submit();
+				return true;
+			}
 			if (formTrm.sumUpStdOrderPercents() != 100) {
-				formTrm.find('#std-error').text('Order Perents Must add up to 100');
+				formTrm.form.find('#std-error').text('Order Perents Must add up to 100');
 				return false;
 			}
 			form.submit();
