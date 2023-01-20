@@ -106,6 +106,20 @@ class TrmForm extends CodeFormBase {
 	}
 
 	/**
+	 * Return Object of STD discount fields excluding input.std_disc_percent
+	 * @param   {HTMLElement} input 
+	 * @returns {Object}
+	 */
+	getStdDiscFieldsByStdDiscGroup(parent) {
+		let inputs = {
+			'std_disc_days': parent.find('input.std_disc_days'),
+			'std_disc_day': parent.find('input.std_disc_day'),
+			'std_disc_date': parent.find('input.std_disc_date')
+		};
+		return inputs;
+	}
+
+	/**
 	 * Enable / disable next STD Split inputs based of input.order_percent
 	 * @param {HTMLElement} input 
 	 * @returns 
@@ -301,26 +315,72 @@ class TrmForm extends CodeFormBase {
 		}
 		let parent  = input.closest('.std-discount');
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
-
-		let inputDiscDays	= parent.find('.std_disc_days');
-		let inputDiscDay	= parent.find('.std_disc_day');
-		let inputDiscDate   = parent.find('.std_disc_date');
+		let inputs = Object.values(this.getStdDiscFieldsByStdDiscGroup(parent));
 
 		if (percent == 0) {
-			this.setReadonly(inputDiscDays, true);
-			this.disableTabindex(inputDiscDays);
-			this.setReadonly(inputDiscDay, true);
-			this.disableTabindex(inputDiscDay);
-			this.setReadonly(inputDiscDate, true);
-			this.disableTabindex(inputDiscDate);
+			this.enableDisableInputs(inputs, false);
 			return true;
 		}
-		this.setReadonly(inputDiscDays, false);
-		this.enableTabindex(inputDiscDays);
-		this.setReadonly(inputDiscDay, false);
-		this.enableTabindex(inputDiscDay);
-		this.setReadonly(inputDiscDate, false);
-		this.enableTabindex(inputDiscDate);
+		this.enableDisableInputs(inputs, true);
+	}
+
+	/**
+	 * Enable / Disable Discount inputs that don't have x name
+	 * @param {HTMLElement} input 
+	 * @param {string}      name 
+	 * @returns 
+	 */
+	enableDisableStdDiscFieldsFromInputClass(input, name) {
+		let parent = input.closest('.std-discount');
+
+		if (this.isMethodStd() === false || parent.length == 0) {
+			return false;
+		}
+
+		if (input.val() == '0' || input.val() == '') {
+			this.enableDisableStdDiscFieldsFromDiscPercent(parent.find('.std_disc_percent'));
+			return true;
+		}
+
+		let inputs = this.getStdDiscFieldsByStdDiscGroup(parent);
+		delete inputs[name];
+		this.enableDisableInputs(Object.values(inputs), false);
+	}
+
+	/**
+	 * Enable / Disable Other STD discount fields that arent input.std_disc_days
+	 * @param {HTMLElement} input 
+	 * @returns 
+	 */
+	enableDisableStdDiscFieldsFromDays(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_disc_days') === false) {
+			return false;
+		}
+		this.enableDisableStdDiscFieldsFromInputClass(input, 'std_disc_days');
+	}
+
+	/**
+	 * Enable / Disable Other STD discount fields that arent input.std_disc_day
+	 * @param {HTMLElement} input 
+	 * @returns 
+	 */
+	enableDisableStdDiscFieldsFromDay(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_disc_day') === false) {
+			return false;
+		}
+		this.enableDisableStdDiscFieldsFromInputClass(input, 'std_disc_day');
+	}
+
+	/**
+	 * Enable / Disable Other STD discount fields that arent input.std_disc_date
+	 * @param {HTMLElement} input 
+	 * @returns 
+	 */
+	enableDisableStdDiscFieldsFromDate(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_disc_date') === false) {
+			return false;
+		}
+		this.enableDisableStdDiscFieldsFromInputClass(input, 'std_disc_date');
 	}
 
 	/**
