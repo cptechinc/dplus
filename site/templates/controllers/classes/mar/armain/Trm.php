@@ -138,6 +138,8 @@ class Trm extends AbstractCodeTableController {
 		$table = static::getCodeTable();
 		$config['type'] = ['default' => $table->fieldAttribute('type', 'default')];
 		$config['method'] = ['default' => $table->fieldAttribute('method', 'default'), 'std' => 'S', 'eom' => 'E'];
+		$config['order_percent'] = ['precision' => $table->fieldAttribute('order_percent', 'precision')];
+		$config['std_disc_percent'] = ['precision' => $table->fieldAttribute('std_disc_percent', 'precision')];
 		$config['std_disc_date'] = ['regex' => $table->fieldAttribute('std_disc_date', 'regex')];
 		$config['std_due_date']  = ['regex' => $table->fieldAttribute('std_due_date', 'regex')];
 		$config['eom_disc_percent']  = ['precision' => $table->fieldAttribute('eom_disc_percent', 'precision')];
