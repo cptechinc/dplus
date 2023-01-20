@@ -12,8 +12,9 @@ $(function() {
 	}
 
 	let momentJsFormats = {
-		'mmdd': 'MMYY',
-		'mm/dd': 'MM/YY',
+		'mmdd': 'MMDD',
+		'mm/dd': 'MM/DD',
+		'm/dd': 'M/DD',
 		'mmddyyyy': 'MMDDYYYY',
 		'mmddyy': 'MMDDYY',
 		'mm/dd/yyyy': 'MM/DD/YYYY',
@@ -266,14 +267,13 @@ $(function() {
 		let input  = $(this);
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		input.val(percent.toFixed(formTrm.config.fields.order_percent.precision));
-
-		// DEBUG:
+		let totalPercent = formTrm.sumUpStdOrderPercents();
 		let formStd = input.closest('#std-splits');
-		formStd.find('.order-percent-total').text(formTrm.sumUpStdOrderPercents());
+		formStd.find('.order-percent-total').text(totalPercent);
+
 		
-
+		
 		if (input.val() == 0) {
-
 			input.val('');
 			formTrm.shiftSplitValuesUp(input);
 			let allInputs = formTrm.getAllStdInputs();
@@ -282,7 +282,6 @@ $(function() {
 				formTrm.clearSplitInputs(input);
 			}
 		}
-		
 		formTrm.enableDisableNextStdSplit(input);
 		formTrm.setupNextStdSplit(input);
 		input.attr('data-lastvalue', percent.toFixed(formTrm.config.fields.order_percent.precision));
@@ -370,6 +369,11 @@ $(function() {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
 		}
+
+		if (dateRegexes.regexes['m/dd'].test(input.val())) {
+			let date = moment(input.val(), momentJsFormats['m/dd']);
+			input.val(date.format(momentJsFormats['mm/dd']));
+		}
 		
 		if (dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
 			return false;
@@ -423,12 +427,12 @@ $(function() {
 		let input  = $(this);
 		let day = input.val() == '' ? 0 : parseInt(input.val());
 
-		formTrm.enableDisableStdDependentFieldsFromDueDay(input);
-		formTrm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
-
 		if (day == 0) {
 			input.val('');
+			input.closest('.std-split').find('input.std_plus_months').val('');
 		}
+		formTrm.enableDisableStdDependentFieldsFromDueDay(input);
+		formTrm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
 	});
 
 	$("body").on("keyup", ".std_due_date", function(e) {
@@ -456,6 +460,7 @@ $(function() {
 		if (input.val() == '') {
 			formTrm.enableDisableStdDependentFieldsFromDueDate(input);
 			formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
+			input.closest('.std-split').find('input.std_plus_years').val('');
 		}
 
 		if (dateRegexes.regexes['mmdd'].test(input.val())) {
@@ -534,6 +539,10 @@ $(function() {
 		return dateRegexes.regexes['mm/dd'].test(value);
 	}
 
+	function  validatestdOrderPercentTotal() {
+		return formTrm.sumUpStdOrderPercents() == 100;
+	}
+
 	jQuery.validator.addMethod("expiredate", function(value, element) {
 		return this.optional(element) || validateExpiredate();
 	}, "Date must be a valid, future date MM/DD/YYYY");
@@ -541,6 +550,10 @@ $(function() {
 	jQuery.validator.addMethod("dateMMYYSlash", function(value, element) {
 		return this.optional(element) || validateDateMMYYSlash(value);
 	}, "Date must be a valid, date MM/YY");
+
+	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
+		return this.optional(element) || validatestdOrderPercentTotal();
+	}, "Order Percent Must add up to 100");
 
 	let validator = formCode.form.validate({
 		errorClass: "is-invalid",
@@ -643,6 +656,15 @@ $(function() {
 		input.rules("add", {
 			required: false,
 			dateMMYYSlash: true,
+		});
+	});
+
+	$('input.order_percent').each(function() {
+		let input = $(this);
+
+		input.rules("add", {
+			required: false,
+			stdOrderPercentTotal: true,
 		});
 	});
 });
