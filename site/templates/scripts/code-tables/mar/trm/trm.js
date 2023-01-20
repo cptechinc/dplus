@@ -308,6 +308,10 @@ $(function() {
 			return true;
 		}
 		input.val('');
+		let inputs = formTrm.getStdDiscFieldsByStdDiscGroup(input.closest('.std-discount'));
+		Object.values(inputs).forEach(sinput => {
+			sinput.val('');
+		});
 	});
 
 	$("body").on("keyup", ".std_disc_days", function(e) {
