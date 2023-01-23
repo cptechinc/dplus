@@ -46,13 +46,14 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		'eom_from_day1'     => ['type' => 'number',  'default' => 1],
 		'eom_thru_day1'     => ['type' => 'number', 'max' => 99, 'default' => 99],
 
-		'std_disc_date'    => ['type' => 'text', 'regex' => "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])", 'dateformat' => 'm/d', 'placeholder' => 'mm/dd'],
-		'std_disc_percent' => ['type' => 'number', 'max' => 100],
-		'std_disc_days'    => ['type' => 'number', 'max' => 99],
+		'order_percent'    => ['type' => 'number', 'max' => 100.00, 'precision' => 2],
+		'std_disc_date'    => ['type' => 'text', 'default' => '0101', 'regex' => "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])", 'dateformat' => 'm/d', 'recordFormat' => 'md', 'placeholder' => 'mm/dd'],
+		'std_disc_percent' => ['type' => 'number', 'max' => 100.00, 'precision' => 2],
+		'std_disc_days'    => ['type' => 'number', 'max' => 999],
 		'std_disc_day'     => ['type' => 'number', 'max' => 31],
-		'std_due_days'     => ['type' => 'number', 'max' => 990],
+		'std_due_days'     => ['type' => 'number', 'default' => 30, 'max' => 999],
 		'std_due_day'      => ['type' => 'number', 'max' => 31],
-		'std_due_date'     => ['type' => 'text', 'regex' => "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])", 'dateformat' => 'm/d', 'placeholder' => 'mm/dd'],
+		'std_due_date'     => ['type' => 'text', 'default' => '0101', 'regex' => "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])", 'dateformat' => 'm/d', 'recordFormat' => 'md', 'placeholder' => 'mm/dd'],
 		'std_plus_months'  => ['type' => 'number', 'max' => 99],
 		'std_plus_years'   => ['type' => 'number', 'max' => 9],
 		
@@ -79,18 +80,17 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		
 		$fields = $this->fieldAttributes;
 		$fields['termsgroup']['enabled'] = in_array(Configs\Sys::custid(), self::DISABLED_TERMSGROUP_DPLUSCUSTIDS);
-		$fields['termsgroup']['enabled'] = true;
 
 		$configSo = Configs\So::config();
-		$fields['freightallow']['enabled'] = $configSo->freightAllowAmt == 0;
-
+		// $configSo->freightAllowAmt > 0 then it's enabled
+		$fields['freightallow']['enabled'] = $configSo->freightAllowAmt > 0;
 		$this->fieldAttributes = $fields;
 	}
 
 
 	/**
 	 * Return EOM (End-of-Month) Field Attributes
-	 * @return string
+	 * @return array
 	 */
 	private function getEomFieldAttributes() {
 		$attr = [];
@@ -108,7 +108,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	/**
 	 * Return EOM (End-of-Month) Input Opitons,
 	 * NOTE: options format is used for ProcessWire\Sanitizer's float, int functions
-	 * @return string
+	 * @return array
 	 */
 	private function getEomFieldInputOptions() {
 		$opts = [];
@@ -133,6 +133,59 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$opts['eom_disc_months'] = [
 			'max'        => $this->fieldAttribute('eom_disc_months', 'max'),
 			'blankValue' => ''
+		];
+		return $opts;
+	}
+
+	/**
+	 * Return STD Discount Input Options
+	 * NOTE: options format is used for ProcessWire\Sanitizer's float, int functions
+	 * @return array
+	 */
+	private function getStdDiscountFieldInputOptions() {
+		$opts = [];
+		$opts['std_disc_percent'] = [
+			'max'       => $this->fieldAttribute('std_disc_percent', 'max'),
+			'precision' => $this->fieldAttribute('std_disc_percent', 'precision')
+		];
+		$opts['std_disc_date'] = [
+			'dateformat'       => $this->fieldAttribute('std_disc_date', 'dateformat'),
+			'returnFormat'     => $this->fieldAttribute('std_disc_date', 'recordFormat')
+		];
+		$opts['std_disc_days'] = [
+			'max'       => $this->fieldAttribute('std_disc_days', 'max'),
+		];
+		$opts['std_disc_day'] = [
+			'max'       => $this->fieldAttribute('std_disc_day', 'max'),
+		];
+		return $opts;
+	}
+
+	/**
+	 * Return STD Due Input Options
+	 * NOTE: options format is used for ProcessWire\Sanitizer's float, int functions
+	 * @return array
+	 */
+	private function getStdDueFieldInputOptions() {
+		$opts = [];
+
+		$opts['std_due_days'] = [
+			'max'      => $this->fieldAttribute('std_due_days', 'max'),
+			'default'  => $this->fieldAttribute('std_due_days', 'default'),
+		];
+		$opts['std_due_day'] = [
+			'max'  => $this->fieldAttribute('std_due_day', 'max'),
+		];
+		$opts['std_plus_months'] = [
+			'max'  => $this->fieldAttribute('std_plus_months', 'max'),
+		];
+		$opts['std_due_date'] = [
+			'dateformat'    => $this->fieldAttribute('std_due_date', 'dateformat'),
+			'returnFormat'  => $this->fieldAttribute('std_due_date', 'recordFormat')
+		];
+
+		$opts['std_plus_years'] = [
+			'max'  => $this->fieldAttribute('std_plus_years', 'max'),
 		];
 		return $opts;
 	}
@@ -191,6 +244,18 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 			$json["eom_due_day$i"]      = $code->eom_due_day($i);
 			$json["eom_plus_months$i"]  = $code->eom_plus_months($i);
 		}
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_E; $i++) {
+			$json["order_percent$i"]     = $code->order_percent($i);
+			$json["std_disc_percent$i"]  = $code->std_disc_percent($i);
+			$json["std_disc_days$i"]  = $code->std_disc_days($i);
+			$json["std_disc_day$i"]  = $code->std_disc_day($i);
+			$json["std_disc_date$i"]  = $code->std_disc_date($i);
+			$json["std_due_days$i"]  = $code->std_due_days($i);
+			$json["std_due_day$i"]  = $code->std_due_day($i);
+			$json["std_plus_months$i"]  = $code->std_plus_months($i);
+			$json["std_due_date$i"]  = $code->std_due_date($i);
+			$json["std_plus_years$i"]  = $code->std_plus_years($i);
+		}
 		return $json;
 	}
 
@@ -219,9 +284,10 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$code->set_eom_thru_day(1, 99);
 
 		// DEBUG:
-		// $code->setMethod(self::METHOD_EOM);
-		// $code->setCode('paul');
-
+		if ($this->user->loginid == 'ron') {
+			// $code->setMethod(self::METHOD_EOM);
+			$code->setCode('tps');
+		}
 		return $code;
 	}
 
@@ -252,14 +318,13 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	 */
 	private function _inputUpdateBasic(WireInputData $values, ArTermsCode $code) {
 		$this->_inputUpdateMethod($values, $code);
-		$this->_inputUpdateFreightallow($values, $code);
+		
 		$this->_inputUpdateType($values, $code);
 		$this->_inputUpdateCcprefix($values, $code);
 		$this->_inputUpdateCountry($values, $code);
 		$this->_inputUpdateTermsgroup($values, $code);
 		$this->_inputUpdateExpiredate($values, $code);
 		$code->setArtmhold($values->yn('hold'));
-		
 		return [];
 	}
 
@@ -280,7 +345,8 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	}
 
 	/**
-	 * Update Terms Code Method
+	 * Update Terms Code Freight Allow
+	 * NOTE: for STD method, call this after updating the splits
 	 * @param  WireInputData $values
 	 * @param  ArTermsCode   $code
 	 * @return bool
@@ -291,11 +357,16 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 			return true;
 		}
 
-		$code->setFreightallow($values->yn('freightallow'));
-		
 		if ($code->method === self::METHOD_EOM) {
 			$code->setFreightallow('N');
+			return true;
 		}
+
+		if ($code->order_percent(1) != 100) {
+			$code->setFreightallow('N');
+			return true;
+		}
+		$code->setFreightallow($values->yn('freightallow'));
 		return true;
 	}
 
@@ -411,6 +482,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	 */
 	private function _inputUpdateMethodTerms(WireInputData $values, ArTermsCode $code) {
 		if ($code->method === self::METHOD_EOM) {
+			$this->_inputUpdateFreightallow($values, $code);
 			return $this->_inputUpdateTermsEom($values, $code);
 		}
 
@@ -418,6 +490,9 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		for ($i = 1; $i < self::NBR_SPLITS_METHOD_E; $i++) {
 			$code->empty_eom_split($i);
 		}
+		$this->_inputUpdateFreightallow($values, $code);
+		$this->_inputUpdateTermsStd($values, $code);
+		return [];
 	}
 
 	/**
@@ -467,5 +542,190 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 			$nextFromDay = $code->eom_thru_day($i) + 1;
 		}
 		return [];
+	}
+
+	/**
+	 * Update STD Splits fields
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return void
+	 */
+	private function _inputUpdateTermsStd(WireInputData $values, ArTermsCode $code) {
+		if ($code->method != self::METHOD_STD) {
+			return [];
+		}
+		$this->setStdFields($values, $code);
+		$this->sumUpOrderPercentsTo100($values, $code);
+		return [];
+	}
+
+	private function sumUpOrderPercentsTo100(WireInputData $values, ArTermsCode $code) {
+		$totalOrderPercent = 0;
+		$lastIndex = 1;
+
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_S; $i++) {
+			if ($totalOrderPercent >= 100) {
+				continue;
+			}
+			$percent = $code->order_percent($i);
+			if ($percent) {
+				$lastIndex = $i;
+			}
+			$totalOrderPercent += $percent;
+		}
+
+		// IF TOTAL ORDER PERCENT DOES NOT ADD UP TO 100 BEEF UP THE LAST INDEX 
+		if ($totalOrderPercent < 100) {
+			$percent = $code->order_percent($lastIndex);
+			$percentNeeded = 100 - $percent;
+			$code->set_order_percent($lastIndex, $percentNeeded);
+		}
+		return true;
+	}
+
+	/**
+	 * Set STD Method Fields
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return array
+	 */
+	private function setStdFields(WireInputData $values, ArTermsCode $code) {
+		$totalOrderPercent = 0;
+
+		$opts = [];
+		$opts['order_percent'] = [
+			'max'       => $this->fieldAttribute('order_percent', 'max'), 
+			'precision' => $this->fieldAttribute('order_percent', 'precision')
+		];
+
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_S; $i++) {
+			if ($totalOrderPercent >= $opts['order_percent']['max']) {
+				$code->empty_std_split($i);
+				continue;
+			}
+			// IF THIS SPLIT MAKES THE ORDER PERCENT OVER HUNDRED THEN MAKE THIS THE EXACT PERCENT
+			// NEEDED TO GET TO A 100
+			$subtotal     = $totalOrderPercent;
+			$orderPercent = $values->float("order_percent$i", $opts['order_percent']);
+			$percentNeededTo100 = 100 - $subtotal;
+
+			if ($orderPercent > $percentNeededTo100) {
+				$orderPercent = $percentNeededTo100;
+			}
+			$code->set_order_percent($i, $orderPercent);
+			$totalOrderPercent += $code->order_percent($i);
+			$this->setStdDiscountFieldsAtIndex($values, $code, $i);
+			$this->setStdDueFieldsAtIndex($values, $code, $i);
+		}
+		// exit;
+		return [];
+	}
+
+	/**
+	 * Set Discount Fields at Split Index
+	 * Fields: percent, days, day, date
+	 * NOTE: if days, day, date are all blank 
+	 * then the discount perceent will be removed for record integrity
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @param  int           $i       Index
+	 * @return bool
+	 */
+	private function setStdDiscountFieldsAtIndex(WireInputData $values, ArTermsCode $code, int $i) {
+		if ($code->method !== self::METHOD_STD) {
+			return false;
+		}
+		$opts = $this->getStdDiscountFieldInputOptions();
+		$code->empty_std_discount_fields($i);
+
+		$discPercent = $values->float("std_disc_percent$i", $opts['std_disc_percent']);
+		$code->set_std_disc_percent($i, $discPercent);
+
+		if (empty($discPercent)) {
+			$code->set_std_disc_percent($i, '');
+			return true;
+		}
+		
+		// DISCOUNT DAYS
+		$days = $values->int("std_disc_days$i" , $opts['std_disc_days']);
+
+		if ($days > 0) {
+			$code->set_std_disc_days($i, $days);
+			return true;
+		}
+
+		// DISCOUNT DAY OF MONTH
+		$day = $values->int("std_disc_day$i" , $opts['std_disc_day']);
+
+		if ($day > 0) {
+			$code->set_std_disc_day($i, $day);
+			return true;
+		}
+
+		// DISCOUNT DATE
+		$date = $values->date("std_disc_date$i", $opts['std_disc_date']['dateformat'], $opts['std_disc_date']);
+
+		// echo "std_disc_date$i : " . "format: ". $opts['std_disc_date']['dateformat'] . " - " . $date . '<br>';
+
+		if (empty($date)) {// VALUES HAVE BEEN INVALID SO FAR, So remove discount percent
+			$code->set_std_disc_percent($i, '');
+			return false;
+		}
+
+		$code->set_std_disc_date($i, $date);
+		return true;
+	}
+
+	/**
+	 * Set Due Fields at Split Index
+	 * FIELDS: days, day, plus months, date, plus years
+	 * NOTE: due days, day, date are all blank 
+	 * then the days is set to default for record integrity
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code 
+	 * @param  int           $i      Split Index
+	 * @return void
+	 */
+	private function setStdDueFieldsAtIndex(WireInputData $values, ArTermsCode $code, int $i) {
+		if ($code->method != self::METHOD_STD) {
+			return false;
+		}
+		$opts = $this->getStdDueFieldInputOptions();
+		$code->empty_std_due_fields($i);
+
+		// DUE DAYS
+		$days = $values->int("std_due_days$i" , $opts['std_due_days']);
+
+		if ($days > 0) {
+			$code->set_std_due_days($i, $days);
+			return true;
+		}
+
+		// DUE DAY
+		$day = $values->int("std_due_day$i" , $opts['std_due_day']);
+
+		if ($day > 0) {
+			$code->set_std_due_day($i, $day);
+			$months = $values->int("std_plus_months$i" , $opts['std_plus_months']);
+			if ($months > 0) {
+				$code->set_std_plus_months($i, $months);
+			}
+			return true;
+		}
+
+		// DUE DATE
+		$date = $values->date("std_due_date$i", $opts['std_due_date']['dateformat'], $opts['std_due_date']);
+
+		if (empty($date)) { // VALUES HAVE BEEN INVALID SO FAR, SET DAYS TO DEFAULT FOR RECORD INTEGRITY
+			$code->set_std_due_days($i, $opts['std_due_days']['max']);
+			return false;
+		}
+		$code->set_std_due_date($i, $date);
+
+		$years = $values->int("std_plus_years$i" , $opts['std_plus_years']);
+		if ($years) {
+			$code->set_std_plus_years($i, $years);
+		}
+		return true;
 	}
 }
