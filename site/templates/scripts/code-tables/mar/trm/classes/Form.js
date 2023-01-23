@@ -153,9 +153,7 @@ class TrmForm extends CodeFormBase {
 			nextSplit.inputs.std_disc_percent,
 			nextSplit.inputs.std_due_days,
 			nextSplit.inputs.std_due_day,
-			nextSplit.inputs.std_plus_months,
 			nextSplit.inputs.std_due_date,
-			nextSplit.inputs.std_plus_years,
 		]
 
 		if (value == 0) {
@@ -400,6 +398,11 @@ class TrmForm extends CodeFormBase {
 			parentGroup.find('input.std_due_date'),
 		];
 
+		// if (days != 0) { // Add these to disable
+		// 	inputs.push(parentGroup.find('input.std_plus_months'),); 
+		// 	inputs.push(parentGroup.find('input.std_plus_years')); 
+		// }
+
 		let enableInputs = days == 0;
 		this.enableDisableInputs(inputs, enableInputs);
 	}
@@ -434,6 +437,7 @@ class TrmForm extends CodeFormBase {
 		}
 		let day = input.val() == '' ? 0 : parseInt(input.val());
 		let parentGroup = input.closest('.std-due');
+
 		let inputs = [
 			parentGroup.find('input.std_due_days'),
 			parentGroup.find('input.std_due_date'),
