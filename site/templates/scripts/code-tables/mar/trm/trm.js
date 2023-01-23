@@ -613,6 +613,11 @@ $(function() {
 
 	function validateStdDueFieldGroup(element) {
 		let parent = $(element).closest('.std-due');
+
+		if (parent.closest('.std-split').find('input.order_percent').val() == '') {
+			return true;
+		}
+
 		let inputs = [parent.find('.std_due_days'), parent.find('.std_due_day'), parent.find('.std_due_date')];
 
 		let valid = false;
