@@ -197,6 +197,15 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		/** @var ArTermsCode */
 		$code = parent::code($id);
 
+		if (empty($code->eom_from_day(1))) {
+			$code->set_eom_from_day(1, 1);
+			$code->set_eom_thru_day(1, 99);
+		}
+
+		if ($code->order_percent(1) == 0) {
+			$code->set_order_percent(1, 100);
+		}
+
 		if ($code->method == self::METHOD_EOM) {
 			for ($i = 2; $i <= self::NBR_SPLITS_METHOD_E; $i++) {
 				$lastI = $i - 1;
