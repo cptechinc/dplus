@@ -218,6 +218,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 					}	
 				}
 			}
+			
 		}
 		return $code;
 	}
