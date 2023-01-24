@@ -287,7 +287,6 @@ class TrmForm extends CodeFormBase {
 	 * @returns {bool}
 	 */
 	clearSplitInputs(input) {
-		console.log(input);
 		if (this.isMethodStd() === false || input.hasClass('order_percent') === false) {
 			return false;
 		}
@@ -313,13 +312,29 @@ class TrmForm extends CodeFormBase {
 		}
 		let parent  = input.closest('.std-discount');
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
-		let inputs = Object.values(this.getStdDiscFieldsByStdDiscGroup(parent));
+
+		let inputs = this.getStdDiscFieldsByStdDiscGroup(parent);
+
 
 		if (percent == 0) {
-			this.enableDisableInputs(inputs, false);
+			this.enableDisableInputs(Object.values(inputs), false);
 			return true;
 		}
-		this.enableDisableInputs(inputs, true);
+
+		this.enableDisableInputs(Object.values(inputs), false);
+		let enableAll = true;
+
+		Object.keys(inputs).forEach(name => {
+			if (inputs[name].val() != 0) {
+				this.setReadonly(inputs[name], false);
+				this.enableTabindex(inputs[name]);
+				enableAll = false;
+			}
+		});
+		if (enableAll === false) {
+			return true;
+		}
+		this.enableDisableInputs(Object.values(inputs), true);
 	}
 
 	/**
