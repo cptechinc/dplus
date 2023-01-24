@@ -271,7 +271,6 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		/** @var ArTermsCode */
 		$code = parent::new($id);
 		$code->setMethod($this->fieldAttribute('method', 'default'));
-
 		$code->setType($this->fieldAttribute('type', 'default'));
 		$code->setArtmhold($this->fieldAttribute('hold', 'default'));
 		$code->setExpiredate($this->fieldAttribute('expiredate', 'default'));
@@ -279,15 +278,8 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		$code->setCcprefix($this->fieldAttribute('ccprefix', 'default'));
 		$code->setFreightallow($this->fieldAttribute('freightallow', 'default'));
 		$code->set_order_percent(1, 100.00);
-
 		$code->set_eom_from_day(1, 1);
 		$code->set_eom_thru_day(1, 99);
-
-		// DEBUG:
-		if ($this->user->loginid == 'ron') {
-			// $code->setMethod(self::METHOD_EOM);
-			$code->setCode('tps');
-		}
 		return $code;
 	}
 
