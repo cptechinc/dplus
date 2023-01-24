@@ -78,7 +78,12 @@ $(function() {
 			let otherInput = formEom.find('input[tabindex='+i+']');
 
 			if (otherInput.length == 0) {
-				continue;
+				// Check negative tabindexes
+				otherInput = formEom.find('input[tabindex="-'+i+'"]');
+
+				if (otherInput.length == 0) {
+					continue;
+				}
 			}
 
 			if (validator.element('#' + otherInput.attr('id')) === false) {
@@ -351,7 +356,7 @@ $(function() {
 	});
 
 	$("body").on("keyup", ".std_disc_days", function(e) {
-		if (formTrm.isMethodStd() === false) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
 		formTrm.enableDisableStdDiscFieldsFromDays($(this));
@@ -370,7 +375,7 @@ $(function() {
 	});
 
 	$("body").on("keyup", ".std_disc_day", function(e) {
-		if (formTrm.isMethodStd() === false) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
 		formTrm.enableDisableStdDiscFieldsFromDay($(this));
@@ -396,7 +401,9 @@ $(function() {
 		let input  = $(this);
 		let parentGroup = input.closest('.std-discount');
 
-		if (input.val() == '') {
+		input.val(input.val().trim());
+
+		if (input.val().trim() == '') {
 			formTrm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
 		}
 
@@ -417,7 +424,7 @@ $(function() {
 	});
 
 	$("body").on("keyup", ".std_due_days", function(e) {
-		if (formTrm.isMethodStd() === false) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
 
@@ -440,7 +447,7 @@ $(function() {
 	});
 
 	$("body").on("keyup", ".std_due_day", function(e) {
-		if (formTrm.isMethodStd() === false) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
 
@@ -466,7 +473,7 @@ $(function() {
 	});
 
 	$("body").on("keyup", ".std_due_date", function(e) {
-		if (formTrm.isMethodStd() === false) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
 
@@ -522,7 +529,7 @@ $(function() {
 	});
 
 	$("body").on("keyup", ".eom_disc_percent", function(e) {
-		if (formTrm.isMethodEom() === false) {
+		if (formTrm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
 
