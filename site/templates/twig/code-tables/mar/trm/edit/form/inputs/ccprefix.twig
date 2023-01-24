@@ -1,5 +1,6 @@
 {% set readonly = code.type != constant('TYPE_CREDITCARD', manager) %}
-{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+{% set tabindexInput = readonly ? '-' ~ tabindex : tabindex %}
+{% set tabindexButton = readonly ? '-' ~ tabindex - 0.5 : tabindex - 0.5 %}
 
 {% include 'util/bootstrap/form/input-group.twig' with {
 	'inputgroup': {
@@ -8,14 +9,12 @@
 		'input': {
 			'name': 'ccprefix',
 			'value': code.ccprefix,
-			'addclasses': [''],
 			'attributes': {
-				'placeholder': '',
-				'aria-label':  'Credit Card Prefix',
+				'aria-label': 'Credit Card Prefix',
 				'data-jqv': 'true',
 				'maxlength': 1,
 				'readonly': readonly,
-				'tabindex':  tabindex,
+				'tabindex':  tabindexInput,
 			}
 		},
 		'button': {
@@ -28,7 +27,7 @@
 				'data-lookupurl': page.searchLookupUrl('mar/crcd/'),
 				'data-input': '#ccprefix',
 				'disabled': readonly,
-				'tabindex': readonly ? '-1' : ''
+				'tabindex': tabindexButton
 			}
 		}
 	}
