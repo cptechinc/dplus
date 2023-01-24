@@ -11,7 +11,7 @@ class Mar extends Lookup {
 	 */
 	public static function creditCardCodes($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		self::pw('page')->headline = "Tax Codes";
+		self::pw('page')->headline = "Credit Card Codes";
 		$filter = new Filters\Mar\ArCreditCardCode();
 		return self::filterResults($filter, $data);
 	}
