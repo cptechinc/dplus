@@ -484,15 +484,19 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 	private function _inputUpdateMethodTerms(WireInputData $values, ArTermsCode $code) {
 		if ($code->method === self::METHOD_EOM) {
 			$this->_inputUpdateFreightallow($values, $code);
+
+			for ($i = 1; $i <= self::NBR_SPLITS_METHOD_S; $i++) {
+				$code->empty_std_split($i);
+			}
 			return $this->_inputUpdateTermsEom($values, $code);
 		}
 
 		// Empty out EOM splits fields
-		for ($i = 1; $i < self::NBR_SPLITS_METHOD_E; $i++) {
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_E; $i++) {
 			$code->empty_eom_split($i);
 		}
-		$this->_inputUpdateFreightallow($values, $code);
 		$this->_inputUpdateTermsStd($values, $code);
+		$this->_inputUpdateFreightallow($values, $code);
 		return [];
 	}
 
