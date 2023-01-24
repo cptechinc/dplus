@@ -4,6 +4,7 @@
 
 {% set tabindex = startindex + (x * 10) + 0 %}
 {% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+{% set readonly = x == 1 ? false : readonly %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
