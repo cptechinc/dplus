@@ -564,6 +564,12 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		return [];
 	}
 
+	/**
+	 * Ensure that Order Percent total adds up to 100
+	 * @param  WireInputData $values
+	 * @param  ArTermsCode   $code
+	 * @return bool
+	 */
 	private function sumUpOrderPercentsTo100(WireInputData $values, ArTermsCode $code) {
 		$totalOrderPercent = 0;
 		$lastIndex = 1;
@@ -648,6 +654,9 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 
 		if (empty($discPercent)) {
 			$code->set_std_disc_percent($i, '');
+			$code->set_std_disc_days($i, '');
+			$code->set_std_disc_day($i, '');
+			$code->set_std_disc_date($i, '');
 			return true;
 		}
 		
