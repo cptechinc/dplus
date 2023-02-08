@@ -652,12 +652,13 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 
 		$discPercent = $values->float("std_disc_percent$i", $opts['std_disc_percent']);
 		$code->set_std_disc_percent($i, $discPercent);
+		// EMPTY DISCOUNT FIELDS REGARDLESS
+		$code->set_std_disc_days($i, '');
+		$code->set_std_disc_day($i, '');
+		$code->set_std_disc_date($i, '');
 
 		if (empty($discPercent)) {
 			$code->set_std_disc_percent($i, '');
-			$code->set_std_disc_days($i, '');
-			$code->set_std_disc_day($i, '');
-			$code->set_std_disc_date($i, '');
 			return true;
 		}
 		

@@ -1,7 +1,7 @@
 $(function() {
 	let formCode = CodeFormBase.getInstance();
 	let formTrm  = TrmForm.getInstance();
-	let alert    = CodeAlertsBase.getInstance();
+	let alert    = TrmAlerts.getInstance();
 	let server   = TrmRequests.getInstance();
 	let dateRegexes = DateRegexes.getInstance();
 
@@ -100,6 +100,10 @@ $(function() {
 		let validator  = form.validate();
 		let formStd    = form.find('#std-splits');
 		let firstInput = formStd.find('input[name=order_percent1]');
+
+		// if (validator.element('#'+input.attr('id')) === false) {
+		// 	return true;
+		// }
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
 			return true;
@@ -309,21 +313,54 @@ $(function() {
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		input.val(percent.toFixed(formTrm.config.fields.order_percent.precision));
 		let totalPercent = formTrm.sumUpStdOrderPercents();
-		let formStd = input.closest('#std-splits');
-		formStd.find('.order-percent-total').text(totalPercent);
+
+		if (totalPercent > 100) {
+			alert.orderPercentIsOver100(function() {
+				input.val(input.attr('data-lastvalue'));
+				input.closest('form').validate().element('#'+input.attr('id'));
+				input.focus();
+				return true;
+			});
+			return true;
+		}
 
 		if (input.val() == 0) {
 			input.val('');
 			formTrm.shiftSplitValuesUp(input);
-			let allInputs = formTrm.getAllStdInputs();
+			let allInputs = formTrm.getAllStdInputs(true);
+			// let prevInput = allInputs.splits[input.closest('.std-split').data('index') - 1].inputs.order_percent;
+			// prevInput.val(prevInput.val() + percent.toFixed(formTrm.config.fields.order_percent.precision));
 
 			if (input.closest('.std-split').data('index') > allInputs.lastindex) {
 				formTrm.clearSplitInputs(input);
 			}
 		}
+		formTrm.enableDisableThisStdSplitInputs(input);
 		formTrm.enableDisableNextStdSplit(input);
 		formTrm.setupNextStdSplit(input);
-		input.attr('data-lastvalue', percent.toFixed(formTrm.config.fields.order_percent.precision));
+
+		if (input.val() == '') {
+			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').change();
+			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').focus();
+		}
+	});
+
+	$("body").on("change", "input[name=order_percent1]", function(e) {
+		if (formTrm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		
+		if (input.val() == 100) {
+			formTrm.setReadonly(formTrm.inputs.fields.freightallow, false);
+			formTrm.enableTabindex(formTrm.inputs.fields.freightallow);
+			formTrm.setDisabled(formTrm.inputs.fields.freightallow, false);
+			return true;
+		}
+		formTrm.setReadonly(formTrm.inputs.fields.freightallow, true);
+		formTrm.disableTabindex(formTrm.inputs.fields.freightallow);
+		formTrm.setDisabled(formTrm.inputs.fields.freightallow, true);
 	});
 
 	$("body").on("keyup", ".std_disc_percent", function(e) {
@@ -393,6 +430,18 @@ $(function() {
 		formTrm.enableDisableStdDiscFieldsFromDay(input);
 	});
 
+	$("body").on("keyup", ".std_disc_date", function(e) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+
+		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
+			console.log(input.closest('form').validate().element('#' + input.attr('id')));
+		}
+	});
+
 	$("body").on("change", ".std_disc_date", function(e) {
 		if (formTrm.isMethodStd() === false) {
 			return false;
@@ -429,6 +478,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDays(input);
 	});
 	
@@ -438,7 +488,8 @@ $(function() {
 		}
 
 		let input  = $(this);
-		let days = input.val() == '' ? 0 : parseInt(input.val());
+		input.val(input.val().trim());
+		let days = input.val() == '' ? 0 : parseInt(input.val().trim());
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDays(input);
 
 		if (days == 0) {
@@ -462,7 +513,7 @@ $(function() {
 		}
 
 		let input  = $(this);
-		let day = input.val() == '' ? 0 : parseInt(input.val());
+		let day = input.val().trim() == '' ? 0 : parseInt(input.val().trim());
 
 		if (day == 0) {
 			input.val('');
@@ -478,6 +529,10 @@ $(function() {
 		}
 
 		let input  = $(this);
+
+		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
+			input.closest('form').validate().element('#' + input.attr('id'))
+		}
 
 		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
@@ -558,7 +613,9 @@ $(function() {
 		formTrm.enableDisableNextEomSplit(input);
 		formTrm.setupNextEomSplit(input);
 
-		if (input.val() != '99' && parent.data('index') != 1) {
+		let nextSplit = $('.eom-split[data-index=' + (parent.data('index') + 1) + ']');
+
+		if (nextSplit.length == 0 || nextSplit.find('input.eom_thru_day').val() != '') {
 			return true;
 		}
 
@@ -566,13 +623,17 @@ $(function() {
 
 		for (let i = (parent.data('index') + 1); i <= codetable.config.methods.eom.splitCount; i++) {
 			let split = $('.eom-split[data-index=' + i + ']');
+			let inputThruDay = split.find('input.eom_thru_day');
 
 			split.find('input').each(function() {
 				let sinput = $(this);
-				sinput.val('');
-				validator.element('#' + sinput.attr('name'));
-				formTrm.disableTabindex(sinput);
-				formTrm.setReadonly(sinput, true);
+				validator.element('#' + sinput.attr('id'));
+
+				if (inputThruDay.val() == '') {
+					sinput.val('');
+					formTrm.disableTabindex(sinput);
+					formTrm.setReadonly(sinput, true);
+				}
 			});
 		}
 	});
@@ -593,11 +654,11 @@ $(function() {
 		return parseInt(expiredate.format(momentJsFormats['timestamp'])) > parseInt(minDate.format(momentJsFormats['timestamp']));
 	}
 
-	function validateDateMMYYSlash(value) {
+	function validateDateMMDDSlash(value) {
 		return dateRegexes.regexes['mm/dd'].test(value);
 	}
 
-	function  validatestdOrderPercentTotal() {
+	function validatestdOrderPercentTotal() {
 		return formTrm.sumUpStdOrderPercents() == 100;
 	}
 
@@ -640,12 +701,15 @@ $(function() {
 		return this.optional(element) || validateExpiredate();
 	}, "Date must be a valid, future date MM/DD/YYYY");
 
-	jQuery.validator.addMethod("dateMMYYSlash", function(value, element) {
-		return this.optional(element) || validateDateMMYYSlash(value);
-	}, "Date must be a valid, date MM/YY");
+	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
+		var isFocused = element == document.activeElement;
+		return this.optional(element) || validateDateMMDDSlash(value);
+	}, "Date must be a valid, date MM/DD");
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
-		return this.optional(element) || validatestdOrderPercentTotal();
+		var percentTotal = formTrm.sumUpStdOrderPercents();
+		var isFocused = element == document.activeElement;
+		return this.optional(element) || value == 0 || (isFocused && percentTotal <= 100) || validatestdOrderPercentTotal();
 	}, "Order Percent Must add up to 100");
 
 	jQuery.validator.addMethod("stdDiscFieldGroup", function(value, element) {
@@ -756,7 +820,7 @@ $(function() {
 
 		input.rules("add", {
 			required: false,
-			dateMMYYSlash: true,
+			dateMMDDSlash: true,
 			stdDiscFieldGroup: true,
 		});
 	});
@@ -766,7 +830,7 @@ $(function() {
 
 		input.rules("add", {
 			required: false,
-			dateMMYYSlash: true,
+			dateMMDDSlash: true,
 			stdDueFieldGroup: true,
 		});
 	});

@@ -358,7 +358,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	}
 
 	/**
-	 * Return relative Path to Request JS class File
+	 * Return relative Path to Requests JS class File
 	 * @return string
 	 */
 	protected static function requestClassJsPath() {
@@ -367,12 +367,21 @@ abstract class AbstractCodeTableController extends AbstractController {
 	}
 
 	/**
-	 * Return relative Path to Request JS class File
+	 * Return relative Path to Form JS class File
 	 * @return string
 	 */
 	protected static function formClassJsPath() {
 		$jsPath = static::getRelativeJsPath();
 		return $jsPath . 'classes/Form.js';
+	}
+
+	/**
+	 * Return relative Path to Alerts JS class File
+	 * @return string
+	 */
+	protected static function alertsClassJsPath() {
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . 'classes/Alerts.js';
 	}
 
 	/**
@@ -408,6 +417,12 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 		if (file_exists(self::pw('config')->paths->templates . $formJsPath)) {
 			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($formJsPath));
+		}
+
+		$alertsJsPath = static::alertsClassJsPath();
+
+		if (file_exists(self::pw('config')->paths->templates . $alertsJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($alertsJsPath));
 		}
 	}
 
