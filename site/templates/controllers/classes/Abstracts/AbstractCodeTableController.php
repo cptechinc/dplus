@@ -12,8 +12,6 @@ use ProcessWire\WireData;
 use Dplus\Filters;
 // Dplus Codes
 use Dplus\Codes;
-// App
-use App\Urls\PurlPaginator;
 // Controllers
 use Controllers\AbstractController;
 
@@ -145,7 +143,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 		$url = new Purl(static::_url());
 		$url->query->set('focus', $focus);
-		$url = PurlPaginator::paginate($url, strtolower(static::getClassName()), $pagenbr);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, strtolower(static::getClassName()), $pagenbr);
 		return $url->getUrl();
 	}
 
@@ -233,7 +231,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 ============================================================= */
 	/**
 	 * Return CodeTable Manager
-	 * @return Codes\AbstractCodeTable
+	 * @return Codes\AbstractCodeTableEditable 
 	 */
 	abstract public static function getCodeTable();
 
