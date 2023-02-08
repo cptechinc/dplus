@@ -7,6 +7,10 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Controllers\\AbstractController' => $baseDir . '/classes/AbstractController.php',
+    'Controllers\\Abstracts\\AbstractCodeTableController' => $baseDir . '/classes/Abstracts/AbstractCodeTableController.php',
+    'Controllers\\Abstracts\\AbstractCodeTableOptmController' => $baseDir . '/classes/Abstracts/AbstractCodeTableOptmController.php',
+    'Controllers\\Abstracts\\AbstractMenuController' => $baseDir . '/classes/Abstracts/AbstractMenuController.php',
     'Controllers\\Ajax\\Json\\AbstractJsonController' => $baseDir . '/classes/ajax/json/AbstractJsonController.php',
     'Controllers\\Ajax\\Json\\ItemLookup' => $baseDir . '/classes/ajax/json/ItemLookup.php',
     'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',

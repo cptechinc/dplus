@@ -8,6 +8,10 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
 {
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Controllers\\AbstractController' => __DIR__ . '/../..' . '/classes/AbstractController.php',
+        'Controllers\\Abstracts\\AbstractCodeTableController' => __DIR__ . '/../..' . '/classes/Abstracts/AbstractCodeTableController.php',
+        'Controllers\\Abstracts\\AbstractCodeTableOptmController' => __DIR__ . '/../..' . '/classes/Abstracts/AbstractCodeTableOptmController.php',
+        'Controllers\\Abstracts\\AbstractMenuController' => __DIR__ . '/../..' . '/classes/Abstracts/AbstractMenuController.php',
         'Controllers\\Ajax\\Json\\AbstractJsonController' => __DIR__ . '/../..' . '/classes/ajax/json/AbstractJsonController.php',
         'Controllers\\Ajax\\Json\\ItemLookup' => __DIR__ . '/../..' . '/classes/ajax/json/ItemLookup.php',
         'Controllers\\Ajax\\Json\\Map' => __DIR__ . '/../..' . '/classes/ajax/json/Map.php',
