@@ -117,6 +117,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		$invalidfieldsSA = $this->_inputUpdateSales($values, $code);
 		$invalidfieldsPE = $this->_inputUpdatePermissions($values, $code);
 		$invalidfieldsEM = $this->_inputUpdateEmail($values, $code);
+		$invalidfieldsNA = $this->_inputUpdateName($values, $code);
 		$invalidfieldsCY = $this->_inputUpdateCycle($values, $code);
 
 		$invalidfields = array_merge($invalidfields, $invalidfieldsVA, $invalidfieldsSA, $invalidfieldsPE, $invalidfieldsEM, $invalidfieldsCY);
@@ -193,6 +194,17 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	private function _inputUpdatePermissions(WireInputData $values, Salesperson $code) {
 		$code->setManager($values->yn('manager'));
 		$code->setRestricted($values->yn('restricted'));
+		return [];
+	}
+
+	/**
+	 * Set Email
+	 * @param WireInputData $values
+	 * @param Salesperson   $code
+	 * @return array
+	 */
+	private function _inputUpdateName(WireInputData $values, Salesperson $code) {
+		$code->setName($values->text('name', ['maxLength' => $this->fieldAttribute('name', 'maxlength')]));
 		return [];
 	}
 
