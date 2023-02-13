@@ -23,7 +23,7 @@
 		 * Otherwise if not locked, create lock
 		 */
 		 if (!$cio->lockrecord($iiuser->userid)) {
-			$msg = "IIO $iiuser->userid is being locked by " . $cio->recordlocker->get_locked_user($iiuser->userid);
+			$msg = "CIO $iiuser->userid is being locked by " . $cio->recordlocker->get_locked_user($iiuser->userid);
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "IIO $iiuser->userid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			$page->body .= $html->div('class=mb-3');
 		}
