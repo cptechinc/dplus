@@ -1,21 +1,19 @@
-<?php namespace Dplus\UserOptions\Mvi;
-// Purl URI Library
-use Purl\Url;
+<?php namespace Dplus\UserOptions;
 // Propel Classes
-use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
+	// use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as UserRecord;
-use Propel\Runtime\Collection\ObjectCollection;
+	// use Propel\Runtime\Collection\ObjectCollection;
 // Dplus Models
 use OptionsViQuery, OptionsVi;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+	// use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Record Locker
-use Dplus\RecordLocker\UserFunction as FunctionLocker;
+	// use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus User Options
-use Dplus\UserOptions\Base;
 use Dplus\UserOptions\Response;
 
-class Vio extends Base {
+class Vio extends AbstractManager {
+	const NAME = 'vio';
 	const MODEL              = 'OptionsVi';
 	const MODEL_KEY          = 'userid';
 	const MODEL_TABLE        = 'vi_options';

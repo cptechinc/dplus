@@ -1,0 +1,28 @@
+<form action="{{ input.url() }}" method="POST" id="user-form" data-userid="{{ u.userid }}">
+	<input type="hidden" name="action" value="update">
+	{% block inputs %}
+
+	{% endblock %}
+	<hr>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if manager.recordlocker.userHasLocked(u.userid) or u.isNew() %}
+			<button type="submit" class="btn btn-success form_button"=>
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if code.isNew() == false %}
+				<a href="{{page.userDeleteUrl(u.userid) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{page.userListUrl(u.userid) }}" class="btn btn-warning pull-right">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

@@ -1,6 +1,4 @@
 <?php namespace Dplus\UserOptions;
-// Purl URI Library
-use Purl\Url;
 // Propel Classes
 use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as UserRecord;
@@ -11,10 +9,12 @@ use ProcessWire\WireInput;
 use ProcessWire\User;
 // Dplus Databases
 use Dplus\Databases\Connectors\Dplus as DbDplus;
+use Dplus\Msa\Logm;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
-abstract class Base extends WireData {
+abstract class AbstractManager extends WireData {
+	const NAME = '';
 	const MODEL              = '';
 	const MODEL_KEY          = '';
 	const MODEL_TABLE        = '';
@@ -27,6 +27,7 @@ abstract class Base extends WireData {
 	const FIELD_ATTRIBUTES = [
 		'userid'        => ['type' => 'text', 'maxlength' => 6],
 	];
+	const FILTERABLE_FIELDS = ['userid', 'name'];
 
 	const SCREENS = [];
 
@@ -74,6 +75,32 @@ abstract class Base extends WireData {
 			return false;
 		}
 		return static::FIELD_ATTRIBUTES[$field][$attr];
+	}
+
+	/**
+	 * Return List of filterable fields
+	 * @return array
+	 */
+	public function filterableFields() {
+		return static::FILTERABLE_FIELDS;
+	}
+
+	/**
+	 * Return Label for field
+	 * @param  string $field
+	 * @return string
+	 */
+	public function fieldLabel($field) {
+		$label = $this->fieldAttribute($field, 'label');
+
+		if ($label !== false) {
+			return $label;
+		}
+
+		if (in_array($field, ['code', 'description'])) {
+			return self::FIELD_ATTRIBUTES[$field]['label'];
+		}
+		return $field;
 	}
 
 /* =============================================================
@@ -125,6 +152,16 @@ abstract class Base extends WireData {
 	public function users() {
 		$q = $this->query();
 		return $q->find();
+	}
+	
+	/**
+	 * Return list of all User IDs
+	 * @return array
+	 */
+	public function userids() {
+		$q = $this->query();
+		$q->select($this->modelClassName()::aliasproperty('userid'));
+		return $q->find()->toArray();
 	}
 
 	/**
@@ -203,6 +240,15 @@ abstract class Base extends WireData {
 		return $exists ? $permissions->isTrue($option) : true;
 	}
 
+	public function userJson(UserRecord $user) {
+		$json = ['userid' => $user->userid];
+
+		foreach (static::SCREENS as $screen) {
+			$json[$screen] = $user->$screen;
+		}
+		return $json;
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */
@@ -258,7 +304,6 @@ abstract class Base extends WireData {
 				$this->inputDelete($input);
 				break;
 			case 'update':
-			case 'edit':
 				$this->inputUpdate($input);
 				break;
 		}
@@ -272,10 +317,10 @@ abstract class Base extends WireData {
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$user   = $this->userOrNew($values->text('userID'));
+		$user   = $this->userOrNew($values->string('userID'));
 
 		if ($user->isNew() === false && $this->lockrecord($user) === false) {
-			$message = "User ($userID) was not saved, it is locked by " . $this->recordlocker->getLockingUser($userID);
+			$message = "User ($user->userid) was not saved, it is locked by " . $this->recordlocker->getLockingUser($user->userid);
 			$this->setResponse(Response::responseError($message));
 			return false;
 		}
@@ -302,7 +347,7 @@ abstract class Base extends WireData {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$userID = $values->text('userID');
+		$userID = $values->string('userID');
 
 		if ($this->exists($userID) === false) {
 			return true;
@@ -336,6 +381,7 @@ abstract class Base extends WireData {
 
 		$response = new Response();
 		$response->setUserid($options->userid);
+		$response->setKey($options->userid);
 
 		if ($saved) {
 			$response->setSuccess(true);
@@ -434,5 +480,17 @@ abstract class Base extends WireData {
 			$this->recordlocker->lock($key);
 		}
 		return $this->recordlocker->userHasLocked($key);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return User's name
+	 * @param  string $userID  User ID
+	 * @return string
+	 */
+	public function logmUserName($userID) {
+		return Logm::getInstance()->name($userID);
 	}
 }

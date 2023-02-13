@@ -21,9 +21,10 @@ class ComposerStaticInit37de5f752b1d696af8edbefaecd69430
     );
 
     public static $classMap = array (
-        'Dplus\\UserOptions\\Base' => __DIR__ . '/../..' . '/src/Base.php',
-        'Dplus\\UserOptions\\Mvi\\Vio' => __DIR__ . '/../..' . '/src/mvi/Vio.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Dplus\\UserOptions\\AbstractManager' => __DIR__ . '/../..' . '/src/AbstractManager.php',
         'Dplus\\UserOptions\\Response' => __DIR__ . '/../..' . '/src/Response.php',
+        'Dplus\\UserOptions\\Vio' => __DIR__ . '/../..' . '/src/Vio.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

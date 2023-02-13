@@ -1,0 +1,32 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+{% set response = manager.getResponse() %}
+
+{% set values = input.get %}
+{% set segments = input.urlSegments() %}
+{% set lastsegment = segments[segments|length] %}
+
+{% block header %}
+	<div class="row">
+		<div class="col-sm-6 mb-3 d-print-none">
+			<a href="{{ page.menuUrl() }}" class="btn btn-primary">
+				<i class="fa fa-undo" aria-hidden="true"></i> Back <span class="d-none d-sm-inline">to {{ page.menuTitle() }}</span>
+			</a>
+		</div>
+		<div class="col-sm-6 mb-3">
+			{% block search %}
+				{% include 'user-options/list/search-filter.twig' %}
+			{% endblock %}
+		</div>
+	</div>
+{% endblock %}
+
+<div class="mb-3">
+	{% include 'user-options/list/list.twig' %}
+</div>
+
+{% include 'util/paginator/propel.twig' with {'pager': users} %}

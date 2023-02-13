@@ -730,7 +730,7 @@ $(function() {
 				error.insertAfter(element);
 				return true;
 			}
-			if (element.closest('.input--group-parent').length) {
+			if (element.closest('.input-group-parent').length) {
 				console.log(error);
 				error.appendTo(element.closest('.input-group-parent'));
 				return true;

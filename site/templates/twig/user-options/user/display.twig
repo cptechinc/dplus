@@ -1,0 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\UserOptions\AbstractManager
+#}
+
+{% include 'user-options/user/' ~ constant('NAME', manager) ~ '/form.twig' %}
+
+

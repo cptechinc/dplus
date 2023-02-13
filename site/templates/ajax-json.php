@@ -331,6 +331,16 @@
 				]
 			]
 		],
+		'mvi' => [
+			'vio' => [
+				['GET', 'user/', Json\Mvi::class, 'getVioUser'],
+			],
+			'validate' => [
+				'vio' => [
+					['GET', 'userid/', Json\Mvi::class, 'validateVioUserid'],
+				],
+			],
+		],
 		'util' => [
 			'recordlocker' => [
 				['GET', 'check', Json\Util::class, 'recordLockerUserCanLock'],
