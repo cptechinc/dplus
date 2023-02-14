@@ -427,10 +427,13 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateIwhmCode($data) {
-		$fields = ['id|string'];
+		$fields = ['id|string', 'allowAll|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		if (empty($data->id) === false) {
 			$data->code = $data->id;
+		}
+		if ($data->code == '**' && $data->allowAll === true) {
+			return true;
 		}
 
 		$table = Codes\Min\Iwhm::getInstance();
