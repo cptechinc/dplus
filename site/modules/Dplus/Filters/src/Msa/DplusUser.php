@@ -29,7 +29,16 @@ class DplusUser extends CodeFilter {
 /* =============================================================
 	2. Base Filter Functions
 ============================================================= */
-
+	/**
+	 * Filter query by user ID
+	 * @param  string       $id          User ID
+	 * @param  string|null  $comparison
+	 * @return void
+	 */
+	public function userid($id, $comparison = null) {
+		$this->query->filterByUserid($id, $comparison);
+	}
+	
 /* =============================================================
 	3. Input Filter Functions
 ============================================================= */
