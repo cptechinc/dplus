@@ -6,11 +6,12 @@ use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
 use ProcessWire\WireData;
 use ProcessWire\WireInput;
+use ProcessWire\WireInputData;
 use ProcessWire\User;
-// Dplus Databases
+// Dplus
+use Dplus\Codes\Min\Iwhm;
 use Dplus\Databases\Connectors\Dplus as DbDplus;
 use Dplus\Msa\Logm;
-// Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
 abstract class AbstractManager extends WireData {
@@ -24,6 +25,7 @@ abstract class AbstractManager extends WireData {
 	const RECORDLOCKER_FUNCTION = '';
 	const DPLUS_TABLE           = '';
 	const USER_DEFAULT = 'system';
+	const WHSEID_ALL   = '**';
 	const FIELD_ATTRIBUTES = [
 		'userid'        => ['type' => 'text', 'maxlength' => 6],
 	];
@@ -265,6 +267,12 @@ abstract class AbstractManager extends WireData {
 		if (strlen($userID) && $userID != 'new') {
 			$r->setUserid($userID);
 		}
+		foreach (array_keys(static::FIELD_ATTRIBUTES) as $field) {
+			if ($this->fieldAttribute($field, 'default') === false) {
+				continue;
+			}
+			$r->set($field, $this->fieldAttribute($field, 'default'));
+		}
 		if ($userID != static::USER_DEFAULT) {
 			$this->copyOptions(static::USER_DEFAULT, $r);
 		}
@@ -325,11 +333,7 @@ abstract class AbstractManager extends WireData {
 			return false;
 		}
 
-		foreach (static::SCREENS as $key) {
-			$setScreen = "set" . ucfirst($key);
-			$user->$setScreen($values->yn($key));
-		}
-
+		$this->_inputUpdate($user, $values);
 		$user->setDate(date('Ymd'));
 		$user->setTime(date('His'));
 		$user->setDummy('P');
@@ -337,6 +341,104 @@ abstract class AbstractManager extends WireData {
 		$response = $this->saveAndRespond($user);
 		$this->setResponse($response);
 		return $response->hasSuccess();
+	}
+
+	/**
+	 * Update Record fields
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function _inputUpdate(UserRecord $user, WireInputData $values) {
+		$this->setUserScreensFromInputData($user, $values);
+		$this->setUserScreensWhse($user, $values);
+		$this->setUserScreensDetail($user, $values);
+		$this->setUserScreensDate($user, $values);
+	}
+
+	/**
+	 * Set User Screen Access
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensFromInputData(UserRecord $user, WireInputData $values) {
+		foreach (static::SCREENS as $key) {
+			$setScreen = "set" . ucfirst($key);
+			$user->$setScreen($values->yn($key));
+		}
+	}
+
+	/**
+	 * Set User Screens' Whse ID
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensWhse(UserRecord $user, WireInputData $values) {
+		$IWHM = Iwhm::instance();
+
+		foreach (static::SCREENS as $screen) {
+			if ($this->fieldAttribute($screen, 'whse') === false) {
+				continue;
+			}
+			$field = 'whse'.$screen;
+			$user->set($field, self::WHSEID_ALL);
+			if (empty($values->text($field))) {
+				continue;
+			}
+			if ($values->string($field) != self::WHSEID_ALL && $IWHM->exists($values->string($field)) === false) {
+				continue;
+			}
+			$user->set($field, $values->string($field));
+		}
+	}
+
+	/**
+	 * Set User Screens' Detail
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensDetail(UserRecord $user, WireInputData $values) {
+		foreach (static::SCREENS as $screen) {
+			if ($this->fieldAttribute($screen, 'detail') === false) {
+				continue;
+			}
+			$field = 'detail'.$screen;
+			$user->set($field, $this->fieldAttribute($field, 'default'));
+			
+			if ($values->option($field, array_keys($this->fieldAttribute($field, 'options'))) === false) {
+				continue;
+			}
+			$user->set($field, $values->option($field, array_keys($this->fieldAttribute($field, 'options'))));
+		}
+	}
+
+	/**
+	 * Set User Screens' Dates
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensDate(UserRecord $user, WireInputData $values) {
+		foreach (static::SCREENS as $screen) {
+			if ($this->fieldAttribute($screen, 'date') === false) {
+				continue;
+			}
+			$fieldDays = 'days'.$screen;
+			$fieldDate = 'date'.$screen;
+			$optDays = ['max' => $this->fieldAttribute($fieldDays, 'max')];
+			$user->set($fieldDays, $values->int($fieldDays, $optDays));
+
+			$optDate = ['returnFormat' => $this->fieldAttribute($fieldDate, 'recordFormat'), 'default' => ''];
+			$date = $values->date($fieldDate, $this->fieldAttribute($fieldDate, 'displayFormat'), $optDate);
+			if (empty($date)) {
+				$date = '';
+			}
+			echo $fieldDate . $date . '<br>';
+			$user->set($fieldDate, $date);
+		}
 	}
 
 	/**
