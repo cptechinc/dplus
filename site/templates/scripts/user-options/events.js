@@ -36,8 +36,8 @@ $(function() {
 	Events
 ============================================================= */
 	$("body").on("focusin", "#user-form input:not(input[name=userID])", function(e) {
-		if (formCode.inputs.fields.userid.val() == '') {
-			formCode.inputs.fields.userid.focus();
+		if (formUser.inputs.fields.userid.val() == '') {
+			formUser.inputs.fields.userid.focus();
 		}
 	});
 
@@ -71,12 +71,38 @@ $(function() {
 		});
 	});
 
+	$("body").on("change", "#user-form input.whseid", function(e) {
+		let input = $(this);
+		let nameField = input.closest('.input-parent').find('.name');
+
+		if (input.val() == '') {
+			nameField.text('');
+			return false;
+		}
+
+		server.getWarehouse(input.val(), function(warehouse) {
+			nameField.text(warehouse.name);
+		});
+	});
+
 	$("body").on('click', '#ajax-modal .user-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var modal  = button.closest('.modal');
 		var input  = $(modal.attr('data-input'));
 		input.val(button.data('userid'));
+		if (input.data('jqv')) {
+			input.change();
+		}
+		modal.modal('hide');
+	});
+
+	$("body").on('click', '#ajax-modal .whse-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		var input  = $(modal.attr('data-input'));
+		input.val(button.data('whseid'));
 		if (input.data('jqv')) {
 			input.change();
 		}
