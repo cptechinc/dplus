@@ -43,4 +43,13 @@ class UserOptionsRequests {
 			callback(response)
 		});
 	}
+
+	getWarehouse(id, callback) {
+		var ajax = new AjaxRequest(config.ajax.urls.json + 'min/iwhm/code/');
+
+		ajax.setData({id: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
 }
