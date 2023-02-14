@@ -1,0 +1,58 @@
+{% extends 'user-options/user/form.twig' %}
+
+{% set IWHM = page.wire('modules').get('CodeTables').getCodeTable('min', 'iwhm') %}
+
+{% block header_columns %}
+	<div class="col-sm-2">
+		Screen Option
+	</div>
+	<div class="col-sm-1">
+		Available
+	</div>
+	<div class="col-sm-2">
+		Warehouse
+	</div>
+	<div class="col-sm-2">
+		Detail
+	</div>
+	<div class="col-sm-5 text-center">
+		Date
+	</div>
+{% endblock %}
+
+{% block inputs %}
+	{% include 'user-options/user/form/screens.twig' %}
+
+	<div class="form-row mb-2">
+		<div class="col-sm-2">
+			<label for="itemdescription">Item Get-Desc 1 or 2</label>
+		</div>
+		<div class="col-sm-1">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'itemdescription',
+					'value' : u.itemdescription,
+					'size': 'sm',
+					'haskeys': true,
+					'options': manager.fieldAttribute('itemdescription', 'options')
+				}
+			} %}
+		</div>
+	</div>
+	<div class="form-row mb-2">
+		<div class="col-sm-2">
+			<label for="deleteloticerts">Delete LOTI Certs </label>
+		</div>
+		<div class="col-sm-1">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'deleteloticerts',
+					'value' : u.deleteloticerts,
+					'size': 'sm',
+					'haskeys': true,
+					'options': manager.fieldAttribute('deleteloticerts', 'options')
+				}
+			} %}
+		</div>
+	</div>
+{% endblock %}

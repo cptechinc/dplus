@@ -1,0 +1,28 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+	'inputgroup': {
+		'type': 'prepend',
+		'size': 'sm',
+		'input': {
+			'name': 'userID',
+			'value': u.userid,
+			'attributes': {
+				'placeholder': '',
+				'aria-label':  'User ID',
+				'data-jqv': 'true',
+				'readonly': u.isNew() == false
+			}
+		},
+		'button': {
+			'colorclass': 'btn-secondary',
+			'text': 'fa fa-search'|icon,
+			'attributes': {
+				'title': 'Search Users',
+				'data-toggle': 'modal',
+				'data-target': '#ajax-modal',
+				'data-lookupurl': page.searchLookupUrl('users'),
+				'data-input': '#userID',
+				'disabled': u.isNew() == false
+			}
+		}
+	}
+} %}

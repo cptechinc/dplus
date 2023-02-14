@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
 {
     public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Controllers\\AbstractController' => __DIR__ . '/../..' . '/classes/AbstractController.php',
         'Controllers\\Abstracts\\AbstractCodeTableController' => __DIR__ . '/../..' . '/classes/Abstracts/AbstractCodeTableController.php',
         'Controllers\\Abstracts\\AbstractCodeTableOptmController' => __DIR__ . '/../..' . '/classes/Abstracts/AbstractCodeTableOptmController.php',
@@ -20,6 +19,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Json\\Mci' => __DIR__ . '/../..' . '/classes/ajax/json/Mci.php',
         'Controllers\\Ajax\\Json\\Mdm' => __DIR__ . '/../..' . '/classes/ajax/json/Mdm.php',
         'Controllers\\Ajax\\Json\\Mgl' => __DIR__ . '/../..' . '/classes/ajax/json/Mgl.php',
+        'Controllers\\Ajax\\Json\\Mii' => __DIR__ . '/../..' . '/classes/ajax/json/Mii.php',
         'Controllers\\Ajax\\Json\\Min' => __DIR__ . '/../..' . '/classes/ajax/json/Min.php',
         'Controllers\\Ajax\\Json\\Misc' => __DIR__ . '/../..' . '/classes/ajax/json/Misc.php',
         'Controllers\\Ajax\\Json\\Mki' => __DIR__ . '/../..' . '/classes/ajax/json/Mki.php',
@@ -129,6 +129,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mii\\Ii\\Substitutes' => __DIR__ . '/../..' . '/classes/mii/Ii/Substitutes.php',
         'Controllers\\Mii\\Ii\\Usage' => __DIR__ . '/../..' . '/classes/mii/Ii/Usage.php',
         'Controllers\\Mii\\Ii\\WhereUsed' => __DIR__ . '/../..' . '/classes/mii/Ii/WhereUsed.php',
+        'Controllers\\Mii\\Iiadmn\\Iio' => __DIR__ . '/../..' . '/classes/mii/Iiadmn/Iio.php',
         'Controllers\\Mii\\Loti\\Activity' => __DIR__ . '/../..' . '/classes/mii/Loti/Activity.php',
         'Controllers\\Mii\\Loti\\Base' => __DIR__ . '/../..' . '/classes/mii/Loti/Base.php',
         'Controllers\\Mii\\Loti\\Loti' => __DIR__ . '/../..' . '/classes/mii/Loti/Loti.php',

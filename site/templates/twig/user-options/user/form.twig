@@ -1,8 +1,36 @@
 <form action="{{ input.url() }}" method="POST" id="user-form" data-userid="{{ u.userid }}">
 	<input type="hidden" name="action" value="update">
-	{% block inputs %}
 
+	<div class="row mb-2">
+		<div class="col-sm-2">
+			<label for="userID">User ID</label>
+		</div>
+		<div class="col-sm-3 input-parent">
+			{% include 'user-options/user/form/inputs/userid.twig' %}
+			<small class="text-muted name">{{ u.user.name }}</small>
+		</div>
+	</div>
+	
+	{% block header %}
+		<div class="p-2 bg-dark text-white text-bold">
+			<div class="row">
+				{% block header_columns %}
+					<div class="col-sm-2">
+						Screen
+					</div>
+					<div class="col-sm-3">
+						Available
+					</div>
+				{% endblock %}
+			</div>
+		</div>
 	{% endblock %}
+
+	<div class="px-2 pt-1">
+		{% block inputs %}
+
+		{% endblock %}
+	</div>
 	<hr>
 	<div class="d-flex justify-content-between align-items-center">
 		{#
