@@ -26,8 +26,6 @@ abstract class AbstractUserOptionsController extends AbstractController {
 	const TITLE 		  = '';
 	const SUMMARY		  = '';
 	const SHOWONPAGE	  = 10;
-	const USE_EDIT_MODAL  = true;
-	const USE_EDIT_PAGE   = false;
 	const BASE_MENU_CODE  = '';
 
 /* =============================================================
@@ -113,6 +111,7 @@ abstract class AbstractUserOptionsController extends AbstractController {
 	 */
 	protected static function getUserList(WireData $data) {
 		$filter = static::getUserFilter();
+		$filter->userid(static::getManager()->userids());
 
 		if (strlen($data->q) > 0) {
 			$cols = self::pw('sanitizer')->array($data->col, ['delimiter' => ',']);
