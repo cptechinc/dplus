@@ -191,7 +191,13 @@
 			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
 		],
 		'mci' => [
+			'cio' => [
+				['GET', 'user/', Json\Mci::class, 'getCioUser'],
+			],
 			'validate' => [
+				'cio' => [
+					['GET', 'userid/', Json\Mci::class, 'validateCioUserid'],
+				],
 				['GET', 'custid/', Json\Mci::class, 'validateCustid'],
 			],
 		],
