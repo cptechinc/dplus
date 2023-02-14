@@ -212,6 +212,16 @@
 			['GET', 'ttm/code/', Json\Mgl::class, 'getTtmCode'],
 			['GET', 'dtm/code/', Json\Mgl::class, 'getDtmCode'],
 		],
+		'mii' => [
+			'iio' => [
+				['GET', 'user/', Json\Mii::class, 'getIioUser'],
+			],
+			'validate' => [
+				'iio' => [
+					['GET', 'userid/', Json\Mii::class, 'validateIioUserid'],
+				],
+			],
+		],
 		'mki' => [
 			'validate' => [
 				['GET', 'kit/', Json\Mki::class, 'validateKitid'],
