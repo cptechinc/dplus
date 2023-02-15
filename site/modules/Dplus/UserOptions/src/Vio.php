@@ -1,41 +1,38 @@
-<?php namespace Dplus\UserOptions\Mvi;
-// Purl URI Library
-use Purl\Url;
+<?php namespace Dplus\UserOptions;
 // Propel Classes
-use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
+	// use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as UserRecord;
-use Propel\Runtime\Collection\ObjectCollection;
+	// use Propel\Runtime\Collection\ObjectCollection;
 // Dplus Models
 use OptionsViQuery, OptionsVi;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+	// use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Record Locker
-use Dplus\RecordLocker\UserFunction as FunctionLocker;
+	// use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus User Options
-use Dplus\UserOptions\Base;
 use Dplus\UserOptions\Response;
 
-class Vio extends Base {
+class Vio extends AbstractManager {
+	const NAME = 'vio';
 	const MODEL              = 'OptionsVi';
 	const MODEL_KEY          = 'userid';
 	const MODEL_TABLE        = 'vi_options';
 	const DESCRIPTION        = 'User Vi Options';
 	const DESCRIPTION_RECORD = 'User Vi Options';
-	const RESPONSE_TEMPLATE  = 'User {userid} was {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'vio';
 	const DPLUS_TABLE           = 'VIO';
 	const FIELD_ATTRIBUTES = [
 		'userid'          => ['type' => 'text', 'maxlength' => 6],
-		'payments'        => ['default' => 'Y', 'label' => 'Payments', 'sanitizer' => 'ynbool'],
-		'contacts'        => ['default' => 'Y', 'label' => 'Contacts', 'sanitizer' => 'ynbool'],
-		'costing'         => ['default' => 'Y', 'label' => 'Costing', 'sanitizer' => 'ynbool'],
-		'purchaseorders'  => ['default' => 'Y', 'label' => 'Purchase Orders', 'sanitizer' => 'ynbool'],
-		'openinvoices'    => ['default' => 'Y', 'label' => 'Open Invoices', 'sanitizer' => 'ynbool'],
-		'purchasehistory' => ['default' => 'Y', 'label' => 'Purchase History', 'sanitizer' => 'ynbool'],
-		'unreleased'      => ['default' => 'Y', 'label' => 'Unreleased', 'sanitizer' => 'ynbool'],
-		'uninvoiced'      => ['default' => 'Y', 'label' => 'Uninvoiced', 'sanitizer' => 'ynbool'],
-		'notes'           => ['default' => 'Y', 'label' => 'Notes', 'sanitizer' => 'ynbool'],
-		'summary'         => ['default' => 'Y', 'label' => '24 Month Summary', 'sanitizer' => 'ynbool'],
+		'payments'        => ['default' => 'Y', 'label' => 'Payments'],
+		'contacts'        => ['default' => 'Y', 'label' => 'Contacts'],
+		'costing'         => ['default' => 'Y', 'label' => 'Costing'],
+		'purchaseorders'  => ['default' => 'Y', 'label' => 'Purchase Orders'],
+		'openinvoices'    => ['default' => 'Y', 'label' => 'Open Invoices'],
+		'purchasehistory' => ['default' => 'Y', 'label' => 'Purchase History'],
+		'unreleased'      => ['default' => 'Y', 'label' => 'Unreleased'],
+		'uninvoiced'      => ['default' => 'Y', 'label' => 'Uninvoiced'],
+		'notes'           => ['default' => 'Y', 'label' => 'Notes'],
+		'summary'         => ['default' => 'Y', 'label' => '24 Month Summary'],
 	];
 
 	const SCREENS = [

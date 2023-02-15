@@ -41,7 +41,7 @@ class Igm extends AbstractCodeTableEditableSingleKey {
 		'maxqtylarge'      => ['type' => 'number', 'precision' => 0, 'default' => 0],
 	];
 
-	private $fieldAttributes;
+	protected $fieldAttributes;
 
 /* =============================================================
 	Field Configs

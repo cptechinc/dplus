@@ -1,6 +1,4 @@
 <?php namespace Dplus\UserOptions;
-// Purl URI Library
-use Purl\Url;
 // Propel Classes
 use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as UserRecord;
@@ -8,13 +6,16 @@ use Propel\Runtime\Collection\ObjectCollection;
 // ProcessWire
 use ProcessWire\WireData;
 use ProcessWire\WireInput;
+use ProcessWire\WireInputData;
 use ProcessWire\User;
-// Dplus Databases
+// Dplus
+use Dplus\Codes\Min\Iwhm;
 use Dplus\Databases\Connectors\Dplus as DbDplus;
-// Dplus Record Locker
+use Dplus\Msa\Logm;
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
-abstract class Base extends WireData {
+abstract class AbstractManager extends WireData {
+	const NAME = '';
 	const MODEL              = '';
 	const MODEL_KEY          = '';
 	const MODEL_TABLE        = '';
@@ -24,9 +25,11 @@ abstract class Base extends WireData {
 	const RECORDLOCKER_FUNCTION = '';
 	const DPLUS_TABLE           = '';
 	const USER_DEFAULT = 'system';
+	const WHSEID_ALL   = '**';
 	const FIELD_ATTRIBUTES = [
 		'userid'        => ['type' => 'text', 'maxlength' => 6],
 	];
+	const FILTERABLE_FIELDS = ['userid', 'name'];
 
 	const SCREENS = [];
 
@@ -74,6 +77,32 @@ abstract class Base extends WireData {
 			return false;
 		}
 		return static::FIELD_ATTRIBUTES[$field][$attr];
+	}
+
+	/**
+	 * Return List of filterable fields
+	 * @return array
+	 */
+	public function filterableFields() {
+		return static::FILTERABLE_FIELDS;
+	}
+
+	/**
+	 * Return Label for field
+	 * @param  string $field
+	 * @return string
+	 */
+	public function fieldLabel($field) {
+		$label = $this->fieldAttribute($field, 'label');
+
+		if ($label !== false) {
+			return $label;
+		}
+
+		if (in_array($field, ['code', 'description'])) {
+			return self::FIELD_ATTRIBUTES[$field]['label'];
+		}
+		return $field;
 	}
 
 /* =============================================================
@@ -125,6 +154,16 @@ abstract class Base extends WireData {
 	public function users() {
 		$q = $this->query();
 		return $q->find();
+	}
+	
+	/**
+	 * Return list of all User IDs
+	 * @return array
+	 */
+	public function userids() {
+		$q = $this->query();
+		$q->select($this->modelClassName()::aliasproperty('userid'));
+		return $q->find()->toArray();
 	}
 
 	/**
@@ -203,6 +242,15 @@ abstract class Base extends WireData {
 		return $exists ? $permissions->isTrue($option) : true;
 	}
 
+	public function userJson(UserRecord $user) {
+		$json = ['userid' => $user->userid];
+
+		foreach (static::SCREENS as $screen) {
+			$json[$screen] = $user->$screen;
+		}
+		return $json;
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */
@@ -218,6 +266,12 @@ abstract class Base extends WireData {
 
 		if (strlen($userID) && $userID != 'new') {
 			$r->setUserid($userID);
+		}
+		foreach (array_keys(static::FIELD_ATTRIBUTES) as $field) {
+			if ($this->fieldAttribute($field, 'default') === false) {
+				continue;
+			}
+			$r->set($field, $this->fieldAttribute($field, 'default'));
 		}
 		if ($userID != static::USER_DEFAULT) {
 			$this->copyOptions(static::USER_DEFAULT, $r);
@@ -258,7 +312,6 @@ abstract class Base extends WireData {
 				$this->inputDelete($input);
 				break;
 			case 'update':
-			case 'edit':
 				$this->inputUpdate($input);
 				break;
 		}
@@ -272,19 +325,15 @@ abstract class Base extends WireData {
 	protected function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$user   = $this->userOrNew($values->text('userID'));
+		$user   = $this->userOrNew($values->string('userID'));
 
 		if ($user->isNew() === false && $this->lockrecord($user) === false) {
-			$message = "User ($userID) was not saved, it is locked by " . $this->recordlocker->getLockingUser($userID);
+			$message = "User ($user->userid) was not saved, it is locked by " . $this->recordlocker->getLockingUser($user->userid);
 			$this->setResponse(Response::responseError($message));
 			return false;
 		}
 
-		foreach (static::SCREENS as $key) {
-			$setScreen = "set" . ucfirst($key);
-			$user->$setScreen($values->yn($key));
-		}
-
+		$this->_inputUpdate($user, $values);
 		$user->setDate(date('Ymd'));
 		$user->setTime(date('His'));
 		$user->setDummy('P');
@@ -295,6 +344,104 @@ abstract class Base extends WireData {
 	}
 
 	/**
+	 * Update Record fields
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function _inputUpdate(UserRecord $user, WireInputData $values) {
+		$this->setUserScreensFromInputData($user, $values);
+		$this->setUserScreensWhse($user, $values);
+		$this->setUserScreensDetail($user, $values);
+		$this->setUserScreensDate($user, $values);
+	}
+
+	/**
+	 * Set User Screen Access
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensFromInputData(UserRecord $user, WireInputData $values) {
+		foreach (static::SCREENS as $key) {
+			$setScreen = "set" . ucfirst($key);
+			$user->$setScreen($values->yn($key));
+		}
+	}
+
+	/**
+	 * Set User Screens' Whse ID
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensWhse(UserRecord $user, WireInputData $values) {
+		$IWHM = Iwhm::instance();
+
+		foreach (static::SCREENS as $screen) {
+			if ($this->fieldAttribute($screen, 'whse') === false) {
+				continue;
+			}
+			$field = 'whse'.$screen;
+			$user->set($field, self::WHSEID_ALL);
+			if (empty($values->text($field))) {
+				continue;
+			}
+			if ($values->string($field) != self::WHSEID_ALL && $IWHM->exists($values->string($field)) === false) {
+				continue;
+			}
+			$user->set($field, $values->string($field));
+		}
+	}
+
+	/**
+	 * Set User Screens' Detail
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensDetail(UserRecord $user, WireInputData $values) {
+		foreach (static::SCREENS as $screen) {
+			if ($this->fieldAttribute($screen, 'detail') === false) {
+				continue;
+			}
+			$field = 'detail'.$screen;
+			$user->set($field, $this->fieldAttribute($field, 'default'));
+			
+			if ($values->option($field, array_keys($this->fieldAttribute($field, 'options'))) === false) {
+				continue;
+			}
+			$user->set($field, $values->option($field, array_keys($this->fieldAttribute($field, 'options'))));
+		}
+	}
+
+	/**
+	 * Set User Screens' Dates
+	 * @param  UserRecord    $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensDate(UserRecord $user, WireInputData $values) {
+		foreach (static::SCREENS as $screen) {
+			if ($this->fieldAttribute($screen, 'date') === false) {
+				continue;
+			}
+			$fieldDays = 'days'.$screen;
+			$fieldDate = 'date'.$screen;
+			$optDays = ['max' => $this->fieldAttribute($fieldDays, 'max')];
+			$user->set($fieldDays, $values->int($fieldDays, $optDays));
+
+			$optDate = ['returnFormat' => $this->fieldAttribute($fieldDate, 'recordFormat'), 'default' => ''];
+			$date = $values->date($fieldDate, $this->fieldAttribute($fieldDate, 'displayFormat'), $optDate);
+			if (empty($date)) {
+				$date = '';
+			}
+			echo $fieldDate . $date . '<br>';
+			$user->set($fieldDate, $date);
+		}
+	}
+
+	/**
 	 * Delete User Record
 	 * @param  WireInput $input Input Data
 	 * @return bool
@@ -302,7 +449,7 @@ abstract class Base extends WireData {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$userID = $values->text('userID');
+		$userID = $values->string('userID');
 
 		if ($this->exists($userID) === false) {
 			return true;
@@ -336,6 +483,7 @@ abstract class Base extends WireData {
 
 		$response = new Response();
 		$response->setUserid($options->userid);
+		$response->setKey($options->userid);
 
 		if ($saved) {
 			$response->setSuccess(true);
@@ -434,5 +582,17 @@ abstract class Base extends WireData {
 			$this->recordlocker->lock($key);
 		}
 		return $this->recordlocker->userHasLocked($key);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return User's name
+	 * @param  string $userID  User ID
+	 * @return string
+	 */
+	public function logmUserName($userID) {
+		return Logm::getInstance()->name($userID);
 	}
 }

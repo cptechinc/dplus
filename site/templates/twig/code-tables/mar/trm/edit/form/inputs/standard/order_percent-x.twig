@@ -1,21 +1,26 @@
-{% set readonly = x != 1 %}
+{% set value = code.order_percent(x) %}
+
 {% set readonly = code.order_percent(x) == 0 ? true : readonly %}
+
+{% set tabindex = startindex + (x * 10) + 0 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+{% set readonly = x == 1 ? false : readonly %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
 		'name': 'order_percent' ~ x,
 		'type': 'number',
-		'value': code.order_percent(x),
+		'value': value != 0 ? value|number_format(manager.fieldAttribute('order_percent', 'precision')) : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',
 			'order_percent'
 		],
 		'attributes': {
-			'tabindex': x ~ '0',
-			'data-error': '.error',
-			'max': 100.00,
-			'readonly': code.order_percent(x) == 0
+			'tabindex': tabindex,
+			'max': manager.fieldAttribute('order_percent', 'max'),
+			'readonly': readonly,
+			'data-lastvalue': value|number_format(manager.fieldAttribute('order_percent', 'precision')) 
 		}
 	}
 } %}

@@ -61,7 +61,7 @@ class Trm extends AbstractCodeTableController {
 		self::pw('page')->show_breadcrumbs = false;
 
 		if ($code->isNew() === false) {
-			self::pw('page')->headline = "CTM: Editing $data->code";
+			self::pw('page')->headline = "TRM: Editing $data->code";
 			$trm->lockrecord($code);
 		}
 		self::initHooks();
@@ -138,10 +138,12 @@ class Trm extends AbstractCodeTableController {
 		$table = static::getCodeTable();
 		$config['type'] = ['default' => $table->fieldAttribute('type', 'default')];
 		$config['method'] = ['default' => $table->fieldAttribute('method', 'default'), 'std' => 'S', 'eom' => 'E'];
+		$config['order_percent'] = ['precision' => $table->fieldAttribute('order_percent', 'precision')];
+		$config['std_disc_percent'] = ['precision' => $table->fieldAttribute('std_disc_percent', 'precision')];
 		$config['std_disc_date'] = ['regex' => $table->fieldAttribute('std_disc_date', 'regex')];
 		$config['std_due_date']  = ['regex' => $table->fieldAttribute('std_due_date', 'regex')];
 		$config['eom_disc_percent']  = ['precision' => $table->fieldAttribute('eom_disc_percent', 'precision')];
-		$config['eom_thru_day']  = ['max' => $table->fieldAttribute('eom_thru_day', 'max'), 'defaultToMaxAt' => $table->fieldAttribute('eom_thru_day', 'defaultToMaxAt')];
+		$config['eom_thru_day']     = ['max' => $table->fieldAttribute('eom_thru_day', 'max'), 'defaultToMaxAt' => $table->fieldAttribute('eom_thru_day', 'defaultToMaxAt')];
 		return $config;
 	}
 

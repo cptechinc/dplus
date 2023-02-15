@@ -1,4 +1,7 @@
 {% set value = code.eom_disc_day(x) %}
+{% set readonly = code.eom_disc_percent(x) == 0 %}
+{% set tabindex = startindex + (x * 10) + 3 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
@@ -11,10 +14,9 @@
 			'eom_disc_day'
 		],
 		'attributes': {
-			'tabindex': x ~ '14',
-			'data-error': '.error',
-			'readonly': code.eom_disc_percent(x) == 0,
-			'max': 31
+			'tabindex': tabindex,
+			'readonly': readonly,
+			'max': manager.fieldAttribute('eom_disc_day', 'max')
 		}
 	}
 } %}

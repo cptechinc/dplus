@@ -21,6 +21,8 @@ class Mar extends Base {
 		'spgpm'  => ['', Ar\Armain\Menu::class, 'spgpmUrl'],
 		'suc'    => ['', Ar\Armain\Menu::class, 'sucUrl'],
 		'tm'     => ['', Ar\Armain\Menu::class, 'tmUrl'],
+		'trm'    => ['', Ar\Armain\Menu::class, 'trmUrl'],
+		'trmg'   => ['', Ar\Armain\Menu::class, 'trmgUrl'],
 		'worm'   => ['', Ar\Armain\Menu::class, 'wormUrl'],
 	];
 }

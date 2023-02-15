@@ -7,7 +7,8 @@
 
 	$routes = [
 		['GET',  '', Admin\Vio::class, 'index'],
-		['POST', '', Admin\Vio::class, 'handleCRUD'],
+		['GET',  'page{pagenbr:\d+}', Admin\Vio::class, 'index'],
+		['POST', '', Admin\Vio::class, 'process'],
 	];
 	$router = new Mvc\Routers\Router();
 	$router->setRoutes($routes);

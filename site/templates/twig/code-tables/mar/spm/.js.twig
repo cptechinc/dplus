@@ -17,7 +17,7 @@ $(function() {
 
 	$("body").on("change", "input[name=vendorid]", function(e) {
 		var input = $(this);
-		var inputParent = input.closest('.row');
+		var inputParent = input.closest('.input-parent');
 		var descriptionField = inputParent.find('.vendor-name');
 		descriptionField.text('');
 		if (input.val() == '') {
@@ -32,7 +32,7 @@ $(function() {
 
 	$("body").on("change", "input[name=groupid]", function(e) {
 		var input = $(this);
-		var inputParent = input.closest('.row');
+		var inputParent = input.closest('.input-parent');
 		var descriptionField = inputParent.find('.group-description');
 		descriptionField.text('');
 		if (input.val() == '') {
@@ -47,7 +47,7 @@ $(function() {
 
 	$("body").on("change", "input[name=userid]", function(e) {
 		var input = $(this);
-		var inputParent = input.closest('.row');
+		var inputParent = input.closest('.input-parent');
 		var descriptionField = inputParent.find('.user-name');
 		descriptionField.text('');
 		if (input.val() == '') {

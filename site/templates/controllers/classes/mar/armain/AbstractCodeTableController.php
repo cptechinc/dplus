@@ -172,7 +172,8 @@ abstract class AbstractCodeTableController extends AbstractController {
 		}
 
 		$msg = "Code $data->code is being locked by " . $codeTable->recordlocker->getLockingUser($data->code);
-		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Code $data->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		$div = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Code $data->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		return '<div class="mb-3">' . $div . '</div>';
 	}
 
 	protected static function renderBreadcrumbs(WireData $data) {
@@ -357,7 +358,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	}
 
 	/**
-	 * Return relative Path to Request JS class File
+	 * Return relative Path to Requests JS class File
 	 * @return string
 	 */
 	protected static function requestClassJsPath() {
@@ -366,12 +367,21 @@ abstract class AbstractCodeTableController extends AbstractController {
 	}
 
 	/**
-	 * Return relative Path to Request JS class File
+	 * Return relative Path to Form JS class File
 	 * @return string
 	 */
 	protected static function formClassJsPath() {
 		$jsPath = static::getRelativeJsPath();
 		return $jsPath . 'classes/Form.js';
+	}
+
+	/**
+	 * Return relative Path to Alerts JS class File
+	 * @return string
+	 */
+	protected static function alertsClassJsPath() {
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . 'classes/Alerts.js';
 	}
 
 	/**
@@ -407,6 +417,12 @@ abstract class AbstractCodeTableController extends AbstractController {
 
 		if (file_exists(self::pw('config')->paths->templates . $formJsPath)) {
 			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($formJsPath));
+		}
+
+		$alertsJsPath = static::alertsClassJsPath();
+
+		if (file_exists(self::pw('config')->paths->templates . $alertsJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($alertsJsPath));
 		}
 	}
 

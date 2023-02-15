@@ -1,15 +1,11 @@
 <?php namespace Controllers\Ajax\Json;
-// ProcessWire Classes, Modules
-use ProcessWire\Module, ProcessWire\ProcessWire;
-// Dplus Validators
+// PrcessWire
+use ProcessWire\WireData;
+// Dplus
 use Dplus\CodeValidators\Mar as MarValidator;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
+use Dplus\UserOptions;
 
-class Mci extends Controller {
-	public static function test() {
-		return 'test';
-	}
+class Mci extends AbstractJsonController {
 
 	public static function validateCustid($data) {
 		$fields = ['custID|string', 'jqv|bool'];
@@ -22,7 +18,18 @@ class Mci extends Controller {
 		return true;
 	}
 
+	public static function validateCioUserid(WireData $data) {
+		return self::validateUserOptionsUserid($data, UserOptions\Iio::getInstance());
+	}
+
+	public static function getCioUser(WireData $data) {
+		return self::getUserOptionsUser($data, UserOptions\Iio::getInstance());
+	}
+
 	private static function validator() {
 		return new MarValidator();
 	}
 }
+
+
+

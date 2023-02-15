@@ -53,7 +53,7 @@ class CodeForm {
 			'groupid', 'cycle', 'userid', 'lastsaledate', 
 			'salesmtd', 'salesytd', 'salesltd',
 			'earnedmtd', 'earnedytd', 'earnedltd',
-			'paidmtd', 'paidytd', 'paidedltd',
+			'paidmtd', 'paidytd', 'paidltd',
 			'vendorid', 'email'
 		];
 		this.inputs.form.attr('data-code', '');
@@ -64,8 +64,8 @@ class CodeForm {
 		blankOutInputs.forEach(field => {
 			this.inputs[field].val('');
 		});
-		this.inputs.restricted(this.config.fields.restricted.default);
-		this.inputs.manager(this.config.fields.manager.default);
+		this.inputs.restricted.val(this.config.fields.restricted.default);
+		this.inputs.manager.val(this.config.fields.manager.default);
 		
 		this.triggerInputsChange();
 	}

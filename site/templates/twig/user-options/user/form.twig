@@ -1,0 +1,56 @@
+<form action="{{ input.url() }}" method="POST" id="user-form" data-userid="{{ u.userid }}">
+	<input type="hidden" name="action" value="update">
+
+	<div class="row mb-2">
+		<div class="col-sm-2">
+			<label for="userID">User ID</label>
+		</div>
+		<div class="col-sm-3 input-parent">
+			{% include 'user-options/user/form/inputs/userid.twig' %}
+			<small class="text-muted name">{{ u.user.name }}</small>
+		</div>
+	</div>
+	
+	{% block header %}
+		<div class="p-2 bg-dark text-white text-bold">
+			<div class="row">
+				{% block header_columns %}
+					<div class="col-sm-2">
+						Screen
+					</div>
+					<div class="col-sm-3">
+						Available
+					</div>
+				{% endblock %}
+			</div>
+		</div>
+	{% endblock %}
+
+	<div class="px-2 pt-1">
+		{% block inputs %}
+
+		{% endblock %}
+	</div>
+	<hr>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if manager.recordlocker.userHasLocked(u.userid) or u.isNew() %}
+			<button type="submit" class="btn btn-success form_button"=>
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if code.isNew() == false %}
+				<a href="{{page.userDeleteUrl(u.userid) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{page.userListUrl(u.userid) }}" class="btn btn-warning pull-right">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

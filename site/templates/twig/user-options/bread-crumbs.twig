@@ -1,0 +1,37 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+#}
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values      = input.get %}
+{% set segments    = input.urlSegments() %}
+{% set lastsegment = input.urlSegmentLast() %}
+{% set menu = input.urlSegment(-2) ? input.urlSegment(-2) : page.name %}
+
+{% block current_page %}
+	{% if menu and menu != page.name %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				<i class="fa fa-list" aria-hidden="true"></i> {{ page.dplus_function ? page.dplus_function|upper : page.title }}
+			</a>
+		</li>
+	{% endif %}
+
+	{% if input.get.offsetExists('userID') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				<i class="fa fa-microchip" aria-hidden="true"></i> {{ page.dplus_function ? page.dplus_function|upper : page.title }}
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ input.get.string('userID' )}}
+		</li>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">
+			<i class="fa fa-microchip" aria-hidden="true"></i> {{ menu|upper }}
+		</li>
+	{% endif %}
+{% endblock %}

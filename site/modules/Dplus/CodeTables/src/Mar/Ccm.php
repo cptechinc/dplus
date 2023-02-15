@@ -8,7 +8,7 @@ use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 /**
  * Class that handles the CRUD of the CCM code table
  */
-class Ccm extends AbstractCodeTableEditableSingleKey{
+class Ccm extends AbstractCodeTableEditableSingleKey {
 	const MODEL              = 'ArCommissionCode';
 	const MODEL_KEY          = 'code';
 	const MODEL_TABLE        = 'ar_cust_comm';

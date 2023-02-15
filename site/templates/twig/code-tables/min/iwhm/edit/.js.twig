@@ -19,7 +19,10 @@ $(function() {
 
 			alert.unsavedChanges(function(save) {
 				if (save) {
-					formCode.form.find('button[type=submit]').click();
+					var validator = formCode.form.validate();
+					if (validator.valid()) {
+						formCode.form.find('button[type=submit]').click();
+					};
 				} else {
 					var uri = URI();
 					uri.setQuery('code', '');

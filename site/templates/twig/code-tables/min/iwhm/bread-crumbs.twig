@@ -29,3 +29,11 @@
 		</li>
 	{% endif %}
 {% endblock %}
+
+{% block page_title_text %}
+	{% if values.offsetExists('code') == false %}
+		{{ page.get('pagetitle|headline|title')|raw }}
+	{% else %}
+		Warehouse Edit
+	{% endif %}
+{% endblock %}

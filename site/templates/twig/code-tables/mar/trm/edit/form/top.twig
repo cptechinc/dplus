@@ -1,23 +1,29 @@
+{% set mCodeTables = page.wire('modules').get('CodeTables') %}
+
+{% set cocom = mCodeTables.getCodeTable('mar', 'cocom') %}
+{% set trmg  = mCodeTables.getCodeTable('mar', 'trmg') %}
+{% set crcd  = mCodeTables.getCodeTable('mar', 'crcd') %}
+
 <div class="row">
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="code">Code</label>
 			</div>
 			<div class="col-sm-6 input-parent">
 				<div class="col-sm-4 px-0">
-					{% include 'code-tables/mar/trm/edit/form/inputs/code.twig' %}
+					{% include 'code-tables/mar/trm/edit/form/inputs/code.twig' with {tabindex: 1} %}
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="description">Description</label>
 			</div>
 			<div class="col-sm-7">
-				{% include 'code-tables/mar/trm/edit/form/inputs/description.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/description.twig' with {tabindex: 2} %}
 			</div>
 		</div>
 	</div>
@@ -25,11 +31,11 @@
 <div class="row">
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="method">Method</label>
 			</div>
 			<div class="col-sm-4">
-				{% include 'code-tables/mar/trm/edit/form/inputs/method.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/method.twig' with {tabindex: 3} %}
 			</div>
 		</div>
 	</div>
@@ -37,25 +43,29 @@
 <div class="row">
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="type">Type</label>
 			</div>
 			<div class="col-sm-4">
-				{% include 'code-tables/mar/trm/edit/form/inputs/type-s.twig' %}
-				{% include 'code-tables/mar/trm/edit/form/inputs/type-e.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/type-s.twig' with {tabindex: 4} %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/type-e.twig' with {tabindex: 5} %}
 			</div>
 		</div>
 	</div>
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="ccprefix">CC Prefix</label>
 			</div>
 			<div class="col-sm-6 input-parent">
-				<div class="col-sm-4 px-0">
-					{% include 'code-tables/mar/trm/edit/form/inputs/ccprefix.twig' %}
+				<div class="row">
+					<div class="col-sm-4">
+						{% include 'code-tables/mar/trm/edit/form/inputs/ccprefix.twig' with {tabindex: 6} %}
+					</div>
+					<div class="col-sm-6 pt-1">
+						<small class="text-muted ajax-description description ">{{ crcd.description(code.ccprefix) }}</small>
+					</div>
 				</div>
-				<small class="text-muted ajax-description description"></small>
 			</div>
 		</div>
 	</div>
@@ -63,21 +73,21 @@
 <div class="row">
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="hold">Hold</label>
 			</div>
 			<div class="col-sm-2">
-				{% include 'code-tables/mar/trm/edit/form/inputs/hold.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/hold.twig' with {tabindex: 7} %}
 			</div>
 		</div>
 	</div>
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="freightallow">Freight Allow</label>
 			</div>
 			<div class="col-sm-2">
-				{% include 'code-tables/mar/trm/edit/form/inputs/freightallow.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/freightallow.twig' with {tabindex: 8} %}
 			</div>
 		</div>
 	</div>
@@ -85,11 +95,11 @@
 <div class="row">
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="expiredate">Expire Date</label>
 			</div>
 			<div class="col-sm-4">
-				{% include 'code-tables/mar/trm/edit/form/inputs/expiredate.twig' %}
+				{% include 'code-tables/mar/trm/edit/form/inputs/expiredate.twig' with {tabindex: 9} %}
 			</div>
 		</div>
 	</div>
@@ -97,15 +107,41 @@
 <div class="row">
 	<div class="col-sm-6">
 		<div class="row mb-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="country">Country</label>
 			</div>
-			<div class="col-sm-6 input-parent">
-				<div class="col-sm-4 px-0">
-					{% include 'code-tables/mar/trm/edit/form/inputs/country.twig' %}
+			<div class="col-sm-9 input-parent">
+				<div class="row">
+					<div class="col-sm-3">
+						{% include 'code-tables/mar/trm/edit/form/inputs/country.twig' with {tabindex: 10} %}
+					</div>
+					<div class="col-sm-6 pt-1">
+						<small class="text-muted ajax-description description">
+							{{ cocom.description(code.country) }}
+						</small>
+					</div>
 				</div>
-				<small class="text-muted ajax-description description"></small>
 			</div>
 		</div>
 	</div>
 </div>
+{% if manager.fieldAttribute('termsgroup', 'enabled') %}
+	<div class="row">
+		<div class="col-sm-6">
+			<span class="badge badge-info">TODO: enable using sys custid for enabling / hiding field</span>
+			<div class="row mb-3">
+				<div class="col-sm-4">
+					<label for="termsgroup">Terms Group</label>
+				</div>
+				<div class="col-sm-6 input-parent">
+					<div class="col-sm-4 px-0">
+						{% include 'code-tables/mar/trm/edit/form/inputs/termsgroup.twig' with {tabindex: 11} %}
+					</div>
+					<small class="text-muted ajax-description description">
+						{{ trmg.description(code.termsgroup) }}
+					</small>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}

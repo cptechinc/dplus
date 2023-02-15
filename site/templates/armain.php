@@ -92,6 +92,11 @@
 			['GET',  'page{pagenbr:\d+}', Armain\Trm::class, 'index'],
 			['POST',  '', Armain\Trm::class, 'handleCRUD'],
 		],
+		'trmg' => [
+			['GET',  '', Armain\Trmg::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Armain\Trmg::class, 'index'],
+			['POST',  '', Armain\Trmg::class, 'handleCRUD'],
+		],
 		'worm' => [
 			['GET',  '', Armain\Worm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Armain\Worm::class, 'index'],

@@ -23,6 +23,7 @@ abstract class AbstractCodeTable extends WireData {
 	const FILTERABLE_FIELDS = ['code', 'description'];
 
 	protected static $instance;
+	protected $fieldAttributes;
 
 	public static function instance() {
 		return static::getInstance();
@@ -48,6 +49,14 @@ abstract class AbstractCodeTable extends WireData {
 	Field Configs
 ============================================================= */
 	/**
+	 * Intialize Field Attributes that need values set from Configs
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		$this->fieldAttributes = static::FIELD_ATTRIBUTES;
+	}
+
+	/**
 	 * Return Field Attribute value
 	 * @param  string $field Field Name
 	 * @param  string $attr  Attribute Name
@@ -57,13 +66,18 @@ abstract class AbstractCodeTable extends WireData {
 		if (empty($field) || empty($attr)) {
 			return false;
 		}
-		if (array_key_exists($field, static::FIELD_ATTRIBUTES) === false) {
+
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
+		}
+
+		if (array_key_exists($field, $this->fieldAttributes) === false) {
 			return false;
 		}
-		if (array_key_exists($attr, static::FIELD_ATTRIBUTES[$field]) === false) {
+		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
 			return false;
 		}
-		return static::FIELD_ATTRIBUTES[$field][$attr];
+		return $this->fieldAttributes[$field][$attr];
 	}
 
 	/**
@@ -91,15 +105,6 @@ abstract class AbstractCodeTable extends WireData {
 		}
 		return $field;
 	}
-
-	/**
-	 * Intialize Field Attributes that need values set from Configs
-	 * @return void
-	 */
-	public function initFieldAttributes() {
-		
-	}
-
 /* =============================================================
 	Model Functions
 ============================================================= */

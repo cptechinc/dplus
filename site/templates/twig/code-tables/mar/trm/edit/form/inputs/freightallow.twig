@@ -1,5 +1,19 @@
 {% set value = code.method == constant('METHOD_STD', manager) ? code.freightallow : 'N' %}
 
+{# 1. Set Readonly if field is enabled #}
+{% set readonly = manager.fieldAttribute('freightallow', 'enabled') == false %}
+{# 2. Set Readonly if method is EOM #}
+{% if readonly == false %}
+	{% set readonly = code.method == constant('METHOD_EOM', manager) %}
+{% endif %}
+{# Set Readonly if Method is STD and if artmorderpct1 != 100 #}
+{% if readonly == false and code.method == constant('METHOD_STD', manager) %}
+	{% set readonly = code.order_percent(1) != 100 %}
+{% endif %}
+
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+
+
 {% include 'util/bootstrap/form/select-simple.twig' with {
 	'select': {
 		'name': 'freightallow',
@@ -8,9 +22,9 @@
 		'haskeys': true,
 		'options': manager.fieldAttribute('freightallow', 'options'),
 		'attributes': {
-			'readonly': code.method == constant('METHOD_EOM', manager),
-			'disabled': code.method == constant('METHOD_EOM', manager),
-			'tabindex': code.method == constant('METHOD_EOM', manager) ? '-1' : '',
+			'readonly': readonly,
+			'disabled': readonly,
+			'tabindex': tabindex,
 		}
 	}
 } %}

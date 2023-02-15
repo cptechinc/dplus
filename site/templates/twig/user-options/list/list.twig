@@ -1,0 +1,56 @@
+{% set response = manager.getResponse() %}
+
+<div class="list-group users-list mb-3">
+	{% block header_div %}
+		<div class="list-group-item bg-dark text-white">
+			{% block list_header_row %}
+				<div class="row align-items-center">
+					<div class="col-3 col-sm-3">
+						ID
+					</div>
+					<div class="col-5 col-sm-6">
+						Name
+					</div>
+					<div class="col-4 col-sm-3 text-center">
+						<a href="{{ page.userAddUrl() }}" class="btn btn-light btn-sm">
+							<i class="fa fa-plus" aria-hidden="true"></i> Add <span class="d-none d-sm-inline">User</span>
+						</a>
+					</div>
+				</div>
+			{% endblock %}
+		</div>
+	{% endblock %}
+	{% for u in users %}
+		{% block user_div %}
+			{% set highightClass = u.userid == input.get.string('focus') ? 'highlight' : '' %}
+			{% set highightClass = u.userid == response.key ? 'bg-success text-white' : highightClass %}
+			<div data-user="{{ u.userid }}" class="list-group-item user pb-1 pt-1 {{ highightClass }}">
+				{% block user_row %}
+					<div class="row align-items-center">
+						<div class="col-3 col-sm-3 ">
+							{{ u.userid|replace({' ': '&nbsp;'})|raw }}
+						</div>
+						<div class="col-5 col-sm-6 ">
+							{{ manager.logmUserName(u.userid) }}
+						</div>
+						<div class="col-4 col-sm-3 text-center d-print-none">
+							{% if manager.recordlocker.isLocked(u.userid) == false or manager.recordlocker.isLockedByUser(u.userid) %}
+								<a href="{{ page.userEditUrl(u.userid) }}" class="btn btn-warning btn-sm">
+									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+								</a>
+								&nbsp;
+								<a href="{{ page.userDeleteUrl(u.userid) }}" class="btn btn-danger btn-sm delete_button">
+									<i class="fa fa-trash" aria-hidden="true"></i> Delete
+								</a>
+							{% else %}
+								<span class="badge badge-secondary">
+									<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ manager.recordlocker.getLockingUser(u.userid) }}
+								</span>
+							{% endif %}
+						</div>
+					</div>
+				{% endblock %}
+			</div>
+		{% endblock %}
+	{% endfor %}
+</div>

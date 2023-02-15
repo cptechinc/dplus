@@ -1,21 +1,29 @@
+{% set value = code.std_disc_date(x) %}
+{# 1. If discount percent == 0 #}
 {% set readonly = code.std_disc_percent(x) == 0 %}
+{# 2. If discount days > 0 #}
 {% set readonly = code.std_disc_days(x) > 0 ? true : readonly %}
+{# 3. If discount days > 0 #}
 {% set readonly = code.std_disc_day(x) > 0 ? true : readonly %}
+
+{% set tabindex = startindex + (x * 10) + 4 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+
+{# prepend ""now"|date('Y') to value so it can be parsed and formatted #}
 
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
 		'name': 'std_disc_date' ~ x,
-		'value': code.date(x) == 0 ? '' : code.date(x),
+		'value': value ? ("now"|date('Y') ~ value)|convertdate(manager.fieldAttribute('std_disc_date', 'dateformat')) : '',
 		'size': 'sm', 
 		'addclasses': [
 			'text-right',
-			'standard_discount_date'
+			'std_disc_date',
 		],
 		'attributes': {
-			'tabindex': x ~ '4',
-			'placeholder': manager.fieldAttribute('std_disc_date', 'placeholder'),
+			'tabindex': tabindex,
 			'readonly': readonly,
-			'regex': manager.fieldAttribute('std_disc_date', 'regex')
+			'regex': manager.fieldAttribute('std_disc_date', 'regex'),
 		}
 	}
 } %}

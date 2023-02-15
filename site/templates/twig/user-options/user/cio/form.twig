@@ -1,0 +1,19 @@
+{% extends 'user-options/user/form.twig' %}
+
+{% set IWHM = page.wire('modules').get('CodeTables').getCodeTable('min', 'iwhm') %}
+
+{% block header_columns %}
+	<div class="col-sm-2">
+		Screen Option
+	</div>
+	<div class="col-sm-1">
+		Available
+	</div>
+	<div class="col-sm-5 text-center">
+		Date
+	</div>
+{% endblock %}
+
+{% block inputs %}
+	{% include 'user-options/user/cio/screens.twig' %}
+{% endblock %}

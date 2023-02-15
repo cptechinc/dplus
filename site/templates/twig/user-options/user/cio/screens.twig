@@ -1,0 +1,68 @@
+{% for option in manager.screens() %}
+	<div class="form-row mb-2">
+		<div class="col-sm-2">
+			<label for="{{ option }}">{{ manager.fieldAttribute(option, 'label') }}</label>
+		</div>
+		<div class="col-sm-1">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': option,
+					'value' : attribute(u, option),
+					'size': 'sm',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
+				}
+			} %}
+		</div>
+
+		{% if manager.fieldAttribute(option, 'date') %}
+			<div class="col-sm-2">
+				<div class="form-row">
+					<div class="col">
+						<label for="days{{ option }}">Days</label>
+					</div>
+					<div class="col">
+						{% set fieldname = 'days' ~ option %}
+						{% set value = attribute(u, fieldname) %}
+
+						{% include 'util/bootstrap/form/input.twig' with {
+							'input': {
+								'name': fieldname,
+								'value' : value > 0 ? value : '',
+								'size': 'sm',
+								'attributes': {
+									'max': manager.fieldAttribute(fieldname, 'max')
+								}
+							}
+						} %}
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-row">
+					<div class="col-sm-4">
+						<label for="date{{ option }}">Start Date</label>
+					</div>
+					<div class="col-sm-8 input-parent">
+						{% set fieldname = 'date' ~ option %}
+						{% set value = attribute(u, fieldname) %}
+
+						{% include 'util/bootstrap/form/date-picker.twig' with {
+							'inputgroup': {
+								'input': {
+									'name': fieldname,
+									'size': 'sm',
+									'value': value ? value|convertdate : '',
+									'addclasses': [
+										'text-right',
+										'date'
+									]
+								}
+							}
+						} %}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endfor %}

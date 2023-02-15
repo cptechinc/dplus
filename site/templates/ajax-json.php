@@ -163,6 +163,7 @@
 				['GET', 'suc/code/', Json\Mar::class, 'validateSucCode'],
 				['GET', 'tm/code/', Json\Mar::class, 'validateTmCode'],
 				['GET', 'trm/code/', Json\Mar::class, 'validateTrmCode'],
+				['GET', 'trmg/code/', Json\Mar::class, 'validateTrmgCode'],
 				['GET', 'worm/code/', Json\Mar::class, 'validateWormCode'],
 				['GET', 'salespersonid/', Json\Mar::class, 'validateSalesPersonId'],
 				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
@@ -184,12 +185,19 @@
 			['GET', 'suc/code/', Json\Mar::class, 'getSucCode'],
 			['GET', 'tm/code/', Json\Mar::class, 'getTmCode'],
 			['GET', 'trm/code/', Json\Mar::class, 'getTrmCode'],
+			['GET', 'trmg/code/', Json\Mar::class, 'getTrmgCode'],
 			['GET', 'worm/code/', Json\Mar::class, 'getWormCode'],
 			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
 			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
 		],
 		'mci' => [
+			'cio' => [
+				['GET', 'user/', Json\Mci::class, 'getCioUser'],
+			],
 			'validate' => [
+				'cio' => [
+					['GET', 'userid/', Json\Mci::class, 'validateCioUserid'],
+				],
 				['GET', 'custid/', Json\Mci::class, 'validateCustid'],
 			],
 		],
@@ -209,6 +217,16 @@
 			['GET', 'mhm/code/', Json\Mgl::class, 'getGlCode'],
 			['GET', 'ttm/code/', Json\Mgl::class, 'getTtmCode'],
 			['GET', 'dtm/code/', Json\Mgl::class, 'getDtmCode'],
+		],
+		'mii' => [
+			'iio' => [
+				['GET', 'user/', Json\Mii::class, 'getIioUser'],
+			],
+			'validate' => [
+				'iio' => [
+					['GET', 'userid/', Json\Mii::class, 'validateIioUserid'],
+				],
+			],
 		],
 		'mki' => [
 			'validate' => [
@@ -328,6 +346,16 @@
 					['POST', '', Json\Mqo::class, 'editQuote'],
 				]
 			]
+		],
+		'mvi' => [
+			'vio' => [
+				['GET', 'user/', Json\Mvi::class, 'getVioUser'],
+			],
+			'validate' => [
+				'vio' => [
+					['GET', 'userid/', Json\Mvi::class, 'validateVioUserid'],
+				],
+			],
 		],
 		'util' => [
 			'recordlocker' => [
