@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mii\Iiadmn;
+<?php namespace Controllers\Mci\Ciadmn;
 // Purl URI Library
 use Purl\Url as Purl;
 // Dplus Model
@@ -8,10 +8,10 @@ use Dplus\UserOptions;
 // MVC Controllers
 use Controllers\Abstracts\AbstractUserOptionsController;
 
-class Iio extends AbstractUserOptionsController {
-	const DPLUSPERMISSION = 'iio';
-	const TITLE 		  = 'Item Information Options';
-	const SUMMARY		  = 'View / Edit User Access in II';
+class Cio extends AbstractUserOptionsController {
+	const DPLUSPERMISSION = 'cio';
+	const TITLE 		  = 'Customer Information Options';
+	const SUMMARY		  = 'View / Edit User Access in CI';
 	const SHOWONPAGE	  = 10;
 	const BASE_MENU_CODE  = 'mii';
 
@@ -19,7 +19,7 @@ class Iio extends AbstractUserOptionsController {
 	4. URLs
 ============================================================= */
 	public static function _url() {
-		return self::pw('pages')->get('pw_template=iio')->url;
+		return self::pw('pages')->get('pw_template=cio')->url;
 	}
 
 	/**
@@ -27,7 +27,7 @@ class Iio extends AbstractUserOptionsController {
 	 * @return string
 	 */
 	public static function menuUrl() {
-		return self::pw('pages')->get('pw_template=iio')->parent()->url;
+		return self::pw('pages')->get('pw_template=cio')->parent()->url;
 	}
 
 /* =============================================================
@@ -38,7 +38,7 @@ class Iio extends AbstractUserOptionsController {
 	 * @return UserOptions\AbstractManager
 	 */
 	public static function getManager() {
-		return UserOptions\Iio::getInstance();
+		return UserOptions\Cio::getInstance();
 	}
 
 /* =============================================================
@@ -49,6 +49,6 @@ class Iio extends AbstractUserOptionsController {
 	 * @return string
 	 */
 	protected static function menuTitle() {
-		return self::pw('pages')->get('pw_template=iio')->parent()->title;
+		return self::pw('pages')->get('pw_template=cio')->parent()->title;
 	}
 }

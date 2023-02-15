@@ -15,33 +15,6 @@
 			} %}
 		</div>
 
-		<div class="col-sm-2 input-parent">
-			{% if manager.fieldAttribute(option, 'whse') %}
-				{% set fieldname = 'whse' ~ option %}
-				{% set value = attribute(u, fieldname) %}
-
-				{% include 'user-options/user/form/inputs/whseid.twig' with {'name': fieldname, 'value': value} %}
-				<small class="text-muted name">{{ value ? IWHM.name(value) : '' }}</small>
-			{% endif %}
-		</div>
-
-		<div class="col-sm-2">
-			{% if manager.fieldAttribute(option, 'detail') %}
-				{% set fieldname = 'detail' ~ option %}
-				{% set value = attribute(u, fieldname) %}
-
-				{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'name': fieldname,
-						'value' : value,
-						'size': 'sm',
-						'haskeys': true,
-						'showvalue': true,
-						'options': manager.fieldAttribute(fieldname, 'options')
-					}
-				} %}
-			{% endif %}
-		</div>
 		{% if manager.fieldAttribute(option, 'date') %}
 			<div class="col-sm-2">
 				<div class="form-row">
