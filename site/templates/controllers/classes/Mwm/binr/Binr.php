@@ -95,9 +95,10 @@ class Binr extends Controller {
 		}
 
 		if ($resultscount === 1) {
-			$item = $inventory->query()->findOne();
-			$url = self::pw('page')->binr_itemURL($item);
-			self::pw('session')->redirect($url, $http301 = false);
+			// $item = $inventory->query()->findOne();
+			// $url = self::pw('page')->binr_itemURL($item);
+			// self::pw('session')->redirect($url, $http301 = false);
+			return self::handleScanInventorySingleItemid($data);
 		}
 
 		// Multiple Items - count the number Distinct Item IDs
@@ -150,6 +151,11 @@ class Binr extends Controller {
 		$inventory   = self::getInventorySearch();
 		$whsesession = self::getWhseSession();
 
+		if ($data->itemID) {
+			$page->scan   = $data->itemID;
+			$resultscount = $inventory->count_lotserial_records($data->itemID, $data->binID);
+		}
+
 		if ($data->lotnbr) {
 			$page->scan   = $data->lotnbr;
 			$resultscount = $inventory->count_lotserial_records($data->lotnbr, $data->binID);
@@ -157,10 +163,6 @@ class Binr extends Controller {
 		if ($data->serialnbr) {
 			$page->scan   = $data->serialnbr;
 			$resultscount = $inventory->count_lotserial_records($data->serialnbr, $data->binID);
-		}
-		if ($data->itemID) {
-			$page->scan   = $data->itemID;
-			$resultscount = $inventory->count_lotserial_records($data->itemID, $data->binID);
 		}
 
 		if ($resultscount > 1) {
@@ -190,7 +192,9 @@ class Binr extends Controller {
 		$html .= $config->twig->render('warehouse/binr/to-bins-modal.twig', ['config' => $config->binr, 'currentbins' => $currentbins, 'warehouse' => $warehouse, 'item' => $item, 'inventory' => $inventory]);
 		// 4. Warehouse Config JS
 		$bins = $warehouse->get_bins();
+		
 		$availablebins = BininfoQuery::create()->filterBySessionItemid(session_id(), $item->itemID)->find()->toArray('Bin');
+		
 		$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
 		$html .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig, 'validfrombins' => $availablebins)]);
 		return $html;
@@ -233,15 +237,14 @@ class Binr extends Controller {
 
 	public static function init() {
 		$wm = self::pw('modules')->get('WarehouseManagement');
+
 		$wm->addHook('Page::binr_itemURL', function($event) {
 			$p = $event->object;
 			$item = $event->arguments(0);
-			$url = new Purl($p->parent('template=warehouse-menu')->child('template=redir')->url);
-			$url->query->set('action','search-item-bins');
+			$url = new Purl($p->url);
 			$url->query->set('itemID', $item->itemid);
 			$url->query->set($item->get_itemtypeproperty(), $item->get_itemidentifier());
 			$url->query->set('binID', $item->bin);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 
