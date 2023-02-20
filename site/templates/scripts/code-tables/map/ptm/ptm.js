@@ -145,7 +145,10 @@ $(function() {
 
 		if (input.val() == 0) {
 			input.val('');
+			formPtm.handleStdOrderPercentClear(input);
 		}
+		formPtm.setupNextStdSplit(input);
+		formPtm.enableDisableNextStdSplit(input.closest('.std-split').data('index'));
 	});
 
 /* =============================================================
