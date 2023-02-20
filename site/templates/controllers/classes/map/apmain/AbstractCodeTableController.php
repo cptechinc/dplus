@@ -297,4 +297,144 @@ abstract class AbstractCodeTableController extends AbstractController {
 		];
 		self::pw('config')->js('vars', $jsVars);
 	}
+
+	/**
+	 * Return CodeTable field Config Data
+	 * NOTE: Keep public for classes that are a copy of another, in a different menu
+	 * @param  WireData $data
+	 * @return array
+	 */
+	public static function getCodeTableFieldConfigData(WireData $data) {
+		$table = static::getCodeTable();
+		return [
+			'code'		  => ['maxlength' => $table->fieldAttribute('code', 'maxlength')],
+			'description' => ['maxlength' => $table->fieldAttribute('description', 'maxlength')],
+		];
+	}
+
+
+	/**
+	 * Return Fields
+	 * @return array
+	 */
+	protected static function getCodeTableFields() {
+		return array_keys(static::getCodeTable()::FIELD_ATTRIBUTES);
+	}
+
+	/**
+	 * Return URLs to JSON API
+	 * NOTE: Keep public for classes that are a copy of another, in a different menu
+	 * @return array
+	 */
+	public static function getCodeTableApiUrls() {
+		$class = strtolower(static::getClassName());
+		
+		return [
+			'validate' => self::pw('page')->jsonApiUrl("map/validate/$class/code/"),
+			'code'	   => self::pw('page')->jsonApiUrl("map/$class/code/"),
+		];
+	}
+	
+	/**
+	 * Return Relative Path to JS directory for this CodeTable
+	 * @return string
+	 */
+	protected static function getRelativeJsPath() {
+		$class = strtolower(static::getClassName());
+		return "scripts/code-tables/map/$class/";
+	}
+
+	/**
+	 * Return relative Path to Requests JS class File
+	 * @return string
+	 */
+	protected static function requestClassJsPath() {
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . 'classes/Requests.js';
+	}
+
+	/**
+	 * Return relative Path to Form JS class File
+	 * @return string
+	 */
+	protected static function formClassJsPath() {
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . 'classes/Form.js';
+	}
+
+	/**
+	 * Return relative Path to Alerts JS class File
+	 * @return string
+	 */
+	protected static function alertsClassJsPath() {
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . 'classes/Alerts.js';
+	}
+
+	/**
+	 * Return JS filepath to custom JS file
+	 * @return string
+	 */
+	protected static function codeTableCustomJsPath() {
+		$class  = strtolower($class = static::getClassName());
+		$jsPath = static::getRelativeJsPath();
+		return $jsPath . "$class.js";
+	}
+
+	/**
+	 * Append JS class files
+	 * @param  WireData|null $data
+	 * @return void
+	 */
+	protected static function appendJsClasses(WireData $data = null) {
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Requests.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Config.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Inputs.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Form.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/classes/Alerts.js'));
+
+		
+		$requestsJsPath = static::requestClassJsPath();
+
+		if (file_exists(self::pw('config')->paths->templates . $requestsJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($requestsJsPath));
+		}
+
+		$formJsPath = static::formClassJsPath();
+
+		if (file_exists(self::pw('config')->paths->templates . $formJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($formJsPath));
+		}
+
+		$alertsJsPath = static::alertsClassJsPath();
+
+		if (file_exists(self::pw('config')->paths->templates . $alertsJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($alertsJsPath));
+		}
+	}
+
+	
+	/**
+	 * Append JS files to loaded
+	 * @param  WireData|null $data
+	 * @return void
+	 */
+	protected static function appendJs(WireData $data = null) {
+		static::appendJsClasses($data);
+
+		if (static::USE_EDIT_MODAL) {
+			// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/modal-form.js'));
+			// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/edit-modal-events.js'));
+		}
+		
+		if (static::USE_EDIT_MODAL === false) { 
+			// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/code-form.js'));
+			// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/code-tables/edit-code-events.js'));
+		}
+
+		$customJsPath = static::codeTableCustomJsPath();
+		if (file_exists(self::pw('config')->paths->templates . $customJsPath)) {
+			self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($customJsPath));
+		}
+	}
 }
