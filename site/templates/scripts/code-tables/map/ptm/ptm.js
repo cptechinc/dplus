@@ -258,6 +258,30 @@ $(function() {
 		formPtm.enableDisableStdDiscFieldsFromDate(input);
 	});
 
+	$("body").on("keyup", ".std_due_days", function(e) {
+		if (formPtm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input = $(this);
+		input.val(input.val().trim());
+		formPtm.enableDisableStdPrimaryDueFieldsFromDueDays(input);
+	});
+
+	$("body").on("change", ".std_due_days", function(e) {
+		if (formPtm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+		let days = formPtm.floatVal(input.val());
+		if (days == 0) {
+			input.val('');
+		}
+		formPtm.enableDisableStdPrimaryDueFieldsFromDueDays(input);
+	});
+
 	
 /* =============================================================
 	Form Validation
@@ -281,7 +305,7 @@ $(function() {
 
 	jQuery.validator.addMethod("expiredate", function(value, element) {
 		return this.optional(element) || validateExpiredate();
-	}, "Date must be a valid, future date MM/DD/YYYY");
+	}, "Date must be a valid future date MM/DD/YYYY");
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
 		var percentTotal = formPtm.sumUpStdOrderPercents();
