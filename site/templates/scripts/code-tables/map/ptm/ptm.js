@@ -196,6 +196,26 @@ $(function() {
 		}
 		formPtm.enableDisableStdDiscFieldsFromDays(input);
 	});
+
+	$("body").on("keyup", ".std_disc_day", function(e) {
+		if (formPtm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+		formPtm.enableDisableStdDiscFieldsFromDay($(this));
+	});
+
+	$("body").on("change", ".std_disc_day", function(e) {
+		if (formPtm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		if (input.val() == 0) {
+			input.val('');
+		}
+		formPtm.enableDisableStdDiscFieldsFromDay(input);
+	});
+	
 /* =============================================================
 	Form Validation
 ============================================================= */
