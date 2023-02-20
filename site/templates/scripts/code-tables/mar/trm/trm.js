@@ -780,7 +780,7 @@ $(function() {
 				return true;
 			}
 			if (formTrm.sumUpStdOrderPercents() != 100) {
-				formTrm.form.find('#std-error').text('Order Perents Must add up to 100');
+				formTrm.form.find('#std-error').text('Order Percents Must add up to 100');
 				return false;
 			}
 			form.submit();
