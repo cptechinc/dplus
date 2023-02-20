@@ -1,0 +1,23 @@
+{% set value = code.std_plus_years(x) %}
+{% set readonly = code.std_due_date(x) == 0 %}
+
+{% set tabindex = startindex + (x * 10) + 9 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'std_plus_years' ~ x,
+		'type': 'number',
+		'value': value != 0 ? value : '',
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'std_plus_years'
+		],
+		'attributes': {
+			'tabindex': tabindex,
+			'readonly': readonly,
+			'max':  manager.fieldAttribute('std_plus_years', 'max')
+		}
+	}
+} %}
