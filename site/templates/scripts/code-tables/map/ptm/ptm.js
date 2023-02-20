@@ -151,6 +151,51 @@ $(function() {
 		formPtm.enableDisableNextStdSplit(input.closest('.std-split').data('index'));
 	});
 
+	$("body").on("keyup", ".std_disc_percent", function(e) {
+		if (formPtm.isMethodStd() === false) {
+			return false;
+		}
+		formPtm.enableDisableStdDiscFieldsFromDiscPercent($(this));
+	});
+
+	$("body").on("change", ".std_disc_percent", function(e) {
+		if (formPtm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		let percent = formPtm.floatVal(input.val());
+		input.val(percent.toFixed(formPtm.config.fields.std_disc_percent.precision));
+		formPtm.enableDisableStdDiscFieldsFromDiscPercent(input);
+		
+		if (percent > 0) {
+			return true;
+		}
+		input.val('');
+		let inputs = formPtm.getStdDiscFieldsByStdDiscGroup(input.closest('.std-discount'));
+		Object.values(inputs).forEach(sinput => {
+			sinput.val('');
+		});
+	});
+	
+	$("body").on("keyup", ".std_disc_days", function(e) {
+		if (formPtm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+		formPtm.enableDisableStdDiscFieldsFromDays($(this));
+	});
+
+	$("body").on("change", ".std_disc_days", function(e) {
+		if (formPtm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		if (input.val() == 0) {
+			input.val('');
+		}
+		formPtm.enableDisableStdDiscFieldsFromDays(input);
+	});
 /* =============================================================
 	Form Validation
 ============================================================= */
