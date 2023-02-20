@@ -532,12 +532,13 @@ $(function() {
 		let input  = $(this);
 
 		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
-			input.closest('form').validate().element('#' + input.attr('id'))
+			input.closest('form').validate().element('#' + input.attr('id'));
 		}
 
 		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
+			input.closest('form').validate().element('#' + input.attr('id'));
 		}
 		formTrm.enableDisableStdDependentFieldsFromDueDate(input);
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
@@ -559,6 +560,7 @@ $(function() {
 		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
+			input.closest('form').validate().element('#' + input.attr('id'));
 		}
 
 		formTrm.enableDisableStdDependentFieldsFromDueDate(input);
