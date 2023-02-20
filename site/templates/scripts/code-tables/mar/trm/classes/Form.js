@@ -189,6 +189,8 @@ class TrmForm extends CodeFormBase {
 
 		let value = input.val() == '' ? 0.0 : parseFloat(input.val());
 
+		console.log(input.attr('name') + ': ' + value);
+
 		let allInputs = this.getAllStdInputs();
 		let thisSplit = allInputs.splits[index];
 		let nextSplit = allInputs.splits[index + 1];
@@ -216,11 +218,13 @@ class TrmForm extends CodeFormBase {
 			return true;
 		}
 
-		if (totalPercent < 100) {
+		console.log(totalPercent);
+
+		if (totalPercent <= 100) {
 			this.enableDisableInputs(nextInputs, true);
 		}
-
-		if (totalPercent == 100 && nextSplit.inputs.order_percent.val() != '') {
+		// console.log(nextSplit.inputs.order_percent.attr('name') + ': '  + nextSplit.inputs.order_percent.val());
+		if (totalPercent == 100 && nextSplit.inputs.order_percent.val() == '') {
 			this.enableDisableInputs(nextInputs, false);
 		}
 	}
@@ -274,6 +278,7 @@ class TrmForm extends CodeFormBase {
 		
 		let thisSplit = input.closest('.std-split');
 		let index = parseInt(thisSplit.data('index'));
+		
 		let thisOrderPercentLast  = input.attr('data-lastvalue');
 
 		let allInputs = this.getAllStdInputs();
@@ -308,9 +313,8 @@ class TrmForm extends CodeFormBase {
 					inputCurr.val(inputNext.val());
 
 					if (name == 'order_percent') {
-						console.log(inputCurr.attr('name'));
+						inputCurr.val(inputNext.val());
 						inputCurr.attr('data-lastvalue', inputCurr.val());
-						console.log(inputCurr.attr('data-lastvalue'));
 					}
 	
 					if (inputNext.attr('readonly') !== undefined) {
@@ -332,10 +336,24 @@ class TrmForm extends CodeFormBase {
 			splitPrev.inputs.order_percent.val(percent.toFixed(this.config.fields.order_percent.precision));
 
 			if (index + 1 <= codetable.config.methods.std.splitCount) {
-				allInputs.splits[index + 1].inputs.order_percent.val('');
+				// allInputs.splits[index + 1].inputs.order_percent.val('');
 			}
 		}
-		input.change();
+		let splitLast = allInputs.splits[codetable.config.methods.std.splitCount];
+		keys = Object.keys(splitLast.inputs);
+		keys.forEach(name => {
+			let inputCurr = splitLast.inputs[name];
+			inputCurr.val('');
+
+			if (name == 'order_percent') {
+				inputCurr.attr('data-lastvalue', '');
+			}
+			formTrm.setReadonly(inputCurr, true);
+			formTrm.disableTabindex(inputCurr);
+		});
+
+		
+		// input.change();
 	}
 
 	/**
