@@ -215,6 +215,49 @@ $(function() {
 		}
 		formPtm.enableDisableStdDiscFieldsFromDay(input);
 	});
+
+	$("body").on("keyup", ".std_disc_date", function(e) {
+		if (formPtm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+
+		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
+			input.closest('form').validate().element('#' + input.attr('id'));
+		}
+	});
+
+	$("body").on("change", ".std_disc_date", function(e) {
+		if (formPtm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		let parentGroup = input.closest('.std-discount');
+
+		input.val(input.val().trim());
+
+		if (input.val().trim() == '') {
+			formPtm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
+		}
+
+		if (dateRegexes.regexes['mmdd'].test(input.val())) {
+			let date = moment(input.val(), momentJsFormats['mmdd']);
+			input.val(date.format(momentJsFormats['mm/dd']));
+		}
+
+		if (dateRegexes.regexes['m/dd'].test(input.val())) {
+			let date = moment(input.val(), momentJsFormats['m/dd']);
+			input.val(date.format(momentJsFormats['mm/dd']));
+		}
+		
+		if (dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
+			return false;
+		}
+		formPtm.enableDisableStdDiscFieldsFromDate(input);
+	});
+
 	
 /* =============================================================
 	Form Validation
