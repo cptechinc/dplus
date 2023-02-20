@@ -358,6 +358,7 @@ $(function() {
 			formTrm.setDisabled(formTrm.inputs.fields.freightallow, false);
 			return true;
 		}
+		formTrm.inputs.fields.freightallow.val('N');
 		formTrm.setReadonly(formTrm.inputs.fields.freightallow, true);
 		formTrm.disableTabindex(formTrm.inputs.fields.freightallow);
 		formTrm.setDisabled(formTrm.inputs.fields.freightallow, true);
