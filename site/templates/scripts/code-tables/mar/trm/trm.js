@@ -700,12 +700,12 @@ $(function() {
 
 	jQuery.validator.addMethod("expiredate", function(value, element) {
 		return this.optional(element) || validateExpiredate();
-	}, "Date must be a valid, future date MM/DD/YYYY");
+	}, "Date must be a valid future date MM/DD/YYYY");
 
 	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
 		var isFocused = element == document.activeElement;
 		return this.optional(element) || validateDateMMDDSlash(value);
-	}, "Date must be a valid, date MM/DD");
+	}, "Date must be a valid date MM/DD");
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
 		var percentTotal = formTrm.sumUpStdOrderPercents();
