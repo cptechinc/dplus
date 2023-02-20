@@ -136,7 +136,7 @@ $(function() {
 		if (totalPercent > 100) {
 			alert.orderPercentIsOver100(function() {
 				input.val(input.attr('data-lastvalue'));
-				// input.closest('form').validate().element('#'+input.attr('id'));
+				input.closest('form').validate().element('#'+input.attr('id'));
 				input.focus();
 				return true;
 			});
