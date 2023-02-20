@@ -25,6 +25,11 @@
 			['GET',  'page{pagenbr:\d+}', Apmain\Mxrfe::class, 'index'],
 			['POST', '', Apmain\Mxrfe::class, 'handleCRUD'],
 		],
+		'ptm' => [
+			['GET',  '', Apmain\Ptm::class, 'index'],
+			['GET',  'page{pagenbr:\d+}', Apmain\Ptm::class, 'index'],
+			['POST', '', Apmain\Ptm::class, 'handleCRUD'],
+		],
 		'vtm' => [
 			['GET',  '', Apmain\Vtm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Apmain\Vtm::class, 'index'],
