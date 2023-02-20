@@ -285,6 +285,19 @@ abstract class AbstractCodeTableController extends AbstractController {
 		return $reflector->getShortName();
 	}
 
+	protected static function codeTableJsVarsArray(WireData $data) {
+		return [
+			'table' => strtolower(static::getClassName()),
+			'config' => [
+				'fields' => static::getCodeTableFieldConfigData($data),
+				'urls' => [
+					'api' => static::getCodeTableApiUrls($data)
+				],
+			],
+			'fields' => static::getCodeTableFields()
+		];
+	}
+
 	/**
 	 * Add Variables to JS Vars Array
 	 * @param  WireData $data
@@ -292,9 +305,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	 */
 	protected static function addVarsToJsVars(WireData $data) {
 		$jsVars = self::pw('config')->js('vars');
-		$jsVars['codetable'] = [
-			'table' => strtolower(static::getClassName()),
-		];
+		$jsVars['codetable'] = static::codeTableJsVarsArray($data);
 		self::pw('config')->js('vars', $jsVars);
 	}
 
