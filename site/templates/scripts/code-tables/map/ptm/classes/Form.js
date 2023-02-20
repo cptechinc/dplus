@@ -388,6 +388,42 @@ class PtmForm extends CodeFormBase {
 	}
 
 	/**
+	 * Enable Discount / Day Month fields based off Discount Percent Value
+	 * @param	{Object} input 
+	 * @returns 
+	 */
+	enableDisableStdDiscFieldsFromDiscPercent(input) {
+		if (this.isMethodStd() === false || input.hasClass('std_disc_percent') === false) {
+			return false;
+		}
+		let parent	= input.closest('.std-discount');
+		let percent = this.floatVal(input.val());
+
+		let inputs = this.getStdDiscFieldsByStdDiscGroup(parent);
+
+
+		if (percent == 0) {
+			this.enableDisableInputs(Object.values(inputs), false);
+			return true;
+		}
+
+		this.enableDisableInputs(Object.values(inputs), false);
+		let enableAll = true;
+
+		Object.keys(inputs).forEach(name => {
+			if (inputs[name].val() != 0) {
+				this.setReadonly(inputs[name], false);
+				this.enableTabindex(inputs[name]);
+				enableAll = false;
+			}
+		});
+		if (enableAll === false) {
+			return true;
+		}
+		this.enableDisableInputs(Object.values(inputs), true);
+	}
+
+	/**
 	 * Enable / Disable Discount inputs that don't have x name
 	 * @param {HTMLElement} input 
 	 * @param {string}		name 
