@@ -656,4 +656,28 @@ class PtmForm extends CodeFormBase {
 		}
 		input.attr('tabindex', disablePrefix + tabindex);
 	}
+
+	/**
+	 * Enable / Disable multiple Inputs
+	 * @param	{array} inputs 
+	 * @param	{bool}	enable 
+	 * @returns {bool}
+	 */
+	enableDisableInputs(inputs, enable = true) {
+		let formTrm = this;
+
+		if (enable === false) {
+			inputs.forEach(input => {
+				formTrm.setReadonly(input, true);
+				formTrm.disableTabindex(input);
+			});
+			return true;
+		}
+		
+		inputs.forEach(input => {
+			formTrm.setReadonly(input, false);
+			formTrm.enableTabindex(input);
+		});
+		return true;
+	}
 }
