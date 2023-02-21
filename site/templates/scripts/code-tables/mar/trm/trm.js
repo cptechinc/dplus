@@ -706,7 +706,7 @@ $(function() {
 
 	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
 		var isFocused = element == document.activeElement;
-		return this.optional(element) || validateDateMMDDSlash(value);
+		return this.optional(element) || (value.length < 5 && isFocused) || validateDateMMDDSlash(value);
 	}, "Date must be a valid date MM/DD");
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {

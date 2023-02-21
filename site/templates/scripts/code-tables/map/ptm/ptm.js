@@ -305,7 +305,7 @@ $(function() {
 
 	jQuery.validator.addMethod("expiredate", function(value, element) {
 		return this.optional(element) || validateExpiredate();
-	}, "Date must be a valid future date MM/DD/YYYY");
+	}, "Date must be in the future (MM/DD/YYYY)");
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
 		var percentTotal = formPtm.sumUpStdOrderPercents();
