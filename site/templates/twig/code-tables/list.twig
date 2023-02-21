@@ -48,12 +48,14 @@
 								<div class="input-group-btn search-panel">
 									<div class="dropdown">
 										<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-											Search By <span class="searchby">{{ values.offsetExists('col') ? values.text('col')|capitalize : 'All' }}</span> <span class="caret"></span>
+											{% set col = values.offsetExists('col') ? values.text('col')|capitalize : 'All' %}
+											{% set col = col == 'Id' ? 'ID' : col %}
+											Search By <span class="searchby">{{ col }}</span> <span class="caret"></span>
 										</button>
 										<div class="dropdown-menu column-options">
 											<a class="dropdown-item" href="#" value="">All</a>
 											{% for field in manager.filterableFields() %}
-												<a class="dropdown-item" href="#" value="{{ field }}">{{ manager.fieldLabel(field)|capitalize }}</a>
+												<a class="dropdown-item" href="#" value="{{ field }}">{{ manager.fieldLabel(field) }}</a>
 											{% endfor %}
 										</div>
 									</div>
