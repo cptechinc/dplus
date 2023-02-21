@@ -328,9 +328,6 @@ $(function() {
 			input.val('');
 			formTrm.shiftSplitValuesUp(input);
 			let allInputs = formTrm.getAllStdInputs(true);
-			// let prevInput = allInputs.splits[input.closest('.std-split').data('index') - 1].inputs.order_percent;
-			// prevInput.val(prevInput.val() + percent.toFixed(formTrm.config.fields.order_percent.precision));
-
 			if (input.closest('.std-split').data('index') > allInputs.lastindex) {
 				formTrm.clearSplitInputs(input);
 			}
