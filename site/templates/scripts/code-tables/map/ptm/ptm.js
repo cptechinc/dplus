@@ -282,6 +282,32 @@ $(function() {
 		formPtm.enableDisableStdPrimaryDueFieldsFromDueDays(input);
 	});
 
+	$("body").on("keyup", ".std_due_day", function(e) {
+		if (formPtm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		formPtm.enableDisableStdDependentFieldsFromDueDay(input);
+		formPtm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
+	});
+
+	$("body").on("change", ".std_due_day", function(e) {
+		if (formPtm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		let day = input.val().trim() == '' ? 0 : parseInt(input.val().trim());
+
+		if (day == 0) {
+			input.val('');
+			input.closest('.std-split').find('input.std_plus_months').val('');
+		}
+		formPtm.enableDisableStdDependentFieldsFromDueDay(input);
+		formPtm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
+	});
+
 	
 /* =============================================================
 	Form Validation
