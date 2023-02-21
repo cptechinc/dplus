@@ -189,8 +189,6 @@ class TrmForm extends CodeFormBase {
 
 		let value = input.val() == '' ? 0.0 : parseFloat(input.val());
 
-		console.log(input.attr('name') + ': ' + value);
-
 		let allInputs = this.getAllStdInputs();
 		let thisSplit = allInputs.splits[index];
 		let nextSplit = allInputs.splits[index + 1];
@@ -218,11 +216,11 @@ class TrmForm extends CodeFormBase {
 			return true;
 		}
 
-		console.log(totalPercent);
-
 		if (totalPercent <= 100) {
 			this.enableDisableInputs(nextInputs, true);
+			this.enableDisableThisStdSplitInputs(nextSplit.inputs.order_percent);
 		}
+
 		// console.log(nextSplit.inputs.order_percent.attr('name') + ': '  + nextSplit.inputs.order_percent.val());
 		if (totalPercent == 100 && nextSplit.inputs.order_percent.val() == '') {
 			this.enableDisableInputs(nextInputs, false);
