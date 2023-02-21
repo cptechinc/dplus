@@ -112,7 +112,10 @@ $(function() {
 ============================================================= */
 	function validateDate(value) {
 		let date = moment(value, momentJsFormats['mm/dd/yyyy']);
-		return date.isValid();
+		if (date.isValid() === false) {
+			return false;
+		}
+		return date.year() > 1970 ? true : false;
 	}
 
 	jQuery.validator.addMethod("dateF", function(value, element) {
