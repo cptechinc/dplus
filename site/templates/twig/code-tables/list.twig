@@ -62,7 +62,7 @@
 								</div>
 				
 								<input class="form-control form-group inline" type="text" name="q" value="{{ values.text('q') }}">
-								<input type="hidden" name="col" value="all">
+								<input type="hidden" name="col" value="{{ values.offsetExists('col') ? values.text('col') : 'all' }}">
 								
 								<span class="input-group-btn">
 									<button class="btn btn-light" type="submit">
