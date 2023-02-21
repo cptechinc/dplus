@@ -28,7 +28,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	const DPLUS_TABLE			= 'SPM';
 	const FIELD_ATTRIBUTES = [
 		'id'     => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
-		'code'     => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
+		'code'   => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
 		'name'   => ['type' => 'text', 'maxlength' => 30, 'label' => 'Name'],
 		'cycle'  => ['type' => 'text', 'maxlength' => 2],
 		'groupid' => ['type' => 'text', 'maxlength' => Spgpm::FIELD_ATTRIBUTES['code']['maxlength']],
@@ -141,6 +141,8 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 			$setField = 'set'.ucfirst($field);
 			$code->$setField($values->float($field, $fieldOptions));
 		}
+
+		$code->setLastsaledate('');
 
 		if ($values->text('lastsaledate') != '') {
 			$code->setLastsaledate(date($this->fieldAttribute('lastsaledate', 'format'), strtotime($values->text('lastsaledate'))));
