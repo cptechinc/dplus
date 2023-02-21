@@ -41,6 +41,7 @@ class DateFormatter {
 				this.dateFormat = pattern;
 			}
 		});
+		console.log(this.dateFormat);
 	}
 
 	initMoment() {
@@ -76,9 +77,8 @@ class DateFormatter {
 		if (this.moment.year() >= minYear) {
 			return true;
 		}
-		let remainder = (100 - (currentCentury - this.moment.year()));
-		let year = currentCentury + remainder;
-		console.log(year);
+		let remainder = this.moment.year().toString().slice(-2);
+		let year = currentCentury + parseInt(remainder);
 		this.moment.year(year);
 	}
 }
