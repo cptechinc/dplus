@@ -2,9 +2,20 @@
 
 $(function() {
 	var ajaxModal = $('#ajax-modal');
-	var server   = SpmRequests.getInstance();
-	var alert    = CodeAlerts.getInstance();
+	var server	 = SpmRequests.getInstance();
+	var alert	 = CodeAlerts.getInstance();
 	var formCode = CodeForm.getInstance();
+	var dateRegexes = DateRegexes.getInstance();
+
+	let momentJsFormats = {
+		'mmdd': 'MMDD',
+		'mm/dd': 'MM/DD',
+		'm/dd': 'M/DD',
+		'mmddyyyy': 'MMDDYYYY',
+		'mmddyy': 'MMDDYY',
+		'mm/dd/yyyy': 'MM/DD/YYYY',
+		'timestamp': 'X'
+	}
 
 /* =============================================================
 	Event Functions
@@ -36,6 +47,7 @@ $(function() {
 		var descriptionField = inputParent.find('.group-description');
 		descriptionField.text('');
 		if (input.val() == '') {
+			input.closest('form').validate().element('#' + input.attr('id'));
 			return true;
 		}
 		server.getSalesGroup(input.val(), function(group) {
@@ -60,11 +72,22 @@ $(function() {
 		});
 	});
 
-
 	$("body").on("change", "input.to-date", function(e) {
 		var input = $(this);
 		var value = parseFloat(input.val());
 		input.val(value.toFixed(formCode.config.fields[input.attr('name')].precision));
+	});
+
+	$("body").on("change", "#code-form input[name=lastsaledate]", function(e) {
+		let input = $(this);
+
+		let date = new DateFormatter(input.val(), 'mm/dd/yyyy');
+		date.updateCentury();
+
+		if (date.isValid()) {
+			console.log(input.val());
+			input.val(date.format('mm/dd/yyyy'));
+		}
 	});
 
 /* =============================================================
@@ -87,6 +110,16 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
+	function validateDate(value) {
+		let date = moment(value, momentJsFormats['mm/dd/yyyy']);
+		return date.isValid();
+	}
+
+	jQuery.validator.addMethod("dateF", function(value, element) {
+		var isFocused = element == document.activeElement;
+		return this.optional(element) || (value.length < 8 && isFocused) || validateDate(value);
+	}, "Invalid Date (MM/DD/YYYY)");
+
 	var validator = formCode.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -155,10 +188,14 @@ $(function() {
 					}
 				}
 			},
+			lastsaledate: {
+				required: false,
+				dateF: true,
+			}
 		},
 		submitHandler: function(form) {
 			var formCode = CodeForm.getInstance();
-			var server   = SpmRequests.getInstance();
+			var server	 = SpmRequests.getInstance();
 			var code = formCode.inputs.code.val();
 
 			if (formCode.inputs.form.attr('data-code') == code) {
