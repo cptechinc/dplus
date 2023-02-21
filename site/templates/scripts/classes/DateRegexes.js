@@ -18,7 +18,7 @@ class DateRegexes {
 		};
 		this.regexes = {
 			'mmddyyyy': new RegExp(this.patterns['mmddyyyy']),
-			'mmddyyyy': new RegExp(this.patterns['mmddyy']),
+			'mmddyy': new RegExp(this.patterns['mmddyy']),
 			'mmdd': new RegExp(this.patterns['mmdd']),
 			'mm/dd': new RegExp(this.patterns['mm/dd']),
 			'm/dd': new RegExp(this.patterns['m/dd']),
