@@ -14,7 +14,7 @@ class Spm extends AbstractCodeTableController {
 	const TITLE      = 'Salesperson';
 	const SUMMARY    = 'View / Edit Salespersons';
 	const SHOWONPAGE = 10;
-	const LIST_SEARCH_COLS = ['userid', 'name'];
+	const LIST_SEARCH_COLS = ['id', 'name'];
 
 	public static function _url() {
 		return Menu::spmUrl();
