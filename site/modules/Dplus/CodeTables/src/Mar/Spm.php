@@ -27,9 +27,9 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	const RECORDLOCKER_FUNCTION = 'spm';
 	const DPLUS_TABLE			= 'SPM';
 	const FIELD_ATTRIBUTES = [
-		'id'     => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
-		'code'     => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
-		'name'   => ['type' => 'text', 'maxlength' => 30, 'label' => 'Name'],
+		'id'	 => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
+		'code'	   => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
+		'name'	 => ['type' => 'text', 'maxlength' => 30, 'label' => 'Name'],
 		'cycle'  => ['type' => 'text', 'maxlength' => 2],
 		'groupid' => ['type' => 'text', 'maxlength' => Spgpm::FIELD_ATTRIBUTES['code']['maxlength']],
 		'salesmtd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Sales MTD'],
@@ -44,9 +44,9 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		'manager' => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
 		'restricted' => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'Y'],
 		'lastsaledate' => ['type' => 'text', 'format' => 'Ymd', 'displayformat' => 'm/d/Y'],
-		'userid'      => ['type' => 'text', 'maxlength' => 6],
-		'email'      => ['type' => 'text'],
-		'vendorid'      => ['type' => 'text'],
+		'userid'	  => ['type' => 'text', 'maxlength' => 6],
+		'email' 	 => ['type' => 'text'],
+		'vendorid'	 => ['type' => 'text'],
 	];
 
 	public function codeJson(Code $code) {
@@ -96,6 +96,9 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		$code = parent::new($id);
 		$code->setManager($this->fieldAttribute('manager', 'default'));
 		$code->setRestricted($this->fieldAttribute('restricted', 'default'));
+		$code->setVendorid('');
+		$code->setGroupid('');
+		$code->setLastsaledate('');
 		return $code;
 	}
 
@@ -104,15 +107,15 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 ============================================================= */
 	/**
 	 * Update Record with Input Data
-	 * @param  WireInput	     $input Input Data
-	 * @param  Salesperson  $code
+	 * @param  WireInput		 $input Input Data
+	 * @param  Salesperson	$code
 	 * @return array
 	 */
 	protected function _inputUpdate(WireInput $input, Code $code) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$invalidfields  = parent::_inputUpdate($input, $code);
+		$invalidfields	= parent::_inputUpdate($input, $code);
 		$invalidfieldsVA = $this->_inputUpdateValidatedFields($values, $code);
 		$invalidfieldsSA = $this->_inputUpdateSales($values, $code);
 		$invalidfieldsPE = $this->_inputUpdatePermissions($values, $code);
@@ -136,7 +139,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		foreach ($fields as $field) {
 			$fieldOptions = [
 				'precision' => $this->fieldAttribute($field, 'precision'),
-				'max'       => $this->fieldAttribute($field, 'max')
+				'max'		=> $this->fieldAttribute($field, 'max')
 			];
 			$setField = 'set'.ucfirst($field);
 			$code->$setField($values->float($field, $fieldOptions));
@@ -151,8 +154,8 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	/**
 	 * Update fields that need validation, return errors
 	 * NOTE: fields are groupid, userid, vendorid
-	 * @param  WireInputData    $values
-	 * @param  Salesperson      $code
+	 * @param  WireInputData	$values
+	 * @param  Salesperson		$code
 	 * @return array
 	 */
 	private function _inputUpdateValidatedFields(WireInputData $values, Salesperson $code) {
@@ -188,7 +191,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	/**
 	 * Set SPM Permissions (Manager, restrictions)
 	 * @param WireInputData $values
-	 * @param Salesperson   $code
+	 * @param Salesperson	$code
 	 * @return array
 	 */
 	private function _inputUpdatePermissions(WireInputData $values, Salesperson $code) {
@@ -200,7 +203,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	/**
 	 * Set Email
 	 * @param WireInputData $values
-	 * @param Salesperson   $code
+	 * @param Salesperson	$code
 	 * @return array
 	 */
 	private function _inputUpdateName(WireInputData $values, Salesperson $code) {
@@ -211,7 +214,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	/**
 	 * Set Email
 	 * @param WireInputData $values
-	 * @param Salesperson   $code
+	 * @param Salesperson	$code
 	 * @return array
 	 */
 	private function _inputUpdateEmail(WireInputData $values, Salesperson $code) {
@@ -222,7 +225,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	/**
 	 * Set Email
 	 * @param WireInputData $values
-	 * @param Salesperson   $code
+	 * @param Salesperson	$code
 	 * @return array
 	 */
 	private function _inputUpdateCycle(WireInputData $values, Salesperson $code) {
