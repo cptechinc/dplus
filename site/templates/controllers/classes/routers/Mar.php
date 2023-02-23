@@ -19,6 +19,7 @@ class Mar extends Base {
 		'roptm'  => ['', Ar\Armain\Menu::class, 'roptmUrl'],
 		'sic'    => ['', Ar\Armain\Menu::class, 'sicUrl'],
 		'spgpm'  => ['', Ar\Armain\Menu::class, 'spgpmUrl'],
+		'spm'    => ['', Ar\Armain\Menu::class, 'spmUrl'],
 		'suc'    => ['', Ar\Armain\Menu::class, 'sucUrl'],
 		'tm'     => ['', Ar\Armain\Menu::class, 'tmUrl'],
 		'trm'    => ['', Ar\Armain\Menu::class, 'trmUrl'],
