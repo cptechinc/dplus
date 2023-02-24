@@ -758,6 +758,19 @@ $(function() {
 					}
 				}
 			},
+			ccprefix: {
+				required: false,
+				remote: {
+					url: config.ajax.urls.json + 'mar/validate/crcd/code/',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.inputs.fields.ccprefix.val();
+						}
+					}
+				}
+			},
 			expiredate: {
 				expiredate: true,
 			},
