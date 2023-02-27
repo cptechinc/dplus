@@ -737,8 +737,13 @@ class TrmForm extends CodeFormBase {
 			nextSplit.find('input').val('');
 			return true;
 		}
-		nextSplit.find('.eom_from_day').val(value+1);
-		nextSplit.find('.eom_thru_day').val(this.config.fields.eom_thru_day.max);
+		let nextThruDay = parseInt(nextSplit.find('.eom_from_day').val()) + 1;
+		if (nextIndex == codetable.config.methods.eom.splitCount) {
+			nextThruDay = this.config.fields.eom_thru_day.max;
+		}
+		nextSplit.find('.eom_from_day').val(value);
+		nextSplit.find('.eom_thru_day').val(nextThruDay);
+		nextSplit.find('.eom_thru_day').change();
 	}
 
 /* =============================================================
