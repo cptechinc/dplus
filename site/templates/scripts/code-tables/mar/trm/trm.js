@@ -203,12 +203,17 @@ $(function() {
 
 	$("body").on("change", "#code-form input[name=ccprefix]", function(e) {
 		let input = $(this);
+		input.val(input.val().trim());
+	});
+
+	$("body").on("change", "#code-form input[name=ccprefix]", function(e) {
+		let input = $(this);
 		let parent = input.closest('.input-parent');
 		let descriptionField = parent.find('.description');
 
 		descriptionField.text('');
 
-		if (input.val() == '') {
+		if (input.val().trim() == '') {
 			return true;
 		}
 
@@ -234,6 +239,11 @@ $(function() {
 		formTrm.setReadonly(formCode.inputs.fields.ccprefix, false);
 		formTrm.enableTabindex(formCode.inputs.fields.ccprefix);
 		ccprefixParent.find('button[data-toggle]').removeAttr('disabled');
+	});
+
+	$("body").on("change", "#code-form input[name=country]", function(e) {
+		let input = $(this);
+		input.val(input.val().trim());
 	});
 
 	$("body").on("change", "#code-form input[name=country]", function(e) {
@@ -394,6 +404,8 @@ $(function() {
 		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
+		let input = $(this);
+		input.val(input.val().trim());
 		formTrm.enableDisableStdDiscFieldsFromDays($(this));
 	});
 
@@ -413,6 +425,8 @@ $(function() {
 		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
+		let input = $(this);
+		input.val(input.val().trim());
 		formTrm.enableDisableStdDiscFieldsFromDay($(this));
 	});
 
@@ -434,6 +448,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 
 		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
 			input.closest('form').validate().element('#' + input.attr('id'));
@@ -502,7 +517,8 @@ $(function() {
 			return false;
 		}
 
-		let input  = $(this);
+		let input = $(this);
+		input.val(input.val().trim());
 		formTrm.enableDisableStdDependentFieldsFromDueDay(input);
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
 	});
@@ -523,12 +539,22 @@ $(function() {
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
 	});
 
+	$("body").on("keyup", ".std_plus_months", function(e) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input = $(this);
+		input.val(input.val().trim());
+	});
+
 	$("body").on("keyup", ".std_due_date", function(e) {
 		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
 
-		let input  = $(this);
+		let input = $(this);
+		input.val(input.val().trim());
 
 		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
 			input.closest('form').validate().element('#' + input.attr('id'))
@@ -566,6 +592,15 @@ $(function() {
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
 	});
 
+	$("body").on("keyup", ".std_plus_years", function(e) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input = $(this);
+		input.val(input.val().trim());
+	});
+
 /* =============================================================
 	Method EOM Events
 ============================================================= */
@@ -591,6 +626,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
@@ -783,6 +819,19 @@ $(function() {
 						jqv: 'true',
 						code: function() {
 							return formCode.inputs.fields.termsgroup.val();
+						}
+					}
+				}
+			},
+			country: {
+				required: false,
+				remote: {
+					url: config.ajax.urls.json + 'mar/validate/cocom/code/',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.inputs.fields.country.val();
 						}
 					}
 				}
