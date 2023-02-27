@@ -41,12 +41,14 @@ $(function() {
 		});
 	});
 
+
 	$("body").on("change", "input[name=groupid]", function(e) {
 		var input = $(this);
 		var inputParent = input.closest('.input-parent');
 		var descriptionField = inputParent.find('.group-description');
 		descriptionField.text('');
 		if (input.val() == '') {
+			input.val('');
 			input.closest('form').validate().element('#' + input.attr('id'));
 			return true;
 		}
@@ -124,6 +126,7 @@ $(function() {
 	}, "Invalid Date (MM/DD/YYYY)");
 
 	var validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -154,6 +157,13 @@ $(function() {
 			},
 			vendorid: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=vendorid]').val('');
+						return '';
+					}
+					return $.trim(value);
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('map/validate/vendorid/') }}',
 					type: "get",
@@ -167,6 +177,13 @@ $(function() {
 			},
 			groupid: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=groupid]').val('');
+						return '';
+					}
+					return $.trim(value);
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('mar/validate/spgpm/code/') }}',
 					type: "get",
@@ -180,6 +197,13 @@ $(function() {
 			},
 			userid: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=userid]').val('');
+						return '';
+					}
+					return $.trim(value);
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('msa/validate/logm/id/') }}',
 					type: "get",
