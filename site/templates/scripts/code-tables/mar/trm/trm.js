@@ -650,21 +650,28 @@ $(function() {
 
 		formTrm.updateEomThruDayInput(input);
 
-		if (input.val() == 99) {
-			for (let i = (parent.data('index') + 1); i <= codetable.config.methods.eom.splitCount; i++) {
-				let split = $('.eom-split[data-index=' + i + ']');
-				split.find('input').each(function() {
-					let sinput = $(this);
-					sinput.val('');
-					formTrm.disableTabindex(sinput);
-					formTrm.setReadonly(sinput, true);
-					validator.element('#' + sinput.attr('id'));
-				});
-			}
-			return true;
-		}
-		formTrm.enableDisableNextEomSplit(input);
-		formTrm.setupNextEomSplit(input);
+		// if (user.id != 'ron') {
+		// 	if (input.val() == 99) {
+		// 		for (let i = (parent.data('index') + 1); i <= codetable.config.methods.eom.splitCount; i++) {
+		// 			let split = $('.eom-split[data-index=' + i + ']');
+		// 			split.find('input').each(function() {
+		// 				let sinput = $(this);
+		// 				sinput.val('');
+		// 				formTrm.disableTabindex(sinput);
+		// 				formTrm.setReadonly(sinput, true);
+		// 				validator.element('#' + sinput.attr('id'));
+		// 			});
+		// 		}
+		// 		return true;
+		// 	}
+		// 	formTrm.enableDisableNextEomSplit(input);
+		// 	formTrm.setupNextEomSplit(input);
+		// }
+		// if (user.id == 'ron') {
+			// console.log('ron');
+			formTrm.setupNextEomSplits(input);
+			formTrm.enableDisableNextEomSplits(input);
+		// }
 		validator.element('#' + input.attr('id'));
 	});
 
@@ -757,7 +764,6 @@ $(function() {
 
 	jQuery.validator.addMethod("eomThruDay", function(value, element) {
 		var isFocused = element == document.activeElement;
-		console.log(isFocused);
 		return this.optional(element) || (isFocused) || validateEomThruDay(element, value);
 	}, "Invalid Thru Day");
 
@@ -773,7 +779,6 @@ $(function() {
 				return true;
 			}
 			if (element.closest('.input-group-parent').length) {
-				console.log(error);
 				error.appendTo(element.closest('.input-group-parent'));
 				return true;
 			}
