@@ -64,6 +64,7 @@ $(function() {
 	}, jQuery.validator.format("Freight Tax Code cannot be the same as Master Code"));
   
 	var validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -86,6 +87,13 @@ $(function() {
 			},
 			gl_account: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=gl_account]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('mgl/validate/mhm/code/') }}',
 					type: "get",
@@ -100,6 +108,23 @@ $(function() {
 			freight_tax_code: {
 				required: false, 
 				freight_taxcode_distinct: true,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=freight_tax_code]').val('');
+						return '';
+					}
+					return value;
+				},
+				remote: {
+					url: '{{ page.jsonApiUrl('mar/validate/mtm/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return $('input[name=freight_tax_code]').val();
+						},
+					}
+				}
 			},
 			description: {
 				maxlength: formCode.config.fields.description.maxlength,

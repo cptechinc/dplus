@@ -131,4 +131,30 @@ $(function() {
 			}
 		}
 	});
+
+	$(".taxcode").each(function () {
+		var input = $(this);
+
+		input.rules('add', {
+			required: false,
+			normalizer: function(value) {
+				if (value.trim() == '') {
+					input.val('');
+					return '';
+				}
+				return value;
+			},
+			remote: {
+				url: '{{ page.jsonApiUrl('mar/validate/mtm/code/') }}',
+				type: "get",
+				data: {
+					jqv: 'true',
+					code: function() {
+						return input.val();
+					},
+				}
+			}
+		});
+	});
+
 });
