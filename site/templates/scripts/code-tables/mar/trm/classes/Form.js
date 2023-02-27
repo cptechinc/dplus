@@ -788,6 +788,10 @@ class TrmForm extends CodeFormBase {
 
 			if (nextIndex < codetable.config.methods.eom.splitCount && nextSplit.find('.eom_thru_day').val()) {
 				nextThruDay = nextFromDay + 1;
+
+				if (nextSplit.find('.eom_thru_day').val() != '') { // Keep value if already set
+					nextThruDay = nextSplit.find('.eom_thru_day').val();
+				}
 			}
 
 			if (thruDay == 99) {
@@ -801,8 +805,7 @@ class TrmForm extends CodeFormBase {
 			}
 			nextSplit.find('.eom_from_day').val(nextFromDay);
 			nextSplit.find('.eom_thru_day').val(nextThruDay);
-
-			
+			this.updateEomThruDayInput(nextSplit.find('.eom_thru_day'));
 		}
 	}
 
