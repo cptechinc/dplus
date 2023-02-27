@@ -35,7 +35,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 		'termsgroup'   => ['type' => 'text', 'enabled' => true, 'maxlength' => Trmg::FIELD_ATTRIBUTES['code']['maxlength']],
 
 		// THESE ARE FOR THE SPLITS, USE BASE NAME
-		'eom_disc_percent' => ['type' => 'number', 'max' => 99.99, 'precision' => 2],
+		'eom_disc_percent' => ['type' => 'number', 'max' => 100, 'precision' => 2],
 		'eom_disc_day'     => ['type' => 'number', 'max' => 31],
 		'eom_disc_months'  => ['type' => 'number', 'max' => 99],
 		'eom_due_day'      => ['type' => 'number', 'max' => 31, 'min' => 1],
