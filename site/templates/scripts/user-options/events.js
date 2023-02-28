@@ -77,6 +77,7 @@ $(function() {
 
 		if (input.val() == '') {
 			nameField.text('');
+			input.val('**');
 			return false;
 		}
 

@@ -23,6 +23,7 @@ $(function() {
 	}, "Date must be a valid date (MM/DD/YYYY)"); 
 
 	let validator = formUser.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -57,6 +58,13 @@ $(function() {
 
 		input.rules("add", {
 			required: false,
+			normalizer: function(value) {
+				if (value.trim() == '') {
+					input.val('');
+					return '';
+				}
+				return value;
+			},
 			remote: {
 				url: config.ajax.urls.json + 'min/validate/iwhm/code/',
 				type: "get",
