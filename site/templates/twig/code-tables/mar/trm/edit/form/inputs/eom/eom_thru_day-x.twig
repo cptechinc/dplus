@@ -2,6 +2,10 @@
 
 {% set readonly = value == 0 %}
 
+{% if x == constant('NBR_SPLITS_METHOD_E', manager) %}
+	{% set readonly = readonly ? readonly : value == 99 %}
+{% endif %}
+
 {% set tabindex = startindex + (x * 10) + 1 %}
 {% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
 

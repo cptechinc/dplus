@@ -216,11 +216,13 @@ class TrmForm extends CodeFormBase {
 			return true;
 		}
 
-		if (totalPercent < 100) {
+		if (totalPercent <= 100) {
 			this.enableDisableInputs(nextInputs, true);
+			this.enableDisableThisStdSplitInputs(nextSplit.inputs.order_percent);
 		}
 
-		if (totalPercent == 100 && nextSplit.inputs.order_percent.val() != '') {
+		// console.log(nextSplit.inputs.order_percent.attr('name') + ': '  + nextSplit.inputs.order_percent.val());
+		if (totalPercent == 100 && nextSplit.inputs.order_percent.val() == '') {
 			this.enableDisableInputs(nextInputs, false);
 		}
 	}
@@ -274,7 +276,8 @@ class TrmForm extends CodeFormBase {
 		
 		let thisSplit = input.closest('.std-split');
 		let index = parseInt(thisSplit.data('index'));
-		let thisOrderPercentLast  = input.attr('data-lastvalue');
+		
+		let thisOrderPercentLast = input.attr('data-lastvalue');
 
 		let allInputs = this.getAllStdInputs();
 		let keys = Object.keys(allInputs.splits[1].inputs);
@@ -294,7 +297,7 @@ class TrmForm extends CodeFormBase {
 				formTrm.disableTabindex(inputCurr);
 			});
 			return false;
-		}
+		};
 
 		for (let i = index; i <= codetable.config.methods.std.splitCount; i++) {
 			let splitCurr = allInputs.splits[i];
@@ -308,9 +311,7 @@ class TrmForm extends CodeFormBase {
 					inputCurr.val(inputNext.val());
 
 					if (name == 'order_percent') {
-						console.log(inputCurr.attr('name'));
 						inputCurr.attr('data-lastvalue', inputCurr.val());
-						console.log(inputCurr.attr('data-lastvalue'));
 					}
 	
 					if (inputNext.attr('readonly') !== undefined) {
@@ -330,12 +331,21 @@ class TrmForm extends CodeFormBase {
 			let splitPrev = allInputs.splits[index - 1];
 			let percent = parseFloat(splitPrev.inputs.order_percent.val()) + parseFloat(thisOrderPercentLast);
 			splitPrev.inputs.order_percent.val(percent.toFixed(this.config.fields.order_percent.precision));
-
-			if (index + 1 <= codetable.config.methods.std.splitCount) {
-				allInputs.splits[index + 1].inputs.order_percent.val('');
-			}
+			
+			splitPrev.inputs.order_percent.attr('data-lastvalue', splitPrev.inputs.order_percent.val());
 		}
-		input.change();
+		let splitLast = allInputs.splits[codetable.config.methods.std.splitCount];
+		keys = Object.keys(splitLast.inputs);
+		keys.forEach(name => {
+			let inputCurr = splitLast.inputs[name];
+			inputCurr.val('');
+
+			if (name == 'order_percent') {
+				inputCurr.attr('data-lastvalue', '');
+			}
+			formTrm.setReadonly(inputCurr, true);
+			formTrm.disableTabindex(inputCurr);
+		});
 	}
 
 	/**
@@ -373,7 +383,6 @@ class TrmForm extends CodeFormBase {
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 
 		let inputs = this.getStdDiscFieldsByStdDiscGroup(parent);
-
 
 		if (percent == 0) {
 			this.enableDisableInputs(Object.values(inputs), false);
@@ -629,7 +638,7 @@ class TrmForm extends CodeFormBase {
 
 		let value = input.val() == '' ? 0 : parseInt(input.val());
 
-		if (value > this.config.fields.eom_thru_day.defaultToMaxAt) {
+		if (value >= this.config.fields.eom_thru_day.defaultToMaxAt) {
 			input.val(input.attr('max'));
 		}
 	}
@@ -721,8 +730,144 @@ class TrmForm extends CodeFormBase {
 			nextSplit.find('input').val('');
 			return true;
 		}
-		nextSplit.find('.eom_from_day').val(value+1);
-		nextSplit.find('.eom_thru_day').val(this.config.fields.eom_thru_day.max);
+		
+		nextSplit.find('.eom_from_day').val(value + 1);
+		let nextThruDay = parseInt(nextSplit.find('.eom_from_day').val()) + 1;
+		if (nextIndex == codetable.config.methods.eom.splitCount) {
+			nextThruDay = this.config.fields.eom_thru_day.max;
+		}
+		nextSplit.find('.eom_thru_day').val(nextThruDay);
+		nextSplit.find('.eom_thru_day').change();
+	}
+
+	/**
+	 * Setup values for Next Eom Split's Day Range
+	 * @param {Object} input 
+	 * @returns 
+	 */
+	setupNextEomSplits(input) {
+		if (this.isMethodEom() === false || this.isInputEomThruDay(input) === false) {
+			return false;
+		}
+
+		let index = parseInt(input.closest('.eom-split').data('index'));
+
+		if (index >= codetable.config.methods.eom.splitCount) {
+			return false;
+		}
+
+		if (this.form.validate().element('#' + input.attr('id')) === false) {
+			return false;
+		}
+
+		let value = input.val() == '' ? 0 : parseInt(input.val());
+
+		if (value === this.config.fields.eom_thru_day.max) {
+			for (let i = index + 1; i <= codetable.config.methods.eom.splitCount; i++) {
+				let split = $('.eom-split[data-index='+ i +']')
+				split.find('input').val('');
+			}
+			return true;
+		}
+
+		for (let i = index; i <= codetable.config.methods.eom.splitCount; i++) {
+			let nextIndex = i + 1;
+			let split = $('.eom-split[data-index='+ i +']');
+			let nextSplit = $('.eom-split[data-index='+ nextIndex +']');
+			let thruDay = split.find('input.eom_thru_day').val() == '' ? 0 : parseInt(split.find('input.eom_thru_day').val());
+			
+			let nextFromDay = thruDay + 1;
+			let nextThruDay = 99;
+
+			if (nextIndex < codetable.config.methods.eom.splitCount && nextSplit.find('.eom_thru_day').val()) {
+				nextThruDay = nextFromDay + 1;
+
+				if (nextSplit.find('.eom_thru_day').val() != '') { // Keep value if already set
+					nextThruDay = nextSplit.find('.eom_thru_day').val();
+				}
+			}
+
+			if (thruDay == 99) {
+				nextSplit.find('.eom_from_day').val('');
+				nextSplit.find('.eom_thru_day').val('');
+				continue;
+			}
+
+			if (nextIndex == codetable.config.methods.eom.splitCount) {
+				nextThruDay = this.config.fields.eom_thru_day.max;
+			}
+			nextSplit.find('.eom_from_day').val(nextFromDay);
+			nextSplit.find('.eom_thru_day').val(nextThruDay);
+			this.updateEomThruDayInput(nextSplit.find('.eom_thru_day'));
+		}
+	}
+
+	/**
+	 * Enable / Disable Inputs for next EOM Split
+	 * @param {Object} input 
+	 * @returns 
+	 */
+	enableDisableNextEomSplits(input) {
+		if (this.isMethodEom() === false || this.isInputEomThruDay(input) === false) {
+			return false;
+		}
+		let index = parseFloat(input.closest('.eom-split').data('index'));
+
+		if (index >= codetable.config.methods.eom.splitCount) {
+			return false;
+		}
+
+		let validator = this.form.validate();
+		let isValid = validator.element('#' + input.attr('id'));
+		let value = input.val() == '' ? 0 : parseInt(input.val());
+		let form = this;
+
+		if (value == 99) {
+			for (let i = (index + 1); i <= codetable.config.methods.eom.splitCount; i++) {
+				let split = $('.eom-split[data-index=' + i + ']');
+				split.find('input').each(function() {
+					let sinput = $(this);
+					form.disableTabindex(sinput);
+					form.setReadonly(sinput, true);
+					validator.element('#' + sinput.attr('id'));
+				});
+			}
+		}
+
+		for (let i = index; i <= codetable.config.methods.eom.splitCount; i++) {
+			let nextIndex = i + 1;
+			let split = $('.eom-split[data-index='+ i +']');
+			let nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
+			let isValid = validator.element('#' + split.find('input.eom_thru_day').attr('id'));
+			let thruDay = split.find('input.eom_thru_day').val() == '' ? 0 : parseInt(split.find('input.eom_thru_day').val());
+
+			// Disable next split's fields if Thru Day value is max or if it's invalid
+			if (thruDay === this.config.fields.eom_thru_day.max || isValid === false) {
+				this.disableTabindex(nextSplit.find('input.eom_thru_day'));
+				this.setReadonly(nextSplit.find('input.eom_thru_day'), true);
+				nextSplit.find('input').each(function() {
+					let eomInput = $(this);
+					form.setReadonly(eomInput, true);
+					form.disableTabindex(eomInput);
+				});
+				return true;
+			}
+			this.setReadonly(nextSplit.find('input.eom_thru_day'), false);
+			this.enableTabindex(nextSplit.find('input.eom_thru_day'));
+			this.setReadonly(nextSplit.find('input.eom_disc_percent'), false);
+			this.enableTabindex(nextSplit.find('input.eom_disc_percent'));
+
+			if (nextIndex >= codetable.config.methods.eom.splitCount) {
+				this.disableTabindex(nextSplit.find('.eom_thru_day'));
+				this.setReadonly(nextSplit.find('input.eom_thru_day'), true);
+			}
+
+			nextSplit.find('.eom-due input').each(function() {
+				let eomInput = $(this);
+				form.setReadonly(eomInput, false);
+				form.enableTabindex(eomInput);
+			});
+		}
 	}
 
 /* =============================================================
