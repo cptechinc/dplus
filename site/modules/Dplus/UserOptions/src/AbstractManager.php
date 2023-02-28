@@ -27,7 +27,7 @@ abstract class AbstractManager extends WireData {
 	const USER_DEFAULT = 'system';
 	const WHSEID_ALL   = '**';
 	const FIELD_ATTRIBUTES = [
-		'userid'        => ['type' => 'text', 'maxlength' => 6],
+		'userid'        => ['type' => 'text', 'maxlength' => 6, 'label' => 'User ID'],
 	];
 	const FILTERABLE_FIELDS = ['userid', 'name'];
 
@@ -99,7 +99,11 @@ abstract class AbstractManager extends WireData {
 			return $label;
 		}
 
-		if (in_array($field, ['code', 'description'])) {
+		if ($field === 'name') {
+			return 'Name';
+		}
+
+		if (in_array($field, ['userid'])) {
 			return self::FIELD_ATTRIBUTES[$field]['label'];
 		}
 		return $field;
