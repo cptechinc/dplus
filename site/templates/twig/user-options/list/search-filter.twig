@@ -13,12 +13,12 @@
 				<div class="input-group-btn search-panel">
 					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-							Search By <span class="searchby">{{ values.offsetExists('col') ? values.text('col')|capitalize : 'All' }}</span> <span class="caret"></span>
+							Search By <span class="searchby">{{ values.offsetExists('col') ? manager.fieldLabel(values.text('col')) : 'All' }}</span> <span class="caret"></span>
 						</button>
 						<div class="dropdown-menu column-options">
 							<a class="dropdown-item" href="#" value="">All</a>
 							{% for field in manager.filterableFields() %}
-								<a class="dropdown-item" href="#" value="{{ field }}">{{ manager.fieldLabel(field)|capitalize }}</a>
+								<a class="dropdown-item" href="#" value="{{ field }}">{{ manager.fieldLabel(field) }}</a>
 							{% endfor %}
 						</div>
 					</div>
