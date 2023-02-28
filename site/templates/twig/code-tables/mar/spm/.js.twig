@@ -80,6 +80,15 @@ $(function() {
 		input.val(value.toFixed(formCode.config.fields[input.attr('name')].precision));
 	});
 
+	$("body").on("keyup", "#code-form input[name=lastsaledate]", function(e) {
+		let input = $(this);
+
+		if (input.val().trim() == '') {
+			input.val('');
+		}
+	});
+
+
 	$("body").on("change", "#code-form input[name=lastsaledate]", function(e) {
 		let input = $(this);
 
@@ -218,6 +227,9 @@ $(function() {
 			lastsaledate: {
 				required: false,
 				dateF: true,
+				normalizer: function(value) {
+					return value.trim();
+				},
 			}
 		},
 		submitHandler: function(form) {
