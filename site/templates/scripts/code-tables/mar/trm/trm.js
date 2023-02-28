@@ -38,6 +38,10 @@ $(function() {
 					if (validator.valid()) {
 						formCode.form.find('button[type=submit]').click();
 					}
+					if ($('.is-invalid').length) {
+						$('.is-invalid').focus();
+						return true;
+					}
 				} else {
 					let uri = URI();
 					uri.setQuery('code', '');
@@ -203,12 +207,17 @@ $(function() {
 
 	$("body").on("change", "#code-form input[name=ccprefix]", function(e) {
 		let input = $(this);
+		input.val(input.val().trim());
+	});
+
+	$("body").on("change", "#code-form input[name=ccprefix]", function(e) {
+		let input = $(this);
 		let parent = input.closest('.input-parent');
 		let descriptionField = parent.find('.description');
 
 		descriptionField.text('');
 
-		if (input.val() == '') {
+		if (input.val().trim() == '') {
 			return true;
 		}
 
@@ -234,6 +243,11 @@ $(function() {
 		formTrm.setReadonly(formCode.inputs.fields.ccprefix, false);
 		formTrm.enableTabindex(formCode.inputs.fields.ccprefix);
 		ccprefixParent.find('button[data-toggle]').removeAttr('disabled');
+	});
+
+	$("body").on("change", "#code-form input[name=country]", function(e) {
+		let input = $(this);
+		input.val(input.val().trim());
 	});
 
 	$("body").on("change", "#code-form input[name=country]", function(e) {
@@ -328,16 +342,16 @@ $(function() {
 			input.val('');
 			formTrm.shiftSplitValuesUp(input);
 			let allInputs = formTrm.getAllStdInputs(true);
-			// let prevInput = allInputs.splits[input.closest('.std-split').data('index') - 1].inputs.order_percent;
-			// prevInput.val(prevInput.val() + percent.toFixed(formTrm.config.fields.order_percent.precision));
-
 			if (input.closest('.std-split').data('index') > allInputs.lastindex) {
 				formTrm.clearSplitInputs(input);
 			}
 		}
+		
 		formTrm.enableDisableThisStdSplitInputs(input);
 		formTrm.enableDisableNextStdSplit(input);
 		formTrm.setupNextStdSplit(input);
+		percent = input.val() == '' ? 0 : parseFloat(input.val());
+		input.attr('data-lastvalue', percent);
 
 		if (input.val() == '') {
 			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').change();
@@ -358,6 +372,7 @@ $(function() {
 			formTrm.setDisabled(formTrm.inputs.fields.freightallow, false);
 			return true;
 		}
+		formTrm.inputs.fields.freightallow.val('N');
 		formTrm.setReadonly(formTrm.inputs.fields.freightallow, true);
 		formTrm.disableTabindex(formTrm.inputs.fields.freightallow);
 		formTrm.setDisabled(formTrm.inputs.fields.freightallow, true);
@@ -396,6 +411,8 @@ $(function() {
 		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
+		let input = $(this);
+		input.val(input.val().trim());
 		formTrm.enableDisableStdDiscFieldsFromDays($(this));
 	});
 
@@ -415,6 +432,8 @@ $(function() {
 		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
+		let input = $(this);
+		input.val(input.val().trim());
 		formTrm.enableDisableStdDiscFieldsFromDay($(this));
 	});
 
@@ -436,9 +455,10 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 
 		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
-			console.log(input.closest('form').validate().element('#' + input.attr('id')));
+			input.closest('form').validate().element('#' + input.attr('id'));
 		}
 	});
 
@@ -459,11 +479,13 @@ $(function() {
 		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
+			input.closest('form').validate().element('#'.input.attr('id'));
 		}
 
 		if (dateRegexes.regexes['m/dd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['m/dd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
+			input.closest('form').validate().element('#'.input.attr('id'));
 		}
 		
 		if (dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
@@ -502,7 +524,8 @@ $(function() {
 			return false;
 		}
 
-		let input  = $(this);
+		let input = $(this);
+		input.val(input.val().trim());
 		formTrm.enableDisableStdDependentFieldsFromDueDay(input);
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
 	});
@@ -523,12 +546,22 @@ $(function() {
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
 	});
 
+	$("body").on("keyup", ".std_plus_months", function(e) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input = $(this);
+		input.val(input.val().trim());
+	});
+
 	$("body").on("keyup", ".std_due_date", function(e) {
 		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
 
-		let input  = $(this);
+		let input = $(this);
+		input.val(input.val().trim());
 
 		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
 			input.closest('form').validate().element('#' + input.attr('id'))
@@ -537,6 +570,7 @@ $(function() {
 		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
+			input.closest('form').validate().element('#' + input.attr('id'))
 		}
 		formTrm.enableDisableStdDependentFieldsFromDueDate(input);
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
@@ -558,10 +592,20 @@ $(function() {
 		if (dateRegexes.regexes['mmdd'].test(input.val())) {
 			let date = moment(input.val(), momentJsFormats['mmdd']);
 			input.val(date.format(momentJsFormats['mm/dd']));
+			input.closest('form').validate().element('#'.input.attr('id'));
 		}
 
 		formTrm.enableDisableStdDependentFieldsFromDueDate(input);
 		formTrm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
+	});
+
+	$("body").on("keyup", ".std_plus_years", function(e) {
+		if (formTrm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input = $(this);
+		input.val(input.val().trim());
 	});
 
 /* =============================================================
@@ -589,6 +633,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
@@ -596,6 +641,7 @@ $(function() {
 		}
 		formTrm.enableDisableEomDiscFieldsFromPercent(input);
 	});
+
 
 	$("body").on("change", ".eom_thru_day", function(e) {
 		if (formTrm.isMethodEom() === false) {
@@ -610,31 +656,12 @@ $(function() {
 		}
 
 		formTrm.updateEomThruDayInput(input);
-		formTrm.enableDisableNextEomSplit(input);
-		formTrm.setupNextEomSplit(input);
+		formTrm.setupNextEomSplits(input);
+		formTrm.enableDisableNextEomSplits(input);
+		validator.element('#' + input.attr('id'));
 
-		let nextSplit = $('.eom-split[data-index=' + (parent.data('index') + 1) + ']');
-
-		if (nextSplit.length == 0 || nextSplit.find('input.eom_thru_day').val() != '') {
-			return true;
-		}
-
-		let validator = input.closest('form').validate();
-
-		for (let i = (parent.data('index') + 1); i <= codetable.config.methods.eom.splitCount; i++) {
-			let split = $('.eom-split[data-index=' + i + ']');
-			let inputThruDay = split.find('input.eom_thru_day');
-
-			split.find('input').each(function() {
-				let sinput = $(this);
-				validator.element('#' + sinput.attr('id'));
-
-				if (inputThruDay.val() == '') {
-					sinput.val('');
-					formTrm.disableTabindex(sinput);
-					formTrm.setReadonly(sinput, true);
-				}
-			});
+		if ($('input.eom_thru_day.is-invalid').length) {
+			$('input.eom_thru_day.is-invalid').focus();
 		}
 	});
 
@@ -697,6 +724,11 @@ $(function() {
 		return valid;
 	}
 
+	function validateEomThruDay(element, value) {
+		let parent = $(element).closest('.eom-day-range');
+		return value >= parseInt(parent.find('.eom_from_day').val()) + 1;
+	}
+
 	jQuery.validator.addMethod("expiredate", function(value, element) {
 		return this.optional(element) || validateExpiredate();
 	}, "Date must be a valid, future date MM/DD/YYYY");
@@ -720,7 +752,13 @@ $(function() {
 		return validateStdDueFieldGroup(element, value);
 	}, "Enter Due Days, Day, or Date");
 
+	jQuery.validator.addMethod("eomThruDay", function(value, element) {
+		var isFocused = element == document.activeElement;
+		return this.optional(element) || (isFocused) || validateEomThruDay(element, value);
+	}, "Invalid Thru Day");
+
 	let validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "",
 		errorPlacement: function(error, element) {
@@ -731,13 +769,13 @@ $(function() {
 				return true;
 			}
 			if (element.closest('.input-group-parent').length) {
-				console.log(error);
 				error.appendTo(element.closest('.input-group-parent'));
 				return true;
 			}
 			error.appendTo(element.closest('.input-parent'));
 		},
 		rules: {
+			onkeyup: false,
 			code: {
 				required: true,
 				remote: {
@@ -748,6 +786,19 @@ $(function() {
 						new: function() {
 							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
 						},
+					}
+				}
+			},
+			ccprefix: {
+				required: false,
+				remote: {
+					url: config.ajax.urls.json + 'mar/validate/crcd/code/',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.inputs.fields.ccprefix.val();
+						}
 					}
 				}
 			},
@@ -763,6 +814,19 @@ $(function() {
 						jqv: 'true',
 						code: function() {
 							return formCode.inputs.fields.termsgroup.val();
+						}
+					}
+				}
+			},
+			country: {
+				required: false,
+				remote: {
+					url: config.ajax.urls.json + 'mar/validate/cocom/code/',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							return formCode.inputs.fields.country.val();
 						}
 					}
 				}
@@ -806,12 +870,17 @@ $(function() {
 		let parent = input.closest('.eom-day-range');
 
 		input.rules( "add", {
+			required: function() {
+				return parent.find('.eom_from_day').val() != '';
+			},
 			min: function() {
 				if (formCode.inputs.fields.method.val() != codetable.config.methods.eom.value) {
 					return 0;
 				}
+				return 0;
 				return parseInt(parent.find('.eom_from_day').val()) + 1;
-			}
+			},
+			eomThruDay: true,
 		});
 	});
 
