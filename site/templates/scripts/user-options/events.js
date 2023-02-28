@@ -86,6 +86,13 @@ $(function() {
 		});
 	});
 
+	$("body").on("keyup", "#user-form input.days", function(e) {
+		var input = $(this);
+
+		if (input.val().trim() == '') {
+			input.val(input.val().trim());
+		}
+	});
 	$("body").on('click', '#ajax-modal .user-link', function(e) {
 		e.preventDefault();
 		var button = $(this);

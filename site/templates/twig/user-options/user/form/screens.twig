@@ -56,7 +56,9 @@
 							'input': {
 								'name': fieldname,
 								'value' : value > 0 ? value : '',
+								'type': 'number',
 								'size': 'sm',
+								'addclasses': ['text-right', 'days'],
 								'attributes': {
 									'max': manager.fieldAttribute(fieldname, 'max')
 								}
