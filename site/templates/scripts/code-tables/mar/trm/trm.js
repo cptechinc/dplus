@@ -350,6 +350,8 @@ $(function() {
 		formTrm.enableDisableThisStdSplitInputs(input);
 		formTrm.enableDisableNextStdSplit(input);
 		formTrm.setupNextStdSplit(input);
+		percent = input.val() == '' ? 0 : parseFloat(input.val());
+		input.attr('data-lastvalue', percent);
 
 		if (input.val() == '') {
 			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').change();
@@ -370,6 +372,7 @@ $(function() {
 			formTrm.setDisabled(formTrm.inputs.fields.freightallow, false);
 			return true;
 		}
+		formTrm.inputs.fields.freightallow.val('N');
 		formTrm.setReadonly(formTrm.inputs.fields.freightallow, true);
 		formTrm.disableTabindex(formTrm.inputs.fields.freightallow);
 		formTrm.setDisabled(formTrm.inputs.fields.freightallow, true);
