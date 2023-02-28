@@ -93,6 +93,29 @@ $(function() {
 			input.val(input.val().trim());
 		}
 	});
+
+
+	$("body").on("keyup", "#user-form input.date", function(e) {
+		let input = $(this);
+
+		if (input.val().trim() == '') {
+			input.val('');
+		}
+	});
+
+	$("body").on("change", "#user-form input.date", function(e) {
+		let input = $(this);
+
+		let date = new DateFormatter(input.val(), 'mm/dd/yyyy');
+		date.updateCentury();
+
+		if (date.isValid()) {
+			input.val(date.format('mm/dd/yyyy'));
+		}
+	});
+
+
+
 	$("body").on('click', '#ajax-modal .user-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
