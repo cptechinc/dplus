@@ -277,7 +277,7 @@ class TrmForm extends CodeFormBase {
 		let thisSplit = input.closest('.std-split');
 		let index = parseInt(thisSplit.data('index'));
 		
-		let thisOrderPercentLast  = input.attr('data-lastvalue');
+		let thisOrderPercentLast = input.attr('data-lastvalue');
 
 		let allInputs = this.getAllStdInputs();
 		let keys = Object.keys(allInputs.splits[1].inputs);
@@ -297,7 +297,7 @@ class TrmForm extends CodeFormBase {
 				formTrm.disableTabindex(inputCurr);
 			});
 			return false;
-		}
+		};
 
 		for (let i = index; i <= codetable.config.methods.std.splitCount; i++) {
 			let splitCurr = allInputs.splits[i];
@@ -311,7 +311,6 @@ class TrmForm extends CodeFormBase {
 					inputCurr.val(inputNext.val());
 
 					if (name == 'order_percent') {
-						inputCurr.val(inputNext.val());
 						inputCurr.attr('data-lastvalue', inputCurr.val());
 					}
 	
@@ -332,10 +331,8 @@ class TrmForm extends CodeFormBase {
 			let splitPrev = allInputs.splits[index - 1];
 			let percent = parseFloat(splitPrev.inputs.order_percent.val()) + parseFloat(thisOrderPercentLast);
 			splitPrev.inputs.order_percent.val(percent.toFixed(this.config.fields.order_percent.precision));
-
-			if (index + 1 <= codetable.config.methods.std.splitCount) {
-				// allInputs.splits[index + 1].inputs.order_percent.val('');
-			}
+			
+			splitPrev.inputs.order_percent.attr('data-lastvalue', splitPrev.inputs.order_percent.val());
 		}
 		let splitLast = allInputs.splits[codetable.config.methods.std.splitCount];
 		keys = Object.keys(splitLast.inputs);
@@ -349,9 +346,6 @@ class TrmForm extends CodeFormBase {
 			formTrm.setReadonly(inputCurr, true);
 			formTrm.disableTabindex(inputCurr);
 		});
-
-		
-		// input.change();
 	}
 
 	/**
@@ -389,7 +383,6 @@ class TrmForm extends CodeFormBase {
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 
 		let inputs = this.getStdDiscFieldsByStdDiscGroup(parent);
-
 
 		if (percent == 0) {
 			this.enableDisableInputs(Object.values(inputs), false);
