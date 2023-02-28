@@ -138,16 +138,14 @@ abstract class AbstractUserOptionsController extends AbstractController {
 	abstract public static function _url();
 
 	public static function userFocusUrl($focus) {
-		$table = static::getManager();
 		$filter = static::getUserFilter();
-		$filter->query->filterByUserid($table->userIDs());
+		$filter->userid(static::getManager()->userids());
 
 		if ($filter->exists($focus) === false) {
 			return static::url();
 		}
 		$position = $filter->positionQuick($focus);
-		$pagenbr = self::getPagenbrFromOffset($position, static::SHOWONPAGE);
-
+		$pagenbr  = self::getPagenbrFromOffset($position, static::SHOWONPAGE);
 		$url = new Purl(static::_url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, strtolower(static::getClassName()), $pagenbr);
