@@ -27,7 +27,7 @@ $(function() {
 		e.preventDefault();
 		var input = $(this);
 		var qty = parseFloat(input.val());
-		input.val(qty.toFixed(m_receiving.decimalPlacesQty()));
+		input.val(qty.toFixed({{ m_receiving.decimalPlacesQty() }}));
 	});
 
 	$("body").on("click", "a:not([href^=#], .receiving a, .modal a, a.post-po)", function(e) {
@@ -61,10 +61,11 @@ $(function() {
 		url.addQuery('binID', button.data('binid'));
 
 		$.getJSON(url.toString(), function(data) {
+			console.log(data);
 			var qty_received = parseFloat(data.qty.received);
 			modal.find('input[name=linenbr]').val(data.linenbr);
 			modal.find('input[name=itemID]').val(data.itemid);
-			modal.find('input[name=qty]').val(qty_received.toFixed(m_receiving.decimalPlacesQty()));
+			modal.find('input[name=qty]').val(qty_received.toFixed({{ m_receiving.decimalPlacesQty() }}));
 			modal.find('input[name=uom]').val(data.uom.code);
 			modal.find('input[name=binID]').val(data.binid);
 			modal.find('input[name=originalbinID]').val(data.binid);
