@@ -123,7 +123,7 @@ class Receiving extends Base {
 		}
 		$received = $this->getSessionLastReceived();
 		$received->itemid = $item->itemid;
-		$recieved->binid  = $item->bin;
+		$received->binid  = $item->bin;
 
 		$this->requestItemReceive();
 		return true;
@@ -363,11 +363,18 @@ class Receiving extends Base {
 	}
 
 	public function getSessionLastReceived() {
+		$received = new WireData();
+
 		if (empty($this->wire('session')->getFor('receiving', 'received'))) {
 			$received = new WireData();
-			$this->wire('session')->setFor('receiving', 'received', $received);
+			$this->wire('session')->setFor('receiving', 'received', $received->data);
 		}
-		return $this->wire('session')->getFor('receiving', 'received');
+		$data = $this->wire('session')->getFor('receiving', 'received');
+		if (empty($data)) {
+			return $received;
+		}
+		$received->setArray($data);
+		return $received;
 	}
 
 	public function getReadQtyStrategy() {
