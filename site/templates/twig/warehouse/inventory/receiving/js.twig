@@ -69,9 +69,12 @@ $(function() {
 			modal.find('input[name=uom]').val(data.uom.code);
 			modal.find('input[name=binID]').val(data.binid);
 			modal.find('input[name=originalbinID]').val(data.binid);
-			modal.find('input[name=productiondate]').val(data.lotdate);
 			modal.find('input[name=lotserialref]').val(data.lotref);
 			modal.find('input[name=lotserial]').val(data.lotserial);
+
+			var lotdate = new DateFormatter(data.date, 'yyyymmdd');
+			
+			modal.find('input[name=productiondate]').val(lotdate.format('mm/dd/yyyy'));
 		});
 	});
 
