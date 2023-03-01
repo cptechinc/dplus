@@ -60,6 +60,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	var validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -85,6 +86,13 @@ $(function() {
 			},
 			custid: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=custid]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('mar/validate/custid/') }}',
 					type: "get",
@@ -98,6 +106,13 @@ $(function() {
 			},
 			gl_account: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=gl_account]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('mgl/validate/mhm/code/') }}',
 					type: "get",
@@ -111,6 +126,13 @@ $(function() {
 			},
 			gl_account_charge: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=gl_account_charge]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('mgl/validate/mhm/code/') }}',
 					type: "get",
