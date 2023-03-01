@@ -246,6 +246,11 @@ abstract class AbstractManager extends WireData {
 		return $exists ? $permissions->isTrue($option) : true;
 	}
 
+	/**
+	 * Return Json array for record
+	 * @param  UserRecord $user
+	 * @return array
+	 */
 	public function userJson(UserRecord $user) {
 		$json = ['userid' => $user->userid];
 
