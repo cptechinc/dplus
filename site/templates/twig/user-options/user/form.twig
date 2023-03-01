@@ -6,8 +6,14 @@
 			<label for="userID">User ID</label>
 		</div>
 		<div class="col-sm-3 input-parent">
-			{% include 'user-options/user/form/inputs/userid.twig' %}
-			<small class="text-muted name">{{ u.user.name }}</small>
+			<div class="row">
+				<div class="col-sm-6">
+					{% include 'user-options/user/form/inputs/userid.twig' %}
+				</div>
+				<div class="col-sm-6">
+					<small class="text-muted name">{{ u.user.name }}</small>
+				</div>
+			</div>
 		</div>
 	</div>
 	
