@@ -103,7 +103,7 @@ return array(
     'Controllers\\Mci\\Ci\\SalesOrders' => $baseDir . '/classes/mci/Ci/SalesOrders.php',
     'Controllers\\Mci\\Ci\\Shipto' => $baseDir . '/classes/mci/Ci/Shipto.php',
     'Controllers\\Mci\\Ci\\StandingOrders' => $baseDir . '/classes/mci/Ci/StandingOrders.php',
-    'Controllers\\Mci\\Ciadmn\\Cio' => $baseDir . '/classes/mci/Ciadmn/Iio.php',
+    'Controllers\\Mci\\Ciadmn\\Cio' => $baseDir . '/classes/mci/Ciadmn/Cio.php',
     'Controllers\\Mgl\\Glmain\\AbstractCodeTableController' => $baseDir . '/classes/mgl/glmain/AbstractCodeTableController.php',
     'Controllers\\Mgl\\Glmain\\AbstractController' => $baseDir . '/classes/mgl/glmain/AbstractController.php',
     'Controllers\\Mgl\\Glmain\\Dtm' => $baseDir . '/classes/mgl/glmain/Dtm.php',
