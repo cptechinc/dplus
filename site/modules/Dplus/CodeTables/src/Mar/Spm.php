@@ -28,7 +28,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 	const DPLUS_TABLE			= 'SPM';
 	const FIELD_ATTRIBUTES = [
 		'id'     => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
-		'code'     => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
+		'code'   => ['type' => 'text', 'maxlength' => 6, 'label' => 'ID'],
 		'name'   => ['type' => 'text', 'maxlength' => 30, 'label' => 'Name'],
 		'cycle'  => ['type' => 'text', 'maxlength' => 2],
 		'groupid' => ['type' => 'text', 'maxlength' => Spgpm::FIELD_ATTRIBUTES['code']['maxlength']],
@@ -142,6 +142,8 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 			$code->$setField($values->float($field, $fieldOptions));
 		}
 
+		$code->setLastsaledate('');
+
 		if ($values->text('lastsaledate') != '') {
 			$code->setLastsaledate(date($this->fieldAttribute('lastsaledate', 'format'), strtotime($values->text('lastsaledate'))));
 		}
@@ -163,7 +165,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		$code->setGroupid($values->string('groupid'));
 
 		if ($spgpm->exists($values->string('groupid')) === false) {
-			$code->setGroupid($originals['groupid']);
+			$code->setGroupid('');
 			$invalidfields['groupid'] = 'Group ID';
 		}
 
@@ -171,7 +173,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		$code->setUserid($values->text('userid'));
 
 		if ($values->text('userid') != '' && $logm->exists($values->text('userid')) === false) {
-			$code->setUserid($originals['userid']);
+			$code->setUserid('');
 			$invalidfields['userid'] = 'Login ID';
 		}
 
@@ -179,7 +181,7 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		$code->setVendorid($values->string('vendorid'));
 
 		if (boolval($vendors->filterByVendorid($values->string('vendorid'))->count()) === false) {
-			$code->setVendorid($originals['vendorid']);
+			$code->setVendorid('');
 			$invalidfields['vendorid'] = 'Vendor ID';
 		}
 		return $invalidfields;

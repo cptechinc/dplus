@@ -90,6 +90,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	var validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -125,6 +126,13 @@ $(function() {
 
 		input.rules('add', {
 			required: true,
+			normalizer: function(value) {
+				if (value.trim() == '') {
+					input.val('');
+					return '';
+				}
+				return value;
+			},
 			remote: {
 				url: '{{ page.jsonApiUrl('mgl/validate/mhm/code/') }}',
 				type: "get",
