@@ -435,15 +435,14 @@ class Receiving extends Base {
 	}
 
 	static protected function poItemScanForm($data) {
-		$configEnv = self::pw('modules')->get('ConfigsWarehouseInventory');
 		$settings = new WireData();
-		$settings->forceItemLookupBin = $configEnv->receive_force_bin_itemlookup;
-		$settings->skipBin            = $configEnv->receive_disregard_bin;
+		$settings->forceItemLookupBin = true;
+		$settings->skipBin = false;
 		$settings->binid = '';
 		$receiving = self::getReceiving($data->ponbr);
 		$received = $receiving->getSessionLastReceived();
 
-		if ($received->binid && $configEnv->physicalcount_savebin) {
+		if ($received->binid) {
 			$settings->binid = $received->binid;
 		}
 		return self::pw('config')->twig->render('warehouse/inventory/receiving/po-item-form.twig', ['ponbr' => $data->ponbr, 'settings' => $settings]);
@@ -461,8 +460,12 @@ class Receiving extends Base {
 		if ($received->binid && $configEnv->physicalcount_savebin) {
 			$settings->binid = $received->binid;
 		}
-
-		return self::pw('config')->twig->render('warehouse/inventory/receiving/po-item-receive-form.twig', ['item' => $physicalitem, 'm_receiving' => self::getReceiving($data->ponbr)]);
+		$settings->productionDateLabel = 'Production Date';
+		if (self::pw('config')->company == 'ugm') {
+			$settings->productionDateLabel = 'Expire Date';
+		}
+		
+		return self::pw('config')->twig->render('warehouse/inventory/receiving/po-item-receive-form.twig', ['item' => $physicalitem, 'm_receiving' => self::getReceiving($data->ponbr), 'settings' => $settings]);
 	}
 
 	static public function createPo($data) {
