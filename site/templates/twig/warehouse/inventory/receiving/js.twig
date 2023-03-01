@@ -181,9 +181,11 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			var jForm = $(form);
+
 			if (jForm.find('input[name=qty]').attr('data-validated') == 'true') {
 				form.submit();
 			} else {
+				console.log('validating exceeds qty');
 				validate_exceeds_qty(jForm)
 			}
 		}
@@ -195,6 +197,7 @@ $(function() {
 		url.addQuery('qty', jForm.find('input[name=qty]').val());
 
 		$.getJSON(url.toString(), function(needswarning) {
+			console.log('needswarning ' + needswarning);
 			if (needswarning) {
 				swal2.fire({
 					icon: 'warning',
@@ -206,7 +209,11 @@ $(function() {
 						jForm.submit();
 					}
 				});
+				return true;
 			}
+			console.log('does not needd warning');
+			jForm.find('input[name=qty]').attr('data-validated', 'true');
+			jForm.submit();
 		});
 	}
 
