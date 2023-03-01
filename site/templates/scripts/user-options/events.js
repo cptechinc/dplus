@@ -3,6 +3,16 @@ $(function() {
 	let alert    = UserOptionsAlerts.getInstance();
 	let server   = UserOptionsRequests.getInstance();
 
+	if (formUser.inputs.fields.userid.val().trim() != '') {
+		let keys = Object.keys(formUser.inputs.fields);
+		let key =  keys[1];
+		formUser.inputs.fields[key].focus();
+	}
+
+	if (formUser.inputs.fields.userid.val() == '') {
+		formUser.inputs.fields.userid.focus();
+	}
+
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
