@@ -27,6 +27,8 @@ use Controllers\Wm\Base;
 
 class Receiving extends Base {
 	const DPLUSPERMISSION = 'er';
+	const PONBR_LENGTH = 8;
+	const PONBR_PAD = '0';
 
 	/** @var ReceivingCRUD */
 	static private $receiving;
@@ -50,6 +52,7 @@ class Receiving extends Base {
 		}
 		$html =  self::pw('config')->twig->render('warehouse/inventory/receiving/bread-crumbs.twig');
 		$html .= self::poForm($data);
+		
 		$receiving = self::getReceiving();
 		$createStrategy = $receiving->getCreatePoStrategy();
 		if ($createStrategy->allowCreatePo()) {
@@ -182,7 +185,6 @@ class Receiving extends Base {
 		if ($data->recno) {
 			$q->filterByRecno($data->recno, Criteria::ALT_NOT_EQUAL);
 			$q->delete();
-
 			self::redirect(self::receivingScanUrl($data->ponbr, $data->scan), $http301 = false);
 		}
 	}
