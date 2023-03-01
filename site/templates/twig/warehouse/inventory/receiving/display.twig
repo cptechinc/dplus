@@ -11,16 +11,16 @@
 
 	{{ html.header|raw }}
 
-	{{ html.scan|raw }}
+	{{ html.has('scan') ? html.scan|raw : '' }}
 
 	<h3>Items</h3>
-	{{ html.items|raw }}
+	{{ html.has('items') ? html.items|raw : '' }}
 </div>
 
 {% include 'warehouse/inventory/receiving/po-actions.twig' %}
 
-{{ html.modalbins|raw }}
+{{ html.has('modalbins') ? html.modalbins|raw : '' }}
 
 {% include 'warehouse/inventory/receiving/item-edit-modal.twig' %}
 
-{{ html.js|raw }}
+{{ html.has('js') ? html.js|raw : '' }}
