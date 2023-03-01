@@ -1,0 +1,85 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+
+
+{% extends 'code-tables/list-print.twig' %}
+
+{% block print_headings_row %}
+	<tr>
+		<th colspan="5">
+			<div class="w-100 d-flex justify-content-between">
+				<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+				<div>{{ page.headline }}</div>
+				<div></div>
+			</div>
+		</th>
+	</tr>
+{% endblock %}
+
+{% block headings_row %}
+	<tr class="bg-dark text-white column-headers">
+		<th class="border-0 pb-0">ID</th>
+		<th class="border-0 pb-0" colspan="2">Name</th>
+		<th class="border-0 pb-0" colspan="3">Group</th>
+		<th class="border-0 pb-0" colspan="3">Email</th>
+		<th class="border-0 pb-0" colspan="3"></th>
+	</tr>
+
+	<tr class="bg-dark text-white column-headers">
+		<th class="border-0 pt-1 pb-0"></th>
+		<th class="border-0 pt-1 pb-0">Cycle</th>
+		<th class="border-0 pt-1 pb-0">Last Sale</th>
+		<th class="border-0 pt-1 pb-0 text-center" colspan="3" class="text-center">Sales</th>
+		<th class="border-0 pt-1 pb-0 text-center" colspan="3">Commission Earned</th>
+		<th class="border-0 pt-1 pb-0 text-center" colspan="3">Commission Paid</th>
+	</tr>
+
+	<tr class="bg-dark text-white column-headers">
+		<th class="border-0 pt-1"></th>
+		<th class="border-0 pt-1"></th>
+		<th class="border-0 pt-1"></th>
+		{% set fields = ['MTD', 'YTD', 'LTD'] %}
+
+		{% for i in 1..3 %}
+			{% for field in fields %}
+			<th class="border-0 pt-1 text-right" class="text-center">{{ field }}</th>
+			{% endfor %}
+		{% endfor %}
+	</tr>
+{% endblock %}
+
+{% block code_row %}
+	<tr class="first-txn-row">
+		<td>
+			<span class="">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
+		</td>
+		<td colspan="2">{{ code.name }}</td>
+		<td colspan="3">{{ code.groupid }}</td>
+		<td colspan="3">{{ code.email }}</td>
+		<td colspan="3"></td>
+	</tr>
+
+	<tr>
+		<td></td>
+		<td>{{ code.cycle }}</td>
+		<td>{{ code.lastsaledate ? code.lastsaledate|convertdate }}</td>
+		{% set fields = ['salesmtd', 'salesytd', 'salesltd'] %}
+		{% for field in fields %}
+			<td class="text-right">{{ attribute(code, field)|number_format(manager.fieldAttribute(field, 'precision'))}}</td>
+		{% endfor %}
+
+		{% set fields = ['earnedmtd', 'earnedytd', 'earnedltd'] %}
+		{% for field in fields %}
+			<td class="text-right">{{ attribute(code, field)|number_format(manager.fieldAttribute(field, 'precision'))}}</td>
+		{% endfor %}
+
+		{% set fields = ['paidmtd', 'paidytd', 'paidltd'] %}
+		{% for field in fields %}
+			<td class="text-right">{{ attribute(code, field)|number_format(manager.fieldAttribute(field, 'precision'))}}</td>
+		{% endfor %}
+	</tr>
+{% endblock %}

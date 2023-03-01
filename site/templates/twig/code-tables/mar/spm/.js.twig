@@ -2,9 +2,20 @@
 
 $(function() {
 	var ajaxModal = $('#ajax-modal');
-	var server   = SpmRequests.getInstance();
-	var alert    = CodeAlerts.getInstance();
+	var server	 = SpmRequests.getInstance();
+	var alert	 = CodeAlerts.getInstance();
 	var formCode = CodeForm.getInstance();
+	var dateRegexes = DateRegexes.getInstance();
+
+	let momentJsFormats = {
+		'mmdd': 'MMDD',
+		'mm/dd': 'MM/DD',
+		'm/dd': 'M/DD',
+		'mmddyyyy': 'MMDDYYYY',
+		'mmddyy': 'MMDDYY',
+		'mm/dd/yyyy': 'MM/DD/YYYY',
+		'timestamp': 'X'
+	}
 
 /* =============================================================
 	Event Functions
@@ -30,12 +41,15 @@ $(function() {
 		});
 	});
 
+
 	$("body").on("change", "input[name=groupid]", function(e) {
 		var input = $(this);
 		var inputParent = input.closest('.input-parent');
 		var descriptionField = inputParent.find('.group-description');
 		descriptionField.text('');
 		if (input.val() == '') {
+			input.val('');
+			input.closest('form').validate().element('#' + input.attr('id'));
 			return true;
 		}
 		server.getSalesGroup(input.val(), function(group) {
@@ -60,11 +74,31 @@ $(function() {
 		});
 	});
 
-
 	$("body").on("change", "input.to-date", function(e) {
 		var input = $(this);
 		var value = parseFloat(input.val());
 		input.val(value.toFixed(formCode.config.fields[input.attr('name')].precision));
+	});
+
+	$("body").on("keyup", "#code-form input[name=lastsaledate]", function(e) {
+		let input = $(this);
+
+		if (input.val().trim() == '') {
+			input.val('');
+		}
+	});
+
+
+	$("body").on("change", "#code-form input[name=lastsaledate]", function(e) {
+		let input = $(this);
+
+		let date = new DateFormatter(input.val(), 'mm/dd/yyyy');
+		date.updateCentury();
+
+		if (date.isValid()) {
+			console.log(input.val());
+			input.val(date.format('mm/dd/yyyy'));
+		}
 	});
 
 /* =============================================================
@@ -87,11 +121,30 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
+	function validateDate(value) {
+		let date = moment(value, momentJsFormats['mm/dd/yyyy']);
+		if (date.isValid() === false) {
+			return false;
+		}
+		return date.year() > 1970 ? true : false;
+	}
+
+	jQuery.validator.addMethod("dateF", function(value, element) {
+		var isFocused = element == document.activeElement;
+		return this.optional(element) || (value.length < 8 && isFocused) || validateDate(value);
+	}, "Invalid Date (MM/DD/YYYY)");
+
 	var validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
-			error.insertAfter(element).addClass('invalid-feedback');
+			error.addClass('invalid-feedback');
+			if (element.closest('.input-parent').length == 0) {
+				error.insertAfter(element);
+				return true;
+			}
+			error.appendTo(element.closest('.input-parent'));
 		},
 		rules: {
 			code: {
@@ -113,6 +166,13 @@ $(function() {
 			},
 			vendorid: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=vendorid]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('map/validate/vendorid/') }}',
 					type: "get",
@@ -126,6 +186,13 @@ $(function() {
 			},
 			groupid: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=groupid]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('mar/validate/spgpm/code/') }}',
 					type: "get",
@@ -139,6 +206,13 @@ $(function() {
 			},
 			userid: {
 				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						$('input[name=userid]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('msa/validate/logm/id/') }}',
 					type: "get",
@@ -150,10 +224,17 @@ $(function() {
 					}
 				}
 			},
+			lastsaledate: {
+				required: false,
+				dateF: true,
+				normalizer: function(value) {
+					return value.trim();
+				},
+			}
 		},
 		submitHandler: function(form) {
 			var formCode = CodeForm.getInstance();
-			var server   = SpmRequests.getInstance();
+			var server	 = SpmRequests.getInstance();
 			var code = formCode.inputs.code.val();
 
 			if (formCode.inputs.form.attr('data-code') == code) {

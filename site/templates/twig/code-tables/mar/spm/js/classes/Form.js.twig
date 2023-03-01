@@ -29,7 +29,7 @@ class CodeForm {
 			this.inputs.cycle.val(json.cycle);
 			this.inputs.userid.val(json.userid);
 			this.inputs.manager.val(json.manager);
-			this.inputs.lastsaledate.val(moment(json.lastsaledate,'YYYYMMDD').format('MM/DD/YYYY'));
+			
 			this.inputs.salesmtd.val(json.salesmtd);
 			this.inputs.salesytd.val(json.salesytd);
 			this.inputs.salesltd.val(json.salesltd);
@@ -43,6 +43,13 @@ class CodeForm {
 			this.inputs.restricted.val(json.restricted);
 			this.inputs.email.val(json.email);
 			this.inputs.vendorid.val(json.vendorid);
+
+			this.inputs.lastsaledate.val('');
+			var lastsaledate = moment(json.lastsaledate,'YYYYMMDD');
+			if (lastsaledate.isValid()) {
+				this.inputs.lastsaledate.val(lastsaledate.format('MM/DD/YYYY'));
+			}
+			
 			this.triggerInputsChange();
 			
 			var validator = this.inputs.form.validate();
