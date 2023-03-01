@@ -48,7 +48,7 @@
 				{{ code.cycle }}
 			</div>
 			<div class="col-sm-2 text-right">
-				{{ code.lastsaledate|convertdate }}
+				{{ code.lastsaledate ? code.lastsaledate|convertdate : '' }}
 			</div>
 			<div class="col-sm-2">
 				{{ code.userid }}
