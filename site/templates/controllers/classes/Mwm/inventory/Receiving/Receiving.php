@@ -60,10 +60,12 @@ class Receiving extends Base {
 		return $html;
 	}
 
-	static public function handleCRUD($data) {
+	static public function handleCRUD(WireData $data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ponbr|int', 'scan|text']);
 
 		$validate = self::getValidatorMpo();
+		$data->ponbr = self::padPoNbr($data->ponbr);
+
 		if (empty($data->ponbr) === false && $validate->po($data->ponbr) === false) {
 			self::redirect(self::receivingUrl($data->ponbr), $http301 = false);
 		}
@@ -119,21 +121,22 @@ class Receiving extends Base {
 			return self::handleCRUD($data);
 		}
 
-		$validate = self::getValidatorMpo();
+		$q = \PurchaseOrderQuery::create();
+		$q->filterByPonbr(self::padPoNbr($data->ponbr));
+		$exists = boolval($q->count());
 
-		if ($validate->po($data->ponbr) === false) {
+		if ($exists === false) {
 			return self::invalidPo($data);
 		}
 		self::pw('page')->headline = "Receiving: PO # $data->ponbr";
 		$receiving = self::getReceiving();
-		$receiving->setPonbr($data->ponbr);
+		$receiving->setPonbr(self::padPoNbr($data->ponbr));
 
 		$po = $receiving->getPurchaseorder();
 
 		if ($po->count_receivingitems() === 0) {
 			$receiving->requestPoInit();
 		}
-		echo self::pw('db-dplus')->getLastExecutedQuery();
 
 		if ($po->count_receivingitems() === 0) {
 			$allowAdd = $receiving->getEnforceItemidsStrategy();
@@ -219,6 +222,10 @@ class Receiving extends Base {
 				self::redirect(self::receivingSubmitVerifyUrl($data->ponbr, $data->scan), $http301 = false);
 			}
 		}
+	}
+
+	protected static function padPoNbr($ponbr) {
+		return str_pad($ponbr, self::PONBR_LENGTH, self::PONBR_PAD, STR_PAD_LEFT);
 	}
 
 /* =============================================================
