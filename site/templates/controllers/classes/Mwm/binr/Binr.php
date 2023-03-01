@@ -182,6 +182,8 @@ class Binr extends Controller {
 
 		// Prepare Binr Form
 		$item = $data->lotnbr || $data->serialnbr ? $inventory->get_lotserial($page->scan, $data->binID) : $inventory->get_invsearch_by_itemid($page->scan, $data->binID);
+		$whsem = self::getWarehouseManagement();
+		$whsem->requestItemBins($item->itemid);
 		$currentbins = BininfoQuery::create()->filterByItem(session_id(), $item)->select_bin_qty()->find();
 		// 1. Binr form
 		$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
