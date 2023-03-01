@@ -27,6 +27,7 @@ abstract class AbstractUserOptionsController extends AbstractController {
 	const SUMMARY		  = '';
 	const SHOWONPAGE	  = 10;
 	const BASE_MENU_CODE  = '';
+	const SHORT_TITLE     = '';
 
 /* =============================================================
 	1. Indexes
@@ -34,7 +35,7 @@ abstract class AbstractUserOptionsController extends AbstractController {
 	public static function index(WireData $data) {
 		$fields = ['userID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		self::pw('page')->headline = static::TITLE;
+		self::pw('page')->headline = static::SHORT_TITLE;
 
 		if (self::validateUserPermission() === false) {
 			return self::renderUserNotPermittedAlert();
@@ -70,8 +71,9 @@ abstract class AbstractUserOptionsController extends AbstractController {
 		$table = static::getManager();
 		$user  = $table->userOrNew($data->userID);
 
+		self::pw('page')->headline = static::SHORT_TITLE . ' Edit';
+
 		if ($user->isNew() === false) {
-			self::pw('page')->headline = "Editing $user->userid";
 			$table->lockrecord($user);
 		}
 		self::initHooks();
