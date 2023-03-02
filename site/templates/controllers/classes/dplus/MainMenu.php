@@ -49,7 +49,7 @@ class MainMenu extends Controller {
 		$results = $menu->children("template=dplus-menu|warehouse-menu, dplus_function=$permitted,sort=dplus_function");
 
 		if ($data->q) {
-			self::pw('page')->headline = "Menu: searching for '$data->q'";
+			self::pw('page')->headline = "Searching for '$data->q'";
 			$results = self::pw('pages')->find("dplus_function%=$data->q");
 			$results->filter("dplus_function=$permitted");
 		}
