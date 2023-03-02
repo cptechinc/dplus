@@ -40,7 +40,7 @@ class Shipto extends AbstractSubfunctionController {
 	private static function list(WireData $data) {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 		$shiptos  = self::getShiptoList($data, $customer);
 		self::pw('page')->headline = "CI: $customer->name Ship-tos";
 		return self::displayList($data, $customer, $shiptos);

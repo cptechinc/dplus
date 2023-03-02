@@ -41,7 +41,7 @@ class Payments extends AbstractSubfunctionController {
 
 	private static function payments(WireData $data) {
 		$json = self::fetchData($data);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 
 		self::initHooks();
 		self::pw('page')->headline = "CI: $customer->name Payments";

@@ -54,10 +54,13 @@ class Ci extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			throw new Wire404Exception();
 		}
-		$fields = ['q|text', 'rid|int'];
+		$fields = ['q|text', 'rid|int', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->rid) === false) {
+			return self::customer($data);
+		}
+		if (trim($data->custID) != '') {
 			return self::customer($data);
 		}
 		return self::list($data);
@@ -69,13 +72,19 @@ class Ci extends AbstractController {
 	 * @return string
 	 */
 	private static function list(WireData $data) {
-		$fields = ['q|text'];
+		$fields = ['q|string'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if ($data->q) {
-			$rID = Cmm::instance()->ridByCustid($data->q);
-			if ($rID) {
-				self::pw('session')->redirect(self::custUrl($rID), $http301 = false);
+			$id = '';
+			if (self::validateCustomerById($data->q)) {
+				$id = $data->q;
+			}
+			if (self::pw('config')->ci->useRid) {
+				$id = Cmm::instance()->ridByCustid($data->q);
+			}
+			if ($id) {
+				self::pw('session')->redirect(self::custUrl($id), $http301 = false);
 			}
 			self::pw('page')->headline = "CI: Searching for '$data->q'";
 		}
@@ -89,17 +98,19 @@ class Ci extends AbstractController {
 	 * @return string
 	 */
 	private static function customer(WireData $data) {
-		if (self::validateCustomerByRid($data->rid) === false) {
-			self::pw('session')->redirect(self::url(), $http301=false);
+		if (self::pw('config')->ci->useRid) {
+			if (self::validateCustomerByRid($data->rid) === false) {
+				self::pw('session')->redirect(self::url(), $http301=false);
+			}
+			self::decorateInputDataWithCustid($data);
 		}
-		self::decorateInputDataWithCustid($data);
 		self::decoratePageWithCustid($data);
-		
+
 		$cmm = Cmm::instance();
 		if (self::validateUserHasCustomerPermission(null, $data->custID) === false) {
 			throw new Wire404Exception();
 		}
-		$customer = $cmm->customerByRid($data->rid);
+		$customer = $cmm->customer($data->custID);
 		$customer->salesOrders  = self::getCustomerSalesOrders($customer->id);
 		$customer->salesHistory = self::getCustomerSalesHistory($customer->id);
 		$customer->quotes       = self::getCustomerQuotes($customer->id);
@@ -255,8 +266,14 @@ class Ci extends AbstractController {
 				$event->return = $page->aCustid;
 				return true;
 			}
-			$page->aCustid = Cmm::instance()->custidByRid($page->wire('input')->get->int('rid'));
-			$event->return = $page->aCustid;
+			if ($page->wire('input')->get->offsetExists('custID')) {
+				$page->aCustid = $page->wire('input')->get->string('custID');
+				$event->return = $page->aCustid;
+			}
+			if ($page->wire('input')->get->offsetExists('custID') === false) {
+				$page->aCustid = Cmm::instance()->custidByRid($page->wire('input')->get->int('rid'));
+				$event->return = $page->aCustid;
+			}
 		});
 
 		$m->addHook('Page(pw_template=ci)::custUrl', function($event) {

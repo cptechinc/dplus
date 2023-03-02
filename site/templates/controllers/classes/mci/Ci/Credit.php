@@ -37,7 +37,7 @@ class Credit extends AbstractSubfunctionController {
 
 	private static function credit(WireData $data) {
 		$json = self::fetchData($data);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 
 		self::initHooks();
 		self::pw('page')->headline = "CI: $customer->name Credit";

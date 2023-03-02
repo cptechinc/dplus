@@ -88,7 +88,7 @@ class Contact extends AbstractSubfunctionController {
 	HTML Rendering
 ============================================================= */
 	protected static function renderContact(WireData $data, Custindex $contact) {
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 		return self::pw('config')->twig->render('customers/ci/.new/contact/display.twig', ['contact' => $contact, 'customer' => $customer]);
 	}
 }

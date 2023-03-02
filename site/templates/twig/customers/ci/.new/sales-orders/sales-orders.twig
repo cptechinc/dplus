@@ -24,7 +24,7 @@
 										{% set ordn = order['Ordn'] %}
 										{% set custID = json['custid'] %}
 										{% if docm.countDocuments(ordn) %}
-											<a href="{{ page.documentListUrl(input.get.int('rid'), ordn) }}" class="text-success" title="View Documents for Order # {{ order['Order Number'] }}">
+											<a href="{{ page.documentListUrl(custID, ordn) }}" class="text-success" title="View Documents for Order # {{ order['Order Number'] }}">
 												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ order['Order Number'] }}</span>
 											</a>
 										{% endif %}

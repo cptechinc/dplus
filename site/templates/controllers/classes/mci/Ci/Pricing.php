@@ -43,7 +43,7 @@ class Pricing extends AbstractSubfunctionController {
 	}
 
 	private static function selectItem(WireData $data) {
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 
 		self::pw('page')->custid   = $data->custID;
 		self::pw('page')->headline = "CI: $customer->name Pricing";
@@ -55,7 +55,7 @@ class Pricing extends AbstractSubfunctionController {
 
 	private static function pricing(WireData $data) {
 		$json = self::fetchData($data);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 		self::pw('page')->custid   = $customer->id;
 		self::pw('page')->headline = "CI: $customer->name Pricing for $data->itemID";
 

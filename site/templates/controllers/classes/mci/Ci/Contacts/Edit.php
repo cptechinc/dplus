@@ -46,7 +46,7 @@ class Edit extends Contact {
 	HTML Rendering
 ============================================================= */
 	protected static function renderContact(WireData $data, Custindex $contact) {
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 		return self::pw('config')->twig->render('customers/ci/.new/contact-edit/display.twig', ['contact' => $contact, 'customer' => $customer]);
 	}
 }

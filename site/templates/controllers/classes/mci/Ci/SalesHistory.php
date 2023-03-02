@@ -47,7 +47,7 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 	private static function selectDate(WireData $data) {
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 		self::pw('page')->headline = "CI: $customer->name Sales History";
 		self::addCioStartDate();
 		return self::displayDateForm($data);
@@ -55,7 +55,7 @@ class SalesHistory extends AbstractSubfunctionController {
 
 	private static function orders(WireData $data) {
 		$json = self::fetchData($data);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 
 		self::initHooks();
 		self::pw('page')->headline = "CI: $customer->name Sales History";
