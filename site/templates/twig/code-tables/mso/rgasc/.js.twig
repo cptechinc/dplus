@@ -25,9 +25,30 @@ $(function() {
 			server.getWarehouse(input.val(), function(warehouse) {
 				if (warehouse) {
 					descriptionField.text(warehouse.name);
+					return false;
 				}
+				input.focus();
 			});
+		}
+	});
 
+	$("body").on("focusout", "#code-form input", function(e) {
+		let input = $(this);
+
+		if (input.hasClass('is-invalid')) {
+			input.closest('form').validate().element('#' + input.attr('id'));
+		}
+	});
+
+	$("body").on("focusin", "#code-form input", function(e) {
+		let input = $(this);
+
+		if (input.hasClass('is-invalid')) {
+			return true;
+		}
+
+		if ($('input.is-invalid').length) {
+			$('input.is-invalid').focus();
 		}
 	});
 
