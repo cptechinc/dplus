@@ -25,7 +25,8 @@
 		{% block headings_columns %}
 			<th>Code</th>
 			<th>Description</th>
-			<th>Update Inventory Watch</th>
+			<th>Warehouse</th>
+			<th>Shipping Account #</th>
 		{% endblock %}
 	</tr>
 {% endblock %}
@@ -36,6 +37,7 @@
 			<span class="">{{ code.code|replace({' ': '&nbsp;'})|raw }}</span>
 		</td>
 		<td>{{ code.description }}</td>
-		<td>{{ code.updateinventorywatch|capitalize }}</td>
+		<td>{{ code.whseid }}</td>
+		<td>{{ code.acctnbr }}</td>
 	{% endblock %}
 {% endfor %}
