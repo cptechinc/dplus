@@ -60,6 +60,7 @@ return array(
     'Controllers\\Map\\Apmain\\Cocom' => $baseDir . '/classes/map/apmain/Cocom.php',
     'Controllers\\Map\\Apmain\\Menu' => $baseDir . '/classes/map/apmain/Menu.php',
     'Controllers\\Map\\Apmain\\Mxrfe' => $baseDir . '/classes/map/apmain/Mxrfe.php',
+    'Controllers\\Map\\Apmain\\Ptm' => $baseDir . '/classes/map/apmain/Ptm.php',
     'Controllers\\Map\\Apmain\\Vtm' => $baseDir . '/classes/map/apmain/Vtm.php',
     'Controllers\\Map\\Apmain\\Vxm' => $baseDir . '/classes/map/apmain/Vxm.php',
     'Controllers\\Mar\\AbstractController' => $baseDir . '/classes/mar/AbstractController.php',

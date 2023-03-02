@@ -61,6 +61,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Map\\Apmain\\Cocom' => __DIR__ . '/../..' . '/classes/map/apmain/Cocom.php',
         'Controllers\\Map\\Apmain\\Menu' => __DIR__ . '/../..' . '/classes/map/apmain/Menu.php',
         'Controllers\\Map\\Apmain\\Mxrfe' => __DIR__ . '/../..' . '/classes/map/apmain/Mxrfe.php',
+        'Controllers\\Map\\Apmain\\Ptm' => __DIR__ . '/../..' . '/classes/map/apmain/Ptm.php',
         'Controllers\\Map\\Apmain\\Vtm' => __DIR__ . '/../..' . '/classes/map/apmain/Vtm.php',
         'Controllers\\Map\\Apmain\\Vxm' => __DIR__ . '/../..' . '/classes/map/apmain/Vxm.php',
         'Controllers\\Mar\\AbstractController' => __DIR__ . '/../..' . '/classes/mar/AbstractController.php',
