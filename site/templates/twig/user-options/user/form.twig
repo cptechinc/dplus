@@ -21,7 +21,7 @@
 		<div class="p-2 bg-dark text-white text-bold">
 			<div class="row">
 				{% block header_columns %}
-					<div class="col-sm-2">Screen</div>
+					<div class="col-sm-2">Screen Option</div>
 					<div class="col-sm-3">Available</div>
 				{% endblock %}
 			</div>
@@ -45,7 +45,7 @@
 			<button type="submit" class="btn btn-success form_button"=>
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
-			{% if code.isNew() == false %}
+			{% if u.isNew() == false %}
 				<a href="{{page.userDeleteUrl(u.userid) }}" class="btn btn-danger form_button delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
