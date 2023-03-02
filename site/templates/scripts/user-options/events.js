@@ -18,7 +18,7 @@ $(function() {
 ============================================================= */
 	origForm = formUser.form.serialize();
 
-	$("body").on("click", "a:not(#user-form .crud-submit, #ajax-modal a, .swal2-modal a, .bootstrap-select a)", function(e) {
+	$("body").on("click", "a:not(#user-form .crud-submit, #ajax-modal a, .swal2-modal a, .bootstrap-select a, #user-form .delete_button)", function(e) {
 		if (formUser.form.serialize() !== origForm) {
 			e.preventDefault();
 			let a = $(this);
