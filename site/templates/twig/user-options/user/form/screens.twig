@@ -15,15 +15,14 @@
 			} %}
 		</div>
 
-		<div class="col-sm-2 input-parent">
+		<div class="col-sm-1 input-parent">
 			{% if manager.fieldAttribute(option, 'whse') %}
 				{% set fieldname = 'whse' ~ option %}
 				{% set value = attribute(u, fieldname) %}
 
-				<div class="col-sm-6 px-0">
-					{% include 'user-options/user/form/inputs/whseid.twig' with {'name': fieldname, 'value': value} %}
-				</div>
-				<small class="text-muted name">{{ value ? IWHM.name(value) : '' }}</small>
+				{% include 'user-options/user/form/inputs/whseid.twig' with {'name': fieldname, 'value': value} %}
+				
+				<small class="text-muted name collapse">{{ value ? IWHM.name(value) : '' }}</small>
 			{% endif %}
 		</div>
 
