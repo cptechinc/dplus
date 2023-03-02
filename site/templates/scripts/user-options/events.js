@@ -45,8 +45,11 @@ $(function() {
 /* =============================================================
 	Events
 ============================================================= */
-	$("body").on("focusin", "#user-form input:not(input[name=userID])", function(e) {
+	$("body").on("focusin", "#user-form input:not(input[name=userID]), #user-form select", function(e) {
 		if (formUser.inputs.fields.userid.val() == '') {
+			formUser.inputs.fields.userid.focus();
+		}
+		if (formUser.form.validate().element('#' + formUser.inputs.fields.userid.attr('id')) === false) {
 			formUser.inputs.fields.userid.focus();
 		}
 	});
@@ -76,7 +79,9 @@ $(function() {
 			server.getLogmUser(input.val(), function(user) {
 				if (user) {
 					nameField.text(user.name);
+					return true;
 				}
+				input.focus();
 			});
 		});
 	});
@@ -123,8 +128,6 @@ $(function() {
 			input.val(date.format('mm/dd/yyyy'));
 		}
 	});
-
-
 
 	$("body").on('click', '#ajax-modal .user-link', function(e) {
 		e.preventDefault();
