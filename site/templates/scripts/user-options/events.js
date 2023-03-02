@@ -88,17 +88,17 @@ $(function() {
 
 	$("body").on("change", "#user-form input.whseid", function(e) {
 		let input = $(this);
-		let nameField = input.closest('.input-parent').find('.name');
+		// let nameField = input.closest('.input-parent').find('.name');
 
-		if (input.val() == '') {
-			nameField.text('');
+		if (input.val().trim() == '') {
+			// nameField.text('');
 			input.val('**');
 			return false;
 		}
 
-		server.getWarehouse(input.val(), function(warehouse) {
-			nameField.text(warehouse.name);
-		});
+		// server.getWarehouse(input.val(), function(warehouse) {
+		// 	nameField.text(warehouse.name);
+		// });
 	});
 
 	$("body").on("keyup", "#user-form input.days", function(e) {
