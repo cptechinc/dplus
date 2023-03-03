@@ -5,7 +5,7 @@
 
 <div class="d-flex justify-content-between mb-3">
 	<div>
-		{% if page.parent().template == 'dplus-menu' or page.parent().template == 'warehouse-menu' %}
+		{% if page.parent().template == 'dplus-menu' or page.parent().template == 'warehouse-menu' or page.parent().template == 'home' %}
 			<a href="{{ page.parent().url }}" class="btn btn-primary">
 				<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
 				Back <span class="d-none d-sm-inline">to {{ page.parent().title }}</span>
