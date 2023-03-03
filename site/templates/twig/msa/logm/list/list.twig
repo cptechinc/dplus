@@ -11,13 +11,14 @@
 	<table class="table table-sm">
 		<thead>
 			<tr class="bg-dark text-white">
-				<th>Login ID / Name</th>
-				<th>Warehouse</th>
-				<th>Admn</th>
-				<th>SF</th>
-				<th>CD</th>
-				<th>RA</th>
-				<th class="text-center">
+				<th class="py-2">Login ID</th>
+				<th class="py-2">Name</th>
+				<th class="py-2">Warehouse</th>
+				<th class="py-2">Admn</th>
+				<th class="py-2">SF</th>
+				<th class="py-2">CD</th>
+				<th class="py-2">RA</th>
+				<th class="py-2 text-center">
 					{% if page.is_print() == false %}
 						<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-modal" data-code="" data-description="">
 							<i class="fa fa-plus" aria-hidden="true"></i> Add
@@ -33,8 +34,8 @@
 				<tr data-userid="{{ user.id }}" class="{{ class }}">
 					<td>
 						<span class="text-monospace">{{ user.id|spacepad(logm.fieldAttribute('id', 'maxlength'))|raw }}</span>
-						{{ user.name }}
 					</td>
+					<td>{{ user.name }}</td>
 					<td>
 						{{ user.whseid }} &nbsp; {{ user.getWhse().name }}
 					</td>
