@@ -180,6 +180,11 @@ class PtmForm extends CodeFormBase {
 		
 		let index = parseInt(input.closest('.std-split').data('index'));
 		let allInputs = this.getAllStdInputs(true);
+
+		if (index > allInputs.lastindex) {
+			this.clearStdSplitInputs(index);
+			this.disableStdSplit(index);
+		}
 	}
 
 	/**
@@ -220,6 +225,7 @@ class PtmForm extends CodeFormBase {
 		});
 	}
 
+
 	/**
 	 * Move the values of split inputs one index 1 up
 	 * @param	{HTMLInputElement} input 
@@ -231,12 +237,12 @@ class PtmForm extends CodeFormBase {
 		}
 		let index = parseInt(input.closest('.std-split').data('index'));
 		let allInputs = this.getAllStdInputs();
+		let form = this;
 
 		for (let i = index; i <= codetable.config.methods.std.splitCount; i++) {
 			let splitCurr = allInputs.splits[i];
 			let splitNext = allInputs.splits[i + 1];
 			let keys = this.getStdSplitInputBaseNames();
-			let form = this;
 			
 			if (splitNext !== undefined) {
 				keys.forEach(name => {
@@ -247,6 +253,7 @@ class PtmForm extends CodeFormBase {
 
 					if (name == 'std_order_percent') {
 						inputCurr.attr('data-lastvalue', inputCurr.val());
+						console.log(input.attr('name') + ':' + inputCurr.attr('data-lastvalue'));
 					}
 	
 					if (inputNext.attr('readonly') !== undefined) {
@@ -261,6 +268,19 @@ class PtmForm extends CodeFormBase {
 				});
 			}
 		}
+
+		let splitLast = allInputs.splits[codetable.config.methods.std.splitCount];
+		let keys = Object.keys(splitLast.inputs);
+		keys.forEach(name => {
+			let inputCurr = splitLast.inputs[name];
+			inputCurr.val('');
+
+			if (name == 'order_percent') {
+				inputCurr.attr('data-lastvalue', '');
+			}
+			form.setReadonly(inputCurr, true);
+			form.disableTabindex(inputCurr);
+		});
 	}
 	
 	/**
@@ -339,6 +359,11 @@ class PtmForm extends CodeFormBase {
 		let stdDueInputs = this.getStdDuePrimaryFieldsByStdDueGroup(stdSplit);
 		let form = this;
 
+		if (stdSplit.find('input.std_order_percent').val() == '') {
+			this.disableStdSplit(index);
+			return true;
+		}
+
 		this.enableStdSplit(index);
 
 		Object.keys(stdDiscInputs).forEach(name => {
@@ -369,10 +394,10 @@ class PtmForm extends CodeFormBase {
 	 */
 	enableDisableNextStdSplit(index) {
 		let nextIndex = index + 1;
-		if (nextIndex >= codetable.config.methods.std.splitCount) {
+		if (nextIndex > codetable.config.methods.std.splitCount) {
 			return false;
 		}
-		let allInputs = this.getAllStdInputs();
+		let allInputs = this.getAllStdInputs(true);
 		let nextSplit = allInputs.splits[nextIndex];
 
 		if (nextSplit.inputs.std_order_percent.val() != '') {
