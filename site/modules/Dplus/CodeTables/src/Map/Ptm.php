@@ -43,7 +43,7 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		// THESE ARE FOR THE SPLITS, USE BASE NAME
 		'eom_from_day1'     => ['type' => 'number',  'default' => 1],
 		'eom_thru_day1'     => ['type' => 'number', 'max' => 99, 'default' => 99],
-		'eom_disc_percent' => ['type' => 'number', 'max' => 99.99, 'precision' => 2],
+		'eom_disc_percent' => ['type' => 'number', 'max' => 100, 'precision' => 2],
 		'eom_disc_day'     => ['type' => 'number', 'max' => 31],
 		'eom_disc_months'  => ['type' => 'number', 'max' => 99],
 		'eom_due_day'      => ['type' => 'number', 'max' => 31, 'min' => 1],
