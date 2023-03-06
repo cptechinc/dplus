@@ -61,7 +61,7 @@ class Ptm extends AbstractCodeTableController {
 		self::pw('page')->show_breadcrumbs = false;
 
 		if ($code->isNew() === false) {
-			self::pw('page')->headline = "TRM: Editing $data->code";
+			self::pw('page')->headline = "PTM: Editing $data->code";
 			$ptm->lockrecord($code);
 		}
 		self::initHooks();
