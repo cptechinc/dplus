@@ -82,6 +82,40 @@ $(function() {
 		}
 	});
 
+	$("body").on("focusin", "#code-form .eom-split input", function(e) {
+		let input = $(this);
+
+		let form       = input.closest('form');
+		let validator  = form.validate();
+		let formEom    = form.find('#eom-splits');
+		let firstInput = formEom.find('input[name=eom_thru_day1]');
+
+		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
+			return true;
+		}
+
+		let start = parseInt(firstInput.attr('tabindex'));
+		
+		// Only loop up to $(this) input
+		for (let i = start; i < parseInt(input.attr('tabindex')); i++) {
+			let otherInput = formEom.find('input[tabindex='+i+']');
+
+			if (otherInput.length == 0) {
+				// Check negative tabindexes
+				otherInput = formEom.find('input[tabindex="-'+i+'"]');
+
+				if (otherInput.length == 0) {
+					continue;
+				}
+			}
+
+			if (validator.element('#' + otherInput.attr('id')) === false) {
+				otherInput.focus();
+				return true;
+			}
+		}
+	});
+
 	$("body").on("change", "#code-form input[name=code]", function(e) {
 		let input = $(this);
 
