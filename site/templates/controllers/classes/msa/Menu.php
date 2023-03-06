@@ -21,9 +21,9 @@ class Menu extends AbstractMenuController {
 		],
 		'logm' => [
 			'name'       => 'logm',
-			'permission' => 'logm',
-			'title'      => 'Login ID Entry',
-			'summary'    => 'View / Edit User Logins'
+			'permission' => Logm::DPLUSPERMISSION,
+			'title'      => Logm::TITLE,
+			'summary'    => Logm::SUMMARY
 		],
 		'noce' => [
 			'name'       => 'noce',

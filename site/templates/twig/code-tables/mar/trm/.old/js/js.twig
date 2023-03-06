@@ -697,7 +697,7 @@ function get_sum_orderpercent() {
 ============================================================= */
 	origForm = form.serialize();
 
-	$("body").on("click", "a:not(.form_button, #ajax-modal a), #code-edit-form button:not(.form_button), .datepicker button:not(.form_button), .dropdown-menu button:not(.form_button), .datepicker-calendar-days button:not(.form_button)", function(e) {
+	$("body").on("click", "a:not(.form_button, #ajax-modal a), #code-form button:not(.form_button), .datepicker button:not(.form_button), .dropdown-menu button:not(.form_button), .datepicker-calendar-days button:not(.form_button)", function(e) {
 		if (form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);

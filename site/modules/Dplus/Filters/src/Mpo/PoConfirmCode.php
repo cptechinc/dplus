@@ -15,13 +15,7 @@ class PoConfirmCode extends CodeFilter {
 /* =============================================================
 	1. Abstract Contract Functions
 ============================================================= */
-	public function _search($q, $cols = []) {
-		$columns = [
-			Model::aliasproperty('code'),
-			Model::aliasproperty('description'),
-		];
-		$this->query->searchFilter($columns, strtoupper($q));
-	}
+	
 
 /* =============================================================
 	2. Base Filter Functions

@@ -19,12 +19,18 @@ $(function() {
 		var inputParent = input.closest('.row');
 		var descriptionField = inputParent.find('.artaxcode-description');
 		descriptionField.text('');
-		
-		server.getArCustTaxCode(input.val(), function(taxcode) {
-			if (taxcode) {
-				descriptionField.text(taxcode.description);
-			}
-		});
+
+		if (input.val().trim() == '') {
+			input.val(input.val().trim());
+		}
+
+		if (input.val() != '') {
+			server.getArCustTaxCode(input.val(), function(taxcode) {
+				if (taxcode) {
+					descriptionField.text(taxcode.description);
+				}
+			});
+		}
 	});
 
 	$("body").on("change", "select[name=addsurcharge]", function(e) {
@@ -52,6 +58,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	var validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {

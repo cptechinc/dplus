@@ -13,7 +13,8 @@ class Cio extends AbstractUserOptionsController {
 	const TITLE 		  = 'Customer Information Options';
 	const SUMMARY		  = 'View / Edit User Access in CI';
 	const SHOWONPAGE	  = 10;
-	const BASE_MENU_CODE  = 'mii';
+	const BASE_MENU_CODE  = 'mci';
+	const SHORT_TITLE     = 'CI Options';
 
 /* =============================================================
 	4. URLs

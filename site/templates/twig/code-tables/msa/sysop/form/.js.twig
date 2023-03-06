@@ -45,6 +45,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	let validator = formSysop.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -69,6 +70,13 @@ $(function() {
 			notecode: {
 				required: false,
 				maxlength: formSysop.config.fields.notecode.maxlength,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						formCode.form.find('input[name=notecode]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('msa/validate/sysop/notecode/') }}',
 					type: "get",

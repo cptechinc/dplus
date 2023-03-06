@@ -105,7 +105,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mci\\Ci\\SalesOrders' => __DIR__ . '/../..' . '/classes/mci/Ci/SalesOrders.php',
         'Controllers\\Mci\\Ci\\Shipto' => __DIR__ . '/../..' . '/classes/mci/Ci/Shipto.php',
         'Controllers\\Mci\\Ci\\StandingOrders' => __DIR__ . '/../..' . '/classes/mci/Ci/StandingOrders.php',
-        'Controllers\\Mci\\Ciadmn\\Cio' => __DIR__ . '/../..' . '/classes/mci/Ciadmn/Iio.php',
+        'Controllers\\Mci\\Ciadmn\\Cio' => __DIR__ . '/../..' . '/classes/mci/Ciadmn/Cio.php',
         'Controllers\\Mgl\\Glmain\\AbstractCodeTableController' => __DIR__ . '/../..' . '/classes/mgl/glmain/AbstractCodeTableController.php',
         'Controllers\\Mgl\\Glmain\\AbstractController' => __DIR__ . '/../..' . '/classes/mgl/glmain/AbstractController.php',
         'Controllers\\Mgl\\Glmain\\Dtm' => __DIR__ . '/../..' . '/classes/mgl/glmain/Dtm.php',

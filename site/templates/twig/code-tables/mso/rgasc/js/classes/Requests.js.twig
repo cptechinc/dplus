@@ -29,4 +29,13 @@ class RgascRequests {
 	validateCodeUrl() {
 		return '{{ page.jsonApiUrl('mso/validate/rgasc/code/') }}';
 	}
+
+	getWarehouse(code, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/iwhm/code/') }}');
+
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
 }

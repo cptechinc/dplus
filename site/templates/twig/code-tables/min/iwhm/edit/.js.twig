@@ -11,7 +11,7 @@ $(function() {
 ============================================================= */
 	origForm = formCode.form.serialize();
 
-	$("body").on("click", "a:not(#code-edit-form .form_button, #ajax-modal a, .swal2-modal a, .bootstrap-select a)", function(e) {
+	$("body").on("click", "a:not(#code-form .form_button, #ajax-modal a, .swal2-modal a, .bootstrap-select a, #code-form .delete_button)", function(e) {
 		if (formCode.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
@@ -111,6 +111,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	var validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -137,6 +138,13 @@ $(function() {
 			whseprofit: {
 				required: true,
 				maxlength: formCode.config.fields.code.maxlength,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						formCode.form.find('input[name=whseprofit]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('min/validate/iwhm/code/') }}',
 					type: "get",
@@ -160,6 +168,13 @@ $(function() {
 			whseasset: {
 				required: true,
 				maxlength: formCode.config.fields.code.maxlength,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						formCode.form.find('input[name=whseasset]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('min/validate/iwhm/code/') }}',
 					type: "get",
@@ -183,6 +198,13 @@ $(function() {
 			whsesupply: {
 				required: true,
 				maxlength: formCode.config.fields.code.maxlength,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						formCode.form.find('input[name=whsesupply]').val('');
+						return '';
+					}
+					return value;
+				},
 				remote: {
 					url: '{{ page.jsonApiUrl('min/validate/iwhm/code/') }}',
 					type: "get",
