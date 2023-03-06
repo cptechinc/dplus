@@ -135,6 +135,7 @@ $(function() {
 			input.val('');
 			formPtm.handleStdOrderPercentClear(input);
 		}
+		input.attr('data-lastvalue', percent);
 		formPtm.setupNextStdSplit(input);
 		formPtm.enableDisableNextStdSplit(input.closest('.std-split').data('index'));
 	});
