@@ -343,20 +343,17 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 	 */
 	private function _inputUpdateMethodTerms(WireInputData $values, ApTermsCode $code) {
 		if ($code->method === self::METHOD_EOM) {
-			$this->_inputUpdateFreightallow($values, $code);
-
 			for ($i = 1; $i <= self::NBR_SPLITS_METHOD_STD; $i++) {
-				$code->empty_std_split($i);
+				$code->emptyStdSplit($i);
 			}
 			return $this->_inputUpdateTermsEom($values, $code);
 		}
 
 		// Empty out EOM splits fields
 		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_EOM; $i++) {
-			$code->empty_eom_split($i);
+			$code->emptyEomSplit($i);
 		}
 		$this->_inputUpdateTermsStd($values, $code);
-		$this->_inputUpdateFreightallow($values, $code);
 		return [];
 	}
 
@@ -469,9 +466,9 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 			'precision' => $this->fieldAttribute('std_order_percent', 'precision')
 		];
 
-		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_STD; $i++) {
+		for ($i = 1; $i < self::NBR_SPLITS_METHOD_STD; $i++) {
 			if ($totalOrderPercent >= $opts['std_order_percent']['max']) {
-				$code->empty_std_split($i);
+				$code->emptyStdSplit($i);
 				continue;
 			}
 			// IF THIS SPLIT MAKES THE ORDER PERCENT OVER HUNDRED THEN MAKE THIS THE EXACT PERCENT
@@ -488,7 +485,6 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 			$this->setStdDiscountFieldsAtIndex($values, $code, $i);
 			$this->setStdDueFieldsAtIndex($values, $code, $i);
 		}
-		// exit;
 		return [];
 	}
 
@@ -507,17 +503,17 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 			return false;
 		}
 		$opts = $this->getStdDiscountFieldInputOptions();
-		$code->empty_std_discount_fields($i);
+		$code->emptyStdDiscFields($i);
 
 		$discPercent = $values->float("std_disc_percent$i", $opts['std_disc_percent']);
-		$code->set_std_disc_percent($i, $discPercent);
+		$code->setStd_disc_percent($i, $discPercent);
 		// EMPTY DISCOUNT FIELDS REGARDLESS
-		$code->set_std_disc_days($i, '');
-		$code->set_std_disc_day($i, '');
-		$code->set_std_disc_date($i, '');
+		$code->setStd_disc_days($i, '');
+		$code->setStd_disc_day($i, '');
+		$code->setStd_disc_date($i, '');
 
 		if (empty($discPercent)) {
-			$code->set_std_disc_percent($i, '');
+			$code->setStd_disc_percent($i, '');
 			return true;
 		}
 		
@@ -525,7 +521,7 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		$days = $values->int("std_disc_days$i" , $opts['std_disc_days']);
 
 		if ($days > 0) {
-			$code->set_std_disc_days($i, $days);
+			$code->setStd_disc_days($i, $days);
 			return true;
 		}
 
@@ -533,7 +529,7 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		$day = $values->int("std_disc_day$i" , $opts['std_disc_day']);
 
 		if ($day > 0) {
-			$code->set_std_disc_day($i, $day);
+			$code->setStd_disc_day($i, $day);
 			return true;
 		}
 
@@ -543,11 +539,11 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		// echo "std_disc_date$i : " . "format: ". $opts['std_disc_date']['dateformat'] . " - " . $date . '<br>';
 
 		if (empty($date)) {// VALUES HAVE BEEN INVALID SO FAR, So remove discount percent
-			$code->set_std_disc_percent($i, '');
+			$code->setStd_disc_percent($i, '');
 			return false;
 		}
 
-		$code->set_std_disc_date($i, $date);
+		$code->setStd_disc_date($i, $date);
 		return true;
 	}
 
@@ -566,13 +562,13 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 			return false;
 		}
 		$opts = $this->getStdDueFieldInputOptions();
-		$code->empty_std_due_fields($i);
+		$code->emptyStdDueFields($i);
 
 		// DUE DAYS
 		$days = $values->int("std_due_days$i" , $opts['std_due_days']);
 
 		if ($days > 0) {
-			$code->set_std_due_days($i, $days);
+			$code->setStd_due_days($i, $days);
 			return true;
 		}
 
@@ -580,10 +576,10 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		$day = $values->int("std_due_day$i" , $opts['std_due_day']);
 
 		if ($day > 0) {
-			$code->set_std_due_day($i, $day);
+			$code->setStd_due_day($i, $day);
 			$months = $values->int("std_plus_months$i" , $opts['std_plus_months']);
 			if ($months > 0) {
-				$code->set_std_plus_months($i, $months);
+				$code->setStd_plus_months($i, $months);
 			}
 			return true;
 		}
@@ -592,14 +588,14 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		$date = $values->date("std_due_date$i", $opts['std_due_date']['dateformat'], $opts['std_due_date']);
 
 		if (empty($date)) { // VALUES HAVE BEEN INVALID SO FAR, SET DAYS TO DEFAULT FOR RECORD INTEGRITY
-			$code->set_std_due_days($i, $opts['std_due_days']['max']);
+			$code->setStd_due_days($i, $opts['std_due_days']['max']);
 			return false;
 		}
-		$code->set_std_due_date($i, $date);
+		$code->setStd_due_date($i, $date);
 
 		$years = $values->int("std_plus_years$i" , $opts['std_plus_years']);
 		if ($years) {
-			$code->set_std_plus_years($i, $years);
+			$code->setStd_plus_years($i, $years);
 		}
 		return true;
 	}
