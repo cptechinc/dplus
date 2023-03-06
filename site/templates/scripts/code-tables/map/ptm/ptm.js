@@ -74,7 +74,7 @@ $(function() {
 					continue;
 				}
 			}
-			
+
 			if (validator.element('#' + otherInput.attr('id')) === false) {
 				otherInput.focus();
 				return true;
@@ -135,7 +135,6 @@ $(function() {
 /* =============================================================
 	Method STD Events
 ============================================================= */
-	
 	$("body").on("change", ".std_order_percent", function(e) {
 		if (formPtm.isMethodStd() === false) {
 			return false;
@@ -366,8 +365,30 @@ $(function() {
 		formPtm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
 	});
 
+/* =============================================================
+	Method EOM Events
+============================================================= */
+	$("body").on("change", ".eom_thru_day", function(e) {
+		if (formPtm.isMethodEom() === false) {
+			return false;
+		}
+		let input  = $(this);
+		input.val(input.val().trim());
 
-	
+		if (input.val() == '') {
+			return true;
+		}
+
+		formPtm.updateEomThruDayInput(input);
+		formPtm.setupNextEomSplits(input);
+		formPtm.enableDisableNextEomSplits(input);
+
+		if ($('input.eom_thru_day.is-invalid').length) {
+			$('input.eom_thru_day.is-invalid').focus();
+		}
+	});
+
+
 /* =============================================================
 	Form Validation
 ============================================================= */

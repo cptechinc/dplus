@@ -612,6 +612,156 @@ class PtmForm extends CodeFormBase {
 	}
 
 /* =============================================================
+	Method STD
+============================================================= */
+	/**
+	 * Update EOM Thru Day Input value
+	 * @param {Object} input 
+	 * @returns 
+	 */
+	updateEomThruDayInput(input) {
+		if (this.isMethodEom === false || this.isInputEomThruDay(input) === false) {
+			return false;
+		}
+
+		let value = input.val() == '' ? 0 : parseInt(input.val());
+
+		if (value >= this.config.fields.eom_thru_day.defaultToMaxAt) {
+			input.val(input.attr('max'));
+		}
+	}
+
+	/**
+	 * Setup values for Next Eom Split's Day Range
+	 * @param {Object} input 
+	 * @returns 
+	 */
+	setupNextEomSplits(input) {
+		if (this.isMethodEom() === false || this.isInputEomThruDay(input) === false) {
+			return false;
+		}
+
+		if (this.form.validate().element('#' + input.attr('id')) === false) {
+			return false;
+		}
+
+		let index = parseInt(input.closest('.eom-split').data('index'));
+
+		if (index >= codetable.config.methods.eom.splitCount) {
+			return false;
+		}
+
+		let value = input.val() == '' ? 0 : parseInt(input.val());
+
+		if (value === this.config.fields.eom_thru_day.max) {
+			for (let i = index + 1; i <= codetable.config.methods.eom.splitCount; i++) {
+				let split = $('.eom-split[data-index='+ i +']')
+				split.find('input').val('');
+			}
+			return true;
+		}
+
+		for (let i = index; i <= codetable.config.methods.eom.splitCount; i++) {
+			let nextIndex = i + 1;
+			let split = $('.eom-split[data-index='+ i +']');
+			let nextSplit = $('.eom-split[data-index='+ nextIndex +']');
+			let thruDay = split.find('input.eom_thru_day').val() == '' ? 0 : parseInt(split.find('input.eom_thru_day').val());
+			
+			let nextFromDay = thruDay + 1;
+			let nextThruDay = 99;
+
+			if (nextIndex < codetable.config.methods.eom.splitCount && nextSplit.find('.eom_thru_day').val()) {
+				nextThruDay = nextFromDay + 1;
+
+				if (nextSplit.find('.eom_thru_day').val() != '') { // Keep value if already set
+					nextThruDay = nextSplit.find('.eom_thru_day').val();
+				}
+			}
+
+			if (thruDay == 99) {
+				nextSplit.find('.eom_from_day').val('');
+				nextSplit.find('.eom_thru_day').val('');
+				continue;
+			}
+
+			if (nextIndex == codetable.config.methods.eom.splitCount) {
+				nextThruDay = this.config.fields.eom_thru_day.max;
+			}
+			nextSplit.find('.eom_from_day').val(nextFromDay);
+			nextSplit.find('.eom_thru_day').val(nextThruDay);
+			this.updateEomThruDayInput(nextSplit.find('.eom_thru_day'));
+		}
+	}
+
+	/**
+	 * Enable / Disable Inputs for next EOM Split
+	 * @param {Object} input 
+	 * @returns 
+	 */
+	enableDisableNextEomSplits(input) {
+		if (this.isMethodEom() === false || this.isInputEomThruDay(input) === false) {
+			return false;
+		}
+		let index = parseFloat(input.closest('.eom-split').data('index'));
+
+		if (index >= codetable.config.methods.eom.splitCount) {
+			return false;
+		}
+
+		let validator = this.form.validate();
+		let isValid = validator.element('#' + input.attr('id'));
+		let value = input.val() == '' ? 0 : parseInt(input.val());
+		let form = this;
+
+		if (value == 99) {
+			for (let i = (index + 1); i <= codetable.config.methods.eom.splitCount; i++) {
+				let split = $('.eom-split[data-index=' + i + ']');
+				split.find('input').each(function() {
+					let sinput = $(this);
+					form.disableTabindex(sinput);
+					form.setReadonly(sinput, true);
+					validator.element('#' + sinput.attr('id'));
+				});
+			}
+		}
+
+		for (let i = index; i <= codetable.config.methods.eom.splitCount; i++) {
+			let nextIndex = i + 1;
+			let split = $('.eom-split[data-index='+ i +']');
+			let nextSplit = $('.eom-split[data-index='+ (nextIndex) +']');
+			let isValid = validator.element('#' + split.find('input.eom_thru_day').attr('id'));
+			let thruDay = split.find('input.eom_thru_day').val() == '' ? 0 : parseInt(split.find('input.eom_thru_day').val());
+
+			// Disable next split's fields if Thru Day value is max or if it's invalid
+			if (thruDay === this.config.fields.eom_thru_day.max || isValid === false) {
+				this.disableTabindex(nextSplit.find('input.eom_thru_day'));
+				this.setReadonly(nextSplit.find('input.eom_thru_day'), true);
+				nextSplit.find('input').each(function() {
+					let eomInput = $(this);
+					form.setReadonly(eomInput, true);
+					form.disableTabindex(eomInput);
+				});
+				return true;
+			}
+			this.setReadonly(nextSplit.find('input.eom_thru_day'), false);
+			this.enableTabindex(nextSplit.find('input.eom_thru_day'));
+			this.setReadonly(nextSplit.find('input.eom_disc_percent'), false);
+			this.enableTabindex(nextSplit.find('input.eom_disc_percent'));
+
+			if (nextIndex >= codetable.config.methods.eom.splitCount) {
+				this.disableTabindex(nextSplit.find('.eom_thru_day'));
+				this.setReadonly(nextSplit.find('input.eom_thru_day'), true);
+			}
+
+			nextSplit.find('.eom-due input').each(function() {
+				let eomInput = $(this);
+				form.setReadonly(eomInput, false);
+				form.enableTabindex(eomInput);
+			});
+		}
+	}
+
+/* =============================================================
 	Supplemental
 ============================================================= */
 	/**

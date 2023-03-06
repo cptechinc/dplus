@@ -49,7 +49,7 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		'eom_due_day'      => ['type' => 'number', 'max' => 31, 'min' => 1],
 		'eom_plus_months'  => ['type' => 'number', 'max' => 99],
 		'eom_from_day'     => ['type' => 'number', 'max' => 98],
-		'eom_thru_day'     => ['type' => 'number', 'max' => 99, 'defaultToMaxAt' => 28],
+		'eom_thru_day'     => ['type' => 'number', 'max' => 99, 'defaultToMaxAt' => 30],
 		
 	];
 	const NBR_SPLITS_METHOD_STD = 5;
