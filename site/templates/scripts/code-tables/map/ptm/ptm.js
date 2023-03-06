@@ -98,26 +98,14 @@ $(function() {
 
 	$("body").on("change", "#code-form input[name=expiredate]", function(e) {
 		let input = $(this);
+		input.val(input.val().trim());
 
-		if (input.val().length < 10 || isNaN(input.val())) {
-			return true;
+		let date = new DateFormatter(input.val(), 'mm/dd/yyyy');
+		date.updateCentury();
+
+		if (date.isValid()) {
+			input.val(date.format('mm/dd/yyyy'));
 		}
-
-		if (dateRegexes.regexes['mmddyyyy'].test(input.val()) === false && dateRegexes.regexes['mmddyy'].test(input.val()) === false) {
-			return true;
-		}
-
-		let momentParseFormat = momentJsFormats['mmddyyyy'];
-
-		if (dateRegexes.regexes['mmddyy'].test(input.val())) {
-			momentParseFormat = momentJsFormats['mmddyy'];
-		}
-
-		let date = moment(input.val(), momentParseFormat);
-		if (date.isValid() === false) {
-			return false;
-		}
-		input.val(date.format(momentJsFormats['mm/dd/yyyy']));
 	});
 
 /* =============================================================
@@ -340,6 +328,7 @@ $(function() {
 	}, "Order Percent Must add up to 100");
 
 	let validator = formPtm.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "",
 		errorPlacement: function(error, element) {
@@ -371,7 +360,11 @@ $(function() {
 				}
 			},
 			expiredate: {
-				expiredate: true,
+				dateMMDDYYYYSlash: true,
+				futuredate: true,
+				normalizer: function(value) {
+					return value.trim();
+				},
 			},
 			std_order_percent1: {
 				required: true,
