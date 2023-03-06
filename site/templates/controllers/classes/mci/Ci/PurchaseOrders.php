@@ -22,21 +22,24 @@ class PurchaseOrders extends AbstractSubfunctionController {
 	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['rid|int', 'custpo|text', 'refresh|bool'];
+		$fields = ['rid|int', 'custpo|text', 'refresh|bool', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
-		$data->custID = self::getCustidByRid($data->rid);
+		
+		self::decorateInputDataWithCustid($data);
+		self::decoratePageWithCustid($data);
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::ordersUrl($data->rid, $data->custpo), $http301 = false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::ordersUrl($id, $data->custpo), $http301 = false);
 		}
 
 		if (empty($data->custpo)) {
 			$jsonm  = self::getJsonFileFetcher();
 			$jsonm->delete(SalesHistory::JSONCODE);
 			$jsonm->delete(SalesOrders::JSONCODE);
-			$customer  = self::getCustomerByRid($data->rid);
+			$customer = self::getCustomerFromWireData($data);
 			self::pw('page')->headline = "CI: $customer->name Purchase Orders";
 			return self::displayInit($data);
 		}
@@ -45,8 +48,8 @@ class PurchaseOrders extends AbstractSubfunctionController {
 
 	private static function custpo(WireData $data) {
 		self::fetchData($data);
-		
-		$customer  = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
+
 		self::pw('page')->headline = "CI: $customer->name Orders that match '$data->custpo'";
 		self::setSessionVar($data->custpo, 'custpo');
 
@@ -69,23 +72,23 @@ class PurchaseOrders extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::ordersUrl($data->rid, $data->custpo, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::ordersUrl($id, $data->custpo, $refresh=true);
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
-		$fields = ['rid|int', 'custID|string', 'custpo|text', 'sessionID|text'];
+		$fields = ['rid|int', 'custID|string', 'shiptoID|string', 'custpo|text', 'sessionID|text'];
 		self::sanitizeParametersShort($data, $fields);
-		if (empty($data->custID)) {
-			$data->custID = self::getCustidByRid($data->rid);
-		}
+		self::decorateInputDataWithCustid($data);
+
 		return ['CICUSTPO', "CUSTID=$data->custID", "SHIPID=$data->shiptoID", "CUSTPO=$data->custpo"];
 	}
 
 /* =============================================================
 	4. URLs
 ============================================================= */
-	public static function ordersUrl($ridID, $custpo = '', $refreshdata = false) {
-		$url = new Purl(self::ciPurchaseOrdersUrl($ridID));
+	public static function ordersUrl($id, $custpo = '', $refreshdata = false) {
+		$url = new Purl(self::ciPurchaseOrdersUrl($id));
 
 		if ($custpo) {
 			$url->query->set('custpo', $custpo);
@@ -124,12 +127,16 @@ class PurchaseOrders extends AbstractSubfunctionController {
 		$json   = $jsonm->getFile(SalesHistory::JSONCODE);
 
 		if ($jsonm->exists(SalesHistory::JSONCODE) === false) {
+			self::initHooks();
+			self::addPageData($data);
 			return self::renderJsonNotFoundAlert($data, 'Sales History');
 		}
 
-		if ($json['error']) {
-			return self::renderJsonError($data, $json);
-		}
+		// if ($json['error']) {
+		// 	self::initHooks();
+		// 	self::addPageData($data);
+		// 	return self::renderJsonError($data, $json);
+		// }
 
 		$formatter = SalesHistory::getFormatter();
 		$docm      = SalesHistory::getDocFinder();
@@ -141,12 +148,16 @@ class PurchaseOrders extends AbstractSubfunctionController {
 		$json   = $jsonm->getFile(SalesOrders::JSONCODE);
 
 		if ($jsonm->exists(SalesOrders::JSONCODE) === false) {
+			self::initHooks();
+			self::addPageData($data);
 			return self::renderJsonNotFoundAlert($data, 'Sales Orders');
 		}
 
-		if ($json['error']) {
-			return self::renderJsonError($data, $json);
-		}
+		// if ($json['error']) {
+		// 	self::initHooks();
+		// 	self::addPageData($data);
+		// 	return self::renderJsonError($data, $json);
+		// }
 
 		$formatter = SalesOrders::getFormatter();
 		$docm      = SalesOrders::getDocFinder();
