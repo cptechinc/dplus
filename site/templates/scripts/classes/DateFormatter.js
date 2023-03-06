@@ -1,6 +1,6 @@
 class DateFormatter {
 
-	constructor(date, expectedFormat = '') {
+	constructor(date = 'now', expectedFormat = '') {
 		this.regexer = DateRegexes.getInstance();
 		this.momentJsFormats = {
 			'mmdd': 'MMDD',
@@ -30,6 +30,11 @@ class DateFormatter {
 	}
 
 	initDateFormat() {
+		if (this.date == 'now') {
+			this.dateFormat = '';
+			return true;
+		}
+
 		let patterns = Object.keys(this.regexer.regexes);
 		if (this.expectedFormat != '') {
 			patterns = this.expectedFormats[this.expectedFormat];
@@ -45,14 +50,20 @@ class DateFormatter {
 	}
 
 	initMoment() {
-		if (this.dateformat != '') {
+		if (this.dateFormat != '') {
 			this.moment = moment(this.date, this.momentJsFormats[this.dateFormat]);
-			console.log(this.moment);
+			return true;
 		}
+
+		if (this.date == 'now') {
+			this.moment = moment();
+			return true;
+		}
+		return false;
 	}
 
 	format(format = 'mm/dd/yyyy') {
-		if (this.date = '' || this.dateFormat == '') {
+		if (this.date = '' || (this.dateFormat == '' && this.date != 'now')) {
 			return '';
 		}
 		if (this.moment.isValid() === false) {
