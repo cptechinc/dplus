@@ -15,7 +15,7 @@ $(function() {
 ============================================================= */
 	origForm = formPtm.form.serialize();
 
-	$("body").on("click", "a:not(#code-form .crud-submit, #ajax-modal a, .swal2-modal a, .bootstrap-select a)", function(e) {
+	$("body").on("click", "a:not(#code-form .crud-submit, #ajax-modal a, .swal2-modal a, .bootstrap-select a, #code-form a.delete_button)", function(e) {
 		if (formPtm.form.serialize() !== origForm) {
 			e.preventDefault();
 			let a = $(this);
@@ -193,7 +193,7 @@ $(function() {
 			input.val('');
 			formPtm.handleStdOrderPercentClear(input);
 		}
-		input.attr('data-lastvalue', percent);
+		input.attr('data-lastvalue', formPtm.floatVal(input.val()));
 		formPtm.setupNextStdSplit(input);
 		formPtm.enableDisableNextStdSplit(input.closest('.std-split').data('index'));
 	});
@@ -508,7 +508,6 @@ $(function() {
 		let inputs = [parent.find('.std_disc_days'), parent.find('.std_disc_day'), parent.find('.std_disc_date')];
 
 		inputs.forEach(input => {
-			console.log(input.attr('name') + ':' + input.val());
 			if (input.val() != '') {
 				valid = true;
 			}
