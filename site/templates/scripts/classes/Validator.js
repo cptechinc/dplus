@@ -27,7 +27,8 @@ class Validator {
 		if (date.isValid() === false) {
 			return false;
 		}
-		let today = new DateFormatter();
-		return parseInt(date.format('timestamp')) > parseInt(today.format('timestamp'));
+
+		let today = new DateFormatter('now');
+		return date.moment.diff(today.moment) > 0;
 	}
 }
