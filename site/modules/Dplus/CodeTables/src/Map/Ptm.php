@@ -377,7 +377,7 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 
 		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_EOM; $i++) {
 			if ($nextFromDay > $fieldAttr['eom_thru_day']['max'] && $i > 1) {
-				$code->empty_eom_split($i);
+				$code->emptyEomSplit($i);
 				continue;
 			}
 			if ($i > 1) {
@@ -389,7 +389,7 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 				$thruDay = $fieldAttr['eom_thru_day']['max'];
 			}
 			if ($thruDay <= $code->eom_from_day($i) && $i > 1) {
-				$code->empty_eom_split($i);
+				$code->emptyEomSplit($i);
 				continue;
 			}
 			$code->setEom_thru_day($i, $thruDay);
