@@ -8,6 +8,10 @@ class Validator {
 		return this.instance;
 	}
 
+	dateMMDDSlash(date) {
+		return DateRegexes.getInstance().regexes['mm/dd'].test(date);
+	}
+
 	dateMMYYSlash(date) {
 		return DateRegexes.getInstance().regexes['mm/dd'].test(date);
 	}
