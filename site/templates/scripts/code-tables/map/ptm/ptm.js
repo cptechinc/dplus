@@ -48,6 +48,40 @@ $(function() {
 		}
 	});
 
+	$("body").on("focusin", "#code-form .std-split input", function(e) {
+		let input = $(this);
+
+		let form       = input.closest('form');
+		let validator  = form.validate();
+		let formStd    = form.find('#std-splits');
+		let firstInput = formStd.find('input[name=std_order_percent1]');
+
+		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
+			return true;
+		}
+
+		let start = parseInt(firstInput.attr('tabindex'));
+		
+		// Only loop up to $(this) input
+		for (let i = start; i < parseInt(input.attr('tabindex')); i++) {
+			let otherInput = formStd.find('input[tabindex='+i+']');
+
+			if (otherInput.length == 0) {
+				// Check negative tabindexes
+				otherInput = formStd.find('input[tabindex="-'+i+'"]');
+
+				if (otherInput.length == 0) {
+					continue;
+				}
+			}
+			
+			if (validator.element('#' + otherInput.attr('id')) === false) {
+				otherInput.focus();
+				return true;
+			}
+		}
+	});
+
 	$("body").on("change", "#code-form input[name=code]", function(e) {
 		let input = $(this);
 
@@ -101,6 +135,7 @@ $(function() {
 /* =============================================================
 	Method STD Events
 ============================================================= */
+	
 	$("body").on("change", ".std_order_percent", function(e) {
 		if (formPtm.isMethodStd() === false) {
 			return false;
@@ -350,6 +385,25 @@ $(function() {
 		let inputs = [parent.find('.std_disc_days'), parent.find('.std_disc_day'), parent.find('.std_disc_date')];
 
 		inputs.forEach(input => {
+			console.log(input.attr('name') + ':' + input.val());
+			if (input.val() != '') {
+				valid = true;
+			}
+		});
+		return valid;
+	}
+
+	function validateStdDueFieldGroup(element) {
+		let parent = $(element).closest('.std-due');
+
+		if (parent.closest('.std-split').find('input.order_percent').val() == '') {
+			return true;
+		}
+
+		let inputs = [parent.find('.std_due_days'), parent.find('.std_due_day'), parent.find('.std_due_date')];
+
+		let valid = false;
+		inputs.forEach(input => {
 			if (input.val() != '') {
 				valid = true;
 			}
@@ -369,12 +423,14 @@ $(function() {
 		return this.optional(element) || Validator.getInstance().dateMMDDSlash(value);
 	}, "Date must be a valid date (MM/DD)");
 
-
 	jQuery.validator.addMethod("stdDiscFieldGroup", function(value, element) {
 		return validateStdDiscountFieldGroup(element, value);
 	}, "Enter Discount Days, Day, or Date");
 
-
+	jQuery.validator.addMethod("stdDueFieldGroup", function(value, element) {
+		return validateStdDueFieldGroup(element, value);
+	}, "Enter Due Days, Day, or Date");
+	
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
 		var percentTotal = formPtm.sumUpStdOrderPercents();
 		var isFocused = element == document.activeElement;
@@ -393,7 +449,6 @@ $(function() {
 				return true;
 			}
 			if (element.closest('.input-group-parent').length) {
-				console.log(error);
 				error.appendTo(element.closest('.input-group-parent'));
 				return true;
 			}
@@ -408,7 +463,7 @@ $(function() {
 					data: {
 						jqv: 'true',
 						new: function() {
-							return formCode.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
+							return formPtm.inputs.form.attr('data-code') == $('#code').val() ? 'false' : 'true';
 						},
 					}
 				}
