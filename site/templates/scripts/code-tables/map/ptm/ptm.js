@@ -4,16 +4,6 @@ $(function() {
 	let server   = PtmRequests.getInstance();
 	let dateRegexes = DateRegexes.getInstance();
 
-	let momentJsFormats = {
-		'mmdd': 'MMDD',
-		'mm/dd': 'MM/DD',
-		'm/dd': 'M/DD',
-		'mmddyyyy': 'MMDDYYYY',
-		'mmddyy': 'MMDDYY',
-		'mm/dd/yyyy': 'MM/DD/YYYY',
-		'timestamp': 'X'
-	}
-
 	if (formPtm.inputs.fields.code.val() == '') {
 		formPtm.inputs.fields.code.focus();
 	} else {
@@ -221,10 +211,6 @@ $(function() {
 
 		let input  = $(this);
 		input.val(input.val().trim());
-
-		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
-			input.closest('form').validate().element('#' + input.attr('id'));
-		}
 	});
 
 	$("body").on("change", ".std_disc_date", function(e) {

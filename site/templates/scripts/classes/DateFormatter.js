@@ -5,6 +5,7 @@ class DateFormatter {
 		this.momentJsFormats = {
 			'mmdd': 'MMDD',
 			'mm/dd': 'MM/DD',
+			'mdd': 'MDD',
 			'm/dd': 'M/DD',
 			'mmddyyyy': 'MMDDYYYY',
 			'mmddyy': 'MMDDYY',
@@ -12,7 +13,7 @@ class DateFormatter {
 			'timestamp': 'X'
 		},
 		this.expectedFormats = {
-			'mm/dd': ['mmdd', 'mm/dd', 'm/d'],
+			'mm/dd': ['mmdd', 'mdd', 'mm/dd', 'm/d'],
 			'mm/dd/yyyy': ['mm/dd/yyyy', 'mmddyyyy', 'mmddyy']
 		}
 		this.inputDate = date;
@@ -41,12 +42,12 @@ class DateFormatter {
 				this.dateFormat = pattern;
 			}
 		});
-		console.log(this.dateFormat);
 	}
 
 	initMoment() {
 		if (this.dateformat != '') {
 			this.moment = moment(this.date, this.momentJsFormats[this.dateFormat]);
+			console.log(this.moment);
 		}
 	}
 
