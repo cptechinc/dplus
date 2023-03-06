@@ -265,6 +265,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 		formPtm.enableDisableStdDependentFieldsFromDueDay(input);
 		formPtm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
 	});
@@ -275,7 +276,8 @@ $(function() {
 		}
 
 		let input  = $(this);
-		let day = input.val().trim() == '' ? 0 : parseInt(input.val().trim());
+		input.val(input.val().trim());
+		let day = input.val() == '' ? 0 : parseInt(input.val().trim());
 
 		if (day == 0) {
 			input.val('');
@@ -284,6 +286,51 @@ $(function() {
 		formPtm.enableDisableStdDependentFieldsFromDueDay(input);
 		formPtm.enableDisableStdPrimaryDueFieldsFromDueDay(input);
 	});
+
+	$("body").on("keyup", ".std_due_date", function(e) {
+		if (formPtm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+
+		if (input.val().length > 3) {
+			let date = new DateFormatter(input.val(), 'mm/dd');
+
+			if (date.isValid()) {
+				input.val(date.format('mm/dd'));
+			}
+		}
+		
+		formPtm.enableDisableStdDependentFieldsFromDueDate(input);
+		formPtm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
+	});
+
+	$("body").on("change", ".std_due_date", function(e) {
+		if (formPtm.isMethodStd() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+		
+		if (input.val() == '') {
+			formPtm.enableDisableStdDependentFieldsFromDueDate(input);
+			formPtm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
+			input.closest('.std-split').find('input.std_plus_years').val('');
+			return true;
+		}
+
+		let date = new DateFormatter(input.val(), 'mm/dd');
+
+		if (date.isValid()) {
+			input.val(date.format('mm/dd'));
+		}
+		formPtm.enableDisableStdDependentFieldsFromDueDate(input);
+		formPtm.enableDisableStdPrimaryDueFieldsFromDueDate(input);
+	});
+
 
 	
 /* =============================================================
@@ -414,4 +461,13 @@ $(function() {
 		});
 	});
 
+	$('.std_due_date').each(function() {
+		let input = $(this);
+
+		input.rules("add", {
+			required: false,
+			dateMMDDSlash: true,
+			stdDueFieldGroup: true,
+		});
+	});
 });
