@@ -307,6 +307,23 @@ $(function() {
 		return formPtm.sumUpStdOrderPercents() == 100;
 	}
 
+	function validateStdDiscountFieldGroup(element, value) {
+		let parent = $(element).closest('.std-discount');
+
+		if (parent.find('.std_disc_percent').val() == '') {
+			return true;
+		}
+		let valid = false;
+		let inputs = [parent.find('.std_disc_days'), parent.find('.std_disc_day'), parent.find('.std_disc_date')];
+
+		inputs.forEach(input => {
+			if (input.val() != '') {
+				valid = true;
+			}
+		});
+		return valid;
+	}
+
 	jQuery.validator.addMethod("dateMMDDYYYYSlash", function(value, element) {
 		return this.optional(element) || Validator.getInstance().dateMMDDYYYYSlash(value);
 	}, "Date must be a valid date (MM/DD/YYYY)");
@@ -314,6 +331,15 @@ $(function() {
 	jQuery.validator.addMethod("futuredate", function(value, element) {
 		return this.optional(element) || Validator.getInstance().dateIsInFuture(value, 'mm/dd/yyyy');
 	}, "Date must be in the future");
+
+	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateMMDDSlash(value);
+	}, "Date must be a valid date (MM/DD)");
+
+
+	jQuery.validator.addMethod("stdDiscFieldGroup", function(value, element) {
+		return validateStdDiscountFieldGroup(element, value);
+	}, "Enter Discount Days, Day, or Date");
 
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
@@ -390,6 +416,16 @@ $(function() {
 			rules.required = true;
 		}
 		input.rules("add", rules);
+	});
+
+	$('.std_disc_date').each(function() {
+		let input = $(this);
+
+		input.rules("add", {
+			required: false,
+			dateMMDDSlash: true,
+			stdDiscFieldGroup: true,
+		});
 	});
 
 });
