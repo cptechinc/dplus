@@ -388,6 +388,42 @@ $(function() {
 		}
 	});
 
+	$("body").on("keyup", ".eom_disc_day", function(e) {
+		if (formPtm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+	});
+
+	$("body").on("keyup", ".eom_disc_months", function(e) {
+		if (formPtm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+	});
+
+	$("body").on("keyup", ".eom_due_day", function(e) {
+		if (formPtm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+	});
+
+	$("body").on("keyup", ".eom_plus_months", function(e) {
+		if (formPtm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+	});
+
 
 /* =============================================================
 	Form Validation
