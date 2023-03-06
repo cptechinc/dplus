@@ -485,7 +485,7 @@ $(function() {
 	function validateStdDueFieldGroup(element) {
 		let parent = $(element).closest('.std-due');
 
-		if (parent.closest('.std-split').find('input.order_percent').val() == '') {
+		if (parent.closest('.std-split').find('input.std_order_percent').val() == '') {
 			return true;
 		}
 
@@ -498,6 +498,11 @@ $(function() {
 			}
 		});
 		return valid;
+	}
+
+	function validateEomThruDay(element, value) {
+		let parent = $(element).closest('.eom-day-range');
+		return value >= parseInt(parent.find('.eom_from_day').val()) + 1;
 	}
 
 	jQuery.validator.addMethod("dateMMDDYYYYSlash", function(value, element) {
@@ -525,6 +530,11 @@ $(function() {
 		var isFocused = element == document.activeElement;
 		return this.optional(element) || value == 0 || (isFocused && percentTotal <= 100) || validatestdOrderPercentTotal();
 	}, "Order Percent Must add up to 100");
+
+	jQuery.validator.addMethod("eomThruDay", function(value, element) {
+		var isFocused = element == document.activeElement;
+		return this.optional(element) || (isFocused) || validateEomThruDay(element, value);
+	}, "Invalid Thru Day");
 
 	let validator = formPtm.form.validate({
 		onkeyup: false,
@@ -565,6 +575,9 @@ $(function() {
 				},
 			},
 			std_order_percent1: {
+				required: true,
+			},
+			eom_due_day1: {
 				required: true,
 			},
 		},
@@ -612,6 +625,39 @@ $(function() {
 			required: false,
 			dateMMDDSlash: true,
 			stdDueFieldGroup: true,
+		});
+	});
+
+	$('.eom_thru_day').each(function() {
+		let input = $(this);
+		let parent = input.closest('.eom-day-range');
+
+		input.rules( "add", {
+			required: function() {
+				return parent.find('.eom_from_day').val() != '';
+			},
+			min: function() {
+				if (formPtm.inputs.fields.method.val() != codetable.config.methods.eom.value) {
+					return 0;
+				}
+				return 0;
+				// return parseInt(parent.find('.eom_from_day').val()) + 1;
+			},
+			eomThruDay: true,
+		});
+	});
+
+	$('.eom_due_day').each(function() {
+		let input = $(this);
+		let parentEomSplit = input.closest('.eom-split');
+
+		input.rules( "add", {
+			required: function() {
+				if (formPtm.inputs.fields.method.val() != codetable.config.methods.eom.value) {
+					return false;
+				}
+				return parentEomSplit.find('.eom_thru_day').val() != '';
+			},
 		});
 	});
 });
