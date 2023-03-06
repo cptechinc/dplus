@@ -144,7 +144,9 @@ $(function() {
 		if (formPtm.isMethodStd() === false) {
 			return false;
 		}
-		formPtm.enableDisableStdDiscFieldsFromDiscPercent($(this));
+		let input  = $(this);
+		input.val(input.val().trim());
+		formPtm.enableDisableStdDiscFieldsFromDiscPercent(input);
 	});
 
 	$("body").on("change", ".std_disc_percent", function(e) {
@@ -153,6 +155,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 		let percent = formPtm.floatVal(input.val());
 		input.val(percent.toFixed(formPtm.config.fields.std_disc_percent.precision));
 		formPtm.enableDisableStdDiscFieldsFromDiscPercent(input);
@@ -171,7 +174,9 @@ $(function() {
 		if (formPtm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
-		formPtm.enableDisableStdDiscFieldsFromDays($(this));
+		let input  = $(this);
+		input.val(input.val().trim());
+		formPtm.enableDisableStdDiscFieldsFromDays(input);
 	});
 
 	$("body").on("change", ".std_disc_days", function(e) {
@@ -180,6 +185,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 		if (input.val() == 0) {
 			input.val('');
 		}
@@ -190,6 +196,8 @@ $(function() {
 		if (formPtm.isMethodStd() === false || $(this).attr('readonly') !== undefined) {
 			return false;
 		}
+		let input  = $(this);
+		input.val(input.val().trim());
 		formPtm.enableDisableStdDiscFieldsFromDay($(this));
 	});
 
@@ -199,6 +207,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 		if (input.val() == 0) {
 			input.val('');
 		}
@@ -211,6 +220,7 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 
 		if (input.val().length > 3 && dateRegexes.regexes['mmdd'].test(input.val()) === false && dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
 			input.closest('form').validate().element('#' + input.attr('id'));
