@@ -273,6 +273,9 @@ class PtmForm extends CodeFormBase {
 			return false;
 		}
 		let index = parseInt(input.closest('.std-split').data('index'));
+		if (index == 1) {
+			return false;
+		}
 		let thisOrderPercentLast  = input.attr('data-lastvalue');
 		let allInputs = this.getAllStdInputs();
 
