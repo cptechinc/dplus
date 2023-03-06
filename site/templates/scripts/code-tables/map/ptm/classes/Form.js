@@ -176,14 +176,10 @@ class PtmForm extends CodeFormBase {
 			return false;
 		}
 		this.addOrderPercentToLast(input);
-		this.shiftStdSplitValuesUp(input) ;
+		this.shiftStdSplitValuesUp(input);
+		
 		let index = parseInt(input.closest('.std-split').data('index'));
 		let allInputs = this.getAllStdInputs(true);
-
-		if (index >= allInputs.lastindex) {
-			this.disableStdSplit(index);
-			this.clearStdSplitInputs(index);
-		}
 	}
 
 	/**
