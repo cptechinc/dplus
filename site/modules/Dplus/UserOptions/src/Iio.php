@@ -34,7 +34,7 @@ class Iio extends AbstractManager {
 		'salesorders'     => ['default' => 'Y', 'label' => 'Sales Orders',  'whse'=> true,  'detail'=> false, 'date'=> false],
 		'lotserial'       => ['default' => 'Y', 'label' => 'Serial / Lot Search',  'whse'=> false,  'detail'=> false, 'date'=> false],
 		'stock'           => ['default' => 'Y', 'label' => 'Stock Status',  'whse'=> true,  'detail'=> true,  'date'=> false],
-		'substitutes'     => ['default' => 'Y', 'label' => 'Subtitutes / Supercede',  'whse'=> true,  'detail'=> false, 'date'=> false],
+		'substitutes'     => ['default' => 'Y', 'label' => 'Substitutes / Supercede',  'whse'=> true,  'detail'=> false, 'date'=> false],
 		'lostsales'       => ['default' => 'Y', 'label' => 'Lost Sales / Quote',  'whse'=> true,  'detail'=> false, 'date'=> false],
 
 		'daysactivity'        => ['max' => 9999, 'default' => 365],

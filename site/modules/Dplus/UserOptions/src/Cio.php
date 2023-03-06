@@ -25,7 +25,7 @@ class Cio extends AbstractManager {
 		'notes'          => ['default' => 'Y', 'label' => 'Notes', 'date'=> false],
 		'contacts'       => ['default' => 'Y', 'label' => 'Contact / Notes', 'date'=> false],
 		'payments'       => ['default' => 'Y', 'label' => 'Payment', 'date'=> false],
-		'corebank'       => ['default' => 'Y', 'label' => 'Core Bank', 'date'=> false],
+		'corebank'       => ['default' => 'N', 'label' => 'Core Bank', 'date'=> false, 'skipUpdate' => true],
 		'credit'         => ['default' => 'Y', 'label' => 'Credit', 'date'=> false],
 		'stock'          => ['default' => 'Y', 'label' => 'Customer Stock', 'date'=> false],
 		'pricing'        => ['default' => 'Y', 'label' => 'Pricing', 'date'=> false],
@@ -46,7 +46,7 @@ class Cio extends AbstractManager {
 		'notes',
 		'contacts',
 		'payments',
-		'corebank',
+		// 'corebank',
 		'credit',
 		'stock',
 		'pricing',
@@ -84,4 +84,14 @@ class Cio extends AbstractManager {
 /* =============================================================
 	CRUD Processing
 ============================================================= */
+	/**
+	 * Set User Screen Access
+	 * @param  OptionsCi     $user
+	 * @param  WireInputData $values
+	 * @return void
+	 */
+	protected function setUserScreensFromInputData(UserRecord $user, WireInputData $values) {
+		parent::setUserScreensFromInputData($user, $values);
+		$user->setCorebank($this->fieldAttribute('corebank', 'default'));
+	}
 }

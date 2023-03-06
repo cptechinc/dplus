@@ -2,6 +2,12 @@
 
 {% set IWHM = page.wire('modules').get('CodeTables').getCodeTable('min', 'iwhm') %}
 
+{% block extra_heading_column %}
+	<div class="col-sm-7 text-right text-bold">
+		<p class="mb-0 p-1 fs-1-2">Warehouse of '**' = all</p>
+	</div>
+{% endblock %}
+
 {% block header_columns %}
 	<div class="col-sm-2">
 		Screen Option
@@ -9,14 +15,11 @@
 	<div class="col-sm-1">
 		Available
 	</div>
-	<div class="col-sm-2">
+	<div class="col-sm-1">
 		Warehouse
 	</div>
 	<div class="col-sm-2">
-		Detail
-	</div>
-	<div class="col-sm-5 text-center">
-		Date
+		Lot/Serial Detail
 	</div>
 {% endblock %}
 

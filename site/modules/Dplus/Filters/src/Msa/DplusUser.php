@@ -16,14 +16,30 @@ class DplusUser extends CodeFilter {
 	1. Abstract Contract / Extensible Functions
 ============================================================= */
 	public function _search($q, $cols = []) {
-		$model = $this->modelName();
+		$cols = array_filter($cols);
 		$columns = [
-			$model::aliasproperty('id'),
-			$model::aliasproperty('name'),
-			$model::aliasproperty('email'),
-			$model::aliasproperty('whseid'),
+			Model::aliasproperty('id'),
+			Model::aliasproperty('name'),
+			Model::aliasproperty('email'),
+			Model::aliasproperty('whseid'),
 		];
+
+		if (empty($cols)) {
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
+
+		$columns = [];
+		foreach ($cols as $col) {
+			if (Model::aliasproperty_exists($col)) {
+				$columns[] = Model::aliasproperty($col);
+			}
+		}
+		if (empty($columns)) {
+			return false;
+		}
 		$this->query->searchFilter($columns, strtoupper($q));
+		return true;
 	}
 	
 /* =============================================================

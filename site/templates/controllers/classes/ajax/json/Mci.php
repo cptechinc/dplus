@@ -19,11 +19,11 @@ class Mci extends AbstractJsonController {
 	}
 
 	public static function validateCioUserid(WireData $data) {
-		return self::validateUserOptionsUserid($data, UserOptions\Iio::getInstance());
+		return self::validateUserOptionsUserid($data, UserOptions\Cio::getInstance());
 	}
 
 	public static function getCioUser(WireData $data) {
-		return self::getUserOptionsUser($data, UserOptions\Iio::getInstance());
+		return self::getUserOptionsUser($data, UserOptions\Cio::getInstance());
 	}
 
 	private static function validator() {

@@ -14,6 +14,7 @@ class Vio extends AbstractUserOptionsController {
 	const SUMMARY		  = 'View / Edit User Access in VI';
 	const SHOWONPAGE	  = 10;
 	const BASE_MENU_CODE  = 'mvi';
+	const SHORT_TITLE     = 'VI Options';
 
 /* =============================================================
 	4. URLs
