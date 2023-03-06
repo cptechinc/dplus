@@ -241,18 +241,10 @@ $(function() {
 			formPtm.enableDisableStdDiscFieldsFromDiscPercent(parentGroup.find('.std_disc_percent'));
 		}
 
-		if (dateRegexes.regexes['mmdd'].test(input.val())) {
-			let date = moment(input.val(), momentJsFormats['mmdd']);
-			input.val(date.format(momentJsFormats['mm/dd']));
-		}
+		let date = new DateFormatter(input.val(), 'mm/dd');
 
-		if (dateRegexes.regexes['m/dd'].test(input.val())) {
-			let date = moment(input.val(), momentJsFormats['m/dd']);
-			input.val(date.format(momentJsFormats['mm/dd']));
-		}
-		
-		if (dateRegexes.regexes['mm/dd'].test(input.val()) === false) {
-			return false;
+		if (date.isValid()) {
+			input.val(date.format('mm/dd'));
 		}
 		formPtm.enableDisableStdDiscFieldsFromDate(input);
 	});
