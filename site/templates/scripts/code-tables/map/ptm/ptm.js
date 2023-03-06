@@ -388,6 +388,38 @@ $(function() {
 		}
 	});
 
+	$("body").on("keyup", ".eom_disc_percent", function(e) {
+		if (formPtm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+		let percent = input.val() == '' ? 0 : parseFloat(input.val());
+		if (percent == 0) {
+			formPtm.enableDisableEomDiscFieldsFromPercent(input);
+			return true;
+		}
+		formPtm.enableDisableEomDiscFieldsFromPercent(input);
+	});
+
+	$("body").on("change", ".eom_disc_percent", function(e) {
+		if (formPtm.isMethodEom() === false) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+		let percent = input.val() == '' ? 0 : parseFloat(input.val());
+		
+		if (percent == 0) {
+			formPtm.enableDisableEomDiscFieldsFromPercent(input);
+			return true;
+		}
+		input.val(percent.toFixed(formPtm.config.fields.eom_disc_percent.precision));
+		formPtm.enableDisableEomDiscFieldsFromPercent(input);
+	});
+
 	$("body").on("keyup", ".eom_disc_day", function(e) {
 		if (formPtm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
 			return false;
