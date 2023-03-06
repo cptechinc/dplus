@@ -761,6 +761,35 @@ class PtmForm extends CodeFormBase {
 		}
 	}
 
+	/**
+	 * Enable Discount / Day Month fields based off Discount Percent Value
+	 * @param {Object} input 
+	 * @returns 
+	 */
+	enableDisableEomDiscFieldsFromPercent(input) {
+		if (this.isMethodEom() === false || input.hasClass('eom_disc_percent') === false) {
+			return false;
+		}
+
+		let parent = input.closest('.eom-discount');
+		let percent = input.val() == '' ? 0 : parseFloat(input.val());
+
+		let inputDiscDay	= parent.find('.eom_disc_day');
+		let inputDiscMonths = parent.find('.eom_disc_months');
+
+		if (percent == 0) {
+			this.setReadonly(inputDiscDay, true);
+			this.disableTabindex(inputDiscDay);
+			this.setReadonly(inputDiscMonths, true);
+			this.disableTabindex(inputDiscMonths);
+			return true;
+		}
+		this.setReadonly(inputDiscDay, false);
+		this.enableTabindex(inputDiscDay);
+		this.setReadonly(inputDiscMonths, false);
+		this.enableTabindex(inputDiscMonths);
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
