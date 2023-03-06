@@ -300,26 +300,18 @@ $(function() {
 /* =============================================================
 	Form Validation
 ============================================================= */
-	function validateExpiredate() {
-		let input = formPtm.inputs.fields.expiredate;
-		let expiredate = moment(input.val(), momentJsFormats['mm/dd/yyyy']);
-		if (input.val().length < 8) {
-			return true;
-		}
-		if (expiredate.isValid() == false) {
-			return false;
-		}
-		let minDate    = moment();
-		return parseInt(expiredate.format(momentJsFormats['timestamp'])) > parseInt(minDate.format(momentJsFormats['timestamp']));
-	}
-
 	function validatestdOrderPercentTotal() {
 		return formPtm.sumUpStdOrderPercents() == 100;
 	}
 
-	jQuery.validator.addMethod("expiredate", function(value, element) {
-		return this.optional(element) || validateExpiredate();
-	}, "Date must be in the future (MM/DD/YYYY)");
+	jQuery.validator.addMethod("dateMMDDYYYYSlash", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateMMDDYYYYSlash(value);
+	}, "Date must be a valid date (MM/DD/YYYY)");
+
+	jQuery.validator.addMethod("futuredate", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateIsInFuture(value, 'mm/dd/yyyy');
+	}, "Date must be in the future");
+
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
 		var percentTotal = formPtm.sumUpStdOrderPercents();
