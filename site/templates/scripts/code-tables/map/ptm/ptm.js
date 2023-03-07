@@ -198,12 +198,16 @@ $(function() {
 			input.val('');
 			formPtm.handleStdOrderPercentClear(input);
 		}
-		input.attr('data-lastvalue', formPtm.floatVal(input.val()));
+		input.attr('data-lastvalue', input.val());
 		formPtm.setupNextStdSplit(input);
 		formPtm.enableDisableNextStdSplit(index);
 
 		if (input.val() == '' || percent == 0) {
 			formPtm.form.find('input[name=std_order_percent'+(index - 1)+']').focus();
+		}
+
+		if (formPtm.sumUpStdOrderPercents() == 100) {
+			formPtm.clearStdOrderPercentErrors();
 		}
 	});
 

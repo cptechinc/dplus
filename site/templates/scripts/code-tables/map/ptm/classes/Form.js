@@ -167,6 +167,17 @@ class PtmForm extends CodeFormBase {
 	}
 
 	/**
+	 * Runs Validator on input.std_order_percent inputs to clear the errors
+	 */
+	clearStdOrderPercentErrors() {
+		let validator = this.form.validate();
+		this.form.find('input.std_order_percent').each(function() {
+			let input = $(this);
+			validator.element('#' + input.attr('id'));
+		});
+	}
+
+	/**
 	 * Handle input.std_order_percent clear
 	 * @param {HTMLInputElement} input 
 	 * @returns 
