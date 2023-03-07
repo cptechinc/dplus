@@ -34,7 +34,8 @@ class OpenInvoices extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::ciOpenInvoicesUrl($data->rid), $http301 = false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::ciOpenInvoicesUrl($id), $http301 = false);
 		}
 		return self::invoices($data);
 	}
@@ -64,7 +65,8 @@ class OpenInvoices extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::ordersUrl($data->rid, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::ordersUrl($id, $refresh=true);
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
@@ -90,6 +92,8 @@ class OpenInvoices extends AbstractSubfunctionController {
 	5. Displays
 ============================================================= */
 	protected static function displayInvoices(WireData $data, Customer $customer, $json = []) {
+		self::addPageData($data);
+		
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Open Invoices');
 		}
@@ -97,7 +101,6 @@ class OpenInvoices extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		self::addPageData($data);
 		return self::renderInvoices($data, $customer, $json);
 	}
 

@@ -30,7 +30,8 @@ class Credit extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::ciCreditUrl($data->rid), $http301 = false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::ciCreditUrl($id), $http301 = false);
 		}
 		return self::credit($data);
 	}
@@ -60,7 +61,8 @@ class Credit extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::creditUrl($data->rid, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::creditUrl($id, $refresh=true);
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
@@ -86,6 +88,8 @@ class Credit extends AbstractSubfunctionController {
 	5. Displays
 ============================================================= */
 	protected static function displayCredit(WireData $data, Customer $customer, $json = []) {
+		self::addPageData($data);
+		
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Credit');
 		}
@@ -93,7 +97,6 @@ class Credit extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		self::addPageData($data);
 		return self::renderCredit($data, $customer, $json);
 	}
 
