@@ -105,15 +105,7 @@ $(function() {
 		let formStd    = form.find('#std-splits');
 		let firstInput = formStd.find('input[name=order_percent1]');
 
-		// if (validator.element('#'+input.attr('id')) === false) {
-		// 	return true;
-		// }
-
-		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
-			return true;
-		}
-
-		if (input.hasClass('is-invalid')) {
+		if (input.attr('tabindex') <= firstInput.attr('tabindex') || input.hasClass('is-invalid')) {
 			return true;
 		}
 
@@ -133,6 +125,9 @@ $(function() {
 			}
 
 			if (validator.element('#' + otherInput.attr('id')) === false) {
+				if (otherInput.hasClass('order_percent') && input.hasClass('order_percent')) {
+					return true;
+				}
 				otherInput.focus();
 				return true;
 			}

@@ -56,11 +56,7 @@ $(function() {
 		let formStd    = form.find('#std-splits');
 		let firstInput = formStd.find('input[name=std_order_percent1]');
 
-		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
-			return true;
-		}
-
-		if (input.hasClass('is-invalid')) {
+		if (input.attr('tabindex') <= firstInput.attr('tabindex') || input.hasClass('is-invalid')) {
 			return true;
 		}
 
@@ -80,6 +76,9 @@ $(function() {
 			}
 
 			if (validator.element('#' + otherInput.attr('id')) === false) {
+				if (otherInput.hasClass('std_order_percent') && input.hasClass('std_order_percent')) {
+					return true;
+				}
 				otherInput.focus();
 				return true;
 			}
@@ -193,6 +192,7 @@ $(function() {
 			});
 			return true;
 		}
+		
 
 		if (input.val() == 0) {
 			input.val('');
