@@ -7,6 +7,7 @@
 
 
 {% extends 'code-tables/list-print.twig' %}
+{% set methods = manager.fieldAttribute('method', 'optionsShort') %}
 
 {% block print_headings_row %}
 	<tr>
@@ -27,7 +28,7 @@
 			<th colspan="4">Description</th>
 			<th>Method</th>
 			<th>Expire Date</th>
-			<th colspan="3">Description</th>
+			<th colspan="3"></th>
 		{% endblock %}
 	</tr>
 {% endblock %}
@@ -37,11 +38,9 @@
 	<tr class="first-txn-row">
 		<td colspan="4">{{ code.code|replace({' ': '&nbsp;'})|raw }}</td>
 		<td colspan="4">{{ code.description }}</td>
-		<td>{{ code.hold }}</td>
-		<td>{{ code.method}}</td>
-		<td>{{ code.ccprefix }}</td>
+		<td>{{ code.method }} - {{ methods[code.method] }}</td>
 		<td>{{ code.expiredate ? code.expiredate|convertdate : '' }}</td>
-		<td>{{ code.country }}</td>
+		<td colspan="3"></td>
 	</tr>
 
 	{% if code.method == constant('METHOD_EOM', manager) %}
@@ -50,6 +49,7 @@
 			<td colspan="2" class="text-center border-left border-right">Day</td>
 			<td colspan="3" class="text-center border-left border-right">Discount</td>
 			<td colspan="2" class="text-center border-left border-right">Due</td>
+			<td colspan="3"></td>
 		</tr>
 		<tr class="text-bold">
 			<td colspan="3"></td>
@@ -60,7 +60,9 @@
 			<td class="text-right">Plus Months</td>
 			<td class="text-right">Day</td>
 			<td class="text-right">Plus Months</td>
+			<td colspan="3"></td>
 		</tr>
+
 		{% for x in 1..constant('NBR_SPLITS_METHOD_EOM', manager) %}
 			{% if code.eom_from_day(x) %}
 				<tr>
@@ -82,19 +84,13 @@
 					<td class="text-right">
 						{{ code.eom_plus_months(x) ? code.eom_plus_months(x) : '' }}
 					</td>
+					<td colspan="3"></td>
 				</tr>
 			{% endif %}
 		{% endfor %}
 	{% endif %}
 
 	{% if code.method == constant('METHOD_STD', manager) %}
-		<tr class="text-bold">
-			<td colspan="2"></td>
-			<td></td>
-			<td></td>
-			<td colspan="4" class="text-center border-left border-right">Discount</td>
-			<td colspan="5" class="text-center border-left border-right">Due</td>
-		</tr>
 		<tr class="text-bold">
 			<td colspan="2"></td>
 			<td class="text-center">Split</td>
