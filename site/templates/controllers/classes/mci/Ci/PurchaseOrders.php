@@ -25,7 +25,6 @@ class PurchaseOrders extends AbstractSubfunctionController {
 		$fields = ['rid|int', 'custpo|text', 'refresh|bool', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
-		
 		self::decorateInputDataWithCustid($data);
 		self::decoratePageWithCustid($data);
 
