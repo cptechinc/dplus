@@ -26,6 +26,7 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		'code'         => ['type' => 'text', 'maxlength' => 4],
 		'description'  => ['type' => 'text', 'maxlength' => 20],
 		'method'       => ['type' => 'text', 'default' => 'S', 'options' => ['S' => 'Standard Terms', 'E' => 'End of Month Terms']],
+		'method'       => ['type' => 'text', 'default' => 'S', 'optionsShort' => ['S' => 'STD', 'E' => 'EOM'], 'options' => ['S' => 'Standard Terms', 'E' => 'End of Month Terms']],
 		'expiredate'   => ['type' => 'text', 'default' => '', 'inputFormat' => 'm/d/Y', 'recordFormat' => 'Ymd'],
 
 		// THESE ARE FOR THE SPLITS, USE BASE NAME
