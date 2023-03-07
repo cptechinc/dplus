@@ -1,6 +1,7 @@
 {% set value = code.eom_thru_day(x) %}
 
 {% set readonly = value == 0 %}
+{% set readonly = x == constant('NBR_SPLITS_METHOD_EOM', manager) ? true : readonly %}
 
 {% set tabindex = startindex + (x * 10) + 1 %}
 {% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
