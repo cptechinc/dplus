@@ -9,11 +9,13 @@ class DateFormatter {
 			'mmddyyyy': 'MMDDYYYY',
 			'mmddyy': 'MMDDYY',
 			'mm/dd/yyyy': 'MM/DD/YYYY',
+			'yyyymmdd': 'YYYYMMDD',
 			'timestamp': 'X'
 		},
 		this.expectedFormats = {
 			'mm/dd': ['mmdd', 'mm/dd', 'm/d'],
-			'mm/dd/yyyy': ['mm/dd/yyyy', 'mmddyyyy', 'mmddyy']
+			'mm/dd/yyyy': ['mm/dd/yyyy', 'mmddyyyy', 'mmddyy'],
+			'yyyymmdd': ['yyyymmdd']
 		}
 		this.inputDate = date;
 		this.date = date;

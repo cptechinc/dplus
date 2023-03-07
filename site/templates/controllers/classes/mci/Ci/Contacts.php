@@ -23,7 +23,7 @@ class Contacts extends AbstractSubfunctionController {
 	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['rid|int', 'shiptoID|text', 'refresh|bool'];
+		$fields = ['rid|int', 'custID|string', 'shiptoID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
 
@@ -36,14 +36,15 @@ class Contacts extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::contactsUrl($data->rid, $data->shiptoID), $http301=false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::contactsUrl($id, $data->shiptoID), $http301=false);
 		}
 		return self::contacts($data);
 	}
 
 	private static function contacts(WireData $data) {
 		$json = self::fetchData($data);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 		self::pw('page')->headline = "CI: $customer->name Contacts";
 
 		if (empty($data->shiptoID) === false) {
@@ -68,7 +69,8 @@ class Contacts extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::contactsUrl($data->rid, $data->shiptoID, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::contactsUrl($id, $data->shiptoID, $refresh=true);
 	}
 
 	/**
@@ -110,10 +112,12 @@ class Contacts extends AbstractSubfunctionController {
 ============================================================= */
 	protected static function displayContacts(WireData $data, Customer $customer, $json = []) {
 		if (empty($json)) {
+			self::addPageData($data);
 			return self::renderJsonNotFoundAlert($data, 'Contacts');
 		}
 
 		if ($json['error']) {
+			self::addPageData($data);
 			return self::renderJsonError($data, $json);
 		}
 		self::addPageData($data);

@@ -1,9 +1,11 @@
 {% include 'customers/ci/.new/bread-crumbs.twig' %}
 
+{% set idCust = config.ci.useRid ? input.get.int('rid') : input.get.string('custID') %}
+
 <div class="row">
 	<div class="col-sm-6">
 		<form action="{{ input.url() }}" method="GET" class="allow-enterkey-submit">
-			<input type="hidden" name="rid" value="{{ input.get.int('rid') }}">
+			<input type="hidden" name="{{ config.ci.useRid ? 'rid' : 'custID' }}" value="{{ idCust }}">
 			<div class="form-group">
 				<label for="custpo">Cust PO #</label>
 				<input class="form-control form-group inline" type="text" name="custpo" id="custpo" placeholder="Customer PO #" autofocus>

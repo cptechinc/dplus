@@ -7,6 +7,9 @@
 	page.custid             Customer ID
 	customer.contacts       Propel\Runtime\Util\PropelModelPager of Custindex
 #}
+{% set idCust = config.ci.useRid ? input.get.int('rid') : input.get.string('custID') %}
+
+
 <div class="card mb-4">
 	<div class="card-header d-flex justify-content-between bg-primary">
 		<a class="text-white" data-toggle="collapse" href="#customer-contacts" role="button" aria-expanded="false" aria-controls="customer-contacts">
@@ -29,13 +32,13 @@
 			{% for contact in contacts %}
 				<div class="list-group-item py-1 px-2">
 					<div class="row">
-						<div class="col"><a href="{{ page.ciContactUrl(input.get.int('rid'), contact.shiptoid, contact.contact) }}" class="link">{{ contact.contact }}</a></div>
+						<div class="col"><a href="{{ page.ciContactUrl(idCust, contact.shiptoid, contact.contact) }}" class="link">{{ contact.contact }}</a></div>
 						<div class="col">{{ contact.shiptoid }}</div>
 						<div class="col">{{ contact.title }}</div>
 						<div class="col">{{ contact.phone }}</div>
 						<div class="col">{{ contact.email }}</div>
 						<div class="col text-right">
-							<a href="{{ page.ciContactEditUrl(input.get.int('rid'), contact.shiptoid, contact.contact) }}" class="btn btn-warning btn-sm">
+							<a href="{{ page.ciContactEditUrl(idCust, contact.shiptoid, contact.contact) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i>
 							</a>
 						</div>
@@ -50,7 +53,7 @@
 			</div>
 		{% endif %}
 		<div class="card-footer">
-			<a href="{{ page.ciContactsUrl(input.get.int('rid'), input.get.text('shiptoID'))}}" class="link">
+			<a href="{{ page.ciContactsUrl(idCust, input.get.text('shiptoID'))}}" class="link">
 				View More Contacts <i class="fa fa-sign-in" aria-hidden="true"></i>
 			</a>
 		</div>

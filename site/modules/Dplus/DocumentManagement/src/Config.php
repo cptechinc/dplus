@@ -2,7 +2,7 @@
 // ProcessWire
 use ProcessWire\WireData;
 // Dplus Document Management
-use Dplus\DocManagement\Config;
+use Dplus\DocManagement\Config as Configs;
 
 /**
  * Document Viewer Config
@@ -32,8 +32,8 @@ class Config extends WireData {
 
 	public function initConfigs() {
 		$json = $this->getConfigJson();
-		$this->viewer = Config\Viewer::getInstance($json);
-		$this->folder = Config\Folder::getInstance($json);
+		$this->viewer = Configs\Viewer::getInstance($json);
+		$this->folder = Configs\Folder::getInstance($json);
 	}
 
 	public function getConfigFilePath() {

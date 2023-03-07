@@ -26,7 +26,7 @@ class SalesOrders extends AbstractSubfunctionController {
 	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['rid|int', 'refresh|bool'];
+		$fields = ['rid|int', 'refresh|bool', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
 		self::decorateInputDataWithCustid($data);
@@ -35,15 +35,16 @@ class SalesOrders extends AbstractSubfunctionController {
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
 			sleep(2);
-			self::pw('session')->redirect(self::ciSalesOrdersUrl($data->rid), $http301 = false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::ciSalesOrdersUrl($id), $http301 = false);
 		}
 		return self::orders($data);
 	}
 
 	private static function orders(WireData $data) {
 		$json = self::fetchData($data);
-		$customer = self::getCustomerByRid($data->rid);
-
+		$customer = self::getCustomerFromWireData($data);
+		
 		self::initHooks();
 		self::pw('page')->headline = "CI: $customer->name Sales Orders";
 
@@ -65,7 +66,8 @@ class SalesOrders extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::ordersUrl($data->rid, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::ordersUrl($id, $refresh=true);
 	}
 
 	protected static function fetchData(WireData $data) {

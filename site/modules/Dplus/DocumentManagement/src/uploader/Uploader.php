@@ -59,6 +59,9 @@ class Uploader extends WireData {
 		if ($autofile) {
 			$sysd = Configs\Sysd::config();
 			$this->uploadDirectory = $sysd->dirautofile . '/';
+			if ($this->config->company == 'ugm') {
+				$this->uploadDirectory = $sysd->dircerts . '/';
+			}
 			return true;
 		}
 		$this->uploadDirectory = static::UPLOAD_DIR;

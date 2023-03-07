@@ -34,14 +34,15 @@ class Quotes extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::ciQuotesUrl($data->rid), $http301 = false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::ciQuotesUrl($id), $http301 = false);
 		}
 		return self::quotes($data);
 	}
 
 	private static function quotes(WireData $data) {
 		$json = self::fetchData($data);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 
 		self::initHooks();
 		self::pw('page')->headline = "CI: $customer->name Quotes";
@@ -64,7 +65,8 @@ class Quotes extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::quotesUrl($data->rid, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::quotesUrl($id, $refresh=true);
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
@@ -90,6 +92,8 @@ class Quotes extends AbstractSubfunctionController {
 	5. Displays
 ============================================================= */
 	protected static function displayQuotes(WireData $data, Customer $customer, $json = []) {
+		self::addPageData($data);
+
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Quotes');
 		}
@@ -97,7 +101,6 @@ class Quotes extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		self::addPageData($data);
 		return self::renderQuotes($data, $customer, $json);
 	}
 

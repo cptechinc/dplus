@@ -24,7 +24,7 @@ abstract class AbstractSubfunctionController extends AbstractController {
 	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['rid|int'];
+		$fields = ['rid|int', 'custID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
 	} 
@@ -44,8 +44,10 @@ abstract class AbstractSubfunctionController extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			throw new Wire404Exception();
 		}
-		$cmm = Cmm::instance();
-		if (self::validateUserHasCustomerPermission(null, $cmm->custidByRid($data->rid)) === false) {
+		if (self::pw('config')->ci->useRid) {
+			$data->custID = Cmm::instance()->ridByCustid($data->q);
+		}
+		if (self::validateUserHasCustomerPermission(null, $data->custID) === false) {
 			throw new Wire404Exception();
 		}
 	}

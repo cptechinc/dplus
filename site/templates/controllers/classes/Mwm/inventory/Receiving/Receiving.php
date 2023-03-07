@@ -27,6 +27,8 @@ use Controllers\Wm\Base;
 
 class Receiving extends Base {
 	const DPLUSPERMISSION = 'er';
+	const PONBR_LENGTH = 8;
+	const PONBR_PAD = '0';
 
 	/** @var ReceivingCRUD */
 	static private $receiving;
@@ -50,6 +52,7 @@ class Receiving extends Base {
 		}
 		$html =  self::pw('config')->twig->render('warehouse/inventory/receiving/bread-crumbs.twig');
 		$html .= self::poForm($data);
+		
 		$receiving = self::getReceiving();
 		$createStrategy = $receiving->getCreatePoStrategy();
 		if ($createStrategy->allowCreatePo()) {
@@ -60,10 +63,12 @@ class Receiving extends Base {
 		return $html;
 	}
 
-	static public function handleCRUD($data) {
+	static public function handleCRUD(WireData $data) {
 		self::sanitizeParametersShort($data, ['action|text', 'ponbr|int', 'scan|text']);
 
 		$validate = self::getValidatorMpo();
+		$data->ponbr = self::padPoNbr($data->ponbr);
+
 		if (empty($data->ponbr) === false && $validate->po($data->ponbr) === false) {
 			self::redirect(self::receivingUrl($data->ponbr), $http301 = false);
 		}
@@ -119,21 +124,22 @@ class Receiving extends Base {
 			return self::handleCRUD($data);
 		}
 
-		$validate = self::getValidatorMpo();
+		$q = \PurchaseOrderQuery::create();
+		$q->filterByPonbr(self::padPoNbr($data->ponbr));
+		$exists = boolval($q->count());
 
-		if ($validate->po($data->ponbr) === false) {
+		if ($exists === false) {
 			return self::invalidPo($data);
 		}
 		self::pw('page')->headline = "Receiving: PO # $data->ponbr";
 		$receiving = self::getReceiving();
-		$receiving->setPonbr($data->ponbr);
+		$receiving->setPonbr(self::padPoNbr($data->ponbr));
 
 		$po = $receiving->getPurchaseorder();
 
 		if ($po->count_receivingitems() === 0) {
 			$receiving->requestPoInit();
 		}
-		echo self::pw('db-dplus')->getLastExecutedQuery();
 
 		if ($po->count_receivingitems() === 0) {
 			$allowAdd = $receiving->getEnforceItemidsStrategy();
@@ -179,7 +185,6 @@ class Receiving extends Base {
 		if ($data->recno) {
 			$q->filterByRecno($data->recno, Criteria::ALT_NOT_EQUAL);
 			$q->delete();
-
 			self::redirect(self::receivingScanUrl($data->ponbr, $data->scan), $http301 = false);
 		}
 	}
@@ -219,6 +224,10 @@ class Receiving extends Base {
 				self::redirect(self::receivingSubmitVerifyUrl($data->ponbr, $data->scan), $http301 = false);
 			}
 		}
+	}
+
+	protected static function padPoNbr($ponbr) {
+		return str_pad($ponbr, self::PONBR_LENGTH, self::PONBR_PAD, STR_PAD_LEFT);
 	}
 
 /* =============================================================
@@ -428,15 +437,14 @@ class Receiving extends Base {
 	}
 
 	static protected function poItemScanForm($data) {
-		$configEnv = self::pw('modules')->get('ConfigsWarehouseInventory');
 		$settings = new WireData();
-		$settings->forceItemLookupBin = $configEnv->receive_force_bin_itemlookup;
-		$settings->skipBin            = $configEnv->receive_disregard_bin;
+		$settings->forceItemLookupBin = true;
+		$settings->skipBin = false;
 		$settings->binid = '';
 		$receiving = self::getReceiving($data->ponbr);
 		$received = $receiving->getSessionLastReceived();
 
-		if ($received->binid && $configEnv->physicalcount_savebin) {
+		if ($received->binid) {
 			$settings->binid = $received->binid;
 		}
 		return self::pw('config')->twig->render('warehouse/inventory/receiving/po-item-form.twig', ['ponbr' => $data->ponbr, 'settings' => $settings]);
@@ -454,8 +462,12 @@ class Receiving extends Base {
 		if ($received->binid && $configEnv->physicalcount_savebin) {
 			$settings->binid = $received->binid;
 		}
-
-		return self::pw('config')->twig->render('warehouse/inventory/receiving/po-item-receive-form.twig', ['item' => $physicalitem, 'm_receiving' => self::getReceiving($data->ponbr)]);
+		$settings->productionDateLabel = 'Production Date';
+		if (self::pw('config')->company == 'ugm') {
+			$settings->productionDateLabel = 'Expire Date';
+		}
+		
+		return self::pw('config')->twig->render('warehouse/inventory/receiving/po-item-receive-form.twig', ['item' => $physicalitem, 'm_receiving' => self::getReceiving($data->ponbr), 'settings' => $settings]);
 	}
 
 	static public function createPo($data) {

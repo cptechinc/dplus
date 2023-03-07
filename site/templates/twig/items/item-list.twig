@@ -23,7 +23,7 @@
 			{% for item in items %}
 				<tr data-itemid="{{ item.itemid }}">
 					<td>
-						<a href="{{ page.wire('hooks').isHooked('Page::itemUrl()') ? page.itemUrl(item.itemid) : '' }}" class="link ii-item item-link" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
+						<a href="{{ page.wire('hooks').isHooked('Page::itemUrl()') ? page.itemUrl(item.itemid) : '' }}" class="link" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
 							<strong>{{ item.itemid }}</strong>
 						</a>
 					</td>
