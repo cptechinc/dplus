@@ -182,6 +182,7 @@ $(function() {
 		input.val(percent.toFixed(formPtm.config.fields.std_order_percent.precision));
 		
 		let totalPercent = formPtm.sumUpStdOrderPercents();
+		let index = input.closest('.std-split').data('index');
 
 		if (totalPercent > 100) {
 			alert.orderPercentIsOver100(function() {
@@ -199,7 +200,11 @@ $(function() {
 		}
 		input.attr('data-lastvalue', formPtm.floatVal(input.val()));
 		formPtm.setupNextStdSplit(input);
-		formPtm.enableDisableNextStdSplit(input.closest('.std-split').data('index'));
+		formPtm.enableDisableNextStdSplit(index);
+
+		if (input.val() == '' || percent == 0) {
+			formPtm.form.find('input[name=std_order_percent'+(index - 1)+']').focus();
+		}
 	});
 
 	$("body").on("keyup", ".std_disc_percent", function(e) {

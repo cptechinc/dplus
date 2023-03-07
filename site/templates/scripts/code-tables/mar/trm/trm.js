@@ -354,10 +354,9 @@ $(function() {
 		formTrm.enableDisableThisStdSplitInputs(input);
 		formTrm.enableDisableNextStdSplit(input);
 		formTrm.setupNextStdSplit(input);
-		percent = input.val() == '' ? 0 : parseFloat(input.val());
-		input.attr('data-lastvalue', percent);
+		input.attr('data-lastvalue', input.val());
 
-		if (input.val() == '') {
+		if (input.val() == '' || percent == 0) {
 			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').change();
 			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').focus();
 		}
