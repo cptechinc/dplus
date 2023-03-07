@@ -60,6 +60,10 @@ $(function() {
 			return true;
 		}
 
+		if (input.hasClass('is-invalid')) {
+			return true;
+		}
+
 		let start = parseInt(firstInput.attr('tabindex'));
 		
 		// Only loop up to $(this) input
