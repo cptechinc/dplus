@@ -234,17 +234,17 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 			$json["eom_due_day$i"]      = $code->eom_due_day($i);
 			$json["eom_plus_months$i"]  = $code->eom_plus_months($i);
 		}
-		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_EOM; $i++) {
-			$json["std_order_percent$i"]     = $code->std_order_percent($i);
-			$json["std_disc_percent$i"]  = $code->std_disc_percent($i);
-			$json["std_disc_days$i"]  = $code->std_disc_days($i);
-			$json["std_disc_day$i"]  = $code->std_disc_day($i);
-			$json["std_disc_date$i"]  = $code->std_disc_date($i);
-			$json["std_due_days$i"]  = $code->std_due_days($i);
-			$json["std_due_day$i"]  = $code->std_due_day($i);
-			$json["std_plus_months$i"]  = $code->std_plus_months($i);
-			$json["std_due_date$i"]  = $code->std_due_date($i);
-			$json["std_plus_years$i"]  = $code->std_plus_years($i);
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_STD; $i++) {
+			$json["std_order_percent$i"]  = $code->std_order_percent($i);
+			$json["std_disc_percent$i"]   = $code->std_disc_percent($i);
+			$json["std_disc_days$i"]      = $code->std_disc_days($i);
+			$json["std_disc_day$i"]       = $code->std_disc_day($i);
+			$json["std_disc_date$i"]      = $code->std_disc_date($i);
+			$json["std_due_days$i"]       = $code->std_due_days($i);
+			$json["std_due_day$i"]        = $code->std_due_day($i);
+			$json["std_plus_months$i"]    = $code->std_plus_months($i);
+			$json["std_due_date$i"]       = $code->std_due_date($i);
+			$json["std_plus_years$i"]     = $code->std_plus_years($i);
 		}
 		return $json;
 	}
