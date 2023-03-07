@@ -211,8 +211,10 @@ $(function() {
 		if (formPtm.isMethodStd() === false) {
 			return false;
 		}
-		let input  = $(this);
-		input.val(input.val().trim());
+		let input = $(this);
+		if (input.val().includes(' ')) {
+			input.val(input.val().trim());
+		}
 		formPtm.enableDisableStdDiscFieldsFromDiscPercent(input);
 	});
 
