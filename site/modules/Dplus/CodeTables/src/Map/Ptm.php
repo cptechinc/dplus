@@ -25,7 +25,6 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 	const FIELD_ATTRIBUTES = [
 		'code'         => ['type' => 'text', 'maxlength' => 4],
 		'description'  => ['type' => 'text', 'maxlength' => 20],
-		'method'       => ['type' => 'text', 'default' => 'S', 'options' => ['S' => 'Standard Terms', 'E' => 'End of Month Terms']],
 		'method'       => ['type' => 'text', 'default' => 'S', 'optionsShort' => ['S' => 'STD', 'E' => 'EOM'], 'options' => ['S' => 'Standard Terms', 'E' => 'End of Month Terms']],
 		'expiredate'   => ['type' => 'text', 'default' => '', 'inputFormat' => 'm/d/Y', 'recordFormat' => 'Ymd'],
 
@@ -51,7 +50,6 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 		'eom_plus_months'  => ['type' => 'number', 'max' => 99],
 		'eom_from_day'     => ['type' => 'number', 'max' => 98],
 		'eom_thru_day'     => ['type' => 'number', 'max' => 99, 'defaultToMaxAt' => 30],
-		
 	];
 	const NBR_SPLITS_METHOD_STD = 5;
 	const NBR_SPLITS_METHOD_EOM = 3;
@@ -467,7 +465,7 @@ class Ptm extends AbstractCodeTableEditableSingleKey {
 			'precision' => $this->fieldAttribute('std_order_percent', 'precision')
 		];
 
-		for ($i = 1; $i < self::NBR_SPLITS_METHOD_STD; $i++) {
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_STD; $i++) {
 			if ($totalOrderPercent >= $opts['std_order_percent']['max']) {
 				$code->emptyStdSplit($i);
 				continue;
