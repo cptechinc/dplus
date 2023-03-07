@@ -355,6 +355,10 @@ $(function() {
 			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').change();
 			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').focus();
 		}
+
+		if (formTrm.sumUpStdOrderPercents() == 100) {
+			formTrm.clearStdOrderPercentErrors();
+		}
 	});
 
 	$("body").on("change", "input[name=order_percent1]", function(e) {
