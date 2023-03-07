@@ -254,7 +254,7 @@ class Trm extends AbstractCodeTableEditableSingleKey {
 			$json["eom_due_day$i"]      = $code->eom_due_day($i);
 			$json["eom_plus_months$i"]  = $code->eom_plus_months($i);
 		}
-		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_E; $i++) {
+		for ($i = 1; $i <= self::NBR_SPLITS_METHOD_S; $i++) {
 			$json["order_percent$i"]     = $code->order_percent($i);
 			$json["std_disc_percent$i"]  = $code->std_disc_percent($i);
 			$json["std_disc_days$i"]  = $code->std_disc_days($i);
