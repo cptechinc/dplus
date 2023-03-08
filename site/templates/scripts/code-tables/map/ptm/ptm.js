@@ -193,7 +193,6 @@ $(function() {
 			return true;
 		}
 		
-
 		if (input.val() == 0) {
 			input.val('');
 			formPtm.handleStdOrderPercentClear(input);
