@@ -10,6 +10,7 @@ class JsonDataFiles extends WireData implements Module {
 			'stock'        => 'iistkstat',
 			'stock_whse'   => 'iistkbywhse',
 			'requirements' => 'iirequire',
+			'price'        => 'price',
 			'pricing'      => 'iiprice',
 			'costing'      => 'iicost',
 			'usage'        => 'iiusage',
