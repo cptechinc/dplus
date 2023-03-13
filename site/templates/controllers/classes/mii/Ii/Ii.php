@@ -26,6 +26,11 @@ class Ii extends Base {
 			'code'      => 'ii-stock',
 			'formatter' => 'ii:stock',
 			'twig'      => 'items/ii/item/stock.twig',
+		],
+		'price' => [
+			'code'      => 'ii-price',
+			'formatter' => '',
+			'twig'      => 'items/ii/item/price.twig',
 		]
 	];
 
@@ -165,7 +170,12 @@ class Ii extends Base {
 
 		$html = new WireData();
 		foreach (self::SECTIONS as $key => $jsonInfo) {
-			$html->$key = self::displaySectionFormatted($data, $jsonInfo);
+			if ($jsonInfo['formatter']) {
+				$html->$key = self::displaySectionFormatted($data, $jsonInfo);
+			}
+			if ($jsonInfo['formatter'] == '') {
+				$html->$key = self::displaySectionUnformatted($data, $jsonInfo);
+			}
 		}
 		$page = self::pw('page');
 		$page->lastmodified = $jsonM->lastModified('ii-stock');
@@ -194,6 +204,22 @@ class Ii extends Base {
 		$formatter = $formatters->formatter($jsonInfo['formatter']);
 		$formatter->init_formatter();
 		return $config->twig->render($jsonInfo['twig'], ['itemID' => $data->itemID, 'json' => $json, 'module_formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint()]);
+	}
+
+	private static function displaySectionUnformatted($data, $jsonInfo) {
+		self::sanitizeParametersShort($data, ['itemID|text']);
+		$config = self::pw('config');
+		$jsonm  = self::getJsonModule();
+		$json   = $jsonm->getFile($jsonInfo['code']);
+
+		if ($jsonm->exists($jsonInfo['code']) === false) {
+			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'File Not Found']);
+		}
+
+		if ($json['error']) {
+			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+		}
+		return $config->twig->render($jsonInfo['twig'], ['itemID' => $data->itemID, 'json' => $json]);
 	}
 
 	private static function displayList($data, PropelModelPager $items) {
