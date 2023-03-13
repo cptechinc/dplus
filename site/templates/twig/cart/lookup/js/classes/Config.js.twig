@@ -13,7 +13,7 @@ class LookupConfig {
 	constructor() {
 		this.custid = '{{ cart.getCustid() }}';
 		this.shiptoid = '{{ cart.getShiptoid() }}';
-		this.addToPrice = {{ customer.hasFreightRateCode() ?  customer.soFreightRate.addon : 0.00 }},
+		this.addToPrice = 0.00,
 		
 		this.fields = {
 			qty: {

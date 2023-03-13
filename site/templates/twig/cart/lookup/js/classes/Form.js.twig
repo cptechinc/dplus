@@ -44,6 +44,7 @@ class LookupForm {
 			} else if (response.matches.itm > 0) {
 				form.searchItemsAjax();
 			} else {
+				var alertsLookup = LookupAlerts.getInstance();
 				alertsLookup.itemNotFound(inputs.itemid.val(), function(makeAdvancedSearch) {
 					if (makeAdvancedSearch) {
 						var url = URI();
