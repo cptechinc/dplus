@@ -7,6 +7,7 @@
 
 	$routes = [
 		['GET',  '', Loti\Loti::class, 'index'],
+		['GET',  'page{pagenbr:\d+}', Loti\Loti::class, 'index'],
 		['GET',  'activity/', Loti\Activity::class, 'index'],
 	];
 

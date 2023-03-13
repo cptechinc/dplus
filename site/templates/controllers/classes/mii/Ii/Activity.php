@@ -60,7 +60,8 @@ class Activity extends Base {
 /* =============================================================
 	Data Requests
 ============================================================= */
-	private static function requestJson($vars) {
+	// NOTE: keep public for Mii\Loti\Activity
+	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'date|date', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
