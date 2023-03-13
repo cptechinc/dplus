@@ -37,7 +37,8 @@ class SalesHistory extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::historyUrl($data->rid, $data->date), $http301 = false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::historyUrl($id, $data->date), $http301 = false);
 		}
 
 		if (empty($data->date)) {
@@ -78,7 +79,8 @@ class SalesHistory extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::historyUrl($data->rid, $data->date, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::historyUrl($id, $data->date, $refresh=true);
 	}
 
 	protected static function fetchData(WireData $data) {
@@ -127,6 +129,7 @@ class SalesHistory extends AbstractSubfunctionController {
 	}
 
 	protected static function displayHistory(WireData $data, Customer $customer, $json = []) {
+		self::addPageData($data);
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Sales History');
 		}
@@ -134,7 +137,6 @@ class SalesHistory extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		self::addPageData($data);
 		return self::renderHistory($data, $customer, $json);
 	}
 
