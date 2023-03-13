@@ -15,7 +15,8 @@
 									<span class="font-weight-bold">{{ column['label'] }}</span>: {{ formatter.format_celldata(quote, column) }} &nbsp;
 									{% if i == 1 and quote['Quote ID'] %}
 										{% if docm.countDocuments(quote['Quote ID']) %}
-											<a href="{{ page.documentListUrl(input.get.int('rid'), quote['Quote ID'])}}" class="text-success" title="View Documents for Quote # {{ quote['Quote ID'] }}">
+											{% set custID = json['custid'] %}
+											<a href="{{ page.documentListUrl(custID, quote['Quote ID'])}}" class="text-success" title="View Documents for Quote # {{ quote['Quote ID'] }}">
 												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Quote # {{ quote['Quote ID'] }}</span>
 											</a>
 										{% endif %}
