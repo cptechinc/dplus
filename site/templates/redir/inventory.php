@@ -119,6 +119,7 @@
 				$labelsession->setLotserial($lotserial);
 				$labelsession->setWhse($whseID);
 			}
+			$labelsession->setLotserial($lotserial);
 			$labelsession->setLabelBox($input->$rm->text('box-label'));
 			$labelsession->setPrinterBox($input->$rm->text('box-printer'));
 			$labelsession->setQtyBox($input->$rm->int('box-qty'));
