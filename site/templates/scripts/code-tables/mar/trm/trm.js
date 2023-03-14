@@ -686,6 +686,8 @@ $(function() {
 
 		let input  = $(this);
 		if (input.val() == ' ') {
+			input.val(input.val().trim());
+		}
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
@@ -757,11 +759,13 @@ $(function() {
 	Form Validation
 ============================================================= */
 	function validateExpiredate() {
+		console.log('validating expire date');
 		let input = formTrm.inputs.fields.expiredate;
 		let expiredate = moment(input.val(), momentJsFormats['mm/dd/yyyy']);
 		if (input.val().length < 8) {
 			return true;
 		}
+		console.log(expiredate.isValid());
 		if (expiredate.isValid() == false) {
 			return false;
 		}
@@ -817,9 +821,13 @@ $(function() {
 		return value >= parseInt(parent.find('.eom_from_day').val()) + 1;
 	}
 
-	jQuery.validator.addMethod("expiredate", function(value, element) {
-		return this.optional(element) || validateExpiredate();
-	}, "Date must be a valid, future date MM/DD/YYYY");
+	jQuery.validator.addMethod("dateMMDDYYYYSlash", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateMMDDYYYYSlash(value);
+	}, "Date must be a valid date (MM/DD/YYYY)");
+
+	jQuery.validator.addMethod("futuredate", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateIsInFuture(value, 'mm/dd/yyyy');
+	}, "Date must be in the future");
 
 	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
 		var isFocused = element == document.activeElement;
@@ -891,7 +899,11 @@ $(function() {
 				}
 			},
 			expiredate: {
-				expiredate: true,
+				dateMMDDYYYYSlash: true,
+				futuredate: true,
+				normalizer: function(value) {
+					return value.trim();
+				},
 			},
 			termsgroup: {
 				required: false,
