@@ -263,7 +263,9 @@ $(function() {
 		server.getCountryCode(input.val(), function(country) {
 			if (country) {
 				descriptionField.text(country.description);
+				return true;
 			}
+			input.focus();
 		});
 	});
 
