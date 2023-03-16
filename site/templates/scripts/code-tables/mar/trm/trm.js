@@ -773,6 +773,14 @@ $(function() {
 		return this.optional(element) || validateExpiredate();
 	}, "Date must be a valid, future date MM/DD/YYYY");
 
+	jQuery.validator.addMethod("dateMMDDYYYYSlash", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateMMDDYYYYSlash(value);
+	}, "Date must be a valid date (MM/DD/YYYY)");
+
+	jQuery.validator.addMethod("futuredate", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateIsInFuture(value, 'mm/dd/yyyy');
+	}, "Date must be in the future");
+
 	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
 		var isFocused = element == document.activeElement;
 		return this.optional(element) || validateDateMMDDSlash(value);
@@ -843,7 +851,12 @@ $(function() {
 				}
 			},
 			expiredate: {
-				expiredate: true,
+				dateMMDDYYYYSlash: true,
+				futuredate: true,
+				normalizer: function(value) {
+					formCode.inputs.fields.expiredate.val(formCode.inputs.fields.expiredate.val().trim());
+					return value.trim();
+				},
 			},
 			termsgroup: {
 				required: false,
