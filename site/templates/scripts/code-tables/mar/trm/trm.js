@@ -63,6 +63,40 @@ $(function() {
 		}
 	});
 
+	$("body").on("focusin", "#code-form #top-inputs input, #code-form #top-inputs select", function(e) {
+		let input = $(this);
+
+		let form       = input.closest('form');
+		let validator  = form.validate();
+		let formTop    = form.find('#top-inputs');
+		let firstInput = formTop.find('input[name=code]');
+
+		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
+			return true;
+		}
+
+		let start = parseInt(firstInput.attr('tabindex'));
+		
+		// Only loop up to $(this) input
+		for (let i = start; i < parseInt(input.attr('tabindex')); i++) {
+			let otherInput = formTop.find('input[tabindex='+i+']');
+
+			if (otherInput.length == 0) {
+				// Check negative tabindexes
+				otherInput = formTop.find('input[tabindex="-'+i+'"]');
+
+				if (otherInput.length == 0) {
+					continue;
+				}
+			}
+
+			if (validator.element('#' + otherInput.attr('id')) === false) {
+				otherInput.focus();
+				return true;
+			}
+		}
+	});
+
 	$("body").on("focusin", "#code-form .eom-split input", function(e) {
 		let input = $(this);
 
