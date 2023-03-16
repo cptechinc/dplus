@@ -442,7 +442,6 @@ $(function() {
 		}
 
 		let input  = $(this);
-		input.val(input.val().trim());
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		if (percent == 0) {
 			formPtm.enableDisableEomDiscFieldsFromPercent(input);
@@ -462,6 +461,10 @@ $(function() {
 		
 		if (percent == 0) {
 			formPtm.enableDisableEomDiscFieldsFromPercent(input);
+			input.closest('.eom-discount').find('input').each(function() {
+				let sinput = $(this);
+				sinput.val('');
+			});
 			return true;
 		}
 		input.val(percent.toFixed(formPtm.config.fields.eom_disc_percent.precision));
