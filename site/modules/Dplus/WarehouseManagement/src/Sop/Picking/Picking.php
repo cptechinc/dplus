@@ -264,7 +264,6 @@ class Picking extends Base {
 		$orderitem     = $this->items->getItemByItemid($itemID);
 		$recordnumbers = [];
 
-
 		foreach ($lotserialbins as $lotserialbin) {
 			echo $lotserialbin;
 			echo '<br /> <br />';
