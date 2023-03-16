@@ -51,10 +51,17 @@ $(function() {
 	$("body").on("focusin", "#code-form .std-split input", function(e) {
 		let input = $(this);
 
+		console.log(input);
+
 		let form       = input.closest('form');
 		let validator  = form.validate();
 		let formStd    = form.find('#std-splits');
-		let firstInput = formStd.find('input[name=std_order_percent1]');
+		let firstInput = formStd.find('input[name=order_percent1]');
+		let formTop    = form.find('#top-inputs');
+		
+		if (formTop.find('input.is-invalid')) {
+			formTop.find('input.is-invalid').focus();
+		}
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex') || input.hasClass('is-invalid')) {
 			return true;
@@ -76,7 +83,7 @@ $(function() {
 			}
 
 			if (validator.element('#' + otherInput.attr('id')) === false) {
-				if (otherInput.hasClass('std_order_percent') && input.hasClass('std_order_percent')) {
+				if (otherInput.hasClass('order_percent') && input.hasClass('order_percent')) {
 					return true;
 				}
 				otherInput.focus();
