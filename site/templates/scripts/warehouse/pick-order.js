@@ -21,6 +21,7 @@ if (query.hasOwnProperty('scan') === false) {
 	input.focus();
 	$('html, body').animate({scrollTop: input.offset().top,},700,'linear');
 }
+
 /////////////////////////////////////
 // 1. Select / Enter Sales Order
 ////////////////////////////////////
@@ -199,6 +200,22 @@ if (query.hasOwnProperty('scan') === false) {
 	$('#so-lock-div').on('shown.bs.collapse', function () {
 		var form = $(this).find('form');
 		form.find('input[name=ordn]').focus();
+	});
+
+	$("#add-lotserials-form").validate({
+		submitHandler : function(form) {
+			var jForm = $(form);
+			jForm.find('input[name="lotserialbins[]"]:not(:checked)').each(function() {
+				var checkInput = $(this);
+				var parent = checkInput.closest('.lotserial-record');
+
+				parent.find('input').each(function() {
+					var input = $(this);
+					input.attr('disabled', 'disabled');
+				});
+			});
+			form.submit();
+		}
 	});
 
 });
