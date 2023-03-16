@@ -223,7 +223,9 @@ $(function() {
 		server.getCreditCardCode(input.val(), function(crcdCode) {
 			if (crcdCode) {
 				descriptionField.text(crcdCode.description);
+				return true;
 			}
+			input.focus();
 		});
 	});
 
