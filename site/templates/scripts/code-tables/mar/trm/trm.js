@@ -63,52 +63,12 @@ $(function() {
 		}
 	});
 
-	$("body").on("focusin", "#code-form #top-inputs input, #code-form #top-inputs button[data-toggle=modal]", function(e) {
-		let input = $(this);
-
-		let form       = input.closest('form');
-		let validator  = form.validate();
-		let formTop    = form.find('#top-inputs');
-		let firstInput = formTop.find('input[name=code]');
-
-		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
-			return true;
-		}
-
-		let start = parseInt(firstInput.attr('tabindex'));
-		
-		// Only loop up to $(this) input
-		for (let i = start; i < parseInt(input.attr('tabindex')); i++) {
-			let otherInput = formTop.find('input[tabindex='+i+']');
-
-			if (otherInput.length == 0) {
-				// Check negative tabindexes
-				otherInput = formTop.find('input[tabindex="-'+i+'"]');
-
-				if (otherInput.length == 0) {
-					continue;
-				}
-			}
-
-			if (validator.element('#' + otherInput.attr('id')) === false) {
-				console.log(otherInput);
-				otherInput.focus();
-				return true;
-			}
-		}
-	});
-
 	$("body").on("focusin", "#code-form .eom-split input", function(e) {
 		let input = $(this);
 
 		let form       = input.closest('form');
 		let validator  = form.validate();
 		let formEom    = form.find('#eom-splits');
-		let formTop    = form.find('#top-inputs');
-
-		if (formTop.find('.is-invalid')) {
-			formTop.find('.is-invalid').focus();
-		}
 		let firstInput = formEom.find('input[name=eom_thru_day1]');
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
@@ -144,11 +104,6 @@ $(function() {
 		let validator  = form.validate();
 		let formStd    = form.find('#std-splits');
 		let firstInput = formStd.find('input[name=order_percent1]');
-		let formTop    = form.find('#top-inputs');
-		
-		if (formTop.find('.is-invalid')) {
-			formTop.find('.is-invalid').focus();
-		}
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex') || input.hasClass('is-invalid')) {
 			return true;
@@ -664,14 +619,9 @@ $(function() {
 		}
 
 		let input  = $(this);
-		input.val(input.val().trim());
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		
 		if (percent == 0) {
-			input.closest('.eom-discount').find('input').each(function() {
-				let sinput = $(this);
-				sinput.val('');
-			});
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
 			return true;
 		}
@@ -685,9 +635,7 @@ $(function() {
 		}
 
 		let input  = $(this);
-		if (input.val() == ' ') {
-			input.val(input.val().trim());
-		}
+		input.val(input.val().trim());
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
@@ -759,13 +707,11 @@ $(function() {
 	Form Validation
 ============================================================= */
 	function validateExpiredate() {
-		console.log('validating expire date');
 		let input = formTrm.inputs.fields.expiredate;
 		let expiredate = moment(input.val(), momentJsFormats['mm/dd/yyyy']);
 		if (input.val().length < 8) {
 			return true;
 		}
-		console.log(expiredate.isValid());
 		if (expiredate.isValid() == false) {
 			return false;
 		}
@@ -821,13 +767,9 @@ $(function() {
 		return value >= parseInt(parent.find('.eom_from_day').val()) + 1;
 	}
 
-	jQuery.validator.addMethod("dateMMDDYYYYSlash", function(value, element) {
-		return this.optional(element) || Validator.getInstance().dateMMDDYYYYSlash(value);
-	}, "Date must be a valid date (MM/DD/YYYY)");
-
-	jQuery.validator.addMethod("futuredate", function(value, element) {
-		return this.optional(element) || Validator.getInstance().dateIsInFuture(value, 'mm/dd/yyyy');
-	}, "Date must be in the future");
+	jQuery.validator.addMethod("expiredate", function(value, element) {
+		return this.optional(element) || validateExpiredate();
+	}, "Date must be a valid, future date MM/DD/YYYY");
 
 	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
 		var isFocused = element == document.activeElement;
@@ -899,11 +841,7 @@ $(function() {
 				}
 			},
 			expiredate: {
-				dateMMDDYYYYSlash: true,
-				futuredate: true,
-				normalizer: function(value) {
-					return value.trim();
-				},
+				expiredate: true,
 			},
 			termsgroup: {
 				required: false,
