@@ -1,7 +1,10 @@
 <?php
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
+
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$tobin = $warehouse->validate_bin($input->get->text('tobin')) ? $input->get->text('tobin') : '';
+	$tobin = $warehouse->validate_bin($values->text('tobin')) ? $values->text('tobin') : '';
 	$config->binr = $modules->get('ConfigsBinr');
 
 	if (!empty($tobin)) {
