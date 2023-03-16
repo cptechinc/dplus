@@ -103,6 +103,11 @@ $(function() {
 		let form       = input.closest('form');
 		let validator  = form.validate();
 		let formEom    = form.find('#eom-splits');
+		let formTop    = form.find('#top-inputs');
+
+		if (formTop.find('.is-invalid')) {
+			formTop.find('.is-invalid').focus();
+		}
 		let firstInput = formEom.find('input[name=eom_thru_day1]');
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
