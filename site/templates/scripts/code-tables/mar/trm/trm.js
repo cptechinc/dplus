@@ -105,8 +105,8 @@ $(function() {
 		let formEom    = form.find('#eom-splits');
 		let formTop    = form.find('#top-inputs');
 
-		if (formTop.find('.is-invalid')) {
-			formTop.find('.is-invalid').focus();
+		if (formTop.find('input.is-invalid')) {
+			formTop.find('input.is-invalid').focus();
 		}
 		let firstInput = formEom.find('input[name=eom_thru_day1]');
 
@@ -145,8 +145,8 @@ $(function() {
 		let firstInput = formStd.find('input[name=order_percent1]');
 		let formTop    = form.find('#top-inputs');
 		
-		if (formTop.find('.is-invalid')) {
-			formTop.find('.is-invalid').focus();
+		if (formTop.find('input.is-invalid')) {
+			formTop.find('input.is-invalid').focus();
 		}
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex') || input.hasClass('is-invalid')) {
