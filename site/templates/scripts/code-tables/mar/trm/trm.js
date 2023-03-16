@@ -282,6 +282,7 @@ $(function() {
 			formCode.inputs.fields.ccprefix.change();
 			formTrm.setReadonly(formCode.inputs.fields.ccprefix, true);
 			formTrm.disableTabindex(formCode.inputs.fields.ccprefix);
+			formTrm.form.validate().element('#' + formCode.inputs.fields.ccprefix.attr('id'));
 			ccprefixParent.find('button[data-toggle]').attr('disabled', 'disabled');
 			return true;
 		}
