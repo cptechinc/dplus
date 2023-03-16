@@ -670,7 +670,6 @@ $(function() {
 		let input  = $(this);
 		input.val(input.val().trim());
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
-		console.log(percent);
 		if (percent == 0) {
 			input.closest('.eom-discount').find('input').each(function() {
 				let sinput = $(this);
