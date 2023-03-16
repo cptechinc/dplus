@@ -635,7 +635,9 @@ $(function() {
 		}
 
 		let input  = $(this);
-		input.val(input.val().trim());
+		if (input.val() == ' ') {
+			input.val(input.val().trim());
+		}
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
