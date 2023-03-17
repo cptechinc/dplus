@@ -34,8 +34,8 @@
 				<td class="">{{ code.force|yesorno|capitalize }}</td>
 				<td class="">{{ code.notecode }}</td>
 				<td class="text-center d-print-none">
-					<div class="d-print-none">
-							{% if code.isNote() %}
+					<div class="{{ input.get.offsetExists('print') ? 'collapse' : '' }}">
+						{% if code.isNote() %}
 							<button class="btn btn-sm btn-warning" disabled>
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</button>
