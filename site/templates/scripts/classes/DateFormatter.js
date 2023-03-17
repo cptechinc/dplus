@@ -13,7 +13,7 @@ class DateFormatter {
 			'timestamp': 'X'
 		},
 		this.expectedFormats = {
-			'mm/dd': ['mmdd', 'mdd', 'mm/dd', 'm/d'],
+			'mm/dd': ['mmdd', 'mdd', 'mm/dd', 'm/dd'],
 			'mm/dd/yyyy': ['mm/dd/yyyy', 'mmddyyyy', 'mmddyy']
 		}
 		this.inputDate = date;
@@ -36,14 +36,17 @@ class DateFormatter {
 		}
 
 		let patterns = Object.keys(this.regexer.regexes);
+		let regexer = this.regexer;
+		
 		if (this.expectedFormat != '') {
 			patterns = this.expectedFormats[this.expectedFormat];
 		}
+		
 		patterns.forEach(pattern => {
 			if (this.dateFormat != '') {
 				return;
 			}
-			if (this.regexer.regexes[pattern].test(this.date)) {
+			if (regexer.regexes[pattern].test(this.date)) {
 				this.dateFormat = pattern;
 			}
 		});
