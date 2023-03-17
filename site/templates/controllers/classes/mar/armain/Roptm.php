@@ -43,7 +43,7 @@ class Roptm extends AbstractController {
 		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
-		$page->headline = "ROPTM: $data->sysop Optional Codes";
+		$page->headline = "AR Optional Code: $data->sysop";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
 		if (strlen($data->q) > 0) {

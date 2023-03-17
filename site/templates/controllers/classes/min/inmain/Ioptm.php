@@ -41,7 +41,7 @@ class Ioptm extends AbstractController {
 		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
-		$page->headline = "IOPTM: $data->sysop Optional Codes";
+		$page->headline = "IN Optional Code: $data->sysop";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
 		if (strlen($data->q) > 0) {
@@ -63,6 +63,7 @@ class Ioptm extends AbstractController {
 	private static function listSysops($data) {
 		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page = self::pw('page');
+		$page->headline = "IN Optional Codes";
 		self::getSysop()->recordlocker->deleteLock();
 
 		$filter = self::getFilterSysop();
