@@ -76,7 +76,7 @@ class Noce extends Base {
 		if (strlen($data->q) > 0) {
 			$subFilter = new Filters\Msa\NotePreDefined();
 			$cols = self::pw('sanitizer')->array($data->col, ['delimiter' => ',']);
-			$cols = empty(array_filter($cols)) ? ['code', 'note'] : $cols;
+			$cols = empty(array_filter($cols)) ? ['id', 'note'] : $cols;
 			$subFilter->search($data->q, $cols);
 			$subFilter->query->select(NotePredefined::aliasproperty('id'));
 			$subFilter->query->distinct();
