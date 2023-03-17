@@ -51,15 +51,14 @@ $(function() {
 	$("body").on("focusin", "#code-form .std-split input", function(e) {
 		let input = $(this);
 
-		console.log(input);
-
 		let form       = input.closest('form');
 		let validator  = form.validate();
 		let formStd    = form.find('#std-splits');
-		let firstInput = formStd.find('input[name=order_percent1]');
+		let firstInput = formStd.find('input[name=std_order_percent1]');
 		let formTop    = form.find('#top-inputs');
 		
-		if (formTop.find('input.is-invalid')) {
+		if (formTop.find('input.is-invalid').length) {
+			validator.element('#' + formTop.find('input.is-invalid').attr('id'))
 			formTop.find('input.is-invalid').focus();
 		}
 
@@ -100,9 +99,11 @@ $(function() {
 		let formEom    = form.find('#eom-splits');
 		let formTop    = form.find('#top-inputs');
 
-		if (formTop.find('input.is-invalid')) {
+		if (formTop.find('input.is-invalid').length) {
+			validator.element('#' + formTop.find('input.is-invalid').attr('id'))
 			formTop.find('input.is-invalid').focus();
 		}
+
 		let firstInput = formEom.find('input[name=eom_thru_day1]');
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {

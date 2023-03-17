@@ -105,9 +105,11 @@ $(function() {
 		let formEom    = form.find('#eom-splits');
 		let formTop    = form.find('#top-inputs');
 
-		if (formTop.find('input.is-invalid')) {
+		if (formTop.find('input.is-invalid').length) {
+			validator.element('#' + formTop.find('input.is-invalid').attr('id'));
 			formTop.find('input.is-invalid').focus();
 		}
+
 		let firstInput = formEom.find('input[name=eom_thru_day1]');
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
@@ -145,7 +147,8 @@ $(function() {
 		let firstInput = formStd.find('input[name=order_percent1]');
 		let formTop    = form.find('#top-inputs');
 		
-		if (formTop.find('input.is-invalid')) {
+		if (formTop.find('input.is-invalid').length) {
+			validator.element('#' + formTop.find('input.is-invalid').attr('id'))
 			formTop.find('input.is-invalid').focus();
 		}
 
@@ -832,9 +835,8 @@ $(function() {
 	}, "Date must be in the future");
 
 	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
-		var isFocused = element == document.activeElement;
-		return this.optional(element) || validateDateMMDDSlash(value);
-	}, "Date must be a valid, date MM/DD");
+		return this.optional(element) || Validator.getInstance().dateMMDDSlash(value);
+	}, "Date must be a valid date (MM/DD)");
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
 		var percentTotal = formTrm.sumUpStdOrderPercents();
