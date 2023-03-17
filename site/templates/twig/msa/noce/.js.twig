@@ -23,6 +23,7 @@ $(function() {
 	$('#notes-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal  = $(this);
+		var form   = modal.find('form');
 		var id   = button.data('code');
 
 		formNote.inputs.code.focus();
@@ -32,10 +33,40 @@ $(function() {
 		}
 	});
 
+	$("#notes-modal").on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var form = modal.find('form');
+		var originalValues = form.attr('data-serialized');
+
+		if (originalValues) {
+			if (originalValues != form.serialize()) {
+				e.preventDefault();
+
+				alert.unsavedChanges(function(confirmSave) {
+					if (confirmSave) {
+						form.submit();
+						return true;
+					}
+					form.attr('data-serialized', '');
+					modal.modal('hide');
+				});
+			}
+		}
+	});
+
 	$('#notes-modal').on('hidden.bs.modal', function (event) {
 		var modal = $(this);
+		var form = modal.find('form');
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var id     = modal.find('input[name=code]').val().toString();
+		if (form.attr('data-code')) {
+		if ($('.note[data-code="'+form.attr('data-code')+'"]').length == 0) {
+				var url = URI();
+				url.setQuery('action', 'focus');
+				url.setQuery('code', form.attr('data-code'));
+				window.location.href = url.toString();
+			}
+		}
 
 		$('.bg-success').removeClass('bg-success text-white');
 		$('.highlight').removeClass('highlight');

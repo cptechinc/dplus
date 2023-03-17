@@ -23,6 +23,7 @@ class NoceForm {
 		inputs.code.val('');
 		inputs.code.removeAttr('readonly');
 		inputs.note.val('');
+		inputs.form.attr('data-serialized', inputs.form.serialize());
 	}
 
 	setupFormEdit(id) {
@@ -44,6 +45,7 @@ class NoceForm {
 				if (notes) {
 					inputs.code.attr('readonly', 'true');
 					inputs.note.val(notes.note);
+					inputs.form.attr('data-serialized', inputs.form.serialize());
 				}
 			});
 		}

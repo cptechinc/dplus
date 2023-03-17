@@ -26,7 +26,7 @@
 		</div>
 	</div>
 	{% for note in notes %}
-		<div class="list-group-item note pb-1 pt-1 {{ (response.key == note.id and response.hasSuccess() ) ? 'bg-success text-white' : ''}}" id="note-{{ note.id|attrJS }}" data-code="{{ note.id }}">
+		<div class="list-group-item note pb-1 pt-1 {{ input.get.string('focus') == note.id ? 'highlight' : ''}} {{ (response.key == note.id and response.hasSuccess() ) ? 'bg-success text-white' : ''}}" id="note-{{ note.id|attrJS }}" data-code="{{ note.id }}">
 			<div class="row align-items-center">
 				<div class="col-sm-2">
 					{{ note.id }}
