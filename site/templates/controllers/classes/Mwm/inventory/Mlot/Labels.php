@@ -90,7 +90,7 @@ class Labels extends Base {
 		$lotm = Lotm::getInstance();
 
 		if ($lotm->exists($data->lotserial) === false) {
-			self::pw('session')->redirect(Menu::labelsUrl(), $http301);
+			self::pw('session')->redirect(Menu::labelsUrl(), $http301 = false);
 		}
 		self::pw('page')->headline = "Print Label for $data->lotserial";
 		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/mlot/labels/lotserial/.js.twig');
@@ -127,7 +127,7 @@ class Labels extends Base {
 		$printer  = self::getPrinter();
 		$response = $printer->getResponse();
 
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

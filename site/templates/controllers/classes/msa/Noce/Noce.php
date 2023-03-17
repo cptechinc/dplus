@@ -148,10 +148,7 @@ class Noce extends Base {
 	public static function displayResponse($data) {
 		$qnotes = self::getQnotes();
 		$response = $qnotes->getResponse();
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

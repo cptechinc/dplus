@@ -69,7 +69,8 @@ class Xrefs extends Base {
 		// 	$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'cxm')]);
 		// 	$session->removeFor('response', 'cxm');
 		// }
-		if ($itm->getResponse()) {
+		$response = $itm->getResponse(); 
+		if ($response && $response->has_success() === false) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
 		}
 		$html .= self::lockItem($data->itemID);

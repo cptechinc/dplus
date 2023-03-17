@@ -145,7 +145,7 @@ class Img extends Base {
 		$imgM = self::getImg();
 		$response = $imgM->getResponse();
 
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

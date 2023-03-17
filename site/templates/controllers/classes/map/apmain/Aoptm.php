@@ -132,10 +132,7 @@ class Aoptm extends AbstractController {
 	private static function displayResponse($data) {
 		$response = self::getAoptm()->getResponse();
 
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if ($response->hasSuccess() || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

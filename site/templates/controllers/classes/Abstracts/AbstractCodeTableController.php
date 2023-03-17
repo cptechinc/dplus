@@ -202,10 +202,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 		$codeTable = static::getCodeTable();
 		$response = $codeTable->getResponse();
 
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('codes/response.twig', ['response' => $response]);

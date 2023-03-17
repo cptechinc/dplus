@@ -129,7 +129,7 @@ class Itmp extends AbstractController {
 	public static function displayResponse($data) {
 		$itmp = self::getItmp();
 		$response = $itmp->getResponse();
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

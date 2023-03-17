@@ -161,7 +161,7 @@ class Logm extends Base {
 	public static function displayResponse($data) {
 		$logm = self::getLogm();
 		$response = $logm->getResponse();
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
