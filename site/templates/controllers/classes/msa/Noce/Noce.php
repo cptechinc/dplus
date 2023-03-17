@@ -4,11 +4,12 @@ use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
-use ProspectSource;
+use NotePredefined;
 // Dplus Filters
 use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Qnotes\Noce as Qnotes;
+use ProcessWire\WireData;
 
 class Noce extends Base {
 	const DPLUSPERMISSION = 'noce';
@@ -44,27 +45,47 @@ class Noce extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['q|text'];
+		$fields = ['q|text', 'col|text', 'q|text', 'print|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
+		$page->headline = "Pre-Defined Notes";
+
+		$notes = self::getList($data);
+		self::initHooks();
+
+		$html = '';
+
+
+		if (empty($data->print)) {
+			$page->js .= self::pw('config')->twig->render('msa/noce/.js.twig', ['qnotes' => self::getQnotes()]);
+			$html = self::displayList($data, $notes);
+		}
+
+		if ($data->print) {
+			$html = self::displayListForPrint($data, $notes);
+		}
+		
+		self::getQnotes()->deleteResponse();
+		return $html;
+	}
+
+	protected static function getList(WireData $data) {
 		$filter = new Filters\Msa\NotePreDefined();
 		$filter->filterSummarized();
 
-		$page->headline = "Pre-defined Notes";
-
 		if (strlen($data->q) > 0) {
-			$filter->search($data->q);
-			$page->headline = "NOCE: Searching for '$data->q'";
+			$subFilter = new Filters\Msa\NotePreDefined();
+			$cols = self::pw('sanitizer')->array($data->col, ['delimiter' => ',']);
+			$cols = empty(array_filter($cols)) ? ['code', 'note'] : $cols;
+			$subFilter->search($data->q, $cols);
+			$subFilter->query->select(NotePredefined::aliasproperty('id'));
+			$subFilter->query->distinct();
+			$ids = $subFilter->query->find()->toArray();
+			$filter->query->filterById($ids);
 		}
 
-		$filter->sortby($page);
-		$notes = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
-		self::initHooks();
-
-		$page->js .= self::pw('config')->twig->render('msa/noce/.js.twig', ['qnotes' => self::getQnotes()]);
-		$html = self::displayList($data, $notes);
-		self::getQnotes()->deleteResponse();
-		return $html;
+		$filter->sort(self::pw('input')->get);
+		return $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 	}
 
 /* =============================================================
@@ -107,10 +128,20 @@ class Noce extends Base {
 		$qnotes = self::getQnotes();
 
 		$html  = '';
-		// $html .= $config->twig->render('code-tables/msa/noce/bread-crumbs.twig');
+		$html .= $config->twig->render('msa/noce/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('msa/noce/list.twig', ['qnotes' => $qnotes, 'notes' => $notes]);
+		$html .= $config->twig->render('msa/noce/list/display.twig', ['qnotes' => $qnotes, 'notes' => $notes]);
 		$html .= $config->twig->render('msa/noce/notes-modal.twig', ['qnotes' => $qnotes]);
+		return $html;
+	}
+
+	private static function displayListForPrint($data, PropelModelPager $notes) {
+		$config = self::pw('config');
+		$qnotes = self::getQnotes();
+
+		$html  = '';
+		$html .= $config->twig->render('msa/noce/bread-crumbs.twig');
+		$html .= $config->twig->render('msa/noce/list/display-print.twig', ['qnotes' => $qnotes, 'notes' => $notes]);
 		return $html;
 	}
 
@@ -118,6 +149,9 @@ class Noce extends Base {
 		$qnotes = self::getQnotes();
 		$response = $qnotes->getResponse();
 		if (empty($response)) {
+			return '';
+		}
+		if ($response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
