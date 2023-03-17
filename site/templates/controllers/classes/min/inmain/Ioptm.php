@@ -48,7 +48,7 @@ class Ioptm extends AbstractController {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::pw('session')->display);
 		self::getIoptm()->recordlocker->deleteLock();
 
 		self::initHooks();
@@ -71,7 +71,7 @@ class Ioptm extends AbstractController {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::pw('session')->display);
 
 		self::initHooks();
 		self::pw('page')->show_breadcrumbs = false;

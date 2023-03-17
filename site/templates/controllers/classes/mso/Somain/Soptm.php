@@ -51,7 +51,7 @@ class Soptm extends AbstractController {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::pw('session')->display);
 		self::getSoptm()->recordlocker->deleteLock();
 
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getSoptm()]);
@@ -72,7 +72,7 @@ class Soptm extends AbstractController {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::pw('session')->display);
 
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
