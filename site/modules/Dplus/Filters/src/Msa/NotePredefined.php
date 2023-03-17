@@ -19,11 +19,26 @@ class NotePreDefined extends AbstractFilter {
 ============================================================= */
 	public function _search($q, $cols = []) {
 		$model = $this->modelName();
-		$columns = [
-			$model::aliasproperty('id'),
-			$model::aliasproperty('note'),
-		];
+
+		if (empty($cols)) {
+			$columns = [
+				$model::aliasproperty('id'),
+				$model::aliasproperty('note'),
+			];
+			$this->query->searchFilter($columns, strtoupper($q));
+			return true;
+		}
+
+		foreach ($cols as $col) {
+			if ($model::aliasproperty_exists($col)) {
+				$columns[] = $model::aliasproperty($col);
+			}
+		}
+		if (empty($columns)) {
+			return false;
+		}
 		$this->query->searchFilter($columns, strtoupper($q));
+		return true;
 	}
 
 /* =============================================================
