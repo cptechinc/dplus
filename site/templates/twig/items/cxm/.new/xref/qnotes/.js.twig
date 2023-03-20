@@ -16,7 +16,24 @@ $(function() {
 
 	qnotesModal.on('shown.bs.modal', function (e) {
 		var modal = $(this);
+		var form  = modal.find('form');
 		modal.find('textarea[name=note]').focus();
+		form.attr('data-serialized', form.serialize());
+	});
+
+	qnotesModal.on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var form  = modal.find('form');
+		var original = form.attr('data-serialized');
+		
+		if (form.serialize() != original) {
+			alert.unsavedChanges(function(save) {
+				if (save) {
+					form.find('button[value="update-notes"]').click();
+					return true;
+				}
+			});
+		}
 	});
 
 	$("#order-notes-form").validate({
@@ -94,7 +111,7 @@ $(function() {
 		} else {
 			modal.find('input.order-form').each(function(index) {
 				var input = $(this);
-				input.prop('checked', qnotesForm.config.fields[input.attr('name')] == 'Y');
+				input.prop('checked', qnotesForm.config.fields[input.attr('name')].default == 'Y');
 			});
 			modal.find('textarea[name=note]').val('');
 		}
