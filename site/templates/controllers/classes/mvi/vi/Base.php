@@ -8,7 +8,7 @@ use Dplus\CodeValidators as Validators;
 // MVC Controllers
 use Mvc\Controllers\Controller;
 // Dplus User Options
-use Dplus\UserOptions\Mvi\Vio;
+use Dplus\UserOptions\Vio;
 
 abstract class Base extends Controller {
 	const PERMISSION     = 'vi';
