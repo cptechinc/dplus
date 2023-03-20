@@ -44,7 +44,8 @@ $(function() {
 
 				alert.unsavedChanges(function(confirmSave) {
 					if (confirmSave) {
-						form.submit();
+						form.find('button[value=update]').click();
+						// form.submit();
 						return true;
 					}
 					form.attr('data-serialized', '');
