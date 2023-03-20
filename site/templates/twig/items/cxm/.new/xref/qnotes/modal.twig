@@ -26,7 +26,7 @@
 					<div class="form-group">
 						<div class="row">
 							{% for field in constant('FIELDS_FORMS', qnotes) %}
-								<div class="col">
+								<div class="col input-parent">
 									<div class="custom-control custom-checkbox">
 										<input type="checkbox" class="custom-control-input order-form" name="{{ field }}" id="order-{{field}}" value="Y">
 										<label class="custom-control-label" for="order-{{field}}">{{ qnotes.fieldAttribute(field, 'label')|capitalize }}</label>
