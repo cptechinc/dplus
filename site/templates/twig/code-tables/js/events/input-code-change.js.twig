@@ -29,6 +29,17 @@ $("body").on("change", "input[name=code]", function(e) {
 							modal.find('.modal-title').text('Edit Code');
 							formCode.updateInputsFromJson(json);
 							formCode.form.attr('data-serialized', formCode.form.serialize());
+					
+							if (formCode.form.find('input[name=description]').length) {
+								console.log('focus on desc');
+								formCode.form.find('input[name=description]').focus();
+								console.log(formCode.inputs.description);
+								return true;
+							}
+							// if (formCode.form.find('input[name=name]').length) {
+							// 	formCode.inputs.name.focus();
+							// 	return true;
+							// }
 						}
 					});
 				} else {
