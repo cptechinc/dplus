@@ -42,7 +42,7 @@
 		<td>{{ code.custom }}</td>
 		<td>{{ code.description }}</td>
 		<td class="text-right">
-			{{ code.echange_rate|number_format(manager.fieldAttribute('exchange_rate', 'precision')) }}
+			{{ code.exchange_rate|number_format(manager.fieldAttribute('exchange_rate', 'precision')) }}
 		</td>
 		<td class="text-right">
 			{{ code.country_date|convertdate(manager.fieldAttribute('country_date', 'displayformat')) }}
