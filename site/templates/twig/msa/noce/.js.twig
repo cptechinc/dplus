@@ -128,37 +128,7 @@ $(function() {
 			},
 		},
 		submitHandler: function(form) {
-			var formNote = NoceForm.getInstance();
-			var server   = NoceRequests.getInstance();
-			var id       = formNote.inputs.code.val();
-
-			if (formNote.inputs.form.attr('data-code') == id) {
-				form.submit();
-				return true;
-			}
-
-			server.validateCode(id, function(exists) {
-				if (exists === false) {
-					form.submit();
-					return true;
-				}
-
-				var alert = NoceAlerts.getInstance();
-
-				alert.codeExists(id, function(editNote) {
-					if (editNote) {
-						var modal = formNote.form.closest('.modal');
-
-						if (editNote) {
-							formNote.setupFormEdit(id);
-						} else {
-							modal.modal('hide');
-						}
-					} else {
-						form.submit();
-					}
-				});
-			});
+			form.submit();
 		}
 	});
 })
