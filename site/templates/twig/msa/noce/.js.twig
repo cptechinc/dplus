@@ -82,14 +82,14 @@ $(function() {
 		server.validateId(id, function(exists) {
 			if (exists === true) {
 				alert.notesExist(id, function(editNote) {
-					if (editNote) {
-						var modal = input.closest('.modal');
+					var modal = input.closest('.modal');
 
-						if (editNote) {
-							formNote.setupFormEdit(id);
-						} else {
-							modal.modal('hide');
-						}
+					if (editNote) {
+						formNote.setupFormEdit(id);
+					} else {
+						formNote.setupFormAdd();
+						formNote.form.validate().resetForm();
+						formNote.inputs.code.focus();
 					}
 				});
 			}
