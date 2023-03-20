@@ -36,7 +36,9 @@ $(function() {
 		let input = $(this);
 
 		if (input.hasClass('is-invalid')) {
-			input.closest('form').validate().element('#' + input.attr('id'));
+			if (input.closest('form').validate().element('#' + input.attr('id')) === false) {
+				input.focus();
+			}
 		}
 	});
 
@@ -47,8 +49,18 @@ $(function() {
 			return true;
 		}
 
-		if ($('input.is-invalid').length) {
-			$('input.is-invalid').focus();
+		if (input.attr('tabindex') <= 2) {
+			return true;
+		}
+
+		let tabindex = input.attr('tabindex');
+
+		let prevInput = input.closest('form').find('input[tabindex=' + (tabindex - 1) + ']');
+ 
+		let validator = input.closest('form').validate();
+
+		if (validator.element('#' + prevInput.attr('id')) === false) {
+			prevInput.focus();
 		}
 	});
 
