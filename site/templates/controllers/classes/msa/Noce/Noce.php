@@ -49,6 +49,7 @@ class Noce extends Base {
 		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
 		$page->headline = "Pre-Defined Notes";
+		self::getQnotes()->recordlocker->deleteLock();
 
 		$notes = self::getList($data);
 		self::initHooks();

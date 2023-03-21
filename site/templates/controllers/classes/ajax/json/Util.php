@@ -26,6 +26,9 @@ class Util extends AbstractJsonController {
 		if ($locker->isLocked($data->key) && $locker->isLockedByUser($data->key) === false) {
 			return false;
 		}
+		if ($locker->isLockedByUser($data->key)) {
+			return true;
+		}
 		return $locker->lock($data->key);
 	}
 
