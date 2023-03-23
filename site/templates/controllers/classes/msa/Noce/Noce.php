@@ -85,8 +85,14 @@ class Noce extends Base {
 			$filter->query->filterById($ids);
 		}
 
-		$filter->sort(self::pw('input')->get);
-		return $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
+		/** @var WireInput */
+		$input = self::pw('input');
+		$filter->sort($input->get);
+
+		if ($input->get->offsetExists('sortby') === false) {
+			$filter->query->orderBy(NotePredefined::aliasproperty('id'));
+		}
+		return $filter->query->paginate($input->pageNum, $input->get->offsetExists('print') ? 0 : self::SHOWONPAGE);
 	}
 
 /* =============================================================
