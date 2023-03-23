@@ -106,6 +106,10 @@ class Receiving extends Base {
 				$url = self::receivingLoadPoUrl();
 				self::redirect($url, $http301 = false);
 				break;
+			case 'post-received':
+				$url = $data->has('close') ? self::receivingUrl() : self::receivingUrl($data->ponbr);
+				self::redirect($url, $http301 = false);
+				break;
 			default:
 				self::redirect(self::receivingUrl($data->ponbr), $http301 = false);
 				break;
