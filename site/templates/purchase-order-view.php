@@ -8,6 +8,7 @@
 
 	$routes = [
 		['GET',  '', Main::class, 'index'],
+		['POST',  '', Main::class, 'handleCRUD'],
 		['GET',  'documents/', App\Documents::class, 'index'],
 		'notes' => [
 			['GET',   '', App\Notes::class, 'index'],
