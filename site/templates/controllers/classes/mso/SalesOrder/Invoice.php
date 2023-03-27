@@ -27,6 +27,10 @@ class Invoice extends SalesOrder {
 	public static function invoice($data) {
 		self::sanitizeParametersShort($data, ['ordn|ordn']);
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if (self::validator()->invoice($data->ordn) === false) {
 			return self::invalidSo($data);
 		}

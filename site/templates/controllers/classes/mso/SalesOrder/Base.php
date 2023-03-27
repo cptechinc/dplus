@@ -1,18 +1,19 @@
 <?php namespace Controllers\Mso\SalesOrder;
 // Purl URI Library
 use Purl\Url as Purl;
+// ProcessWire
+use ProcessWire\User;
 // Dplus Model
 use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
-// Dplus Document Finders
-use Dplus\DocManagement\Finders as DocFinders;
-// Dplus Classes
+// Dplus
 use Dplus\CodeValidators\Mso as MsoValidator;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Mii\Ii;
-use Controllers\Mci\Ci\Ci;
+use Dplus\DocManagement\Finders as DocFinders;
+use Dplus\Session\UserMenuPermissions;
+// Controllers
+use Controllers\AbstractController;
 
-abstract class Base extends Controller {
+abstract class Base extends AbstractController {
+	const PARENT_MENU_CODE = 'mso';
 	private static $validate;
 	private static $docm;
 	private static $configSo;
@@ -177,5 +178,15 @@ abstract class Base extends Controller {
 			self::$configSo = self::pw('modules')->get('ConfigureSo')->config();
 		}
 		return self::$configSo;
+	}
+
+/* =============================================================
+	Validator, Module Getters
+============================================================= */
+	public static function validateUserPermission(User $user = null) {
+		if (UserMenuPermissions::instance()->canAccess(self::PARENT_MENU_CODE) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
 	}
 }

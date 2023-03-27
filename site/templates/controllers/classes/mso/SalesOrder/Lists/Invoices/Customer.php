@@ -22,6 +22,9 @@ class Customer extends Base {
 	public static function index($data) {
 		$fields = ['custID|string', 'shiptoID|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 		$validate = new Validators\Mar();
 		if ($validate->custid($data->custID)) {
 			if (self::pw('user')->has_customer($data->custID) === false) {

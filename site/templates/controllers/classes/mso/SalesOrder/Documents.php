@@ -20,6 +20,10 @@ class Documents extends Base {
 		$fields = ['ordn|text', 'document|text', 'folder|text'];
 		self::sanitizeParametersShort($data, $fields);
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->ordn)) {
 			return self::lookupScreen($data);
 		}

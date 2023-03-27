@@ -14,6 +14,10 @@ class PrintSo extends Base {
 		$fields = ['ordn|text', 'download|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->ordn)) {
 			return self::invalidSo($data);
 		}

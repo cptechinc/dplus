@@ -18,8 +18,9 @@ class Invoice extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = [];
-		self::sanitizeParametersShort($data, $fields);
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 		return self::listInvoices($data);
 	}
 
