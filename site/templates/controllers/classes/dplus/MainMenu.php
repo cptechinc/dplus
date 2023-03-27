@@ -1,7 +1,8 @@
 <?php namespace Controllers\Dplus;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
-// Dplus RecordLocker
+// Dplus 
+use Dplus\Session\UserMenuPermissions;
 use Dplus\RecordLocker;
 // Dplus Function Routers
 use Controllers\Routers;
@@ -28,24 +29,27 @@ class MainMenu extends Controller {
 		}
 		$count = self::pw('pages')->find("dplus_function=$data->q")->count;
 
-		if ($count === 1 && self::pw('user')->has_function($data->q)) {
+		$perimittedList = UserMenuPermissions::instance()->list();
+
+		if ($count === 1 && $perimittedList->has($data->q)) {
 			self::pw('session')->redirect(self::pw('pages')->get("dplus_function=$data->q")->url, $http301 = false);
 		}
 
 		$routers = new Routers\Factory();
 
-		if ($routers->exists($data->q)) {
-			if (self::pw('user')->has_function($data->q)) {
-				$routers->route($data->q);
-			}
+		if ($routers->exists($data->q) && $perimittedList->has($data->q)) {
+			$routers->route($data->q);;
 		}
 	}
 
 	private static function list($data) {
 		self::pw('page')->show_breadcrumbs = false;
-		$permitted = implode("|", self::pw('user')->get_functions());
-		$menu = self::pw('pages')->get('/');
 		self::pw('page')->headline = "Menu";
+		$menu = self::pw('pages')->get('/');
+
+		$permittedList = UserMenuPermissions::instance()->list();
+		$permitted = implode('|', array_merge($permittedList->getKeys(), ['']));
+		
 		$results = $menu->children("template=dplus-menu|warehouse-menu, dplus_function=$permitted,sort=dplus_function");
 
 		if ($data->q) {
