@@ -4,24 +4,29 @@ use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
-use InvLotMasterQuery, InvLotMaster;
+use InvLotMaster;
 // Dpluso Model
-use InvsearchQuery, Invsearch;
+use Invsearch;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\SearchInventory, ProcessWire\DpagesMii;
-// Dplus Filters
-use Dplus\Filters\Min\LotMaster as LotFilter;
+use ProcessWire\SearchInventory;
+use ProcessWire\User;
+// Dplus
+use Dplus\Session\UserMenuPermissions;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
 use Controllers\Mii\Loti\Base;
 
 class Loti extends Base {
+	
 /* =============================================================
 	Index, Logic Functions
 ============================================================= */
 	public static function index($data) {
 		$fields = ['scan|text'];
 		self::sanitizeParametersShort($data, $fields);
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
 
 		if (empty($data->scan) === false) { // HANDLE SEARCHING UPC, LOTNBR, ITEMID
 			return self::scan($data);
@@ -85,6 +90,31 @@ class Loti extends Base {
 		$html  = self::breadcrumbs($data);
 		$html .= self::formAndlistDisplay($data, $lots);
 		return $html;
+	}
+
+/* =============================================================
+	2. Validations
+============================================================= */
+	/**
+	 * Validate User's Permission to this Function
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserPermission(User $user = null) {
+		if (static::validateUserMenuPermission($user) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
+	}
+
+	/**
+	 * Return if User has Access to Parent Menu
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserMenuPermission(User $user = null) {
+		$perimittedList = UserMenuPermissions::instance()->list();
+		return $perimittedList->has('mii');
 	}
 
 /* =============================================================

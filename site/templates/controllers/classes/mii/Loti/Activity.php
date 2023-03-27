@@ -22,6 +22,10 @@ class Activity extends Base {
 		$fields = ['lotnbr|text', 'startdate|date', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->lotnbr)) {
 			// TODO redirect
 		}

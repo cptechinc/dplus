@@ -1,21 +1,19 @@
 <?php namespace Controllers\Mii\Ii;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Model
-use ItemMasterItemQuery, ItemMasterItem;
-use ItemPricingQuery, ItemPricing;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\CiLoadCustomerShipto;
+// ProcessWire
+use ProcessWire\User;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Databases
 use Dplus\Databases\Connectors\Dpluso as DbDpluso;
-// Dplus Filters
-use Dplus\Filters\Min\ItemMaster  as ItemMasterFilter;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
+// Dplus
+use Dplus\Session\UserMenuPermissions;
+// Controllers
+use Controllers\AbstractController;
 
-abstract class Base extends Controller {
+abstract class Base extends AbstractController {
+	const PARENT_MENU_CODE = 'mii';
 	const PERMISSION     = 'ii';
 	const PERMISSION_IIO = '';
 
@@ -34,7 +32,7 @@ abstract class Base extends Controller {
 			return false;
 		}
 
-		if (self::validateUserPermission($data) === false) {
+		if (self::validateUserPermission() === false) {
 			return false;
 		}
 		return true;
@@ -45,14 +43,20 @@ abstract class Base extends Controller {
 		return $validate->itemid($itemID);
 	}
 
-	protected static function validateUserPermission($data) {
-		$user = self::pw('user');
-		$iio  = self::getIio();
+	public static function validateUserPermission(User $user = null) {
+		$user = $user ? $user : self::pw('user');
 
-		if ($user->has_function(self::PERMISSION) === false) {
+		$MCP = UserMenuPermissions::instance();
+
+		if ($MCP->canAccess(static::PARENT_MENU_CODE) === false) {
 			return false;
 		}
 
+		if (parent::validateUserPermission($user) === false) {
+			return false;
+		}
+		$iio = self::getIio();
+		
 		if ($iio->allowUser($user, static::PERMISSION_IIO) === false) {
 			return false;
 		}

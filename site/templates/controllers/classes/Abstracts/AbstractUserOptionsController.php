@@ -7,10 +7,11 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
+use ProcessWire\User;
 use ProcessWire\WireData;
-// Dplus Filters
+// Dplus
 use Dplus\Filters;
-// Dplus Codes
+use Dplus\Session\UserMenuPermissions;
 use Dplus\UserOptions;
 use Dplus\UserOptions\AbstractManager;
 // Controllers
@@ -102,6 +103,37 @@ abstract class AbstractUserOptionsController extends AbstractController {
 /* =============================================================
 	2. Validations
 ============================================================= */
+	/**
+	 * Return if User has Permission based off Dplus Permission Code
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserPermission(User $user = null) {
+		if (static::validateUserMenuPermission($user) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
+	}
+
+	/**
+	 * Return if User has Permission To Menu
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserMenuPermission(User $user = null) {
+		$page = self::pw('page');
+
+		$parents = $page->parents("template=dplus-menu");
+
+		foreach ($parents as $parent) {
+			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
+
+			if (UserMenuPermissions::instance()->canAccess($code) === false) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 /* =============================================================
 	3. Data Requests / Data Fetching

@@ -11,10 +11,11 @@ use InvsearchQuery, Invsearch;
 use ProcessWire\Page, ProcessWire\SearchInventory, ProcessWire\DpagesMii;
 // Dplus Filters
 use Dplus\Filters\Min\LotMaster as LotFilter;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
+// Controllers
+use Controllers\AbstractController;
 
-class Base extends Controller {
+class Base extends AbstractController {
+	const DPLUSPERMISSION = ''; // TODO
 /* =============================================================
 	Classes, Module Getters
 ============================================================= */
