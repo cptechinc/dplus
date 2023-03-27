@@ -13,6 +13,8 @@ use Dplus\CodeValidators as Validators;
 
 use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 
+use Dplus\Permissions\MenuPermissions;
+
 include_once(__DIR__.'/vendor/autoload.php');
 
 /**
@@ -122,6 +124,7 @@ class DplusUser extends WireData implements Module {
 			$user->loggedin = true;
 			$this->setup_user_logperm($user, $sessionID);
 			$this->setup_user_logm($user);
+			$this->setupUserPermissions($user);
 		} else {
 			$user->loggedin = false;
 		}
@@ -188,6 +191,16 @@ class DplusUser extends WireData implements Module {
 	 */
 	private function setup_user_slsmgr(User $user) {
 		$this->setup_user_slsrep($user);
+	}
+
+	/**
+	 * Append Dplus Permission Codes for User
+	 * @param  User $user
+	 * @return void
+	 */
+	private function setupUserPermissions(User $user) {
+		$permissions = MenuPermissions::instance();
+		$user->dplusPermissions = $permissions->userPermissionsWireArray($user->loginid);
 	}
 
 /* =============================================================
