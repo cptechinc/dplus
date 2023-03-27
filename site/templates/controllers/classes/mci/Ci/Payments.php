@@ -34,14 +34,15 @@ class Payments extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::ciPaymentsUrl($data->rid), $http301 = false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::ciPaymentsUrl($id), $http301 = false);
 		}
 		return self::payments($data);
 	}
 
 	private static function payments(WireData $data) {
 		$json = self::fetchData($data);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 
 		self::initHooks();
 		self::pw('page')->headline = "CI: $customer->name Payments";
@@ -64,7 +65,8 @@ class Payments extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::paymentsUrl($data->rid, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::paymentsUrl($id, $refresh=true);
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
@@ -90,6 +92,8 @@ class Payments extends AbstractSubfunctionController {
 	5. Displays
 ============================================================= */
 	protected static function displayPayments(WireData $data, Customer $customer, $json = []) {
+		self::addPageData($data);
+
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Payments');
 		}
@@ -97,7 +101,6 @@ class Payments extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		self::addPageData($data);
 		return self::renderPayments($data, $customer, $json);
 	}
 

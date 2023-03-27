@@ -1,4 +1,5 @@
 <?php
+	use Purl\Url as Purl;
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 	$loginm = $modules->get('DplusUser');
@@ -11,12 +12,17 @@
 	if ($user->loggedin) {
 		$session->remove('loggingin');
 
+		$url = $pages->get('/')->url;
+
 		if ($session->returnurl) {
 			$url = $session->returnurl;
+			$purl = new Purl($url);
+			if (in_array('site', $purl->path->getData())) {
+				$url = $pages->get('/')->url;
+			}
 			$session->remove('returnurl');
-		} else {
-			$url = $pages->get('/')->url;
 		}
+
 		$session->redirect($url, $http301 = false);
 	}
 

@@ -10,6 +10,7 @@ class DateFormatter {
 			'mmddyyyy': 'MMDDYYYY',
 			'mmddyy': 'MMDDYY',
 			'mm/dd/yyyy': 'MM/DD/YYYY',
+			'yyyymmdd': 'YYYYMMDD',
 			'timestamp': 'X'
 		},
 		this.expectedFormats = {

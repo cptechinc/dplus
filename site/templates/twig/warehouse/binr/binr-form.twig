@@ -40,7 +40,7 @@
 									<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
 								</button>
 							</span>
-							<input type="text" class="form-control input-sm" name="frombin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
+							<input type="text" class="form-control input-sm" name="frombin" id="frombin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
 						</div>
 					</div>
 				</div>
@@ -56,7 +56,7 @@
 									<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
 								</button>
 							</span>
-							<input type="text" class="form-control input-sm" name="tobin" value="{{ page.tobin }}">
+							<input type="text" class="form-control input-sm" name="tobin" id="tobin" value="{{ page.tobin }}">
 						</div>
 					</div>
 				</div>
@@ -66,7 +66,7 @@
 					<div class="col-sm-6 form-group">
 						<label for="bin-qty">Qty </label> (On Hand: <span class="qty-available">{{ inventory.get_qty_invsearch(item, item.bin)|number_format(config.decimal_places()) }}</span>)
 						<div class="input-group">
-							<input type="text" class="form-control input-sm text-right" name="qty" value="{{ config.default_qtyonhand or config.use_qtyonly ? item.qty|number_format(config.decimal_places()) : ''}}" {{ config.use_qtyonly ? 'readonly' : ''}}>
+							<input type="text" class="form-control input-sm text-right" name="qty" id="qty" value="{{ config.default_qtyonhand or config.use_qtyonly ? item.qty|number_format(config.decimal_places()) : ''}}" {{ config.use_qtyonly ? 'readonly' : ''}}>
 							<span class="input-group-append">
 								<button type="submit" class="btn btn-primary use-bin-qty" data-direction="from">Use Bin Qty</button>
 							</span>

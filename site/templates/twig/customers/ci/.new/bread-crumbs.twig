@@ -11,8 +11,10 @@
 
 {% set values = input.get %}
 
+{% set idCust = config.ci.useRid ? values.int('rid') : values.string('custID') %}
+
 {% block current_page %}
-	{% if values.offsetExists('rid') %}
+	{% if idCust %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.url }}">
 				{{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
@@ -21,19 +23,19 @@
 
 		{% if input.countSegments() %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.ciUrl(values.int('rid')) }}">
+				<a href="{{ page.ciUrl(idCust) }}">
 					{{ page.custid }}
 				</a>
 			</li>
 			{% if values.offsetExists('shiptoID') and values.text('shiptoID') != '' %}
 				<li class="breadcrumb-item">
-					<a href="{{ page.ciShiptoUrl(values.int('rid')) }}">
+					<a href="{{ page.ciShiptoUrl(idCust) }}">
 						Ship-tos
 					</a>
 				</li>
 				{% if input.urlSegmentLast() != 'ship-tos' %}
 					<li class="breadcrumb-item">
-						<a href="{{ page.ciShiptoUrl(values.int('rid'), values.text('shiptoID')) }}">
+						<a href="{{ page.ciShiptoUrl(idCust, values.text('shiptoID')) }}">
 							{{ values.text('shiptoID') }}
 						</a>
 					</li>
@@ -45,7 +47,7 @@
 				{% endif %}
 			{% elseif (input.urlSegmentLast() == 'contact' or (input.urlSegment(-2) == 'contact' and input.urlSegmentLast() == 'edit')) %}
 				<li class="breadcrumb-item">
-					<a href="{{ page.ciContactsUrl(values.int('rid')) }}">
+					<a href="{{ page.ciContactsUrl(idCust) }}">
 						Contacts
 					</a>
 				</li>

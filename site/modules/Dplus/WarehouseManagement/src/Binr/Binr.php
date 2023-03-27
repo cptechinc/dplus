@@ -6,10 +6,11 @@ class Binr extends Base {
 		$vars->tobin   = strtoupper($vars->tobin);
 
 		$data = ['BINR', "ITEMID=$vars->itemID"];
-		if ($data->lotnbr) {
+
+		if ($vars->lotnbr) {
 			$data[] = "LOTNBR=$vars->lotnbr";
 		}
-		if ($data->serialnbr) {
+		if ($vars->serialnbr) {
 			$data[] = "SERIALNBR=$vars->serialnbr";
 		}
 		$data[] = "QTY=$vars->qty";

@@ -3,6 +3,7 @@
 	use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 	// Figure out page request method, then grab needed inputs
 	$requestmethod = $input->requestMethod('POST') ? 'post' : 'get';
+	$values = $input->$requestmethod;
 	$action = $input->$requestmethod->text('action');
 	$dplusdb = DbDpluso::instance()->dbconfig->dbName;
 
@@ -47,6 +48,10 @@
 			$data = array("DBNAME=$dplusdb", 'MOVEBIN', "FROMBIN=$frombin", "TOBIN=$tobin");
 			$session->loc = $input->$requestmethod->text('page');
 			$session->bincm = array('tobin' => $tobin, 'frombin' => $frombin);
+			break;
+		case 'search-item-bins':
+			$itemID = $values->string('itemID');
+			// $ITM = \Dplus\Min\Inmain\Itm::instance();
 			break;
 	}
 

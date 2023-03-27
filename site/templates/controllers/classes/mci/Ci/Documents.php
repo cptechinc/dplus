@@ -45,7 +45,7 @@ class Documents extends AbstractSubfunctionController {
 		self::initHooks();
 		self::addPageData($data);
 		$list = self::createList($data->custID);
-		$customer = self::getCustomerByRid($data->rid);
+		$customer = self::getCustomerFromWireData($data);
 
 		switch ($data->folder) {
 			case 'SO':

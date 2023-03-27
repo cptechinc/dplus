@@ -24,7 +24,6 @@ class FindItem extends Base {
 		return self::$instance;
 	}
 
-	
 	/**
 	 * Set Warehouse ID for Inquiry Calls
 	 * @param  string $whseID  Warehouse ID
