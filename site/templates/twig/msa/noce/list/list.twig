@@ -1,0 +1,66 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	qnotes                 Dplus\qnotes\Noce
+	notes                  NotePreDefined[]|ObjectCollection
+#}
+{% set response = qnotes.getResponse() %}
+
+<div class="list-group notes-list">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-sm-2">
+				Code
+			</div>
+			<div class="col-sm-6">
+				Note
+			</div>
+			<div class="col-sm-4 text-center">
+				{% if page.is_print() == false %}
+					<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-modal" data-code="" data-json="">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Note
+					</button>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% for note in notes %}
+		<div class="list-group-item note pb-1 pt-1 {{ input.get.string('focus') == note.id ? 'highlight' : '' }} {{ (response.key == note.id and response.hasSuccess() ) ? 'bg-success text-white' : ''}}" id="note-{{ note.id|attrJS }}" data-code="{{ note.id }}">
+			<div class="row align-items-center">
+				<div class="col-sm-2">
+					{{ note.id }}
+				</div>
+				<div class="col-sm-6">
+					<span class="summary" data-code="{{ note.id }}">{{ note.note }}</span>
+				</div>
+				<div class="col-sm-4 text-center">
+					<button type="button" class="btn btn-sm btn-light" data-toggle="collapse" data-target="#notes-{{ note.id|attrJS }}" aria-controls="#notes-{{ note.id|attrJS }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					&nbsp;
+					{% if qnotes.recordlocker.isLocked(note.id) == false or qnotes.recordlocker.isLockedByUser(note.id) %}
+						<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#notes-modal" data-code="{{ note.id }}" data-json="{{ qnotes.json(note)|json_encode }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+						&nbsp;
+						<a href="{{ page.notesDeleteUrl(note.id) }}" class="btn btn-sm btn-danger delete_button" data-deleting="Pre-Defined Note" data-delete="{{ note.id }}">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% else %}
+						<span class="badge badge-secondary">
+							<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ qnotes.recordlocker.getLockingUser(note.id) }}
+						</span>
+					{% endif %}
+				</div>
+			</div>
+			<div class="row align-items-center">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-6">
+					<textarea class="collapse form-control-plaintext hidden-note" data-code="{{ note.id }}" id="notes-{{ note.id|attrJS }}" cols="{{ qnotes.fieldAttribute('note', 'cols') }}" rows="10" readonly>{{ qnotes.getNotesArray(note.id)|join('\r') }}</textarea>
+				</div>
+				<div class="col-sm-4"></div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

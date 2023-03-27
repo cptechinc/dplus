@@ -368,6 +368,17 @@ class TrmForm extends CodeFormBase {
 	}
 
 	/**
+	 * Runs Validator on input.std_order_percent inputs to clear the errors
+	 */
+	clearStdOrderPercentErrors() {
+		let validator = this.form.validate();
+		this.form.find('input.order_percent').each(function() {
+			let input = $(this);
+			validator.element('#' + input.attr('id'));
+		});
+	}
+
+	/**
 	 * Enable Discount / Day Month fields based off Discount Percent Value
 	 * @param	{Object} input 
 	 * @returns 

@@ -104,6 +104,7 @@ if ($values->offsetExists('action') === false|| $page->template == 'dplus-screen
 	$config->scripts->append($hasher->getHashUrl('scripts/classes.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/classes/DateRegexes.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/classes/DateFormatter.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/classes/Validator.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/ajax-modal.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/main.js'));
 

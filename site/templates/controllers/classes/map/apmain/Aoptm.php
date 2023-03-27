@@ -45,14 +45,14 @@ class Aoptm extends AbstractController {
 		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
-		$page->headline = "AOPTM: $data->sysop Optional Codes";
+		$page->headline = "AP Optional Code: $data->sysop";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
 		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::pw('session')->display);
 		self::getAoptm()->recordlocker->deleteLock();
 
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/sysop/edit/.js.twig', ['optm' => self::getAoptm()]);
@@ -74,7 +74,7 @@ class Aoptm extends AbstractController {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::pw('session')->display);
 
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/optm/list/.js.twig');
 		$html = self::displaySysopList($data, $codes);
@@ -132,10 +132,7 @@ class Aoptm extends AbstractController {
 	private static function displayResponse($data) {
 		$response = self::getAoptm()->getResponse();
 
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if ($response->hasSuccess() || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

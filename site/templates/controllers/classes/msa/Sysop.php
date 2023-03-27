@@ -137,7 +137,7 @@ class Sysop extends Base {
 	public static function displayResponse($data) {
 		$sysop = self::getSysop();
 		$response = $sysop->getResponse();
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

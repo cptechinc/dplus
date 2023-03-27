@@ -123,7 +123,7 @@ abstract class AbstractCodeTableEditable extends AbstractCodeTable {
 	protected function saveAndRespond(Code $code, $invalidfields = []) {
 		$is_new = $code->isDeleted() ? false : $code->isNew();
 		$saved  = $code->isDeleted() ? $code->isDeleted() : $code->save();
-
+		
 		$response = new Response();
 		$response->setCode($code->id);
 		$response->setKey($this->getRecordlockerKey($code));

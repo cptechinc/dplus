@@ -243,6 +243,11 @@ $(function() {
 				modal.attr('tabindex', '-1');
 			}
 			if (confirm.value) {
+				if (button.attr('value')) {
+					var input ='<input type="hidden" name="action" value="'+ button.attr('value')+'">';
+					$(input).appendTo(button.closest('form'));
+				}
+				
 				button.closest('form').submit();
 			}
 		});

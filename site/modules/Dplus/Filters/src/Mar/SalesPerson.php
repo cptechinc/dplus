@@ -15,8 +15,8 @@ class SalesPerson extends CodeFilter {
 ============================================================= */
 	public function _search($q, $cols = []) {
 		$columns = [
-			Model::get_aliasproperty('code'),
-			Model::get_aliasproperty('name'),
+			Model::aliasproperty('code'),
+			Model::aliasproperty('name'),
 		];
 		if ($cols) {
 			$columns = [];

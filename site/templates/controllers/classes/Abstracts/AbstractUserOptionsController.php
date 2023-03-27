@@ -215,10 +215,7 @@ abstract class AbstractUserOptionsController extends AbstractController {
 		$table = static::getManager();
 		$response = $table->getResponse();
 
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('codes/response.twig', ['response' => $response]);

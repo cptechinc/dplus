@@ -229,7 +229,7 @@ class Bmm extends AbstractController {
 	public static function displayResponse($data) {
 		$bmm = self::getBmm();
 		$response = $bmm::getResponse();
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('items/itm/response-alert-new.twig', ['response' => $response]);

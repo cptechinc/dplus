@@ -126,7 +126,7 @@ class Src extends AbstractController {
 	public static function displayResponse($data) {
 		$src = self::getSrc();
 		$response = $src->getResponse();
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

@@ -151,18 +151,17 @@ class Logm extends Base {
 		$logm   = self::getLogm();
 
 		$html  = '';
-		$html .= $config->twig->render('code-tables/msa/logm/bread-crumbs.twig');
+		$html .= $config->twig->render('msa/logm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
 		$html .= $config->twig->render('msa/logm/list/display.twig', ['logm' => $logm, 'users' => $users]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $users]);
-		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $logm]);
 		return $html;
 	}
 
 	public static function displayResponse($data) {
 		$logm = self::getLogm();
 		$response = $logm->getResponse();
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

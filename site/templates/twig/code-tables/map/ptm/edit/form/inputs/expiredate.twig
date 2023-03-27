@@ -1,0 +1,22 @@
+<div class="input-parent">
+	{% include 'util/bootstrap/form/date-picker.twig' with {
+		'inputgroup': {
+			'size': 'sm',
+			'input': {
+				'name': 'expiredate',
+				'value': code.expiredate ? code.expiredate|convertdate : '',
+				'attributes': {
+					'placeholder': '',
+					'aria-label':  'Terms Code Expiration Date',
+					'min-date': 'now'|date('m/d/Y'),
+					'tabindex': tabindex,
+				}
+			},
+			'button': {
+				'attributes': {
+					'tabindex': '-1',
+				}
+			}
+		}
+	} %}
+</div>

@@ -1,6 +1,7 @@
 {% set readonly = code.type != constant('TYPE_CREDITCARD', manager) %}
 {% set tabindexInput = readonly ? '-' ~ tabindex : tabindex %}
 {% set tabindexButton = readonly ? '-' ~ tabindex - 0.5 : tabindex - 0.5 %}
+{% set tabindexButton = -1 %}
 
 {% include 'util/bootstrap/form/input-group.twig' with {
 	'inputgroup': {

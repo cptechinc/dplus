@@ -16,36 +16,35 @@ class NoceForm {
 	}
 
 	setupFormAdd() {
-		var modal  = this.form.closest('.modal');
-		var inputs = this.inputs;
+		let modal  = this.form.closest('.modal');
+		let inputs = this.inputs;
 		modal.find('.modal-title').text('Add Note');
 		inputs.form.attr('data-code', '');
 		inputs.code.val('');
 		inputs.code.removeAttr('readonly');
 		inputs.note.val('');
+		this.serializeForm();
 	}
 
-	setupFormEdit(id) {
-		var modal  = this.form.closest('.modal');
-		var inputs = this.inputs;
-		modal.find('.modal-title').text('Edit Note ' + id);
-		this.updateFormFromId(id);
-	}
-
-	updateFormFromId(id) {
-		var inputs = this.inputs;
-		inputs.code.val(id);
-		inputs.form.attr('data-code', id);
-
-		var validator = this.form.validate();
-		if (validator.element('#'+inputs.code.attr('id'))) {
-			var server = NoceRequests.getInstance();
-			server.getNotes(id, function(notes) {
-				if (notes) {
-					inputs.code.attr('readonly', 'true');
-					inputs.note.val(notes.note);
-				}
-			});
+	updateFormFromJson(notes) {
+		if (notes) {
+			console.log(notes);
+			let modal  = this.form.closest('.modal');
+			modal.find('.modal-title').text('Edit Note');
+			this.form.attr('data-code', notes.code);
+			this.inputs.code.attr('readonly', 'true');
+			this.inputs.code.val(notes.code);
+			this.inputs.note.val(notes.lines.join('\n'));
+			this.serializeForm();
+			this.form.validate().element('#code');
 		}
+	}
+
+	serializeForm(serialize = true) {
+		if (serialize == false) {
+			this.form.attr('data-serialized', '');
+			return true;
+		}
+		this.form.attr('data-serialized', this.form.serialize());
 	}
 }

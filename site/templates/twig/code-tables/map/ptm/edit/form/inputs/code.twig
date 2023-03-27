@@ -1,0 +1,17 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'code',
+		'value': code.code,
+		'size': 'sm',
+		'addclasses': [''],
+		'attributes': {
+			'placeholder': '',
+			'aria-label':  'Terms Code',
+			'data-jqv': 'true',
+			'maxlength': manager.fieldAttribute('code', 'maxlength'),
+			'autofocus': code.isNew(),
+			'readonly': code.isNew() == false,
+			'tabindex': tabindex,
+		}
+	}
+} %}

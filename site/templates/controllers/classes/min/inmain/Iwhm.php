@@ -81,7 +81,7 @@ class Iwhm extends AbstractCodeTableController {
 
 		if ($warehouse->isNew() === false) {
 			self::pw('page')->js .= self::pw('config')->twig->render('msa/noce/ajax/js.twig');
-			self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/iwhm/edit/qnotes/js.twig', ['iwhm' => $iwhm]);
+			self::pw('page')->js .= self::pw('config')->twig->render('code-tables/min/iwhm/edit/qnotes/.js.twig', ['iwhm' => $iwhm]);
 		}
 		$html = self::displayCode($data, $warehouse);
 		self::getCodeTable()->deleteResponse();

@@ -79,7 +79,9 @@ class Costing extends Base {
 		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 
-		if ($itm->getResponse()) {
+		$response = $itm->getResponse();
+
+		if (empty($response) === false || $response->has_success() === false) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
 		}
 		$html .= self::lockItem($data->itemID);

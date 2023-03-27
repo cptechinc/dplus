@@ -168,7 +168,7 @@ class Substitutes extends Base {
 		$itmSub = self::getItmSubstitutes();
 
 		$response = $itmSub->getResponse();
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('items/itm/response-alert-new.twig', ['response' => $response]);

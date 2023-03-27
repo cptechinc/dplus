@@ -63,12 +63,53 @@ $(function() {
 		}
 	});
 
+	$("body").on("focusin", "#code-form #top-inputs input, #code-form #top-inputs select", function(e) {
+		let input = $(this);
+
+		let form       = input.closest('form');
+		let validator  = form.validate();
+		let formTop    = form.find('#top-inputs');
+		let firstInput = formTop.find('input[name=code]');
+
+		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
+			return true;
+		}
+
+		let start = parseInt(firstInput.attr('tabindex'));
+		
+		// Only loop up to $(this) input
+		for (let i = start; i < parseInt(input.attr('tabindex')); i++) {
+			let otherInput = formTop.find('input[tabindex='+i+']');
+
+			if (otherInput.length == 0) {
+				// Check negative tabindexes
+				otherInput = formTop.find('input[tabindex="-'+i+'"]');
+
+				if (otherInput.length == 0) {
+					continue;
+				}
+			}
+
+			if (validator.element('#' + otherInput.attr('id')) === false) {
+				otherInput.focus();
+				return true;
+			}
+		}
+	});
+
 	$("body").on("focusin", "#code-form .eom-split input", function(e) {
 		let input = $(this);
 
 		let form       = input.closest('form');
 		let validator  = form.validate();
 		let formEom    = form.find('#eom-splits');
+		let formTop    = form.find('#top-inputs');
+
+		if (formTop.find('input.is-invalid').length) {
+			validator.element('#' + formTop.find('input.is-invalid').attr('id'));
+			formTop.find('input.is-invalid').focus();
+		}
+
 		let firstInput = formEom.find('input[name=eom_thru_day1]');
 
 		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
@@ -104,12 +145,14 @@ $(function() {
 		let validator  = form.validate();
 		let formStd    = form.find('#std-splits');
 		let firstInput = formStd.find('input[name=order_percent1]');
+		let formTop    = form.find('#top-inputs');
+		
+		if (formTop.find('input.is-invalid').length) {
+			validator.element('#' + formTop.find('input.is-invalid').attr('id'))
+			formTop.find('input.is-invalid').focus();
+		}
 
-		// if (validator.element('#'+input.attr('id')) === false) {
-		// 	return true;
-		// }
-
-		if (input.attr('tabindex') <= firstInput.attr('tabindex')) {
+		if (input.attr('tabindex') <= firstInput.attr('tabindex') || input.hasClass('is-invalid')) {
 			return true;
 		}
 
@@ -129,6 +172,9 @@ $(function() {
 			}
 
 			if (validator.element('#' + otherInput.attr('id')) === false) {
+				if (otherInput.hasClass('order_percent') && input.hasClass('order_percent')) {
+					return true;
+				}
 				otherInput.focus();
 				return true;
 			}
@@ -224,7 +270,9 @@ $(function() {
 		server.getCreditCardCode(input.val(), function(crcdCode) {
 			if (crcdCode) {
 				descriptionField.text(crcdCode.description);
+				return true;
 			}
+			input.focus();
 		});
 	});
 
@@ -237,6 +285,7 @@ $(function() {
 			formCode.inputs.fields.ccprefix.change();
 			formTrm.setReadonly(formCode.inputs.fields.ccprefix, true);
 			formTrm.disableTabindex(formCode.inputs.fields.ccprefix);
+			formTrm.form.validate().element('#' + formCode.inputs.fields.ccprefix.attr('id'));
 			ccprefixParent.find('button[data-toggle]').attr('disabled', 'disabled');
 			return true;
 		}
@@ -264,7 +313,9 @@ $(function() {
 		server.getCountryCode(input.val(), function(country) {
 			if (country) {
 				descriptionField.text(country.description);
+				return true;
 			}
+			input.focus();
 		});
 	});
 
@@ -350,12 +401,15 @@ $(function() {
 		formTrm.enableDisableThisStdSplitInputs(input);
 		formTrm.enableDisableNextStdSplit(input);
 		formTrm.setupNextStdSplit(input);
-		percent = input.val() == '' ? 0 : parseFloat(input.val());
-		input.attr('data-lastvalue', percent);
+		input.attr('data-lastvalue', input.val());
 
-		if (input.val() == '') {
+		if (input.val() == '' || percent == 0) {
 			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').change();
 			formTrm.form.find('input[name=order_percent'+(input.closest('.std-split').data('index') - 1)+']').focus();
+		}
+
+		if (formTrm.sumUpStdOrderPercents() == 100) {
+			formTrm.clearStdOrderPercentErrors();
 		}
 	});
 
@@ -617,9 +671,13 @@ $(function() {
 		}
 
 		let input  = $(this);
+		input.val(input.val().trim());
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
-		
 		if (percent == 0) {
+			input.closest('.eom-discount').find('input').each(function() {
+				let sinput = $(this);
+				sinput.val('');
+			});
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
 			return true;
 		}
@@ -633,7 +691,6 @@ $(function() {
 		}
 
 		let input  = $(this);
-		input.val(input.val().trim());
 		let percent = input.val() == '' ? 0 : parseFloat(input.val());
 		if (percent == 0) {
 			formTrm.enableDisableEomDiscFieldsFromPercent(input);
@@ -663,6 +720,42 @@ $(function() {
 		if ($('input.eom_thru_day.is-invalid').length) {
 			$('input.eom_thru_day.is-invalid').focus();
 		}
+	});
+
+	$("body").on("keyup", ".eom_disc_day", function(e) {
+		if (formTrm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+	});
+
+	$("body").on("keyup", ".eom_disc_months", function(e) {
+		if (formTrm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+	});
+
+	$("body").on("keyup", ".eom_due_day", function(e) {
+		if (formTrm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
+	});
+
+	$("body").on("keyup", ".eom_plus_months", function(e) {
+		if (formTrm.isMethodEom() === false || $(this).attr('readonly') !== undefined) {
+			return false;
+		}
+
+		let input  = $(this);
+		input.val(input.val().trim());
 	});
 
 /* =============================================================
@@ -733,10 +826,17 @@ $(function() {
 		return this.optional(element) || validateExpiredate();
 	}, "Date must be a valid, future date MM/DD/YYYY");
 
+	jQuery.validator.addMethod("dateMMDDYYYYSlash", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateMMDDYYYYSlash(value);
+	}, "Date must be a valid date (MM/DD/YYYY)");
+
+	jQuery.validator.addMethod("futuredate", function(value, element) {
+		return this.optional(element) || Validator.getInstance().dateIsInFuture(value, 'mm/dd/yyyy');
+	}, "Date must be in the future");
+
 	jQuery.validator.addMethod("dateMMDDSlash", function(value, element) {
-		var isFocused = element == document.activeElement;
-		return this.optional(element) || validateDateMMDDSlash(value);
-	}, "Date must be a valid, date MM/DD");
+		return this.optional(element) || Validator.getInstance().dateMMDDSlash(value);
+	}, "Date must be a valid date (MM/DD)");
 
 	jQuery.validator.addMethod("stdOrderPercentTotal", function(value, element) {
 		var percentTotal = formTrm.sumUpStdOrderPercents();
@@ -803,7 +903,12 @@ $(function() {
 				}
 			},
 			expiredate: {
-				expiredate: true,
+				dateMMDDYYYYSlash: true,
+				futuredate: true,
+				normalizer: function(value) {
+					formCode.inputs.fields.expiredate.val(formCode.inputs.fields.expiredate.val().trim());
+					return value.trim();
+				},
 			},
 			termsgroup: {
 				required: false,

@@ -1,0 +1,28 @@
+{% set value = code.std_disc_day(x) %}
+
+{% set readonly = code.std_disc_percent(x) == 0 %}
+{% set readonly = code.std_disc_days(x) > 0 ? true : readonly %}
+{% set readonly = code.std_disc_date(x) > 0 ? true : readonly %}
+
+{% set tabindex = startindex + (x * 10) + 3 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'std_disc_day' ~ x,
+		'type': 'number',
+		'value': value != 0 ? value : '',
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'std_disc_day',
+		],
+		'attributes': {
+			'tabindex': tabindex,
+			'readonly': readonly,
+			'max': manager.fieldAttribute('std_disc_day', 'max')
+		}
+	}
+} %}
+
+
