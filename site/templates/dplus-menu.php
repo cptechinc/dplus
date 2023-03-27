@@ -1,4 +1,5 @@
 <?php
+	
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Dplus\Menu;
 

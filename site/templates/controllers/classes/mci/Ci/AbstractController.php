@@ -10,12 +10,14 @@ Use ProcessWire\User;
 Use ProcessWire\WireData;
 // Dplus
 use Dplus\Mar\Armain\Cmm;
+use Dplus\Session\UserMenuPermissions;
 // MVC Controllers
 use Controllers\Templates\AbstractController as Controller;
 
 abstract class AbstractController extends Controller {
 	const DPLUSPERMISSION = 'ci';
 	const PERMISSION_CIO  = '';
+	const PARENT_MENU_CODE = 'mci';
 	const TITLE      = 'Customer Information';
 	const SUMMARY    = 'View Customer Information';
 
@@ -32,6 +34,12 @@ abstract class AbstractController extends Controller {
 	 * @return bool
 	 */
 	public static function validateUserPermission(User $user = null) {
+		$MCP = UserMenuPermissions::instance();
+
+		if ($MCP->canAccess(static::PARENT_MENU_CODE) === false) {
+			return false;
+		}
+
 		if (parent::validateUserPermission($user) === false) {
 			return false;
 		}

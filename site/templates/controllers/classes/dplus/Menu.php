@@ -14,6 +14,13 @@ class Menu extends Controller {
 	public static function index($data) {
 		$page   = self::pw('page');
 
+		if ($page->parent->template == 'dplus-menu') {
+			$code = $page->parent->dplus_function ? $page->parent->dplus_function : $page->parent->dplus_permission;
+
+			if (UserMenuPermissions::instance()->canAccess($code) === false) {
+				return self::notPermittedDisplay();
+			}
+		}
 		if (self::validateUserPermission() === false) {
 			return self::notPermittedDisplay();
 		}
@@ -35,7 +42,7 @@ class Menu extends Controller {
 		return $html;
 	}
 
-	protected static function notPermittedDisplay() {
+	public static function notPermittedDisplay() {
 		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: " . self::getPagePermission()]);
 	}
 
