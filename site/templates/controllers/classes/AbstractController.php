@@ -5,7 +5,7 @@ use Purl\Url as Purl;
 use ProcessWire\User;
 use ProcessWire\Page;
 // Dplus
-use Dplus\User\FunctionPermissions as PermissionsAdmin;
+use Dplus\Session\UserMenuPermissions;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -32,7 +32,8 @@ abstract class AbstractController extends Controller {
 		if (empty($user)) {
 			$user = self::pw('user');
 		}
-		return $user->has_function(static::DPLUSPERMISSION);
+		$MCP = UserMenuPermissions::instance();
+		return $MCP->canAccess(static::DPLUSPERMISSION);
 	}
 
 	/**
@@ -43,7 +44,8 @@ abstract class AbstractController extends Controller {
 	public static function validateUserPagePermission(Page $page = null) {
 		$user = self::pw('user');
 		$permission = self::getPagePermission($page);
-		return empty($permission) || $user->has_function($permission);
+		$MCP = UserMenuPermissions::instance();
+		return empty($permission) || $MCP->canAccess(static::DPLUSPERMISSION);
 	}
 
 	/**

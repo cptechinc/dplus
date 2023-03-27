@@ -7,6 +7,7 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
+use ProcessWire\User;
 use ProcessWire\WireData;
 // Dplus Filters
 use Dplus\Filters;
@@ -96,6 +97,24 @@ abstract class AbstractCodeTableController extends AbstractController {
 /* =============================================================
 	2. Validations
 ============================================================= */
+	/**
+	 * Return if User has Permission To Menu
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserPermission(User $user = null) {
+		if (static::validateUserMenuPermission($user) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
+	}
+
+	/**
+	 * Return if User has Permission To Menu
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	abstract public static function validateUserMenuPermission(User $user = null);
 
 /* =============================================================
 	3. Data Requests / Data Fetching

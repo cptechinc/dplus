@@ -2,7 +2,10 @@
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
 // ProcessWire
+use ProcessWire\User;
 use ProcessWire\WireData;
+// Dplus
+use Dplus\Session\UserMenuPermissions;
 // Controllers
 use Controllers\AbstractController;
 
@@ -15,6 +18,7 @@ abstract class AbstractMenuController extends AbstractController {
 	const DPLUSPERMISSION = '';
 	const TITLE   = '';
 	const SUMMARY = '';
+	const PARENT_MENU_CODE = '';
 	const SUBFUNCTIONS = [
 		// 'cnfm' => [
 		// 	'name'       => 'cnfm',
@@ -38,14 +42,42 @@ abstract class AbstractMenuController extends AbstractController {
 	}
 
 	protected static function menu(WireData $data) {
-		$user  = self::pw('user');
 		$functions = [];
+		$permittedList = UserMenuPermissions::instance()->list();
+
 		foreach (static::SUBFUNCTIONS as $key => $function) {
-			if (empty($function['permission']) || $user->has_function($function['permission'])) {
+			if (empty($function['permission']) || $permittedList->has($function['permission'])) {
 				$functions[$key] = $function;
 			}
 		}
 		return static::renderMenu($data, $functions);
+	}
+
+/* =============================================================
+	2. Validations / Permissions / Initializations
+============================================================= */
+	/**
+	 * Return if User has Permission based off Dplus Permission Code
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserPermission(User $user = null) {
+		if (static::validateUserMenuPermission($user) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
+	}
+
+	/**
+	 * Return if User has Permission to the Menu this Menu is under
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserMenuPermission(User $user = null) {
+		if (empty(static::PARENT_MENU_CODE)) {
+			return true;
+		}
+		return UserMenuPermissions::instance()->canAccess(static::PARENT_MENU_CODE);
 	}
 
 /* =============================================================
