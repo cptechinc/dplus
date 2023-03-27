@@ -6,23 +6,33 @@ use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use Invkit;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Kim as KimCRUD;
-// Dplus Filters
+use ProcessWire\Page;
+use ProcessWire\User;
+// Dplus
 use Dplus\Filters\Mki\Kim as FilterKim;
+use Dplus\Session\UserMenuPermissions;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
+use Controllers\AbstractController;
 
-class Kim extends Controller {
+class Kim extends AbstractController {
+	const PARENT_MENU_CODE = 'mki';
+	const DPLUSPERMISSION  = 'kim';
 	private static $kim;
 
 	public static function index($data) {
 		$fields = [
-			'kitID'     => 'sanitizer|text',
-			'component' => 'sanitizer|text',
-			'q'         => 'sanitizer|text',
-			'action'    => 'sanitizer|text'
+			'kitID'     => 'kitID|text',
+			'component' => 'componen|text',
+			'q'         => 'q|text',
+			'action'    => 'action|text'
 		];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
+
+
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
 
@@ -158,6 +168,16 @@ class Kim extends Controller {
 			self::$kim = self::pw('modules')->get('Kim');
 		}
 		return self::$kim;
+	}
+
+/* =============================================================
+	Validator, Module Getters
+============================================================= */
+	public static function validateUserPermission(User $user = null) {
+		if (UserMenuPermissions::instance()->canAccess(self::PARENT_MENU_CODE) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
 	}
 
 /* =============================================================
