@@ -3,7 +3,6 @@ $(function() {
 	$("body").on('change', '.lotserial-qty', function(e) {
 		var input = $(this);
 		var qty = input.val();
-		console.log(input.val());
 
 		if (parseInt(qty) > 0) {
 			var record = input.closest('.lotserial-bin-record');

@@ -25,7 +25,7 @@ class Pricing extends AbstractSubfunctionController {
 	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['rid|int', 'itemID|text', 'refresh|bool'];
+		$fields = ['rid|int', 'custID|string', 'itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
 		self::decorateInputDataWithCustid($data);
@@ -37,7 +37,8 @@ class Pricing extends AbstractSubfunctionController {
 
 		if ($data->refresh) {
 			self::requestJson(self::prepareJsonRequest($data));
-			self::pw('session')->redirect(self::pricingUrl($data->rid, $data->itemID), $http301 = false);
+			$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+			self::pw('session')->redirect(self::pricingUrl($id, $data->itemID), $http301 = false);
 		}
 		return self::pricing($data);
 	}
@@ -77,7 +78,8 @@ class Pricing extends AbstractSubfunctionController {
 	 * @return string
 	 */
 	protected static function fetchDataRedirectUrl(WireData $data) {
-		return self::pricingUrl($data->rid, $data->itemID, $refresh=true);
+		$id = self::pw('config')->ci->useRid ? $data->rid : $data->custID;
+		return self::pricingUrl($id, $data->itemID, $refresh=true);
 	}
 
 	/**
@@ -87,11 +89,11 @@ class Pricing extends AbstractSubfunctionController {
 	 * @return bool
 	 */
 	protected static function validateJsonFileMatches(WireData $data, array $json) {
-		return $json['itemid'] == $data->itemID && $json['custid'] == self::getCustidByRid($data->rid);
+		return $json['itemid'] == $data->itemID && $json['custid'] == $data->custID;
 	}
 
 	protected static function prepareJsonRequest(WireData $data) {
-		$fields = ['rid|int', 'itemID|text', 'sessionID|text'];
+		$fields = ['rid|int', 'custID|string', 'itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::decorateInputDataWithCustid($data);
 		return ['CIPRICE', "ITEMID=$data->itemID", "CUSTID=$data->custID"];
@@ -121,6 +123,7 @@ class Pricing extends AbstractSubfunctionController {
 	}
 
 	private static function displayPricing(WireData $data, Customer $customer, $json = []) {
+		self::addPageData($data);
 		if (empty($json)) {
 			return self::renderJsonNotFoundAlert($data, 'Pricing');
 		}
@@ -128,7 +131,6 @@ class Pricing extends AbstractSubfunctionController {
 		if ($json['error']) {
 			return self::renderJsonError($data, $json);
 		}
-		self::addPageData($data);
 		$item = Ii\Pricing::getItmItem($data->itemID);
 		return self::renderPricing($data, $customer, $item, $json);
 	}

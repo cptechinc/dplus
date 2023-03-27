@@ -11,7 +11,7 @@ class CartConfig {
 	}
 
 	constructor() {
-		this.addToPrice = {{ customer.hasFreightRateCode() ?  customer.soFreightRate.addon : 0.00 }},
+		this.addToPrice = 0.00,
 		this.fields = {
 			qty: {
 				precision: {{  cart.decimalPlacesQty() }}

@@ -7,6 +7,13 @@
 <form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit" id="whse-search-inventory-form">
 	<input type="hidden" name="action" value="inventory-search">
 	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+	{% if page.name == 'move-from' %}
+		<input type="hidden" name="frombin" value="{{ input.get.string('frombin') }}">
+	{% endif %}
+	{% if page.name == 'move-to' %}
+		<input type="hidden" name="tobin" value="{{ input.get.string('tobin') }}">
+	{% endif %}
+
 	<label for="scan">Scan Barcode, UPC, Item ID, or  Lot / Serial #</label>
 
 	<div class="form-group">

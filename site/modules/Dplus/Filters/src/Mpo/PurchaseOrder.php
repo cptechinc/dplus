@@ -136,10 +136,10 @@ class PurchaseOrder extends AbstractFilter {
 
 			if (sizeof($vendorID) == 2) {
 				if (!empty($vendorID[0])) {
-					$this->_vendorid($vendorID[0], Criteria::GREATER_EQUAL);
+					$this->vendorid($vendorID[0], Criteria::GREATER_EQUAL);
 				}
 				if (!empty($vendorID[1])) {
-					$this->_vendorid($vendorID[1], Criteria::LESS_EQUAL);
+					$this->vendorid($vendorID[1], Criteria::LESS_EQUAL);
 				}
 				return $this;
 			}

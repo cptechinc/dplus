@@ -48,7 +48,7 @@ class Binr extends Controller {
 	}
 
 	public static function handleCRUD($data) {
-		$data = self::sanitizeParametersShort($data, ['action|text', 'scan|text']);
+		$data = self::sanitizeParametersShort($data, ['action|text', 'scan|text', 'frombin']);
 
 		switch ($data->action) {
 			case 'inventory-search':
@@ -56,6 +56,12 @@ class Binr extends Controller {
 				$whsem->requestInventorySearch(strtoupper($data->scan));
 				$url = new Purl(self::pw('page')->url);
 				$url->query->set('scan', $data->scan);
+				if ($data->frombin) {
+					$url->query->set('frombin', $data->frombin);
+				}
+				if ($data->tobin) {
+					$url->query->set('tobin', $data->tobin);
+				}
 				self::pw('session')->redirect($url->getUrl(), $http301 = false);
 				break;
 			case 'bin-reassign';
@@ -113,7 +119,7 @@ class Binr extends Controller {
 
 	private static function handleScanInventorySingleItemid($data) {
 		$fields    = ['scan|text', 'action|text', 'frombin|text', 'tobin|text', 'binID|text'];
-		$data      = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$inventory = self::getInventorySearch();
 		$config    = self::pw('config');
 
@@ -128,11 +134,36 @@ class Binr extends Controller {
 			$whsem->requestItemBins($item->itemid);
 			$url = new Purl(self::pw('page')->url);
 			$url->query->set('itemID', $item->itemid);
-			self::pw('session')->redirect($url->getUrl(), $http301 = false);
+			if ($data->frombin) {
+				$url->query->set('frombin', $data->frombin);
+			}
+			if ($data->tobin) {
+				$url->query->set('tobin', $data->tobin);
+			}
+ 			self::pw('session')->redirect($url->getUrl(), $http301 = false);
 		}
 
 		// If Item is Lotted / Serialized show results to choose which lot or serial to move
 		$countLotserial = $inventory->count_itemid_records($item->itemid, $data->binID);
+
+		if ($countLotserial == 1) {
+			$whsem = self::getWarehouseManagement();
+			$whsem->requestItemBins($item->itemid);
+			$url = new Purl(self::pw('page')->url);
+			if ($item->is_lotted()) {
+				$url->query->set('lotnbr', $item->lotserial);
+			}
+			if ($item->is_serialized()) {
+				$url->query->set('serialnbr', $item->lotserial);
+			}
+			if ($data->frombin) {
+				$url->query->set('frombin', $data->frombin);
+			}
+			if ($data->tobin) {
+				$url->query->set('tobin', $data->tobin);
+			}
+			self::pw('session')->redirect($url->getUrl(), $http301 = false);
+		}
 		$items = $inventory->get_items_distinct($data->binID);
 		$warehouse = self::getCurrentUserWarehouse();
 
@@ -143,13 +174,17 @@ class Binr extends Controller {
 	}
 
 	private static function handleItem($data) {
-		$fields = ['lotnbr|text', 'serialnbr|text', 'itemID|text', 'binID|text'];
-		$data   = self::sanitizeParametersShort($data, $fields);
+		$fields = ['lotnbr|text', 'serialnbr|text', 'itemID|text', 'binID|text', 'frombin|string', 'tobin|string'];
+		self::sanitizeParametersShort($data, $fields);
+		if (empty($data->binID) && empty($data->frombin) === false) {
+			$data->binID = $data->frombin;
+		}
 		$page   = self::pw('page');
 		$config = self::pw('config');
 		$warehouse   = self::getCurrentUserWarehouse();
 		$inventory   = self::getInventorySearch();
 		$whsesession = self::getWhseSession();
+		$page->tobin = $data->tobin;
 
 		if ($data->itemID) {
 			$page->scan   = $data->itemID;

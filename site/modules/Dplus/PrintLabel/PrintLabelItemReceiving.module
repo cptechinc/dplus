@@ -54,7 +54,6 @@ class PrintLabelItemReceiving extends PrintLabelItem implements Module {
 		$labelsession->setPrinterBox($values->text('box-printer'));
 		$labelsession->setQtyBox($values->int('box-qty'));
 		$labelsession->setNbrBoxLabels($values->int('box-label-count'));
-
 		$labelsession->save();
 
 		$success = $this->request_label_print($labelsession, $values->text('ponbr'), $values->int('linenbr'));

@@ -1,7 +1,9 @@
 <?php
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$frombin = $warehouse->validate_bin($input->get->text('frombin')) ? $input->get->text('frombin') : '';
+	$frombin = $warehouse->validate_bin($input->$rm->text('frombin')) ? $input->$rm->text('frombin') : '';
 	$config->binr = $modules->get('ConfigsBinr');
 
 	if (!empty($frombin)) {

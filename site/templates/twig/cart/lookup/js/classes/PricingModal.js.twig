@@ -23,9 +23,9 @@ class PricingModal {
 		this.modal.find('.itemid').text(json.itemid);
 		var table   = this.modal.find('.pricing-table');
 		var example = table.find('.example');
-		var clone   = example.clone();
 
 		json.pricebreaks.forEach(pricebreak => {
+			var clone   = example.clone();
 			clone.removeClass('example');
 			clone.removeClass('collapse');
 			clone.addClass('qty-break');

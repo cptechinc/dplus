@@ -60,11 +60,15 @@ class Activity extends Base {
 /* =============================================================
 	Data Requests
 ============================================================= */
-	private static function requestJson($vars) {
+	// NOTE: keep public for Mii\Loti\Activity
+	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'date|date', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$data = ['IIACTIVITY', "ITEMID=$vars->itemID"];
+		if ($vars->lotnbr) {
+			$data[] = "LOTSERIAL=$vars->lotnbr";
+		}
 		if ($vars->date) {
 			$dateYmd = date(self::DATE_FORMAT_DPLUS, $vars->date);
 			$data[] = "DATE=$dateYmd";

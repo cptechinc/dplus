@@ -69,12 +69,21 @@ class Receiving extends Base {
 		$validate = self::getValidatorMpo();
 		$data->ponbr = self::padPoNbr($data->ponbr);
 
+		$m = self::getReceiving($data->ponbr);
+
+		if ($data->action == 'create-po') {
+			$m->processInput(self::pw('input'));
+			$url = self::receivingLoadPoUrl();
+			self::redirect($url, $http301 = false);
+		}
+
 		if (empty($data->ponbr) === false && $validate->po($data->ponbr) === false) {
 			self::redirect(self::receivingUrl($data->ponbr), $http301 = false);
 		}
 
 		$m = self::getReceiving($data->ponbr);
 		$m->processInput(self::pw('input'));
+		
 
 		// REDIRECT
 		switch ($data->action) {
@@ -95,6 +104,10 @@ class Receiving extends Base {
 				break;
 			case 'create-po':
 				$url = self::receivingLoadPoUrl();
+				self::redirect($url, $http301 = false);
+				break;
+			case 'post-received':
+				$url = $data->has('close') ? self::receivingUrl() : self::receivingUrl($data->ponbr);
 				self::redirect($url, $http301 = false);
 				break;
 			default:

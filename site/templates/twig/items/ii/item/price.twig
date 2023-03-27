@@ -1,0 +1,18 @@
+{% set columns = json['columns'] %}
+
+<table class="table table-sm">
+	<thead>
+		{% for column in columns %}
+			<th>{{ column }}</th>
+		{% endfor %}
+	</thead>
+	<tbody>
+		{% for pricebreak in json['data'] %}
+			<tr>
+				{% for key, label in columns %}
+					<td>{{ pricebreak[key] }}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

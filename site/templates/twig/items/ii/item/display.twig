@@ -15,6 +15,10 @@
 		{% endif %}
 		{{ html.item|raw }}
 		{# include 'items/ii/item/item-data.twig' #}
+		<div class="col-sm-4 px-0 mb-3">
+			<h4>Pricing</h4>
+			{{ html.price|raw }}
+		</div>
 		{{ html.stock|raw }}
 	</div>
 </div>

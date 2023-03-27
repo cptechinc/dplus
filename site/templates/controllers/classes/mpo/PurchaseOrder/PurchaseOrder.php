@@ -45,11 +45,13 @@ class PurchaseOrder extends Base {
 	public static function handleCRUD($data) {
 		self::sanitizeParametersShort($data, ['ponbr|ponbr', 'action|text']);
 		switch ($data->action) {
-			case 'print-invoice':
-				self::requestPrintInvoice($data);
+			case 'update-notes':
+			case 'delete-notes':
+				$qnotes = self::qnotes();
+				$qnotes->process_input(self::pw('input'));
 				break;
 		}
-		self::pw('session')->redirect(self::orderUrl($data->ponbr));
+		self::pw('session')->redirect(self::poUrl($data->ponbr));
 	}
 
 /* =============================================================
