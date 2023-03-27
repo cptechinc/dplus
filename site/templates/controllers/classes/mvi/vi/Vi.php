@@ -5,6 +5,7 @@ use Propel\Runtime\Util\PropelModelPager;
 use VendorQuery, Vendor;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
+use ProcessWire\Wire404Exception;
 use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\CodeValidators\Map as MapValidator;
@@ -41,6 +42,10 @@ class Vi extends Base {
 	public static function index($data) {
 		$fields = ['vendorID|string', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
+
+		if (self::validateUserPermission() === false) {
+			throw new Wire404Exception();
+		}
 
 		if (empty($data->vendorID) === false) {
 			return self::vendor($data);

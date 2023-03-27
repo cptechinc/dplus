@@ -3,14 +3,17 @@
 use Purl\Url as Purl;
 // Dplus Model
 use VendorQuery, Vendor;
-// Dplus Code Validators
+// ProcessWire
+use ProcessWire\User;
+// Dplus
 use Dplus\CodeValidators as Validators;
-// MVC Controllers
-use Mvc\Controllers\Controller;
-// Dplus User Options
+use Dplus\Session\UserMenuPermissions;
 use Dplus\UserOptions\Vio;
+// Controllers
+use Controllers\AbstractController;
 
-abstract class Base extends Controller {
+abstract class Base extends AbstractController {
+	const PARENT_MENU_CODE = 'mvi';
 	const PERMISSION     = 'vi';
 	const PERMISSION_VIO = '';
 
@@ -109,7 +112,7 @@ abstract class Base extends Controller {
 			return self::displayInvalidVendorid($data);
 		}
 
-		if (self::validateUserPermission($data) === false) {
+		if (self::validateUserPermission() === false) {
 			return self::displayInvalidPermission($data);
 		}
 		return '';
@@ -150,7 +153,7 @@ abstract class Base extends Controller {
 			return false;
 		}
 
-		if (self::validateUserPermission($data) === false) {
+		if (self::validateUserPermission() === false) {
 			return false;
 		}
 		return true;
@@ -161,13 +164,18 @@ abstract class Base extends Controller {
 		return $validate->vendorid($vendorID);
 	}
 
-	protected static function validateUserPermission($data) {
-		$user = self::pw('user');
+	public static function validateUserPermission(User $user = null) {
+		$user = $user ? $user : self::pw('user');
 
-		if ($user->has_function(static::PERMISSION) === false) {
+		$MCP = UserMenuPermissions::instance();
+
+		if ($MCP->canAccess(static::PARENT_MENU_CODE) === false) {
 			return false;
 		}
 
+		if (parent::validateUserPermission($user) === false) {
+			return false;
+		}
 		$vio  = self::getVio();
 		return $vio->allowUser($user, static::PERMISSION_VIO);
 	}
