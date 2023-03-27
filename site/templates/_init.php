@@ -128,3 +128,4 @@ if ($values->offsetExists('action') === false|| $page->template == 'dplus-screen
 }
 include_once('./_func.php');
 include ('./_init.js.php');
+include ('./_init.config.php');
