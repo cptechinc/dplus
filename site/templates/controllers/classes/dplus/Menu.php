@@ -3,7 +3,8 @@
 use ProcessWire\Page;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
-// Dplus RecordLocker
+// Dplus
+use Dplus\Session\UserMenuPermissions;
 use Dplus\RecordLocker;
 
 class Menu extends Controller {
@@ -44,7 +45,8 @@ class Menu extends Controller {
 	public static function validateUserPermission() {
 		$user = self::pw('user');
 		$permission = self::getPagePermission();
-		return empty($permission) || $user->has_function($permission);
+		$MCP = UserMenuPermissions::instance();
+		return empty($permission) || $MCP->canAccess($permission);
 	}
 
 	public static function getPagePermission(Page $page = null) {

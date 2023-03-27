@@ -1,8 +1,8 @@
 <?php namespace Controllers\Map\Apmain;
 // ProcessWire
 use ProcessWire\User;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
+// Controllers
+use Controllers\AbstractController as Controller;
 
 abstract class AbstractController extends Controller {
 	const DPLUSPERMISSION = 'apmain';
@@ -22,12 +22,9 @@ abstract class AbstractController extends Controller {
 	Validator, Module Getters
 ============================================================= */
 	public static function validateUserPermission(User $user = null) {
-		if (empty(static::DPLUSPERMISSION)) {
-			return true;
+		if (Menu::validateUserPermission($user) === false) {
+			return false;
 		}
-		if (empty($user)) {
-			$user = self::pw('user');
-		}
-		return $user->has_function(static::DPLUSPERMISSION);
+		return parent::validateUserPermission($user);
 	}
 }

@@ -13,6 +13,7 @@ use Controllers\Mpr\Menu as MenuMpr;
 class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'prman';
 	const TITLE = 'Maintenance';
+	const PARENT_MENU_CODE = 'mpr';
 	const SUBFUNCTIONS = [
 		'src' => [
 			'name'       => 'src',

@@ -2,6 +2,8 @@
 // ProcessWire
 use ProcessWire\User;
 use ProcessWire\WireData;
+// Dplus
+use Dplus\Session\UserMenuPermissions;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -51,6 +53,7 @@ abstract class AbstractController extends Controller {
 		if (empty($user)) {
 			$user = self::pw('user');
 		}
-		return $user->has_function(static::DPLUSPERMISSION);
+		$MCP = UserMenuPermissions::instance();
+		return $MCP->canAccess(static::DPLUSPERMISSION);
 	}
 }

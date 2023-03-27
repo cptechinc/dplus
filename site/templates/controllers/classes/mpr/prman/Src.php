@@ -3,6 +3,8 @@
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
+// ProcessWire
+use ProcessWire\User;
 // Dplus Models
 use ProspectSource;
 // Dplus Filters
@@ -159,5 +161,12 @@ class Src extends AbstractController {
 			self::$src = new SrcManager();
 		}
 		return self::$src;
+	}
+
+	public static function validateUserPermission(User $user = null) {
+		if (Menu::validateUserPermission($user) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
 	}
 }

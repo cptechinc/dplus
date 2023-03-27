@@ -12,6 +12,7 @@ use Controllers\Templates\AbstractMenuController;
 class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'poadmn';
 	const TITLE = 'Administration';
+	const PARENT_MENU_CODE = 'mpo';
 	const SUBFUNCTIONS = [
 		'cnfm' => [
 			'name'       => 'cnfm',

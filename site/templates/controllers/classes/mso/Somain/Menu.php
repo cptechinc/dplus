@@ -12,6 +12,7 @@ use Controllers\Templates\AbstractMenuController;
 class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'somain';
 	const TITLE = 'Maintenance';
+	const PARENT_MENU_CODE = 'mso';
 	const SUBFUNCTIONS = [
 		'cxm' => [
 			'name'       => 'cxm',

@@ -1,6 +1,8 @@
 <?php namespace Controllers\Dplus;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
+// Dplus
+use Dplus\Session\UserMenuPermissions;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -23,7 +25,10 @@ class Process extends Controller {
 		}
 
 		$permission = empty($page->dplus_function) ? $page->dplus_permission : $page->dplus_function;
-		$hasPermission = $user->hasPermissionCode($permission) || empty($permission);
+
+		$permMCP = UserMenuPermissions::instance();
+		
+		$hasPermission = $permMCP->canAccess($permission) || empty($permission);
 
 		if ($hasPermission === false) {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $permission"]);

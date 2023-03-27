@@ -13,6 +13,7 @@ use Controllers\Mgl\Menu as MglMenu;
 class Menu extends AbstractMenuController {
 	const DPLUSPERMISSION = 'glmain';
 	const TITLE = 'Maintenance';
+	const PARENT_MENU_CODE = 'mgl';
 	const SUBFUNCTIONS = [
 		'ttm' => [
 			'name'       => 'ttm',
