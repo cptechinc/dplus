@@ -14,6 +14,10 @@ class Notes extends Base {
 		$fields = ['qnbr|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if ($data->action) {
 			self::handleCRUD($data);
 		}

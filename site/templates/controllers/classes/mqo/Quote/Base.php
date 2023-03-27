@@ -1,19 +1,20 @@
 <?php namespace Controllers\Mqo\Quote;
 // Purl URI Library
 use Purl\Url as Purl;
-// Dplus Configs
-use Dplus\Configs;
-// Alias Document Finders
-use Dplus\DocManagement\Finders as DocFinders;
-// Dplus Validators
+// ProcessWire
+use ProcessWire\User;
+// Dplus 
 use Dplus\CodeValidators\Mqo as MqoValidator;
-// Dplus Filters
+use Dplus\Configs;
+use Dplus\DocManagement\Finders as DocFinders;
 use Dplus\Filters\Mqo\Quote as FilterQuotes;
+use Dplus\Session\UserMenuPermissions;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
-use Controllers\Mii\Ii;
+use Controllers\AbstractController;
 
-abstract class Base extends Controller {
+
+abstract class Base extends AbstractController {
+	const PARENT_MENU_CODE = 'mqo';
 	private static $validate;
 	private static $docm;
 	private static $configQt;
@@ -169,5 +170,15 @@ abstract class Base extends Controller {
 			self::$configQt = Configs\Qt::config();
 		}
 		return self::$configQt;
+	}
+
+/* =============================================================
+	Validator, Module Getters
+============================================================= */
+	public static function validateUserPermission(User $user = null) {
+		if (UserMenuPermissions::instance()->canAccess(self::PARENT_MENU_CODE) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
 	}
 }

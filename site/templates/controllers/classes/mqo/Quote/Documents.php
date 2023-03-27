@@ -13,6 +13,10 @@ class Documents extends Base {
 		$fields = ['qnbr|text', 'document|text', 'folder|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->qnbr)) {
 			return self::lookupScreen($data);
 		}

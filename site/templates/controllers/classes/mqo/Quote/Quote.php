@@ -29,6 +29,10 @@ class Quote extends Base {
 		$fields = ['qnbr|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->qnbr) === false) {
 			return self::quote($data);
 		}
@@ -61,7 +65,7 @@ class Quote extends Base {
 		$config = self::pw('config');
 		$docm   = self::docm();
 		$twig = [];
-		$twig['header']      = $config->twig->render("quotes/quote/quote-page.twig", ['quote' => $quote, 'document_management' => $docm]);
+		$twig['header']      = $config->twig->render("quotes/quote/quote-header.twig", ['quote' => $quote, 'document_management' => $docm]);
 		$twig['items']       = $config->twig->render("quotes/quote/quote-items.twig", ['configSo' => Configs\So::config(), 'quote' => $quote]);
 		$twig['actions']     = $config->twig->render('quotes/quote/quote-actions.twig', ['user' => self::pw('user'), 'quote' => $quote]);
 		$twig['qnotes']      = $config->twig->render('quotes/quote/quote-notes.twig', ['qnbr' => $data->qnbr, 'qnotes_qt' => self::pw('modules')->get('QnotesQt')]);

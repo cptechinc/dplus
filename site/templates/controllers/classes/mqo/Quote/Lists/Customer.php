@@ -24,6 +24,10 @@ class Customer extends Base {
 ============================================================= */
 	public static function index($data) {
 		self::sanitizeParametersShort($data, ['custID|string']);
+		
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 
 		if (empty($data->custID)) {
 			self::pw('page')->js .= self::pw('config')->twig->render('quotes/customer/customer-form.js.twig');

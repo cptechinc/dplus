@@ -20,7 +20,9 @@ class Quote extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 		return self::listQuotes($data);
 	}
 

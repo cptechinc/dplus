@@ -28,7 +28,7 @@ class Process extends Controller {
 
 		$permMCP = UserMenuPermissions::instance();
 		
-		$hasPermission = $permMCP->canAccess($permission) || empty($permission);
+		$hasPermission = empty($permission) || $permMCP->canAccess($permission);
 
 		if ($hasPermission === false) {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $permission"]);

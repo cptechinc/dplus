@@ -9,6 +9,11 @@
 		<li class="breadcrumb-item active">
 			Quote
 		</li>
+		{% if values.offsetExists('qnbr') %}
+			<li class="breadcrumb-item active">
+				{{ values.text('qnbr') }}
+			</li>
+		{% endif %}
 	{% endif %}
 
 	{% if segments|length > 0 %}

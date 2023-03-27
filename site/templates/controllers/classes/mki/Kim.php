@@ -32,7 +32,6 @@ class Kim extends AbstractController {
 			return self::renderUserNotPermittedAlert();
 		}
 
-
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
 

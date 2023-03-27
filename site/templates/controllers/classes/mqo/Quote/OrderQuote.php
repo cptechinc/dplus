@@ -24,6 +24,10 @@ class OrderQuote extends Edit {
 		$fields = ['qnbr|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}

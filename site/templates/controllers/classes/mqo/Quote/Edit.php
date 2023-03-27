@@ -22,6 +22,10 @@ class Edit extends Base {
 	public static function index($data) {
 		$fields = ['qnbr|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
