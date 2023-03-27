@@ -6,3 +6,9 @@
 	 * 
 	 */
 
+	 // Used for Hiding Functions / Menus
+	if ($config->has('hideFunctions') === false) {
+		$config->hideFunctions = new Config();
+		$config->hideFunctions->dev = ['map'];
+		$config->hideFunctions->cmp = ['mar'];
+	}
