@@ -13,6 +13,8 @@ use Dplus\CodeValidators as Validators;
 
 use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 
+include_once(__DIR__.'/vendor/autoload.php');
+
 /**
  * Module that Handles Tying User to their Dplus data through roles && permissions
  */
