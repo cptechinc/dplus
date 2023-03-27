@@ -1,10 +1,11 @@
 class DateFormatter {
 
-	constructor(date, expectedFormat = '') {
+	constructor(date = 'now', expectedFormat = '') {
 		this.regexer = DateRegexes.getInstance();
 		this.momentJsFormats = {
 			'mmdd': 'MMDD',
 			'mm/dd': 'MM/DD',
+			'mdd': 'MDD',
 			'm/dd': 'M/DD',
 			'mmddyyyy': 'MMDDYYYY',
 			'mmddyy': 'MMDDYY',
@@ -13,9 +14,8 @@ class DateFormatter {
 			'timestamp': 'X'
 		},
 		this.expectedFormats = {
-			'mm/dd': ['mmdd', 'mm/dd', 'm/d'],
-			'mm/dd/yyyy': ['mm/dd/yyyy', 'mmddyyyy', 'mmddyy'],
-			'yyyymmdd': ['yyyymmdd']
+			'mm/dd': ['mmdd', 'mdd', 'mm/dd', 'm/dd'],
+			'mm/dd/yyyy': ['mm/dd/yyyy', 'mmddyyyy', 'mmddyy']
 		}
 		this.inputDate = date;
 		this.date = date;
@@ -31,29 +31,43 @@ class DateFormatter {
 	}
 
 	initDateFormat() {
+		if (this.date == 'now') {
+			this.dateFormat = '';
+			return true;
+		}
+
 		let patterns = Object.keys(this.regexer.regexes);
+		let regexer = this.regexer;
+		
 		if (this.expectedFormat != '') {
 			patterns = this.expectedFormats[this.expectedFormat];
 		}
+		
 		patterns.forEach(pattern => {
 			if (this.dateFormat != '') {
 				return;
 			}
-			if (this.regexer.regexes[pattern].test(this.date)) {
+			if (regexer.regexes[pattern].test(this.date)) {
 				this.dateFormat = pattern;
 			}
 		});
-		console.log(this.dateFormat);
 	}
 
 	initMoment() {
-		if (this.dateformat != '') {
+		if (this.dateFormat != '') {
 			this.moment = moment(this.date, this.momentJsFormats[this.dateFormat]);
+			return true;
 		}
+
+		if (this.date == 'now') {
+			this.moment = moment();
+			return true;
+		}
+		return false;
 	}
 
 	format(format = 'mm/dd/yyyy') {
-		if (this.date = '' || this.dateFormat == '') {
+		if (this.date = '' || (this.dateFormat == '' && this.date != 'now')) {
 			return '';
 		}
 		if (this.moment.isValid() === false) {

@@ -1,0 +1,148 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	manager                Dplus\Codes\Base
+#}
+
+
+{% extends 'code-tables/list-print.twig' %}
+{% set methods = manager.fieldAttribute('method', 'optionsShort') %}
+
+{% block print_headings_row %}
+	<tr>
+		<th colspan="13">
+			<div class="w-100 d-flex justify-content-between">
+				<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+				<div>{{ page.headline }}</div>
+				<div></div>
+			</div>
+		</th>
+	</tr>
+{% endblock %}
+
+{% block headings_row %}
+	<tr class="bg-dark text-white column-headers">
+		{% block headings_columns %}
+			<th colspan="4">Code</th>
+			<th colspan="4">Description</th>
+			<th>Method</th>
+			<th>Expire Date</th>
+			<th colspan="3"></th>
+		{% endblock %}
+	</tr>
+{% endblock %}
+
+
+{% block code_row %}
+	<tr class="first-txn-row">
+		<td colspan="4">{{ code.code|replace({' ': '&nbsp;'})|raw }}</td>
+		<td colspan="4">{{ code.description }}</td>
+		<td>{{ code.method }} - {{ methods[code.method] }}</td>
+		<td>{{ code.expiredate ? code.expiredate|convertdate : '' }}</td>
+		<td colspan="3"></td>
+	</tr>
+
+	{% if code.method == constant('METHOD_EOM', manager) %}
+		<tr class="text-bold">
+			<td colspan="3"></td>
+			<td colspan="2" class="text-center border-left border-right">Day</td>
+			<td colspan="3" class="text-center border-left border-right">Discount</td>
+			<td colspan="2" class="text-center border-left border-right">Due</td>
+			<td colspan="3"></td>
+		</tr>
+		<tr class="text-bold">
+			<td colspan="3"></td>
+			<td class="text-right">From</td>
+			<td class="text-right">Thru</td>
+			<td class="text-right">Percent</td>
+			<td class="text-right">Day</td>
+			<td class="text-right">Plus Months</td>
+			<td class="text-right">Day</td>
+			<td class="text-right">Plus Months</td>
+			<td colspan="3"></td>
+		</tr>
+
+		{% for x in 1..constant('NBR_SPLITS_METHOD_EOM', manager) %}
+			{% if code.eom_from_day(x) %}
+				<tr>
+					<td colspan="3"></td>
+					<td class="text-right">{{ code.eom_from_day(x) }}</td>
+					<td class="text-right">{{ code.eom_thru_day(x) }}</td>
+					<td class="text-right">
+						{{ code.eom_disc_percent(x) ? code.eom_disc_percent(x) : ''  }}
+					</td>
+					<td class="text-right">
+						{{ code.eom_disc_day(x) ? code.eom_disc_day(x) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.eom_disc_months(x) ? code.eom_disc_months(x) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.eom_due_day(x) ? code.eom_due_day(x) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.eom_plus_months(x) ? code.eom_plus_months(x) : '' }}
+					</td>
+					<td colspan="3"></td>
+				</tr>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+
+	{% if code.method == constant('METHOD_STD', manager) %}
+		<tr class="text-bold">
+			<td colspan="2"></td>
+			<td class="text-center">Split</td>
+			<td class="text-right">Order Percent</td>
+			<td class="border-left text-right">Percent</td>
+			<td class="text-right">Days</td>
+			<td class="text-right">Day</td>
+			<td class="text-right">Date</td>
+			<td class="border-left text-right">Days</td>
+			<td class="text-right">Day</td>
+			<td class="text-right">Plus Months</td>
+			<td class="text-right">Date</td>
+			<td class="text-right">Plus Years</td>
+		</tr>
+
+		{% for x in 1..constant('NBR_SPLITS_METHOD_STD', manager) %}
+			{% if code.std_order_percent(x) > 0 %}
+				<tr>
+					<td colspan="2"></td>
+					<td class="text-center">{{ x }}</td>
+					<td class="text-right">
+						{{ code.std_order_percent(x)|number_format(manager.fieldAttribute('std_order_percent', 'precision')) }}
+					</td>
+					<td class="border-left text-right">
+						{{ code.std_disc_percent(x) > 0 ? code.std_disc_percent(x)|number_format(manager.fieldAttribute('std_disc_percent', 'precision')) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.std_disc_days(x) ? code.std_disc_days(x) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.std_disc_day(x) ? code.std_disc_day(x) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.std_disc_date(x) ? ("now"|date('Y') ~ code.std_disc_date(x))|convertdate(manager.fieldAttribute('std_disc_date', 'dateformat')) : '' }}
+					</td>
+					<td class="border-left text-right">
+						{{ code.std_due_days(x) ? code.std_due_days(x) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.std_due_day(x) ? code.std_due_day(x) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.std_plus_months(x) ? code.std_plus_months(x) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.std_due_date(x) ? ("now"|date('Y') ~ code.std_due_date(x))|convertdate(manager.fieldAttribute('std_due_date', 'dateformat')) : '' }}
+					</td>
+					<td class="text-right">
+						{{ code.std_plus_years(x) ? code.std_plus_years(x) : '' }}
+					</td>
+				</tr>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+{% endblock %}

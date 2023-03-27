@@ -3,7 +3,8 @@
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Code;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use  ProcessWire\WireInput;
+use  ProcessWire\WireInputData;
 // Dplus Models
 use MotorFreightCodeQuery, MotorFreightCode;
 // Dplus Validators
@@ -79,10 +80,26 @@ class Mfcm extends AbstractCodeTableEditableSingleKey {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = parent::_inputUpdate($input, $code);
-		$code->setDescription2($values->text('description2', ['maxLength' => $this->fieldAttribute('description2', 'maxlength')]));
-		$code->setDescription3($values->text('description3', ['maxLength' => $this->fieldAttribute('description3', 'maxlength')]));
-		$code->setDescription4($values->text('description4', ['maxLength' => $this->fieldAttribute('description4', 'maxlength')]));
-		$code->setClass($values->text('class', ['maxLength' => $this->fieldAttribute('class', 'maxlength')]));
+
+		$this->_inputUpdateMfcmFields($values, $code);
 		return $invalidfields;
+	}
+
+	/**
+	 * Update Mfcm Record Specific fields
+	 * @param  WireInputData  $values
+	 * @param  SoRgaCode      $code
+	 * @return void
+	 */
+	private function _inputUpdateMfcmFields(WireInputData $values, Code $code) {
+		$fields = ['description2', 'description3', 'description4', 'class'];
+
+		foreach ($fields as $field) {
+			$value = $values->string($field);
+			$valueMaxLength = substr($value, 0, $this->fieldAttribute($field, 'maxlength'));
+
+			$setField = 'set' . ucfirst($field);
+			$code->$setField($valueMaxLength);
+		}
 	}
 }

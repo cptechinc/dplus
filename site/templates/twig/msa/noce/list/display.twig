@@ -1,0 +1,9 @@
+{% include 'msa/noce/list/header.twig' %}
+
+<div class="mb-3">
+	{% include 'msa/noce/list/list.twig' %}
+</div>
+
+{% if input.get.offsetExists('print') == false %}
+	{% include 'util/paginator/propel.twig' with {'pager': notes} %}
+{% endif %}

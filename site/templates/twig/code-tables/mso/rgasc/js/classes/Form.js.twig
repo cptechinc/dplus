@@ -28,6 +28,7 @@ class RgascForm {
 
 			var validator = this.inputs.form.validate();
 			validator.element('#' + this.inputs.code.attr('id'));
+			this.inputs.whseid.change();
 			return true;
 		}
 		this.inputs.form.attr('data-code', '');

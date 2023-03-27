@@ -37,11 +37,17 @@ class Menu extends AbstractMenuController {
 			'title'      => 'Mnfr / Competitor Item X-Ref',
 			'summary'    => 'View / Edit Manufacturer / Competitor X-Ref'
 		],
+		'ptm' => [
+			'name'		 => 'ptm',
+			'permission' => Ptm::DPLUSPERMISSION,
+			'title' 	 => Ptm::TITLE,
+			'summary'	 => Ptm::SUMMARY
+		],
 		'vtm' => [
-			'name'       => 'vtm',
+			'name'		 => 'vtm',
 			'permission' => Vtm::DPLUSPERMISSION,
-			'title'      => Vtm::TITLE,
-			'summary'    => Vtm::SUMMARY
+			'title' 	 => Vtm::TITLE,
+			'summary'	 => Vtm::SUMMARY
 		],
 		'vxm' => [
 			'name'       => 'vxm',
@@ -78,6 +84,10 @@ class Menu extends AbstractMenuController {
 
 	public static function mxrfeUrl() {
 		return self::subfunctionUrl('mxrfe');
+	}
+
+	public static function ptmUrl() {
+		return self::subfunctionUrl('ptm');
 	}
 
 	public static function vtmUrl() {

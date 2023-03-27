@@ -1,0 +1,24 @@
+{% set value = code.std_disc_percent(x) %}
+
+{% set readonly = code.std_order_percent(x) == 0 ? true : false %}
+
+{% set tabindex = startindex + (x * 10) + 1 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'std_disc_percent' ~ x,
+		'type': 'number',
+		'value':value != 0 ? value|number_format(manager.fieldAttribute('std_disc_percent', 'precision')) : '',
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'std_disc_percent'
+		],
+		'attributes': {
+			'tabindex': tabindex,
+			'readonly': readonly,
+			'max': manager.fieldAttribute('std_disc_percent', 'max')
+		}
+	}
+} %}

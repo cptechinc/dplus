@@ -3,6 +3,8 @@
 use NotePredefinedQuery, NotePredefined;
 // ProcessWire
 use ProcessWire\WireInput;
+// Dplus
+use Dplus\RecordLocker\UserFunction as Locker;
 
 class Noce extends Qnotes {
 	const MODEL                = 'NotePredefined';
@@ -12,9 +14,44 @@ class Noce extends Qnotes {
 	const TYPE                 = 'NOCE';
 
 	const FIELD_ATTRIBUTES = [
-		'code' => ['type' => 'text', 'maxlength' => NotePredefined::MAX_LENGTH_CODE],
-		'note' => ['type' => 'text', 'cols' => 50],
+		'code' => ['type' => 'text', 'label' => 'Code', 'maxlength' => NotePredefined::MAX_LENGTH_CODE],
+		'note' => ['type' => 'text', 'label' => 'Note', 'cols' => 50],
 	];
+
+	const FILTERABLE_FIELDS = ['code', 'note'];
+
+	public function __construct() {
+		parent::__construct();
+		$this->recordlocker = new Locker();
+		$this->recordlocker->setFunction(strtolower(self::TYPE));
+		$this->recordlocker->setUser($this->wire('user'));
+	}
+
+	/**
+	 * Return List of filterable fields
+	 * @return array
+	 */
+	public function filterableFields() {
+		return static::FILTERABLE_FIELDS;
+	}
+
+	/**
+	 * Return Label for field
+	 * @param  string $field
+	 * @return string
+	 */
+	public function fieldLabel($field) {
+		$label = $this->fieldAttribute($field, 'label');
+
+		if ($label !== false) {
+			return $label;
+		}
+
+		if (in_array($field, ['code', 'note'])) {
+			return self::FIELD_ATTRIBUTES[$field]['label'];
+		}
+		return $field;
+	}
 
 /* =============================================================
 	CRUD Read, Validate Functions
@@ -53,6 +90,22 @@ class Noce extends Qnotes {
 		$q->filterById($id);
 		$q->filterBySequence($line);
 		return $q->findOne();
+	}
+
+	/**
+	 * Return JSON for Note
+	 * @param  NotePredefined Note
+	 * @return array
+	 */
+	public function json(NotePredefined $note) {
+		$noteLines = $this->getNotesArray($note->code);
+
+		$json = [
+			'code'  => $note->code,
+			'note'  => implode("\n", $noteLines),
+			'lines' => $noteLines,
+		];
+		return $json;
 	}
 
 /* =============================================================

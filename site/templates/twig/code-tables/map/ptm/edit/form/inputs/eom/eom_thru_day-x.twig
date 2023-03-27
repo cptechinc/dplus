@@ -1,0 +1,27 @@
+{% set value = code.eom_thru_day(x) %}
+
+{% set readonly = value == 0 %}
+{% set readonly = x == constant('NBR_SPLITS_METHOD_EOM', manager) ? true : readonly %}
+
+{% set tabindex = startindex + (x * 10) + 1 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'eom_thru_day' ~ x,
+		'type': 'number',
+		'value': value ? value : '',
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'eom_thru_day'
+		],
+		'attributes': {
+			'tabindex': tabindex,
+			'readonly': readonly,
+			'min': x == 1,
+			'max': manager.fieldAttribute('eom_thru_day', 'max'),
+			'required': x == 1,
+		}
+	}
+} %}

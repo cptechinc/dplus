@@ -9,6 +9,7 @@ class Map extends Base {
 		'aoptm'  => ['', Ap\Apmain\Menu::class, 'aoptmUrl'],
 		'bum'    => ['', Ap\Apmain\Menu::class, 'bumUrl'],
 		'mxrfe'  => ['', Ap\Apmain\Menu::class, 'mxrfeUrl'],
+		'ptm'    => ['', Ap\Apmain\Menu::class, 'ptmUrl'],
 		'vtm'    => ['', Ap\Apmain\Menu::class, 'vtmUrl'],
 		'vxm'    => ['', Ap\Apmain\Menu::class, 'vxmUrl'],
 	];

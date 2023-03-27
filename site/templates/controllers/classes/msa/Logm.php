@@ -15,6 +15,8 @@ use Dplus\Msa\Logm as LogmManager;
 class Logm extends Base {
 	const DPLUSPERMISSION = 'logm';
 	const SHOWONPAGE = 10;
+	const TITLE   = 'Login ID Entry';
+	const SUMMARY = 'View / Edit Logins';
 
 	private static $logm;
 
@@ -78,7 +80,7 @@ class Logm extends Base {
 		$page->headline = "LOGM: $data->id";
 
 		if ($logm->exists($data->id) === false) {
-			$page->headline = "LOGM: Creating New User";
+			$page->headline = "LOGM: New User";
 		}
 		$user = $logm->getOrCreate($data->id);
 
@@ -149,18 +151,17 @@ class Logm extends Base {
 		$logm   = self::getLogm();
 
 		$html  = '';
-		// $html .= $config->twig->render('code-tables/msa/logm/bread-crumbs.twig');
+		$html .= $config->twig->render('msa/logm/bread-crumbs.twig');
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('msa/logm/list.twig', ['logm' => $logm, 'users' => $users]);
+		$html .= $config->twig->render('msa/logm/list/display.twig', ['logm' => $logm, 'users' => $users]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $users]);
-		$html .= $config->twig->render('code-tables/edit-modal.twig', ['manager' => $logm]);
 		return $html;
 	}
 
 	public static function displayResponse($data) {
 		$logm = self::getLogm();
 		$response = $logm->getResponse();
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
@@ -180,10 +181,10 @@ class Logm extends Base {
 		$config = self::pw('config');
 		$logm   = self::getLogm();
 
-		$html  = '';
+		$html  = $config->twig->render('msa/logm/bread-crumbs.twig');
 		$html .= '<div class="mb-3">' . self::displayLock($data) . '</div>';
 		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('msa/logm/user.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= $config->twig->render('msa/logm/user/display.twig', ['logm' => $logm, 'duser' => $user]);
 		$html .= $config->twig->render('msa/logm/user/password/modal/pswd.twig', ['logm' => $logm, 'duser' => $user]);
 		$html .= $config->twig->render('msa/logm/user/password/modal/pswd-web.twig', ['logm' => $logm, 'duser' => $user]);
 		return $html;
@@ -216,6 +217,10 @@ class Logm extends Base {
 		});
 
 		$m->addHook('Page(pw_template=msa)::userDeleteUrl', function($event) {
+			$event->return = self::userDeleteUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=msa)::codeDeleteUrl', function($event) {
 			$event->return = self::userDeleteUrl($event->arguments(0));
 		});
 

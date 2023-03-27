@@ -247,7 +247,8 @@ class Sysop extends Base {
 		if ($this->systemExists($system) === false) {
 			$this->setResponse(Response::responseError("System $system not found"));
 			return false;
-		}
+		}	
+
 		$code = $this->getOrCreate($values->text('system'), $values->string('code'));
 
 		if ($this->lockrecord($code) === false) {
@@ -279,9 +280,9 @@ class Sysop extends Base {
 		$code->setAdvsearch($values->yn('advsearch'));
 		$code->setWebvalidate($values->yn('webvalidate'));
 		$code->setWebforce($values->yn('webforce'));
-		$code->setDocfolder($values->yn('docfolder'));
+		$code->setDocfolder($values->text('docfolder'));
 		$code->setSequence($values->int('sequence', ['max' => $this->fieldAttribute('sequence', 'max')]));
-		$code->setFieldtype($values->yn('fieldtype'));
+		$code->setFieldtype($values->text('fieldtype'));
 
 		if ($code->isNumeric()) {
 			$code->setBeforedecimal($values->int('beforedecimal', ['max' => $this->fieldAttribute('beforedecimal', 'max')]));

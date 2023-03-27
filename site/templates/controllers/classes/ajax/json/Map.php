@@ -291,6 +291,16 @@ class Map extends AbstractJsonController {
 		return $response;
 	}
 
+	public static function validatePtmCode($data) {
+		$table = Codes\Map\Ptm::getInstance();
+		return self::validateCodeTableCode($data, $table);
+	}
+
+	public static function getPtmCode($data) {
+		$table = Codes\Map\Ptm::getInstance();
+		return self::getCodeTableCode($data, $table);
+	}
+
 	public static function validateVtmCode($data) {
 		$table = Codes\Map\Vtm::getInstance();
 		return self::validateCodeTableCode($data, $table);

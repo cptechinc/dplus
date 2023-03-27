@@ -51,5 +51,9 @@
 	if ($config->ajax) {
 		echo $page->body;
 	} else {
-		include __DIR__ . "/basic-page.php";
+		if ($input->get->offsetExists('print')) {
+			include __DIR__ . "/blank-page.php";
+		} else {
+			include __DIR__ . "/basic-page.php";
+		}
 	}

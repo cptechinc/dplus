@@ -87,7 +87,7 @@
 
 <div class="list-group codes-list mb-3">
 	{% block header_div %}
-		<div class="list-group-item bg-dark text-white">
+		<div class="list-group-item bg-dark text-white px-2">
 			{% block list_header_row %}
 				<div class="row align-items-center">
 					<div class="col-3 col-sm-3">
@@ -110,7 +110,7 @@
 	{% for code in codes %}
 		{% block code_div %}
 			{# data-code attribuisLockedByUserte and class code is for the highlight on close #}
-			<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key is same as(code.code) and response.hasSuccess()) ? 'bg-success text-white' : ''}}">
+			<div id="code-{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code px-2 pb-1 pt-1 {{ (response.key is same as(code.code) and response.hasSuccess()) ? 'bg-success text-white' : ''}}">
 				{% block code_row %}
 					<div class="row align-items-center">
 						<div class="col-3 col-sm-3 ">

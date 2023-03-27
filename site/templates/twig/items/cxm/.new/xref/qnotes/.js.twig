@@ -16,19 +16,57 @@ $(function() {
 
 	qnotesModal.on('shown.bs.modal', function (e) {
 		var modal = $(this);
+		var form  = modal.find('form');
 		modal.find('textarea[name=note]').focus();
+		form.attr('data-serialized', form.serialize());
 	});
 
-	$("#order-notes-form").validate({
+	qnotesModal.on('hide.bs.modal', function (e) {
+		var modal = $(this);
+		var form  = modal.find('form');
+		var original = form.attr('data-serialized');
+		
+		if (form.serialize() != original) {
+			alert.unsavedChanges(function(save) {
+				if (save) {
+					form.find('button[value="update-notes"]').click();
+					return true;
+				}
+			});
+		}
+	});
+
+	$("#qnotes-form").validate({
 		errorClass: "is-invalid",
-		validClass: "is-valid",
+		validClass: "",
 		ignore: ".validate-ignore",
 		errorPlacement: function(error, element) {
-			error.insertAfter(element).addClass('invalid-feedback');
+			error.addClass('invalid-feedback');
+
+			if (element.closest('.input-parent').length == 0 && element.closest('.input-group-parent').length == 0) {
+				error.insertAfter(element);
+				return true;
+			}
+			error.appendTo(element.closest('.input-parent'));
 		},
 		rules: {
 			note: {
 				required: true,
+			},
+			quote: {
+				require_from_group: [1, ".order-form"]
+			},
+			pick: {
+				require_from_group: [1, ".order-form"]
+			},
+			pack: {
+				require_from_group: [1, ".order-form"]
+			},
+			invoice: {
+				require_from_group: [1, ".order-form"]
+			},
+			acknowledgement: {
+				require_from_group: [1, ".order-form"]
 			},
 		},
 		messages: {
@@ -44,16 +82,8 @@ $(function() {
 			}
 
 			if (action == 'delete-notes') {
-				
-				alert.delete(function(confirmDelete) {
-					if (confirmDelete) {
-						$('<input type="hidden" name="action" value="delete-notes">').appendTo(jform);
-						form.submit();
-					}
-					if (modal.length) {
-						modal.attr('tabindex', '-1');
-					}
-				});
+				// $('<input type="hidden" name="action" value="delete-notes">').appendTo(jform);
+				form.submit();
 			} else {
 				if (qnotesForm.hasDocumentSelected()) {
 					console.log(qnotesForm.getNoteFormscode());
@@ -94,7 +124,7 @@ $(function() {
 		} else {
 			modal.find('input.order-form').each(function(index) {
 				var input = $(this);
-				input.prop('checked', qnotesForm.config.fields[input.attr('name')] == 'Y');
+				input.prop('checked', qnotesForm.config.fields[input.attr('name')].default == 'Y');
 			});
 			modal.find('textarea[name=note]').val('');
 		}

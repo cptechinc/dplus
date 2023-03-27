@@ -33,7 +33,7 @@ class Lsm extends AbstractCodeTableEditableSingleKey {
 
 	protected static $instance;
 
-	private $fieldAttributes;
+	protected $fieldAttributes;
 
 	/**
 	 * Return Array ready for JSON

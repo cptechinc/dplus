@@ -1,0 +1,30 @@
+
+{% set value = code.std_due_day(x)%}
+{# 1. If Order Percent = 0 #}
+{% set readonly = code.std_order_percent(x) == 0 ? true : false %}
+{# 2. If Due Days > 0 #}
+{% set readonly = code.std_due_days(x) > 0 ? true : readonly %}
+{# 3. If Due Date  #}
+{% set readonly = code.std_due_date(x) > 0 ? true : readonly %}
+
+{% set tabindex = startindex + (x * 10) + 6 %}
+{% set tabindex = readonly ? '-' ~ tabindex : tabindex %}
+
+
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'std_due_day' ~ x,
+		'type': 'number',
+		'value': value != 0 ? value : '',
+		'size': 'sm', 
+		'addclasses': [
+			'text-right',
+			'std_due_day',
+		],
+		'attributes': {
+			'tabindex': tabindex,
+			'readonly': readonly,
+			'max': manager.fieldAttribute('std_due_day', 'max')
+		}
+	}
+} %}

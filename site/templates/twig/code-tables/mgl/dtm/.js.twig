@@ -137,9 +137,17 @@ $(function() {
 
 	$(".glcode").each(function () {
 		var input = $(this);
+		
 		input.rules('add', {
 			required: false,
 			glAccountAlreadyUsed: true,
+			normalizer: function(value) {
+				if (value.trim() == '') {
+					input.val('');
+					return '';
+				}
+				return value;
+			},
 			remote: {
 				url: '{{ page.jsonApiUrl('mgl/validate/gl-code/') }}',
 				type: "get",

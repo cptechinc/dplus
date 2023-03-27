@@ -111,6 +111,9 @@
 				'vendor' => [
 					['GET', 'shipfromid/', Json\Map::class, 'validateVendorShipfromid'],
 				],
+				'ptm' => [
+					['GET', 'code/', Json\Map::class, 'validatePtmCode'],
+				],
 				'vtm' => [
 					['GET', 'code/', Json\Map::class, 'validateVtmCode'],
 				],
@@ -128,6 +131,9 @@
 					['GET', 'new/', Json\Map::class, 'validateMxrfeNew'],
 				]
 				
+			],
+			'ptm' => [
+				['GET', 'code/', Json\Map::class, 'getPtmCode'],
 			],
 			'vtm' => [
 				['GET', 'code/', Json\Map::class, 'getVtmCode'],

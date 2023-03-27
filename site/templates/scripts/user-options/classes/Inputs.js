@@ -9,7 +9,7 @@ class UserOptionsInputs {
 	}
 
 	constructor() {
-		this.id   = 'code-form';
+		this.id   = 'user-form';
 		this.form = $('#' + this.id);
 		this.fields = {};
 
@@ -19,5 +19,7 @@ class UserOptionsInputs {
 		useroptions.fields.forEach(function(fieldname) {
 			inputs.fields[fieldname] = form.find('[name=' + fieldname + ']');
 		});
+
+		inputs.fields.userid = form.find('input[name=userID]');
 	}
 }

@@ -19,7 +19,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 	const DPLUSPERMISSION = 'msa';
 	const TITLE 		  = '';
 	const SUMMARY		  = '';
-	const SHOWONPAGE      = 10;
+	const SHOWONPAGE	  = 10;
 	const USE_EDIT_MODAL  = true;
 	const USE_EDIT_PAGE   = false;
 
@@ -153,10 +153,7 @@ abstract class AbstractCodeTableController extends AbstractController {
 		$codeTable = static::getCodeTable();
 		$response = $codeTable->getResponse();
 
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if (empty($response) ||$response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

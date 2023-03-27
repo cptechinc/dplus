@@ -27,6 +27,7 @@ abstract class AbstractUserOptionsController extends AbstractController {
 	const SUMMARY		  = '';
 	const SHOWONPAGE	  = 10;
 	const BASE_MENU_CODE  = '';
+	const SHORT_TITLE     = '';
 
 /* =============================================================
 	1. Indexes
@@ -34,7 +35,7 @@ abstract class AbstractUserOptionsController extends AbstractController {
 	public static function index(WireData $data) {
 		$fields = ['userID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		self::pw('page')->headline = static::TITLE;
+		self::pw('page')->headline = static::SHORT_TITLE;
 
 		if (self::validateUserPermission() === false) {
 			return self::renderUserNotPermittedAlert();
@@ -70,8 +71,9 @@ abstract class AbstractUserOptionsController extends AbstractController {
 		$table = static::getManager();
 		$user  = $table->userOrNew($data->userID);
 
+		self::pw('page')->headline = static::SHORT_TITLE . ' Edit';
+
 		if ($user->isNew() === false) {
-			self::pw('page')->headline = "Editing $user->userid";
 			$table->lockrecord($user);
 		}
 		self::initHooks();
@@ -138,16 +140,14 @@ abstract class AbstractUserOptionsController extends AbstractController {
 	abstract public static function _url();
 
 	public static function userFocusUrl($focus) {
-		$table = static::getManager();
 		$filter = static::getUserFilter();
-		$filter->query->filterByUserid($table->userIDs());
+		$filter->userid(static::getManager()->userids());
 
 		if ($filter->exists($focus) === false) {
 			return static::url();
 		}
 		$position = $filter->positionQuick($focus);
-		$pagenbr = self::getPagenbrFromOffset($position, static::SHOWONPAGE);
-
+		$pagenbr  = self::getPagenbrFromOffset($position, static::SHOWONPAGE);
 		$url = new Purl(static::_url());
 		$url->query->set('focus', $focus);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, strtolower(static::getClassName()), $pagenbr);
@@ -215,10 +215,7 @@ abstract class AbstractUserOptionsController extends AbstractController {
 		$table = static::getManager();
 		$response = $table->getResponse();
 
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('codes/response.twig', ['response' => $response]);

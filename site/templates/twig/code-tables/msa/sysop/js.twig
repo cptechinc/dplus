@@ -81,7 +81,7 @@ $(function() {
 ============================================================= */
 	origForm = form.serialize();
 
-	$("body").on("click", "a:not(#code-edit-form .form_button, #ajax-modal a, .swal2-modal a)", function(e) {
+	$("body").on("click", "a:not(#code-form .form_button, #ajax-modal a, .swal2-modal a, #code-form .delete_button)", function(e) {
 		if (form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);

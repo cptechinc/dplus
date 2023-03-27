@@ -23,8 +23,8 @@ class Vio extends AbstractManager {
 	const DPLUS_TABLE           = 'VIO';
 	const FIELD_ATTRIBUTES = [
 		'userid'          => ['type' => 'text', 'maxlength' => 6],
-		'payments'        => ['default' => 'Y', 'label' => 'Payments'],
 		'contacts'        => ['default' => 'Y', 'label' => 'Contacts'],
+		'payments'        => ['default' => 'Y', 'label' => 'Payments'],
 		'costing'         => ['default' => 'Y', 'label' => 'Costing'],
 		'purchaseorders'  => ['default' => 'Y', 'label' => 'Purchase Orders'],
 		'openinvoices'    => ['default' => 'Y', 'label' => 'Open Invoices'],

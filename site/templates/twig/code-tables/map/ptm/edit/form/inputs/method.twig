@@ -1,0 +1,13 @@
+{% include 'util/bootstrap/form/select-simple.twig' with {
+	'select': {
+		'name': 'method',
+		'value' : code.method,
+		'size': 'sm',
+		'haskeys': true,
+		'options': manager.fieldAttribute('method', 'options'),
+		'showvalue': true,
+		'attributes': {
+			'tabindex': tabindex,
+		}
+	}
+} %}

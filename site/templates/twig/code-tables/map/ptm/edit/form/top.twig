@@ -1,0 +1,48 @@
+<div class="row">
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-3">
+				<label for="code">Code</label>
+			</div>
+			<div class="col-sm-6 input-parent">
+				<div class="col-sm-4 px-0">
+					{% include 'code-tables/mar/trm/edit/form/inputs/code.twig' with {tabindex: 1} %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-3">
+				<label for="description">Description</label>
+			</div>
+			<div class="col-sm-7">
+				{% include 'code-tables/mar/trm/edit/form/inputs/description.twig' with {tabindex: 2} %}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-3">
+				<label for="method">Method</label>
+			</div>
+			<div class="col-sm-4">
+				{% include 'code-tables/mar/trm/edit/form/inputs/method.twig' with {tabindex: 3} %}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="row mb-3">
+			<div class="col-sm-3">
+				<label for="expiredate">Expire Date</label>
+			</div>
+			<div class="col-sm-4">
+				{% include 'code-tables/mar/trm/edit/form/inputs/expiredate.twig' with {tabindex: 9} %}
+			</div>
+		</div>
+	</div>
+</div>

@@ -143,7 +143,7 @@ class Addm extends AbstractController {
 	public static function displayResponse() {
 		$response = self::getAddm()->getResponse();
 
-		if (empty($response)) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('items/itm/response-alert-new.twig', ['response' => $response]);

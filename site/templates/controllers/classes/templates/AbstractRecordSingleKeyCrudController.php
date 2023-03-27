@@ -136,10 +136,7 @@ abstract class AbstractRecordSingleKeyController extends AbstractController {
 		$recordTable = static::getRecordTable();
 		$response = $recordTable->getResponse();
 
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);

@@ -14,6 +14,7 @@ use Dplus\Configs;
 use Dplus\Codes;
 use Dplus\Codes\AbstractCodeTableEditableSingleKey;
 use Dplus\Codes\Response;
+use ProcessWire\WireInputData;
 
 /**
  * Class that handles the CRUD of the RGASC code table
@@ -77,11 +78,25 @@ class Rgasc extends AbstractCodeTableEditableSingleKey {
 		$invalidfields = parent::_inputUpdate($input, $code);
 		$iwhm = Codes\Min\Iwhm::getInstance();
 
+		$this->_inputUpdateRgascFields($values, $code);
+
 		if ($iwhm->exists($values->string('whseid')) === false) {
 			$invalidfields['whseid'] = "Warehouse ID";
 			return $invalidfields;
 		}
 		$code->setWhseid($values->string('whseid'));
 		return $invalidfields;
+	}
+
+	/**
+	 * Update Rgasc Record Specific fields
+	 * @param  WireInputData  $values
+	 * @param  SoRgaCode      $code
+	 * @return void
+	 */
+	private function _inputUpdateRgascFields(WireInputData $values, Code $code) {
+		$acctnbr = $values->string('acctnbr');
+		$acctnbr = substr($acctnbr, 0, $this->fieldAttribute('acctnbr', 'maxlength'));
+		$code->setAcctnbr($acctnbr);
 	}
 }

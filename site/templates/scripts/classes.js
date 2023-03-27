@@ -122,7 +122,6 @@ class Alerts {
 			showCancelButton: true,
 			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
 			cancelButtonText: 'No',
-			returnFocus: false,
 		}).then((result) => {
 			if (result.value) {
 				callback(true);

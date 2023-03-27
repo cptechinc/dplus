@@ -181,10 +181,14 @@ class Icxm extends Qnotes {
 	 * @param  string $custID  Cust ID
 	 * @return bool
 	 */
-	public function deleteNotes($itemID, $custID) {
+	public function deleteNotes($itemID, $custID, $form = '') {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		$q->filterByCustid($custID);
+
+		if ($form) {
+			$q->filterByForm($form);
+		}
 
 		if ($q->count() === 0) {
 			return true;
@@ -205,7 +209,14 @@ class Icxm extends Qnotes {
 		$values = $input->$rm;
 		$itemID = $values->string('itemID');
 		$custID = $values->string('custID');
-		$this->deleteNotes($itemID, $custID);
+		$note = $this->new($itemID, $custID);
+		$note->setQuote($values->yn('quote'));
+		$note->setPick($values->yn('pick'));
+		$note->setPack($values->yn('pack'));
+		$note->setInvoice($values->yn('invoice'));
+		$note->setAcknowledgement($values->yn('acknowledgement'));
+		$note->generateForm(); // PK
+		$this->deleteNotes($itemID, $custID, $note->form);
 
 		$noteLines = $this->explodeNoteLines($values->textarea('note'), $this->fieldAttribute('note', 'cols'));
 		$savedLines = [];
@@ -219,6 +230,7 @@ class Icxm extends Qnotes {
 			$note->setInvoice($values->yn('invoice'));
 			$note->setAcknowledgement($values->yn('acknowledgement'));
 			$note->generateKey2(); // PK
+			$note->generateForm(); // PK
 			$note->setSequence($sequence); // PK
 			$note->setNote($line);
 			$note->setDate(date('Ymd'));
@@ -277,6 +289,12 @@ class Icxm extends Qnotes {
 		$custID = $values->string('custID');
 
 		$note = $this->new($itemID, $custID);
+		$note->setQuote($values->yn('quote'));
+		$note->setPick($values->yn('pick'));
+		$note->setPack($values->yn('pack'));
+		$note->setInvoice($values->yn('invoice'));
+		$note->setAcknowledgement($values->yn('acknowledgement'));
+		$note->generateForm(); // PK
 		$response = $this->deleteAndRespond($note);
 
 		$this->setResponse($response);
@@ -289,7 +307,7 @@ class Icxm extends Qnotes {
 	 * @return Response
 	 */
 	protected function deleteAndRespond(ItemXrefCustomerNote $note) {
-		$success = $this->deleteNotes($note->itemid, $note->custid);
+		$success = $this->deleteNotes($note->itemid, $note->custid, $note->form);
 
 		$response = new Response();
 		$response->setKey("$note->itemid|$note->custid");

@@ -1,0 +1,40 @@
+<table class="table table-sm code-list">
+	<thead>
+		<tr>
+			<th colspan="3">
+				<div class="w-100 d-flex justify-content-between">
+					<div>{{ 'now'|date('m/d/Y h:i A') }}</div>
+					<div>{{ page.headline }}</div>
+					<div></div>
+				</div>
+			</th>
+		</tr>
+		<tr class="bg-dark text-white column-headers">
+			<th>Code</th>
+			<th>Note</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for note in notes %}
+			<tr class="first-txn-row">
+				<td>{{ note.id }}</td>
+				<td>
+					{% set notelines = qnotes.getNotesArray(note.id) %}
+					{% include 'util/bootstrap/form/textarea.twig' with {
+						'textarea': {
+							'value': notelines|join('\r'),
+							'inputclass': 'form-control-plaintext',
+							'addclasses': ['qnotes', 'readonly'],
+							'attributes': {
+								'cols': qnote.fieldAttribute('note', 'cols'),
+								'rows': notelines|length,
+								'readonly': true,
+								'disabled': true,
+							}
+						}
+					} %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

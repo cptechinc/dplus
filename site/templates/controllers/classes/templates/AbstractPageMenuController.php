@@ -35,7 +35,7 @@ abstract class AbstractPageMenuController extends AbstractController {
 	protected static function menu(WireData $data) {
 		$permission_list = implode("|", self::pw('user')->get_functions());
 		$page = self::pw('page');
-		$page->pagetitle = "Menu: $page->title";
+		// $page->pagetitle = "Menu: $page->title";
 		$items = $page->children("template!=redir|dplus-json, dplus_function=$permission_list");
 
 		return static::renderMenu($data, $items);

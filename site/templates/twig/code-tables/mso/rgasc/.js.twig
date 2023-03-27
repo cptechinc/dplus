@@ -14,6 +14,56 @@ $(function() {
 	{% include 'code-tables/js/events/input-code-change.js.twig' %}
 	{% include 'code-tables/js/events/input-code-force-focus.js.twig' %}
 
+	$("body").on("change", "#code-form input[name=whseid]", function(e) {
+		let input = $(this);
+		input.val(input.val().trim());
+		let descriptionField = input.closest('.input-parent').find('.name');
+
+		descriptionField.text('');
+
+		if (input.val() != '') {
+			server.getWarehouse(input.val(), function(warehouse) {
+				if (warehouse) {
+					descriptionField.text(warehouse.name);
+					return false;
+				}
+				input.focus();
+			});
+		}
+	});
+
+	$("body").on("focusout", "#code-form input", function(e) {
+		let input = $(this);
+
+		if (input.hasClass('is-invalid')) {
+			if (input.closest('form').validate().element('#' + input.attr('id')) === false) {
+				input.focus();
+			}
+		}
+	});
+
+	$("body").on("focusin", "#code-form input", function(e) {
+		let input = $(this);
+
+		if (input.hasClass('is-invalid')) {
+			return true;
+		}
+
+		if (input.attr('tabindex') <= 2) {
+			return true;
+		}
+
+		let tabindex = input.attr('tabindex');
+
+		let prevInput = input.closest('form').find('input[tabindex=' + (tabindex - 1) + ']');
+ 
+		let validator = input.closest('form').validate();
+
+		if (validator.element('#' + prevInput.attr('id')) === false) {
+			prevInput.focus();
+		}
+	});
+
 /* =============================================================
 	Lookup Modal Functions
 	ajax modal events is handled by scripts/code-tables/ajax-modal.js
@@ -34,6 +84,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	var validator = formCode.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {

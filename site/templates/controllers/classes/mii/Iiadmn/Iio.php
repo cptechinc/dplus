@@ -14,6 +14,7 @@ class Iio extends AbstractUserOptionsController {
 	const SUMMARY		  = 'View / Edit User Access in II';
 	const SHOWONPAGE	  = 10;
 	const BASE_MENU_CODE  = 'mii';
+	const SHORT_TITLE     = 'II Options';
 
 /* =============================================================
 	4. URLs

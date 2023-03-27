@@ -74,9 +74,7 @@ abstract class CodeFilter extends AbstractFilter {
 		if (is_object($code)) {
 			$code = $code->id;
 		}
-		$q = $this->getQueryClass();
-		$q->execute_query('SET @rownum = 0');
-		$table = $q->getTableMap()::TABLE_NAME;
+
 		$model = $this->modelName();
 		$col   = '';
 
@@ -87,10 +85,29 @@ abstract class CodeFilter extends AbstractFilter {
 		if ($model::aliasproperty_exists('id')) {
 			$col = $model::aliasproperty('id');
 		}
-		$sql = "SELECT x.position FROM (SELECT $col, @rownum := @rownum + 1 AS position FROM $table) x WHERE $col = :code";
+
+		$q = $this->getQueryClass();
+		$q->executeQuery('SET @rownum = 0');
+		$table = $this->getPositionSubSql($col);
+
+		$sql = "SELECT x.position FROM ($table) x WHERE $col = :code";
 		$params = [':code' => $code];
 		$stmt = $q->executeQuery($sql, $params);
 		return $stmt->fetchColumn();
+	}
+
+	/**
+	 * Return Sub Query for getting result set with custid and position
+	 * @return string
+	 */
+	private function getPositionSubSql($col) {
+		$table = $this->query->getTableMap()::TABLE_NAME;
+		$sql = "SELECT $col, @rownum := @rownum + 1 AS position FROM $table";
+		$whereClause = $this->getWhereClauseString();
+		if (empty($whereClause) === false) {
+			$sql .= ' WHERE ' . $whereClause;
+		}
+		return $sql;
 	}
 
 	public function searchWildcardId($q) {
@@ -109,6 +126,5 @@ abstract class CodeFilter extends AbstractFilter {
 			return false;
 		}
 		$qWildcard = $this->wildcardify($q, ['prepend' => true]);
-
 	}
 }

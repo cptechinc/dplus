@@ -121,11 +121,7 @@ class Msa extends Controller {
 			return false;
 		}
 		$note = $qnotes->noteLine($data->code);
-		$response = [
-			'code'  => $note->id,
-			'note'  => implode("\r", $qnotes->getNotesArray($data->code)),
-		];
-		return $response;
+		return $qnotes->json($note);
 	}
 
 	public static function validateSysop($data) {

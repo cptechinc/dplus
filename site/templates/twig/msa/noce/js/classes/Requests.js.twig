@@ -17,7 +17,7 @@ class NoceRequests {
 		});
 	}
 
-	getNotes(id, callback) {
+	getNote(id, callback) {
 		var ajax = new AjaxRequest('{{ page.jsonApiUrl('msa/noce/') }}');
 
 		ajax.setData({code: id});
@@ -28,5 +28,23 @@ class NoceRequests {
 
 	validateIdUrl() {
 		return '{{ page.jsonApiUrl('msa/validate/noce/') }}';
+	}
+
+	lockCode(code, callback) {
+		var ajax = new AjaxRequest(config.ajax.urls.locker.lock);
+
+		ajax.setData({function: 'noce', key: code});
+		ajax.request(function(isLocked) {
+			callback(isLocked)
+		});
+	}
+
+	unlockCode(code, callback) {
+		var ajax = new AjaxRequest(config.ajax.urls.locker.delete);
+
+		ajax.setData({function: 'noce', key: code});
+		ajax.request(function(deleted) {
+			callback(deleted)
+		});
 	}
 }

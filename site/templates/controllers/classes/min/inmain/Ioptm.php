@@ -41,14 +41,14 @@ class Ioptm extends AbstractController {
 		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page  = self::pw('page');
 		$sysop = self::getSysop()->code(self::SYSTEM, $data->sysop);
-		$page->headline = "IOPTM: $data->sysop Optional Codes";
+		$page->headline = "IN Optional Code: $data->sysop";
 
 		$filter = self::getFilterSysopOptions($data->sysop);
 		if (strlen($data->q) > 0) {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::pw('session')->display);
 		self::getIoptm()->recordlocker->deleteLock();
 
 		self::initHooks();
@@ -63,6 +63,7 @@ class Ioptm extends AbstractController {
 	private static function listSysops($data) {
 		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 		$page = self::pw('page');
+		$page->headline = "IN Optional Codes";
 		self::getSysop()->recordlocker->deleteLock();
 
 		$filter = self::getFilterSysop();
@@ -70,7 +71,7 @@ class Ioptm extends AbstractController {
 			$filter->search($data->q, self::pw('sanitizer')->array($data->col, ['delimiter' => ',']));
 		}
 		$filter->sortby($page);
-		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$codes = $filter->query->paginate(self::pw('input')->pageNum, self::pw('input')->get->offsetExists('print') ? 0 : self::pw('session')->display);
 
 		self::initHooks();
 		self::pw('page')->show_breadcrumbs = false;
@@ -131,10 +132,7 @@ class Ioptm extends AbstractController {
 	private static function displayResponse($data) {
 		$response = self::getIoptm()->getResponse();
 
-		if (empty($response)) {
-			return '';
-		}
-		if ($response->hasSuccess()) {
+		if (empty($response) || $response->hasSuccess()) {
 			return '';
 		}
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
