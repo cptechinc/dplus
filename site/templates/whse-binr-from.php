@@ -1,4 +1,11 @@
 <?php
+	use Controllers\Wm\Binr;
+	if (Binr::validateUserPermission() === false) {
+		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: binr"]);
+		include('./basic-page.php');
+		return false;
+	}
+
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
