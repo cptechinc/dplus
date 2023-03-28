@@ -20,9 +20,10 @@ class Menu extends Controller {
 
 		self::deleteRecordLocks();
 
-		$permission_list = implode("|", self::pw('user')->get_functions());
+		$permittedList = UserMenuPermissions::instance()->list();
+		$permitted = implode('|', array_merge($permittedList->getKeys(), ['']));
 		// $page->pagetitle = "Menu: $page->title";
-		$items = $page->children("template!=redir|dplus-json, dplus_function=$permission_list");
+		$items = $page->children("template!=redir|dplus-json, dplus_function=$permitted");
 		return self::listDisplay($data, $items);
 	}
 
