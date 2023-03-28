@@ -85,6 +85,7 @@ class Upcx extends AbstractController {
 		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
 		self::initHooks();
 		$html = self::displayUpc($data, $xref);
+		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
 	}
 
@@ -115,6 +116,7 @@ class Upcx extends AbstractController {
 		self::pw('page')->js .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
 		self::initHooks();
 		$html = self::displayList($data, $upcs);
+		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
 	}
 
