@@ -6,9 +6,15 @@
 	 * 
 	 */
 
+	  // Used for Hiding Functions / Menus
+	if ($config->has('ci') === false) {
+		$config->ci = new Config();
+		$config->ci->useRid = false;
+	}
+
 	 // Used for Hiding Functions / Menus
 	if ($config->has('hideFunctions') === false) {
 		$config->hideFunctions = new Config();
-		$config->hideFunctions->dev = ['map'];
-		$config->hideFunctions->cmp = ['mar'];
+		$config->hideFunctions->dev = ['sobook'];
+		$config->hideFunctions->cmp = [];
 	}
