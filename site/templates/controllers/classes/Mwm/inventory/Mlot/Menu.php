@@ -1,6 +1,10 @@
 <?php namespace Controllers\Mwm\Inventory\Mlot;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
+// ProcessWire
+use ProcessWire\User;
+// Dplus
+use Dplus\Session\UserMenuPermissions;
 // Mvc Controllers
 use Controllers\Mwm\Menu as WmMenu;
 
@@ -27,8 +31,8 @@ class Menu extends WmMenu {
 ============================================================= */
 	public static function index($data) {
 		self::sanitizeParametersShort($data, []);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+		if (static::validateUserPermission() === false) {
+			return self::notPermittedDisplay();
 		}
 		return self::menu($data);
 	}
@@ -90,5 +94,27 @@ class Menu extends WmMenu {
 		$m->addHook('Page(pw_template=whse-mlot)::menuUrl', function($event) {
 			$event->return = self::menuUrl();
 		});
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	public static function validateUserPermission(User $user = null) {
+		if (static::validateMenuPermissions($user) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
+	}
+
+	public static function validateMenuPermissions(User $user = null) {
+		$page   = self::pw('page');
+
+		foreach ($page->parents('template=dplus-menu|warehouse-menu') as $parent) {
+			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
+
+			if (empty($code) === false && UserMenuPermissions::instance()->canAccess($code) === false) {
+				return false;
+			}
+		}
 	}
 }

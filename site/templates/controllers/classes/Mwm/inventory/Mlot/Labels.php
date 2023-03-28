@@ -32,8 +32,8 @@ class Labels extends Base {
 ============================================================= */
 	public static function index($data) {
 		self::sanitizeParametersShort($data, ['q|text', 'lotserial|text', 'action|text']);
-		if (self::validateUserPermission() === false) {
-			return self::displayUserNotPermitted();
+		if (self::validateUserPermission() === false || Menu::validateUserPermission()) {
+			return static::renderUserNotPermittedAlert();
 		}
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);

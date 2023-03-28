@@ -17,6 +17,9 @@ class StockStatus extends Base {
 	public static function index($data) {
 		$fields = ['download|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 		self::pw('page')->headline = "Inventory Stock Report";
 		if ($data->download) {
 			return self::download($data);
@@ -75,12 +78,7 @@ class StockStatus extends Base {
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
-	public static function validateUserPermission(User $user = null) {
-		if (empty($user)) {
-			$user = self::pw('user');
-		}
-		return $user->has_function(self::DPLUSPERMISSION);
-	}
+	
 
 /* =============================================================
 	Init

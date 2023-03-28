@@ -20,6 +20,9 @@ class FindItem extends Base {
 	public static function index(WireData $data) {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 		self::pw('page')->headline = "Find Item";
 
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/warehouse/find-item.js'));

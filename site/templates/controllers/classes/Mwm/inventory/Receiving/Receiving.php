@@ -43,6 +43,10 @@ class Receiving extends Base {
 		$fields = ['scan|text', 'action|text', 'ponbr|int'];
 		self::sanitizeParametersShort($data, $fields);
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
@@ -486,6 +490,9 @@ class Receiving extends Base {
 	static public function createPo($data) {
 		$fields = ['action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -499,13 +506,6 @@ class Receiving extends Base {
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
-	static public function validateUserPermission(User $user = null) {
-		if (empty($user)) {
-			$user = self::pw('user');
-		}
-		return $user->has_function(self::DPLUSPERMISSION);
-	}
-
 	static public function getReceiving($ponbr = '') {
 		self::pw('modules')->get('WarehouseManagement');
 

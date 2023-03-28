@@ -1,22 +1,19 @@
 <?php namespace Controllers\Wm;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
 // Dplus Model
 use WarehouseQuery, Warehouse;
 // Dpluso Model
-use BininfoQuery, Bininfo;
 use WhsesessionQuery, Whsesession;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, ProcessWire\User;
+use ProcessWire\Module, ProcessWire\User;
 use Processwire\SearchInventory, Processwire\WarehouseManagement;
 // Dplus Classes
-use Dplus\Wm\Binr as BinrCRUD;
+use Dplus\Session\UserMenuPermissions;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
+use Controllers\AbstractController;
 
-class Base extends Controller {
+class Base extends AbstractController {
 	/** @var SearchInventory **/
 	static private $inventory;
 
@@ -89,24 +86,26 @@ class Base extends Controller {
 /* =============================================================
 	Displays
 ============================================================= */
-	protected static function displayUserNotPermitted() {
-		if (self::validateUserPermission()) {
-			return true;
-		}
-		$perm = static::DPLUSPERMISSION;
-		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $perm"]);
-	}
 
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
 	public static function validateUserPermission(User $user = null) {
-		if (empty(static::DPLUSPERMISSION)) {
-			return true;
+		if (static::validateMenuPermissions($user) === false) {
+			return false;
 		}
-		if (empty($user)) {
-			$user = self::pw('user');
+		return parent::validateUserPermission($user);
+	}
+
+	public static function validateMenuPermissions(User $user = null) {
+		$page   = self::pw('page');
+
+		foreach ($page->parents('template=dplus-menu|warehouse-menu') as $parent) {
+			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
+
+			if (empty($code) === false && UserMenuPermissions::instance()->canAccess($code) === false) {
+				return false;
+			}
 		}
-		return $user->has_function(static::DPLUSPERMISSION);
 	}
 }

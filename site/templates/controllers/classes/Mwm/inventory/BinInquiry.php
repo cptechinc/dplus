@@ -21,6 +21,9 @@ class BinInquiry extends Base {
 	public static function index(WireData $data) {
 		$fields = ['binID|text'];
 		self::sanitizeParametersShort($data, $fields);
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 		self::pw('page')->headline = "Bin Inquiry";
 
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/warehouse/bin-inquiry.js'));
