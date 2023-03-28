@@ -1,6 +1,8 @@
 <?php namespace ProcessWire;
 
 require_once(__DIR__ . '/../DplusPwPages/DplusPwPages.module');
+// Dplus
+use Dplus\Session\UserMenuPermissions;
 
 /**
  * class Dpages
@@ -87,16 +89,15 @@ class Dpages extends DplusPwPages implements Module {
 	 * @return PageArray
 	 */
 	public function get_user_allowed_menus(User $user) {
-		$p = $this->wire('pages')->get('template=home');
+		$p = $this->pages->get('template=home');
+
+		$permittedList = UserMenuPermissions::instance()->list();
+		$permitted = implode('|', array_merge($permittedList->getKeys(), ['']));
 
 		if ($user->hasRole('whse') || $user->hasRole('whsemgr')) {
-			$dplus_functions = array_unique($p->children('template=dplus-menu|warehouse-menu|menu')->explode('dplus_function'));
-		} else {
-			$dplus_functions = array_unique($p->children('template=dplus-menu|menu')->explode('dplus_function'));
+			return $p->children("template=dplus-menu|warehouse-menu|menudplus_function=$permitted");
 		}
-
-		$filtered_functions = $user->filter_functions($dplus_functions);
-		return $p->children('template=dplus-menu|warehouse-menu|menu, dplus_function='.implode('|', $filtered_functions));
+		return $p->children("template=dplus-menu|menu,dplus_function=$permitted");
 	}
 
 	/**
