@@ -19,7 +19,7 @@ class Cxm extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -43,7 +43,7 @@ class Cxm extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'custID|string', 'custitemID|text', 'action|text'];
+		$fields = ['itemID|string', 'custID|string', 'custitemID|string', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 
 		$cxm = CxmController::getCxm();
@@ -95,7 +95,7 @@ class Cxm extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['itemID|text', 'q|text'];
+		$fields = ['itemID|string', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::initHooks();
 		$input   = self::pw('input');

@@ -15,7 +15,7 @@ class Bom extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		self::sanitizeParametersShort($data, ['itemID|text', 'component|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['itemID|string', 'component|string', 'action|text']);
 
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
@@ -37,7 +37,7 @@ class Bom extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		self::sanitizeParametersShort($data, ['bomID|text', 'itemID|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['bomID|text', 'itemID|string', 'action|text']);
 
 		if (empty($data->bomID)) {
 			self::setupInputBomid($data);
@@ -65,7 +65,7 @@ class Bom extends Base {
 	}
 
 	private static function bomComponent($data) {
-		$fields = ['itemID|text', 'component|text', 'action|text'];
+		$fields = ['itemID|string', 'component|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$bmm  = BmmParent::getBmm();

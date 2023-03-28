@@ -15,7 +15,7 @@ class Kim extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['itemID|string', 'action|text']);
 
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
@@ -39,7 +39,7 @@ class Kim extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['itemID|string', 'action|text']);
 		$kim = KimController::getKim();
 		$kim->init_configs();
 
@@ -57,7 +57,7 @@ class Kim extends Base {
 	}
 
 	private static function kitComponent($data) {
-		$fields = ['itemID|text', 'component|text', 'action|text'];
+		$fields = ['itemID|string', 'component|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$kim  = KimController::getKim();

@@ -30,7 +30,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateItemid($data) {
-		$fields = ['itemID|text', 'jqv|bool'];
+		$fields = ['itemID|string', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
@@ -41,7 +41,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function getItm($data) {
-		$fields = ['itemID|text'];
+		$fields = ['itemID|string'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
@@ -55,7 +55,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function getItemAvailable($data) {
-		self::sanitizeParametersShort($data, ['itemID|text']);
+		self::sanitizeParametersShort($data, ['itemID|string']);
 		$validate = self::validator();
 
 		if ($validate->itemid($data->itemID) === false) {
@@ -103,7 +103,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateItmpExists($data) {
-		$fields = ['loginID|text', 'jqv|bool', 'new|bool'];
+		$fields = ['loginID|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$itmp = self::pw('modules')->get('Itmp');
 
@@ -126,7 +126,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateUpc($data) {
-		$fields = ['upc|text', 'jqv|bool', 'new|bool'];
+		$fields = ['upc|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = new UpcxValidator();
 
@@ -145,7 +145,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateUpcXref($data) {
-		$fields = ['upc|text', 'itemID|text', 'jqv|bool', 'new|bool'];
+		$fields = ['upc|string', 'itemID|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = new UpcxValidator();
 
@@ -164,7 +164,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateUpcPrimary($data) {
-		$fields = ['upc|text', 'itemID|text', 'jqv|bool'];
+		$fields = ['upc|string', 'itemID|string', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new UpcxValidator();
 
@@ -190,7 +190,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function getPrimaryUpc($data) {
-		$fields = ['itemID|text'];
+		$fields = ['itemID|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$upcx = self::pw('modules')->get('XrefUpc');
 
@@ -205,7 +205,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateI2iExists($data) {
-		$fields = ['parentID|text', 'childID|text', 'jqv|bool'];
+		$fields = ['parentID|string', 'childID|string', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
@@ -224,7 +224,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateItmWhse($data) {
-		$fields = ['itemID|text', 'whseID|string', 'new|bool', 'jqv|bool'];
+		$fields = ['itemID|string', 'whseID|string', 'new|bool', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 		$exists = $validate->itmWhse($data->itemID, $data->whseID);
@@ -245,7 +245,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateItmSub($data) {
-		$fields = ['itemID|text', 'subitemID|text', 'jqv|bool', 'new|bool'];
+		$fields = ['itemID|string', 'subitemID|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$itmSub = new ItmSub();
 		$itmSub->init();
@@ -269,7 +269,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateItmShortitemid($data) {
-		$fields = ['itemID|text', 'shortitemID|text', 'jqv|bool', 'new|bool'];
+		$fields = ['itemID|string', 'shortitemID|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = new Validator\Mso\Cxm();
 		$exists = $validate->shortitemExists($data->shortitemID);
@@ -291,7 +291,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateItmShortitemidAvailable($data) {
-		$fields = ['itemID|text', 'shortitemID|text', 'jqv|bool'];
+		$fields = ['itemID|string', 'shortitemID|string', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = new Validators\Mso\Cxm();
 		$exists = $validate->shortitemExists($data->shortitemID);
@@ -308,7 +308,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function validateAddm($data) {
-		$fields = ['itemID|text', 'addonID|text', 'jqv|bool', 'new|bool'];
+		$fields = ['itemID|string', 'addonID|string', 'jqv|bool', 'new|bool'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
@@ -336,7 +336,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function getInvOptCodeNotes($data) {
-		$fields = ['itemID|text', 'type|text'];
+		$fields = ['itemID|string', 'type|string'];
 		self::sanitizeParametersShort($data, $fields);
 		$qnotes = ItmOptions\Qnotes::getInstance();
 		if ($qnotes->notesExist($data->itemID, $data->type) === false) {
@@ -346,7 +346,7 @@ class Min extends AbstractJsonController {
 	}
 
 	public static function getItmpUser($data) {
-		$fields = ['userID|text', 'code|line'];
+		$fields = ['userID|string', 'code|line'];
 		self::sanitizeParametersShort($data, $fields);
 
 		$manager = MinMaintenance\Itmp::instance();

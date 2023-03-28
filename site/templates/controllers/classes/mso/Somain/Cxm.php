@@ -22,7 +22,7 @@ class Cxm extends AbstractController {
 	private static $cxm;
 
 	public static function index($data) {
-		$fields = ['custID|string', 'custitemID|text', 'q|text', 'action|text'];
+		$fields = ['custID|string', 'custitemID|string', 'q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 		self::pw('page')->headline = 'Customer Item X-Ref';
@@ -45,7 +45,7 @@ class Cxm extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'custID|string', 'custitemID|text'];
+		$fields = ['action|text', 'custID|string', 'custitemID|string'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateUserPermission() === false) {
@@ -74,7 +74,7 @@ class Cxm extends AbstractController {
 	}
 
 	private static function xref($data) {
-		$fields = ['custID|string', 'custitemID|text', 'itemID|text', 'action|text'];
+		$fields = ['custID|string', 'custitemID|string', 'itemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);

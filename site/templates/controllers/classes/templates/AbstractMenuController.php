@@ -30,6 +30,7 @@ abstract class AbstractMenuController extends AbstractController {
 		if (static::validateUserPermission() === false) {
 			return static::renderUserNotPermittedAlert();
 		}
+		self::pw('page')->headline = static::TITLE;
 		self::pw('page')->show_breadcrumbs = false;
 		static::initHooks();
 		return static::menu($data);

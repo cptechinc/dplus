@@ -247,7 +247,7 @@ class Itm extends WireData implements Module {
 				$this->inputUpdate($input);
 				break;
 			default:
-				$itemID = $values->text('itemID');
+				$itemID = $values->string('itemID');
 				$message = self::DESCRIPTION_RECORD . " ($itemID) was not saved, no action was specified";
 				$response = ItmResponse::response_error($itemID, $message);
 				$this->wire('session')->setFor('response', 'itm', $response);
@@ -263,7 +263,7 @@ class Itm extends WireData implements Module {
 	private function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		if ($this->exists($itemID) === false) {
 			return true;
@@ -298,7 +298,7 @@ class Itm extends WireData implements Module {
 		$values = $input->$rm;
 		$configIn = $this->configIn();
 
-		$itemID = $configIn->useUppercaseItemid() ? strtoupper($values->text('itemID')) : $values->text('itemID');
+		$itemID = $configIn->useUppercaseItemid() ? strtoupper($values->string('itemID')) : $values->string('itemID');
 		$record = $this->getCreateItem($itemID);
 		$invalidfields = array();
 

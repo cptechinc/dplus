@@ -264,9 +264,9 @@ class XrefVxm extends WireData implements Module {
 	protected function input_delete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$vendorID = $values->text('vendorID');
-		$vendoritemID = $values->text('vendoritemID');
-		$itemID = $values->text('itemID');
+		$vendorID = $values->string('vendorID');
+		$vendoritemID = $values->string('vendoritemID');
+		$itemID = $values->string('itemID');
 
 		if ($this->xref_exists($vendorID, $vendoritemID, $itemID)) {
 			$record = $this->xref($vendorID, $vendoritemID, $itemID);
@@ -294,9 +294,9 @@ class XrefVxm extends WireData implements Module {
 		$this->init_configs();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$vendorID = $values->text('vendorID');
-		$vendoritemID = $values->text('original_vendoritemID') != $values->text('vendoritemID') ? $values->text('original_vendoritemID') : $values->text('vendoritemID');
-		$itemID = $values->text('itemID');
+		$vendorID = $values->string('vendorID');
+		$vendoritemID = $values->text('original_vendoritemID') != $values->string('vendoritemID') ? $values->text('original_vendoritemID') : $values->string('vendoritemID');
+		$itemID = $values->string('itemID');
 
 		$record = $this->get_create_xref($vendorID, $vendoritemID, $itemID);
 
@@ -341,7 +341,7 @@ class XrefVxm extends WireData implements Module {
 
 		$response = new XrefResponse();
 		$response->set_action(XrefResponse::CRUD_UPDATE);
-		$record->setVendoritemid($values->text('vendoritemID'));
+		$record->setVendoritemid($values->string('vendoritemID'));
 		$itemID = $record->ouritemid;
 		$invalidfields = $this->update_record_validated($record, $input);
 

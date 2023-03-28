@@ -107,7 +107,7 @@ class ItmCosting extends WireData implements Module {
 	public function processInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		switch ($values->action) {
 			case 'update-itm-costing':
@@ -128,7 +128,7 @@ class ItmCosting extends WireData implements Module {
 	private function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 		$itm = $this->wire('modules')->get('Itm');
 
 		if ($itm->exists($itemID) === false) {

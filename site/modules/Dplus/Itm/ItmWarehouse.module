@@ -217,7 +217,7 @@ class ItmWarehouse extends WireData implements Module {
 	public function input_delete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 		$whseID = $values->text('whseID');
 
 		if ($this->itemwarehouse_exists($itemID, $whseID)) {
@@ -252,7 +252,7 @@ class ItmWarehouse extends WireData implements Module {
 		$validate = new ItmwValidator();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 		$whseID = $values->text('whseID');
 		$record = $this->getOrCreate($itemID, $whseID);
 

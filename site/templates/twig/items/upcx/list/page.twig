@@ -1,7 +1,8 @@
 {% include 'items/upcx/bread-crumbs.twig' %}
+{% set response = session.getFor('response', 'upcx') %}
 
-{% if session.getFor('response', 'upcx') %}
-	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'upcx')} %}
+{% if response and response.has_success() == false %}
+	{% include 'items/itm/response-alert.twig' with {'response': response} %}
 {% endif %}
 
 {% include 'items/upcx/search.twig' with {'q' : page.input.get.text('q')} %}

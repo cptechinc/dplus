@@ -121,7 +121,7 @@ class Itmimg extends WireData {
 	private function upload(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		$uploader = Uploader::getInstance();
 		$uploader->useAutoFile($this->useAutofile);
@@ -140,7 +140,7 @@ class Itmimg extends WireData {
 		}
 
 		$response = Response::responseSuccess("Uploaded $itemID Image");
-		$response->setKey($values->text('itemID'));
+		$response->setKey($values->string('itemID'));
 		$this->setResponse($response);
 
 		return true;

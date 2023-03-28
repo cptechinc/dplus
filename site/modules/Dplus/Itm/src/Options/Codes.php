@@ -154,7 +154,7 @@ class Codes extends WireData {
 		$values = $input->$rm;
 
 		$itm = $this->wire('modules')->get('Itm');
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		if ($itm->exists($itemID) === false) {
 			return false;
@@ -174,9 +174,9 @@ class Codes extends WireData {
 	private function updateInputCode(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
-		$sysop  = $values->text('sysop');
-		$code   = $values->text('code');
+		$itemID = $values->string('itemID');
+		$sysop  = $values->string('sysop');
+		$code   = $values->string('code');
 
 		$sysopM = $this->getSysop();
 
@@ -213,9 +213,9 @@ class Codes extends WireData {
 		$input = $this->wire('input');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
-		$sysop  = $values->text('sysop');
-		$code   = $values->text('code');
+		$itemID = $values->string('itemID');
+		$sysop  = $values->string('sysop');
+		$code   = $values->string('code');
 
 		if ($sysOption->force() && $sysop == '') {
 			$msg = "Sysop $sysop is Required";
@@ -260,7 +260,7 @@ class Codes extends WireData {
 		$values = $input->$rm;
 
 		$itm = $this->wire('modules')->get('Itm');
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		if ($itm->exists($itemID) === false) {
 			return false;
@@ -280,9 +280,9 @@ class Codes extends WireData {
 	private function deleteInputCode(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
-		$sysop  = $values->text('sysop');
-		$code   = $values->text('code');
+		$itemID = $values->string('itemID');
+		$sysop  = $values->string('sysop');
+		$code   = $values->string('code');
 
 		$sysopM = $this->getSysop();
 
