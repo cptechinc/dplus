@@ -97,6 +97,7 @@ class Vi extends Base {
 		$config = self::pw('config');
 
 		$html = '';
+		$html .= self::displayBreadCrumbs($data);
 		$html .= $config->twig->render('vendors/vendor-search.twig', ['vendors' => $vendors, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $vendors]);
