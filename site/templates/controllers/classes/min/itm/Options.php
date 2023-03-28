@@ -112,7 +112,7 @@ class Options extends Base {
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$response = $itmOpt->getResponse();
 
-		if (empty($response) === false || $response->hasSuccess() === false) {
+		if (empty($response) === false && $response->hasSuccess() === false) {
 			$html .= $config->twig->render('items/itm/response-alert-new.twig', ['response' => $itmOpt->getResponse()]);
 		}
 		$html .= $config->twig->render('items/itm/options/display.twig', ['itm' => $itm, 'itmOpt' => $itmOpt, 'item' => $item, 'options' => $options]);

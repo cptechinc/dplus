@@ -82,7 +82,7 @@ class Dimensions extends Base {
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$response = $itm->getResponse();
-		if (empty($response) === false || $response->has_success() === false) {
+		if (empty($response) === false && $response->has_success() === false) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
 		}
 		if ($session->getFor('response', 'itm-dim')) {
