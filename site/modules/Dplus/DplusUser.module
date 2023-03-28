@@ -14,6 +14,7 @@ use Dplus\CodeValidators as Validators;
 use Dplus\Databases\Connectors\Dpluso as DbDpluso;
 
 use Dplus\Permissions\MenuPermissions;
+use Dplus\Session\UserMenuPermissions;
 
 include_once(__DIR__.'/vendor/autoload.php');
 
@@ -300,6 +301,13 @@ class DplusUser extends WireData implements Module {
 			$function = $event->arguments(0);
 			$validate = new Validators\UserPermission();
 			$event->return = $validate->userHasPermission($user->loginid, $function);
+		});
+
+		$this->addHook('User::hasMenuPermission', function($event) {
+			$user = $event->object;
+			$function = $event->arguments(0);
+			$MCP = UserMenuPermissions::instance();
+			$event->return = $MCP->canAccess($function);
 		});
 
 		$this->addHook('User::hasPermissionCode', function($event) {
