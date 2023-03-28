@@ -16,6 +16,7 @@ use Dplus\Session\UserMenuPermissions;
 use Dplus\Wm\Binr as BinrCRUD;
 // Mvc Controllers
 use Controllers\AbstractController;
+use Controllers\Mwm\Menu;
 
 class Binr extends AbstractController {
 	const PARENT_MENU_CODE = 'wm';
@@ -287,12 +288,9 @@ class Binr extends AbstractController {
 	 * @return bool
 	 */
 	public static function validateUserPermission(User $user = null) {
-		$MCP = UserMenuPermissions::instance();
-
-		if ($MCP->canAccess(static::PARENT_MENU_CODE) === false) {
+		if (Menu::validateMenuPermission() === false) {
 			return false;
 		}
-
 		return parent::validateUserPermission($user);
 	}
 
