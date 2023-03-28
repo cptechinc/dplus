@@ -29,7 +29,7 @@ class Img extends Base {
 ============================================================= */
 	public static function index($data) {
 		self::sanitizeParametersShort($data, ['scan|text', 'lotserial|text', 'action|text']);
-		if (self::validateUserPermission() === false || Menu::validateUserPermission()) {
+		if (self::validateUserPermission() === false || Menu::validateUserPermission() === false) {
 			return static::renderUserNotPermittedAlert();
 		}
 		if (empty($data->action) === false) {
