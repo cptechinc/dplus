@@ -27,7 +27,7 @@ class Upcx extends AbstractController {
 			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
-		$fields = ['upc|text', 'itemID|text', 'action|text'];
+		$fields = ['upc|string', 'itemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
@@ -44,7 +44,7 @@ class Upcx extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			return self::pw('session')->redirect(self::url(), $http301 = false);
 		}
-		$fields = ['action|text', 'upc|text', 'itemID|text',];
+		$fields = ['action|text', 'upc|string', 'itemID|string',];
 		self::sanitizeParameters($data, $fields);
 
 		if (empty($data->action) === false) {
@@ -67,7 +67,7 @@ class Upcx extends AbstractController {
 	}
 
 	private static function upc($data) {
-		self::sanitizeParametersShort($data, ['upc|text', 'itemID|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['upc|string', 'itemID|string', 'action|text']);
 		self::pw('page')->show_breadcrumbs = false;
 
 		$upcx = self::getUpcx();
@@ -85,6 +85,7 @@ class Upcx extends AbstractController {
 		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
 		self::initHooks();
 		$html = self::displayUpc($data, $xref);
+		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
 	}
 
@@ -115,6 +116,7 @@ class Upcx extends AbstractController {
 		self::pw('page')->js .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
 		self::initHooks();
 		$html = self::displayList($data, $upcs);
+		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
 	}
 
@@ -139,6 +141,21 @@ class Upcx extends AbstractController {
 		return $html;
 	}
 
+	public static function lockXref(ItemXrefUpc $xref) {
+		$html = '';
+		$upcx = self::getUpcx();
+		$key  = $upcx->getRecordlockerKey($xref);
+
+		if (!$xref->isNew()) {
+			if (!$upcx->lockrecord($xref)) {
+				$msg = "UPC ". $key ." is being locked by " . $upcx->recordlocker->getLockingUser($key);
+				$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $key is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$html .= '<div class="mb-3"></div>';
+			}
+		}
+		return $html;
+	}
+
 	private static function displayLocked($data, ItemXrefUpc $xref) {
 		$upcx = self::getUpcx();
 		$key  = $upcx->getRecordlockerKey($xref);
@@ -154,7 +171,7 @@ class Upcx extends AbstractController {
 		$upcx = self::getUpcx();
 		$response = self::pw('session')->getFor('response', 'upcx');
 
-		if (empty($response)) {
+		if (empty($response) || $response->success === false) {
 			return '';
 		}
 		return self::pw('config')->twig->render('items/itm/response-alert.twig', ['response' => $response]);

@@ -14,7 +14,7 @@ class Mki extends Controller {
 	}
 
 	public static function validateKitid($data) {
-		$fields = ['kitID|text'];
+		$fields = ['kitID|string'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
@@ -33,7 +33,7 @@ class Mki extends Controller {
 	}
 
 	public static function validateKitDeletion($data) {
-		$fields = ['kitID|text'];
+		$fields = ['kitID|string'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
@@ -44,7 +44,7 @@ class Mki extends Controller {
 	}
 
 	public static function getKit($data) {
-		$fields = ['kitID|text'];
+		$fields = ['kitID|string'];
 		$data     = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
@@ -59,7 +59,7 @@ class Mki extends Controller {
 	}
 
 	public static function validateKitComponent($data) {
-		$fields = ['kitID|text', 'component|text'];
+		$fields = ['kitID|string', 'component|string'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 

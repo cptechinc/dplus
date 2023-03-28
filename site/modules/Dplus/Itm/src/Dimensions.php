@@ -106,7 +106,7 @@ class Dimensions extends WireData {
 		$values = $input->$rm;
 
 		$itm = $this->wire('modules')->get('Itm');
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		if ($itm->exists($itemID) === false) {
 			return false;
@@ -143,11 +143,11 @@ class Dimensions extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if ($this->validateAndLockItemid($values->text('itemID')) === false) {
+		if ($this->validateAndLockItemid($values->string('itemID')) === false) {
 			return false;
 		}
 		$itm = $this->wire('modules')->get('Itm');
-		$item = $itm->item($values->text('itemID'));
+		$item = $itm->item($values->string('itemID'));
 		$item->setQty_pack_inner($values->float('innerpack'));
 		$item->setQty_pack_outer($values->float('outerpack'));
 		$item->setQty_tare($values->float('qtytare'));
@@ -169,11 +169,11 @@ class Dimensions extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if ($this->validateAndLockItemid($values->text('itemID')) === false) {
+		if ($this->validateAndLockItemid($values->string('itemID')) === false) {
 			return false;
 		}
 
-		$dim = $this->getOrCreateDimension($values->text('itemID'));
+		$dim = $this->getOrCreateDimension($values->string('itemID'));
 		$dim->setLength($values->float('length'));
 		$dim->setWidth($values->float('width'));
 		$dim->setThickness($values->float('thickness'));

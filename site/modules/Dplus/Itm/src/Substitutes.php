@@ -177,7 +177,7 @@ class Substitutes extends WireData {
 
 		$itm = $this->getItm();
 		$itm->init();
-		$itemID = $itm->itemid($values->text('itemID'));
+		$itemID = $itm->itemid($values->string('itemID'));
 
 		if ($itm->exists($itemID) === false) {
 			return false;
@@ -198,7 +198,7 @@ class Substitutes extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$itemID    = $values->text('itemID');
+		$itemID    = $values->string('itemID');
 		$subitemID = $values->text('subitemID');
 		$sub = $this->getOrCreate($itemID, $subitemID);
 
@@ -235,7 +235,7 @@ class Substitutes extends WireData {
 
 		$itm = $this->getItm();
 		$itm->init();
-		$itemID = $itm->itemid($values->text('itemID'));
+		$itemID = $itm->itemid($values->string('itemID'));
 
 		if ($itm->exists($itemID) === false) {
 			return false;
@@ -256,7 +256,7 @@ class Substitutes extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$itemID    = $values->text('itemID');
+		$itemID    = $values->string('itemID');
 		$subitemID = $values->text('subitemID');
 		$sub = $this->getOrCreate($itemID, $subitemID);
 
@@ -307,12 +307,12 @@ class Substitutes extends WireData {
 		$itm = $this->getItm();
 
 		if ($sub->isNew()) {
-			if ($itm->exists($values->text('itemID')) === false) {
+			if ($itm->exists($values->string('itemID')) === false) {
 				$invalid['itemID'] = 'Item ID';
 			}
 
-			if ($itm->exists($values->text('itemID'))) {
-				$sub->setItemid($values->text('itemID'));
+			if ($itm->exists($values->string('itemID'))) {
+				$sub->setItemid($values->string('itemID'));
 			}
 		}
 

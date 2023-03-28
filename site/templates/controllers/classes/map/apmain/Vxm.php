@@ -20,7 +20,7 @@ class Vxm extends AbstractController{
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['vendorID|string', 'vendoritemID|text', 'q|text', 'action|text'];
+		$fields = ['vendorID|string', 'vendoritemID|string', 'q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
@@ -46,7 +46,7 @@ class Vxm extends AbstractController{
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'vendorID|string', 'vendoritemID|text', 'itemID|text'];
+		$fields = ['action|text', 'vendorID|string', 'vendoritemID|string', 'itemID|string'];
 		self::sanitizeParameters($data, $fields);
 		$input  = self::pw('input');
 		$vxm    = self::vxmMaster();
@@ -74,7 +74,7 @@ class Vxm extends AbstractController{
 	}
 
 	private static function xref($data) {
-		$fields = ['vendorID|string', 'vendoritemID|text', 'itemID|text', 'action|text'];
+		$fields = ['vendorID|string', 'vendoritemID|string', 'itemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if ($data->action) {

@@ -210,7 +210,7 @@ class I2i extends WireData {
 				return $this->inputUpdate($input);
 				break;
 			default:
-				$key = implode('-', [$values->text('parentID'), $values->text('childID')]);
+				$key = implode('-', [$values->string('parentID'), $values->string('childID')]);
 				$message = self::DESCRIPTION_RECORD . " ($key) was not saved, no action was specified";
 				$this->setResponse(Response::responseError($key, $message));
 				return false;
@@ -226,8 +226,8 @@ class I2i extends WireData {
 	public function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$parentID = $values->text('parentID');
-		$childID  = $values->text('childID');
+		$parentID = $values->string('parentID');
+		$childID  = $values->string('childID');
 		$xref     = $this->getOrCreate($parentID, $childID);
 
 		if ($this->lockrecord($xref) === false && $xref->isNew() === false) {
@@ -249,8 +249,8 @@ class I2i extends WireData {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$parentID = $values->text('parentID');
-		$childID  = $values->text('childID');
+		$parentID = $values->string('parentID');
+		$childID  = $values->string('childID');
 
 		if ($this->exists($parentID, $childID)) {
 			$xref = $this->xref($parentID, $childID);

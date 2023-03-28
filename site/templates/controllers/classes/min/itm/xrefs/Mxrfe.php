@@ -10,14 +10,14 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
 // Dplus Filters
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 // Mvc Controllers
-use Controllers\Map\Mxrfe as BaseMxrfe;
+use Controllers\Map\Apmain\Mxrfe as BaseMxrfe;
 
 class Mxrfe extends Base {
 /* =============================================================
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'mnfrID|string', 'mnfritemID|text', 'action|text'];
+		$fields = ['itemID|string', 'mnfrID|string', 'mnfritemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -40,7 +40,7 @@ class Mxrfe extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'mnfrID|string', 'mnfritemID|text', 'action|text'];
+		$fields = ['itemID|string', 'mnfrID|string', 'mnfritemID|string', 'action|text'];
 		$data  = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 		$mxrfe = BaseMxrfe::mxrfeMaster();
@@ -80,7 +80,7 @@ class Mxrfe extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['itemID|string', 'q|text']);
 		self::initHooks();
 
 		$mxrfe = BaseMxrfe::mxrfeMaster();
@@ -128,8 +128,10 @@ class Mxrfe extends Base {
 
 		$html .= self::breadCrumbs();
 
-		if ($session->getFor('response','mxrfe')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','mxrfe')]);
+		$response = $session->getFor('response','mxrfe');
+
+		if (empty($response) === false && $response->success === false) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $response]);
 		}
 		return $html;
 	}

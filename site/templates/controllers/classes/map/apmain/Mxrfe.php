@@ -20,7 +20,7 @@ class Mxrfe extends AbstractController {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['mnfrID|string', 'mnfritemID|text', 'q|text', 'action|text'];
+		$fields = ['mnfrID|string', 'mnfritemID|string', 'q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
@@ -62,7 +62,7 @@ class Mxrfe extends AbstractController {
 	}
 
 	private static function xref($data) {
-		$fields = ['mnfrID|string', 'mnfritemID|text', 'itemID|text', 'action|text'];
+		$fields = ['mnfrID|string', 'mnfritemID|string', 'itemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if ($data->action) {

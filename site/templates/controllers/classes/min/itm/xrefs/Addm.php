@@ -19,7 +19,7 @@ class Addm extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		$fields = ['itemID|string', 'addonID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -39,7 +39,7 @@ class Addm extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		$fields = ['itemID|string', 'addonID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -66,7 +66,7 @@ class Addm extends Base {
 	}
 
 	private static function xref($data) {
-		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		$fields = ['itemID|string', 'addonID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$addm = AddmParent::getAddm();
 

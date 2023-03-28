@@ -12,14 +12,14 @@ use Dplus\Configs;
 // Dplus Filters
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
-use Controllers\Min\Upcx as UpcxController;
+use Controllers\Min\Inmain\Upcx as UpcxController;
 
 class Upcx extends Base {
 /* =============================================================
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'upc|text', 'action|text'];
+		$fields = ['itemID|string', 'upc|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -42,7 +42,7 @@ class Upcx extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'upc|text', 'action|text'];
+		$fields = ['itemID|string', 'upc|string', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 
 		if ($data->action) {
@@ -77,7 +77,7 @@ class Upcx extends Base {
 
 	private static function list($data) {
 		self::initHooks();
-		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['itemID|string', 'q|text']);
 		$upcx = UpcxController::getUpcx();
 		$upcx->recordlocker->deleteLock();
 		$page   = self::pw('page');
@@ -117,8 +117,10 @@ class Upcx extends Base {
 
 		$html .= self::breadCrumbs();
 
-		if ($session->getFor('response','upcx')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','upcx')]);
+		$response = $session->getFor('response','upcx');
+
+		if (empty($response) === false && $response->success === false) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $response]);
 		}
 		return $html;
 	}
@@ -192,6 +194,31 @@ class Upcx extends Base {
 		$m->addHook('Page(pw_template=itm)::upcCreateUrl', function($event) {
 			$itemID  = self::pw('input')->get->text('itemID');
 			$event->return = self::xrefUrl($itemID, 'new');
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefUrl', function($event) {
+			$p = $event->object;
+			$itemID  = self::pw('input')->get->text('itemID');
+			$upc     = $event->arguments(0);
+			$event->return = self::xrefUrl($itemID, $upc);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefDeleteUrl', function($event) {
+			$p = $event->object;
+			$itemID  = self::pw('input')->get->text('itemID');
+			$upc     = $event->arguments(0);
+			$event->return = self::xrefDeleteUrl($itemID, $upc);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefCreateUrl', function($event) {
+			$itemID  = self::pw('input')->get->text('itemID');
+			$event->return = self::xrefUrl($itemID, 'new');
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefListUrl', function($event) {
+			$p = $event->object;
+			$itemID  = self::pw('input')->get->text('itemID');
+			$event->return = Xrefs::xrefUrlUpcx($itemID);
 		});
 	}
 }
