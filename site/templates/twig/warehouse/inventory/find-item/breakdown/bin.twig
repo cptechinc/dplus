@@ -11,10 +11,18 @@
 <div class="p-2 pb-1">
 	<div class="row">
 		<div class="col-sm-3">
-			<strong>Bins :</strong> {{ inventory.count_bins_itemid(item.itemid) }}
+			<strong>Bins :</strong> 
+			{% block bin_count %}
+				{{ inventory.count_bins_itemid(item.itemid) }}
+			{% endblock %}
 		</div>
 		<div class="col-sm-2">
-			<strong>Qty:</strong> <span class="pull-right">{{ inventory.get_qty_itemid(item.itemid)|number_format(config.decimal_places()) }}</span>
+			<strong>Qty:</strong> 
+			<span class="pull-right">
+				{% block item_qty %}
+					{{ inventory.get_qty_itemid(item.itemid)|number_format(config.decimal_places()) }}
+				{% endblock %}
+			</span>
 		</div>
 		<div class="col">
 			{% if (not page.is_print()) %}

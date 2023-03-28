@@ -1,5 +1,13 @@
 {% extends 'warehouse/inventory/find-item/breakdown/bin.twig' %}
 
+{% block bin_count %}
+	{{ inventory.count_bins_itemid(item.itemid, input.get.string('frombin')) }}
+{% endblock %}
+
+{% block item_qty %}
+	{{ inventory.get_qty_itemid(item.itemid, input.get.string('frombin'))|number_format(config.decimal_places()) }}
+{% endblock %}
+
 {% block show_button %}
 	<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
 		Show / Hide Bins
