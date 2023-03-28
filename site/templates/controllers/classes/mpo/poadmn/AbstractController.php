@@ -2,7 +2,7 @@
 // ProcessWire
 use ProcessWire\User;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
+use Controllers\AbstractController as Controller;
 
 abstract class AbstractController extends Controller {
 	const DPLUSPERMISSION = 'poadmn';
