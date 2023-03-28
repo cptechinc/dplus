@@ -2,15 +2,15 @@
 // Purl URI Library
 use Purl\Url as Purl;
 // Propel ORM Ljbrary
-use Propel\Runtime\Util\PropelModelPager;
+	// use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use InvLotMasterQuery, InvLotMaster;
-// Dpluso Model
-use InvsearchQuery, Invsearch;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\SearchInventory, ProcessWire\DpagesMii;
-// Dplus Filters
+// ProcessWire
+use ProcessWire\Page;
+use ProcessWire\User;
+// Dplus
 use Dplus\Filters\Min\LotMaster as LotFilter;
+use Dplus\Session\UserMenuPermissions;
 // Controllers
 use Controllers\AbstractController;
 
@@ -57,6 +57,28 @@ class Base extends AbstractController {
 ============================================================= */
 	protected static function breadcrumbs($data) {
 		return self::pw('config')->twig->render('mii/loti/bread-crumbs.twig');
+	}
+
+/* =============================================================
+	Validator, Module Getters
+============================================================= */
+	public static function validateUserPermission(User $user = null) {
+		if (self::validateMenuPermission($user) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
+	}
+
+	public static function validateMenuPermission(User $user = null) {
+		$page   = self::pw('page');
+
+		foreach ($page->parents('template=dplus-menu|warehouse-menu') as $parent) {
+			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
+
+			if (UserMenuPermissions::instance()->canAccess($code) === false) {
+				return false;
+			}
+		}
 	}
 
 /* =============================================================

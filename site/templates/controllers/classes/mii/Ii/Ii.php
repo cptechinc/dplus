@@ -62,7 +62,7 @@ class Ii extends Base {
 		$fields = ['itemID|text', 'q|text', 'refresh|text'];
 		self::sanitizeParametersShort($data, $fields);
 
-		if (self::validateUserPermission($data) === false) {
+		if (self::validateUserPermission() === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
 

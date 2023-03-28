@@ -129,12 +129,12 @@ abstract class Base extends AbstractController {
 	Displays
 ============================================================= */
 	protected static function alertInvalidItemPermissions($data) {
+		if (self::validateUserPermission() === false) {
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You don't have Permission for this Function"]);
+		}
 		self::sanitizeParametersShort($data, ['itemID|text']);
 		if (empty($data->itemID) === false && self::validateItemid($data->itemID) === false) {
 			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item $data->itemID could not be found"]);
-		}
-		if (self::validateUserPermission($data) === false) {
-			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You don't have Permission for this Function"]);
 		}
 		return '';
 	}
