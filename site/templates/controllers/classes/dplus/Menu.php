@@ -14,15 +14,7 @@ class Menu extends Controller {
 	public static function index($data) {
 		$page   = self::pw('page');
 
-		foreach ($page->parents('template=dplus-menu|warehouse-menu') as $parent) {
-			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
-
-			if (UserMenuPermissions::instance()->canAccess($code) === false) {
-				return self::notPermittedDisplay();
-			}
-		}
-
-		if (self::validateUserPermission() === false) {
+		if (self::validateMenuPermission() === false || self::validateUserPermission() === false) {
 			return self::notPermittedDisplay();
 		}
 
@@ -55,6 +47,19 @@ class Menu extends Controller {
 		$permission = self::getPagePermission();
 		$MCP = UserMenuPermissions::instance();
 		return empty($permission) || $MCP->canAccess($permission);
+	}
+
+	public static function validateMenuPermission() {
+		$page   = self::pw('page');
+
+		foreach ($page->parents('template=dplus-menu|warehouse-menu') as $parent) {
+			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
+
+			if (empty($code) === false && UserMenuPermissions::instance()->canAccess($code) === false) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static function getPagePermission(Page $page = null) {
