@@ -75,7 +75,7 @@ class Base extends AbstractController {
 		foreach ($page->parents('template=dplus-menu|warehouse-menu') as $parent) {
 			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
 
-			if (UserMenuPermissions::instance()->canAccess($code) === false) {
+			if (empty($code) === false && UserMenuPermissions::instance()->canAccess($code) === false) {
 				return false;
 			}
 		}
