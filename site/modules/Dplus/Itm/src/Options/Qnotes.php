@@ -158,7 +158,7 @@ class Qnotes extends QnotesBase {
 			return false;
 		}
 
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		if ($sysop->force() && empty($values->textarea('note'))) {
 			$responseQnotes = Response::responseError("$sysop->notecode Notes are required");
@@ -186,7 +186,7 @@ class Qnotes extends QnotesBase {
 	private function writeNotes(WireInput $input, MsaSysopCode $sysop) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		$this->deleteNotes($itemID, $sysop->notecode);
 
@@ -249,7 +249,7 @@ class Qnotes extends QnotesBase {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$sysopM = $this->getSysop();
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 		$sysop  = $sysopM->code(self::SYSTEM, $values->text('sysop'));
 
 		if ($sysop->force()) {

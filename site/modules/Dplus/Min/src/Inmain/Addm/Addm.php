@@ -206,7 +206,7 @@ class Addm extends WireData {
 				return $this->inputUpdate($input);
 				break;
 			default:
-				$key = implode('-', [$values->text('itemID'), $values->text('addonID')]);
+				$key = implode('-', [$values->string('itemID'), $values->string('addonID')]);
 				$message = self::DESCRIPTION_RECORD . " ($key) was not saved, no action was specified";
 				$this->setResponse(Response::responseError($key, $message));
 				return false;
@@ -222,8 +222,8 @@ class Addm extends WireData {
 	public function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID   = $values->text('itemID');
-		$addonID  = $values->text('addonID');
+		$itemID   = $values->string('itemID');
+		$addonID  = $values->string('addonID');
 		$xref     = $this->getOrCreate($itemID, $addonID);
 
 		if ($this->lockrecord($xref) === false && $xref->isNew() === false) {
@@ -255,8 +255,8 @@ class Addm extends WireData {
 	protected function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values  = $input->$rm;
-		$itemID  = $values->text('itemID');
-		$addonID = $values->text('addonID');
+		$itemID  = $values->string('itemID');
+		$addonID = $values->string('addonID');
 
 		if ($this->exists($itemID, $addonID)) {
 			$xref = $this->xref($itemID, $addonID);

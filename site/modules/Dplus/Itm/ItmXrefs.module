@@ -46,7 +46,7 @@ class ItmXrefs extends WireData implements Module {
 	public function processInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 		$itm = $this->wire('modules')->get('Itm');
 
 		if ($itm->exists($itemID) === false) {
@@ -70,7 +70,7 @@ class ItmXrefs extends WireData implements Module {
 		$itm = $this('modules')->get('Itm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$item = $itm->item($values->text('itemID'));
+		$item = $itm->item($values->string('itemID'));
 
 		if ($item->isNew() === false) {
 			$itm->lockrecord($item->itemid);
@@ -136,7 +136,7 @@ class ItmXrefs extends WireData implements Module {
 		$cxm = $this->wire('modules')->get('XrefCxm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 		$shortitemID = $values->text('shortitemID');
 
 		// Delete record if blank

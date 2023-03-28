@@ -175,7 +175,7 @@ class ItmHazmat extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itm = $this->wire('modules')->get('Itm');
-		$itemID = $itm->itemid($values->text('itemID'));
+		$itemID = $itm->itemid($values->string('itemID'));
 
 		if ($itm->exists($itemID) === false) {
 			$this->setResponse(ItmResponse::response_error($itemID, "$itemID does not exist"));

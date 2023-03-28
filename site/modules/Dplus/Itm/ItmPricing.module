@@ -129,7 +129,7 @@ class ItmPricing extends WireData implements Module {
 	 */
 	public function get_create_itempricing(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID = $input->$rm->text('itemID');
+		$itemID = $input->$rm->string('itemID');
 
 		if ($this->wire('modules')->get('Itm')->exists($itemID)) {
 			return $this->get_pricing($itemID);
@@ -167,7 +167,7 @@ class ItmPricing extends WireData implements Module {
 		$itm = $this->wire('modules')->get('Itm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		switch ($values->text('action')) {
 			case 'update-itm-pricing':
@@ -190,7 +190,7 @@ class ItmPricing extends WireData implements Module {
 		$itm = $this->wire('modules')->get('Itm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 
 		if ($itm->exists($itemID) === false) {
 			$response = ItmResponse::response_error($itemID, "No Item with ItemID $itemID exists");
@@ -251,7 +251,7 @@ class ItmPricing extends WireData implements Module {
 		$values = $input->$rm;
 		$itm = $this->wire('modules')->get('Itm');
 
-		$itemID = $values->text('itemID');
+		$itemID = $values->string('itemID');
 		$item = $itm->item($itemID);
 		return $this->updateItmItem($item, $input);
 	}

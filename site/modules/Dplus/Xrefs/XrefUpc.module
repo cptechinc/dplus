@@ -177,7 +177,7 @@ class XrefUpc extends WireData implements Module {
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc = $values->text('upc');
+		$upc = $values->string('upc');
 
 		switch ($values->text('action')) {
 			case 'delete-upcx':
@@ -201,8 +201,8 @@ class XrefUpc extends WireData implements Module {
 	public function input_delete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc    = $values->text('upc');
-		$itemID = $values->text('itemID');
+		$upc    = $values->string('upc');
+		$itemID = $values->string('itemID');
 
 		if ($this->xrefExists($upc, $itemID)) {
 			$xref = $this->xref($upc, $itemID);
@@ -228,8 +228,8 @@ class XrefUpc extends WireData implements Module {
 	public function input_update(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc = $values->text('upc');
-		$itemID = $values->text('itemID');
+		$upc = $values->string('upc');
+		$itemID = $values->string('itemID');
 		$record = $this->getCreateXref($upc, $itemID);
 
 		if ($this->lockrecord($record) === false && $record->isNew() === false) {
@@ -257,7 +257,7 @@ class XrefUpc extends WireData implements Module {
 	public function update_record_input(ItemXrefUpc $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$record->setItemid($values->text('itemID'));
+		$record->setItemid($values->string('itemID'));
 		$record->setQty($values->int('qty'));
 		$record->setMastercase($values->yn('mastercase'));
 		$record->setNeedslabel($values->yn('needslabel'));
