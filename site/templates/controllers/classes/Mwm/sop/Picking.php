@@ -6,11 +6,12 @@ use SalesOrderQuery;
 // Dpluso Model
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module;
+use Processwire\User;
 use Processwire\WarehouseManagement;
 use  Dplus\Mso\So\SalesOrder as SalesOrders;
-// Dplus Validators
+// Dplus 
 use Dplus\CodeValidators\Mso as MsoValidator;
-// Dplus CRUD
+use Dplus\Session\UserMenuPermissions;
 use Dplus\Wm\Sop\Picking\Picking as PickingCRUD;
 use Dplus\Wm\Sop\Picking\Strategies\Inventory\Lookup\Lookup as InvLookup;
 use Dplus\Wm as Wm;
@@ -31,6 +32,10 @@ class Picking extends Base {
 	public static function index($data) {
 		$fields = ['scan|text', 'action|text', 'ordn|ordn'];
 		self::sanitizeParametersShort($data, $fields);
+
+		if (self::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -367,6 +372,28 @@ class Picking extends Base {
 			self::$validateMso = new MsoValidator();
 		}
 		return self::$validateMso;
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	public static function validateUserPermission(User $user = null) {
+		if (static::validateMenuPermissions($user) === false) {
+			return false;
+		}
+		return parent::validateUserPermission($user);
+	}
+
+	public static function validateMenuPermissions(User $user = null) {
+		$page   = self::pw('page');
+
+		foreach ($page->parents('template=dplus-menu|warehouse-menu') as $parent) {
+			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
+
+			if (empty($code) === false && UserMenuPermissions::instance()->canAccess($code) === false) {
+				return false;
+			}
+		}
 	}
 
 /* =============================================================
