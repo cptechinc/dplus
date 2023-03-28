@@ -1,21 +1,26 @@
 <?php namespace Controllers\Wm;
-
-use stdClass;
 // Purl Library
 use Purl\Url as Purl;
 // Dplus Model
 use WarehouseQuery, Warehouse;
 // Dpluso Model
-use BininfoQuery, Bininfo;
+use BininfoQuery;
 use WhsesessionQuery, Whsesession;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module, Processwire\SearchInventory, Processwire\WarehouseManagement;
+use ProcessWire\Page;  
+use Processwire\SearchInventory;
+use Processwire\User;
+use Processwire\WarehouseManagement;
 // Dplus Classes
+use Dplus\Session\UserMenuPermissions;
 use Dplus\Wm\Binr as BinrCRUD;
 // Mvc Controllers
-use Mvc\Controllers\Controller;
+use Controllers\AbstractController;
 
-class Binr extends Controller {
+class Binr extends AbstractController {
+	const PARENT_MENU_CODE = 'wm';
+	const DPLUSPERMISSION = 'binr';
+
 	/** @var SearchInventory **/
 	private static $inventory;
 
@@ -31,6 +36,10 @@ class Binr extends Controller {
 	public static function index($data) {
 		$fields = ['scan|text', 'action|text', 'frombin|text', 'tobin|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
+
+		if (self::validateUserPermission() === false) {
+			return self::renderUserNotPermittedAlert();
+		}
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -270,6 +279,21 @@ class Binr extends Controller {
 			self::$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 		}
 		return self::$whsesession;
+	}
+
+	/**
+	 * Validate User's Permission to this Function
+	 * @param  User|null $user
+	 * @return bool
+	 */
+	public static function validateUserPermission(User $user = null) {
+		$MCP = UserMenuPermissions::instance();
+
+		if ($MCP->canAccess(static::PARENT_MENU_CODE) === false) {
+			return false;
+		}
+
+		return parent::validateUserPermission($user);
 	}
 
 	public static function init() {

@@ -14,13 +14,14 @@ class Menu extends Controller {
 	public static function index($data) {
 		$page   = self::pw('page');
 
-		if ($page->parent->template == 'dplus-menu') {
-			$code = $page->parent->dplus_function ? $page->parent->dplus_function : $page->parent->dplus_permission;
+		foreach ($page->parents('template=dplus-menu|warehouse-menu') as $parent) {
+			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
 
 			if (UserMenuPermissions::instance()->canAccess($code) === false) {
 				return self::notPermittedDisplay();
 			}
 		}
+
 		if (self::validateUserPermission() === false) {
 			return self::notPermittedDisplay();
 		}
