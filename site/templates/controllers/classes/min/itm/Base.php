@@ -2,17 +2,20 @@
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Itm as ItmModel;
-// Dplus Filters
-use Dplus\Filters;
-// Validators
+use ProcessWire\User, ProcessWire\Itm as ItmModel;
+// Dplus
 use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Mvc\Controllers\Controller;
+use Dplus\Filters;
 use Dplus\Min\Itmp;
+use Dplus\Session\UserMenuPermissions;
+// Mvc Controllers
+use Controllers\AbstractController;
 
 
-abstract class Base extends Controller {
+
+abstract class Base extends AbstractController {
+	const DPLUSPERMISSION = 'itm';
+	const PARENT_MENU_CODE = 'inmain';
 	const PERMISSION_ITMP = '';
 
 	private static $minvalidator;
@@ -32,15 +35,35 @@ abstract class Base extends Controller {
 		return true;
 	}
 
-	protected static function validateUserPermission() {
-		$user = self::pw('user');
-		$itmp = self::getItmp();
+	public static function validateUserPermission(User $user = null) {
+		$user = $user ? $user : self::pw('user');
 
-		if ($user->has_function('itm') === false) {
+		if (self::validateMenuPermission($user) === false) {
 			return false;
 		}
+
+		if (parent::validateUserPermission($user) === false) {
+			return false;
+		}
+
+		$itmp = self::getItmp();
+			
 		if (static::PERMISSION_ITMP != '') {
 			return $itmp->isUserAllowed($user, static::PERMISSION_ITMP);
+		}
+		return true;
+	}
+
+	public static function validateMenuPermission(User $user = null) {
+		$user = $user ? $user : self::pw('user');
+		$page  = self::pw('page');
+
+		foreach ($page->parents('template=dplus-menu') as $parent) {
+			$code = $parent->dplus_function ? $parent->dplus_function : $parent->dplus_permission;
+
+			if (empty($code) === false && UserMenuPermissions::instance()->canAccess($code) === false) {
+				return false;
+			}
 		}
 		return true;
 	}

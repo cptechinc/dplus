@@ -31,6 +31,10 @@ class Itm extends Base {
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
+		if (static::validateUserPermission() === false) {
+			return static::renderUserNotPermittedAlert();
+		}
+
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
@@ -229,7 +233,4 @@ class Itm extends Base {
 		return $allowed;
 	}
 
-	protected static function validateUserPermission() {
-		return self::pw('user')->has_function('itm');
-	}
 }
