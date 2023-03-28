@@ -11,7 +11,7 @@ class Xrefs extends Base {
 	const PERMISSION_ITMP = 'xrefs';
 
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -32,7 +32,7 @@ class Xrefs extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|string', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 
 		if ($data->action) {

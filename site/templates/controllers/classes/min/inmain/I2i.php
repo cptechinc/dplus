@@ -27,7 +27,7 @@ class I2i extends AbstractController {
 		}
 
 		// Sanitize Params, parse route from params
-		$fields = ['parentID|text', 'childID|text', 'action|text'];
+		$fields = ['parentID|string', 'childID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
@@ -46,7 +46,7 @@ class I2i extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			return self::pw('session')->redirect(self::url(), $http301 = false);
 		}
-		$fields = ['parentID|text', 'childID|text', 'action|text'];
+		$fields = ['parentID|string', 'childID|string', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 		$i2i = self::getI2i();
 		$i2i->processInput(self::pw('input'));
@@ -94,7 +94,7 @@ class I2i extends AbstractController {
 	}
 
 	public static function xref($data) {
-		$fields = ['parentID|text', 'childID|text', 'action|text'];
+		$fields = ['parentID|string', 'childID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$i2i = self::getI2i();
 

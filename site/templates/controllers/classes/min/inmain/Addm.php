@@ -25,7 +25,7 @@ class Addm extends AbstractController {
 			return self::renderUserNotPermittedAlert();
 		}
 		// Sanitize Params, parse route from params
-		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		$fields = ['itemID|string', 'addonID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
@@ -45,7 +45,7 @@ class Addm extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			return self::pw('session')->redirect(self::url(), $http301 = false);
 		}
-		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		$fields = ['itemID|string', 'addonID|string', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 		$addm = self::getAddm();
 		$addm->processInput(self::pw('input'));
@@ -93,7 +93,7 @@ class Addm extends AbstractController {
 	}
 
 	private static function xref($data) {
-		$fields = ['itemID|text', 'addonID|text', 'action|text'];
+		$fields = ['itemID|string', 'addonID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$addm = self::getAddm();
 

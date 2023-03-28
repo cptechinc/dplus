@@ -17,7 +17,7 @@ class Substitutes extends Base {
 	private static $crud;
 
 	public static function index($data) {
-		$fields = ['itemID|text', 'subitemID|text', 'action|text'];
+		$fields = ['itemID|string', 'subitemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -40,7 +40,7 @@ class Substitutes extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'subitemID|text', 'action|text'];
+		$fields = ['itemID|string', 'subitemID|string', 'action|text'];
 		self::sanitizeParameters($data, $fields);
 		if (empty($data->action)) {
 			self::pw('session')->redirect(self::subListUrl($data->itemID), $http301 = false);

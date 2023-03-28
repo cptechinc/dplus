@@ -19,7 +19,7 @@ class Vxm extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -42,7 +42,7 @@ class Vxm extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'vendorID|string', 'vendoritemID|text', 'action|text'];
+		$fields = ['itemID|string', 'vendorID|string', 'vendoritemID|string', 'action|text'];
 		$data  = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 		$vxm   = VxmController::vxmMaster();
@@ -53,14 +53,14 @@ class Vxm extends Base {
 		$session = self::pw('session');
 		$page    = self::pw('page');
 		$response = $session->getFor('response', 'vxm');
-		$url = Xrefs::xrefUrlVxm($itemID);
+		$url = Xrefs::xrefUrlVxm($data->itemID);
 
 		if ($vxm->xref_exists($data->vendorID, $data->vendoritemID, $data->itemID)) {
 			$url = self::xrefUrl($data->vendorID, $data->vendoritemID, $data->itemID);
 
 			if ($response && $response->has_success()) {
 				$xref = $vxm->xref($data->vendorID, $data->vendoritemID, $data->itemID);
-				$url  = Xrefs::xrefUrlVxm($itemID);
+				$url  = Xrefs::xrefUrlVxm($data->itemID);
 			}
 		}
 		$session->redirect($url, $http301 = false);
@@ -86,7 +86,7 @@ class Vxm extends Base {
 	}
 
 	private static function list($data) {
-		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['itemID|string', 'q|text']);
 		self::initHooks();
 		VxmController::vxmMaster()->recordlocker->deleteLock();
 
@@ -129,8 +129,10 @@ class Vxm extends Base {
 
 		$html .= self::breadCrumbs();
 
-		if ($session->getFor('response','vxm')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','vxm')]);
+		$response = $session->getFor('response','vxm');
+
+		if (empty($response) === false && $response->has_success() === false) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $response]);
 		}
 		return $html;
 	}
