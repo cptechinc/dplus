@@ -114,6 +114,9 @@ class Binr extends Controller {
 			return self::handleScanInventorySingleItemid($data);
 		}
 		$items = $inventory->get_items_distinct($data->binID);
+		if ($data->frombin) {
+			$items = $inventory->get_items_distinct($data->frombin);
+		}
 		return $config->twig->render('warehouse/binr/inventory-results.twig', ['resultscount' => $resultscount, 'items' => $items]);
 	}
 
@@ -165,7 +168,11 @@ class Binr extends Controller {
 			self::pw('session')->redirect($url->getUrl(), $http301 = false);
 		}
 		$items = $inventory->get_items_distinct($data->binID);
+		if ($data->frombin) {
+			$items = $inventory->get_items_distinct($data->frombin);
+		}
 		$warehouse = self::getCurrentUserWarehouse();
+
 
 		if ($config->twigloader->exists("warehouse/binr/$config->company/inventory-results.twig")) {
 			return $config->twig->render("warehouse/binr/$config->company/inventory-results.twig", ['config' => $config->binr, 'resultscount' => $countLotserial, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
@@ -277,11 +284,19 @@ class Binr extends Controller {
 
 		$wm->addHook('Page::binr_itemURL', function($event) {
 			$p = $event->object;
+			$input = $p->wire('input');
+
 			$item = $event->arguments(0);
 			$url = new Purl($p->url);
 			$url->query->set('itemID', $item->itemid);
 			$url->query->set($item->get_itemtypeproperty(), $item->get_itemidentifier());
 			$url->query->set('binID', $item->bin);
+			if ($input->get->offsetExists('frombin')) {
+				$url->query->set('frombin', $input->get->string('frombin'));
+			}
+			if ($input->get->offsetExists('tobin')) {
+				$url->query->set('tobin', $input->get->string('tobin'));
+			}
 			$event->return = $url->getUrl();
 		});
 
