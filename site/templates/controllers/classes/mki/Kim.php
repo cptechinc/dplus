@@ -156,8 +156,10 @@ class Kim extends AbstractController {
 
 		$html .= $config->twig->render('mki/kim/bread-crumbs.twig', ['input' => self::pw('input')]);
 
-		if ($session->getFor('response','kim')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','kim')]);
+		$response = $session->getFor('response','kim');
+
+		if (empty($response) === false && $response->success === false) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $response]);
 		}
 		return $html;
 	}
