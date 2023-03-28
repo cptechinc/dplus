@@ -122,12 +122,15 @@ class SearchInventory extends WireData implements Module {
 	 * @param  string $itemID
 	 * @return int
 	 */
-	public function count_bins_itemid($itemID) {
+	public function count_bins_itemid($itemID, $binID = '') {
 		$q = $this->get_query();
 		$q->addAsColumn('count', 'COUNT(DISTINCT(bin))');
 		$q->select('count');
 		$q->filterByQty(array('min' => 0));
 		$q->filterByItemid($itemID);
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
 		return intval($q->findOne());
 	}
 
