@@ -160,7 +160,7 @@ class Itm extends Base {
 
 		$response = $itm->getResponse();
 
-		if (empty($response) === false || $response->has_success() === false) {
+		if (empty($response) === false && $response->has_success() === false) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
 		}
 
