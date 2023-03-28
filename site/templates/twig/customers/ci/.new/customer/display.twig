@@ -47,7 +47,7 @@
 	{% include 'customers/ci/.new/customer/sales-history.twig' with {'orders': customer.salesHistory} %}
 </div>
 
-{% if user.has_function('mqo') %}
+{% if user.hasMenuPermission('mqo') %}
 	<div class="mb-3">
 		{% include 'customers/ci/.new/customer/quotes.twig' with {'quotes': customer.quotes} %}
 	</div>

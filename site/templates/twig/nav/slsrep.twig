@@ -12,31 +12,34 @@
 			{{ pages.get('pw_template=cart').title }} <i class="fa fa-shopping-cart" aria-hidden="true"></i>
 		</a>
 	</li>
-	{% if user.has_function('ci') %}
+	{% if user.hasMenuPermission('ci') %}
 		<li class="nav-item">
 			<a class="nav-link" href="{{ pages.get('dplus_function=ci').url }}">
 			{{ pages.get('dplus_function=ci').title|raw }}
 			</a>
 		</li>
 	{% endif %}
-	{% if user.has_function('ii') %}
+	{% if user.hasMenuPermission('ii') %}
 		<li class="nav-item">
 			<a class="nav-link" href="{{ pages.get('dplus_function=ii').url }}">
 			{{ pages.get('dplus_function=ii').title|raw }}
 			</a>
 		</li>
 	{% endif %}
-	{% if user.has_function('mqo') %}
+	{% if user.hasMenuPermission('mqo') %}
 		<li class="nav-item">
-			<a class="nav-link" href="{{ pages.get('dplus_function=mqo').url }}">{{ pages.get('dplus_function=mqo').title }}</a>
+			{{ dump(user.hasMenuPermission('mqo')) }}
+			<a class="nav-link" href="{{ pages.get('dplus_function=mqo').url }}">
+				{{ pages.get('dplus_function=mqo').title }}
+			</a>
 		</li>
 	{% endif %}
-	{% if user.has_function('mso') %}
+	{% if user.hasMenuPermission('mso') %}
 		<li class="nav-item">
 			<a class="nav-link" href="{{ pages.get('dplus_function=mso').url }}">{{ pages.get('dplus_function=mso').title }}</a>
 		</li>
 	{% endif %}
-	{% if user.has_function('sobook') %}
+	{% if user.hasMenuPermission('sobook') %}
 		<li class="nav-item">
 			<a class="nav-link" href="{{ pages.get('dplus_function=sobook').url }}">{{ pages.get('dplus_function=sobook').title }}</a>
 		</li>

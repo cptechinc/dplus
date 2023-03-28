@@ -2,7 +2,7 @@
 <div class="pt-3">
 	<h5>Actions</h5>
 	<div class="form-row">
-		{% if user.has_function('eso') %}
+		{% if user.hasMenuPermission('eso') %}
 			<div class="col-6 col-sm-4 mb-3">
 				<a href="{{ page.createOrderUrl() }}" class="btn btn-primary">
 					<span class="fa-stack fa-md" aria-hidden="true">
@@ -14,7 +14,7 @@
 				</a>
 			</div>
 		{% endif %}
-		{% if user.has_function('eqo') %}
+		{% if user.hasMenuPermission('eqo') %}
 			<div class="col-6 col-sm-4 mb-3">
 				<a href="{{ page.createQuoteUrl() }}" class="btn btn-primary">
 					<span class="fa-stack fa-md" aria-hidden="true">
