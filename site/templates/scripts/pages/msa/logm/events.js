@@ -3,6 +3,14 @@ $(function() {
 	let alert	 = LogmAlerts.getInstance();
 	let formLogm = LogmForm.getInstance();
 
+	if (formLogm.inputs.loginid.val() == '') {
+		formLogm.inputs.loginid.focus();
+	}
+
+	if (formLogm.inputs.loginid.val() != '') {
+		formLogm.inputs.name.focus();
+	}
+
 /* =============================================================
 	Unsaved Changes Alert
 ============================================================= */
@@ -37,6 +45,15 @@ $(function() {
 	$("body").on("focusin", "#logm-form input:not(input[name=id])", function(e) {
 		if (formLogm.inputs.loginid.val() == '') {
 			formLogm.inputs.loginid.focus();
+			return true;
+		}
+		let input = $(this);
+		formLogm.validateInputsBetweenIndexes(1, input.attr('tabindex'));
+		let inputError = formLogm.findFirstInvalidInput(1, input.attr('tabindex'));
+
+		if (inputError !== false) {
+			inputError.focus();
+			return true;
 		}
 	});
 
@@ -100,6 +117,10 @@ $(function() {
 		if (input.val() == '') {
 			return true;
 		}
+
+		if (formLogm.form.validate().element('#' + input.attr('id')) === false) {
+			return false;
+		}
 		
 		server.getPrinter(input.val(), function(printer) {
 			if (printer) {
@@ -151,15 +172,18 @@ $(function() {
 		let modal  = button.closest('.modal');
 		let input  = $(modal.attr('data-input'));
 		input.val(whseid);
+		input.change();
 		modal.modal('hide');
 	});
 
 	$("#ajax-modal").on('hidden.bs.modal', function (e) {
+		e.preventDefault();
 		let modal = $(this);
 
 		if (modal.attr('data-input')) {
 			let input = $(modal.attr('data-input'));
-			if (input.length) {
+			if (input.length > 0) {
+				console.log(input);
 				input.focus();
 			}
 		}
