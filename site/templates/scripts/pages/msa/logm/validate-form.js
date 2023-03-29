@@ -4,6 +4,10 @@ $(function() {
 /* =============================================================
 	jQuery Validate Form
 ============================================================= */
+	jQuery.validator.addMethod("printeridIsNotBrowse", function(value, element) {
+		return this.optional(element) || value.toLowerCase() != 'browse';
+	}, "Cannot Set to browse printer");
+
 	formLogm.form.validate({
 		onkeyup: false,
 		errorClass: "is-invalid",
@@ -33,6 +37,7 @@ $(function() {
 			},
 			printerreport: {
 				required: true,
+				printeridIsNotBrowse: true,
 				remote: {
 					url: config.ajax.urls.json + 'msa/validate/printer/id/',
 					type: "get",
@@ -46,6 +51,7 @@ $(function() {
 			},
 			printerbrowse: {
 				required: true,
+				printeridIsNotBrowse: true,
 				remote: {
 					url: config.ajax.urls.json + 'msa/validate/printer/id/',
 					type: "get",
