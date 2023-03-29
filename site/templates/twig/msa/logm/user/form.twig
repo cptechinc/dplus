@@ -39,8 +39,10 @@
 		<div class="col-sm-3">
 			<label for="companyid">Company ID</label>
 		</div>
-		<div class="col-sm-1">
-			{% include 'msa/logm/user/form/inputs/companyid.twig' %}
+		<div class="col-sm-4 input-parent">
+			<div class="col-sm-3 px-0">
+				{% include 'msa/logm/user/form/inputs/companyid.twig' %}
+			</div>
 		</div>
 	</div>
 
@@ -55,15 +57,14 @@
 		</div>
 		<div class="col-sm-2">
 			{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'name': 'userwhsefirst',
-						'addclasses': ['form-control-sm'],
-						'value' : duser.displayUserWhseFirst() ? 'Y' : 'N',
-						'haskeys': true,
-						'options': {'Y': 'Yes', 'N': 'No'}
-					}
+				'select': {
+					'name': 'userwhsefirst',
+					'addclasses': ['form-control-sm'],
+					'value' : duser.displayUserWhseFirst() ? 'Y' : 'N',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
 				}
-			%}
+			} %}
 		</div>
 	</div>
 
@@ -73,15 +74,14 @@
 		</div>
 		<div class="col-sm-2">
 			{% include 'util/bootstrap/form/select-simple.twig' with {
-					'select': {
-						'name': 'activteitemsonly',
-						'addclasses': ['form-control-sm'],
-						'value' : duser.displayActiveItemsOnly() ? 'Y' : 'N',
-						'haskeys': true,
-						'options': {'Y': 'Yes', 'N': 'No'}
-					}
+				'select': {
+					'name': 'activteitemsonly',
+					'addclasses': ['form-control-sm'],
+					'value' : duser.displayActiveItemsOnly() ? 'Y' : 'N',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
 				}
-			%}
+			} %}
 		</div>
 	</div>
 
