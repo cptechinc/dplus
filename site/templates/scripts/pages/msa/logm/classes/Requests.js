@@ -8,8 +8,8 @@ class LogmRequests {
 		return this.instance;
 	}
 
-	validateId(id) {
-		let ajax = new AjaxRequest(config.ajax.urls.json + 'msa/logm/id/');
+	validateId(id, callback) {
+		let ajax = new AjaxRequest(config.ajax.urls.json + 'msa/validate/logm/id/');
 
 		ajax.setData({id: id});
 		ajax.request(function(response) {
