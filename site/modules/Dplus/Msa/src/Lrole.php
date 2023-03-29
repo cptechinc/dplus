@@ -107,11 +107,11 @@ class Lrole extends WireData {
 	}
 
 	/**
-	 * Return User
+	 * Return User Role
 	 * @param  string $id    User ID
 	 * @return SysLoginRole
 	 */
-	public function user($id) {
+	public function role($id) {
 		$q = $this->queryId($id);
 		return $q->findOne();
 	}
@@ -139,5 +139,14 @@ class Lrole extends WireData {
 			return $this->new($id);
 		}
 		return $this->user($id);
+	}
+
+	/**
+	 * Return Role Description
+	 * @param  string $id
+	 * @return bool
+	 */
+	public function description($id) {
+		return $this->queryId($id)->select(SysLoginRole::aliasproperty('description'))->findOne();
 	}
 }
