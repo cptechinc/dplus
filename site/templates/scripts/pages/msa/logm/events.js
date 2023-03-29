@@ -8,7 +8,7 @@ $(function() {
 ============================================================= */
 	origForm = formLogm.form.serialize();
 
-	$("body").on("click", "a:not(#logm-form.form_button, #ajax-modal a)", function(e) {
+	$("body").on("click", "a:not(#logm-form .crud-submit, #ajax-modal a)", function(e) {
 		if (formLogm.form.serialize() !== origForm) {
 			e.preventDefault();
 			let a = $(this);
@@ -34,7 +34,7 @@ $(function() {
 /* =============================================================
 	Input Focus events
 ============================================================= */
-	$("body").on("focusin", "#logm-form input:not(input[name=loginid])", function(e) {
+	$("body").on("focusin", "#logm-form input:not(input[name=id])", function(e) {
 		if (formLogm.inputs.loginid.val() == '') {
 			formLogm.inputs.loginid.focus();
 		}
@@ -64,9 +64,9 @@ $(function() {
 		server.validateId(id, function(exists) {
 			if (exists) {
 				alert.exists(id, function(editUser) {
-					if (editCode) {
+					if (editUser) {
 						let uri = URI();
-						uri.setQuery('code', code);
+						uri.setQuery('id', id);
 						window.location.href = uri.toString();
 						return true;
 					}
