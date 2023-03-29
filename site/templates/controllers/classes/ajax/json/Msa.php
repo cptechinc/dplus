@@ -1,15 +1,14 @@
 <?php namespace Controllers\Ajax\Json;
 // Dplus Model
-use DplusUserQuery, DplusUser;
+use DplusUserQuery;
 // ProcessWire Classes, Modules
-use ProcessWire\Module, ProcessWire\ProcessWire;
+use ProcessWire\WireData;;
 // Dplus Codes
 use Dplus\Codes;
 use Dplus\Codes\Msa as MsaCodes;
-// Dplus Qnotes
+use Dplus\Msa as DMSA;
 use Dplus\Qnotes;
-// Dplus Validators
-use Dplus\CodeValidators\Msa as MsaValidator;
+
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -19,11 +18,11 @@ class Msa extends Controller {
 	}
 
 	public static function validateUserid($data) {
-		$fields = ['userID|text', 'loginID|text', 'jqv|bool', 'new|bool'];
+		$fields = ['userID|string', 'loginID|string', 'jqv|bool', 'new|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
+		$LOGM = DMSA\Logm::getInstance();
 		$userID = $data->loginID ? $data->loginID : $data->userID;
-		$exists = $validate->userid($userID);
+		$exists = $LOGM->exists($userID);
 
 		if ($data->jqv === false) {
 			if ($data->new) {
@@ -39,7 +38,7 @@ class Msa extends Controller {
 	}
 
 	public static function getUser($data) {
-		$fields = ['userID|text', 'loginID|text'];
+		$fields = ['userID|string', 'loginID|string'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 		$userID = $data->loginID ? $data->loginID : $data->userID;
@@ -277,35 +276,54 @@ class Msa extends Controller {
 	}
 
 	public static function validatePrinter($data) {
-		$fields = ['id|text', 'strict|bool', 'jqv|bool'];
+		$fields = ['id|string', 'strict|bool', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
-		$prtd = new MsaCRUDs\Prtd();
+		$PRTD = DMSA\Prtd::getInstance();
 
 		if ($data->jqv) { // JQueryValidate
 			if ($data->strict) {
-				return $prtd->exists($data->id) ? true : "Printer $data->id not found";
+				return $PRTD->exists($data->id) ? true : "Printer $data->id not found";
 			}
-			return $prtd->existsPrinterPitch($data->id) ? true : "Printer & Pitch $data->id not found";
+			return $PRTD->existsPrinterPitch($data->id) ? true : "Printer & Pitch $data->id not found";
 		}
 
 		if ($data->strict) {
-			return $prtd->exists($data->id);
+			return $PRTD->exists($data->id);
 		}
-		return $prtd->existsPrinterPitch($data->id);
+		return $PRTD->existsPrinterPitch($data->id);
+	}
+
+	public static function getPrinter(WireData $data) {
+		$fields = ['id|string', 'strict|bool', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$PRTD = DMSA\Prtd::getInstance();
+		$id = $PRTD->idByPrinterPitch($data->id);
+
+		if ($id === false) {
+			return false;
+		}
+		return $PRTD->printerJson($PRTD->printer($id));
 	}
 
 	public static function validateRoleid($data) {
-		$fields = ['id|text', 'jqv|bool'];
+		$fields = ['id|string', 'jqv|bool'];
 		self::sanitizeParametersShort($data, $fields);
-		$prtd = new MsaCRUDs\Lrole();
+		$LROLE  = DMSA\Lrole::getInstance();
+		$exists = $LROLE->exists($data->id);
 
 		if ($data->jqv) { // JQueryValidate
-			return $prtd->exists($data->id) ? true : "Role ID $data->id not found";
+			return $exists ? true : "Role ID $data->id not found";
 		}
-		return $prtd->exists($data->id);
+		return $exists;
 	}
 
-	private static function validator() {
-		return new MsaValidator();
+	public static function getRole($data) {
+		self::sanitizeParametersShort($data, ['id|string']);
+		$LROLE  = DMSA\Lrole::getInstance();
+		$role = $LROLE->role($data->id);
+		if (empty($role)) {
+			return false;
+		}
+		return $LROLE->roleJson($role);
 	}
 }
