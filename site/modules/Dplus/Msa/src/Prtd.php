@@ -148,7 +148,6 @@ class Prtd extends WireData {
 		return false;
 	}
 
-
 	/**
 	 * Return Printer
 	 * @param  string $id    Printer ID
@@ -186,5 +185,21 @@ class Prtd extends WireData {
 			return $this->user($this->idByPrinterPitch($id));
 		}
 		return $this->new($id);
+	}
+
+	/**
+	 * Return Printer
+	 * @param  string $id    Printer ID
+	 * @return Printer
+	 */
+	public function printerJson(Printer $p) {
+		return [
+			'id' => $p->id,
+			'description' => $p->description,
+			'type'        => $p->type,
+			'pitch10'     => $p->pitch10 == 'X',
+			'pitch12'     => $p->pitch12 == 'X',
+			'pitch17'     => $p->pitch17 == 'X',
+ 		];
 	}
 }
