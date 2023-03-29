@@ -60,6 +60,16 @@ $(function() {
 		modal.modal('hide');
 	});
 
+	$("body").on('click', '.printer-link', function(e) {
+		e.preventDefault();
+		var button    = $(this);
+		var printerid = button.data('printer');
+		var modal     = button.closest('.modal');
+		var input     = $(modal.attr('data-input'));
+		input.val(printerid);
+		modal.modal('hide');
+	});
+
 	$("body").on('submit', '#ajax-modal form', function(e) {
 		e.preventDefault();
 		var form = $(this);
