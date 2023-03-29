@@ -46,9 +46,9 @@ abstract class Controller extends WireData {
 			}
 			$method = $arr[1];
 
-				// Check if Param exists
-			if (!isset($data->$name)) {
-				$data->$name = '';
+			// Check if Param exists
+			if ($data->has($name) === false) {
+				$data->$name = $method == 'bool' ? false : '';
 				continue;
 			}
 			$data->$name = self::sanitizeByMethod($data->$name, $method);
@@ -57,14 +57,20 @@ abstract class Controller extends WireData {
 	}
 
 	public static function sanitizeByMethod($subject, $method) {
+		
 		$sanitizer = self::pw('sanitizer');
 		// Sanitize Data
 		// If no sanitizer is defined, use the text sanitizer as default
 		$method = $method ? $method : 'text';
 
+		if ($method == 'bool') {
+			return boolval($sanitizer->bool($subject));
+		}
+
 		if (!method_exists($sanitizer, $method) && $sanitizer->hooks->isHooked("Sanitizer::$method()") === false) {
 			$method = 'text';
 		}
+		
 		return $sanitizer->$method($subject);
 	}
 
