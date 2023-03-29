@@ -18,11 +18,14 @@ class Msa extends Controller {
 	}
 
 	public static function validateUserid($data) {
-		$fields = ['userID|string', 'loginID|string', 'jqv|bool', 'new|bool'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		$fields = ['id|string', 'userID|string', 'loginID|string', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
 		$LOGM = DMSA\Logm::getInstance();
-		$userID = $data->loginID ? $data->loginID : $data->userID;
-		$exists = $LOGM->exists($userID);
+		if (empty($data->id)) {
+			$data->id = $data->loginID ? $data->loginID : $data->userID;
+		}
+		
+		$exists = $LOGM->exists($data->id);
 
 		if ($data->jqv === false) {
 			if ($data->new) {
@@ -32,23 +35,26 @@ class Msa extends Controller {
 		}
 
 		if ($data->new) {
-			return $exists === false ? true : "User $userID Exists";
+			return $exists === false ? true : "User $data->id Exists";
 		}
-		return $exists ? true : "User $userID Not Found";
+		return $exists ? true : "User $data->id Not Found";
 	}
 
 	public static function getUser($data) {
-		$fields = ['userID|string', 'loginID|string'];
+		$fields = ['id|string', 'userID|string', 'loginID|string'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		$userID = $data->loginID ? $data->loginID : $data->userID;
+		$LOGM = DMSA\Logm::getInstance();
 
-		if ($validate->userid($userID) === false) {
+		if (empty($data->id)) {
+			$data->id = $data->loginID ? $data->loginID : $data->userID;
+		}
+
+		if ($LOGM->exists($data->id)=== false) {
 			return false;
 		}
-		$login = DplusUserQuery::create()->findOneByUserid($userID);
+		$login = $LOGM->user($data->id);
 		return array(
-			'loginid' => $userID,
+			'loginid' => $data->id,
 			'name'    => $login->name,
 			'whseid'  => $login->whseid,
 		);
