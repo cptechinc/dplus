@@ -58,7 +58,7 @@ class Logm extends Base {
 		return $html;
 	}
 
-	private static function user($data) {
+	private static function user(WireData $data) {
 		self::pw('page')->headline = "Login ID Entry Edit";
 		$logm = self::getLogm();
 		$user = $logm->getOrCreate($data->id);
@@ -67,7 +67,7 @@ class Logm extends Base {
 			$logm->lockrecord($data->id);
 		}
 		self::initHooks();
-		// $page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
+		self::appendJsUser($data);
 		$html = self::displayUser($data, $user);
 		self::getLogm()->deleteResponse();
 		return $html;
@@ -205,6 +205,25 @@ class Logm extends Base {
 ============================================================= */
 	public static function getLogm() {
 		return LogmManager::getInstance();
+	}
+
+/* =============================================================
+	7. Supplemental
+============================================================= */
+	private static function appendJsUser(WireData $data) {
+		$jsPath = self::getJsPath($data);
+
+		$scripts = ['classes/Alerts.js', 'classes/Requests.js', 'classes/Inputs.js', 'classes/Form.js', 'validate-form.js', 'events.js'];
+
+		foreach ($scripts as $script) {
+			if (file_exists(self::pw('config')->paths->templates . $jsPath . $script)) {
+				self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl($jsPath . $script));
+			}
+		}
+	}	
+
+	private static function getJsPath(WireData $data) {
+		return 'scripts/pages/' . self::getNamespaceAsPath() . '/' . self::getClassNameAsPath() . '/';
 	}
 
 /* =============================================================
