@@ -1,13 +1,14 @@
 {% include 'util/bootstrap/form/input.twig' with {
 	'input': {
-		'type': 'number',
 		'name': 'companyid',
 		'value': duser.companyid,
 		'size': 'sm',
-		'addclasses': ['text-right'],
+		'addclasses': [],
 		'attributes': {
 			'placeholder': '',
 			'aria-label':  'Company ID',
+			'maxlength': logm.fieldAttribute('companyid', 'maxlength'),
+			'tabindex': 4,
 		}
 	}
 } %}
