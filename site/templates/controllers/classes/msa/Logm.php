@@ -246,6 +246,10 @@ class Logm extends Base {
 			$event->return = self::logmUrl($event->arguments(0));
 		});
 
+		$m->addHook('Page(pw_template=msa)::userAddUrl', function($event) {
+			$event->return = self::userEditUrl('new');
+		});
+
 		$m->addHook('Page(pw_template=msa)::userEditUrl', function($event) {
 			$event->return = self::userEditUrl($event->arguments(0));
 		});
