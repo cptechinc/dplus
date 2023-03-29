@@ -1,11 +1,11 @@
 <?php namespace Controllers;
+// Base PHP
+use ReflectionClass;
 // Purl URI Manipulation Library
 use Purl\Url as Purl;
 // ProcessWire
 use ProcessWire\User;
 use ProcessWire\Page;
-// Dplus
-use Dplus\User\FunctionPermissions as PermissionsAdmin;
 // Mvc Controllers
 use Mvc\Controllers\Controller;
 
@@ -92,6 +92,40 @@ abstract class AbstractController extends Controller {
 ============================================================= */
 	public static function addAjaxNoceJs() {
 		// self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/ajax-noce-modal.js'));
+	}
+
+	/**
+	 * Return Reflection Class
+	 * @return ReflectionClass
+	 */
+	protected static function getStaticReflectionClass() {
+		return new ReflectionClass(static::class);
+	}
+
+	/**
+	 * Return Namespace as path
+	 * @return string
+	 */
+	protected static function getNamespaceAsPath() {
+		$insp = static::getStaticReflectionClass();
+		$ns = $insp->getNamespaceName();
+		$ns = preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $ns);
+		$ns = strtolower($ns);
+		$ns = ltrim($ns, 'controllers\\');
+		$ns = str_replace("\\", '/', $ns);
+		return $ns;
+	}
+
+	/**
+	 * Return Class Name as path
+	 * @return string
+	 */
+	protected static function getClassNameAsPath() {
+		$insp = static::getStaticReflectionClass();
+		$class = $insp->getShortName();
+		$class = preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $class);
+		$class = strtolower($class);
+		return $class;
 	}
 
 /* =============================================================
