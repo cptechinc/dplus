@@ -265,25 +265,25 @@ class Logm extends WireData {
 		$invalid = [];
 
 		$validateMin = new Validators\Min();
-		if ($validateMin->whseid($values->text('whseid')) === false) {
+		if ($validateMin->whseid($values->string('whseid')) === false) {
 			$invalid['whseid'] = 'Warehouse ID';
 		}
 
 		$prtd = Prtd::getInstance();
-		if ($prtd->existsPrinterPitch($values->text('printerbrowse')) === false) {
+		if ($prtd->existsPrinterPitch($values->text('printerbrowse')) === false || strtolower($values->string('printerbrowse')) == 'browse') {
 			$invalid['printerbrowse'] = 'Default Printer';
 		}
-		if ($prtd->existsPrinterPitch($values->text('printerbrowse')) === false) {
+		if ($prtd->existsPrinterPitch($values->string('printerreport')) === false || strtolower($values->string('printerreport')) == 'browse') {
 			$invalid['printerreport'] = 'Report Printer';
 		}
 
 		$lgrp = Lgrp::getInstance();
-		if ($values->text('groupid') != '' && $lgrp->exists($values->text('groupid')) === false) {
+		if ($values->text('groupid') != '' && $lgrp->exists($values->string('groupid')) === false) {
 			$invalid['groupid'] = 'Login Group';
 		}
 
 		$lrole = Lrole::getInstance();
-		if ($values->text('roleid') != '' && $lrole->exists($values->text('roleid')) === false) {
+		if ($values->text('roleid') != '' && $lrole->exists($values->string('roleid')) === false) {
 			$invalid['roleid'] = 'Login Role';
 		}
 
@@ -291,7 +291,7 @@ class Logm extends WireData {
 		foreach ($fields as $field) {
 			if (array_key_exists($field, $invalid) === false) {
 				$setFunc = 'set'.ucfirst($field);
-				$user->$setFunc($values->text($field));
+				$user->$setFunc($values->string($field));
 			}
 		}
 		return $invalid;
