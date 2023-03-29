@@ -18,7 +18,7 @@ class Contact extends Logm {
 		'email'        => ['type' => 'text', 'maxlength' => 50],
 		'faxsubject'   => ['type' => 'text', 'maxlength' => 40],
 		'sendtime'     => ['type' => 'text', 'options' => DplusUser::SENDTIMES],
-		'notify'       => ['type' => 'text', 'true' => DplusUser::NOTIFY_TRUE]
+		'notify'       => ['type' => 'text', 'true'    => DplusUser::NOTIFY_TRUE]
 	];
 
 	private static $instance;
