@@ -1,0 +1,26 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+	'inputgroup': {
+		'type': 'prepend',
+		'size': 'sm',
+		'input': {
+			'name': 'whseid',
+			'value': duser.whseid,
+			'attributes': {
+				'placeholder': '',
+				'aria-label':  'Warehouse ID',
+				'required': true,
+			}
+		},
+		'button': {
+			'colorclass': 'btn-secondary',
+			'text': 'fa fa-search'|icon,
+			'attributes': {
+				'title': 'Search Warehouses',
+				'data-toggle': 'modal',
+				'data-target': '#ajax-modal',
+				'data-lookupurl': page.searchLookupUrl('warehouses'),
+				'data-input': '#whseid'
+			}
+		}
+	}
+} %}

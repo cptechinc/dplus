@@ -451,4 +451,20 @@ class Logm extends WireData {
 	public function getPrtd() {
 		return Prtd::getInstance();
 	}
+
+	/**
+	 * Return Lgrp
+	 * @return Lgrp
+	 */
+	public function getLgrp() {
+		return Lgrp::getInstance();
+	}
+
+	/**
+	 * Return Lgrp
+	 * @return Lrole
+	 */
+	public function getLrole() {
+		return Lrole::getInstance();
+	}
 }

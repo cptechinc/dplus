@@ -153,15 +153,10 @@ class Logm extends Base {
 	}
 
 	private static function displayUser($data, DplusUser $user) {
-		$config = self::pw('config');
-		$logm   = self::getLogm();
-
 		$html  = self::renderBreadcrumbs($data);
 		$html .= '<div class="mb-3">' . self::renderLock($data) . '</div>';
 		$html .= self::renderResponse($data);
-		$html .= $config->twig->render('msa/logm/user/display.twig', ['logm' => $logm, 'duser' => $user]);
-		$html .= $config->twig->render('msa/logm/user/password/modal/pswd.twig', ['logm' => $logm, 'duser' => $user]);
-		$html .= $config->twig->render('msa/logm/user/password/modal/pswd-web.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= self::renderUser($data, $user);
 		return $html;
 	}
 
@@ -198,6 +193,11 @@ class Logm extends Base {
 
 	private static function renderListForPrinting(WireData $data, PropelModelPager $users) {
 		return self::pw('config')->twig->render('msa/logm/list/display-print.twig', ['users' => $users]);
+	}
+
+	private static function renderUser(WireData $data, DplusUser $user) {
+		$logm = self::getLogm();
+		return self::pw('config')->twig->render('msa/logm/user/display.twig', ['logm' => $logm, 'duser' => $user]);
 	}
 
 /* =============================================================

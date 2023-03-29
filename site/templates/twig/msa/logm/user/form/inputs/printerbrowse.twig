@@ -1,0 +1,25 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+	'inputgroup': {
+		'type': 'prepend',
+		'size': 'sm',
+		'input': {
+			'name': 'printerbrowse',
+			'value': duser.printerbrowse,
+			'attributes': {
+				'placeholder': '',
+				'aria-label':  'Browse Printer'
+			}
+		},
+		'button': {
+			'colorclass': 'btn-secondary',
+			'text': 'fa fa-search'|icon,
+			'attributes': {
+				'title': 'Search Printers',
+				'data-toggle': 'modal',
+				'data-target': '#ajax-modal',
+				'data-lookupurl': page.searchLookupUrl('msa/printers'),
+				'data-input': '#printerbrowse'
+			}
+		}
+	}
+} %}

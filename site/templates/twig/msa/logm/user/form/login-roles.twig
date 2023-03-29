@@ -1,67 +1,35 @@
-<div class="form-group row">
+<div class="mb-2 form-row">
 	<div class="col-sm-3">
 		<label for="groupid">Login Group</label>
 	</div>
-	<div class="col-sm-9">
-		{% include 'util/bootstrap/form/input-group.twig' with {
-				'inputgroup': {
-					'type': 'prepend',
-					'size': 'sm',
-					'input': {
-						'name': 'groupid',
-						'value': duser.groupid,
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Login Group'
-						}
-					},
-					'button': {
-						'colorclass': 'btn-secondary',
-						'text': 'fa fa-search'|icon,
-						'attributes': {
-							'title': 'Search Login Groups',
-							'data-toggle': 'modal',
-							'data-target': '#ajax-modal',
-							'data-lookupurl': page.searchLookupUrl('msa/lgrp'),
-							'data-input': '#groupid'
-						}
-					}
-				}
-			}
-		%}
+	<div class="col-sm-6 input-parent">
+		<div class="row">
+			<div class="col-sm-4">
+				{% include 'msa/logm/user/form/inputs/groupid.twig' %}
+			</div>
+			<div class="col-sm-6">
+				<p class="form-control-plaintext form-control-sm text-muted ajax-description">
+					{{ duser.groupid ? logm.getLgrp().description(duser.groupid) : '' }}
+				</p>
+			</div>
+		</div>
 	</div>
 </div>
 
-<div class="form-group row">
+<div class="mb-2 form-row">
 	<div class="col-sm-3">
 		<label for="roleid">Login Role</label>
 	</div>
-	<div class="col-sm-9">
-		{% include 'util/bootstrap/form/input-group.twig' with {
-				'inputgroup': {
-					'type': 'prepend',
-					'size': 'sm',
-					'input': {
-						'name': 'roleid',
-						'value': duser.roleid,
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Login Role'
-						}
-					},
-					'button': {
-						'colorclass': 'btn-secondary',
-						'text': 'fa fa-search'|icon,
-						'attributes': {
-							'title': 'Search Login Roles',
-							'data-toggle': 'modal',
-							'data-target': '#ajax-modal',
-							'data-lookupurl': page.searchLookupUrl('msa/lrole'),
-							'data-input': '#roleid'
-						}
-					}
-				}
-			}
-		%}
+	<div class="col-sm-6 input-parent">
+		<div class="row">
+			<div class="col-sm-4">
+				{% include 'msa/logm/user/form/inputs/roleid.twig' %}
+			</div>
+			<div class="col-sm-6">
+				<p class="form-control-plaintext form-control-sm text-muted ajax-description">
+					{{ duser.roleid ? logm.getLrole().description(duser.roleid) : '' }}
+				</p>
+			</div>
+		</div>
 	</div>
 </div>

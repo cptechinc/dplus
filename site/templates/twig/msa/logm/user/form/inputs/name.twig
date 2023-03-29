@@ -1,0 +1,12 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'name',
+		'value': duser.name,
+		'size': 'sm',
+		'attributes': {
+			'placeholder': '',
+			'aria-label':  'Login Name',
+			'maxlength': logm.fieldAttribute('name', 'maxlength'),
+		}
+	}
+} %}

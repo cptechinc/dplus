@@ -1,0 +1,14 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'id',
+		'value': duser.id,
+		'size': 'sm',
+		'attributes': {
+			'placeholder': '',
+			'aria-label':  'Login ID',
+			'readonly': duser.isNew() == false,
+			'maxlength': logm.fieldAttribute('id', 'maxlength'),
+			'oninput': 'this.value = this.value.toLowerCase()'
+		}
+	}
+} %}

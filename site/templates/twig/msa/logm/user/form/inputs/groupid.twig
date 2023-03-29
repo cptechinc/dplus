@@ -1,0 +1,25 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+	'inputgroup': {
+		'type': 'prepend',
+		'size': 'sm',
+		'input': {
+			'name': 'groupid',
+			'value': duser.groupid,
+			'attributes': {
+				'placeholder': '',
+				'aria-label':  'Login Group'
+			}
+		},
+		'button': {
+			'colorclass': 'btn-secondary',
+			'text': 'fa fa-search'|icon,
+			'attributes': {
+				'title': 'Search Login Groups',
+				'data-toggle': 'modal',
+				'data-target': '#ajax-modal',
+				'data-lookupurl': page.searchLookupUrl('msa/lgrp'),
+				'data-input': '#groupid'
+			}
+		}
+	}
+} %}

@@ -1,101 +1,59 @@
 <form action="{{ input.paginateUrl(1) }}" method="POST" id="logm-form">
-	<div class="form-group row">
+	<div class="mb-2 form-row">
 		<div class="col-sm-3">
 			<label for="id">Login ID</label>
 		</div>
 		<div class="col-sm-2">
-			{% include 'util/bootstrap/form/input.twig' with {
-					'input': {
-						'name': 'id',
-						'value': duser.id,
-						'size': 'sm',
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Login ID',
-							'readonly': duser.isNew() == false,
-							'maxlength': logm.fieldAttribute('id', 'maxlength'),
-							'oninput': 'this.value = this.value.toLowerCase()'
-						}
-					}
-				}
-			%}
+			{% include 'msa/logm/user/form/inputs/id.twig' %}
 		</div>
 	</div>
 
-	<div class="form-group row">
+	<div class="mb-2 form-row">
 		<div class="col-sm-3">
 			<label for="name">Login Name</label>
 		</div>
-		<div class="col-sm-4">
-			{% include 'util/bootstrap/form/input.twig' with {
-					'input': {
-						'name': 'name',
-						'value': duser.name,
-						'size': 'sm',
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Login Name',
-							'maxlength': logm.fieldAttribute('name', 'maxlength'),
-						}
-					}
-				}
-			%}
+		<div class="col-sm-3">
+			{% include 'msa/logm/user/form/inputs/name.twig' %}
 		</div>
 	</div>
 
-	<div class="form-group row">
+	<div class="mb-2 form-row">
 		<div class="col-sm-3">
 			<label for="whseid">Warehouse ID</label>
 		</div>
-		<div class="col-sm-2">
-			{% include 'util/bootstrap/form/input-group.twig' with {
-					'inputgroup': {
-						'type': 'prepend',
-						'size': 'sm',
-						'input': {
-							'name': 'whseid',
-							'value': duser.whseid,
-							'attributes': {
-								'placeholder': '',
-								'aria-label':  'Warehouse ID'
-							}
-						},
-						'button': {
-							'colorclass': 'btn-secondary',
-							'text': 'fa fa-search'|icon,
-							'attributes': {
-								'title': 'Search Warehouses',
-								'data-toggle': 'modal',
-								'data-target': '#ajax-modal',
-								'data-lookupurl': page.searchLookupUrl('warehouses'),
-								'data-input': '#whseid'
-							}
-						}
-					}
-				}
-			%}
+		<div class="col-sm-6 input-parent">
+			<div class="row">
+				<div class="col-sm-4">
+					{% include 'msa/logm/user/form/inputs/whseid.twig' %}
+				</div>
+				<div class="col-sm-6">
+					<p class="form-control-plaintext form-control-sm text-muted name">
+						{{ duser.getWhse().name }}
+					</p>
+				</div>
+			</div>
 		</div>
 	</div>
 
-	<div class="form-group row">
+	<div class="mb-2 form-row">
 		<div class="col-sm-3">
 			<label for="companyid">Company ID</label>
 		</div>
 		<div class="col-sm-1">
-			<input type="number" name="companyid" id="companyid" class="form-control form-control-sm text-right" value="{{ duser.companyid }}">
+			{% include 'msa/logm/user/form/inputs/companyid.twig' %}
 		</div>
 	</div>
 
 	{% include 'msa/logm/user/form/user-roles.twig' %}
 
-	<legend>Printers</legend>
+	<legend>Default Printers</legend>
 	{% include 'msa/logm/user/form/printers.twig' %}
 
-	<div class="form-group row">
+	<div class="mb-2 form-row">
 		<div class="col-sm-3">
 			<label for="userwhsefirst">II screens, My Whse First?</label>
 		</div>
-		<div class="col-sm-3">
+		<div class="col-sm-2">
 			{% include 'util/bootstrap/form/select-simple.twig' with {
 					'select': {
 						'name': 'userwhsefirst',
@@ -109,11 +67,11 @@
 		</div>
 	</div>
 
-	<div class="form-group row">
+	<div class="mb-2 form-row">
 		<div class="col-sm-3">
 			<label for="activteitemsonly">Item ID Get, Active Items Only</label>
 		</div>
-		<div class="col-sm-3">
+		<div class="col-sm-2">
 			{% include 'util/bootstrap/form/select-simple.twig' with {
 					'select': {
 						'name': 'activteitemsonly',
@@ -133,7 +91,9 @@
 	<legend>Groups, Roles</legend>
 	{% include 'msa/logm/user/form/login-roles.twig' %}
 
-	<div class="d-flex justify-content-between align-items-center">
+	<hr>
+
+	<div class="mt-3 d-flex justify-content-between align-items-center">
 		{% if logm.recordlocker.userHasLocked(duser.id) or duser.isNew() %}
 			<button type="submit" name="action" value="update" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save

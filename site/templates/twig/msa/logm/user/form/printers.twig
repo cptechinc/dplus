@@ -1,68 +1,39 @@
 {% set prtd = logm.getPrtd() %}
 
-<div class="row">
-	<div class="col-sm-6 form-group">
-		<label for="printerbrowse">Default Printer, Browse Printer</label>
-		{% include 'util/bootstrap/form/input-group.twig' with {
-				'inputgroup': {
-					'type': 'prepend',
-					'size': 'sm',
-					'input': {
-						'name': 'printerbrowse',
-						'value': duser.printerbrowse,
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Browse Printer'
-						}
-					},
-					'button': {
-						'colorclass': 'btn-secondary',
-						'text': 'fa fa-search'|icon,
-						'attributes': {
-							'title': 'Search Printers',
-							'data-toggle': 'modal',
-							'data-target': '#ajax-modal',
-							'data-lookupurl': page.searchLookupUrl('msa/printers'),
-							'data-input': '#printerbrowse'
-						}
-					}
-				}
-			}
-		%}
-		<small class="form-text text-muted printer-description">
-			{{ prtd.printer(prtd.idByPrinterPitch(duser.printerbrowse)).description }}
-		</small>
+<div class="mb-2 form-row">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-2">
+		<label for="printerbrowse">Browse Printer</label>
 	</div>
-	<div class="col-sm-6 form-group">
+	<div class="col-sm-4 input-parent">
+		<div class="row">
+			<div class="col-sm-6">
+				{% include 'msa/logm/user/form/inputs/printerbrowse.twig' %}
+			</div>
+			<div class="col-sm-6">
+				<p class="form-control-plaintext form-control-sm text-muted name">
+					{{ prtd.printer(prtd.idByPrinterPitch(duser.printerbrowse)).description }}
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="mb-2 form-row">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-2">
 		<label for="printerreport">Report Printer</label>
-		{% include 'util/bootstrap/form/input-group.twig' with {
-				'inputgroup': {
-					'type': 'prepend',
-					'size': 'sm',
-					'input': {
-						'name': 'printerreport',
-						'value': duser.printerreport,
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'ReportPrinter'
-						}
-					},
-					'button': {
-						'colorclass': 'btn-secondary',
-						'text': 'fa fa-search'|icon,
-						'attributes': {
-							'title': 'Search Printers',
-							'data-toggle': 'modal',
-							'data-target': '#ajax-modal',
-							'data-lookupurl': page.searchLookupUrl('msa/printers'),
-							'data-input': '#printerreport'
-						}
-					}
-				}
-			}
-		%}
-		<small class="form-text text-muted printer-description">
-			{{ prtd.printer(prtd.idByPrinterPitch(duser.printerreport)).description }}
-		</small>
+	</div>
+	<div class="col-sm-4 input-parent">
+		<div class="row">
+			<div class="col-sm-6">
+				{% include 'msa/logm/user/form/inputs/printerreport.twig' %}
+			</div>
+			<div class="col-sm-6">
+				<p class="form-control-plaintext form-control-sm text-muted name">
+					{{ prtd.printer(prtd.idByPrinterPitch(duser.printerreport)).description }}
+				</p>
+			</div>
+		</div>
 	</div>
 </div>

@@ -1,0 +1,25 @@
+{% include 'util/bootstrap/form/input-group.twig' with {
+	'inputgroup': {
+		'type': 'prepend',
+		'size': 'sm',
+		'input': {
+			'name': 'roleid',
+			'value': duser.roleid,
+			'attributes': {
+				'placeholder': '',
+				'aria-label':  'Login Role'
+			}
+		},
+		'button': {
+			'colorclass': 'btn-secondary',
+			'text': 'fa fa-search'|icon,
+			'attributes': {
+				'title': 'Search Login Roles',
+				'data-toggle': 'modal',
+				'data-target': '#ajax-modal',
+				'data-lookupurl': page.searchLookupUrl('msa/lrole'),
+				'data-input': '#roleid'
+			}
+		}
+	}
+} %}
