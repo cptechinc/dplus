@@ -234,7 +234,7 @@ class Logm extends WireData {
 		$user->setCitydesk($values->yn('citydesk'));
 		$user->setReportadmin($values->yn('reportadmin'));
 		$user->setUserwhsefirst($values->yn('userwhsefirst'));
-		$user->setActiveitemsonly($values->yn('activteitemsonly'));
+		$user->setActiveitemsonly($values->yn('activeitemsonly'));
 		$user->setRestrictaccess($values->yn('restrictaccess'));
 		$user->setAllowprocessdelete($values->yn('allowprocessdelete'));
 		$invalid = $this->updateInputUserValidated($input, $user);
