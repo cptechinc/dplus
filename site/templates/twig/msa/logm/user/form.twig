@@ -101,7 +101,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if duser.isNew() == false %}
-				<a href="{{ page.userDeleteUrl(duser.id) }}" class="btn btn-danger delete_button">
+				<a href="{{ page.userDeleteUrl(duser.id) }}" class="btn btn-danger delete_button crud-submit">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
