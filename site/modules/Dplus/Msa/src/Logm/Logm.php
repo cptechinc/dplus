@@ -474,4 +474,8 @@ class Logm extends WireData {
 	public function getLrole() {
 		return Lrole::getInstance();
 	}
+
+	public function getContactM() {
+		return Logm\Contact::getInstance();
+	}
 }
