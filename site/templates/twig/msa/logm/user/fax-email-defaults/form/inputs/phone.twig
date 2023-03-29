@@ -1,0 +1,13 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'phone',
+		'value': contact.phone('-'),
+		'size': 'sm',
+		'addclasses': ['phone-input', 'w-auto'],
+		'attributes': {
+			'placeholder': '',
+			'aria-label':  'Phone',
+			'tabindex': 105,
+		},
+	}
+} %}

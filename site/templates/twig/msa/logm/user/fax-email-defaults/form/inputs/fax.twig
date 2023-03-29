@@ -1,0 +1,13 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'fax',
+		'value': contact.fax('-'),
+		'size': 'sm',
+		'addclasses': ['phone-input', 'w-auto'],
+		'attributes': {
+			'placeholder': '',
+			'aria-label':  'Fax Number',
+			'tabindex': 104
+		},
+	}
+} %}

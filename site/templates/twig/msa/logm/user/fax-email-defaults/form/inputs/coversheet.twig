@@ -1,0 +1,14 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'coversheet',
+		'value': contact.coversheet,
+		'size': 'sm',
+		'addclasses': ['w-auto'],
+		'attributes': {
+			'placeholder': '',
+			'aria-label':  'Cover Sheet',
+			'maxlength': CONTACTM.fieldAttribute('coversheet', 'maxlength'),
+			'tabindex': 106,
+		},
+	}
+} %}

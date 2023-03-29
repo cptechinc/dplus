@@ -1,0 +1,13 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'company': 'faxcompany',
+		'value': contact.faxcompany,
+		'size': 'sm',
+		'attributes': {
+			'placeholder': '',
+			'aria-label':  'Fax / Email Company',
+			'maxlength': CONTACTM.fieldAttribute('faxcompany', 'maxlength'),
+			'tabindex': 103,
+		}
+	}
+} %}

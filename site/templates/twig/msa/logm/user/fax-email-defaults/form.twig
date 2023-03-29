@@ -1,0 +1,69 @@
+{% set CONTACTM = logm.getContactM() %}
+{% set contact = CONTACTM.user(duser.id) %}
+
+<form action="{{ input.url() }}" method="POST">
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label for="faxUserid">Login ID</label>
+				</div>
+				<div class="col-sm-2">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/id.twig' %}
+				</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label for="faxname">Name</label>
+				</div>
+				<div class="col-sm-5">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxname.twig' %}
+				</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label for="faxcompany">Company</label>
+				</div>
+				<div class="col-sm-5">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxcompany.twig' %}
+				</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label for="fax">Fax Number</label>
+				</div>
+				<div class="col-sm-9">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/fax.twig' %}
+				</div>
+			</div>
+
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label for="phone">Phone Number</label>
+				</div>
+				<div class="col-sm-9">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/phone.twig' %}
+				</div>
+			</div>
+
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label for="coversheet">Cover Sheet</label>
+				</div>
+				<div class="col-sm-9">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/coversheet.twig' %}
+				</div>
+			</div>
+
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label for="coversheet">Cover Sheet</label>
+				</div>
+				<div class="col-sm-9">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/subject.twig' %}
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4"></div>
+	</div>
+</form>
