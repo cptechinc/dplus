@@ -1,15 +1,13 @@
 <?php namespace Controllers\Msa\Logm;
-// External Libraries, classes
-use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Models
 use DplusUser;
-// Dplus Filters
+// ProcessWire;
+use ProcessWire\WireData;
+// Dplus
 use Dplus\Filters;
-// Dplus CRUD
 use Dplus\Msa;
-use Dplus\Msa\Logm as LogmManager;
 use Dplus\Msa\Logm\Contact as LogmContactManager;
 // Conrollers
 use Controllers\Msa\Logm;
@@ -52,7 +50,7 @@ class Contact extends Logm {
 	private static function user($data) {
 		$logm = self::getLogm();
 		$page = self::pw('page');
-		$page->headline = "LOGM: $data->id Fax Defaults";
+		$page->headline = "Login ID Entry Edit Fax Defaults";
 
 		if ($logm->exists($data->id) === false) {
 			self::pw('session')->redirect(self::logmUrl($data->id), $http301 = false);
@@ -61,7 +59,6 @@ class Contact extends Logm {
 		$logm->lockrecord($data->id);
 
 		self::initHooks();
-		// $page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
 		return $html;
 	}
@@ -74,12 +71,12 @@ class Contact extends Logm {
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function displayUser($data, DplusUser $user) {
+	private static function displayUser(WireData $data, DplusUser $user) {
 		$config = self::pw('config');
 		$logmContact = self::getLogmContact();
 
-		$html  = '';
-		$html .= '<div class="mb-3">' . self::displayLock($data) . '</div>';
+		$html  = self::renderBreadcrumbs($data);
+		$html .= '<div class="mb-3">' . self::renderLock($data) . '</div>';
 		$html .= $config->twig->render('msa/logm/user/contact/display.twig', ['logm' => $logmContact, 'duser' => $user]);
 		return $html;
 	}

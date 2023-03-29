@@ -165,7 +165,8 @@ class Logm extends Base {
 /* =============================================================
 	6. HTML Rendering
 ============================================================= */
-	private static function renderBreadcrumbs(WireData $data) {
+	// NOTE: keep protected so Logm\Contact can use
+	protected static function renderBreadcrumbs(WireData $data) {
 		return self::pw('config')->twig->render('msa/logm/bread-crumbs.twig');
 	}
 
@@ -178,7 +179,8 @@ class Logm extends Base {
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
-	private static function renderLock($data) {
+	// NOTE: keep protected so Logm\Contact can use
+	protected static function renderLock($data) {
 		$logm = self::getLogm();
 
 		if ($logm->recordlocker->isLocked($data->id) === false || $logm->recordlocker->userHasLocked($data->id)) {
