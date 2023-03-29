@@ -11,7 +11,7 @@
 				{% include 'msa/logm/user/form/inputs/printerbrowse.twig' %}
 			</div>
 			<div class="col-sm-6">
-				<p class="form-control-plaintext form-control-sm text-muted name">
+				<p class="form-control-plaintext form-control-sm text-muted ajax-description">
 					{{ prtd.printer(prtd.idByPrinterPitch(duser.printerbrowse)).description }}
 				</p>
 			</div>
@@ -30,7 +30,7 @@
 				{% include 'msa/logm/user/form/inputs/printerreport.twig' %}
 			</div>
 			<div class="col-sm-6">
-				<p class="form-control-plaintext form-control-sm text-muted name">
+				<p class="form-control-plaintext form-control-sm text-muted ajax-description">
 					{{ prtd.printer(prtd.idByPrinterPitch(duser.printerreport)).description }}
 				</p>
 			</div>
