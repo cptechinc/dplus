@@ -1,0 +1,38 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	users                  DplusUser[]|ObjectCollection
+#}
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr class="bg-dark text-white">
+				<th class="py-2">Login ID</th>
+				<th class="py-2">Name</th>
+				<th class="py-2">Warehouse</th>
+				<th class="py-2">Admin</th>
+				<th class="py-2">Store Front</th>
+				<th class="py-2">City Desk</th>
+				<th class="py-2">Report Admin</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for user in users %}
+				<tr>
+					<td>
+						{{ user.id|spacepad(logm.fieldAttribute('id', 'maxlength'))|raw }}
+					</td>
+					<td>{{ user.name }}</td>
+					<td>
+						{{ user.whseid }} &nbsp; {{ user.getWhse().name }}
+					</td>
+					<td>{{ user.isAdmin()|yesorno|capitalize }}</td>
+					<td>{{ user.isStorefront()|yesorno|capitalize }}</td>
+					<td>{{ user.isCityDesk()|yesorno|capitalize }}</td>
+					<td>{{ user.isReportAdmin()|yesorno|capitalize }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

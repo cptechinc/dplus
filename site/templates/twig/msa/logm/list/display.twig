@@ -1,1 +1,7 @@
+<div class="mb-3">
+	{% include 'msa/logm/list/header.twig' %}
+</div>
+
 {% include 'msa/logm/list/list.twig' %}
+
+{% include 'util/paginator/propel.twig' with {'pager': users} %}

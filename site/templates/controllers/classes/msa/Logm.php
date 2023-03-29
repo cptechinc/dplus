@@ -10,7 +10,7 @@ use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Msa;
 use Dplus\Msa\Logm as LogmManager;
-
+use ProcessWire\WireData;
 
 class Logm extends Base {
 	const DPLUSPERMISSION = 'logm';
@@ -18,13 +18,11 @@ class Logm extends Base {
 	const TITLE   = 'Login ID Entry';
 	const SUMMARY = 'View / Edit Logins';
 
-	private static $logm;
-
 /* =============================================================
-	Indexes
+	1. Indexes
 ============================================================= */
 	public static function index($data) {
-		$fields = ['id|text', 'action|text'];
+		$fields = ['id|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::pw('page')->show_breadcrumbs = false;
 
@@ -39,7 +37,7 @@ class Logm extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['id|text', 'action|text'];
+		$fields = ['id|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::logmUrl();
 		$logm = self::getLogm();
@@ -52,50 +50,51 @@ class Logm extends Base {
 	}
 
 	private static function list($data) {
-		$fields = ['q|text'];
-		self::sanitizeParametersShort($data, $fields);
-		$page   = self::pw('page');
-		$filter = new Filters\Msa\DplusUser();
-
-		$page->headline = "Login ID Entry";
-
-		if (strlen($data->q) > 0) {
-			$filter->search($data->q);
-			$page->headline = "LOGM: Searching for '$data->q'";
-		}
-
-		$filter->sortby($page);
-		$ids = $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+		self::pw('page')->headline = "Login ID Entry";
 
 		self::initHooks();
-		$page->js .= self::pw('config')->twig->render('msa/logm/list/.js.twig');
-		$html = self::displayList($data, $ids);
+		$html  = self::displayList($data, self::getList($data));
 		self::getLogm()->deleteResponse();
 		return $html;
 	}
 
 	private static function user($data) {
+		self::pw('page')->headline = "Login ID Entry Edit";
 		$logm = self::getLogm();
-		$page = self::pw('page');
-		$page->headline = "LOGM: $data->id";
-
-		if ($logm->exists($data->id) === false) {
-			$page->headline = "LOGM: New User";
-		}
 		$user = $logm->getOrCreate($data->id);
 
 		if ($user->isNew() === false) {
 			$logm->lockrecord($data->id);
 		}
 		self::initHooks();
-		$page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
+		// $page->js .= self::pw('config')->twig->render('msa/logm/user/.js.twig', ['logm' => self::getLogm()]);
 		$html = self::displayUser($data, $user);
 		self::getLogm()->deleteResponse();
 		return $html;
 	}
 
 /* =============================================================
-	URLs
+	3. Data Fetching / Requests / Retrieval
+============================================================= */
+	/**
+	 * Return List of Users filtered by Query Parameters
+	 * @param  WireData $data
+	 * @return PropelModelPager
+	 */
+	private static function getList(WireData $data) {
+		self::sanitizeParametersShort($data, ['q|text']);
+
+		$filter = new Filters\Msa\DplusUser();
+		if (strlen($data->q) > 0) {
+			$filter->search($data->q, ['id', 'name']);
+		}
+
+		$filter->sort(self::pw('input')->get);
+		return $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
+	}
+
+/* =============================================================
+	4. URLs
 ============================================================= */
 	public static function logmUrl($id = '') {
 		if (empty($id)) {
@@ -144,21 +143,36 @@ class Logm extends Base {
 	}
 
 /* =============================================================
-	Displays
+	5. Displays
 ============================================================= */
-	private static function displayList($data, PropelModelPager $users) {
-		$config = self::pw('config');
-		$logm   = self::getLogm();
-
-		$html  = '';
-		$html .= $config->twig->render('msa/logm/bread-crumbs.twig');
-		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('msa/logm/list/display.twig', ['logm' => $logm, 'users' => $users]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $users]);
+	private static function displayList(WireData $data, PropelModelPager $users) {
+		$html  = self::renderBreadcrumbs($data);
+		$html .= self::renderResponse($data);
+		$html .= $data->has('print') ? self::renderListForPrinting($data, $users) : self::renderList($data, $users);
 		return $html;
 	}
 
-	public static function displayResponse($data) {
+	private static function displayUser($data, DplusUser $user) {
+		$config = self::pw('config');
+		$logm   = self::getLogm();
+
+		$html  = self::renderBreadcrumbs($data);
+		$html .= '<div class="mb-3">' . self::renderLock($data) . '</div>';
+		$html .= self::renderResponse($data);
+		$html .= $config->twig->render('msa/logm/user/display.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= $config->twig->render('msa/logm/user/password/modal/pswd.twig', ['logm' => $logm, 'duser' => $user]);
+		$html .= $config->twig->render('msa/logm/user/password/modal/pswd-web.twig', ['logm' => $logm, 'duser' => $user]);
+		return $html;
+	}
+
+/* =============================================================
+	6. HTML Rendering
+============================================================= */
+	private static function renderBreadcrumbs(WireData $data) {
+		return self::pw('config')->twig->render('msa/logm/bread-crumbs.twig');
+	}
+
+	private static function renderResponse(WireData $data) {
 		$logm = self::getLogm();
 		$response = $logm->getResponse();
 		if (empty($response) || $response->hasSuccess()) {
@@ -167,31 +181,34 @@ class Logm extends Base {
 		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
-	public static function displayLock($data) {
+	private static function renderLock($data) {
 		$logm = self::getLogm();
 
-		if ($logm->recordlocker->isLocked($data->id) && $logm->recordlocker->userHasLocked($data->id) === false) {
-			$msg = "User $data->id is being locked by " . $logm->recordlocker->getLockingUser($data->id);
-			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "User is Locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		if ($logm->recordlocker->isLocked($data->id) === false || $logm->recordlocker->userHasLocked($data->id)) {
+			return '';
 		}
-		return '';
+		$msg = "User $data->id is being locked by " . $logm->recordlocker->getLockingUser($data->id);
+		return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "User is Locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 	}
 
-	private static function displayUser($data, DplusUser $user) {
-		$config = self::pw('config');
-		$logm   = self::getLogm();
+	private static function renderList(WireData $data, PropelModelPager $users) {
+		$logm = self::getLogm();
+		return self::pw('config')->twig->render('msa/logm/list/display.twig', ['logm' => $logm, 'users' => $users]);
+	}
 
-		$html  = $config->twig->render('msa/logm/bread-crumbs.twig');
-		$html .= '<div class="mb-3">' . self::displayLock($data) . '</div>';
-		$html .= self::displayResponse($data);
-		$html .= $config->twig->render('msa/logm/user/display.twig', ['logm' => $logm, 'duser' => $user]);
-		$html .= $config->twig->render('msa/logm/user/password/modal/pswd.twig', ['logm' => $logm, 'duser' => $user]);
-		$html .= $config->twig->render('msa/logm/user/password/modal/pswd-web.twig', ['logm' => $logm, 'duser' => $user]);
-		return $html;
+	private static function renderListForPrinting(WireData $data, PropelModelPager $users) {
+		return self::pw('config')->twig->render('msa/logm/list/display-print.twig', ['users' => $users]);
 	}
 
 /* =============================================================
-	Hooks
+	7. Class / Module Getters
+============================================================= */
+	public static function getLogm() {
+		return LogmManager::getInstance();
+	}
+
+/* =============================================================
+	9. Hooks / Object Decorating
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Dpages');
@@ -229,13 +246,4 @@ class Logm extends Base {
 		});
 	}
 
-/* =============================================================
-	Supplemental
-============================================================= */
-	public static function getLogm() {
-		if (empty(self::$logm)) {
-			self::$logm = new LogmManager();
-		}
-		return self::$logm;
-	}
 }

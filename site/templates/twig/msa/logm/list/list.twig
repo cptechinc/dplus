@@ -2,8 +2,7 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	qusers                 Dplus\qusers\Noce
-	users                  NotePreDefined[]|ObjectCollection
+	users                  DplusUser[]|ObjectCollection
 #}
 {% set response = logm.getResponse() %}
 
@@ -29,11 +28,12 @@
 		</thead>
 		<tbody>
 			{% for user in users %}
-				{% set class = '' %}
+				{% set class = input.get.string('focus') == user.id ? 'highlight' : '' %}
 				{% set class = response.key == user.id ? 'bg-success text-white' : class %}
+
 				<tr data-userid="{{ user.id }}" class="{{ class }}">
 					<td>
-						<span class="text-monospace">{{ user.id|spacepad(logm.fieldAttribute('id', 'maxlength'))|raw }}</span>
+						{{ user.id|spacepad(logm.fieldAttribute('id', 'maxlength'))|raw }}
 					</td>
 					<td>{{ user.name }}</td>
 					<td>

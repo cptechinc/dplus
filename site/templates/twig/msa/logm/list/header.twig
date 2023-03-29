@@ -1,0 +1,53 @@
+<div class="row">
+	<div class="col-sm-6 mb-3 d-print-none">
+		<a href="{{ page.menuUrl() }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> Back <span class="d-none d-sm-inline">to {{ page.menuTitle() }}</span>
+		</a>
+		&nbsp;
+		<a href="{{ page.get_printURL() }}" class="btn btn-primary">
+			<i class="fa fa-print" aria-hidden="true"></i> View Printable
+		</a>
+	</div>
+
+	<div class="col-sm-6 mb-3 d-print-none">
+		<div>
+			<div class="d-flex justify-content-between flex-wrap">
+				{% if input.get.text('q') != '' %}
+					<div class="order-2 order-sm-1 flex-grow-1 mt-1">
+						<a href="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" class="btn btn-warning">
+							<i class="fa fa-times" aria-hidden="true"></i> Clear Search
+						</a>
+					</div>
+				{% endif %}
+				{% set fields = {'id': 'Login ID', 'name': 'Name'} %}
+				<form action="{{ input.paginateUrl(1, {'includeQueryString': false}) }}" method="GET" class="allow-enterkey-submit column-filter flex-grow-1 d-print-none {{ page.is_print() ? 'collapse' : '' }} order-1 order-sm-2">
+					<div class="input-group">
+						<div class="input-group-btn search-panel">
+							<div class="dropdown">
+								<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+									{% set col = input.get.offsetExists('col') ? fields[input.get.text('col')] : 'All' %}
+									Search By <span class="searchby">{{ col }}</span> <span class="caret"></span>
+								</button>
+								<div class="dropdown-menu column-options">
+									<a class="dropdown-item" href="#" value="">All</a>
+									{% for field, name in fields %}
+										<a class="dropdown-item" href="#" value="{{ field }}">{{ name }}</a>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+		
+						<input class="form-control form-group inline" type="text" name="q" value="{{ input.get.text('q') }}">
+						<input type="hidden" name="col" value="{{ input.get.offsetExists('col') ? input.get.text('col') : 'all' }}">
+						
+						<span class="input-group-btn">
+							<button class="btn btn-light" type="submit">
+								<i class="fa fa-search"></i> <span class="sr-only">Search</span>
+							</button>
+						</span>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
