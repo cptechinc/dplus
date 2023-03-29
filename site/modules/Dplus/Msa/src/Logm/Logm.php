@@ -247,6 +247,7 @@ class Logm extends WireData {
 			$response->setSuccess(false);
 			$response->buildMessage(self::RESPONSE_TEMPLATE);
 		}
+		$this->deleteResponse();
 		$this->setResponse($response);
 		return $response->hasSuccess();
 	}
@@ -372,7 +373,7 @@ class Logm extends WireData {
 	 * @param Response $response
 	 */
 	protected function setResponse(Response $response) {
-		$this->wire('session')->setFor('response', self::RECORDLOCKER_FUNCTION, $response);
+		$this->wire('session')->setFor('response', self::RECORDLOCKER_FUNCTION, $response->data);
 	}
 
 	/**
@@ -380,7 +381,13 @@ class Logm extends WireData {
 	 * @return Response|null
 	 */
 	public function getResponse() {
-		return $this->wire('session')->getFor('response', self::RECORDLOCKER_FUNCTION);
+		$data = $this->wire('session')->getFor('response', self::RECORDLOCKER_FUNCTION);
+		if (empty($data)) {
+			return null;
+		}
+		$r = new Response();
+		$r->setArray($data);
+		return $r;
 	}
 
 	/**
