@@ -82,13 +82,15 @@ class Logm extends Base {
 	 * @return PropelModelPager
 	 */
 	private static function getList(WireData $data) {
-		self::sanitizeParametersShort($data, ['q|text']);
+		self::sanitizeParametersShort($data, ['q|text', 'col|text']);
 
 		$filter = new Filters\Msa\DplusUser();
-		if (strlen($data->q) > 0) {
-			$filter->search($data->q, ['id', 'name']);
-		}
 
+		if (strlen($data->q) > 0) {
+			$cols = self::pw('sanitizer')->array($data->col, ['delimiter' => ',']);
+			$cols = empty(array_filter($cols)) ? ['id', 'name'] : $cols;
+			$filter->search($data->q, $cols);
+		}
 		$filter->sort(self::pw('input')->get);
 		return $filter->query->paginate(self::pw('input')->pageNum, self::SHOWONPAGE);
 	}
