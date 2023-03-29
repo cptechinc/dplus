@@ -1,4 +1,6 @@
 <form action="{{ input.paginateUrl(1) }}" method="POST" id="logm-form">
+	<input type="hidden" name="action" value="update">
+
 	<div class="mb-2 form-row">
 		<div class="col-sm-3">
 			<label for="id">Login ID</label>
@@ -99,9 +101,9 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if duser.isNew() == false %}
-				<button type="submit" name="action" value="delete" class="btn btn-danger delete_button">
+				<a href="{{ page.userDeleteUrl(duser.id) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-				</button>
+				</a>
 			{% endif %}
 		{% endif %}
 
