@@ -14,7 +14,8 @@ $(function() {
 /* =============================================================
 	Unsaved Changes Alert
 ============================================================= */
-	origForm = formLogm.form.serialize();
+	let origForm = formLogm.form.serialize();
+
 
 	$("body").on("click", "a:not(#logm-form .crud-submit, #ajax-modal a)", function(e) {
 		if (formLogm.form.serialize() !== origForm) {
