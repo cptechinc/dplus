@@ -40,13 +40,21 @@ class Logm extends Base {
 		$fields = ['id|string', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 		$url  = self::logmUrl();
-		$logm = self::getLogm();
-
+		
 		if ($data->action) {
-			$logm->processInput(self::pw('input'));
+			$logm = self::getLogm();
+			switch (self::pw('input')->urlSegmentLast()) {
+				case 'logm':
+					$logm->processInput(self::pw('input'));
+					break;
+				case 'contact':
+					$contactM = $logm->getContactM();
+					$contactM->processInput(self::pw('input'));
+					break;
+			}
 			$url  = self::logmUrl($data->id);
 		}
-		self::pw('session')->redirect($url, $http301 = false);
+		self::pw('session')->redirect($url, $http301=false);
 	}
 
 	private static function list($data) {
