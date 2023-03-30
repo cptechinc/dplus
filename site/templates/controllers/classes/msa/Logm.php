@@ -217,7 +217,11 @@ class Logm extends Base {
 	private static function appendJsUser(WireData $data) {
 		$jsPath = self::getJsPath($data);
 
-		$scripts = ['classes/Alerts.js', 'classes/Requests.js', 'classes/Inputs.js', 'classes/Form.js', 'validate-form.js', 'events.js'];
+		$scripts = [
+			'classes/Alerts.js', 'classes/Requests.js', 'classes/Inputs.js', 'classes/Form.js', 
+			'validate-form.js', 'events.js',
+			'contact/validate-form.js', 'contact/events.js'
+		];
 
 		foreach ($scripts as $script) {
 			if (file_exists(self::pw('config')->paths->templates . $jsPath . $script)) {
