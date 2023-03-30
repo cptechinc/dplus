@@ -1,6 +1,7 @@
 $(function() {
 	let modalContact = $('#contact-modal');
 	let formContact  = modalContact.find('form');
+	let alert	     = LogmAlerts.getInstance();
 
 /* =============================================================
 	Unsaved Changes Alert
@@ -20,7 +21,6 @@ $(function() {
 					return true;
 				}
 				location.reload();
-				modal.modal('hide');
 			});
 		}
 	});
