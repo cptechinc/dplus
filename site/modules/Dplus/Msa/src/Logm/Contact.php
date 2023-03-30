@@ -1,10 +1,8 @@
 <?php namespace Dplus\Msa\Logm;
 // Dplus Models
-use DplusUserQuery, DplusUser;
+use DplusUser;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
-// Dplus Record Locker
-use Dplus\RecordLocker\UserFunction as FunctionLocker;
+use ProcessWire\WireInput;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
 // Dplus MSA
