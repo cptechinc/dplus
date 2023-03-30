@@ -264,10 +264,6 @@ class Logm extends Base {
 			$event->return = self::userDeleteUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=msa)::codeDeleteUrl', function($event) {
-			$event->return = self::userDeleteUrl($event->arguments(0));
-		});
-
 		$m->addHook('Page(pw_template=msa)::userEditPasswordUrl', function($event) {
 			$event->return = self::userEditPasswordUrl($event->arguments(0));
 		});
