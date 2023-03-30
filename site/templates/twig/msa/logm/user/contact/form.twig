@@ -3,14 +3,14 @@
 
 {% set tabindex = 100 %}
 
-<form action="{{ input.url() }}" method="POST">
+<form action="{{ input.url() }}" method="POST" id="logm-contact-form">
 	<div class="col-sm-8 px-0">
 		<div class="row mb-2">
 			<div class="col-sm-3">
 				<label for="faxUserid">Login ID</label>
 			</div>
 			<div class="col-sm-2">
-				{% include 'msa/logm/user/fax-email-defaults/form/inputs/id.twig' %}
+				{% include 'msa/logm/user/contact/form/inputs/id.twig' %}
 			</div>
 		</div>
 	</div>
@@ -18,11 +18,11 @@
 	<div class="row">
 		<div class="col-sm-8">
 			<legend class="text-center">Send From</legend>
-			{% include 'msa/logm/user/fax-email-defaults/form/send-from.twig' %}
+			{% include 'msa/logm/user/contact/form/send-from.twig' %}
 		</div>
 		<div class="col-sm-4">
 			<legend class="text-center">Send Time</legend>
-			{% include 'msa/logm/user/fax-email-defaults/form/send-time.twig' %}
+			{% include 'msa/logm/user/contact/form/send-time.twig' %}
 		</div>
 	</div>
 
@@ -36,7 +36,7 @@
 				</div>
 				<div class="col-sm-9">
 					{% set tabindex = tabindex + 1 %}
-					{% include 'msa/logm/user/fax-email-defaults/form/inputs/coversheet.twig' %}
+					{% include 'msa/logm/user/contact/form/inputs/coversheet.twig' %}
 				</div>
 			</div>
 
@@ -46,7 +46,7 @@
 				</div>
 				<div class="col-sm-6">
 					{% set tabindex = tabindex + 1 %}
-					{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxsubject.twig' %}
+					{% include 'msa/logm/user/contact/form/inputs/faxsubject.twig' %}
 				</div>
 			</div>
 
@@ -56,9 +56,9 @@
 				</div>
 				<div class="col-sm-6">
 					{% set tabindex = tabindex + 1 %}
-					{% include 'msa/logm/user/fax-email-defaults/form/inputs/notifysuccess.twig' %}
+					{% include 'msa/logm/user/contact/form/inputs/notifysuccess.twig' %}
 					{% set tabindex = tabindex + 1 %}
-					{% include 'msa/logm/user/fax-email-defaults/form/inputs/notifyfailure.twig' %}
+					{% include 'msa/logm/user/contact/form/inputs/notifyfailure.twig' %}
 				</div>
 			</div>
 
@@ -68,7 +68,7 @@
 				</div>
 				<div class="col-sm-6">
 					{% set tabindex = tabindex + 1 %}
-					{% include 'msa/logm/user/fax-email-defaults/form/inputs/email.twig' %}
+					{% include 'msa/logm/user/contact/form/inputs/email.twig' %}
 				</div>
 			</div>
 		</div>
