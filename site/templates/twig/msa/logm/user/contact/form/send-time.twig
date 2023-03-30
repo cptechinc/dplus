@@ -2,16 +2,15 @@
 
 {% for option,label in logm.fieldAttribute('sendtime', 'options') %}
 	{% include 'util/bootstrap/form/radio-custom.twig' with {
-			'input': {
-				'id': option,
-				'name': 'sendtime',
-				'value': option,
-				'label': label,
-				'size': 'sm',
-				'attributes': {
-					'checked': option == duser.sendtime,
-				}
+		'input': {
+			'id': option,
+			'name': 'sendtime',
+			'value': option,
+			'label': label,
+			'size': 'sm',
+			'attributes': {
+				'checked': option == duser.sendtime,
 			}
 		}
-	%}
+	} %}
 {% endfor %}

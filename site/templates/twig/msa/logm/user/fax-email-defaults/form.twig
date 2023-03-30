@@ -1,22 +1,29 @@
 {% set CONTACTM = logm.getContactM() %}
 {% set contact = CONTACTM.user(duser.id) %}
 
+{% set tabindex = 100 %}
+
 <form action="{{ input.url() }}" method="POST">
+	<div class="col-sm-8 px-0">
+		<div class="row mb-2">
+			<div class="col-sm-3">
+				<label for="faxUserid">Login ID</label>
+			</div>
+			<div class="col-sm-2">
+				{% include 'msa/logm/user/fax-email-defaults/form/inputs/id.twig' %}
+			</div>
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="col-sm-8">
-			<div class="row mb-2">
-				<div class="col-sm-3">
-					<label for="faxUserid">Login ID</label>
-				</div>
-				<div class="col-sm-2">
-					{% include 'msa/logm/user/fax-email-defaults/form/inputs/id.twig' %}
-				</div>
-			</div>
+			<legend>Send From</legend>
 			<div class="row mb-2">
 				<div class="col-sm-3">
 					<label for="faxname">Name</label>
 				</div>
 				<div class="col-sm-5">
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxname.twig' %}
 				</div>
 			</div>
@@ -25,6 +32,7 @@
 					<label for="faxcompany">Company</label>
 				</div>
 				<div class="col-sm-5">
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxcompany.twig' %}
 				</div>
 			</div>
@@ -33,24 +41,51 @@
 					<label for="fax">Fax Number</label>
 				</div>
 				<div class="col-sm-9">
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/fax.twig' %}
 				</div>
 			</div>
-
 			<div class="row mb-2">
 				<div class="col-sm-3">
 					<label for="phone">Phone Number</label>
 				</div>
 				<div class="col-sm-9">
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/phone.twig' %}
 				</div>
 			</div>
+		</div>
+		<div class="col-sm-4">
+			<legend>Send Time</legend>
+			{% for option,label in CONTACTM.fieldAttribute('sendtime', 'options') %}
+				{% set tabindex = tabindex + 1 %}
+				{% include 'util/bootstrap/form/radio-custom.twig' with {
+					'input': {
+						'id': option,
+						'name': 'sendtime',
+						'value': option,
+						'label': label,
+						'size': 'sm',
+						'attributes': {
+							'checked': option == contact.sendtime,
+							'tabindex': tabindex,
+						}
+					}
+				} %}
+			{% endfor %}
+		</div>
+	</div>
 
+	<hr>
+
+	<div class="row">
+		<div class="col-sm-8">
 			<div class="row mb-2">
 				<div class="col-sm-3">
 					<label for="coversheet">Cover Sheet</label>
 				</div>
 				<div class="col-sm-9">
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/coversheet.twig' %}
 				</div>
 			</div>
@@ -60,6 +95,7 @@
 					<label for="faxsubject">Subject</label>
 				</div>
 				<div class="col-sm-6">
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxsubject.twig' %}
 				</div>
 			</div>
@@ -69,7 +105,9 @@
 					<label>Notify</label>
 				</div>
 				<div class="col-sm-6">
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/notifysuccess.twig' %}
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/notifyfailure.twig' %}
 				</div>
 			</div>
@@ -79,10 +117,10 @@
 					<label for="email">Email</label>
 				</div>
 				<div class="col-sm-6">
+					{% set tabindex = tabindex + 1 %}
 					{% include 'msa/logm/user/fax-email-defaults/form/inputs/email.twig' %}
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-4"></div>
 	</div>
 </form>
