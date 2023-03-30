@@ -1,0 +1,13 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'email',
+		'type': 'email',
+		'value': contact.email,
+		'size': 'sm',
+		'attributes': {
+			'aria-label':  'Email',
+			'maxlength': CONTACTM.fieldAttribute('email', 'maxlength'),
+			'tabindex': 110
+		}
+	}
+} %}

@@ -57,10 +57,29 @@
 
 			<div class="row mb-2">
 				<div class="col-sm-3">
-					<label for="coversheet">Cover Sheet</label>
+					<label for="faxsubject">Subject</label>
 				</div>
-				<div class="col-sm-9">
-					{% include 'msa/logm/user/fax-email-defaults/form/inputs/subject.twig' %}
+				<div class="col-sm-6">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxsubject.twig' %}
+				</div>
+			</div>
+
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label>Notify</label>
+				</div>
+				<div class="col-sm-6">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/notifysuccess.twig' %}
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/notifyfailure.twig' %}
+				</div>
+			</div>
+
+			<div class="row mb-2">
+				<div class="col-sm-3">
+					<label for="email">Email</label>
+				</div>
+				<div class="col-sm-6">
+					{% include 'msa/logm/user/fax-email-defaults/form/inputs/email.twig' %}
 				</div>
 			</div>
 		</div>

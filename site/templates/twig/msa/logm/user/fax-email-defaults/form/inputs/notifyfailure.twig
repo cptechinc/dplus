@@ -1,0 +1,12 @@
+{% include 'util/bootstrap/form/checkbox-custom.twig' with {
+	'input': {
+		'name': 'notifyfailure',
+		'label': 'On Failure',
+		'value': CONTACTM.fieldAttribute('notify', 'true'),
+		'size': 'sm',
+		'attributes': {
+			'checked': contact.notifyFailure(),
+			'tabindex': 109
+		}
+	}
+} %}

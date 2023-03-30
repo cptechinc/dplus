@@ -1,0 +1,12 @@
+{% include 'util/bootstrap/form/checkbox-custom.twig' with {
+	'input': {
+		'name': 'notifysuccess',
+		'label': 'On Success',
+		'value': CONTACTM.fieldAttribute('notify', 'true'),
+		'size': 'sm',
+		'attributes': {
+			'checked': contact.notifySuccess(),
+			'tabindex': 108
+		}
+	}
+} %}

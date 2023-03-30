@@ -1,0 +1,14 @@
+{% include 'util/bootstrap/form/input.twig' with {
+	'input': {
+		'name': 'faxsubject',
+		'value': contact.faxsubject,
+		'size': 'sm',
+		'addclasses': [],
+		'attributes': {
+			'placeholder': '',
+			'aria-label':  'Subject',
+			'maxlength': CONTACTM.fieldAttribute('faxsubject', 'maxlength'),
+			'tabindex': 107,
+		},
+	}
+} %}
