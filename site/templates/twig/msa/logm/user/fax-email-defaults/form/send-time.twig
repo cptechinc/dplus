@@ -1,0 +1,16 @@
+{% for option,label in CONTACTM.fieldAttribute('sendtime', 'options') %}
+	{% set tabindex = tabindex + 1 %}
+	{% include 'util/bootstrap/form/radio-custom.twig' with {
+		'input': {
+			'id': option,
+			'name': 'sendtime',
+			'value': option,
+			'label': label,
+			'size': 'sm',
+			'attributes': {
+				'checked': option == contact.sendtime,
+				'tabindex': tabindex,
+			}
+		}
+	} %}
+{% endfor %}

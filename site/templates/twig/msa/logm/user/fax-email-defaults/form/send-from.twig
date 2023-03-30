@@ -1,0 +1,36 @@
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="faxname">Name</label>
+	</div>
+	<div class="col-sm-5">
+		{% set tabindex = tabindex + 1 %}
+		{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxname.twig' %}
+	</div>
+</div>
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="faxcompany">Company</label>
+	</div>
+	<div class="col-sm-5">
+		{% set tabindex = tabindex + 1 %}
+		{% include 'msa/logm/user/fax-email-defaults/form/inputs/faxcompany.twig' %}
+	</div>
+</div>
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="fax">Fax Number</label>
+	</div>
+	<div class="col-sm-9">
+		{% set tabindex = tabindex + 1 %}
+		{% include 'msa/logm/user/fax-email-defaults/form/inputs/fax.twig' %}
+	</div>
+</div>
+<div class="row mb-2">
+	<div class="col-sm-3">
+		<label for="phone">Phone Number</label>
+	</div>
+	<div class="col-sm-9">
+		{% set tabindex = tabindex + 1 %}
+		{% include 'msa/logm/user/fax-email-defaults/form/inputs/phone.twig' %}
+	</div>
+</div>
