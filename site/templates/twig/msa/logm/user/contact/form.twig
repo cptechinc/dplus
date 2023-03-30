@@ -3,7 +3,7 @@
 
 {% set tabindex = 100 %}
 
-<form action="{{ input.url() }}" method="POST" id="logm-contact-form">
+<form action="{{ page.userEditContactUrl(duser.id) }}" method="POST" id="logm-contact-form">
 	<div class="col-sm-8 px-0">
 		<div class="row mb-2">
 			<div class="col-sm-3">
