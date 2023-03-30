@@ -22,13 +22,9 @@
 			['GET',  '', Msa\Logm::class, 'index'],
 			['GET',  'page{pagenbr:\d+}', Msa\Logm::class, 'index'],
 			['POST', '', Msa\Logm::class, 'handleCRUD'],
-			'contact' => [
-				['POST', '', Msa\Logm::class, 'handleCRUD'],
-			],
-			'password' => [
-				['POST',  '', Msa\Logm\Password::class, 'handleCRUD'],
-				['POST',  'web/', Msa\Logm\Password\Web::class, 'handleCRUD'],
-			],
+			['POST', 'contact', Msa\Logm::class, 'handleCRUD'],
+			['POST', 'password', Msa\Logm::class, 'handleCRUD'],
+			['POST', 'web-password', Msa\Logm::class, 'handleCRUD'],
 		],
 		'sysop' => [
 			['GET',  '', Msa\Sysop::class, 'index'],

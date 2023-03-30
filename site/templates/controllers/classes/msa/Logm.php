@@ -43,6 +43,7 @@ class Logm extends Base {
 		
 		if ($data->action) {
 			$logm = self::getLogm();
+
 			switch (self::pw('input')->urlSegmentLast()) {
 				case 'logm':
 					$logm->processInput(self::pw('input'));
@@ -50,6 +51,14 @@ class Logm extends Base {
 				case 'contact':
 					$contactM = $logm->getContactM();
 					$contactM->processInput(self::pw('input'));
+					break;
+				case 'password':
+					$passwordM = $logm->getPasswordM();
+					$passwordM->processInput(self::pw('input'));
+					break;
+				case 'web-password':
+					$passwordM = $logm->getWebPasswordM();
+					$passwordM->processInput(self::pw('input'));
 					break;
 			}
 			$url  = self::logmUrl($data->id);
@@ -228,7 +237,8 @@ class Logm extends Base {
 		$scripts = [
 			'classes/Alerts.js', 'classes/Requests.js', 'classes/Inputs.js', 'classes/Form.js', 
 			'validate-form.js', 'events.js',
-			'contact/validate-form.js', 'contact/events.js'
+			'contact/validate-form.js', 'contact/events.js',
+			'passwords/validate-form.js', 'passwords/events.js'
 		];
 
 		foreach ($scripts as $script) {
