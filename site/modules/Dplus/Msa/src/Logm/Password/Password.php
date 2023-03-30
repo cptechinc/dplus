@@ -1,4 +1,4 @@
-<?php namespace Dplus\Msa\Logm;
+<?php namespace Dplus\Msa\Logm\Password;
 // Dplus Models
 use DplusUserQuery, DplusUser;
 // ProcessWire
@@ -61,9 +61,11 @@ class Password extends Logm {
 	protected function updateInputUserPassword(WireInput $input, DplusUser $user) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$password = $values->text('password');
+		$password = $values->string('password');
 		$cmd = 'php ' . self::PSWD_SHELL . " hash password=$password";
 		$password = $this->wire('sanitizer')->text(shell_exec($cmd));
+		echo $password;
+		exit;
 		$user->setPassword($password);
 	}
 }

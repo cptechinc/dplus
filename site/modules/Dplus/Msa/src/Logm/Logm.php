@@ -475,7 +475,28 @@ class Logm extends WireData {
 		return Lrole::getInstance();
 	}
 
+	/**
+	 * Return Logm Contact Manager
+	 * @return Logm\Contact
+	 */
 	public function getContactM() {
 		return Logm\Contact::getInstance();
+	}
+
+	
+	/**
+	 * Return Logm Password Manager
+	 * @return Logm\Password
+	 */
+	public function getPasswordM() {
+		return Logm\Password\Password::getInstance();
+	}
+
+	/**
+	 * Return Logm Web Password Manager
+	 * @return Logm\Password
+	 */
+	public function getWebPasswordM() {
+		return Logm\Password\WebPassword::getInstance();
 	}
 }

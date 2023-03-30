@@ -1,14 +1,9 @@
 <?php namespace Dplus\Msa\Logm\Password;
 // Dplus Models
-use DplusUserQuery, DplusUser;
+use DplusUser;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
-// Dplus Record Locker
-use Dplus\RecordLocker\UserFunction as FunctionLocker;
-// Dplus Validators
-use Dplus\CodeValidators as Validators;
-// Dplus MSA
-use Dplus\Msa\Password;
+use ProcessWire\WireInput;
+
 
 class WebPassword extends Password {
 	const FIELD_ATTRIBUTES = [];
@@ -21,50 +16,5 @@ class WebPassword extends Password {
 			self::$instance = $instance;
 		}
 		return self::$instance;
-	}
-
-/* =============================================================
-	Input Functions
-============================================================= */
-	/**
-	 * Update Logm User Data
-	 * @param  WireInput $input Input Data
-	 * @param  DplusUser $user  User
-	 * @return bool
-	 */
-	protected function updateInputUser(WireInput $input, DplusUser $user) {
-		$rm = strtolower($input->requestMethod());
-		$values  = $input->$rm;
-		$invalid = [];
-
-		$this->updateInputUserPassword($input, $user);
-		$user->setDate(date('Ymd'));
-		$user->setTime(date('His'));
-
-		$response = $this->saveAndRespond($user, $invalid);
-		if ($response->fields) {
-			$response->setError(true);
-			$response->setSuccess(false);
-			$response->buildMessage(self::RESPONSE_TEMPLATE);
-		}
-		$this->setResponse($response);
-		return $response->hasSuccess();
-	}
-
-	/**
-	 * Update Email, Phones
-	 * @param  WireInput $input Input Data
-	 * @param  DplusUser $user  User
-	 * @return void
-	 */
-	protected function updateInputUserPassword(WireInput $input, DplusUser $user) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$password = $values->text('password');
-		$cmd = 'php ' . self::PSWD_SHELL . " hash password=$password";
-		$password = $this->wire('sanitizer')->text(shell_exec($cmd));
-		echo $password;
-		exit;
-		$user->setPassword($password);
 	}
 }

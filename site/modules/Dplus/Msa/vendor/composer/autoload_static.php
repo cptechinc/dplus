@@ -7,9 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInitaaa727932adf929509f6ae58bf7e96aa
 {
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Dplus\\Msa\\Logm' => __DIR__ . '/../..' . '/src/Logm/Logm.php',
         'Dplus\\Msa\\Logm\\Contact' => __DIR__ . '/../..' . '/src/Logm/Contact.php',
-        'Dplus\\Msa\\Logm\\Password' => __DIR__ . '/../..' . '/src/Logm/Password/Password.php',
+        'Dplus\\Msa\\Logm\\Password\\Password' => __DIR__ . '/../..' . '/src/Logm/Password/Password.php',
         'Dplus\\Msa\\Logm\\Password\\WebPassword' => __DIR__ . '/../..' . '/src/Logm/Password/WebPassword.php',
         'Dplus\\Msa\\Lrole' => __DIR__ . '/../..' . '/src/Lrole.php',
         'Dplus\\Msa\\Prtd' => __DIR__ . '/../..' . '/src/Prtd.php',
