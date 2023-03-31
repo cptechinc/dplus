@@ -77,12 +77,9 @@ class Sysop extends Base {
 	private static function code($data) {
 		$sysop = self::getSysop();
 		$page  = self::pw('page');
-		$page->headline = "SYSOP: Editing $data->system $data->code";
+		$page->headline = "System Optional Code Edit";
 		$code = $sysop->getOrCreate($data->system, $data->code);
 
-		if ($code->isNew()) {
-			$page->headline = "SYSOP: Creating New Code";
-		}
 		$sysop->lockrecord($code);
 		self::initHooks();
 		$page->js .= self::pw('config')->twig->render('code-tables/msa/sysop/form/.js.twig', ['sysop' => $sysop]);
