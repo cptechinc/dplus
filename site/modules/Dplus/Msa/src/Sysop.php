@@ -175,7 +175,7 @@ class Sysop extends WireData {
 	 */
 	public function new($system, $id) {
 		$opt = new MsaSysopCode();
-		$opt->setSystem($option);
+		$opt->setSystem($system);
 		$opt->setId($id);
 		return $opt;
 	}
