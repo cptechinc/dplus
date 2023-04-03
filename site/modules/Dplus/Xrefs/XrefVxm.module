@@ -300,7 +300,6 @@ class XrefVxm extends WireData implements Module {
 
 		$record = $this->get_create_xref($vendorID, $vendoritemID, $itemID);
 
-
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
