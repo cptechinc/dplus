@@ -116,7 +116,6 @@ $(function() {
 	});
 
 
-
 	$("body").on("focusin", "#code-form .eom-split input", function(e) {
 		let input = $(this);
 
