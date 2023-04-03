@@ -181,6 +181,28 @@ $(function() {
 		}
 	});
 
+	$("body").on("focusout", "#code-form .std-split input[name=std_due_date6]", function(e) {
+		let input = $(this);
+		let form       = input.closest('form');
+
+		if (form.validate().element('#' + input.attr('id'))) {
+			return true;
+		}
+	});
+
+	$("body").on("focusin", "#code-form a.form_button, #code-form button.form_button", function(e) {
+		let button = $(this);
+
+		if (formTrm.isMethodStd()) {
+			let input = formTrm.form.find('input[name=std_due_date6]');
+			if (formTrm.form.validate().element('#' + input.attr('id'))) {
+				return true;
+			}
+			input.focus();
+			return false;
+		}
+	});
+
 	$("body").on("change", "#code-form input[name=code]", function(e) {
 		let input = $(this);
 
