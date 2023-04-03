@@ -91,6 +91,30 @@ $(function() {
 		}
 	});
 
+	$("body").on("focusout", "#code-form .std-split input[name=std_due_date5]", function(e) {
+		let input = $(this);
+		let form       = input.closest('form');
+
+		if (form.validate().element('#' + input.attr('id'))) {
+			return true;
+		}
+	});
+
+	$("body").on("focusin", "#code-form a.form_button, #code-form button.form_button", function(e) {
+		let button = $(this);
+
+		if (formPtm.isMethodStd()) {
+			let input = formPtm.form.find('input[name=std_due_date5]');
+			if (formPtm.form.validate().element('#' + input.attr('id'))) {
+				return true;
+			}
+			input.focus();
+			return false;
+		}
+	});
+
+
+
 	$("body").on("focusin", "#code-form .eom-split input", function(e) {
 		let input = $(this);
 
