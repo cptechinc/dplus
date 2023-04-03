@@ -91,7 +91,7 @@ $(function() {
 		}
 	});
 
-	$("body").on("focusout", "#code-form .std-split input[name=std_due_date5]", function(e) {
+	$("body").on("focusout", "#code-form .std-split input.std_due_date", function(e) {
 		let input = $(this);
 		let form       = input.closest('form');
 
@@ -104,12 +104,14 @@ $(function() {
 		let button = $(this);
 
 		if (formPtm.isMethodStd()) {
-			let input = formPtm.form.find('input[name=std_due_date5]');
-			if (formPtm.form.validate().element('#' + input.attr('id'))) {
-				return true;
-			}
-			input.focus();
-			return false;
+			formPtm.form.find('input.std_due_date').each(function() {
+				let input = $(this);
+				if (formPtm.form.validate().element('#' + input.attr('id'))) {
+					return true;
+				}
+				input.focus();
+				return false;
+			});
 		}
 	});
 
