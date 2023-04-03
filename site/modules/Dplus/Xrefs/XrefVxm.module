@@ -355,10 +355,26 @@ class XrefVxm extends WireData implements Module {
 		if ($this->configs->ap->use_vendor_cost_breaks()) {
 			$this->update_record_unitx_input($record, $input);
 		}
-		$record->setDate_changed(date('Ymd'));
+		
+		$this->updateDateChangedIfUpdated($record);
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
 		return $invalidfields;
+	}
+
+	private function updateDateChangedIfUpdated(ItemXrefVendor $record) {
+		$modified = false;
+
+		foreach ($record->originalvalues as $key => $value) {
+			if ($record->$key != $value) {
+				$modified = true;
+			}
+		}
+		if ($modified === false) {
+			return false;
+		}
+		$record->setDate_changed(date('Ymd'));
+		return true;
 	}
 
 	/**
