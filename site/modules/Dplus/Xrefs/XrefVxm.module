@@ -224,6 +224,27 @@ class XrefVxm extends WireData implements Module {
 	}
 
 /* =============================================================
+	CRUD Update Functions
+============================================================= */
+	/**
+	 * Remove Values from Unit Cost, Unit Qty Fields
+	 * @param  ItemXrefVendor $record
+	 * @return bool
+	 */
+	private function emptyUnitxFields(ItemXrefVendor $record) {
+		$sanitizer = $this->wire('sanitizer');
+
+		for ($i = 1; $i <= ItemXrefVendor::UNITS_AVAILABLE; $i++) {
+			$colQty = ucfirst(ItemXrefVendor::get_unitqty_column($i));
+			$colCost = ucfirst(ItemXrefVendor::get_unitcost_column($i));
+			$setUnitqty = "set$colQty";
+			$setUnitcost = "set$colCost";
+			$record->$setUnitqty($sanitizer->float(0, ['precision' => $this->field_attribute('unit_qty', 'precision')]));
+			$record->$setUnitcost($sanitizer->float(0, ['precision' => $this->field_attribute('unit_cost', 'precision')]));
+		}
+		return true;
+	}
+/* =============================================================
 	CRUD Processing Functions
 ============================================================= */
 	/**
@@ -273,7 +294,7 @@ class XrefVxm extends WireData implements Module {
 
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
-				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
+				$message = self::DESCRIPTION . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
 				$this->wire('session')->setFor('response', 'vxm', XrefResponse::response_error($key, $message));
 				return false;
 			}
@@ -303,7 +324,7 @@ class XrefVxm extends WireData implements Module {
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
-				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
+				$message = self::DESCRIPTION . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
 				$this->wire('session')->setFor('response', 'vxm', XrefResponse::response_error("$key", $message));
 				return false;
 			}
@@ -351,27 +372,51 @@ class XrefVxm extends WireData implements Module {
 		$record->setQty_percase($values->float('qty_percase', ['precision' => $this->field_attribute('qty_percase', 'precision'), 'max' => $this->field_attribute('qty_percase', 'max')]));
 		$record->setMinbuyqty($values->float('minbuyqty', ['precision' => $this->field_attribute('minbuyqty', 'precision'), 'max' => $this->field_attribute('minbuyqty', 'max')]));
 		$record->setListprice($values->float('listprice', ['precision' => $this->field_attribute('listprice', 'precision'), 'max' => $this->field_attribute('listprice', 'max')]));
-		if ($this->configs->ap->use_vendor_cost_breaks()) {
-			$this->update_record_unitx_input($record, $input);
-		}
-		
-		$this->updateDateChangedIfUpdated($record);
+		$this->updateRecordUnitxInput($record, $values);
+		$this->updateDateChangedIfCostUpdated($record);
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
 		return $invalidfields;
 	}
 
-	private function updateDateChangedIfUpdated(ItemXrefVendor $record) {
-		$modified = false;
-
-		foreach ($record->originalvalues as $key => $value) {
-			if ($record->$key != $value) {
-				$modified = true;
-			}
-		}
-		if ($modified === false) {
+	/**
+	 * Set Date Changed to today if the record was modified
+	 * @param  ItemXrefVendor $record
+	 * @return bool
+	 */
+	private function updateDateChangedIfCostUpdated(ItemXrefVendor $record) {
+		if ($this->haveCostingFieldsChanged($record) === false) {
 			return false;
 		}
+		$this->setDateChangedToToday($record);
+	}
+
+	/**
+	 * Return If any costing fields have changed
+	 * @param  ItemXrefVendor $record
+	 * @return bool
+	 */
+	private function haveCostingFieldsChanged(ItemXrefVendor $record) {
+		$unitCostBase = ItemXrefVendor::aliasproperty('unitcost_base');
+
+		if (array_key_exists($unitCostBase, $record->originalvalues)) {
+			return $record->originalvalues[$unitCostBase] != $record->$unitCostBase;
+		}
+
+		if ($this->configs->ap->use_vendor_cost_breaks() === false) {
+			return false;
+		}
+
+		for ($i = 1; $i <= ItemXrefVendor::UNITS_AVAILABLE; $i++) {
+			$field = ItemXrefVendor::get_unitcost_column($i);
+			if (array_key_exists($field, $record->originalvalues)) {
+				return $record->originalvalues[$field] != $record->$field;
+			}
+		}
+		return false;
+	}
+
+	private function setDateChangedToToday(ItemXrefVendor $record) {
 		$record->setDate_changed(date('Ymd'));
 		return true;
 	}
@@ -399,6 +444,43 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
+	 * Update Unit Costs, Unit Qtys
+	 * @param  ItemXrefVendor $record
+	 * @param  WireInputData  $input
+	 * @return bool
+	 */
+	private function updateRecordUnitxInput(ItemXrefVendor $record, WireInputData $input) {
+		$sanitizer = $this->wire('sanitizer');
+
+		if ($record->uompurchase) {
+			$cost = $input->float('unitcost_base', ['precision' => $this->field_attribute('unit_cost', 'precision')]);
+			$unitcost = $cost / $record->uompurchase->conversion;
+			$record->setUnitcost_base($sanitizer->float($unitcost, ['precision' => $this->field_attribute('unit_cost', 'precision')]));
+		}
+
+		if ($this->configs->ap->use_vendor_cost_breaks() === false) {
+			$this->emptyUnitxFields($record);
+			return true;
+		}
+
+		for ($i = 1; $i <= ItemXrefVendor::UNITS_AVAILABLE; $i++) {
+			$col_qty = ucfirst(ItemXrefVendor::get_unitqty_column($i));
+			$col_cost = ucfirst(ItemXrefVendor::get_unitcost_column($i));
+			$setUnitqty = "set$col_qty";
+			$setUnitcost = "set$col_cost";
+			$record->$setUnitqty($input->float("unit_qty$i", ['precision' => $this->field_attribute('unit_qty', 'precision')]));
+			$record->$setUnitcost($input->float("unit_cost$i", ['precision' => $this->field_attribute('unit_cost', 'precision')]));
+
+			if ($record->uompurchase) {
+				$cost = $input->float("unit_cost$i", ['precision' => $this->field_attribute('unit_cost', 'precision')]);
+				$unitcost = $cost / $record->uompurchase->conversion;
+				$record->$setUnitcost ($sanitizer->float($unitcost, ['precision' => $this->field_attribute('unit_cost', 'precision')]));
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Update the unitcost and unitqty columns for record
 	 * @param  ItemXrefVendor $record VXM record
 	 * @param  WireInput      $input  Input Data
@@ -412,10 +494,10 @@ class XrefVxm extends WireData implements Module {
 		if ($record->uompurchase) {
 			$cost = $values->float('unitcost_base', ['precision' => $this->field_attribute('unit_cost', 'precision')]);
 			$unitcost = $cost / $record->uompurchase->conversion;
-			$record->setUnitcost_base($sanitizer->float($unitcost));
+			$record->setUnitcost_base($sanitizer->float($unitcost, ['precision' => $this->field_attribute('unit_cost', 'precision')]));
 		}
 
-		if ($this->configs->ap->use_vendor_cost_breaks() == false) {
+		if ($this->configs->ap->use_vendor_cost_breaks() === false) {
 			return true;
 		}
 
@@ -434,6 +516,7 @@ class XrefVxm extends WireData implements Module {
 				$record->$function_unitcost($values->float("unit_cost$i"));
 			}
 		}
+		return true;
 	}
 
 	/**
