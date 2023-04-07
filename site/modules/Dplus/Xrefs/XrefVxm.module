@@ -27,9 +27,9 @@ use Dplus\CodeValidators\Map\Vxm as VxmValidator;
  * because there are notes and other linked items, so users must delete, recreate.
  */
 class XrefVxm extends WireData implements Module {
-	const MODEL              = 'ItemXrefVendor';
-	const MODEL_KEY          = 'code';
-	const DESCRIPTION        = 'VXM Item';
+	const MODEL 			 = 'ItemXrefVendor';
+	const MODEL_KEY 		 = 'code';
+	const DESCRIPTION		 = 'VXM Item';
 	const RESPONSE_TEMPLATE  = 'VXM X-ref {key} was {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'vxm';
 
@@ -108,9 +108,9 @@ class XrefVxm extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Returns if Vendor Item ID exists
-	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendorID 	Vendor ID
 	 * @param  string $vendoritemID Vendor's Item ID'
-	 * @param  string $itemID       ITM Item ID'
+	 * @param  string $itemID		ITM Item ID'
 	 * @return bool
 	 */
 	public function xref_exists($vendorID, $vendoritemID, $itemID) {
@@ -120,9 +120,9 @@ class XrefVxm extends WireData implements Module {
 
 	/**
 	 * Return ItemXrefVendor
-	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendorID 	Vendor ID
 	 * @param  string $vendoritemID Vendor's Item ID'
-	 * @param  string $itemID       ITM Item ID
+	 * @param  string $itemID		ITM Item ID
 	 * @return ItemXrefVendor
 	 */
 	public function xref($vendorID, $vendoritemID, $itemID) {
@@ -145,7 +145,7 @@ class XrefVxm extends WireData implements Module {
 
 	/**
 	 * Return Existing or New X-ref
-	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendorID 	Vendor ID
 	 * @param  string $vendoritemID Vendor Item ID
 	 * @return ItemXrefVendor
 	 */
@@ -321,7 +321,7 @@ class XrefVxm extends WireData implements Module {
 
 		$record = $this->get_create_xref($vendorID, $vendoritemID, $itemID);
 
-		if (!$record->isNew()) {
+		if ($record->isNew() === false) {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
 				$message = self::DESCRIPTION . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
@@ -351,7 +351,7 @@ class XrefVxm extends WireData implements Module {
 	/**
 	 * Updates VXM Item Record, Returns Invalid Fields
 	 * @param  ItemXrefVendor  $record VXM Item Record
-	 * @param  WireInput       $input  Input Data
+	 * @param  WireInput	   $input  Input Data
 	 * @return array
 	 */
 	public function update_record_input(ItemXrefVendor $record, WireInput $input) {
@@ -374,6 +374,9 @@ class XrefVxm extends WireData implements Module {
 		$record->setListprice($values->float('listprice', ['precision' => $this->field_attribute('listprice', 'precision'), 'max' => $this->field_attribute('listprice', 'max')]));
 		$this->updateRecordUnitxInput($record, $values);
 		$this->updateDateChangedIfCostUpdated($record);
+		if ($record->isNew()) {
+			$this->setDateChangedToToday($record);
+		}
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
 		return $invalidfields;
@@ -400,19 +403,25 @@ class XrefVxm extends WireData implements Module {
 		$unitCostBase = ItemXrefVendor::aliasproperty('unitcost_base');
 
 		if (array_key_exists($unitCostBase, $record->originalvalues)) {
-			return $record->originalvalues[$unitCostBase] != $record->$unitCostBase;
+			if ($record->originalvalues[$unitCostBase] != $record->$unitCostBase) {
+				return true;
+			}
 		}
 
 		if ($this->configs->ap->use_vendor_cost_breaks() === false) {
 			return false;
 		}
 
+		echo json_encode(array_keys($record->originalvalues));
+
 		for ($i = 1; $i <= ItemXrefVendor::UNITS_AVAILABLE; $i++) {
 			$field = ItemXrefVendor::get_unitcost_column($i);
 			if (array_key_exists($field, $record->originalvalues)) {
 				return $record->originalvalues[$field] != $record->$field;
 			}
+			echo $field . '<br>';
 		}
+		exit;
 		return false;
 	}
 
@@ -437,7 +446,7 @@ class XrefVxm extends WireData implements Module {
 		$original->delete();
 		$this->update_dplus_cobol($original);
 
-		$new =  new ItemXrefVendor();
+		$new =	new ItemXrefVendor();
 		$new->fromArray($array);
 		$new->save();
 		$record = $new;
@@ -463,11 +472,15 @@ class XrefVxm extends WireData implements Module {
 			return true;
 		}
 
+		
 		for ($i = 1; $i <= ItemXrefVendor::UNITS_AVAILABLE; $i++) {
 			$col_qty = ucfirst(ItemXrefVendor::get_unitqty_column($i));
 			$col_cost = ucfirst(ItemXrefVendor::get_unitcost_column($i));
 			$setUnitqty = "set$col_qty";
 			$setUnitcost = "set$col_cost";
+
+			$record->add_originalvalue(strtolower($col_qty), $record->$col_qty);
+			$record->add_originalvalue(strtolower($col_cost), $record->$col_cost);
 			$record->$setUnitqty($input->float("unit_qty$i", ['precision' => $this->field_attribute('unit_qty', 'precision')]));
 			$record->$setUnitcost($input->float("unit_cost$i", ['precision' => $this->field_attribute('unit_cost', 'precision')]));
 
@@ -483,7 +496,7 @@ class XrefVxm extends WireData implements Module {
 	/**
 	 * Update the unitcost and unitqty columns for record
 	 * @param  ItemXrefVendor $record VXM record
-	 * @param  WireInput      $input  Input Data
+	 * @param  WireInput	  $input  Input Data
 	 * @return void
 	 */
 	protected function update_record_unitx_input(ItemXrefVendor $record, WireInput $input) {
@@ -522,7 +535,7 @@ class XrefVxm extends WireData implements Module {
 	/**
 	 * Sets Record fields if valid, returns invalid fields
 	 * @param  ItemXrefVendor $record VXM Item
-	 * @param  WireInput      $input  Input Data
+	 * @param  WireInput	  $input  Input Data
 	 * @return array
 	 */
 	public function update_record_validated(ItemXrefVendor $record, WireInput $input) {
@@ -534,23 +547,23 @@ class XrefVxm extends WireData implements Module {
 		$fields = array(
 			'itemid' => array(
 				'description' => 'Item ID',
-				'input'       => 'itemID',
-				'function'    => 'itemid'
+				'input' 	  => 'itemID',
+				'function'	  => 'itemid'
 			),
 			'approvalcode' => array(
 				'description' => 'Approval Code',
-				'input'       => 'approvalcode',
-				'function'    => 'approvalcode'
+				'input' 	  => 'approvalcode',
+				'function'	  => 'approvalcode'
 			),
 			'uom_purchase' => array(
 				'description' => 'UoM Purchase',
-				'input'       => 'uom_purchase',
-				'function'    => 'unitofm_purchase'
+				'input' 	  => 'uom_purchase',
+				'function'	  => 'unitofm_purchase'
 			),
 			'vendorid' => array(
 				'description' => 'Vendor ID',
-				'input'       => 'vendorID',
-				'function'    => 'vendorid'
+				'input' 	  => 'vendorID',
+				'function'	  => 'vendorid'
 			),
 		);
 		$validator = $this->wire('modules')->get('InputValidator');
@@ -649,13 +662,13 @@ class XrefVxm extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Returns XrefResponse based on the outcome of the database save
-	 * @param  ItemXrefVendor $record        Record to record response of database save
-	 * @param  array          $invalidfields
+	 * @param  ItemXrefVendor $record		 Record to record response of database save
+	 * @param  array		  $invalidfields
 	 * @return XrefResponse
 	 */
 	protected function save_and_respond(ItemXrefVendor $record, array $invalidfields = null) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
-		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+		$saved	= $record->isDeleted() ? $record->isDeleted() : $record->save();
 
 		$response = new XrefResponse();
 		$response->set_key($this->get_recordlocker_key($record));
@@ -855,9 +868,9 @@ class XrefVxm extends WireData implements Module {
 
 	/**
 	 * Return if ITM costing can be updated
-	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendorID 	Vendor ID
 	 * @param  string $vendoritemID Vendor Item ID
-	 * @param  string $itemID       Item ID
+	 * @param  string $itemID		Item ID
 	 * @return bool
 	 */
 	public function allow_itm_cost_update($vendorID, $vendoritemID, $itemID) {
