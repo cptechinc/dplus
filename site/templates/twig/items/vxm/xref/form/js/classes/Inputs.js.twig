@@ -201,7 +201,10 @@ class VxmInputs {
 		listprice = listprice.toFixed(config.fields.listprice.precision);
 		this.margin.base.val(basemargin.toFixed(config.fields.unit_margin.precision));
 		this.listprice.val(listprice);
-		form.updateEachListPriceUsingOrdercodeCosting();
+		
+		if (config.basemarginchange.computeListpriceOrCost != config.options.basemarginchange.computeListpriceOrCost.listprice) {
+			form.updateEachListPriceUsingOrdercodeCosting();
+		}
 
 		callback();
 	}
