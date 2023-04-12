@@ -22,6 +22,7 @@ class Slsrep extends Common {
 	}
 
 	protected static function dashboardBookings($data) {
+		return '';
 		$config  = self::pw('config');
 		$modules = self::pw('modules');
 		$input   = self::pw('input');

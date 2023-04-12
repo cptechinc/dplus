@@ -22,7 +22,7 @@ class Documents extends AbstractSubfunctionController {
 	1. Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['rid|int', 'folder|text', 'document|text'];
+		$fields = ['rid|int', 'custID|string', 'folder|text', 'document|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
 		self::decorateInputDataWithCustid($data);

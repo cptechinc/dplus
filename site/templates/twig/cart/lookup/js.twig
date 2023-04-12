@@ -56,7 +56,8 @@ $(function() {
 
 		var button = $(this);
 		var itemID = button.data('itemid');
-		formLookup.inputs.itemid.val(itemID).change();
+		formLookup.inputs.itemid.val(itemID);
+		formLookup.inputs.itemid.change();
 		var validator = formLookup.form.validate();
 		validator.element('#' + inputs.itemid.attr('id'));
 		formLookup.inputs.qty.focus();
