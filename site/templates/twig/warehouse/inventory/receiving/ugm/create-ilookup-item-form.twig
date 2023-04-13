@@ -10,6 +10,7 @@
 	<input type="hidden" name="action" value="create-ilookup">
 	<input type="hidden" name="ponbr" value="{{ m_receiving.getPonbr() }}">
 	<input type="hidden" name="scan" value="{{ item.scan }}">
+	<input type="hidden" name="binID" value="{{ input.get.string('binID') }}">
 
 	<div class="form-row">
 		<div class="col-sm-6">
@@ -26,7 +27,7 @@
 				<div class="item-div">
 					<div class="input-group">
 						<span class="input-group-prepend">
-							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for / Choose Item">
+							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for Item" data-lookupurl="{{ page.search_lookupURL('items') }}">
 								<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Item</span>
 							</button>
 						</span>

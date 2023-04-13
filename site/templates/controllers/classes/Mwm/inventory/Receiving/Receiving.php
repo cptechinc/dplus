@@ -110,6 +110,10 @@ class Receiving extends Base {
 				$url = $data->has('close') ? self::receivingUrl() : self::receivingUrl($data->ponbr);
 				self::redirect($url, $http301 = false);
 				break;
+			case 'create-ilookup':
+				$url = self::receivingLoadPoUrl();
+				self::redirect(self::receivingScanUrl($data->ponbr, $data->scan, $data->binID), $http301 = false);
+				break;
 			default:
 				self::redirect(self::receivingUrl($data->ponbr), $http301 = false);
 				break;
