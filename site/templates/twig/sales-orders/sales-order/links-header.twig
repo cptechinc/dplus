@@ -31,7 +31,7 @@
 				</span>
 			{% endif %}
 
-			{% if docm.countDocuments(order.ordernumber) %}
+			{% if docm.count(order.ordernumber) %}
 				<a href="#documents" title="View Documents" aria-label="View Documents">
 					<i class="fa fa-file-text fa-2x" aria-hidden="true"></i>
 				</a>
