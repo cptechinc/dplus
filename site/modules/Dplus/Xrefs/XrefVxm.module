@@ -412,16 +412,14 @@ class XrefVxm extends WireData implements Module {
 			return false;
 		}
 
-		echo json_encode(array_keys($record->originalvalues));
-
 		for ($i = 1; $i <= ItemXrefVendor::UNITS_AVAILABLE; $i++) {
 			$field = ItemXrefVendor::get_unitcost_column($i);
 			if (array_key_exists($field, $record->originalvalues)) {
-				return $record->originalvalues[$field] != $record->$field;
+				if ($record->originalvalues[$field] != $record->$field) {
+					return true;
+				}
 			}
-			echo $field . '<br>';
 		}
-		exit;
 		return false;
 	}
 
