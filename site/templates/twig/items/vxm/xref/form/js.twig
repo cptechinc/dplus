@@ -174,10 +174,14 @@ $(function() {
 
 	$("body").on("focus", "#" + formVxm.id + " select, #" + formVxm.id +" input", function(e) {
 		var input = $(this);
-		if (input != formVxm.inputs.itemid && formVxm.inputs.itemid.hasClass('is-invalid')) {
+
+		if (input.attr('name') != formVxm.inputs.itemid.attr('name') && formVxm.inputs.itemid.hasClass('is-invalid')) {
 			formVxm.inputs.itemid.focus();
+			return true;
 		}
 	});
+
+	
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -219,6 +223,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	formVxm.inputs.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
