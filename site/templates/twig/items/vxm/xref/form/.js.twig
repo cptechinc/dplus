@@ -107,8 +107,6 @@ $(function() {
 		var input = $(this);
 		var server = new VxmRequests();
 
-		formVxm.populateItemData(input.val());
-
 		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(exists) {
 			if (exists) {
 				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(editXref) {
@@ -124,7 +122,9 @@ $(function() {
 						location.reload();
 					}
 				});
+				return true;
 			}
+			formVxm.populateItemData(input.val());
 		});
 	});
 
