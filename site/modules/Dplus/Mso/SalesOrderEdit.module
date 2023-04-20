@@ -220,7 +220,7 @@ class SalesOrderEdit extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
-		$itemID  = $values->text('itemID');
+		$itemID  = $values->string('itemID');
 		$qty     = $values->float('qty', ['precision' => $config->decimal_places_qty]);
 		$price   = $values->float('price', ['precision' => $config->decimal_places_price]);
 		$this->request_so_add_detail($ordn, $itemID, $qty, $price);
