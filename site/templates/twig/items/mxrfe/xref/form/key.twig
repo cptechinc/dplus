@@ -33,7 +33,8 @@
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
 								'data-lookupurl': page.searchLookupUrl('vendors'),
-								'data-input': '#mnfrID'
+								'data-input': '#mnfrID',
+								'data-jqv': 'true',
 							}
 						}
 					}
@@ -80,6 +81,7 @@
 						'attributes': {
 							'readonly': xref.isNew() == false ? true : false,
 							'tabindex': xref.isNew() == false ? '' : '-1',
+							'data-jqv': 'true',
 						}
 					},
 					'button': {
@@ -91,7 +93,7 @@
 							'data-target': '#ajax-modal',
 							'data-lookupurl': page.searchLookupUrl('items'),
 							'data-input': '#itemID',
-							'data-itemid': xref.itemid
+							'data-itemid': xref.itemid,
 						}
 					}
 				}

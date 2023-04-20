@@ -79,7 +79,7 @@ class Mxrfe extends AbstractController {
 		if ($xref->isNew() === false) {
 			$page->headline = "MXRFE: $xref->itemid";
 		}
-		$page->js   .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
+		$page->js   .= self::pw('config')->twig->render('items/mxrfe/xref/form/.js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 		$html = self::displayXref($data, $xref);
 		$mxrfe->deleteResponse();
 		return $html;

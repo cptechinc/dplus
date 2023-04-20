@@ -227,13 +227,17 @@ $(function() {
 	function populate_item_data(itemID) {
 		request_item(itemID, function(item) {
 			if (item) {
-				console.log(item);
 				$('.item-description').text(item.description);
 				$('.item-description2').text(item.description2);
 				$('select[name=unitofm]').val(item.uom_purchase);
-			} else {
-				input_itemID.attr('data-itemid', '');
+				$('select[name=unitofm]').change();
+				return true;
 			}
+			input_itemID.attr('data-itemid', '');
+			$('.item-description').text('');
+			$('.item-description2').text('');
+			$('select[name=unitofm]').val('EACH');
+			$('select[name=unitofm]').change();
 		});
 	}
 
