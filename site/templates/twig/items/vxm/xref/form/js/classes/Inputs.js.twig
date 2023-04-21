@@ -47,8 +47,7 @@ class VxmInputs {
 			if (margin != 0) {
 				displaymargin = floatParse(margin).toFixed(config.fields.unit_margin.precision);
 			}
-			console.log(unitrow.data('break') + ' ' + displaymargin);
-
+			// console.log(unitrow.data('break') + ' ' + displaymargin);
 			inputs.margin.val(displaymargin);
 		}
 	}
@@ -201,6 +200,9 @@ class VxmInputs {
 		listprice = listprice.toFixed(config.fields.listprice.precision);
 		this.margin.base.val(basemargin.toFixed(config.fields.unit_margin.precision));
 		this.listprice.val(listprice);
+
+		console.log('List price or cost: ' + config.basemarginchange.computeListpriceOrCost);
+		console.log('list price option: ' + config.options.basemarginchange.computeListpriceOrCost.listprice);
 		
 		if (config.basemarginchange.computeListpriceOrCost != config.options.basemarginchange.computeListpriceOrCost.listprice) {
 			form.updateEachListPriceUsingOrdercodeCosting();
