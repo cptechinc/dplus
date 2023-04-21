@@ -392,6 +392,7 @@ class XrefVxm extends WireData implements Module {
 			return false;
 		}
 		$this->setDateChangedToToday($record);
+		return true;
 	}
 
 	/**
