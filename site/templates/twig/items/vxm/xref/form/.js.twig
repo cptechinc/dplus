@@ -62,12 +62,11 @@ $(function() {
 		var config = VxmConfigs.getInstance();
 
 		if (parseInt(unitrow.data('break')) == 0) {
-			console.log('List price or cost: ' + config.basemarginchange.computeListpriceOrCost);
-			console.log('list price option: ' + config.options.basemarginchange.computeListpriceOrCost.listprice);
+			// console.log('List price or cost: ' + config.basemarginchange.computeListpriceOrCost);
+			// console.log('list price option: ' + config.options.basemarginchange.computeListpriceOrCost.listprice);
 
 
 			if (config.basemarginchange.computeListpriceOrCost == config.options.basemarginchange.computeListpriceOrCost.listprice) {
-
 				formVxm.inputs.updateListPriceFromBaseMargin(function() {
 					var vxmInputs = VxmInputs.getInstance();
 					vxmInputs.updateAllUnitMargins();
