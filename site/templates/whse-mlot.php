@@ -7,6 +7,7 @@
 		['GET',  '', Mlot\Menu::class, 'index'],
 		'img' => [
 			['GET',  '', Mlot\Img::class, 'index'],
+			['GET',  'page{pagenbr:\d+}/', Mlot\Img::class, 'index'],
 			['POST',  '', Mlot\Img::class, 'handleCRUD'],
 		],
 		'labels' => [
