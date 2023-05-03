@@ -69,12 +69,19 @@ class Binr extends Controller {
 				$binr = new BinrCRUD();
 				$binr->requestBinReassignment($data);
 				$params = explode('&', self::pw('input')->queryString());
+
 				$url = new Purl(self::pw('page')->url);
 				if (array_key_exists('frombin', $params)) {
 					$url->query->set('frombin', $params['frombin']);
 				}
+				if (self::pw('page')->name == 'move-from') {
+					$url->query->set('frombin', $data->frombin);
+				}
 				if (array_key_exists('tobin', $params)) {
 					$url->query->set('tobin', $params['tobin']);
+				}
+				if (self::pw('page')->name == 'move-to') {
+					$url->query->set('tobin', $data->tobin);
 				}
 				self::pw('session')->redirect($url->getUrl(), $http301 = false);
 				break;
