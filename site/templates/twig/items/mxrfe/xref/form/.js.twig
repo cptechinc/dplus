@@ -19,6 +19,33 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
+	$("body").on("focusin", "input, select", function(e) {
+		var input = $(this);
+
+		if (input.attr('name') != 'mnfritemID' && input_mnfritemID.val().trim() == '') {
+			input_mnfritemID.focus();
+			return true;
+		}
+
+		if (input.attr('name') != 'mnfritemID' && input.attr('name') != 'itemID' && input_itemID.val().trim() == '') {
+			input_itemID.focus();
+			return true;
+		}
+		
+		if (input.hasClass('is-invalid')) {
+			form_mxrfe.validate().element('#' + input.attr('id'));
+
+			if (input.hasClass('is-invalid')) {
+				return true;
+			}
+		}
+
+		if (form_mxrfe.find('input.is-invalid').length) {
+			form_mxrfe.find('input.is-invalid').focus();
+			return true;
+		}
+	});
+
 	/**
 	 * Change the Unit of Measure Description when the Unit of Measure is changed
 	 */
@@ -92,6 +119,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	var validator = form_mxrfe.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -203,10 +231,13 @@ $(function() {
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
 
-		if (validator.element('#'+input.attr('id'))) {
-			if (input_mnfritemID.val() != '') {
-				input_mnfritemID.change();
-			}
+		if (validator.element('#'+input.attr('id')) === false) {
+			input.focus();
+			return false;
+		}
+
+		if (input_mnfritemID.val() != '') {
+			input_mnfritemID.change();
 		}
 
 		if (input.val() != input.attr('data-itemid')) {
