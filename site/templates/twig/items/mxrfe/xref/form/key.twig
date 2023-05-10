@@ -80,7 +80,7 @@
 						'value': xref.itemid,
 						'attributes': {
 							'readonly': xref.isNew() == false ? true : false,
-							'tabindex': xref.isNew() == false ? '' : '-1',
+							'tabindex': xref.isNew() == false ? '-1' : '',
 							'data-jqv': 'true',
 						}
 					},
@@ -94,6 +94,7 @@
 							'data-lookupurl': page.searchLookupUrl('items'),
 							'data-input': '#itemID',
 							'data-itemid': xref.itemid,
+							'tabindex': '-1'
 						}
 					}
 				}
