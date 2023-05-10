@@ -91,7 +91,9 @@ class PurchaseOrder extends Finder {
 		$conditions = array();
 
 		if ($validate->invoice($invnbr) === false) {
-			$this->addConditionPo($q, $invnbr);
+			$conditions[] = $this->addConditionPo($q, $invnbr);
+			$q->where($conditions, 'or');
+			return $q;
 		}
 
 		if ($validate->invoice($invnbr)) {
