@@ -25,7 +25,7 @@ class Shipto extends AbstractSubfunctionController {
 	Indexes
 ============================================================= */
 	public static function index(WireData $data) {
-		$fields = ['rid|int', 'shiptoID|text', 'q|text'];
+		$fields = ['rid|int', 'custID|text', 'shiptoID|text', 'q|text'];
 		self::sanitizeParametersShort($data, $fields);
 		self::throw404IfInvalidCustomerOrPermission($data);
 		self::decorateInputDataWithCustid($data);
@@ -56,7 +56,7 @@ class Shipto extends AbstractSubfunctionController {
 		}
 		
 		$shipto = self::getShipto($data->custID, $data->shiptoID);
-		$shipto->customer     = self::getCustomerByRid($data->rid);
+		$shipto->customer     = self::getCustomer($data->custID);
 		$shipto->salesOrders  = self::getShiptoSalesOrders($shipto->custid, $shipto->shiptoid);
 		$shipto->salesHistory = self::getShiptoSalesHistory($shipto->custid, $shipto->shiptoid);
 		$shipto->quotes       = self::getShiptoQuotes($shipto->custid, $shipto->shiptoid);
