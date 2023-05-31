@@ -26,7 +26,7 @@
 		{% for shipto in shiptos %}
 			<tr>
 				<td scope="row">
-					<a href="{{ page.ciShiptoUrl(customer.rid, shipto.id)}}" class="link">
+					<a href="{{ page.ciShiptoUrl(customer.id, shipto.id)}}" class="link">
 						<strong>{{ shipto.id }}</strong>
 					</a>
 				</td>
