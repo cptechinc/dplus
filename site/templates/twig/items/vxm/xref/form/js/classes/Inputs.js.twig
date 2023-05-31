@@ -11,14 +11,14 @@ class VxmInputs {
 	constructor() {
 		this.id = 'vxm-item-form',
 		this.form = $('#' + this.id),
-		this.vendorid      = this.form.find('input[name=vendorID]'),
+		this.vendorid	   = this.form.find('input[name=vendorID]'),
 		this.vendoritemid  = this.form.find('input[name=vendoritemID]'),
-		this.itemid        = this.form.find('input[name=itemID]'),
-		this.kit           = this.form.find('select[name=iskit]'),
-		this.listprice     = this.form.find('input[name=listprice]'),
+		this.itemid 	   = this.form.find('input[name=itemID]'),
+		this.kit		   = this.form.find('select[name=iskit]'),
+		this.listprice	   = this.form.find('input[name=listprice]'),
 		this.eachlistprice = this.form.find('input[name=eachlistprice]'),
-		this.uom           = this.form.find('select[name=uom_purchase]'),
-		this.ordercode     = this.form.find('select[name=po_ordercode]'),
+		this.uom		   = this.form.find('select[name=uom_purchase]'),
+		this.ordercode	   = this.form.find('select[name=po_ordercode]'),
 		this.ordercodevalidated = this.form.find('input[name=po_ordercode_validated]'),
 		this.cost = {
 			base: this.form.find('input[name=unitcost_base]'),
@@ -34,8 +34,8 @@ class VxmInputs {
 		var form = VxmForm.getInstance();
 		var config = VxmConfigs.getInstance();
 		var inputs = {
-			qty:    unitrow.find('.unit-qty'),
-			cost:   unitrow.find('.unit-cost'),
+			qty:	unitrow.find('.unit-qty'),
+			cost:	unitrow.find('.unit-cost'),
 			margin: unitrow.find('.unit-margin'),
 		};
 		inputs.cost.val(floatParse(inputs.cost.val()).toFixed(config.fields.unit_cost.precision));
@@ -65,8 +65,8 @@ class VxmInputs {
 		var form = VxmForm.getInstance();
 		var config = VxmConfigs.getInstance();
 		var inputs = {
-			qty:    unitrow.find('.unit-qty'),
-			cost:   unitrow.find('.unit-cost'),
+			qty:	unitrow.find('.unit-qty'),
+			cost:	unitrow.find('.unit-cost'),
 			margin: unitrow.find('.unit-margin'),
 		};
 		var margin = floatParse(inputs.margin.val()).truncate(config.fields.unit_margin.precision);
@@ -84,7 +84,7 @@ class VxmInputs {
 
 		$(".unit-row").each(function(index) {
 			var unitcost = $(this).find('.unit-cost');
-			var margin   = $(this).find('.unit-margin');
+			var margin	 = $(this).find('.unit-margin');
 			if (unitcost.attr('name') == 'unitcost_base') { // SET BASE COST = LIST PRICE IF BASE COST IS 0
 				if (floatParse(unitcost.val()) == 0 || floatParse(margin.val()) == 0) {
 					unitcost.val(inputs.listprice.val());
@@ -99,8 +99,8 @@ class VxmInputs {
 		var form = VxmForm.getInstance();
 		var config = VxmConfigs.getInstance();
 		var inputs = {
-			qty:    unitrow.find('.unit-qty'),
-			cost:   unitrow.find('.unit-cost'),
+			qty:	unitrow.find('.unit-qty'),
+			cost:	unitrow.find('.unit-cost'),
 			margin: unitrow.find('.unit-margin'),
 		};
 
@@ -146,7 +146,12 @@ class VxmInputs {
 	updateMarginsOrListpriceAfterBasecost() {
 		var config = VxmConfigs.getInstance();
 		var unitrow = this.cost.base.closest('.unit-row');
-		var update  = config.basecostchange.computeListpriceOrPercent;
+		var update	= config.basecostchange.computeListpriceOrPercent;
+
+		if (this.cost.base.val() == 0) {
+			this.margin.base.val(0);
+			this.margin.base.change();
+		}
 
 		if (update == config.options.basecostchange.computeListpriceOrPercent.percent) { // Update Margins
 			this.updateAllUnitMargins();
@@ -191,7 +196,7 @@ class VxmInputs {
 	updateListPriceFromBaseMargin(callback) {
 		var config = VxmConfigs.getInstance();
 		var calculator = VxmCalculator.getInstance();
-		var form       = VxmForm.getInstance();
+		var form	   = VxmForm.getInstance();
 		var conversion = floatParse(this.uom.find('option:selected').data('conversion'));
 		var basecost   = floatParse(this.cost.base.val());
 		var basemargin = floatParse(this.margin.base.val());
