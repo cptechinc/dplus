@@ -12,10 +12,18 @@
 		<tr class="bg-dark text-white p-3">
 			<th></th>
 			<th class="pt-3 pb-3 align-middle">
-				<a href="{{ page.get_sortURL('vendoritemid') }}" class="link">Vendor Item ID</a>
+				<a href="{{ page.get_sortURL('vendoritemid') }}" class="link">Vendor Item ID
+					{% if page.orderby_column == '' or page.orderby_column == 'vendoritemid' or page.orderby_column != 'vendoritemid'  %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_column == 'vendoritemid' ? page.orderby_sort|lower : 'asc' }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th class="pt-3 pb-3 align-middle">
-				<a href="{{ page.get_sortURL('itemid') }}" class="link">Our Item ID</a>
+				<a href="{{ page.get_sortURL('itemid') }}" class="link">Our Item ID
+					{% if  page.orderby_column == 'itemid'  %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 align-middle text-right">Base Cost</th>
