@@ -66,3 +66,11 @@
 		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
 	{% endif %}
 {% endblock %}
+
+{% block page_title_text %}
+	{% if input.countSegments() %}
+		{{ page.get('pagetitle|headline|title')|raw }}
+	{% else %}
+		Customer Information
+	{% endif %}
+{% endblock %}
