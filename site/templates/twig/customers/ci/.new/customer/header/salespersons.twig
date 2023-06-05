@@ -1,0 +1,41 @@
+{#
+	var / var property      Description / Instance of
+	-------------------------------------------------
+	user                    ProcessWire\User
+	input                   ProcessWire\WireInput
+	page                    ProcessWire\Page
+	page.custid             Customer ID
+	customer                Customer
+	customer.contacts       Propel\Runtime\Util\PropelModelPager of Custinde
+	customer.salesOrders    Propel\Runtime\Util\PropelModelPager of SalesOrder
+	customer.salesHistory   Propel\Runtime\Util\PropelModelPager of Sales History
+	customer.quotes         Propel\Runtime\Util\PropelModelPager of Quote
+#}
+{% set SALESPERSONS = page.wire('modules').get('CodeTables').getCodeTable('mar', 'spm') %}
+
+<div class="card border-light">
+	<table class="table table-sm">
+		<tr>
+			<td class="font-weight-bold">Sales Person 1:</td>
+			<td>
+				{{ customer.salesperson1 }} - {{ SALESPERSONS.name(customer.salesperson1) }}
+			</td>
+		</tr>
+		{% if customer.salesperson2 %}
+			<tr>
+				<td class="font-weight-bold">Sales Person 2:</td>
+				<td>
+					{{ customer.salesperson2 }} - {{ SALESPERSONS.name(customer.salesperson2) }}
+				</td>
+			</tr>
+		{% endif %}
+		{% if customer.salesperson3 %}
+			<tr>
+				<td class="font-weight-bold">Sales Person 3:</td>
+				<td>
+					{{ customer.salesperson3 }} - {{ SALESPERSONS.name(customer.salesperson3) }}
+				</td>
+			</tr>
+		{% endif %}
+	</table>
+</div>
