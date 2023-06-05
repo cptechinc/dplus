@@ -93,7 +93,7 @@ class Vxm extends AbstractController{
 			$page->headline = "VXM: " . $xref->itemid;
 		}
 
-		$page->js .= self::pw('config')->twig->render('items/vxm/xref/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
+		$page->js .= self::pw('config')->twig->render('items/vxm/xref/form/.js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
 		$html = self::displayXref($data, $xref);
 		$vxm->deleteResponse();
 		return $html;

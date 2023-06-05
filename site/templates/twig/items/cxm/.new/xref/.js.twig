@@ -33,7 +33,7 @@ $(function() {
 
 	$("body").on("change", "input[name=price_retail]", function(e) {
 		var input = $(this);
-		var price = parseInt(input.val());
+		var price = parseFloat(input.val());
 		input.val(price.toFixed(formCxm.config.fields.price_retail.precision));
 	});
 

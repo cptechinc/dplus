@@ -106,7 +106,7 @@ class InputValidator extends WireData implements Module {
 		if (strlen($values->text($field->input())) == 0 && $field->allow_blank()) {
 			return true;
 		}
-		return $this->validate->$function($values->text($field->input()));
+		return $this->validate->$function($values->string($field->input()));
 	}
 
 	/**
@@ -158,7 +158,7 @@ class InputValidator extends WireData implements Module {
 				if (strlen($values->text($field->input()))) {
 					$function = $field->function();
 
-					if ($this->validate->$function($values->text($field->input()))) {
+					if ($this->validate->$function($values->string($field->input()))) {
 						$this->set_property($field);
 					}
 				} elseif ($field->allow_blank && strlen($values->text($field->input())) == 0) {
@@ -176,7 +176,7 @@ class InputValidator extends WireData implements Module {
 		$rm = strtolower($this->input->requestMethod());
 		$values = $this->input->$rm;
 		$setProperty = "set".ucfirst($field->property());
-		$this->record->$setProperty($values->text($field->input(), $opt = ['maxLength' => $field->length]));
+		$this->record->$setProperty($values->string($field->input(), $opt = ['maxLength' => $field->length]));
 	}
 
 /* =============================================================

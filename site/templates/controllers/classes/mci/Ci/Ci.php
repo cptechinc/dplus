@@ -185,7 +185,8 @@ class Ci extends AbstractController {
 	private static function getCustomerList(WireData $data) {
 		$filter = new Filters\Mar\Customer();
 		$filter->user(self::pw('user'));
-		$filter->sortby(self::pw('page'));
+		$filter->sort(self::pw('input')->get);
+		$filter->query->orderBy(Customer::aliasproperty('custid'));
 		if ($data->q) {
 			$filter->search($data->q);
 		}

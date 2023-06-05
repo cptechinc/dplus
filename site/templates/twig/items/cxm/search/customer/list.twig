@@ -10,8 +10,8 @@
 			<th scope="col">
 				<a href="{{ page.get_sortURL('custid') }}" class="link">
 					ID
-					{% if page.orderby_column == 'custid' %}
-						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% if page.orderby_column == '' or page.orderby_column == 'custid' or page.orderby_column != 'custid'  %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_column == 'custid' ? page.orderby_sort|lower : 'asc' }}" aria-hidden="true"></i>
 					{% endif %}
 				</a>
 			</th>

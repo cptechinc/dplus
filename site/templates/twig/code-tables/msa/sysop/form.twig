@@ -84,7 +84,7 @@
 			2. Is a new code
 			NOTE: Only show delete if code already exists.
 		#}
-		{% if sysop.recordlocker.isLocked(sysop.getRecordlockerKey(code)) == false or sysop.recordlocker.userHasLocked(sysop.getRecordlockerKey(code)) %}
+		{% if code.isNew() or sysop.recordlocker.isLocked(sysop.getRecordlockerKey(code)) == false or sysop.recordlocker.userHasLocked(sysop.getRecordlockerKey(code)) %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
@@ -94,6 +94,7 @@
 				</a>
 			{% endif %}
 		{% endif %}
+		
 		<a href="{{ page.sysopUrl(sysop.getRecordlockerKey(code)) }}" class="btn btn-warning pull-right">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>

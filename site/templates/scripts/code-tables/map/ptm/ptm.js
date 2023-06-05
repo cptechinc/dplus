@@ -91,6 +91,31 @@ $(function() {
 		}
 	});
 
+	$("body").on("focusout", "#code-form .std-split input.std_due_date", function(e) {
+		let input = $(this);
+		let form       = input.closest('form');
+
+		if (form.validate().element('#' + input.attr('id'))) {
+			return true;
+		}
+	});
+
+	$("body").on("focusin", "#code-form a.form_button, #code-form button.form_button", function(e) {
+		let button = $(this);
+
+		if (formPtm.isMethodStd()) {
+			formPtm.form.find('input.std_due_date').each(function() {
+				let input = $(this);
+				if (formPtm.form.validate().element('#' + input.attr('id'))) {
+					return true;
+				}
+				input.focus();
+				return false;
+			});
+		}
+	});
+
+
 	$("body").on("focusin", "#code-form .eom-split input", function(e) {
 		let input = $(this);
 

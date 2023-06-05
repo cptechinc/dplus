@@ -2,23 +2,47 @@
 	<thead>
 		<tr>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('vendorID') }}" class="link sort">ID</a>
+				<a href="{{ page.get_sortURL('vendorID') }}" class="link sort">ID
+					{% if page.orderby_column == '' or page.orderby_column == 'vendorID' or page.orderby_column != 'vendorID'  %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_column == 'vendorID' ? page.orderby_sort|lower : 'asc' }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('name') }}" class="link sort">Name</a>
+				<a href="{{ page.get_sortURL('name') }}" class="link sort">Name
+					{% if page.orderby_column == 'name' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">Address</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('city') }}" class="link sort">City</a>
+				<a href="{{ page.get_sortURL('city') }}" class="link sort">City
+					{% if page.orderby_column == 'city' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('state') }}" class="link sort">State</a>
+				<a href="{{ page.get_sortURL('state') }}" class="link sort">State
+					{% if page.orderby_column == 'state' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('zip') }}" class="link sort">Zip</a>
+				<a href="{{ page.get_sortURL('zip') }}" class="link sort">Zip
+					{% if page.orderby_column == 'zip' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col" class="text-right">
-				<a href="{{ page.get_sortURL('date_lastpurchased') }}" class="link sort">Last Purchase</a>
+				<a href="{{ page.get_sortURL('date_lastpurchased') }}" class="link sort">Last Purchase
+					{% if page.orderby_column == 'date_lastpurchased' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 		</tr>
 	</thead>

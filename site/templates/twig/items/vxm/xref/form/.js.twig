@@ -58,11 +58,14 @@ $(function() {
 
 	$("body").on("change", ".unit-margin", function(e) {
 		var unitrow = $(this).closest('.unit-row');
-		var computeListpriceOrCost = '{{ vxm.getConfigAp().computelistpriceorcost }}';
 		var vxmInputs = VxmInputs.getInstance();
 		var config = VxmConfigs.getInstance();
 
 		if (parseInt(unitrow.data('break')) == 0) {
+			// console.log('List price or cost: ' + config.basemarginchange.computeListpriceOrCost);
+			// console.log('list price option: ' + config.options.basemarginchange.computeListpriceOrCost.listprice);
+
+
 			if (config.basemarginchange.computeListpriceOrCost == config.options.basemarginchange.computeListpriceOrCost.listprice) {
 				formVxm.inputs.updateListPriceFromBaseMargin(function() {
 					var vxmInputs = VxmInputs.getInstance();
@@ -103,8 +106,6 @@ $(function() {
 		var input = $(this);
 		var server = new VxmRequests();
 
-		formVxm.populateItemData(input.val());
-
 		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(exists) {
 			if (exists) {
 				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(editXref) {
@@ -120,7 +121,9 @@ $(function() {
 						location.reload();
 					}
 				});
+				return true;
 			}
+			formVxm.populateItemData(input.val());
 		});
 	});
 
@@ -170,10 +173,14 @@ $(function() {
 
 	$("body").on("focus", "#" + formVxm.id + " select, #" + formVxm.id +" input", function(e) {
 		var input = $(this);
-		if (input != formVxm.inputs.itemid && formVxm.inputs.itemid.hasClass('is-invalid')) {
+
+		if (input.attr('name') != formVxm.inputs.itemid.attr('name') && formVxm.inputs.itemid.hasClass('is-invalid')) {
 			formVxm.inputs.itemid.focus();
+			return true;
 		}
 	});
+
+	
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -215,6 +222,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	formVxm.inputs.form.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {

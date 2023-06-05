@@ -23,14 +23,7 @@
 					{% endif %}
 				</a>
 			</th>
-			<th scope="col">
-				<a href="{{ page.get_sortURL('address1') }}" class="link">
-					Address
-					{% if page.orderby_column == 'address1' %}
-						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
-					{% endif %}
-				</a>
-			</th>
+			<th scope="col">Address</th>
 			<th scope="col">
 				<a href="{{ page.get_sortURL('city') }}" class="link">
 					City

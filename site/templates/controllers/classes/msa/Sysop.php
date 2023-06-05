@@ -77,13 +77,12 @@ class Sysop extends Base {
 	private static function code($data) {
 		$sysop = self::getSysop();
 		$page  = self::pw('page');
-		$page->headline = "SYSOP: Editing $data->system $data->code";
+		$page->headline = "System Optional Code Edit";
 		$code = $sysop->getOrCreate($data->system, $data->code);
 
-		if ($code->isNew()) {
-			$page->headline = "SYSOP: Creating New Code";
+		if ($code->isNew() === false) {
+			$sysop->lockrecord($code);
 		}
-		$sysop->lockrecord($code);
 		self::initHooks();
 		$page->js .= self::pw('config')->twig->render('code-tables/msa/sysop/form/.js.twig', ['sysop' => $sysop]);
 		$html = self::displayCode($data, $code);
@@ -123,8 +122,12 @@ class Sysop extends Base {
 		$sysop = self::getSysop();
 		$key   = $sysop->getRecordlockerKey($code);
 
+		if ($code->isNew()) {
+			return '';
+		}
+
 		if ($sysop->recordlocker->isLocked($key) === false || $sysop->recordlocker->userHasLocked($key)) {
-			return false;
+			return '';
 		}
 
 		$msg = "$data->system $data->code is being locked by " . $sysop->recordlocker->getLockingUser($key);

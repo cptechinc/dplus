@@ -43,9 +43,9 @@ class VxmForm {
 
 		requests.getItm(itemID, ['uom','iskit','pricing','standardcostbasedon'], function(item) {
 			var form = new VxmForm();
+			var itemcol = $('.item-col');
 
 			if (item) {
-				var itemcol = $('.item-col');
 				form.inputs.itemid.attr('data-iskit',  item.iskit ? 'true' : 'false');
 				form.inputs.itemid.attr('data-itemid', item.itemid);
 				form.inputs.itemid.attr('data-standardcostbase', item.standardcostbasedon.base);
@@ -57,11 +57,18 @@ class VxmForm {
 				form.inputs.uom.val(item.uom.purchase.code).change();
 				form.inputs.listprice.val(calculator.listprice(item.pricing.base, item.uom.purchase.conversion)).change();
 				form.enableDisableKit();
-			} else {
-				form.inputs.itemid.attr('data-iskit', 'false');
-				form.inputs.itemid.attr('data-itemid', '');
-				form.enableDisableKit();
+				return true;
 			}
+			form.inputs.itemid.attr('data-iskit', 'false');
+			form.inputs.itemid.attr('data-itemid', '');
+			form.enableDisableKit();
+			form.inputs.itemid.focus();
+			itemcol.find('.description').text('');
+			itemcol.find('.description2').text('');
+			itemcol.find('.uom-sale').text('');
+			$('.uom-sale-code').attr('data-conversion', 1);
+			$('.uom-sale-code').text('EACH');
+			form.inputs.uom.val('EACH').change();
 		});
 	}
 
@@ -165,9 +172,6 @@ class VxmForm {
 		var config = VxmConfigs.getInstance();
 		var changeItmCost = config.ordercodesForChangingItmCost.contains(this.inputs.ordercode.val());
 		this.inputs.eachlistprice.val(floatParse(this.getListPriceEach()).toFixed(config.fields.listprice.precision));
-		console.log('changeItmCost ' + changeItmCost);
-		console.log('allowListPriceUpdate ' + config.allowListPriceUpdate);
-
 		if (changeItmCost && config.allowListPriceUpdate) {
 			this.inputs.eachlistprice.val(floatParse(this.getListPriceEach()).toFixed(config.fields.listprice.precision));
 		}

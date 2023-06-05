@@ -10,23 +10,47 @@
 	<thead>
 		<tr>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('custID') }}" class="link sort">ID</a>
+				<a href="{{ page.get_sortURL('custID') }}" class="link sort">ID
+					{% if page.orderby_column == '' or page.orderby_column == 'custID' or page.orderby_column != 'custID'  %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_column == 'custID' ? page.orderby_sort|lower : 'asc' }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('name') }}" class="link sort">Name</a>
+				<a href="{{ page.get_sortURL('name') }}" class="link sort">Name
+					{% if page.orderby_column == 'name' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">Address</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('city') }}" class="link sort">City</a>
+				<a href="{{ page.get_sortURL('city') }}" class="link sort">City
+					{% if page.orderby_column == 'city' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('state') }}" class="link sort">State</a>
+				<a href="{{ page.get_sortURL('state') }}" class="link sort">State
+					{% if page.orderby_column == 'state' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('zip') }}" class="link sort">Zip</a>
+				<a href="{{ page.get_sortURL('zip') }}" class="link sort">Zip
+					{% if page.orderby_column == 'zip' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('lastsaledate') }}" class="link sort">Last Sales Date</a>
+				<a href="{{ page.get_sortURL('lastsaledate') }}" class="link sort">Last Sales Date
+					{% if page.orderby_column == 'lastsaledate' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 		</tr>
 	</thead>
@@ -35,7 +59,7 @@
 			{% for customer in results %}
 				<tr>
 					<td scope="row">
-						<a href="#" class="link customer-link text-monospace" data-custid="{{ customer.id }}" data-cust_name="{{ customer.name }}" >
+						<a href="#" class="link customer-link text-monospace" data-custID="{{ customer.id }}" data-cust_name="{{ customer.name }}" >
 							<strong>{{ customer.id|replace({' ': '&nbsp;'})|raw }}</strong>
 						</a>
 					</td>

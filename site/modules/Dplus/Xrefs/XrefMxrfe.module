@@ -293,11 +293,29 @@ class XrefMxrfe extends WireData implements Module {
 
 		$record->setPrice($values->float('price'), ['precision' => $this->field_attribute('price', 'precision')]);
 		$record->setCost($values->float('cost'), ['precision' => $this->field_attribute('cost', 'precision')]);
-		$record->setDateupdated(date('Ymd'));
+		$this->updateDateUpdatedIfUpdatedCostOrPrice($record);
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
 		$record->setDummy('P');
 		return $invalidfields;
+	}
+
+	private function updateDateUpdatedIfUpdatedCostOrPrice(ItemXrefManufacturer $record) {
+		$modified = false;
+
+		$fields = ['price', 'cost'];
+
+		foreach ($fields as $alias) {
+			$field = strtolower(ItemXrefManufacturer::aliasproperty($alias));
+			if (array_key_exists($field, $record->originalvalues) && $record->originalvalues[$field] != $record->$field) {
+				$modified = true;
+			}
+		}
+		if ($modified === false) {
+			return false;
+		}
+		$record->setDateupdated(date('Ymd'));
+		return true;
 	}
 
 	/**

@@ -19,6 +19,33 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
+	$("body").on("focusin", "input, select", function(e) {
+		var input = $(this);
+
+		if (input.attr('name') != 'mnfritemID' && input_mnfritemID.val().trim() == '') {
+			input_mnfritemID.focus();
+			return true;
+		}
+
+		if (input.attr('name') != 'mnfritemID' && input.attr('name') != 'itemID' && input_itemID.val().trim() == '') {
+			input_itemID.focus();
+			return true;
+		}
+		
+		if (input.hasClass('is-invalid')) {
+			form_mxrfe.validate().element('#' + input.attr('id'));
+
+			if (input.hasClass('is-invalid')) {
+				return true;
+			}
+		}
+
+		if (form_mxrfe.find('input.is-invalid').length) {
+			form_mxrfe.find('input.is-invalid').focus();
+			return true;
+		}
+	});
+
 	/**
 	 * Change the Unit of Measure Description when the Unit of Measure is changed
 	 */
@@ -92,6 +119,7 @@ $(function() {
 	Validation Functions
 ============================================================= */
 	var validator = form_mxrfe.validate({
+		onkeyup: false,
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -177,9 +205,9 @@ $(function() {
 
 	function swal_xref_exists() {
 		swal2.fire({
-			title: "X-ref already exists",
-			text: 'Would you like to go edit this X-ref?',
-			icon: 'error',
+			title: "Manufacturer Item " + input_mnfritemID.val() + " exists",
+			text: 'Would you like to edit this item?',
+			icon: 'question',
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No',
@@ -203,10 +231,13 @@ $(function() {
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
 
-		if (validator.element('#'+input.attr('id'))) {
-			if (input_mnfritemID.val() != '') {
-				input_mnfritemID.change();
-			}
+		if (validator.element('#'+input.attr('id')) === false) {
+			input.focus();
+			return false;
+		}
+
+		if (input_mnfritemID.val() != '') {
+			input_mnfritemID.change();
 		}
 
 		if (input.val() != input.attr('data-itemid')) {
@@ -227,13 +258,17 @@ $(function() {
 	function populate_item_data(itemID) {
 		request_item(itemID, function(item) {
 			if (item) {
-				console.log(item);
 				$('.item-description').text(item.description);
 				$('.item-description2').text(item.description2);
 				$('select[name=unitofm]').val(item.uom_purchase);
-			} else {
-				input_itemID.attr('data-itemid', '');
+				$('select[name=unitofm]').change();
+				return true;
 			}
+			input_itemID.attr('data-itemid', '');
+			$('.item-description').text('');
+			$('.item-description2').text('');
+			$('select[name=unitofm]').val('EACH');
+			$('select[name=unitofm]').change();
 		});
 	}
 

@@ -203,7 +203,6 @@ class Cxm extends AbstractController {
 	}
 
 	/**
-	 * 
 	 *	NOTE: Keep public for ITM
 	 * @return string
 	 */
