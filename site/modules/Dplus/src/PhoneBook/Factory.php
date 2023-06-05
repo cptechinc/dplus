@@ -10,7 +10,10 @@ use ProcessWire\WireData;
  */
 class Factory extends WireData {
 	const CLASSMAP = [
-		'customer' => Customer::class
+		'customer' => Customer::class,
+		'c'        => Customer::class,
+		'customer-contact' => CustomerContact::class,
+		'cc'               => CustomerContact::class,
 	];
 
 	private static $instance;
