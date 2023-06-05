@@ -31,9 +31,20 @@ class Customer extends AbstractType {
 /* =============================================================
 	Read Functions
 ============================================================= */	
+	/**
+	 * Return the number of contacts for Customer
+	 * @param  string $custID
+	 * @return int
+	 */
 	public function countByCustid($custID) {
 		return $this->queryCustid($custID)->count();
 	}
+
+	/**
+	 * Return the first record that matches
+	 * @param  string $custID
+	 * @return Record
+	 */
 	public function findOne($custID) {
 		return $this->queryCustid($custID)->findOne();
 	}
