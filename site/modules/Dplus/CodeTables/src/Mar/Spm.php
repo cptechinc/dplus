@@ -83,6 +83,18 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		return $q->findOne();
 	}
 
+	/**
+	 * Return Sales Person's Name
+	 * @param  string $id Sales Person ID
+	 * @return SalesPerson
+	 */
+	public function name($id) {
+		$q = $this->query();
+		$q->filterById($id);
+		$q->select(SalesPerson::aliasproperty('name'));
+		return $q->findOne();
+	}
+
 /* =============================================================
 	CRUD Creates
 ============================================================= */
