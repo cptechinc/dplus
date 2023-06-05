@@ -2,6 +2,7 @@
 
 include_once(__DIR__.'/vendor/autoload.php');
 
+use Dplus\Mar;
 use Dplus\PhoneBook;
 
 /**
@@ -9,6 +10,7 @@ use Dplus\PhoneBook;
  */
 class Dplus extends WireData implements Module {
 	public function init() {
+		$this->mar        = Mar\Factory::instance();
 		$this->phoneBooks = PhoneBook\Factory::instance();
 	}
 
