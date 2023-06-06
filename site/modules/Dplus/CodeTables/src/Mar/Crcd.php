@@ -36,6 +36,7 @@ class Crcd extends AbstractCodeTableEditableSingleKey {
 		'transactioncost'	   => ['type' => 'number', 'max' => 99.99, 'precision' => 2, 'default' => 0.00],
 		'cc_surcharge_percent' => ['type' => 'number', 'max' => 99.99, 'precision' => 2, 'default' => 0.00],
 	];
+	protected static $instance;
 
 	public function codeJson(Code $code) {
 		$json = parent::codeJson($code);

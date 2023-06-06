@@ -28,6 +28,8 @@ class Cuc extends AbstractCodeTableEditableSingleKey {
 		'description'      => ['type' => 'text', 'maxlength' => 20],
 	];
 
+	protected static $instance;
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */

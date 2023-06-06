@@ -32,6 +32,8 @@ class Cpm extends AbstractCodeTableEditableSingleKey {
 		'percent'          => ['type' => 'number', 'precision' => 3, 'max' => 99.999, 'default' => '0.000'],
 	];
 
+	protected static $instance;
+
 	public function codeJson(Code $code) {
 		$json = parent::codeJson($code);
 		$json['surcharge'] = $code->surcharge;
