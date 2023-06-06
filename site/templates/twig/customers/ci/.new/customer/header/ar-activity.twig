@@ -12,111 +12,115 @@
 	customer.quotes         Propel\Runtime\Util\PropelModelPager of Quote
 #}
 <div class="card">
-	<div class="card-header">
-		<span class="h5">Customer Activity</span>
-	</div>
 	<ul class="list-group list-group-flush">
-		<li class="list-group-item py-1 px-1 bg-success text-white">
+		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-6">
-					Last Sale Date
-				</div>
-				<div class="col-sm-6 text-right">
-					{{ customer.lastsaledate|convertdate }}
-				</div>
+				<div class="col-sm-6 text-bold">Activity</div>
+				<div class="col-sm-3 text-right text-bold">Number</div>
+				<div class="col-sm-3 text-right text-bold">Amount</div>
 			</div>
 		</li>
 		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-6">
-					Sales Orders
-				</div>
-				<div class="col-sm-6 text-right">
-					{{ customer.countSalesOrders() }}
-				</div>
+				<div class="col-sm-6 text-bold">Sales Orders</div>
+				<div class="col-sm-3 text-right">{{ customer.countSalesOrders() }}</div>
+				<div class="col-sm-3 text-right">$ {{ customer.getSalesOrdersAmt()|currency }}</div>
 			</div>
 		</li>
 		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-6">
-					Amount
-				</div>
-				<div class="col-sm-6 text-right">
-					$ {{ customer.get_orders_amount()|currency }}
-				</div>
+				<div class="col-sm-6 text-bold">Standing Orders</div>
+				<div class="col-sm-3 text-right">{{ customer.countSoStandingOrderDetails() }}</div>
+				<div class="col-sm-3 text-right"></div>
 			</div>
 		</li>
 		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-6">
-					Highest Balance
-				</div>
-				<div class="col-sm-6 text-right">
-					$ {{ customer.highestbalance|currency }}
-				</div>
+				<div class="col-sm-6 text-bold">Open Invoices</div>
+				<div class="col-sm-3 text-right">{{ customer.countArInvoices() }}</div>
+				<div class="col-sm-3 text-right">$ {{ customer.getArInvoicesTotalAmt()|currency }}</div>
 			</div>
 		</li>
+		
+		<li class="list-group-item p-1 bg-light">
+			<h5 class="text-center mb-0">Sales History</h5>
+		</li>
+
 		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-6">
-					Current Finance Charge
-				</div>
-				<div class="col-sm-6 text-right">
-					{{ customer.financecharge }}
-				</div>
+				<div class="col-sm-6 text-bold">Period</div>
+				<div class="col-sm-3 text-right text-bold">Amount</div>
+				<div class="col-sm-3 text-right text-bold">Invoices</div>
 			</div>
 		</li>
-		<li class="list-group-item py-1 px-1 bg-light text-center"><span class="h5 font-weight-bold">Invoices</span></li>
-		<li class="list-group-item py-1 px-1">
-			<div class="row font-weight-bold">
-				<div class="col-sm-6">
-					Period
-				</div>
-				<div class="col-sm-3 text-right">
-					Amount
-				</div>
-				<div class="col-sm-3 text-right">
-					Invoices
-				</div>
-			</div>
-		</li>
+
 		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-6 text-bold">
 					<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
 				</div>
-				<div class="col-sm-3 text-right">
-					$ {{ customer.mtd_sales|currency }}
-				</div>
-				<div class="col-sm-3 text-right">
-					{{ customer.mtd_invoices }}
-				</div>
+				<div class="col-sm-3 text-right">$ {{ customer.mtd_sales|currency }}</div>
+				<div class="col-sm-3 text-right">{{ customer.mtd_invoices }}</div>
 			</div>
 		</li>
+
 		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-6 text-bold">
 					<abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr>
 				</div>
-				<div class="col-sm-3 text-right">
-					$ {{ customer.ytd_sales|currency }}
-				</div>
-				<div class="col-sm-3 text-right">
-					{{ customer.ytd_invoices }}
-				</div>
+				<div class="col-sm-3 text-right">$ {{ customer.ytd_sales|currency }}</div>
+				<div class="col-sm-3 text-right">{{ customer.ytd_invoices }}</div>
 			</div>
 		</li>
 		<li class="list-group-item py-1 px-1">
 			<div class="row">
-				<div class="col-sm-5">
-					Last 12 Months
-				</div>
-				<div class="col-sm-4 text-right">
-					$ {{ customer.get_lastxmonthsamount(12)|currency }}
-				</div>
-				<div class="col-sm-3 text-right">
-					{{ customer.get_lastxmonthscount(12) }}
-				</div>
+				<div class="col-sm-6 text-bold">Last 12 Months</div>
+				<div class="col-sm-3 text-right">$ {{ customer.get_lastxmonthsamount(12)|currency }}</div>
+				<div class="col-sm-3 text-right">{{ customer.get_lastxmonthscount(12) }}</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6 text-bold">Prev Fiscal Year</div>
+				<div class="col-sm-3 text-right">$ {{ customer.getPrevFiscalYrSalesAmt()|currency }}</div>
+				<div class="col-sm-3 text-right">{{ customer.getPrevFiscalYrSalesCount() }}</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6 text-bold">Highest Balance</div>
+				<div class="col-sm-3 text-right">$ {{ customer.highestbalance|currency }}</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6 text-bold">Credit Limit</div>
+				<div class="col-sm-3 text-right">$ {{ customer.creditlimit|currency }}</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6 text-bold">Current Finance Charge</div>
+				<div class="col-sm-3 text-right">$ {{ customer.financecharge|currency }}</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6 text-bold">Line Minimum</div>
+				<div class="col-sm-3 text-right">$ {{ customer.linemin|currency }}</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6 text-bold">Order Minimum</div>
+				<div class="col-sm-3 text-right">$ {{ customer.ordermin|currency }}</div>
+			</div>
+		</li>
+		<li class="list-group-item py-1 px-1">
+			<div class="row">
+				<div class="col-sm-6 text-bold">Last Sale Date</div>
+				<div class="col-sm-3 text-right">{{ customer.lastsaledate|convertdate }}</div>
 			</div>
 		</li>
 	</ul>
