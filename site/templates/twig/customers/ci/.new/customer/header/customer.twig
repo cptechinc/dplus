@@ -33,179 +33,213 @@
 {% set configAr = CONFIGS.config('ar') %}
 
 
-<table class="table table-sm">
-	<tr>
-		<td class="font-weight-bold">Customer</td>
-		<td>
-			{{ customer.id }} <br>
-			{{ customer.name }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Address</td>
-		<td>
-			{{ customer.address1 }} <br>
-			{% if (customer.address2 is not empty) %}
-				{{ customer.address2 }} <br>
-			{% endif %}
+<div class="list-group">
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Customer</div>
+			<div class="col-sm-8">
+				{{ customer.id }} <br>
+				{{ customer.name }}
+			</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Address</div>
+			<div class="col-sm-8">
+				{{ customer.address1 }} <br>
+				{% if (customer.address2 is not empty) %}
+					{{ customer.address2 }} <br>
+				{% endif %}
 
-			{% if (customer.address3 is not empty) %}
-				{{ customer.address3 }} <br>
-			{% endif %}
+				{% if (customer.address3 is not empty) %}
+					{{ customer.address3 }} <br>
+				{% endif %}
 
-			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip }} <br>
-			{{ COUNTRIES.description(customer.country) }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Number of Shiptos</td>
-		<td>{{ customer.count_shiptos() }}</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Sales Person 1</td>
-		<td>
-			{{ customer.salesperson1 }} - {{ SALESPERSONS.name(customer.salesperson1) }}
-		</td>
-	</tr>
+				{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip }} <br>
+				{{ COUNTRIES.description(customer.country) }}
+			</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Phone</div>
+			<div class="col-sm-8">
+				{{ contact.isInternational() ? contact.international :  contact.phone|phone_us }}
+			</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Cell</div>
+			<div class="col-sm-8">
+				{{ contact.isInternational() ? contact.cellphone_international :  contact.cellphone|phone_us }}
+			</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Fax</div>
+			<div class="col-sm-8">
+				{{ contact.isInternational() ? contact.fax_international :  contact.fax|phone_us }}
+			</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Email</div>
+			<div class="col-sm-8">{{ contact.email }}</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Contact</div>
+			<div class="col-sm-8">
+				{{ ARCONTACTS.hasPrimaryBuyer(customer.custid) ? ARCONTACTS.primaryBuyer(customer.custid).contactid : ARCONTACTS.buyer(customer.custid).contactid }}
+			</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Phone</div>
+			<div class="col-sm-8">
+				{{ contactCustomer.isInternational() ? contactCustomer.international :  contactCustomer.phone|phone_us }}
+			</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Cell</div>
+			<div class="col-sm-8">
+				{{ contactCustomer.isInternational() ? contactCustomer.cellphone_international :  contactCustomer.cellphone|phone_us }}
+			</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Fax</div>
+			<div class="col-sm-8">
+				{{ contactCustomer.isInternational() ? contactCustomer.fax_international :  contactCustomer.fax|phone_us }}
+			</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Email</div>
+			<div class="col-sm-8">{{ contactCustomer.email }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Number of Ship-Tos</div>
+			<div class="col-sm-8">{{ customer.count_shiptos() }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Sales Person 1</div>
+			<div class="col-sm-8">{{ SALESPERSONS.name(customer.salesperson1) }}</div>
+		</div>
+	</div>
+
 	{% if customer.salesperson2 %}
-		<tr>
-			<td class="font-weight-bold">Sales Person 2</td>
-			<td>
-				{{ customer.salesperson2 }} - {{ SALESPERSONS.name(customer.salesperson2) }}
-			</td>
-		</tr>
+		<div class="list-group-item p-1">
+			<div class="row">
+				<div class="col-sm-4 text-bold">Sales Person 2</div>
+				<div class="col-sm-8">{{ SALESPERSONS.name(customer.salesperson2) }}</div>
+			</div>
+		</div>
 	{% endif %}
+
 	{% if customer.salesperson3 %}
-		<tr>
-			<td class="font-weight-bold">Sales Person 3</td>
-			<td>
-				{{ customer.salesperson3 }} - {{ SALESPERSONS.name(customer.salesperson3) }}
-			</td>
-		</tr>
+		<div class="list-group-item p-1">
+			<div class="row">
+				<div class="col-sm-4 text-bold">Sales Person 3</div>
+				<div class="col-sm-8">{{ SALESPERSONS.name(customer.salesperson3) }}</div>
+			</div>
+		</div>
 	{% endif %}
-	<tr>
-		<td class="font-weight-bold">Phone</td>
-		<td>
-			{{ contact.isInternational() ? contact.international :  contact.phone|phone_us }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Cell</td>
-		<td>
-			{{ contact.isInternational() ? contact.cellphone_international :  contact.cellphone|phone_us }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Fax</td>
-		<td>
-			{{ contact.isInternational() ? contact.fax_international :  contact.fax|phone_us }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Email</td>
-		<td>{{ contact.email }}</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Contact</td>
-		<td>
-			{{ ARCONTACTS.hasPrimaryBuyer(customer.custid) ? ARCONTACTS.primaryBuyer(customer.custid).contactid : ARCONTACTS.buyer(customer.custid).contactid }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Phone</td>
-		<td>
-			{{ contactCustomer.isInternational() ? contactCustomer.international :  contactCustomer.phone|phone_us }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Cell</td>
-		<td>
-			{{ contactCustomer.isInternational() ? contactCustomer.cellphone_international :  contactCustomer.cellphone|phone_us }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Fax</td>
-		<td>
-			{{ contactCustomer.isInternational() ? contactCustomer.fax_international :  contactCustomer.fax|phone_us }}
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Email</td>
-		<td>{{ contactCustomer.email }}</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Warehouse</td>
-		<td>
-			<div class="row">
-				<div class="col-sm-4">{{ customer.warehouse }}</div>
-				<div class="col-sm-8">{{ WAREHOUSES.name(customer.warehouse) }}</div>
-			</div>
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Ship Via</td>
-		<td>
-			<div class="row">
-				<div class="col-sm-4">{{ customer.shipvia.code }}</div>
-				<div class="col-sm-8">{{ customer.shipvia.description }}</div>
-			</div> 
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Tax Code</td>
-		<td>
-			<div class="row">
-				<div class="col-sm-4">{{ customer.taxcode }}</div>
-				<div class="col-sm-8">{{ TAXCODES.description(customer.taxcode) }}</div>
-			</div>
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Tax Exempt</td>
-		<td>{{ customer.is_taxexempt() ? customer.taxexemptcode : 'N/A' }}</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Terms</td>
-		<td> 
-			<div class="row">
-				<div class="col-sm-4">{{ customer.termscode }}</div>
-				<div class="col-sm-8">{{ TERMSCODES.description(customer.termscode) }}</div>
-			</div> 
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Type Code</td>
-		<td>
-			<div class="row">
-				<div class="col-sm-4">{{ customer.type }}</div>
-				<div class="col-sm-8">{{ TYPECODES.description(customer.type) }}</div>
-			</div> 
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Price Code</td>
-		<td>
-			<div class="row">
-				<div class="col-sm-4">{{ customer.pricecode }}</div>
-				<div class="col-sm-8">{{ PRICECODES.description(customer.pricecode) }}</div>
-			</div> 
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Credit Hold</td>
-		<td>{{ customer.credithold() }}</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">{{ configAr.custlabel ? configAr.custlabel : 'User Code' }}</td>
-		<td>
-			<div class="row">
-				<div class="col-sm-4">{{ customer.usercode }}</div>
-				<div class="col-sm-8">{{ USERCODES.description(customer.usercode) }}</div>
-			</div> 
-		</td>
-	</tr>
-	<tr>
-		<td class="font-weight-bold">Date Entered</td>
-		<td>{{ customer.dateentered|convertdate }}</td>
-	</tr>
-</table>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Warehouse</div>
+			<div class="col-sm-2">{{ customer.warehouse }}</div>
+			<div class="col-sm-6">{{ WAREHOUSES.name(customer.warehouse) }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Ship Via</div>
+			<div class="col-sm-2">{{ customer.shipvia.code }}</div>
+			<div class="col-sm-6">{{ customer.shipvia.description }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Tax Code</div>
+			<div class="col-sm-2">{{ customer.taxcode }}</div>
+			<div class="col-sm-6">{{ TAXCODES.description(customer.taxcode) }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Tax Exempt</div>
+			<div class="col-sm-8">{{ customer.is_taxexempt() ? customer.taxexemptcode : '' }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Terms</div>
+			<div class="col-sm-2">{{ customer.termscode }}</div>
+			<div class="col-sm-6">{{ TERMSCODES.description(customer.termscode) }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Type Code</div>
+			<div class="col-sm-2">{{ customer.type }}</div>
+			<div class="col-sm-6">{{ TYPECODES.description(customer.type) }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Price Code</div>
+			<div class="col-sm-2">{{ customer.pricecode }}</div>
+			<div class="col-sm-6">{{ PRICECODES.description(customer.pricecode) }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Credit Hold</div>
+			<div class="col-sm-8">{{ customer.credithold() }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">{{ configAr.custlabel ? configAr.custlabel : 'User Code' }}</div>
+			<div class="col-sm-2">{{ customer.usercode }}</div>
+			<div class="col-sm-6">{{ USERCODES.description(customer.usercode) }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Date Entered</div>
+			<div class="col-sm-8">{{ customer.dateentered|convertdate }}</div>
+		</div>
+	</div>
+</div>
