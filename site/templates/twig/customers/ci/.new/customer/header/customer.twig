@@ -26,12 +26,14 @@
 {% set ARCONTACTS = DPLUS.mar.fetch('ar-contact') %}
 {% set PHONEBOOK_CUSTOMER = DPLUS.phoneBooks.fetch('customer') %}
 {% set contact = PHONEBOOK_CUSTOMER.findOne(customer.custid) %}
+
+{% set buyerContactID =  ARCONTACTS.hasPrimaryBuyer(customer.custid) ? ARCONTACTS.primaryBuyer(customer.custid).contactid : ARCONTACTS.buyer(customer.custid).contactid %}
+
 {% set PHONEBOOK_CUSTOMERCONTACTS = DPLUS.phoneBooks.fetch('customer-contact') %}
-{% set contactCustomer = PHONEBOOK_CUSTOMERCONTACTS.findOne(customer.custid) %}
+{% set contactCustomer = PHONEBOOK_CUSTOMERCONTACTS.findOne(customer.custid, buyerContactID) %}
 
 {% set CONFIGS = page.wire('modules').get('Dconfigs') %}
 {% set configAr = CONFIGS.config('ar') %}
-
 
 <div class="list-group">
 	<div class="list-group-item p-1">
@@ -63,7 +65,8 @@
 	</div>
 	<div class="list-group-item p-1">
 		<div class="row">
-			<div class="col-sm-4 text-bold">Phone</div>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Phone</div>
 			<div class="col-sm-8">
 				{{ contact.isInternational() ? contact.international :  contact.phone|phone_us }}
 			</div>
@@ -71,7 +74,8 @@
 	</div>
 	<div class="list-group-item p-1">
 		<div class="row">
-			<div class="col-sm-4 text-bold">Cell</div>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Cell</div>
 			<div class="col-sm-8">
 				{{ contact.isInternational() ? contact.cellphone_international :  contact.cellphone|phone_us }}
 			</div>
@@ -79,7 +83,8 @@
 	</div>
 	<div class="list-group-item p-1">
 		<div class="row">
-			<div class="col-sm-4 text-bold">Fax</div>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Fax</div>
 			<div class="col-sm-8">
 				{{ contact.isInternational() ? contact.fax_international :  contact.fax|phone_us }}
 			</div>
@@ -87,7 +92,8 @@
 	</div>
 	<div class="list-group-item p-1">
 		<div class="row">
-			<div class="col-sm-4 text-bold">Email</div>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Email</div>
 			<div class="col-sm-8">{{ contact.email }}</div>
 		</div>
 	</div>
@@ -95,14 +101,15 @@
 		<div class="row">
 			<div class="col-sm-4 text-bold">Contact</div>
 			<div class="col-sm-8">
-				{{ ARCONTACTS.hasPrimaryBuyer(customer.custid) ? ARCONTACTS.primaryBuyer(customer.custid).contactid : ARCONTACTS.buyer(customer.custid).contactid }}
+				{{ buyerContactID }}
 			</div>
 		</div>
 	</div>
 
 	<div class="list-group-item p-1">
 		<div class="row">
-			<div class="col-sm-4 text-bold">Phone</div>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Phone</div>
 			<div class="col-sm-8">
 				{{ contactCustomer.isInternational() ? contactCustomer.international :  contactCustomer.phone|phone_us }}
 			</div>
@@ -111,7 +118,8 @@
 
 	<div class="list-group-item p-1">
 		<div class="row">
-			<div class="col-sm-4 text-bold">Cell</div>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Cell</div>
 			<div class="col-sm-8">
 				{{ contactCustomer.isInternational() ? contactCustomer.cellphone_international :  contactCustomer.cellphone|phone_us }}
 			</div>
@@ -120,7 +128,8 @@
 
 	<div class="list-group-item p-1">
 		<div class="row">
-			<div class="col-sm-4 text-bold">Fax</div>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Fax</div>
 			<div class="col-sm-8">
 				{{ contactCustomer.isInternational() ? contactCustomer.fax_international :  contactCustomer.fax|phone_us }}
 			</div>
@@ -129,7 +138,8 @@
 
 	<div class="list-group-item p-1">
 		<div class="row">
-			<div class="col-sm-4 text-bold">Email</div>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Email</div>
 			<div class="col-sm-8">{{ contactCustomer.email }}</div>
 		</div>
 	</div>
