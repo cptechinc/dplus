@@ -11,14 +11,14 @@
 	customer.salesHistory   Propel\Runtime\Util\PropelModelPager of Sales History
 	customer.quotes         Propel\Runtime\Util\PropelModelPager of Quote
 #}
-<div class="row mb-4">
+<div class="form-row mb-4">
 	<div class="col-sm-6">
 		<div class="mb-2">
 			{% include 'customers/ci/.new/customer/header/customer.twig' %}
 		</div>
 	</div>
 	<div class="col-sm-6">
-		{% if pages.get('pw_template=cart').isHidden() == false %}
+		{% if pages.get('pw_template=cart').isHidden() == false and (user.hasPermissionCode('eso') or user.hasPermissionCode('eqo')) %}
 			<div class="text-center form-group">
 				<a href="{{ page.cartCustomerUrl(customer.id) }}" class="btn btn-dark">
 					<i class="fa fa-shopping-cart" aria-hidden="true"></i> Order Entry
