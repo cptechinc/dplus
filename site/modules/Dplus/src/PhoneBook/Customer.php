@@ -43,9 +43,14 @@ class Customer extends AbstractType {
 	/**
 	 * Return the first record that matches
 	 * @param  string $custID
+	 * @param  string $contactID
 	 * @return Record
 	 */
-	public function findOne($custID) {
-		return $this->queryCustid($custID)->findOne();
+	public function findOne($custID, $contactID = '') {
+		$q = $this->queryCustid($custID);
+		if ($contactID) {
+			$q->filterByContactid($contactID);
+		}
+		return $q->findOne();
 	}
 }
