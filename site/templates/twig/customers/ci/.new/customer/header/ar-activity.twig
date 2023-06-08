@@ -14,28 +14,28 @@
 <div class="card">
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Activity</div>
 				<div class="col-sm-4 text-right text-bold">Number</div>
 				<div class="col-sm-4 text-right text-bold">Amount</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Sales Orders</div>
 				<div class="col-sm-4 text-right">{{ customer.countSalesOrders() }}</div>
 				<div class="col-sm-4 text-right">$ {{ customer.getSalesOrdersAmt()|currency }}</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Standing Orders</div>
 				<div class="col-sm-4 text-right">{{ customer.countSoStandingOrderDetails() }}</div>
 				<div class="col-sm-4 text-right"></div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Open Invoices</div>
 				<div class="col-sm-4 text-right">{{ customer.countDistinctArInvoices() }}</div>
 				<div class="col-sm-4 text-right">$ {{ (customer.getArInvoicesTotalAmt() - customer.getArInvoicesTotalDiscMemosPayments() - customer.getArInvoicesTotalAmtMemosPayments())|currency }}</div>
@@ -47,7 +47,7 @@
 		</li>
 
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Period</div>
 				<div class="col-sm-4 text-right text-bold">Amount</div>
 				<div class="col-sm-4 text-right text-bold">Invoices</div>
@@ -55,7 +55,7 @@
 		</li>
 
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">
 					<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
 				</div>
@@ -65,23 +65,23 @@
 		</li>
 
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">
 					<abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr>
 				</div>
-				<div class="col-sm-4 text-right">$ {{ customer.ytd_sales|currency }}</div>
-				<div class="col-sm-4 text-right">{{ customer.ytd_invoices }}</div>
+				<div class="col-sm-4 text-right">$ {{ customer.getYtdSales()|currency }}</div>
+				<div class="col-sm-4 text-right">{{ customer.getYtdInvoices() }}</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Last 12 Months</div>
 				<div class="col-sm-4 text-right">$ {{ customer.get_lastxmonthsamount(12)|currency }}</div>
 				<div class="col-sm-4 text-right">{{ customer.get_lastxmonthscount(12) }}</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Prev Fiscal Year</div>
 				<div class="col-sm-4 text-right">$ {{ customer.getPrevFiscalYrSalesAmt()|currency }}</div>
 				<div class="col-sm-4 text-right">{{ customer.getPrevFiscalYrSalesCount() }}</div>
@@ -89,37 +89,37 @@
 		</li>
 		<li class="list-group-item py-3 px-1 bg-light"></li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Highest Balance</div>
 				<div class="col-sm-4 text-right">$ {{ customer.highestbalance|currency }}</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Credit Limit</div>
 				<div class="col-sm-4 text-right">$ {{ customer.creditlimit|currency }}</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Current Finance Charge</div>
 				<div class="col-sm-4 text-right">$ {{ customer.financecharge|currency }}</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Line Minimum</div>
 				<div class="col-sm-4 text-right">$ {{ customer.linemin|currency }}</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Order Minimum</div>
 				<div class="col-sm-4 text-right">$ {{ customer.ordermin|currency }}</div>
 			</div>
 		</li>
 		<li class="list-group-item p-1">
-			<div class="row">
+			<div class="form-row">
 				<div class="col-sm-4 text-bold">Last Sale Date</div>
 				<div class="col-sm-4 text-right">{{ customer.lastsaledate|convertdate }}</div>
 			</div>
