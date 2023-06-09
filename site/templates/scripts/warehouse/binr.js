@@ -52,14 +52,27 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var binID = button.data('binid');
-		var qty = button.data('qty');
 		var bindirection = button.data('direction');
-		$('.binr-form').find('input[name='+bindirection+'-bin]').attr('data-bin', binID);
-		$('.binr-form').find('input[name='+bindirection+'-bin]').val(binID);
-		//input_qty.val(qty);
-		$('.binr-form').find('.qty-available').text(qty);
+		
+		$('.binr-form').find('input[name="'+bindirection+'bin"]').attr('data-bin', binID);
+		$('.binr-form').find('input[name="'+bindirection+'bin"]').val(binID);
+		$('.binr-form').find('input[name="'+bindirection+'bin"]').change();
+		
 		button.closest('.list-group').parent().addClass('hidden');
 		button.closest('.modal').modal('hide');
+	});
+
+	$("body").on("change", "input[name=frombin]", function(e) {
+		e.preventDefault();
+		var uri = URI(config.ajax.urls.json + 'wm/inventory/lotserial-bin/');
+		uri.addQuery('itemID', $('.binr-form').find('input[name=itemID]').val());
+		uri.addQuery('lotserial', $('.binr-form').find('input[name=lotserial]').val());
+		uri.addQuery('binID', $('.binr-form').find('input[name=frombin]').val());
+
+		var ajax = new AjaxRequest(uri.toString());
+		ajax.request(function(json) {
+			$('.binr-form').find('.qty-available').text(json.qty);
+		});
 	});
 
 /////////////////////////////////////
