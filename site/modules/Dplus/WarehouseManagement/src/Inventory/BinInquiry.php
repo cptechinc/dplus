@@ -103,6 +103,23 @@ class BinInquiry extends Base {
 	}
 
 	/**
+	 * Return Total Item Qty in Bin
+	 * @param  string $binID   Bin ID
+	 * @param  string $itemID  Item ID
+	 * @return float
+	 */
+	public function totalBinItemLotserialQty($binID, $itemID, $lotserial) {
+		$colQty = InvWhseLot::aliasproperty('qty');
+
+		$q = $this->queryBinid($binID);
+		$q->filterByItemid($itemID);
+		$q->filterByLotserial($lotserial);
+		$q->withColumn("SUM($colQty)", 'qty');
+		$q->select('qty');
+		return $q->findOne();
+	}
+
+	/**
 	 * Return Item Lotserials found in Bin
 	 * @param  string $binID   Bin ID
 	 * @param  string $itemID  Item ID
