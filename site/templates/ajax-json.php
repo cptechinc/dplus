@@ -371,6 +371,11 @@
 			]
 		],
 		'wm' => [
+			'inventory' => [
+				'lotserial-bin' => [
+					['GET', '', Json\Wm\Inventory::class, 'getItemLotserialBinQty'],
+				]
+			],
 			'receiving' => [
 				'validate' => [
 					['GET', 'require-lotserial/', Json\Wm\Receiving::class, 'requireLotserial'],

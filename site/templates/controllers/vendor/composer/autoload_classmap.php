@@ -31,6 +31,7 @@ return array(
     'Controllers\\Ajax\\Json\\Mso' => $baseDir . '/classes/ajax/json/Mso.php',
     'Controllers\\Ajax\\Json\\Mvi' => $baseDir . '/classes/ajax/json/Mvi.php',
     'Controllers\\Ajax\\Json\\Util' => $baseDir . '/classes/ajax/json/Util.php',
+    'Controllers\\Ajax\\Json\\Wm\\Inventory' => $baseDir . '/classes/ajax/json/Wm/Inventory.php',
     'Controllers\\Ajax\\Json\\Wm\\Receiving' => $baseDir . '/classes/ajax/json/Wm/Receiving.php',
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
     'Controllers\\Ajax\\Lookup\\Lookup' => $baseDir . '/classes/ajax/Lookup/Lookup.php',
