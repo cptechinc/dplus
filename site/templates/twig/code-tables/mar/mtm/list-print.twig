@@ -42,23 +42,12 @@
 			<td class="text-right">{{ code.percent }}</td>
 			<td>{{ code.gl_account }} &nbsp; {{ manager.glAcctDescription(code.gl_account) }}</td>
 			<td>
-				{% if code.note1 != '' %}
+				<div class="qnotes" style="overflow-y: auto;">
 					{% set note_lines = [code.note1, code.note2, code.note3, code.note4] %}
-
-					{% include 'util/bootstrap/form/textarea.twig' with {
-						'textarea': {
-							'value': note_lines|join('\r'),
-							'inputclass': 'form-control-plaintext',
-							'addclasses': ['qnotes', 'readonly'],
-							'attributes': {
-								'cols': manager.fieldAttribute('note1', 'maxlength'),
-								'rows': note_lines|length,
-								'readonly': true,
-								'disabled': true,
-							}
-						}
-					} %}
-				{% endif %}
+					{% for line in note_lines if line != '' %}
+						{{ line }} <br>
+					{% endfor %}
+				</div>
 			</td>
 		</tr>
 	{% endblock %}
