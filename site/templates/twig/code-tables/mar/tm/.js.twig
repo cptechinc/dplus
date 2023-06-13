@@ -35,6 +35,10 @@ $(function() {
 			return true;
 		}
 
+		if (input.hasClass('is-invalid')) {
+			input.focus();
+		}
+
 		server.getArTaxCode(code, function(code) {
 			if (code) {
 				if (input.val() == code.code) {
@@ -43,6 +47,20 @@ $(function() {
 				return true;
 			}
 		});
+	});
+
+	$("body").on("focus", "input.taxcode", function(e) {
+		var input = $(this);
+		var inputTabIndex = parseInt(input.attr('tabindex'));
+
+		if (inputTabIndex == 1 || input.hasClass('is-invalid')) {
+			return true;
+		}
+
+		var prevInput = $('input.taxcode[tabindex=' + (inputTabIndex - 1) +']');
+		if (prevInput.hasClass('is-invalid')) {
+			prevInput.focus();
+		}
 	});
 
 /* =============================================================
