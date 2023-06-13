@@ -48,6 +48,16 @@
 						{{ line }} <br>
 					{% endfor %}
 				</div>
+				<div class="pl-4">
+					{% if code.freight_tax_code %}
+						<b>Freight Tax:</b> {{ code.freight_tax_code }} &nbsp; &nbsp; {{ manager.description(code.freight_tax_code) }}
+					{% endif %}
+				</div>
+				<div class="pl-4">
+					{% if code.limit %}
+						<b>Taxable Limit:</b> {{ code.limit }}
+					{% endif %}
+				</div>
 			</td>
 		</tr>
 	{% endblock %}
