@@ -13,19 +13,19 @@
 		<div class="col-sm-4">
 			<div class="form-group">
 				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code">
+				<input type="text" name="code" class="form-control" maxlength="{{ manager.fieldAttribute('code', 'maxlength') }}" id="code" tabindex="1">
 			</div>
 		</div>
 		<div class="col-sm-8">
 			<div class="form-group">
 				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description">
+				<input type="text" name="description" class="form-control" maxlength="{{ manager.fieldAttribute('description', 'maxlength') }}" id="description" tabindex="2">
 			</div>
 		</div>
 	</div>
 	
 	{% for i in 1..constant('NUMBER_TAXCODES', manager) %}
-		{% include 'code-tables/mar/tm/form/taxcode.twig' with {'name' : 'taxcode' ~ i, 'index': i } %}
+		{% include 'code-tables/mar/tm/form/taxcode.twig' with {'name' : 'taxcode' ~ i, 'index': i, 'tabindex': 2 + i} %}
 	{% endfor %}
 
 	<div class="d-flex justify-content-between align-items-center">
