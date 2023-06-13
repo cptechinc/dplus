@@ -1,12 +1,14 @@
 {#
-	var                    Description / Instance of
+	var 				   Description / Instance of
 	-------------------------------------------------
-	page                   ProcessWire\Page
-	manager                Dplus\Codes\Base
+	page				   ProcessWire\Page
+	manager 			   Dplus\Codes\Base
 #}
 
 
 {% extends 'code-tables/list-print.twig' %}
+
+{% set configAr = page.wire('modules').get('Dconfigs').config('ar') %}
 
 {% block print_headings_row %}
 	<tr>
@@ -43,15 +45,16 @@
 			<td></td>
 			<td></td>
 		</tr>
-		{% for field in manager.glaccounts() %}
-			<tr>
-				<td></td>
-				<td></td>
-				<td>{{ manager.fieldAttribute(field, 'label') }}</td>
-				<td>{{ attribute(code, field) }}</td>
-				<td>{{ manager.glAcctDescription(attribute(code, field)) }}</td>
-			</tr>
-		{% endfor %}
-		
+		{% if configAr.glReportType()|lower == 'customer' %}
+			{% for field in manager.glaccounts() %}
+				<tr>
+					<td></td>
+					<td></td>
+					<td>{{ manager.fieldAttribute(field, 'label') }}</td>
+					<td>{{ attribute(code, field) }}</td>
+					<td>{{ manager.glAcctDescription(attribute(code, field)) }}</td>
+				</tr>
+			{% endfor %}
+		{% endif %}
 	{% endblock %}
 {% endfor %}
