@@ -53,7 +53,6 @@ class CodeForm {
 	
 
 	shiftTaxCodesUp(index = 1) {
-
 		var taxcodes = [];
 		// Get all the Tax Codes at their current Index
 
@@ -83,11 +82,7 @@ class CodeForm {
 			if (input.length == 0) {
 				continue;
 			}
-			console.log('emptying ' + input.attr('name'));
-			console.log(input);
-			console.log(input.val());
 			input.val('');
-
 		}
 	}
 
