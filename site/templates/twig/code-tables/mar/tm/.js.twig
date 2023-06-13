@@ -25,6 +25,7 @@ $(function() {
 
 		if (code == '') {
 			formCode.shiftTaxCodesUp(index);
+			formCode.revalidateUpToIndex(index);
 			return true;
 		}
 
@@ -46,6 +47,7 @@ $(function() {
 				}
 				return true;
 			}
+			input.focus();
 		});
 	});
 

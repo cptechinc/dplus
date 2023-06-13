@@ -50,6 +50,13 @@ class CodeForm {
 			this.inputs.taxcode(i).change();
 		}
 	}
+
+	revalidateUpToIndex(index = 1) {
+		for (var i = 1; i <= 9; i++) {
+			var input = this.inputs.taxcode(i);
+			this.inputs.form.validate().element('#' + input.attr('id'));
+		}
+	}
 	
 
 	shiftTaxCodesUp(index = 1) {
