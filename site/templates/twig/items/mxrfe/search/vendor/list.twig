@@ -3,7 +3,7 @@
 		<tr>
 			<th scope="col">
 				<a href="{{ page.get_sortURL('vendorID') }}" class="link">ID
-					{% if page.orderby_column == '' or page.orderby_column == 'vendorID' or page.orderby_column != 'vendorID'  %}
+					{% if page.orderby_column == '' or page.orderby_column == 'vendorID' or page.orderby_column != 'vendorID' %}
 						<i class="fa fa-sort-alpha-{{ page.orderby_column == 'vendorID' ? page.orderby_sort|lower : 'asc' }}" aria-hidden="true"></i>
 					{% endif %}
 				</a>
