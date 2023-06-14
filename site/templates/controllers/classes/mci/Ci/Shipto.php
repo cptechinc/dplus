@@ -87,6 +87,7 @@ class Shipto extends AbstractSubfunctionController {
 		$filter->custid($customer->id);
 		$filter->user(self::pw('user'));
 		$filter->sortby(self::pw('page'));
+		$filter->query->orderBy(CustomerShipto::aliasproperty('shiptoID'));
 		return $filter->query->paginate(self::pw('input')->pageNum, 0);
 	}
 
