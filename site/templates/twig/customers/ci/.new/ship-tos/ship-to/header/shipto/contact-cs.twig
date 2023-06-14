@@ -1,0 +1,35 @@
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-3 text-bold">Phone</div>
+		<div class="col-sm-8">
+			{{ contact.isInternational() ? contact.international :  contact.phone|phone_us }}
+			{{ contact.extension ? ' X ' ~ contact.extension : '' }}
+		</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-3 text-bold">Cell</div>
+		<div class="col-sm-8">
+			{{ contact.isInternational() ? contact.cellphone_international :  contact.cellphone|phone_us }}
+		</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-3 text-bold">Fax</div>
+		<div class="col-sm-8">
+			{{ contact.isInternational() ? contact.fax_international :  contact.fax|phone_us }}
+		</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-3 text-bold">Email</div>
+		<div class="col-sm-8">{{ contact.email }}</div>
+	</div>
+</div>

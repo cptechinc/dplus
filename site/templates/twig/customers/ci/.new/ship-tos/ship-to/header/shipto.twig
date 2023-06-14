@@ -1,0 +1,47 @@
+{% set CODETABLES = page.wire('modules').get('CodeTables') %}
+
+{% set COUNTRIES = CODETABLES.getCodeTable('mar', 'cocom') %}
+
+
+<div class="list-group">
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Customer</div>
+			<div class="col-sm-8">
+				{{ customer.id }} <br>
+				{{ customer.name }}
+			</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-4 text-bold">Ship-To</div>
+			<div class="col-sm-8">
+				{{ shipto.id }} <br>
+				{{ shipto.name }}
+			</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="row">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3 text-bold">Address</div>
+			<div class="col-sm-8">
+				{{ shipto.address1 }} <br>
+				{% if (shipto.address2 is not empty) %}
+					{{ shipto.address2 }} <br>
+				{% endif %}
+
+				{% if (shipto.address3 is not empty) %}
+					{{ shipto.address3 }} <br>
+				{% endif %}
+
+				{{ shipto.city ~ ', ' ~ shipto.state ~ ' ' ~ shipto.zip }} <br>
+				{{ COUNTRIES.description(shipto.country) }}
+			</div>
+		</div>
+	</div>
+	{% include 'customers/ci/.new/ship-tos/ship-to/header/shipto/contacts.twig' %}
+	{% include 'customers/ci/.new/ship-tos/ship-to/header/shipto/salespersons.twig' %}
+	{% include 'customers/ci/.new/ship-tos/ship-to/header/shipto/codes.twig' %}
+</div>

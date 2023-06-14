@@ -1,0 +1,24 @@
+{% set DPLUS = page.wire('modules').get('Dplus') %}
+{% set ARCONTACTS = DPLUS.mar.fetch('ar-contact') %}
+{% set PHONEBOOK_SHIPTO = DPLUS.phoneBooks.fetch('customer-shipto') %}
+{% set contact = PHONEBOOK_SHIPTO.findOne(shipto.custid, shipto.shiptoid) %}
+
+{% set buyerContactID =  ARCONTACTS.hasPrimaryBuyer(shipto.custid, shipto.shiptoid) ? ARCONTACTS.primaryBuyer(shipto.custid, shipto.shiptoid).contactid : ARCONTACTS.buyer(shipto.custid, shipto.shiptoid).contactid %}
+
+{% set PHONEBOOK_CUSTOMERCONTACTS = DPLUS.phoneBooks.fetch('customer-contact') %}
+{% set contactShipto = PHONEBOOK_SHIPTO.findOne(shipto.custid, shipto.shiptoid, buyerContactID) %}
+
+{# page.wire('db-dplus').getLastExecutedQuery() #}
+
+{% include 'customers/ci/.new/ship-tos/ship-to/header/shipto/contact-cs.twig' %}
+
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">Contact</div>
+		<div class="col-sm-8">
+			{{ buyerContactID }}
+		</div>
+	</div>
+</div>
+
+{% include 'customers/ci/.new/ship-tos/ship-to/header/shipto/contact-buyer.twig' %}

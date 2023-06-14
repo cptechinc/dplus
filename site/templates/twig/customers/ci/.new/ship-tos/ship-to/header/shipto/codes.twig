@@ -1,0 +1,45 @@
+{% set WAREHOUSES = CODETABLES.getCodeTable('min', 'iwhm') %}
+{% set PRICECODES = CODETABLES.getCodeTable('mar', 'cpm') %}
+{% set SHIPVIAS = CODETABLES.getCodeTable('mar', 'csv') %}
+{% set TAXCODES = CODETABLES.getCodeTable('mar', 'tm') %}
+{% set USERCODES = CODETABLES.getCodeTable('mar', 'cuc') %}
+
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">Warehouse</div>
+		<div class="col-sm-2">{{ shipto.warehouse }}</div>
+		<div class="col-sm-6">{{ WAREHOUSES.name(shipto.warehouse) }}</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">Ship Via</div>
+		<div class="col-sm-2">{{ shipto.shipvia }}</div>
+		<div class="col-sm-6">{{ SHIPVIAS.description(shipto.shipvia) }}</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">Tax Code</div>
+		<div class="col-sm-2">{{ shipto.taxcode }}</div>
+		<div class="col-sm-6">{{ TAXCODES.description(shipto.taxcode) }}</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">Tax Exempt</div>
+		<div class="col-sm-8">{{ shipto.taxexemptnbr }}</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">Credit Hold</div>
+		<div class="col-sm-8">{{ shipto.credithold() ? 'Yes' : 'No' }}</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">Date Entered</div>
+		<div class="col-sm-8">{{ shipto.dateentered|convertdate }}</div>
+	</div>
+</div>
