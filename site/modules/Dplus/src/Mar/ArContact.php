@@ -41,8 +41,8 @@ class ArContact extends AbstractQueryWrapper {
 	 * @param  string $custID 
 	 * @return Query
 	 */
-	public function queryCustidBuyer($custID) {
-		return $this->queryCustid($custID)->filterByBuyer(self::YN_TRUE);
+	public function queryCustidShiptoidBuyer($custID, $shiptoID = '') {
+		return $this->queryCustidShiptoid($custID, $shiptoID)->filterByBuyer(self::YN_TRUE);
 	}
 
 	/**
@@ -50,22 +50,22 @@ class ArContact extends AbstractQueryWrapper {
 	 * @param  string $custID 
 	 * @return Query
 	 */
-	public function queryCustidPrimaryBuyer($custID) {
-		return $this->queryCustid($custID)->filterByBuyer(self::PRIMARY_BUYER_CODE);
+	public function queryCustidPrimaryBuyer($custID, $shiptoID = '') {
+		return $this->queryCustidShiptoid($custID, $shiptoID)->filterByBuyer(self::PRIMARY_BUYER_CODE);
 	}
 
 /* =============================================================
 	Read Functions
 ============================================================= */
-	public function hasPrimaryBuyer($custID) {
-		return boolval($this->queryCustidPrimaryBuyer($custID)->count());
+	public function hasPrimaryBuyer($custID, $shiptoID = '') {
+		return boolval($this->queryCustidShiptoid($custID, $shiptoID)->count());
 	}
 
-	public function primaryBuyer($custID) {
-		return $this->queryCustidPrimaryBuyer($custID)->findOne();
+	public function primaryBuyer($custID, $shiptoID = '') {
+		return $this->queryCustidShiptoid($custID, $shiptoID)->findOne();
 	}
 
-	public function buyer($custID) {
-		return $this->queryCustidBuyer($custID)->findOne();
+	public function buyer($custID, $shiptoID = '') {
+		return $this->queryCustidShiptoidBuyer($custID, $shiptoID)->findOne();
 	}
 }
