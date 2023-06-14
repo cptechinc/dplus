@@ -14,6 +14,8 @@ class Factory extends WireData {
 		'c'        => Customer::class,
 		'customer-contact' => CustomerContact::class,
 		'cc'               => CustomerContact::class,
+		'customer-shipto'  => CustomerShipto::class,
+		'cs'               => CustomerShipto::class,
 	];
 
 	private static $instance;
