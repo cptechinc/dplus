@@ -58,11 +58,11 @@ class ArContact extends AbstractQueryWrapper {
 	Read Functions
 ============================================================= */
 	public function hasPrimaryBuyer($custID, $shiptoID = '') {
-		return boolval($this->queryCustidShiptoid($custID, $shiptoID)->count());
+		return boolval($this->queryCustidPrimaryBuyer($custID, $shiptoID)->count());
 	}
 
 	public function primaryBuyer($custID, $shiptoID = '') {
-		return $this->queryCustidShiptoid($custID, $shiptoID)->findOne();
+		return $this->queryCustidPrimaryBuyer($custID, $shiptoID)->findOne();
 	}
 
 	public function buyer($custID, $shiptoID = '') {

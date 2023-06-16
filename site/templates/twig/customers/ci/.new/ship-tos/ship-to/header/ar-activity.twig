@@ -1,110 +1,88 @@
-<div class="card">
-	<div class="card-header">
-		<span class="h5">Ship-to Activity</span>
+<div class="list-group list-group-flush">
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Activity</div>
+			<div class="col-sm-4 text-right text-bold">Number</div>
+			<div class="col-sm-4 text-right text-bold">Amount</div>
+		</div>
 	</div>
-	<ul class="list-group list-group-flush">
-		<li class="list-group-item p-1 bg-success text-white">
-			<div class="row">
-				<div class="col-sm-6">
-					Last Sale Date
-				</div>
-				<div class="col-sm-6 text-right">
-					{{ shipto.lastsaledate|convertdate }}
-				</div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Sales Orders</div>
+			<div class="col-sm-4 text-right">{{ shipto.countSalesOrders() }}</div>
+			<div class="col-sm-4 text-right">$ {{ shipto.getSalesOrdersAmt()|currency }}</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Standing Orders</div>
+			<div class="col-sm-4 text-right">{{ shipto.countSoStandingOrderDetails() }}</div>
+			<div class="col-sm-4 text-right"></div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Open Invoices</div>
+			<div class="col-sm-4 text-right">{{ shipto.countDistinctArInvoices() }}</div>
+			<div class="col-sm-4 text-right">$ {{ (shipto.getArInvoicesTotalAmt() - shipto.getArInvoicesTotalDiscMemosPayments() - shipto.getArInvoicesTotalAmtMemosPayments())|currency }}</div>
+		</div>
+	</div>
+
+	<div class="list-group-item p-1 bg-light">
+		<h5 class="text-center mb-0">Sales History</h5>
+	</div>
+
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Period</div>
+			<div class="col-sm-4 text-right text-bold">Amount</div>
+			<div class="col-sm-4 text-right text-bold">Invoices</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">
+				<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
 			</div>
-		</li>
-		<li class="list-group-item p-1">
-			<div class="row">
-				<div class="col-sm-6">
-					Sales Orders
-				</div>
-				<div class="col-sm-6 text-right">
-					{{ shipto.get_orders_count() }}
-				</div>
+			<div class="col-sm-4 text-right">$ {{ shipto.mtd_sales|currency }}</div>
+			<div class="col-sm-4 text-right">{{ shipto.mtd_invoices }}</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">
+				<abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr>
 			</div>
-		</li>
-		<li class="list-group-item p-1">
-			<div class="row">
-				<div class="col-sm-6">
-					Amount
-				</div>
-				<div class="col-sm-6 text-right">
-					$ {{ shipto.get_orders_amount()|currency }}
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item p-1">
-			<div class="row">
-				<div class="col-sm-6">
-					Highest Balance
-				</div>
-				<div class="col-sm-6 text-right">
-					$ {{ shipto.highestbalance|currency }}
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item p-1">
-			<div class="row">
-				<div class="col-sm-6">
-					Current Finance Charge
-				</div>
-				<div class="col-sm-6 text-right">
-					$ {{ shipto.financecharge|currency }}
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item p-1 bg-light text-center"><span class="h5 font-weight-bold">Invoices</span></li>
-		<li class="list-group-item p-1">
-			<div class="row font-weight-bold">
-				<div class="col-sm-5">
-					Period
-				</div>
-				<div class="col-sm-4 text-right">
-					Amount
-				</div>
-				<div class="col-sm-3 text-right">
-					Invoices
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item p-1">
-			<div class="row">
-				<div class="col-sm-5">
-					<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
-				</div>
-				<div class="col-sm-4 text-right">
-					$ {{ shipto.mtd_sales|currency }}
-				</div>
-				<div class="col-sm-3 text-right">
-					{{ shipto.mtd_invoices }}
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item p-1">
-			<div class="row">
-				<div class="col-sm-5">
-					<abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr>
-				</div>
-				<div class="col-sm-4 text-right">
-					$ {{ shipto.ytd_sales|currency }}
-				</div>
-				<div class="col-sm-3 text-right">
-					{{ shipto.ytd_invoices }}
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item p-1">
-			<div class="row">
-				<div class="col-sm-5">
-					Last 12 Months
-				</div>
-				<div class="col-sm-4 text-right">
-					$ {{ shipto.get_lastxmonthsamount(13)|currency }}
-				</div>
-				<div class="col-sm-3 text-right">
-					{{ shipto.get_lastxmonthscount(13) }}
-				</div>
-			</div>
-		</li>
-	</ul>
+			<div class="col-sm-4 text-right">$ {{ shipto.getYtdSales()|currency }}</div>
+			<div class="col-sm-4 text-right">{{ shipto.getYtdInvoices() }}</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Last 12 Months</div>
+			<div class="col-sm-4 text-right">$ {{ shipto.get_lastxmonthsamount(12)|currency }}</div>
+			<div class="col-sm-4 text-right">{{ shipto.get_lastxmonthscount(12) }}</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Prev Fiscal Year</div>
+			<div class="col-sm-4 text-right">$ {{ shipto.getPrevFiscalYrSalesAmt()|currency }}</div>
+			<div class="col-sm-4 text-right">{{ shipto.getPrevFiscalYrSalesCount() }}</div>
+		</div>
+	</div>
+	<div class="list-group-item py-3 px-1 bg-light"></div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Last Sale Date</div>
+			<div class="col-sm-4 text-right">{{ shipto.lastsaledate|convertdate }}</div>
+		</div>
+	</div>
+	<div class="list-group-item p-1">
+		<div class="form-row">
+			<div class="col-sm-4 text-bold">Back Order</div>
+			<div class="col-sm-4 text-right">{{ shipto.backorder()|yesorno|capitalize }}</div>
+		</div>
+	</div>
 </div>
+

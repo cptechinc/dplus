@@ -49,6 +49,10 @@ class Spm extends AbstractCodeTableEditableSingleKey {
 		'vendorid'	 => ['type' => 'text'],
 	];
 
+	protected static $instance;
+
+
+
 	public function codeJson(Code $code) {
 		$json = [];
 		foreach (array_keys(static::FIELD_ATTRIBUTES) as $field) {

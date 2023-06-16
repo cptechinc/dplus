@@ -2,7 +2,10 @@
 {% set PRICECODES = CODETABLES.getCodeTable('mar', 'cpm') %}
 {% set SHIPVIAS = CODETABLES.getCodeTable('mar', 'csv') %}
 {% set TAXCODES = CODETABLES.getCodeTable('mar', 'tm') %}
-{% set USERCODES = CODETABLES.getCodeTable('mar', 'cuc') %}
+{% set USERCODES = CODETABLES.getCodeTable('mar', 'suc') %}
+
+{% set CONFIGS = page.wire('modules').get('Dconfigs') %}
+{% set configAr = CONFIGS.config('ar') %}
 
 <div class="list-group-item p-1">
 	<div class="row">
@@ -41,5 +44,18 @@
 	<div class="row">
 		<div class="col-sm-4 text-bold">Date Entered</div>
 		<div class="col-sm-8">{{ shipto.dateentered|convertdate }}</div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">Notes</div>
+		<div class="col-sm-8">// TODO: </div>
+	</div>
+</div>
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-4 text-bold">{{ configAr.usercodelabelshipto ? configAr.usercodelabelshipto : 'User Code' }}</div>
+		<div class="col-sm-2">{{ shipto.usercode }}</div>
+		<div class="col-sm-6">{{ USERCODES.description(shipto.usercode) }}</div>
 	</div>
 </div>
