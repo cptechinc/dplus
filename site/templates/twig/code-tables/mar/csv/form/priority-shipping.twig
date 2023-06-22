@@ -2,17 +2,19 @@
 	<div class="col-sm-3 mb-2">
 		<label for="priority">Priority</label>
 	</div>
-	<div class="col-sm-2 mb-2">
-		{% include 'util/bootstrap/form/input.twig' with {
-				'input': {
-					'name': 'priority',
-					'size': 'sm',
-					'attributes': {
-						'maxlength': manager.fieldAttribute('priority', 'maxlength')
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-2 px-0">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'priority',
+						'size': 'sm',
+						'attributes': {
+							'maxlength': manager.fieldAttribute('priority', 'maxlength')
+						}
 					}
 				}
-			}
-		%}
+			%}
+		</div>
 	</div>
 </div>
 
@@ -20,8 +22,9 @@
 	<div class="col-sm-3 mb-2">
 		<label for="shippingarea">Shipping Area</label>
 	</div>
-	<div class="col-sm-2 mb-2">
-		{% include 'util/bootstrap/form/input.twig' with {
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-2 px-0">
+			{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
 					'name': 'shippingarea',
 					'size': 'sm',
@@ -29,8 +32,8 @@
 						'maxlength': manager.fieldAttribute('shippingarea', 'maxlength')
 					}
 				}
-			}
-		%}
+			} %}
+		</div>
 	</div>
 </div>
 
@@ -38,8 +41,9 @@
 	<div class="col-sm-3 mb-2">
 		<label for="airshipment">Air Shipment</label>
 	</div>
-	<div class="col-sm-2 mb-2">
-		{% include 'util/bootstrap/form/select-simple.twig' with {
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-2 px-0">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
 				'select': {
 					'name': 'airshipment',
 					'size': 'sm',
@@ -48,8 +52,8 @@
 					'showvalue': true,
 					'options': manager.fieldAttribute('airshipment', 'options')
 				}
-			}
-		%}
+			} %}
+		</div>
 	</div>
 </div>
 
@@ -57,8 +61,9 @@
 	<div class="col-sm-3 mb-2">
 		<label for="commercialflight">Commercial Freight</label>
 	</div>
-	<div class="col-sm-2 mb-2">
-		{% include 'util/bootstrap/form/select-simple.twig' with {
+	<div class="col-sm-8 mb-2">
+		<div class="col-sm-2 px-0">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
 					'select': {
 						'name': 'commercialflight',
 						'size': 'sm',
@@ -67,7 +72,7 @@
 						'showvalue': true,
 						'options': manager.fieldAttribute('commercialflight', 'options')
 					}
-				}
-			%}
+			} %}
+		</div>
 	</div>
 </div>

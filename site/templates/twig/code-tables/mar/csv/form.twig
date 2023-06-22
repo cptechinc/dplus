@@ -34,18 +34,17 @@
 		<div class="col-sm-3 mb-2">
 			<label for="description">Description</label>
 		</div>
-		<div class="col-sm-4 mb-2">
+		<div class="col-sm-6 mb-2">
 			{% include 'util/bootstrap/form/input.twig' with {
-					'input': {
-						'name': 'description',
-						'size': 'sm',
-						'addclasses': [''],
-						'attributes': {
-							'maxlength': manager.fieldAttribute('description', 'maxlength')
-						}
+				'input': {
+					'name': 'description',
+					'size': 'sm',
+					'addclasses': [''],
+					'attributes': {
+						'maxlength': manager.fieldAttribute('description', 'maxlength')
 					}
 				}
-			%}
+			} %}
 		</div>
 	</div>
 

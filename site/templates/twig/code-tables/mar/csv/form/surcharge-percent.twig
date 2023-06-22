@@ -23,7 +23,7 @@
 	<div class="col-sm-3 mb-2">
 		&nbsp; &nbsp; &nbsp; <label for="surchargepercent">Surcharge Percent</label>
 	</div>
-	<div class="col-sm-9 mb-2">
+	<div class="col-sm-8 mb-2">
 		<div class="col-sm-2 px-0 input-parent">
 			{% include 'util/bootstrap/form/input.twig' with {
 					'input': {
@@ -35,6 +35,7 @@
 							'max': manager.fieldAttribute('surchargepercent', 'max'),
 							'default': manager.fieldAttribute('surchargepercent', 'default'),
 							'readonly': true,
+							'tabindex': 14,
 						}
 					}
 				}
