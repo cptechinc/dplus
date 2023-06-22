@@ -55,9 +55,11 @@ class CodeForm {
 
 		if (this.config.fields.useroute.enabled === false) {
 			this.enableDisableInputs([input], false);
+			this.setDisabled(input, true);
 			return true;
 		}
 		this.enableDisableInputs([input], true);
+		this.setDisabled(input, false);
 	}
 
 	clearInputs() {
@@ -174,5 +176,22 @@ class CodeForm {
 			formTrm.enableTabindex(input);
 		});
 		return true;
+	}
+
+	/**
+	 * Set / remove disabled attribute on input
+	 * @param	{Object} input 
+	 * @param	{bool}	 disable
+	 * @returns {bool}
+	 */
+	setDisabled(input, disable = true) {
+		if (input.attr('name') == undefined || input.attr('name') == '') {
+			return false;
+		}
+		if (disable === false) {
+			input.removeAttr('disabled');
+			return true;
+		}
+		input.attr('disabled', 'disabled');
 	}
 }
