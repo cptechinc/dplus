@@ -29,6 +29,7 @@ class CodeForm {
 					this.inputs[name].val(json[name]);
 				}
 			});
+			this.enableDisableUseroute();
 			this.triggerInputsChange();
 			var validator = this.inputs.form.validate();
 			validator.element('#' + this.inputs.code.attr('id'));
@@ -45,8 +46,18 @@ class CodeForm {
 				this.inputs[name].val(this.config.fields[name].default);
 			}
 		});
-
+		this.enableDisableUseroute();
 		this.triggerInputsChange();
+	}
+
+	enableDisableUseroute() {
+		var input = this.inputs.useroute;
+
+		if (this.config.fields.useroute.enabled === false) {
+			this.enableDisableInputs([input], false);
+			return true;
+		}
+		this.enableDisableInputs([input], true);
 	}
 
 	clearInputs() {
@@ -89,6 +100,79 @@ class CodeForm {
 		uri.query(data);
 		button.attr('href', uri.toString());
 		button.removeClass('show');
+		return true;
+	}
+
+	/**
+	 * Enable tabindex attribute on input
+	 * @param	{Object} input 
+	 * @returns {bool}
+	 */
+	enableTabindex(input) {
+		if (input.attr('name') == undefined || input.attr('name') == '') {
+			return false;
+		}
+		let tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
+		input.attr('tabindex', tabindex);
+	}
+
+	/**
+	 * Disable tabindex attribute on input
+	 * @param	{Object} input 
+	 * @returns {bool}
+	 */
+	disableTabindex(input) {
+		if (input.attr('name') == undefined || input.attr('name') == '') {
+			return false;
+		}
+		let disablePrefix = '-';
+
+		let tabindex = isNaN(input.attr('tabindex')) ? '' : Math.abs(parseInt(input.attr('tabindex')));
+
+		if (tabindex == '') {
+			tabindex = 1;
+		}
+		input.attr('tabindex', disablePrefix + tabindex);
+	}
+
+	/**
+	 * Set / remove Readonly attribute on input
+	 * @param	{Object} input 
+	 * @param	{bool}	 readonly 
+	 * @returns {bool}
+	 */
+	setReadonly(input, readonly = true) {
+		if (input.attr('name') == undefined || input.attr('name') == '') {
+			return false;
+		}
+		if (readonly === false) {
+			input.removeAttr('readonly');
+			return true;
+		}
+		input.attr('readonly', 'readonly');
+	}
+
+	/**
+	 * Enable / Disable multiple Inputs
+	 * @param	{array} inputs 
+	 * @param	{bool}	enable 
+	 * @returns {bool}
+	 */
+	enableDisableInputs(inputs, enable = true) {
+		let formTrm = this;
+
+		if (enable === false) {
+			inputs.forEach(input => {
+				formTrm.setReadonly(input, true);
+				formTrm.disableTabindex(input);
+			});
+			return true;
+		}
+		
+		inputs.forEach(input => {
+			formTrm.setReadonly(input, false);
+			formTrm.enableTabindex(input);
+		});
 		return true;
 	}
 }

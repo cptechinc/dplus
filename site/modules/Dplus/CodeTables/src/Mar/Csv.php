@@ -49,7 +49,7 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 		'scac'             => ['type' => 'text', 'maxlength' => 4],
 		'edimethod'        => ['type' => 'text', 'maxlength' => 2],
 		'chargefreight'    => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'Y'],
-		'useroute'         => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
+		'useroute'         => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N', 'enabled' => false],
 		'addsurcharge'     => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
 		'surchargepercent' => ['type' => 'number', 'max' => 99.999, 'precision' => 3, 'default' => 0.000],
 		'artaxcode'        => ['type' => 'text', 'enabled' => false, 'maxlength' => Tm::FIELD_ATTRIBUTES['code']['maxlength']],
@@ -65,6 +65,23 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 		}
 		return $json;
 	}
+
+/* =============================================================
+	Field Configs
+============================================================= */
+	/**
+	 * Intialize Field Attributes that need values set from Configs
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		parent::initFieldAttributes();
+
+		$configSo = Configs\So::config();
+		$fields = $this->fieldAttributes;
+		$fields['useroute']['enabled'] = $configSo->providerouting =='Y';
+		$this->fieldAttributes = $fields;
+	}
+
 
 /* =============================================================
 	CRUD Creates

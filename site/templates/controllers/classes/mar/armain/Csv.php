@@ -39,4 +39,21 @@ class Csv extends AbstractCodeTableController {
 		$codeTable = static::getCodeTable();
 		return self::pw('config')->twig->render('code-tables/mar/csv/edit-modal.twig', ['manager' => $codeTable]);
 	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return CodeTable field Config Data
+	 * NOTE: Keep public for classes that are a copy of another, in a different menu
+	 * @param  WireData $data
+	 * @return array
+	 */
+	public static function getCodeTableFieldConfigData(WireData $data) {
+		$configData = parent::getCodeTableFieldConfigData($data);
+		$table = static::getCodeTable();
+		$configData['useroute'] = ['enabled' => $table->fieldAttribute('useroute', 'enabled')];
+		return $configData;
+	}
+
 }

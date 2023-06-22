@@ -32,7 +32,8 @@ class CodeConfigs {
 				default: '{{ manager.fieldAttribute('chargefreight', 'default') }}'
 			},
 			useroute: {
-				default: '{{ manager.fieldAttribute('useroute', 'default') }}'
+				default: '{{ manager.fieldAttribute('useroute', 'default') }}',
+				enabled: {{ manager.fieldAttribute('useroute', 'enabled') ? 'true' : 'false' }}
 			},
 			addsurcharge: {
 				default: '{{ manager.fieldAttribute('addsurcharge', 'default') }}'
