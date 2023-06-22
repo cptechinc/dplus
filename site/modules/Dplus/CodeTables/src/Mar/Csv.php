@@ -25,7 +25,7 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 	const RECORDLOCKER_FUNCTION = 'csv';
 	const DPLUS_TABLE           = 'CSV';
 	const FIELD_ATTRIBUTES = [
-		'code'        => ['type' => 'text', 'maxlength' => 8],
+		'code'        => ['type' => 'text', 'maxlength' => 4],
 		'description' => ['type' => 'text', 'maxlength' => 20],
 		'service'     => [
 			'type' => 'text', 
