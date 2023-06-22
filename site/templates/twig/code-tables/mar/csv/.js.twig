@@ -36,11 +36,11 @@ $(function() {
 	$("body").on("change", "select[name=addsurcharge]", function(e) {
 		var input = $(this);
 		if (input.val() == 'Y') {
-			formCode.inputs.surchargepercent.removeAttr('readonly');
+			formCode.enableDisableInputs([formCode.inputs.surchargepercent], true);
 			return true;
 		}
 		formCode.inputs.surchargepercent.val('');
-		formCode.inputs.surchargepercent.attr('readonly', 'readonly');
+		formCode.enableDisableInputs([formCode.inputs.surchargepercent], false);
 	});
 
 	$("body").on("change", "input[name=surchargepercent]", function(e) {
