@@ -29,7 +29,8 @@ class CodeConfigs {
 				default: '{{ manager.fieldAttribute('commercialflight', 'default') }}'
 			},
 			chargefreight: {
-				default: '{{ manager.fieldAttribute('chargefreight', 'default') }}'
+				default: '{{ manager.fieldAttribute('chargefreight', 'default') }}',
+				enabled: {{ manager.fieldAttribute('chargefreight', 'enabled') ? 'true' : 'false' }}
 			},
 			useroute: {
 				default: '{{ manager.fieldAttribute('useroute', 'default') }}',

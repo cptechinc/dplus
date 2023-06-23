@@ -48,7 +48,7 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 		'commercialflight' => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
 		'scac'             => ['type' => 'text', 'maxlength' => 4],
 		'edimethod'        => ['type' => 'text', 'maxlength' => 2],
-		'chargefreight'    => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'Y'],
+		'chargefreight'    => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'Y', 'enabled' => false],
 		'useroute'         => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N', 'enabled' => false],
 		'addsurcharge'     => ['type' => 'text', 'options' => ['Y' => 'Yes', 'N' => 'No'], 'default' => 'N'],
 		'surchargepercent' => ['type' => 'number', 'max' => 99.999, 'precision' => 3, 'default' => 0.000],
@@ -77,8 +77,13 @@ class Csv extends AbstractCodeTableEditableSingleKey {
 		parent::initFieldAttributes();
 
 		$configSo = Configs\So::config();
+		$configSoFrt = Configs\Sofrt::config();
 		$fields = $this->fieldAttributes;
-		$fields['useroute']['enabled'] = $configSo->providerouting =='Y';
+		$fields['useroute']['enabled']      = $configSo->providerouting =='Y';
+		$fields['chargefreight']['enabled'] = $configSoFrt->usetable =='Y' || $configSoFrt->orderamtA > 0;
+
+		// echo json_encode($fields['chargefreight']);
+		// exit;
 		$this->fieldAttributes = $fields;
 	}
 

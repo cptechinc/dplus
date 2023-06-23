@@ -30,6 +30,7 @@ class CodeForm {
 				}
 			});
 			this.enableDisableUseroute();
+			this.enableDisableChargeFreight();
 			this.triggerInputsChange();
 			var validator = this.inputs.form.validate();
 			validator.element('#' + this.inputs.code.attr('id'));
@@ -47,13 +48,30 @@ class CodeForm {
 			}
 		});
 		this.enableDisableUseroute();
+		this.enableDisableChargeFreight();
 		this.triggerInputsChange();
 	}
 
 	enableDisableUseroute() {
 		var input = this.inputs.useroute;
 
+		
+
 		if (this.config.fields.useroute.enabled === false) {
+			this.enableDisableInputs([input], false);
+			this.setDisabled(input, true);
+			return true;
+		}
+		this.enableDisableInputs([input], true);
+		this.setDisabled(input, false);
+	}
+
+	enableDisableChargeFreight() {
+		var input = this.inputs.chargefreight;
+
+		console.log(this.config.fields.chargefreight);
+
+		if (this.config.fields.chargefreight.enabled === false) {
 			this.enableDisableInputs([input], false);
 			this.setDisabled(input, true);
 			return true;
