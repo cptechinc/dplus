@@ -23,7 +23,7 @@
 							<div class="collapse" id="{{ item.itemid|attrJS }}-lotserial">
 								<div class="list-group">
 									{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid) %}
-										<a href="{{ page.print_itemlabelURL(item) }}" class="list-group-item p-1">
+										<a href="{{ page.print_itemlabelURL(lotserial) }}" class="list-group-item p-1">
 											<div class="row">
 												<div class="col">
 													<h4 class="list-group-item-heading">
