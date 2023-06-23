@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit4ed415e031ba38684c0dc56114a11d32
 {
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Dplus\\Configs\\AbstractConfig' => __DIR__ . '/../..' . '/src/AbstractConfig.php',
         'Dplus\\Configs\\Ap' => __DIR__ . '/../..' . '/src/configs/Ap.php',
         'Dplus\\Configs\\Ar' => __DIR__ . '/../..' . '/src/configs/Ar.php',
@@ -20,6 +21,7 @@ class ComposerStaticInit4ed415e031ba38684c0dc56114a11d32
         'Dplus\\Configs\\Po' => __DIR__ . '/../..' . '/src/configs/Po.php',
         'Dplus\\Configs\\Qt' => __DIR__ . '/../..' . '/src/configs/Qt.php',
         'Dplus\\Configs\\So' => __DIR__ . '/../..' . '/src/configs/So.php',
+        'Dplus\\Configs\\Sofrt' => __DIR__ . '/../..' . '/src/configs/Sofrt.php',
         'Dplus\\Configs\\Sys' => __DIR__ . '/../..' . '/src/configs/Sys.php',
         'Dplus\\Configs\\Sysd' => __DIR__ . '/../..' . '/src/configs/Sysd.php',
     );

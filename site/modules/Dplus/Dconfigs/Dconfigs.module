@@ -26,7 +26,7 @@ class Dconfigs extends WireData implements Module {
 		'kt',
 		'pm', 'po',
 		'qt',
-		'so', 'sys',
+		'so', 'sofrt', 'sys',
 	];
 
 	const NAMESPACE = '\\Dplus\\Configs';
