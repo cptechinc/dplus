@@ -88,7 +88,7 @@ class Picking extends Base {
 		$wSession = self::getWhsesession();
 
 		if ((empty($data->ordn) === false && $validate->order($data->ordn) === false) || $wSession->is_orderinvalid()) {
-			return self::displayOrderNotFound();
+			return self::displayOrderNotFound($data);
 		}
 
 		self::pw('page')->headline = "Picking Order # $data->ordn";
@@ -178,7 +178,7 @@ class Picking extends Base {
 		return self::pw('config')->twig->render('warehouse/picking/order/form.twig');
 	}
 
-	private static function displayOrderNotFound() {
+	private static function displayOrderNotFound($data) {
 		$html  = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ordn can not be found"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::displayOrderForm();
@@ -264,8 +264,9 @@ class Picking extends Base {
 		}
 
 		if ($q->count() == 0) {
+			$html = '';
 			$writer  = self::getHtmlWriter();
-			$html .= $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => '0 items found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "No items found for '$data->scan'"]));
+			$html .= $writer->div('class=mb-3', self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => '0 items found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "No items found for '$data->scan'"]));
 			$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/form.twig');
 			return $html;
 		}
