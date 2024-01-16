@@ -1,0 +1,8 @@
+$(function() {
+	var linenbr = {{ linenbr }};
+	var button_target = "#{{ (linenbr)|attrJS }}";
+
+	var button = $('button[data-target='+button_target+']');
+	button.click();
+	$('html, body').animate({scrollTop: button.offset().top - 60}, 1000);
+});
