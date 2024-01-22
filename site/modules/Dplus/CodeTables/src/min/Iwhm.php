@@ -284,7 +284,7 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 			return $invalidfields;
 		}
 
-		if ($warehouse->validate_bin($values->string('receivebinid')) === false) {
+		if ($values->string('receivebinid') != '' && $warehouse->validate_bin($values->string('receivebinid')) === false) {
 			return $invalidfields;
 		}
 		$warehouse->setReceivebinid($values->string('receivebinid'));
