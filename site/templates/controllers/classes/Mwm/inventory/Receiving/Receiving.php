@@ -224,9 +224,11 @@ class Receiving extends Base {
 			if ($session->getfor('receiving', 'received')) {
 				$received = $session->getfor('receiving', 'received');
 
-				if ($received->itemid == $physicalitem->itemid) {
-					$physicalitem->setBin($received->binid);
-				}
+				// if ($received && $physicalitem) {
+					if ($received->itemid == $physicalitem->itemid) {
+						$physicalitem->setBin($received->binid);
+					}
+				// }
 			}
 
 			if ($data->binID) {
