@@ -90,6 +90,55 @@
 
 <div class="form-row form-group">
 	<div class="col-sm-4">
+		<label for="receivebinid">Receive Bin</label>
+	</div>
+	<div class="col-sm-3">
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'consignment',
+					'value' : warehouse.receivebintype,
+					'size': 'sm',
+					'haskeys': true,
+					'showvalue': true,
+					'options': iwhm.fieldAttribute('receivebintype', 'options')
+				}
+			}
+		%}
+	</div>
+	<div class="col-sm-3">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'size': 'sm',
+					'input': {
+						'name': 'receivebinid',
+						'value': warehouse.receivebinid,
+						'attributes': {
+							'placeholder': '',
+							'data-jqv': 'true',
+							'aria-label':  'Warehouse Receive Bin ID',
+							'maxlength': iwhm.fieldAttribute('receivebinid', 'maxlength')
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Bins',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('warehouse/bins/', {'whseID': warehouse.id}),
+							'data-input': '#receivebinid'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="form-row form-group">
+	<div class="col-sm-4">
 		<label for="consignment">Consignment</label>
 	</div>
 	<div class="col-sm-3">

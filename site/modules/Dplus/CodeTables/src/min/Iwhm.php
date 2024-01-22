@@ -45,6 +45,8 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 		'binarrangement'  => ['type' => 'text', 'default' => 'L', 'options' => ['L' => 'List', 'R' => 'Range']],
 		'pickdetail'      => ['type' => 'text', 'default' => 'N', 'options' => ['A' => 'Available', 'S' => 'Selected', 'N' => 'No']],
 		'consignment'     => ['type' => 'text', 'default' => 'N'],
+		'receivebintype'  => ['type' => 'text', 'options' => ['S' => 'System', 'W' => 'Warehouse'], 'default' => 'S'],
+		'receivebinid'    => ['type' => 'text', 'maxlength' => 8,]
 	];
 	const FILTERABLE_FIELDS = ['code', 'name'];
 
@@ -155,6 +157,8 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 		$code->setPickdetail($this->fieldAttribute('pickdetail', 'default'));
 		$code->setConsignment($this->fieldAttribute('consignment', 'default'));
 		$code->setBinarrangement($this->fieldAttribute('binarrangement', 'default'));
+		$code->setReceivebintype($this->fieldAttribute('receivebintype', 'default'));
+		$code->setReceivebinid('');
 		return $code;
 	}
 
@@ -272,6 +276,18 @@ class Iwhm extends AbstractCodeTableEditableSingleKey {
 			$warehouse->setCustid($values->string('custid'));
 		}
 
+		$receiveBinType = $values->text('receivebintype');
+		$receiveBinType = in_array($receiveBinType, array_keys($this->fieldAttribute('receivebintype', 'options'))) ? $receiveBinType : $this->fieldAttribute('receivebintype', 'default');
+		$warehouse->setReceivebintype($receiveBinType);
+
+		if ($warehouse->isNew()) {
+			return $invalidfields;
+		}
+
+		if ($warehouse->validate_bin($values->string('receivebinid')) === false) {
+			return $invalidfields;
+		}
+		$warehouse->setReceivebinid($values->string('receivebinid'));
 		return $invalidfields;
 	}
 

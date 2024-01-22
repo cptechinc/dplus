@@ -75,6 +75,13 @@ $(function() {
 			}
 		}
 	});
+
+	$("body").on("change", "input[name=receivebinid]", function(e) {
+		var input = $(this);
+		if (input.val() == '') {
+			formCode.form.validate().element('#receivebinid');
+		}
+	})
 	
 	$("body").on("focusin", "#code-form input:not(input[name=code])", function(e) {
 		if (formCode.inputs.code.val() == '') {
@@ -134,6 +141,29 @@ $(function() {
 			},
 			name: {
 				maxlength: formCode.config.fields.name.maxlength,
+			},
+			receivebinid: {
+				required: false,
+				normalizer: function(value) {
+					if (value.trim() == '') {
+						formCode.form.find('input[name=receivebinid]').val('');
+						return '';
+					}
+					return value;
+				},
+				remote: {
+					url: '{{ page.jsonApiUrl('min/validate/warehouse/bin/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						whseID: function() {
+							return $('#code').val();
+						},
+						binID: function() {
+							return $('#receivebinid').val();
+						}
+					}
+				}
 			},
 			whseprofit: {
 				required: true,
