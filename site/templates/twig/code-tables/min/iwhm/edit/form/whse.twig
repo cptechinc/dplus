@@ -93,10 +93,9 @@
 		<label for="receivebinid">Receive Bin</label>
 	</div>
 	<div class="col-sm-3">
-		{{ warehouse.receivebintype }}
 		{% include 'util/bootstrap/form/select-simple.twig' with {
 				'select': {
-					'name': 'consignment',
+					'name': 'receivebintype',
 					'value' : warehouse.receivebintype,
 					'size': 'sm',
 					'haskeys': true,
