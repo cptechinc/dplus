@@ -223,15 +223,15 @@ class Receiving extends Base {
 
 			if ($session->getfor('receiving', 'received')) {
 				$received = $session->getfor('receiving', 'received');
-
 				if ($received && $physicalitem) {
-					if ($received->itemid == $physicalitem->itemid) {
-						$physicalitem->setBin($received->binid);
+					if ($received['itemid'] == $physicalitem->itemid) {
+						$physicalitem->setBin($received['binid']);
 					}
 				}
 			}
 
-			if ($data->binID) {
+			if ($data->binID && $physicalitem) {
+
 				$physicalitem->setBin($data->binID);
 			}
 			$receiving = self::getReceiving();
