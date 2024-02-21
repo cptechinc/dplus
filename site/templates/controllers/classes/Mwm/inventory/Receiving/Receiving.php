@@ -317,6 +317,15 @@ class Receiving extends Base {
 		return $url->getUrl();
 	}
 
+	static public function printReceivingLineLotserialUrl(PurchaseOrderDetailReceiving $item, $lotserial) {
+		$url = new Purl(self::receivingUrl($item->ponbr));
+		$url->path = self::pw('pages')->get('pw_template=whse-print-received-item-label')->url;
+		$url->query->set('ponbr', $item->ponbr);
+		$url->query->set('linenbr', $item->linenbr);
+		$url->query->set('lotserial', $lotserial);
+		return $url->getUrl();
+	}
+
 	static public function receivingCreatePoUrl() {
 		$url = new Purl(self::receivingUrl());
 		$url->path->add('create');
@@ -561,6 +570,11 @@ class Receiving extends Base {
 		$m->addHook('Page(pw_template=whse-receiving)::printReceivingLineUrl', function($event) {
 			$item     = $event->arguments(0); // Instance of PurchaseOrderDetailReceiving
 			$event->return = self::printReceivingLineUrl($item);
+		});
+
+		$m->addHook('Page(pw_template=whse-receiving)::printReceivingLotserialUrl', function($event) {
+			$item     = $event->arguments(0); // Instance of PurchaseOrderDetailReceiving
+			$event->return = self::printReceivingLineLotserialUrl($item, $event->arguments(1));
 		});
 	}
 }
