@@ -120,6 +120,7 @@ class Twig extends WireData implements Module {
 				'&' => 'amp',
 				"'" => 'apos',
 				"@" => 'att',
+				'/' => 'slash'
 			);
 			$string = str_replace(array_keys($replace), array_values($replace), $string);
 			return $jsprepend ? "js-$string" : $string;
