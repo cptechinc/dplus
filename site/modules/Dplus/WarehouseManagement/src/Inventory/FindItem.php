@@ -156,9 +156,16 @@ class FindItem extends Base {
 	 * @return InvWhseLot[]|ObjectCollection
 	 */
 	public function lotserialsMatchingInvsearch($itemID) {
+		$lotserials = Search::instance()->getDistinctLotserialsArray();
+		if (sizeof($lotserials) == 1 && $lotserials[0] == '') {
+			unset($lotserials[0]);
+		}
 		$q = $this->queryWhseid();
 		$q->filterByItemid($itemID);
-		$q->filterByLotserial(Search::instance()->getDistinctLotserialsArray());
+
+		if (empty($lotserials) === false) {
+			$q->filterByLotserial($lotserials);
+		}
 		$q->orderByBinid();
 		return $q->find();
 	}
