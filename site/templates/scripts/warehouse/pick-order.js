@@ -194,6 +194,23 @@ if (query.hasOwnProperty('scan') === false) {
 		});
 	});
 
+	$("body").on("click", ".finish-picking", function(e) {
+		e.preventDefault();
+		var button = $(this);
+
+		swal2.fire({
+			title: 'Are you sure?',
+			text: "You are trying to finish this order",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			if (result) {
+				window.location.href = button.attr('href');
+			}
+		});
+	});
+
 	/////////////////////////////////////
 	// 4. Remove Sales Order Locks
 	////////////////////////////////////
