@@ -121,10 +121,11 @@ class Binr extends Controller {
 			return self::handleScanInventorySingleItemid($data);
 		}
 		$items = $inventory->get_items_distinct($data->binID);
+		
 		if ($data->frombin) {
 			$items = $inventory->get_items_distinct($data->frombin);
 		}
-		return $config->twig->render('warehouse/binr/inventory-results.twig', ['resultscount' => $resultscount, 'items' => $items]);
+		return $config->twig->render('warehouse/binr/inventory-results.twig', ['inventory' => $inventory, 'resultscount' => $resultscount, 'items' => $items]);
 	}
 
 	private static function handleScanInventorySingleItemid($data) {
@@ -132,6 +133,7 @@ class Binr extends Controller {
 		self::sanitizeParametersShort($data, $fields);
 		$inventory = self::getInventorySearch();
 		$config    = self::pw('config');
+		$config->binr = self::pw('modules')->get('ConfigsBinr');
 
 		$q = $inventory->query();
 		if ($data->binID) {
@@ -182,9 +184,9 @@ class Binr extends Controller {
 
 
 		if ($config->twigloader->exists("warehouse/binr/$config->company/inventory-results.twig")) {
-			return $config->twig->render("warehouse/binr/$config->company/inventory-results.twig", ['config' => $config->binr, 'resultscount' => $countLotserial, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+			return $config->twig->render("warehouse/binr/$config->company/inventory-results.twig", ['config' => $config, 'resultscount' => $countLotserial, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
 		}
-		return $config->twig->render('warehouse/binr/inventory-results.twig', ['config' => $config->binr, 'resultscount' => $countLotserial, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+		return $config->twig->render('warehouse/binr/inventory-results.twig', ['config' => $config, 'resultscount' => $countLotserial, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
 	}
 
 	private static function handleItem($data) {

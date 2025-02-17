@@ -117,7 +117,7 @@ class Picking extends Base {
 
 		// Check if there are 0 items left to pick
 		if ($picking->items->queryOrdn()->count() === 0) {
-			$wSession->setStatus("There are no detail lines available to pick for Order # $ordn");
+			$wSession->setStatus("There are no detail lines available to pick for Order # $data->ordn");
 
 			if ($wSession->is_orderfinished() || $wSession->is_orderexited()) {
 				// TODO
@@ -287,7 +287,7 @@ class Picking extends Base {
 		$session->removeFor('picking', 'verify-picked-items');
 		$writer  = self::getHtmlWriter();
 		$html = $writer->div('class=mb-3');
-		$html .= $config->twig->render('warehouse/picking/unguided/scan/form.twig');
+		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/form.twig');
 		return $html;
 	}
 

@@ -78,6 +78,11 @@ class Base extends Controller {
 		return self::$sessionID;
 	}
 
+	/**
+	 * Return Whsesession Record
+	 * @param string $sessionID
+	 * @return \Whsesession
+	 */
 	static public function getWhseSession($sessionID = '') {
 		if (empty(self::$whsesession)) {
 			self::setSessionid($sessionID);

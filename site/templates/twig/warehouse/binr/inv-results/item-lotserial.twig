@@ -7,7 +7,7 @@
 			<strong>Bin:</strong> {{ lotserial.bin }}
 		</div>
 		<div class="col-sm-2">
-			<strong>Qty:</strong> <span class="pull-right">{{ lotserial.qty|number_format(config.decimal_places()) }}</span>
+			<strong>Qty:</strong> <span class="pull-right">{{ lotserial.qty|number_format(config.binr.decimal_places()) }}</span>
 		</div>
 		<div class="col-sm-3">
 			<strong>{{ item.get_itemtypepropertydesc()|upper }}:</strong> {{ lotserial.get_itemidentifier() }}

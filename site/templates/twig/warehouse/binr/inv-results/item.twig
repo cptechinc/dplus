@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block item_qty %}
-	{{ inventory.get_qty_itemid(item.itemid, input.get.string('frombin'))|number_format(config.decimal_places()) }}
+	{{ inventory.get_qty_itemid(item.itemid, input.get.string('frombin'))|number_format(config.binr.decimal_places()) }}
 {% endblock %}
 
 {% block show_button %}
