@@ -74,6 +74,7 @@ class Picking extends Base {
 				if (self::pw('session')->getFor('picking', 'verify-picked-items')) {
 					self::redirect(self::pickScanUrl($data->ordn, $data->scan), $http301 = false);
 				}
+				self::pw('session')->setFor('sop', 'action', $data->action);
 				self::redirect(self::pickingUrl($data->ordn), $http301 = false);
 				break;
 			default:
@@ -117,6 +118,10 @@ class Picking extends Base {
 
 		// Check if there are 0 items left to pick
 		if ($picking->items->queryOrdn()->count() === 0) {
+			if (self::pw('session')->getFor('sop', 'action') == 'add-lotserials') {
+				self::pw('session')->redirect(self::pickingRefreshUrl($data->ordn), false);
+				return '';
+			}
 			$wSession->setStatus("There are no detail lines available to pick for Order # $data->ordn");
 
 			if ($wSession->is_orderfinished() || $wSession->is_orderexited()) {
@@ -146,6 +151,12 @@ class Picking extends Base {
 		if ($ordn) {
 			$url->query->set('ordn', $ordn);
 		}
+		return $url->getUrl();
+	}
+
+	public static function pickingRefreshUrl($ordn) {
+		$url = new Purl(self::pickingUrl($ordn));
+		$url->query->set('action', 'start-order');
 		return $url->getUrl();
 	}
 
