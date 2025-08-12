@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a3e104392fcb89c88fab0b84286ab243",
+    "content-hash": "e427082e45dcec86525d57630f41c54f",
     "packages": [
         {
             "name": "cptechinc/dplus-model",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "e6bc0dd9e130a716a65fd4fdc74cccbfbf91193e"
+                "reference": "7dfa7073af8c1e6a583042cac90ae5ef68fdc8f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/e6bc0dd9e130a716a65fd4fdc74cccbfbf91193e",
-                "reference": "e6bc0dd9e130a716a65fd4fdc74cccbfbf91193e",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/7dfa7073af8c1e6a583042cac90ae5ef68fdc8f9",
+                "reference": "7dfa7073af8c1e6a583042cac90ae5ef68fdc8f9",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 "issues": "https://github.com/cptechinc/dplus-model/issues",
                 "source": "https://github.com/cptechinc/dplus-model/tree/master"
             },
-            "time": "2023-03-20T16:41:02+00:00"
+            "time": "2025-03-17T18:02:25+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -3021,14 +3021,14 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "jwage/purl": 20,
-        "twig/twig": 20,
-        "propel/propel": 20,
         "cptechinc/dplus-model": 20,
         "cptechinc/dpluso-model": 20,
+        "jwage/purl": 20,
         "mikehaertl/phpwkhtmltopdf": 20,
-        "picqer/php-barcode-generator": 20,
         "phpoffice/phpspreadsheet": 20,
+        "picqer/php-barcode-generator": 20,
+        "propel/propel": 20,
+        "twig/twig": 20,
         "vlucas/phpdotenv": 20
     },
     "prefer-stable": false,
@@ -3037,6 +3037,9 @@
         "php": ">=7.0.0",
         "ext-gd": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "platform-overrides": {
+        "php": "7.4.0"
+    },
+    "plugin-api-version": "2.6.0"
 }

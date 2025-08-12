@@ -5,7 +5,7 @@ class Binr extends Base {
 		$vars->frombin = strtoupper($vars->frombin);
 		$vars->tobin   = strtoupper($vars->tobin);
 
-		$data = ['BINR', "ITEMID=$vars->itemID"];
+		$data = ['BINR', "WHSE={$this->user->whseid}", "ITEMID=$vars->itemID"];
 
 		if ($vars->lotnbr) {
 			$data[] = "LOTNBR=$vars->lotnbr";
